@@ -181,18 +181,27 @@ def fib(n):
         this._initVisualization(container);
     },
 
+    // ===== 5단계 문제 구성 =====
+    stages: [
+        { num: 1, title: 'DP 입문', desc: '기본 점화식 연습', problemIds: ['boj-24416', 'boj-9184', 'boj-1463', 'boj-1904'] },
+        { num: 2, title: '1차원 DP 심화', desc: '조건이 있는 1차원 DP', problemIds: ['boj-2579', 'boj-2156', 'boj-1912', 'boj-10844'] },
+        { num: 3, title: '2차원 DP', desc: '테이블을 2차원으로 확장', problemIds: ['boj-1149', 'boj-1932'] },
+        { num: 4, title: 'LIS 계열', desc: '최장 증가 부분 수열', problemIds: ['boj-11053', 'boj-11054', 'boj-2565'] },
+        { num: 5, title: '고전 DP', desc: 'LCS, 배낭 문제', problemIds: ['boj-9251', 'boj-12865'] }
+    ],
+
     // ===== 문제 목록 =====
     problems: [
+        // ========== 1단계: DP 입문 ==========
         {
             id: 'boj-24416',
             title: 'BOJ 24416 - 알고리즘 수업: 피보나치 수 1',
-            difficulty: 'easy',
+            difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/24416',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>오늘도 서준이는 동적 프로그래밍 수업 조교를 하고 있다. 아, 전공이 뭐냐고? 컴퓨터공학이다.</p>
+                <p>오늘도 서준이는 동적 프로그래밍 수업 조교를 하고 있다.</p>
                 <p>재귀 호출로 피보나치 수를 구하는 코드와, 동적 프로그래밍으로 피보나치 수를 구하는 코드에서 각각 <strong>기본 연산의 실행 횟수</strong>를 구해보자.</p>
-
                 <div class="problem-codes">
                     <div class="problem-code-block">
                         <h4>코드 1: 재귀</h4>
@@ -212,18 +221,10 @@ def fib(n):
 }</code></pre>
                     </div>
                 </div>
-
                 <div class="problem-io">
-                    <div>
-                        <h4>입력</h4>
-                        <p>첫째 줄에 n이 주어진다. (5 ≤ n ≤ 40)</p>
-                    </div>
-                    <div>
-                        <h4>출력</h4>
-                        <p>재귀 호출의 기본 연산 횟수와 DP의 기본 연산 횟수를 공백으로 구분하여 출력한다.</p>
-                    </div>
+                    <div><h4>입력</h4><p>첫째 줄에 n이 주어진다. (5 ≤ n ≤ 40)</p></div>
+                    <div><h4>출력</h4><p>재귀 호출의 기본 연산 횟수와 DP의 기본 연산 횟수를 공백으로 구분하여 출력한다.</p></div>
                 </div>
-
                 <div class="problem-example">
                     <h4>예제</h4>
                     <div class="example-grid">
@@ -232,118 +233,900 @@ def fib(n):
                     </div>
                 </div>
             `,
-            hint: `<p><strong>재귀의 기본 연산 횟수</strong>는 n=1 또는 n=2에 도달하는 횟수입니다. 이것은 사실 <code>fib(n)</code>의 값 자체와 같습니다.</p>
-                   <p><strong>DP의 기본 연산 횟수</strong>는 for문이 3부터 n까지 돌기 때문에 <code>n - 2</code>번입니다.</p>`,
+            hints: [
+                { title: '접근법', content: '이 문제는 두 코드의 "기본 연산" 횟수를 세는 문제입니다. 각 코드에서 기본 연산이 어떤 줄인지 주석을 확인해보세요.' },
+                { title: '재귀의 기본 연산', content: '재귀에서 기본 연산은 <code>return 1</code>입니다. 이것은 리프 노드에 도달한 횟수, 즉 <code>fib(n)</code>의 값 자체와 같습니다.' },
+                { title: 'DP의 기본 연산', content: 'DP에서 기본 연산은 <code>f[i] = f[i-1] + f[i-2]</code>입니다. for문이 i=3부터 i=n까지 돌므로 총 <code>n - 2</code>번 실행됩니다.' },
+                { title: '구현 팁', content: '재귀 fib(n)을 직접 구현하여 값을 구하고, DP 횟수는 단순히 <code>n - 2</code>를 출력하면 됩니다. n이 최대 40이므로 재귀도 시간 내에 동작합니다.' }
+            ],
             inputLabel: '입력값 (n)',
-            inputMin: 5,
-            inputMax: 40,
-            inputDefault: 5,
+            inputMin: 5, inputMax: 40, inputDefault: 5,
             solve(n) {
-                function fibRec(n) {
-                    if (n <= 2) return 1;
-                    return fibRec(n - 1) + fibRec(n - 2);
-                }
+                function fibRec(n) { if (n <= 2) return 1; return fibRec(n-1) + fibRec(n-2); }
                 return `${fibRec(n)} ${n - 2}`;
             },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\n\n# 여기에 풀이를 작성하세요\n# 재귀 호출의 기본 연산 횟수와 DP의 기본 연산 횟수를 구하세요\n`,
+                cpp: `#include <iostream>\nusing namespace std;\n\n// 여기에 풀이를 작성하세요\n\nint main() {\n    int n;\n    cin >> n;\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    // 여기에 풀이를 작성하세요\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-9184',
+            title: 'BOJ 9184 - 신나는 함수 실행',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/9184',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>다음과 같은 재귀 함수 w(a, b, c)가 있다.</p>
+                <div class="problem-code-block">
+                    <h4>재귀 함수 w</h4>
+                    <pre><code class="language-cpp">if a <= 0 or b <= 0 or c <= 0, return 1
+if a > 20 or b > 20 or c > 20, return w(20, 20, 20)
+if a < b and b < c, return w(a, b, c-1) + w(a, b-1, c-1) - w(a, b-1, c)
+otherwise, return w(a-1, b, c) + w(a-1, b-1, c) + w(a-1, b, c-1) - w(a-1, b-1, c-1)</code></pre>
+                </div>
+                <p>이 함수를 구현하면 매우 느리다. 메모이제이션을 적용하여 빠르게 동작하도록 하라.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>각 줄에 a, b, c가 주어진다. (끝은 -1 -1 -1)</p></div>
+                    <div><h4>출력</h4><p>각 입력에 대해 w(a, b, c)의 값을 출력한다.</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>1 1 1
+2 2 2
+-1 -1 -1</pre></div>
+                        <div><strong>출력</strong><pre>w(1, 1, 1) = 2
+w(2, 2, 2) = 4</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '이 문제는 재귀 함수가 이미 주어져 있습니다. 그대로 구현하되 <strong>메모이제이션</strong>만 추가하면 됩니다. 3차원 배열이나 딕셔너리를 사용하세요.' },
+                { title: '상태 정의', content: '<code>dp[a][b][c]</code> = w(a, b, c)의 결과값. a, b, c가 0~20 범위이므로 <code>dp[21][21][21]</code> 크기면 충분합니다.' },
+                { title: '점화식', content: '문제에서 주어진 조건 그대로:<br>• a,b,c 중 하나가 ≤ 0이면 1<br>• 하나라도 > 20이면 w(20,20,20)<br>• a < b < c이면 w(a,b,c-1) + w(a,b-1,c-1) - w(a,b-1,c)<br>• 나머지: w(a-1,b,c) + w(a-1,b-1,c) + w(a-1,b,c-1) - w(a-1,b-1,c-1)' },
+                { title: '구현 팁', content: '함수 시작에서 <code>dp[a][b][c]</code>가 이미 계산되었는지 확인하고, 계산된 값이 있으면 바로 리턴합니다. 출력 형식에 주의: <code>w(a, b, c) = 결과</code> 형태입니다.' }
+            ],
+            inputLabel: 'a 값',
+            inputMin: -1, inputMax: 50, inputDefault: 1,
+            solve(a) {
+                const memo = {};
+                function w(a, b, c) {
+                    if (a <= 0 || b <= 0 || c <= 0) return 1;
+                    if (a > 20 || b > 20 || c > 20) return w(20, 20, 20);
+                    const key = `${a},${b},${c}`;
+                    if (memo[key] !== undefined) return memo[key];
+                    let res;
+                    if (a < b && b < c) res = w(a, b, c-1) + w(a, b-1, c-1) - w(a, b-1, c);
+                    else res = w(a-1, b, c) + w(a-1, b-1, c) + w(a-1, b, c-1) - w(a-1, b-1, c-1);
+                    memo[key] = res;
+                    return res;
+                }
+                return `w(${a}, ${a}, ${a}) = ${w(a, a, a)}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\n# 메모이제이션을 위한 3차원 배열 또는 딕셔너리\n# dp = [[[0]*21 for _ in range(21)] for _ in range(21)]\n\ndef w(a, b, c):\n    # 여기에 메모이제이션 적용한 함수를 작성하세요\n    pass\n\nwhile True:\n    a, b, c = map(int, input().split())\n    if a == -1 and b == -1 and c == -1:\n        break\n    print(f"w({a}, {b}, {c}) = {w(a, b, c)}")\n`,
+                cpp: `#include <iostream>\nusing namespace std;\n\nint dp[21][21][21];\nbool visited[21][21][21];\n\nint w(int a, int b, int c) {\n    // 여기에 메모이제이션 적용한 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int a, b, c;\n    while (cin >> a >> b >> c) {\n        if (a == -1 && b == -1 && c == -1) break;\n        printf("w(%d, %d, %d) = %d\\n", a, b, c, w(a, b, c));\n    }\n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    static int[][][] dp = new int[21][21][21];\n    static boolean[][][] visited = new boolean[21][21][21];\n    \n    static int w(int a, int b, int c) {\n        // 여기에 메모이제이션 적용한 함수를 작성하세요\n        return 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        while (sc.hasNextInt()) {\n            int a = sc.nextInt(), b = sc.nextInt(), c = sc.nextInt();\n            if (a == -1 && b == -1 && c == -1) break;\n            System.out.printf("w(%d, %d, %d) = %d%n", a, b, c, w(a, b, c));\n        }\n    }\n}`
+            }
+        },
+        {
+            id: 'boj-1463',
+            title: 'BOJ 1463 - 1로 만들기',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/1463',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>정수 X에 사용할 수 있는 연산은 다음 세 가지이다.</p>
+                <ol>
+                    <li>X가 3으로 나누어 떨어지면, 3으로 나눈다.</li>
+                    <li>X가 2로 나누어 떨어지면, 2로 나눈다.</li>
+                    <li>1을 뺀다.</li>
+                </ol>
+                <p>정수 N이 주어질 때, 위 연산을 적절히 사용하여 <strong>1을 만드는 데 필요한 최소 연산 횟수</strong>를 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 정수 N (1 ≤ N ≤ 10<sup>6</sup>)</p></div>
+                    <div><h4>출력</h4><p>최소 연산 횟수를 출력한다.</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>10</pre></div>
+                        <div><strong>출력</strong><pre>3</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '그리디하게 큰 수로 나누는 것이 항상 최적은 아닙니다 (예: 10). DP로 모든 경우를 고려해야 합니다.' },
+                { title: '상태 정의', content: '<code>dp[i]</code> = 정수 i를 1로 만드는 데 필요한 <strong>최소 연산 횟수</strong>. dp[1] = 0 (이미 1이므로).' },
+                { title: '점화식', content: '<code>dp[i] = dp[i-1] + 1</code> (1을 빼기)<br>i가 2로 나누어지면: <code>dp[i] = min(dp[i], dp[i/2] + 1)</code><br>i가 3으로 나누어지면: <code>dp[i] = min(dp[i], dp[i/3] + 1)</code>' },
+                { title: '구현 팁', content: 'Bottom-Up으로 i=2부터 N까지 순회하면서 dp를 채웁니다. 초기값 dp[1]=0. 각 i에서 세 가지 연산을 모두 고려해서 최솟값을 저장합니다.' }
+            ],
+            inputLabel: '정수 N',
+            inputMin: 1, inputMax: 1000000, inputDefault: 10,
+            solve(n) {
+                const dp = new Array(n + 1).fill(0);
+                for (let i = 2; i <= n; i++) {
+                    dp[i] = dp[i - 1] + 1;
+                    if (i % 2 === 0) dp[i] = Math.min(dp[i], dp[i / 2] + 1);
+                    if (i % 3 === 0) dp[i] = Math.min(dp[i], dp[i / 3] + 1);
+                }
+                return `${dp[n]}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\n\n# dp[i] = i를 1로 만드는 최소 연산 횟수\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint dp[1000001];\n\nint main() {\n    int n;\n    cin >> n;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] dp = new int[n + 1];\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-1904',
+            title: 'BOJ 1904 - 01타일',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/1904',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>지원이에게 2진 수열이 있다. 이 수열은 0과 1로만 이루어져 있으며, 다음과 같은 타일로 만들 수 있다:</p>
+                <ul>
+                    <li><strong>1</strong> 타일 (길이 1)</li>
+                    <li><strong>00</strong> 타일 (길이 2)</li>
+                </ul>
+                <p>길이가 N인 2진 수열의 개수를 15746으로 나눈 나머지를 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 자연수 N (1 ≤ N ≤ 1,000,000)</p></div>
+                    <div><h4>출력</h4><p>N길이 수열의 개수를 15746으로 나눈 나머지</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>4</pre></div>
+                        <div><strong>출력</strong><pre>5</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '길이 N인 수열의 마지막에 올 수 있는 타일을 생각해보세요. 마지막이 "1" 타일이면 나머지 길이는? "00" 타일이면?' },
+                { title: '상태 정의', content: '<code>dp[i]</code> = 길이 i인 올바른 2진 수열의 개수' },
+                { title: '점화식', content: '마지막에 "1"을 놓으면 앞에 길이 i-1의 수열이 와야 하고, "00"을 놓으면 앞에 길이 i-2의 수열이 와야 합니다.<br><code>dp[i] = (dp[i-1] + dp[i-2]) % 15746</code><br>이것은 피보나치 수열과 동일한 구조입니다!' },
+                { title: '구현 팁', content: 'dp[1] = 1 ("1"), dp[2] = 2 ("11", "00"). 매 계산마다 <strong>15746으로 나머지</strong>를 취해야 합니다. N이 최대 100만이므로 배열 대신 변수 2개로 공간 최적화도 가능합니다.' }
+            ],
+            inputLabel: '길이 N',
+            inputMin: 1, inputMax: 1000000, inputDefault: 4,
+            solve(n) {
+                if (n === 1) return '1';
+                let a = 1, b = 2;
+                for (let i = 3; i <= n; i++) { const t = (a + b) % 15746; a = b; b = t; }
+                return `${b}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\n\n# dp[i] = 길이 i인 2진 수열의 개수\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
 
-n = int(input())
+        // ========== 2단계: 1차원 DP 심화 ==========
+        {
+            id: 'boj-2579',
+            title: 'BOJ 2579 - 계단 오르기',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/2579',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>계단 오르기 게임은 계단 아래 시작점부터 꼭대기에 있는 도착점까지 가는 게임이다.</p>
+                <p>규칙은 다음과 같다:</p>
+                <ol>
+                    <li>계단은 한 번에 한 계단씩 또는 두 계단씩 오를 수 있다.</li>
+                    <li><strong>연속된 세 개의 계단을 모두 밟아서는 안 된다.</strong></li>
+                    <li>마지막 도착 계단은 반드시 밟아야 한다.</li>
+                </ol>
+                <p>각 계단에 쓰여진 점수의 합이 최대가 되도록 계단을 밟자.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 계단의 수 N (1 ≤ N ≤ 300), 이후 N개의 줄에 계단 점수</p></div>
+                    <div><h4>출력</h4><p>얻을 수 있는 총 점수의 최댓값</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>6
+10
+20
+15
+25
+10
+20</pre></div>
+                        <div><strong>출력</strong><pre>75</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '"연속 3개 불가" 조건이 핵심입니다. i번째 계단을 밟을 때, 바로 직전(i-1)도 밟았는지 여부에 따라 경우가 나뉩니다.' },
+                { title: '상태 정의', content: '<code>dp[i]</code> = i번째 계단을 밟았을 때의 최대 점수.<br>i번째에 도달하는 방법은 두 가지:<br>① i-2에서 2칸 점프<br>② i-1에서 1칸 (단, i-1도 직전에서 1칸 온 건 불가)' },
+                { title: '점화식', content: '경우 1: i-2 → i (2칸 점프): <code>dp[i-2] + score[i]</code><br>경우 2: i-3 → i-1 → i (1칸+1칸, 단 i-2는 안 밟음): <code>dp[i-3] + score[i-1] + score[i]</code><br><code>dp[i] = max(dp[i-2] + score[i], dp[i-3] + score[i-1] + score[i])</code>' },
+                { title: '구현 팁', content: '초기값: dp[1] = score[1], dp[2] = score[1]+score[2], dp[3] = max(score[1], score[2])+score[3]. i=4부터 점화식을 적용하세요. 1-indexed가 편합니다.' }
+            ],
+            inputLabel: '계단 수 N',
+            inputMin: 1, inputMax: 300, inputDefault: 6,
+            solve(n) {
+                const scores = [0, 10, 20, 15, 25, 10, 20];
+                if (n > scores.length - 1) return '(테스트 입력 범위 초과)';
+                const dp = new Array(n + 1).fill(0);
+                dp[1] = scores[1];
+                if (n >= 2) dp[2] = scores[1] + scores[2];
+                if (n >= 3) dp[3] = Math.max(scores[1], scores[2]) + scores[3];
+                for (let i = 4; i <= n; i++) {
+                    dp[i] = Math.max(dp[i-2] + scores[i], dp[i-3] + scores[i-1] + scores[i]);
+                }
+                return `${dp[n]}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nscores = [0] + [int(input()) for _ in range(n)]\n\n# dp[i] = i번째 계단을 밟았을 때 최대 점수\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint score[301], dp[301];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) cin >> score[i];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] score = new int[n + 1];\n        int[] dp = new int[n + 1];\n        for (int i = 1; i <= n; i++) score[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-2156',
+            title: 'BOJ 2156 - 포도주 시식',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/2156',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>효주는 포도주 시식회에 참석했다. N개의 포도주 잔이 순서대로 놓여 있고, 각 잔에는 일정량의 포도주가 들어 있다.</p>
+                <p>규칙:</p>
+                <ol>
+                    <li>포도주 잔을 선택하면 그 잔을 모두 마셔야 한다.</li>
+                    <li><strong>연속으로 놓여 있는 3잔을 모두 마실 수는 없다.</strong></li>
+                </ol>
+                <p>가장 많은 양의 포도주를 마실 수 있도록 하는 프로그램을 작성하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 포도주 잔의 수 n (1 ≤ n ≤ 10,000), 이후 n개의 줄에 각 잔의 포도주 양</p></div>
+                    <div><h4>출력</h4><p>마실 수 있는 포도주의 최대 양</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>6
+6
+10
+13
+9
+8
+1</pre></div>
+                        <div><strong>출력</strong><pre>33</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '계단 오르기와 비슷하지만 중요한 차이가 있습니다: <strong>마지막 잔을 반드시 마실 필요가 없습니다.</strong> 이 차이 때문에 점화식이 달라집니다.' },
+                { title: '상태 정의', content: '<code>dp[i]</code> = 1번째부터 i번째 잔까지 고려했을 때 마실 수 있는 최대 양. (i번째를 안 마실 수도 있음!)' },
+                { title: '점화식', content: 'i번째 잔에 대해 3가지 경우:<br>① i번째를 안 마심: <code>dp[i-1]</code><br>② i번째만 마심 (i-1은 안 마심): <code>dp[i-2] + wine[i]</code><br>③ i-1과 i를 연속 마심 (i-2는 안 마심): <code>dp[i-3] + wine[i-1] + wine[i]</code><br><code>dp[i] = max(dp[i-1], dp[i-2]+wine[i], dp[i-3]+wine[i-1]+wine[i])</code>' },
+                { title: '구현 팁', content: '계단 오르기와 달리 "안 마시는" 경우(<code>dp[i-1]</code>)가 추가됩니다. 초기값 처리에 주의하고, n이 작을 때(1, 2)의 예외 처리를 잊지 마세요.' }
+            ],
+            inputLabel: '잔 수 n',
+            inputMin: 1, inputMax: 10000, inputDefault: 6,
+            solve(n) {
+                const wine = [0, 6, 10, 13, 9, 8, 1];
+                if (n > wine.length - 1) return '(테스트 입력 범위 초과)';
+                const dp = new Array(n + 1).fill(0);
+                dp[1] = wine[1];
+                if (n >= 2) dp[2] = wine[1] + wine[2];
+                for (let i = 3; i <= n; i++) {
+                    dp[i] = Math.max(dp[i-1], dp[i-2] + wine[i], dp[i-3] + wine[i-1] + wine[i]);
+                }
+                return `${dp[n]}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nwine = [0] + [int(input()) for _ in range(n)]\n\n# dp[i] = i번째 잔까지 고려했을 때 최대 양\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint wine[10001], dp[10001];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) cin >> wine[i];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] wine = new int[n + 1];\n        int[] dp = new int[n + 1];\n        for (int i = 1; i <= n; i++) wine[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-1912',
+            title: 'BOJ 1912 - 연속합',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/1912',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>n개의 정수로 이루어진 임의의 수열이 주어진다. 이 중 연속된 몇 개의 수를 선택해서 구할 수 있는 합 중 가장 큰 합을 구하려고 한다.</p>
+                <p>수는 한 개 이상 선택해야 한다.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 정수 n (1 ≤ n ≤ 100,000), 둘째 줄에 n개의 정수 (절댓값 ≤ 1,000)</p></div>
+                    <div><h4>출력</h4><p>연속합의 최댓값</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>10
+10 -4 3 1 5 6 -35 12 21 -1</pre></div>
+                        <div><strong>출력</strong><pre>33</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '이 문제는 "최대 부분 배열 합" (Maximum Subarray) 문제입니다. 카데인 알고리즘(Kadane\'s Algorithm)이라는 유명한 DP 기법으로 풀 수 있습니다.' },
+                { title: '상태 정의', content: '<code>dp[i]</code> = i번째 원소를 <strong>마지막 원소로 포함하는</strong> 연속 부분 배열의 최대 합.' },
+                { title: '점화식', content: 'i번째 원소에서 두 가지 선택:<br>① 이전 연속합에 이어 붙이기: <code>dp[i-1] + a[i]</code><br>② 여기서 새로 시작: <code>a[i]</code><br><code>dp[i] = max(dp[i-1] + a[i], a[i])</code><br>최종 답은 <code>max(dp[1], dp[2], ..., dp[n])</code>' },
+                { title: '구현 팁', content: '배열 없이 변수 하나로도 가능합니다. <code>cur = max(cur + a[i], a[i])</code>, <code>ans = max(ans, cur)</code>. 음수만 있는 경우도 처리해야 합니다 (한 개는 반드시 선택).' }
+            ],
+            inputLabel: 'n 값',
+            inputMin: 1, inputMax: 100000, inputDefault: 10,
+            solve(n) {
+                const arr = [10, -4, 3, 1, 5, 6, -35, 12, 21, -1];
+                if (n > arr.length) return '(테스트 입력 범위 초과)';
+                let cur = arr[0], ans = arr[0];
+                for (let i = 1; i < n; i++) {
+                    cur = Math.max(cur + arr[i], arr[i]);
+                    ans = Math.max(ans, cur);
+                }
+                return `${ans}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# dp[i] = i번째를 마지막으로 하는 최대 연속합\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-10844',
+            title: 'BOJ 10844 - 쉬운 계단 수',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/10844',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>45656이란 수를 보자. 이 수는 인접한 모든 자릿수의 차이가 1이다. 이런 수를 계단 수라 한다.</p>
+                <p>N이 주어질 때, 길이가 N인 계단 수가 총 몇 개 있는지 구하시오. (0으로 시작하는 수는 계단 수가 아니다)</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 100)</p></div>
+                    <div><h4>출력</h4><p>길이가 N인 계단 수의 개수를 1,000,000,000으로 나눈 나머지</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>1</pre></div>
+                        <div><strong>출력</strong><pre>9</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '마지막 자릿수가 무엇인지에 따라 다음에 올 수 있는 숫자가 달라집니다. 마지막 자릿수를 상태에 포함시켜야 합니다.' },
+                { title: '상태 정의', content: '<code>dp[i][j]</code> = 길이가 i이고 마지막 자릿수가 j인 계단 수의 개수' },
+                { title: '점화식', content: '마지막 자릿수가 j인 수 뒤에는 j-1 또는 j+1이 올 수 있습니다.<br>• j = 0일 때: 앞에 1만 가능 → <code>dp[i][0] = dp[i-1][1]</code><br>• j = 9일 때: 앞에 8만 가능 → <code>dp[i][9] = dp[i-1][8]</code><br>• 그 외: <code>dp[i][j] = dp[i-1][j-1] + dp[i-1][j+1]</code><br>결과: <code>sum(dp[N][0..9])</code> (단, 0으로 시작 불가는 초기값에서 처리)' },
+                { title: '구현 팁', content: '초기값: dp[1][1~9] = 1, dp[1][0] = 0 (0으로 시작 불가). 매 계산마다 <code>% 1000000000</code>. 답은 dp[N][0]~dp[N][9]의 합입니다.' }
+            ],
+            inputLabel: '길이 N',
+            inputMin: 1, inputMax: 100, inputDefault: 1,
+            solve(n) {
+                const MOD = 1000000000;
+                const dp = Array.from({length: n + 1}, () => new Array(10).fill(0));
+                for (let j = 1; j <= 9; j++) dp[1][j] = 1;
+                for (let i = 2; i <= n; i++) {
+                    dp[i][0] = dp[i-1][1];
+                    dp[i][9] = dp[i-1][8];
+                    for (let j = 1; j <= 8; j++) {
+                        dp[i][j] = (dp[i-1][j-1] + dp[i-1][j+1]) % MOD;
+                    }
+                }
+                let ans = 0;
+                for (let j = 0; j <= 9; j++) ans = (ans + dp[n][j]) % MOD;
+                return `${ans}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nMOD = 1_000_000_000\n\n# dp[i][j] = 길이 i, 마지막 자릿수 j인 계단 수의 개수\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\nusing namespace std;\n\nconst int MOD = 1000000000;\nlong long dp[101][10];\n\nint main() {\n    int n;\n    cin >> n;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        long MOD = 1000000000;\n        long[][] dp = new long[n + 1][10];\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
 
-# 재귀 호출 횟수 (fib(n)의 값과 같음)
-def fib(n):
-    if n == 1 or n == 2:
-        return 1
-    return fib(n-1) + fib(n-2)
+        // ========== 3단계: 2차원 DP ==========
+        {
+            id: 'boj-1149',
+            title: 'BOJ 1149 - RGB거리',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/1149',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>RGB거리에는 집이 N개 있다. 각 집을 빨강, 초록, 파랑 중 하나로 칠해야 한다.</p>
+                <p>규칙: <strong>이웃한 집은 같은 색이면 안 된다.</strong></p>
+                <p>각 집을 특정 색으로 칠하는 비용이 주어질 때, 모든 집을 칠하는 비용의 최솟값을 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 집의 수 N (2 ≤ N ≤ 1,000), 이후 N개의 줄에 R G B 비용</p></div>
+                    <div><h4>출력</h4><p>모든 집을 칠하는 최소 비용</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>3
+26 40 83
+49 60 57
+13 89 99</pre></div>
+                        <div><strong>출력</strong><pre>96</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: 'i번째 집의 색을 정할 때, i-1번째 집이 어떤 색인지에 따라 선택지가 달라집니다. 따라서 <strong>마지막에 칠한 색</strong>을 상태에 포함시켜야 합니다.' },
+                { title: '상태 정의', content: '<code>dp[i][c]</code> = 1번째~i번째 집까지 칠했을 때, i번째 집을 색 c(R=0,G=1,B=2)로 칠한 경우의 최소 비용' },
+                { title: '점화식', content: '이웃한 집은 다른 색이어야 하므로:<br><code>dp[i][0] = min(dp[i-1][1], dp[i-1][2]) + cost[i][0]</code><br><code>dp[i][1] = min(dp[i-1][0], dp[i-1][2]) + cost[i][1]</code><br><code>dp[i][2] = min(dp[i-1][0], dp[i-1][1]) + cost[i][2]</code><br>답: <code>min(dp[N][0], dp[N][1], dp[N][2])</code>' },
+                { title: '구현 팁', content: '초기값: dp[1][c] = cost[1][c]. 이전 행만 참조하므로 공간 최적화로 1차원 배열 2개만 써도 됩니다.' }
+            ],
+            inputLabel: '집의 수 N',
+            inputMin: 2, inputMax: 1000, inputDefault: 3,
+            solve(n) {
+                const costs = [[26,40,83],[49,60,57],[13,89,99]];
+                if (n > costs.length) return '(테스트 입력 범위 초과)';
+                let dp = [...costs[0]];
+                for (let i = 1; i < n; i++) {
+                    const ndp = [
+                        Math.min(dp[1], dp[2]) + costs[i][0],
+                        Math.min(dp[0], dp[2]) + costs[i][1],
+                        Math.min(dp[0], dp[1]) + costs[i][2]
+                    ];
+                    dp = ndp;
+                }
+                return `${Math.min(...dp)}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncost = [list(map(int, input().split())) for _ in range(n)]\n\n# dp[i][c] = i번째 집을 색 c로 칠했을 때 최소 비용\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint cost[1001][3], dp[1001][3];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        cin >> cost[i][0] >> cost[i][1] >> cost[i][2];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[][] cost = new int[n][3];\n        int[][] dp = new int[n][3];\n        for (int i = 0; i < n; i++)\n            for (int j = 0; j < 3; j++)\n                cost[i][j] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-1932',
+            title: 'BOJ 1932 - 정수 삼각형',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/1932',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>크기 n인 정수 삼각형이 있다. 맨 위에서 시작하여 아래로 내려올 때, 현재 위치에서 왼쪽 아래 또는 오른쪽 아래로만 이동할 수 있다.</p>
+                <p>선택된 수의 합이 최대가 되는 경로를 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 삼각형 크기 n (1 ≤ n ≤ 500), 이후 삼각형 정보</p></div>
+                    <div><h4>출력</h4><p>합이 최대가 되는 경로의 합</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>5
+7
+3 8
+8 1 0
+2 7 4 4
+4 5 2 6 5</pre></div>
+                        <div><strong>출력</strong><pre>30</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '위에서 아래로 내려가면서, 각 위치까지 도달했을 때의 최대 합을 구합니다. 각 위치는 위쪽의 왼쪽 또는 오른쪽에서 올 수 있습니다.' },
+                { title: '상태 정의', content: '<code>dp[i][j]</code> = i행 j열까지 도달했을 때의 최대 합' },
+                { title: '점화식', content: '<code>dp[i][j] = max(dp[i-1][j-1], dp[i-1][j]) + tri[i][j]</code><br>단, j=0이면 왼쪽 위는 없으므로 dp[i-1][j]만, j=i이면 오른쪽 위는 없으므로 dp[i-1][j-1]만 고려합니다.<br>답: <code>max(dp[n-1][0], dp[n-1][1], ..., dp[n-1][n-1])</code>' },
+                { title: '구현 팁', content: 'Bottom-up으로 아래에서 위로 올라가며 풀 수도 있습니다. 그러면 마지막에 dp[0][0]이 답이 되어 더 간단합니다. 삼각형 배열을 직접 수정해도 됩니다.' }
+            ],
+            inputLabel: '삼각형 크기 n',
+            inputMin: 1, inputMax: 500, inputDefault: 5,
+            solve(n) {
+                const tri = [[7],[3,8],[8,1,0],[2,7,4,4],[4,5,2,6,5]];
+                if (n > tri.length) return '(테스트 입력 범위 초과)';
+                const dp = tri.map(row => [...row]);
+                for (let i = n - 2; i >= 0; i--) {
+                    for (let j = 0; j <= i; j++) {
+                        dp[i][j] += Math.max(dp[i+1][j], dp[i+1][j+1]);
+                    }
+                }
+                return `${dp[0][0]}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\ntri = [list(map(int, input().split())) for _ in range(n)]\n\n# dp[i][j] = i행 j열까지의 최대 합\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint tri[501][501];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j <= i; j++)\n            cin >> tri[i][j];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[][] tri = new int[n][];\n        for (int i = 0; i < n; i++) {\n            tri[i] = new int[i + 1];\n            for (int j = 0; j <= i; j++)\n                tri[i][j] = sc.nextInt();\n        }\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
 
-# DP 연산 횟수는 n-2
-print(fib(n), n - 2)`,
-                cpp: `#include <iostream>
-using namespace std;
+        // ========== 4단계: LIS 계열 ==========
+        {
+            id: 'boj-11053',
+            title: 'BOJ 11053 - 가장 긴 증가하는 부분 수열',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/11053',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열(LIS)의 길이를 구하시오.</p>
+                <p>예를 들어, 수열 {10, 20, 10, 30, 20, 50}의 LIS는 {10, 20, 30, 50}이며 길이는 4이다.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 수열 크기 N (1 ≤ N ≤ 1,000), 둘째 줄에 수열 A</p></div>
+                    <div><h4>출력</h4><p>가장 긴 증가하는 부분 수열의 길이</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>6
+10 20 10 30 20 50</pre></div>
+                        <div><strong>출력</strong><pre>4</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '각 위치에서 끝나는 LIS의 길이를 구합니다. i번째 원소 앞에 있는 원소들 중, 자기보다 작은 것들의 LIS 길이를 참고합니다.' },
+                { title: '상태 정의', content: '<code>dp[i]</code> = i번째 원소를 <strong>마지막으로 포함하는</strong> 가장 긴 증가하는 부분 수열의 길이' },
+                { title: '점화식', content: '0 ≤ j < i인 모든 j에 대해, <code>A[j] < A[i]</code>이면:<br><code>dp[i] = max(dp[i], dp[j] + 1)</code><br>초기값: dp[i] = 1 (자기 자신만 포함)<br>답: <code>max(dp[0], dp[1], ..., dp[n-1])</code>' },
+                { title: '구현 팁', content: '이중 for문으로 O(N²)에 풀 수 있습니다. N ≤ 1000이므로 충분합니다. 더 빠른 O(N log N) 풀이도 있지만, 이 문제에서는 O(N²)이면 됩니다.' }
+            ],
+            inputLabel: '수열 크기 N',
+            inputMin: 1, inputMax: 1000, inputDefault: 6,
+            solve(n) {
+                const a = [10, 20, 10, 30, 20, 50];
+                if (n > a.length) return '(테스트 입력 범위 초과)';
+                const dp = new Array(n).fill(1);
+                for (let i = 1; i < n; i++) {
+                    for (let j = 0; j < i; j++) {
+                        if (a[j] < a[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+                    }
+                }
+                return `${Math.max(...dp)}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# dp[i] = a[i]를 마지막으로 하는 LIS의 길이\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint a[1001], dp[1001];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        int[] dp = new int[n];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-11054',
+            title: 'BOJ 11054 - 가장 긴 바이토닉 부분 수열',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/11054',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>바이토닉 수열이란 어떤 수를 기준으로 앞부분은 증가하고 뒷부분은 감소하는 수열이다.</p>
+                <p>예를 들어, {1, 5, 2, 1}은 바이토닉 수열이다 (5를 기준).</p>
+                <p>수열 A가 주어질 때, 가장 긴 바이토닉 부분 수열의 길이를 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 수열 크기 N (1 ≤ N ≤ 1,000), 둘째 줄에 수열 A</p></div>
+                    <div><h4>출력</h4><p>가장 긴 바이토닉 부분 수열의 길이</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>10
+1 5 2 1 4 3 4 5 2 1</pre></div>
+                        <div><strong>출력</strong><pre>7</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '바이토닉 = 증가 + 감소. LIS를 응용하면 됩니다. 왼쪽에서의 LIS와 오른쪽에서의 LIS를 각각 구한 뒤 합치면 됩니다.' },
+                { title: '상태 정의', content: '<code>lis[i]</code> = 왼쪽→오른쪽으로 보았을 때 a[i]로 끝나는 LIS 길이<br><code>lds[i]</code> = 오른쪽→왼쪽으로 보았을 때 a[i]로 끝나는 LIS 길이 (= a[i]에서 시작하는 최장 감소 수열)' },
+                { title: '점화식', content: 'lis[i]: 앞에서와 동일한 LIS 점화식<br>lds[i]: 뒤에서부터 LIS를 구하는 것 (j > i이고 a[j] < a[i]이면 lds[i] = max(lds[i], lds[j]+1))<br>답: <code>max(lis[i] + lds[i] - 1)</code> (꼭짓점 i를 기준으로)' },
+                { title: '구현 팁', content: 'LIS를 정방향, 역방향으로 두 번 구합니다. 두 배열의 합에서 1을 빼면 (꼭짓점이 중복이므로) 바이토닉 수열의 길이입니다.' }
+            ],
+            inputLabel: '수열 크기 N',
+            inputMin: 1, inputMax: 1000, inputDefault: 10,
+            solve(n) {
+                const a = [1, 5, 2, 1, 4, 3, 4, 5, 2, 1];
+                if (n > a.length) return '(테스트 입력 범위 초과)';
+                const lis = new Array(n).fill(1);
+                const lds = new Array(n).fill(1);
+                for (let i = 1; i < n; i++)
+                    for (let j = 0; j < i; j++)
+                        if (a[j] < a[i]) lis[i] = Math.max(lis[i], lis[j] + 1);
+                for (let i = n - 2; i >= 0; i--)
+                    for (let j = n - 1; j > i; j--)
+                        if (a[j] < a[i]) lds[i] = Math.max(lds[i], lds[j] + 1);
+                let ans = 0;
+                for (let i = 0; i < n; i++) ans = Math.max(ans, lis[i] + lds[i] - 1);
+                return `${ans}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# lis[i] = 왼→우 LIS, lds[i] = 우→좌 LIS\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint a[1001], lis[1001], lds[1001];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n], lis = new int[n], lds = new int[n];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-2565',
+            title: 'BOJ 2565 - 전깃줄',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/2565',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>두 전봇대 A와 B 사이에 전깃줄이 연결되어 있다. 전깃줄이 교차하지 않으려면 최소 몇 개의 전깃줄을 없애야 하는지 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 전깃줄 수 N (1 ≤ N ≤ 100), 이후 N줄에 A, B 전봇대 위치</p></div>
+                    <div><h4>출력</h4><p>교차하지 않으려면 없애야 하는 전깃줄의 최소 개수</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>8
+1 8
+3 9
+2 2
+4 1
+6 4
+10 10
+9 7
+7 6</pre></div>
+                        <div><strong>출력</strong><pre>3</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '이 문제를 "교차하지 않는 전깃줄의 최대 개수"로 바꿔 생각하세요. 교차하지 않는 줄의 최대 개수를 K라 하면 답은 N - K입니다.' },
+                { title: '상태 정의', content: 'A 전봇대 기준으로 오름차순 정렬합니다. 그러면 B의 값이 증가하는 순서대로 선택하면 교차가 없습니다. 이것은 <strong>B 배열의 LIS</strong> 문제와 같습니다!' },
+                { title: '점화식', content: 'A 기준 정렬 후 B 배열에 대한 LIS를 구합니다.<br><code>dp[i]</code> = i번째 전깃줄을 마지막으로 포함하는 교차 없는 최대 전깃줄 수<br>LIS와 동일한 점화식을 적용합니다.<br>답: <code>N - max(dp)</code>' },
+                { title: '구현 팁', content: '정렬이 핵심입니다! A 기준 정렬 후 B 값으로 LIS를 구하세요. N ≤ 100이므로 O(N²)이면 충분합니다.' }
+            ],
+            inputLabel: '전깃줄 수 N',
+            inputMin: 1, inputMax: 100, inputDefault: 8,
+            solve(n) {
+                const wires = [[1,8],[3,9],[2,2],[4,1],[6,4],[10,10],[9,7],[7,6]];
+                if (n > wires.length) return '(테스트 입력 범위 초과)';
+                const sorted = wires.slice(0, n).sort((a, b) => a[0] - b[0]);
+                const b = sorted.map(w => w[1]);
+                const dp = new Array(n).fill(1);
+                for (let i = 1; i < n; i++)
+                    for (let j = 0; j < i; j++)
+                        if (b[j] < b[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+                return `${n - Math.max(...dp)}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nwires = [list(map(int, input().split())) for _ in range(n)]\n\n# A 기준 정렬 후 B에 대한 LIS\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\npair<int,int> wires[101];\nint dp[101];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        cin >> wires[i].first >> wires[i].second;\n    sort(wires, wires + n);\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[][] wires = new int[n][2];\n        for (int i = 0; i < n; i++) {\n            wires[i][0] = sc.nextInt();\n            wires[i][1] = sc.nextInt();\n        }\n        Arrays.sort(wires, (a, b) -> a[0] - b[0]);\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
 
-int fib(int n) {
-    if (n == 1 || n == 2)
-        return 1;
-    return fib(n-1) + fib(n-2);
-}
-
-int main() {
-    int n;
-    cin >> n;
-    cout << fib(n) << " " << n - 2 << endl;
-    return 0;
-}`,
-                java: `import java.util.Scanner;
-
-public class Main {
-    static int fib(int n) {
-        if (n == 1 || n == 2)
-            return 1;
-        return fib(n-1) + fib(n-2);
-    }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        System.out.println(fib(n) + " " + (n - 2));
-    }
-}`
+        // ========== 5단계: 고전 DP ==========
+        {
+            id: 'boj-9251',
+            title: 'BOJ 9251 - LCS',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/9251',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>LCS(Longest Common Subsequence, 최장 공통 부분 수열)은 두 수열 모두의 부분 수열 중 가장 긴 것을 찾는 문제이다.</p>
+                <p>예를 들어, ACAYKP와 CAPCAK의 LCS는 ACAK이고 길이는 4이다.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>두 줄에 걸쳐 두 문자열이 주어진다. (길이 ≤ 1,000, 대문자)</p></div>
+                    <div><h4>출력</h4><p>LCS의 길이</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>ACAYKP
+CAPCAK</pre></div>
+                        <div><strong>출력</strong><pre>4</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '두 문자열의 문자를 하나씩 비교해가며 2차원 테이블을 채웁니다. 문자가 같으면 대각선+1, 다르면 왼쪽이나 위쪽의 최대값을 취합니다.' },
+                { title: '상태 정의', content: '<code>dp[i][j]</code> = 문자열 A의 처음 i글자와 문자열 B의 처음 j글자의 LCS 길이' },
+                { title: '점화식', content: '• <code>A[i] == B[j]</code>이면: <code>dp[i][j] = dp[i-1][j-1] + 1</code><br>• <code>A[i] != B[j]</code>이면: <code>dp[i][j] = max(dp[i-1][j], dp[i][j-1])</code><br>답: <code>dp[len(A)][len(B)]</code>' },
+                { title: '구현 팁', content: 'dp 테이블의 0행, 0열은 모두 0 (빈 문자열과의 LCS는 0). 1-indexed로 구현하면 편합니다. 공간 최적화로 2행만 써도 됩니다.' }
+            ],
+            inputLabel: '(내장 예제 사용)',
+            inputMin: 0, inputMax: 0, inputDefault: 0,
+            solve() {
+                const a = 'ACAYKP', b = 'CAPCAK';
+                const m = a.length, n = b.length;
+                const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+                for (let i = 1; i <= m; i++) {
+                    for (let j = 1; j <= n; j++) {
+                        if (a[i-1] === b[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+                        else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                    }
+                }
+                return `${dp[m][n]}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\na = input().strip()\nb = input().strip()\n\n# dp[i][j] = a[:i]와 b[:j]의 LCS 길이\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\n#include <cstring>\nusing namespace std;\n\nint dp[1001][1001];\n\nint main() {\n    string a, b;\n    cin >> a >> b;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String a = sc.next();\n        String b = sc.next();\n        int[][] dp = new int[a.length() + 1][b.length() + 1];\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
+            }
+        },
+        {
+            id: 'boj-12865',
+            title: 'BOJ 12865 - 평범한 배낭',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/12865',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>이 문제는 아주 유명한 <strong>0/1 배낭 문제 (Knapsack Problem)</strong>이다.</p>
+                <p>N개의 물건이 있고, 각 물건은 무게 W와 가치 V를 가진다. 배낭의 최대 무게가 K일 때, 넣을 수 있는 물건들의 가치의 최대합을 구하시오.</p>
+                <div class="problem-io">
+                    <div><h4>입력</h4><p>첫째 줄에 물건 수 N(1≤N≤100)과 최대 무게 K(1≤K≤100,000), 이후 N줄에 W, V</p></div>
+                    <div><h4>출력</h4><p>배낭에 넣을 수 있는 물건들의 가치 합의 최댓값</p></div>
+                </div>
+                <div class="problem-example">
+                    <h4>예제</h4>
+                    <div class="example-grid">
+                        <div><strong>입력</strong><pre>4 7
+6 13
+4 8
+3 6
+5 12</pre></div>
+                        <div><strong>출력</strong><pre>14</pre></div>
+                    </div>
+                </div>
+            `,
+            hints: [
+                { title: '접근법', content: '각 물건을 넣거나 안 넣거나 (0/1) 선택합니다. 물건을 하나씩 고려하면서, 현재 남은 용량에 따라 최적의 선택을 합니다.' },
+                { title: '상태 정의', content: '<code>dp[i][w]</code> = 처음 i개 물건까지 고려하고 배낭 용량이 w일 때의 최대 가치' },
+                { title: '점화식', content: '• i번째 물건을 넣지 않는 경우: <code>dp[i][w] = dp[i-1][w]</code><br>• i번째 물건을 넣는 경우 (w ≥ W[i]): <code>dp[i][w] = dp[i-1][w - W[i]] + V[i]</code><br><code>dp[i][w] = max(dp[i-1][w], dp[i-1][w - W[i]] + V[i])</code><br>답: <code>dp[N][K]</code>' },
+                { title: '구현 팁', content: '1차원 배열로 공간 최적화가 가능합니다. <code>dp[w]</code>를 w를 K부터 W[i]까지 <strong>역순</strong>으로 순회하면서 갱신합니다. 역순인 이유: 같은 물건을 두 번 넣는 것을 방지합니다.' }
+            ],
+            inputLabel: '(내장 예제 사용)',
+            inputMin: 0, inputMax: 0, inputDefault: 0,
+            solve() {
+                const items = [[6,13],[4,8],[3,6],[5,12]];
+                const K = 7;
+                const dp = new Array(K + 1).fill(0);
+                for (const [w, v] of items) {
+                    for (let j = K; j >= w; j--) {
+                        dp[j] = Math.max(dp[j], dp[j - w] + v);
+                    }
+                }
+                return `${dp[K]}`;
+            },
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nn, k = map(int, input().split())\nitems = [list(map(int, input().split())) for _ in range(n)]\n\n# dp[i][w] = i번째까지 고려, 용량 w일 때 최대 가치\n# 여기에 풀이를 작성하세요\n`,
+                cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint dp[100001];\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), k = sc.nextInt();\n        int[] dp = new int[k + 1];\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
             }
         }
     ],
 
-    // ===== 문제풀이 렌더링 =====
+    // ===== 문제풀이 렌더링 (목록 보기) =====
     renderProblem(container) {
-        if (this.problems.length === 0) {
-            container.innerHTML = '<div class="empty-state"><p>아직 문제가 없습니다.</p></div>';
-            return;
-        }
-        this._renderProblemDetail(container, this.problems[0]);
+        container.innerHTML = '';
+
+        // 단계별 섹션 렌더링
+        this.stages.forEach(stage => {
+            const section = document.createElement('div');
+            section.className = 'stage-section';
+
+            section.innerHTML = `
+                <div class="stage-header">
+                    <span class="stage-num">${stage.num}</span>
+                    <h3>${stage.title}</h3>
+                    <span class="stage-desc">${stage.desc}</span>
+                </div>
+            `;
+
+            const cardsDiv = document.createElement('div');
+            cardsDiv.className = 'problem-cards';
+
+            stage.problemIds.forEach(pid => {
+                const problem = this.problems.find(p => p.id === pid);
+                if (!problem) return;
+
+                const card = document.createElement('div');
+                card.className = 'problem-card';
+                const bojNum = problem.id.replace('boj-', '');
+                card.innerHTML = `
+                    <span class="card-num">#${bojNum}</span>
+                    <span class="card-title">${problem.title.replace(/BOJ \d+ - /, '')}</span>
+                    <span class="card-diff ${problem.difficulty}">${problem.difficulty === 'silver' ? '실버' : '골드'}</span>
+                `;
+                card.addEventListener('click', () => {
+                    this._renderProblemDetail(container, problem);
+                });
+                cardsDiv.appendChild(card);
+            });
+
+            section.appendChild(cardsDiv);
+            container.appendChild(section);
+        });
     },
 
+    // ===== 문제 상세 보기 =====
     _renderProblemDetail(container, problem) {
-        container.innerHTML = `
-            <div class="problem-header">
-                <h2>${problem.title}</h2>
-                <a href="${problem.link}" target="_blank" class="btn btn-link">문제 원본 보기 →</a>
-            </div>
+        container.innerHTML = '';
 
-            <div class="problem-description">
-                ${problem.descriptionHTML}
-            </div>
+        // 뒤로가기 버튼
+        const backBtn = document.createElement('button');
+        backBtn.className = 'back-btn';
+        backBtn.innerHTML = '← 문제 목록으로';
+        backBtn.addEventListener('click', () => this.renderProblem(container));
+        container.appendChild(backBtn);
 
-            <div class="problem-hint">
-                <details>
-                    <summary>💡 힌트 보기</summary>
-                    <div class="hint-content">${problem.hint}</div>
-                </details>
-            </div>
+        // 문제 헤더
+        const header = document.createElement('div');
+        header.className = 'problem-header';
+        header.innerHTML = `
+            <h2>${problem.title}</h2>
+            <a href="${problem.link}" target="_blank" class="btn btn-link">문제 원본 보기 →</a>
+        `;
+        container.appendChild(header);
 
-            <div class="solve-area">
-                <div class="editor-header">
-                    <h3>풀이 작성</h3>
-                    <select id="lang-select">
-                        <option value="python">Python</option>
-                        <option value="cpp">C++</option>
-                        <option value="java">Java</option>
-                    </select>
+        // 문제 설명
+        const desc = document.createElement('div');
+        desc.className = 'problem-description';
+        desc.innerHTML = problem.descriptionHTML;
+        container.appendChild(desc);
+
+        // 단계별 힌트
+        const hintsSection = document.createElement('div');
+        hintsSection.className = 'hints-section';
+        hintsSection.innerHTML = '<h3>💡 단계별 힌트</h3>';
+
+        const hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+
+        const openedState = new Array(problem.hints.length).fill(false);
+
+        problem.hints.forEach((hint, idx) => {
+            const step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML = `
+                <div class="hint-step-header">
+                    <span class="hint-step-num">${idx + 1}</span>
+                    <span class="hint-step-title">${hint.title}</span>
+                    <span class="hint-step-toggle">▼</span>
                 </div>
-                <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
-                <div class="editor-actions">
+                <div class="hint-step-body">${hint.content}</div>
+            `;
+
+            const headerEl = step.querySelector('.hint-step-header');
+            headerEl.addEventListener('click', () => {
+                if (step.classList.contains('locked')) return;
+
+                if (openedState[idx]) {
+                    // 닫기
+                    step.classList.remove('opened');
+                    openedState[idx] = false;
+                } else {
+                    // 열기
+                    step.classList.add('opened');
+                    openedState[idx] = true;
+                    // 다음 힌트 잠금 해제
+                    if (idx + 1 < problem.hints.length) {
+                        const nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+            });
+
+            hintsDiv.appendChild(step);
+        });
+
+        hintsSection.appendChild(hintsDiv);
+        container.appendChild(hintsSection);
+
+        // 풀이 영역
+        const solveArea = document.createElement('div');
+        solveArea.className = 'solve-area';
+        solveArea.innerHTML = `
+            <div class="editor-header">
+                <h3>풀이 작성</h3>
+                <select id="lang-select">
+                    <option value="python">Python</option>
+                    <option value="cpp">C++</option>
+                    <option value="java">Java</option>
+                </select>
+            </div>
+            <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
+            <div class="editor-actions">
+                ${problem.inputMin !== problem.inputMax ? `
                     <div class="input-group">
                         <label>${problem.inputLabel}</label>
                         <input type="number" id="test-input" value="${problem.inputDefault}" min="${problem.inputMin}" max="${problem.inputMax}">
                     </div>
-                    <button id="run-btn" class="btn btn-primary">▶ 실행</button>
-                    <button id="check-btn" class="btn btn-success">✓ 정답 확인</button>
-                </div>
-                <div id="output-area" class="output-area">
-                    <div class="output-label">실행 결과</div>
-                    <pre id="output-text"></pre>
-                </div>
+                ` : ''}
+                <button id="run-btn" class="btn btn-primary">▶ 실행</button>
+                <button id="check-btn" class="btn btn-success">✓ 정답 확인</button>
+            </div>
+            <div id="output-area" class="output-area">
+                <div class="output-label">실행 결과</div>
+                <pre id="output-text"></pre>
             </div>
         `;
+        container.appendChild(solveArea);
 
         // 코드 하이라이팅
         container.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
@@ -369,36 +1152,31 @@ public class Main {
 
         // 실행 버튼
         container.querySelector('#run-btn').addEventListener('click', () => {
-            const n = parseInt(container.querySelector('#test-input').value);
-            if (isNaN(n) || n < problem.inputMin || n > problem.inputMax) {
-                this._showOutput(container, `오류: ${problem.inputMin} ≤ n ≤ ${problem.inputMax}`, 'wrong');
+            const inputEl = container.querySelector('#test-input');
+            const n = inputEl ? parseInt(inputEl.value) : 0;
+            if (inputEl && (isNaN(n) || n < problem.inputMin || n > problem.inputMax)) {
+                this._showOutput(container, `오류: ${problem.inputMin} ≤ 입력 ≤ ${problem.inputMax}`, 'wrong');
                 return;
             }
             const expected = problem.solve(n);
-            this._showOutput(container, `입력: ${n}\n예상 정답: ${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
+            this._showOutput(container, `입력: ${inputEl ? n : '(내장 예제)'}\n예상 정답: ${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
         });
 
         // 정답 확인 버튼
         container.querySelector('#check-btn').addEventListener('click', () => {
-            const n = parseInt(container.querySelector('#test-input').value);
-            if (isNaN(n) || n < problem.inputMin || n > problem.inputMax) {
-                this._showOutput(container, `오류: ${problem.inputMin} ≤ n ≤ ${problem.inputMax}`, 'wrong');
+            const inputEl = container.querySelector('#test-input');
+            const n = inputEl ? parseInt(inputEl.value) : 0;
+            if (inputEl && (isNaN(n) || n < problem.inputMin || n > problem.inputMax)) {
+                this._showOutput(container, `오류: ${problem.inputMin} ≤ 입력 ≤ ${problem.inputMax}`, 'wrong');
                 return;
             }
             const code = editor.value.trim();
-            if (!code) {
+            if (!code || code === problem.templates[langSelect.value].trim()) {
                 this._showOutput(container, '코드를 먼저 작성해주세요!', 'wrong');
                 return;
             }
             const expected = problem.solve(n);
-            const result = this._simulateCode(code, n, expected);
-            if (result === null) {
-                this._showOutput(container, `입력: ${n}\n예상 정답: ${expected}\n\n⚠️ 코드 시뮬레이션이 어렵습니다.\n직접 실행 환경에서 확인해주세요.`);
-            } else if (result === expected) {
-                this._showOutput(container, `입력: ${n}\n출력: ${result}\n\n✅ 정답입니다!`, 'correct');
-            } else {
-                this._showOutput(container, `입력: ${n}\n출력: ${result}\n예상: ${expected}\n\n❌ 오답입니다. 다시 시도해보세요.`, 'wrong');
-            }
+            this._showOutput(container, `입력: ${inputEl ? n : '(내장 예제)'}\n예상 정답: ${expected}\n\n💡 코드를 BOJ에 제출하여 정답을 확인하세요!\n위 예상 정답과 비교하여 코드를 검증해보세요.`);
         });
     },
 
@@ -406,16 +1184,6 @@ public class Main {
         const area = container.querySelector('#output-area');
         area.querySelector('#output-text').textContent = text;
         area.className = 'output-area' + (status ? ' ' + status : '');
-    },
-
-    _simulateCode(code, n, expected) {
-        if (code.includes('fib') && (code.includes('n - 2') || code.includes('n-2') || code.includes('n -2'))) {
-            return expected;
-        }
-        if (code.includes('for') && (code.includes('dp[') || code.includes('f['))) {
-            return expected;
-        }
-        return null;
     },
 
     // ===== 유틸리티 =====
@@ -478,14 +1246,12 @@ public class Main {
             container.querySelector('#viz-play').disabled = true;
             container.querySelector('#viz-pause').disabled = false;
 
-            // Build tree
             const treeSvg = container.querySelector('#tree-svg');
             const tree = this._buildTree(n);
             const positions = this._layoutTree(tree);
             this._drawTree(treeSvg, tree, positions);
             this._animateTree(container, treeSvg, tree, positions, getDelay());
 
-            // Build DP table
             const dpContainer = container.querySelector('#dp-table-container');
             const cells = this._buildDPTable(dpContainer, n);
             this._animateDPTable(container, cells, n, getDelay());
