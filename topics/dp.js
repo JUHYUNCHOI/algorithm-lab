@@ -13,79 +13,152 @@ const dpTopic = {
                 <p class="hero-sub">큰 문제를 작은 조각으로, 한 번 푼 건 다시 풀지 않는다</p>
             </div>
 
-            <div class="concept-grid">
-                <div class="concept-card">
-                    <div class="card-icon">
-                        <svg viewBox="0 0 80 80" class="icon-svg">
-                            <circle cx="30" cy="40" r="20" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.6"/>
-                            <circle cx="50" cy="40" r="20" fill="none" stroke="var(--accent2)" stroke-width="2" opacity="0.6"/>
-                        </svg>
-                    </div>
-                    <h3>중복되는 부분 문제</h3>
-                    <p>같은 작은 문제가 여러 번 반복해서 등장합니다. 재귀로 풀면 같은 계산을 수없이 반복하게 됩니다.</p>
+            <!-- ① DP란 무엇인가? -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">1</span> DP란 무엇인가?</div>
+                <div class="analogy-box">
+                    <strong>비유로 이해하기:</strong> 여러분은 이미 <strong>1+1+1+1+1 = 5</strong>를 계산했습니다.<br>
+                    이제 누가 <strong>1+1+1+1+1+1</strong>을 물어봅니다.<br>
+                    처음부터 다시 더할 건가요? 아니면 아까 답(5)에 1만 더할 건가요?<br><br>
+                    DP는 바로 이 아이디어입니다. <strong>이미 계산한 결과를 저장해두고 재활용</strong>하는 것!
                 </div>
-                <div class="concept-card">
-                    <div class="card-icon">
-                        <svg viewBox="0 0 80 80" class="icon-svg">
-                            <rect x="10" y="50" width="15" height="20" rx="2" fill="var(--accent)" opacity="0.4"/>
-                            <rect x="32" y="35" width="15" height="35" rx="2" fill="var(--accent)" opacity="0.6"/>
-                            <rect x="54" y="15" width="15" height="55" rx="2" fill="var(--accent)" opacity="0.9"/>
-                        </svg>
-                    </div>
-                    <h3>최적 부분 구조</h3>
-                    <p>큰 문제의 최적 해가 작은 부분 문제의 최적 해로 구성됩니다. 작은 것을 잘 풀면 큰 것도 풀립니다.</p>
-                </div>
-            </div>
 
-            <div class="why-section">
-                <h2>왜 DP를 쓸까?</h2>
-                <div class="comparison-container">
-                    <div class="compare-card bad">
-                        <div class="compare-header">
-                            <span class="compare-emoji">🐢</span>
-                            <h3>재귀 (Brute Force)</h3>
-                        </div>
-                        <div class="compare-body">
-                            <div class="complexity">O(2<sup>n</sup>)</div>
-                            <p>같은 계산을 반복</p>
-                        </div>
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">피보나치 수를 재귀로 구할 때, fib(5)를 호출하면 fib(3)은 총 몇 번 호출될까요?</span>
                     </div>
-                    <div class="vs-badge">VS</div>
-                    <div class="compare-card good">
-                        <div class="compare-header">
-                            <span class="compare-emoji">🚀</span>
-                            <h3>DP (메모이제이션)</h3>
-                        </div>
-                        <div class="compare-body">
-                            <div class="complexity">O(n)</div>
-                            <p>한 번 계산, 저장, 재활용</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="perf-demo">
-                    <p class="perf-label">fib(<span id="perf-n">10</span>) 호출 횟수 비교</p>
-                    <div class="perf-slider-wrap">
-                        <input type="range" id="perf-slider" min="3" max="25" value="10">
-                    </div>
-                    <div class="perf-result">
-                        <div class="perf-bar-wrapper">
-                            <span class="perf-bar-label">재귀</span>
-                            <div class="perf-bar recursive-bar"><span id="recursive-count"></span></div>
-                        </div>
-                        <div class="perf-bar-wrapper">
-                            <span class="perf-bar-label">DP</span>
-                            <div class="perf-bar dp-bar"><span id="dp-count"></span></div>
-                        </div>
+                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                    <div class="think-box-answer">
+                        <strong>2번</strong>입니다!<br>
+                        fib(5) → fib(4) + fib(3)<br>
+                        fib(4) → fib(3) + fib(2)<br>
+                        이렇게 fib(3)이 2번 호출됩니다. n이 커지면 중복은 폭발적으로 늘어납니다.<br>
+                        이것이 바로 <code>중복되는 부분 문제</code>이고, DP가 필요한 이유입니다.
                     </div>
                 </div>
             </div>
 
-            <div class="approach-section">
-                <h2>DP의 두 가지 접근법</h2>
+            <!-- ② DP의 두 가지 조건 -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">2</span> DP가 가능한 두 가지 조건</div>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 80" class="icon-svg">
+                                <circle cx="30" cy="40" r="20" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.6"/>
+                                <circle cx="50" cy="40" r="20" fill="none" stroke="var(--accent2)" stroke-width="2" opacity="0.6"/>
+                            </svg>
+                        </div>
+                        <h3>중복되는 부분 문제</h3>
+                        <p>같은 작은 문제가 여러 번 반복 등장합니다. 재귀로 풀면 같은 계산을 수없이 반복합니다. DP는 한 번 계산한 결과를 저장해서 재사용합니다.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 80 80" class="icon-svg">
+                                <rect x="10" y="50" width="15" height="20" rx="2" fill="var(--accent)" opacity="0.4"/>
+                                <rect x="32" y="35" width="15" height="35" rx="2" fill="var(--accent)" opacity="0.6"/>
+                                <rect x="54" y="15" width="15" height="55" rx="2" fill="var(--accent)" opacity="0.9"/>
+                            </svg>
+                        </div>
+                        <h3>최적 부분 구조</h3>
+                        <p>큰 문제의 최적 해가 작은 부분 문제의 최적 해로 구성됩니다. 작은 것을 최적으로 풀면, 그 조합으로 큰 문제도 최적으로 풀립니다.</p>
+                    </div>
+                </div>
+
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">다음 중 DP로 풀 수 있는 문제는? 클릭해서 확인해보세요!</span>
+                    </div>
+                    <div class="quiz-cards">
+                        <div class="quiz-card" data-isdp="true">
+                            <div><span class="quiz-text">"계단을 1칸 또는 2칸씩 올라갈 때, n번째 계단까지 가는 방법의 수"</span><div class="quiz-explain">부분 문제(n-1, n-2번째 계단)의 해가 반복되고, 최적 부분 구조를 가집니다.</div></div>
+                            <span class="quiz-badge">클릭!</span><span class="quiz-result">✅ DP 가능!</span>
+                        </div>
+                        <div class="quiz-card" data-isdp="false">
+                            <div><span class="quiz-text">"배열에서 가장 큰 수 찾기"</span><div class="quiz-explain">단순히 하나씩 비교하면 되는 O(n) 문제. 부분 문제가 중복되지 않습니다.</div></div>
+                            <span class="quiz-badge">클릭!</span><span class="quiz-result">❌ DP 불필요</span>
+                        </div>
+                        <div class="quiz-card" data-isdp="true">
+                            <div><span class="quiz-text">"동전 종류가 주어질 때, 금액 n을 만드는 최소 동전 수"</span><div class="quiz-explain">금액 n을 만드는 문제가 더 작은 금액의 부분 문제로 나뉘며, 중복됩니다.</div></div>
+                            <span class="quiz-badge">클릭!</span><span class="quiz-result">✅ DP 가능!</span>
+                        </div>
+                        <div class="quiz-card" data-isdp="false">
+                            <div><span class="quiz-text">"주어진 배열을 오름차순으로 정렬하기"</span><div class="quiz-explain">정렬은 분할정복이나 비교 기반 알고리즘으로 풀지, DP의 영역은 아닙니다.</div></div>
+                            <span class="quiz-badge">클릭!</span><span class="quiz-result">❌ DP 불필요</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ③ DP 문제 풀이 4단계 -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">3</span> DP 문제 풀이 4단계</div>
+                <p style="color:var(--text2); margin-bottom:1rem;">DP 문제를 만나면 이 4단계를 순서대로 따라가세요. 피보나치를 예시로 설명합니다.</p>
+
+                <div class="steps-flow">
+                    <div class="step-card">
+                        <div class="step-card-header"><span class="step-num">1</span><h4>상태 정의하기</h4></div>
+                        <p>"dp[i]가 무엇을 의미하는지" 명확히 정의합니다. 이것이 가장 중요한 단계입니다.</p>
+                        <div class="think-box" style="margin:0.8rem 0 0">
+                            <div class="think-box-question">
+                                <span class="think-box-question-icon">Q</span>
+                                <span class="think-box-question-text">피보나치에서 dp[i]는 무엇을 의미할까요?</span>
+                            </div>
+                            <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                            <div class="think-box-answer"><code>dp[i]</code> = i번째 피보나치 수. 즉, fib(i)의 값을 저장합니다.</div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-card-header"><span class="step-num">2</span><h4>점화식 세우기</h4></div>
+                        <p>dp[i]를 더 작은 부분 문제(dp[i-1], dp[i-2] 등)로 표현하는 관계식을 세웁니다.</p>
+                        <div class="think-box" style="margin:0.8rem 0 0">
+                            <div class="think-box-question">
+                                <span class="think-box-question-icon">Q</span>
+                                <span class="think-box-question-text">피보나치의 점화식은 무엇일까요?</span>
+                            </div>
+                            <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                            <div class="think-box-answer"><code>dp[i] = dp[i-1] + dp[i-2]</code><br>i번째 피보나치 수 = 직전 두 수의 합</div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-card-header"><span class="step-num">3</span><h4>초기값 설정</h4></div>
+                        <p>점화식을 시작하기 위한 기저 조건(base case)을 설정합니다.</p>
+                        <div class="think-box" style="margin:0.8rem 0 0">
+                            <div class="think-box-question">
+                                <span class="think-box-question-icon">Q</span>
+                                <span class="think-box-question-text">피보나치의 초기값은? dp[1]과 dp[2]는 각각 얼마일까요?</span>
+                            </div>
+                            <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                            <div class="think-box-answer"><code>dp[1] = 1, dp[2] = 1</code><br>이 두 값이 있어야 dp[3] = dp[2] + dp[1]부터 계산할 수 있습니다.</div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-card-header"><span class="step-num">4</span><h4>계산 순서 결정</h4></div>
+                        <p>dp 테이블을 어떤 순서로 채울지 결정합니다. 작은 문제 → 큰 문제 순서로!</p>
+                        <div class="think-box" style="margin:0.8rem 0 0">
+                            <div class="think-box-question">
+                                <span class="think-box-question-icon">Q</span>
+                                <span class="think-box-question-text">dp[i]를 구하려면 dp[i-1]과 dp[i-2]가 먼저 필요합니다. 어떤 순서로 채워야 할까요?</span>
+                            </div>
+                            <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                            <div class="think-box-answer"><strong>i = 3부터 n까지 순서대로!</strong><br>작은 인덱스부터 채워야 큰 인덱스를 계산할 때 필요한 값이 이미 있습니다.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ④ Top-Down vs Bottom-Up -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">4</span> Top-Down vs Bottom-Up</div>
                 <div class="approach-grid">
                     <div class="approach-card">
-                        <h3>🔽 Top-Down</h3>
-                        <p class="approach-desc">재귀 + 메모이제이션</p>
+                        <h3>🔽 Top-Down (메모이제이션)</h3>
+                        <p class="approach-desc">재귀 + 결과 저장. 큰 문제에서 시작해서 필요할 때만 작은 문제를 풂</p>
                         <div class="code-block"><pre><code class="language-python">memo = {}
 def fib(n):
     if n in memo:
@@ -96,14 +169,82 @@ def fib(n):
     return memo[n]</code></pre></div>
                     </div>
                     <div class="approach-card">
-                        <h3>🔼 Bottom-Up</h3>
-                        <p class="approach-desc">반복문 + 테이블</p>
+                        <h3>🔼 Bottom-Up (타뷸레이션)</h3>
+                        <p class="approach-desc">반복문 + 테이블. 작은 문제부터 차례로 채워나감</p>
                         <div class="code-block"><pre><code class="language-python">def fib(n):
     dp = [0] * (n+1)
     dp[1] = dp[2] = 1
     for i in range(3, n+1):
         dp[i] = dp[i-1] + dp[i-2]
     return dp[n]</code></pre></div>
+                    </div>
+                </div>
+
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">그러면 언제 Top-Down을, 언제 Bottom-Up을 쓸까요?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                    <div class="think-box-answer">
+                        <strong>Top-Down이 좋을 때:</strong> 모든 상태를 다 계산할 필요 없을 때, 점화식이 복잡할 때<br>
+                        <strong>Bottom-Up이 좋을 때:</strong> 재귀 깊이 제한이 걱정될 때(파이썬!), 모든 상태를 순서대로 채울 수 있을 때<br><br>
+                        실전 팁: <strong>대부분의 대회/코딩테스트에서는 Bottom-Up을 더 많이 씁니다.</strong> 함수 호출 오버헤드가 없고, 스택 오버플로 걱정이 없기 때문이에요.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⑤ 성능 비교 -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">5</span> 재귀 vs DP 성능 비교</div>
+                <div class="comparison-container">
+                    <div class="compare-card bad">
+                        <div class="compare-header"><span class="compare-emoji">🐢</span><h3>재귀 (Brute Force)</h3></div>
+                        <div class="compare-body"><div class="complexity">O(2<sup>n</sup>)</div><p>같은 계산을 반복</p></div>
+                    </div>
+                    <div class="vs-badge">VS</div>
+                    <div class="compare-card good">
+                        <div class="compare-header"><span class="compare-emoji">🚀</span><h3>DP (메모이제이션)</h3></div>
+                        <div class="compare-body"><div class="complexity">O(n)</div><p>한 번 계산, 저장, 재활용</p></div>
+                    </div>
+                </div>
+                <div class="perf-demo">
+                    <p class="perf-label">fib(<span id="perf-n">10</span>) 호출 횟수 비교 — 슬라이더를 움직여보세요!</p>
+                    <div class="perf-slider-wrap"><input type="range" id="perf-slider" min="3" max="25" value="10"></div>
+                    <div class="perf-result">
+                        <div class="perf-bar-wrapper"><span class="perf-bar-label">재귀</span><div class="perf-bar recursive-bar"><span id="recursive-count"></span></div></div>
+                        <div class="perf-bar-wrapper"><span class="perf-bar-label">DP</span><div class="perf-bar dp-bar"><span id="dp-count"></span></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⑥ DP 유형 로드맵 -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">6</span> DP 유형 분류 로드맵</div>
+                <p style="color:var(--text2); margin-bottom:1rem;">DP 문제는 크게 다음 유형으로 나뉩니다. 문제풀이 탭에서 각 유형의 문제를 풀어보세요!</p>
+                <div class="dp-roadmap">
+                    <div class="roadmap-item"><div class="roadmap-icon">🔢</div><h4>1차원 DP</h4><p>피보나치, 01타일, 1로 만들기</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">🪜</div><h4>조건부 1차원 DP</h4><p>계단 오르기, 포도주, 연속합</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">📊</div><h4>2차원 DP</h4><p>RGB거리, 정수 삼각형, 계단 수</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">📈</div><h4>LIS (최장 증가 부분 수열)</h4><p>LIS, 바이토닉, 전깃줄</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">🔤</div><h4>LCS (최장 공통 부분 수열)</h4><p>두 문자열 비교, 2D 테이블</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">🎒</div><h4>배낭 문제 (Knapsack)</h4><p>무게 제한 내 최대 가치</p></div>
+                </div>
+
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">새로운 DP 문제를 만나면, 어떻게 유형을 파악할 수 있을까요?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                    <div class="think-box-answer">
+                        <strong>핵심은 "상태를 어떻게 정의하느냐"입니다:</strong><br>
+                        • dp[i] 하나로 충분하면 → <strong>1차원 DP</strong><br>
+                        • dp[i][j]처럼 2개 이상의 변수가 필요하면 → <strong>2차원 DP</strong><br>
+                        • "순서대로 증가/감소" 키워드가 보이면 → <strong>LIS 계열</strong><br>
+                        • "두 문자열/수열 비교"이면 → <strong>LCS 계열</strong><br>
+                        • "무게/용량 제한 + 선택"이면 → <strong>배낭 문제</strong><br><br>
+                        연습하면 자연스럽게 보이기 시작합니다!
                     </div>
                 </div>
             </div>
@@ -124,14 +265,86 @@ def fib(n):
         slider.addEventListener('input', updatePerf);
         updatePerf();
 
+        // think-box 인터랙션
+        this._initConceptInteractions(container);
+
         // 신택스 하이라이팅
         container.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+    },
+
+    _initConceptInteractions(container) {
+        // Think-box 클릭 공개
+        container.querySelectorAll('.think-box-trigger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const box = btn.closest('.think-box');
+                if (!box.classList.contains('revealed')) {
+                    box.classList.add('revealed');
+                    btn.textContent = '✓ 답변 확인 완료';
+                }
+            });
+        });
+        // 퀴즈 카드
+        container.querySelectorAll('.quiz-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (card.classList.contains('answered')) return;
+                card.classList.add('answered');
+                card.classList.add(card.dataset.isdp === 'true' ? 'correct' : 'wrong');
+            });
+        });
     },
 
     // ===== 시각화 렌더링 =====
     renderVisualize(container) {
         container.innerHTML = `
-            <h2>피보나치 시각화</h2>
+            <h2>DP 시각화</h2>
+            <div class="viz-type-selector">
+                <button class="viz-type-btn active" data-viz="fibonacci">피보나치</button>
+                <button class="viz-type-btn" data-viz="makeone">1로 만들기</button>
+                <button class="viz-type-btn" data-viz="stairs">계단 오르기</button>
+                <button class="viz-type-btn" data-viz="lis">LIS</button>
+                <button class="viz-type-btn" data-viz="knapsack">배낭 문제</button>
+            </div>
+            <div id="viz-content"></div>
+        `;
+        const vizContent = container.querySelector('#viz-content');
+        const buttons = container.querySelectorAll('.viz-type-btn');
+
+        const switchViz = (type) => {
+            this._clearVizState();
+            buttons.forEach(b => b.classList.toggle('active', b.dataset.viz === type));
+            vizContent.innerHTML = '';
+            this._renderVizType(vizContent, type);
+        };
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => switchViz(btn.dataset.viz));
+        });
+
+        switchViz('fibonacci');
+    },
+
+    _clearVizState() {
+        if (this._vizState) {
+            this._vizState.timeouts.forEach(t => clearTimeout(t));
+            this._vizState.timeouts = [];
+            this._vizState.running = false;
+            this._vizState.paused = false;
+        }
+    },
+
+    _renderVizType(el, type) {
+        switch(type) {
+            case 'fibonacci': this._renderVizFibonacci(el); break;
+            case 'makeone': this._renderVizMakeOne(el); break;
+            case 'stairs': this._renderVizStairs(el); break;
+            case 'lis': this._renderVizLIS(el); break;
+            case 'knapsack': this._renderVizKnapsack(el); break;
+        }
+    },
+
+    // ===== 피보나치 시각화 =====
+    _renderVizFibonacci(el) {
+        el.innerHTML = `
             <div class="viz-controls">
                 <div class="viz-control-group">
                     <label>n = <span id="viz-n-label">5</span></label>
@@ -147,7 +360,6 @@ def fib(n):
                     <button id="viz-reset" class="btn">↺ 리셋</button>
                 </div>
             </div>
-
             <div class="viz-panels">
                 <div class="viz-panel">
                     <div class="viz-panel-header">
@@ -169,7 +381,6 @@ def fib(n):
                     </div>
                 </div>
             </div>
-
             <div class="viz-legend">
                 <span class="legend-item"><span class="legend-dot new"></span> 새로운 계산</span>
                 <span class="legend-item"><span class="legend-dot duplicate"></span> 중복 계산</span>
@@ -177,8 +388,633 @@ def fib(n):
                 <span class="legend-item"><span class="legend-dot computed"></span> 계산 완료</span>
             </div>
         `;
+        this._initVisualization(el);
+    },
 
-        this._initVisualization(container);
+    // ===== 1로 만들기 시각화 =====
+    _renderVizMakeOne(el) {
+        el.innerHTML = `
+            <div class="viz-controls">
+                <div class="viz-control-group">
+                    <label>N = <span id="viz-n-label">10</span></label>
+                    <input type="range" id="viz-n-slider" min="2" max="20" value="10">
+                </div>
+                <div class="viz-control-group">
+                    <label>속도</label>
+                    <input type="range" id="viz-speed" min="1" max="5" value="3">
+                </div>
+                <div class="viz-buttons">
+                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
+                    <button id="viz-reset" class="btn">↺ 리셋</button>
+                </div>
+            </div>
+            <div class="viz-panel">
+                <div class="viz-panel-header">
+                    <h3>dp[i] = i를 1로 만드는 최소 연산 횟수</h3>
+                </div>
+                <div class="viz-panel-body">
+                    <div id="makeone-table" class="dp-table-container" style="flex-wrap:wrap;gap:8px;"></div>
+                    <div id="makeone-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
+                    <div id="makeone-path" style="margin-top:16px;font-weight:600;color:var(--accent);min-height:24px;"></div>
+                </div>
+            </div>
+            <div class="viz-legend">
+                <span class="legend-item"><span class="legend-dot base"></span> 기저 조건</span>
+                <span class="legend-item"><span class="legend-dot new"></span> 현재 계산 중</span>
+                <span class="legend-item"><span class="legend-dot computed"></span> 계산 완료</span>
+                <span class="legend-item" style="color:var(--green);">━ 최적 경로</span>
+            </div>
+        `;
+        const state = this._vizState;
+        const nSlider = el.querySelector('#viz-n-slider');
+        const nLabel = el.querySelector('#viz-n-label');
+        const speedSlider = el.querySelector('#viz-speed');
+        const getDelay = () => [600, 450, 300, 180, 80][parseInt(speedSlider.value) - 1];
+
+        const buildTable = (n) => {
+            const tableEl = el.querySelector('#makeone-table');
+            tableEl.innerHTML = '';
+            const cells = [];
+            for (let i = 1; i <= n; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'dp-cell';
+                cell.innerHTML = `<div class="dp-cell-index">${i}</div><div class="dp-cell-value">?</div>`;
+                tableEl.appendChild(cell);
+                cells.push(cell);
+            }
+            return cells;
+        };
+
+        const reset = () => {
+            state.timeouts.forEach(t => clearTimeout(t));
+            state.timeouts = [];
+            state.running = false;
+            el.querySelector('#makeone-formula').textContent = '';
+            el.querySelector('#makeone-path').textContent = '';
+            el.querySelector('#viz-play').disabled = false;
+            buildTable(parseInt(nSlider.value));
+        };
+
+        nSlider.addEventListener('input', () => { nLabel.textContent = nSlider.value; reset(); });
+        el.querySelector('#viz-reset').addEventListener('click', reset);
+
+        el.querySelector('#viz-play').addEventListener('click', () => {
+            const n = parseInt(nSlider.value);
+            state.running = true;
+            el.querySelector('#viz-play').disabled = true;
+            const cells = buildTable(n);
+            const dp = new Array(n + 1).fill(Infinity);
+            dp[1] = 0;
+            const formula = el.querySelector('#makeone-formula');
+            const pathEl = el.querySelector('#makeone-path');
+
+            // Base case
+            cells[0].classList.add('base');
+            cells[0].querySelector('.dp-cell-value').textContent = '0';
+
+            let step = 0;
+            for (let i = 2; i <= n; i++) {
+                step++;
+                const idx = i;
+                const t = setTimeout(() => {
+                    if (!state.running) return;
+                    dp[idx] = dp[idx - 1] + 1;
+                    let from = idx - 1;
+                    let explanation = `dp[${idx}] = dp[${idx}-1]+1 = ${dp[idx]}`;
+                    if (idx % 2 === 0 && dp[idx / 2] + 1 < dp[idx]) {
+                        dp[idx] = dp[idx / 2] + 1;
+                        from = idx / 2;
+                        explanation = `dp[${idx}] = dp[${idx}/2]+1 = ${dp[idx]}`;
+                    }
+                    if (idx % 3 === 0 && dp[idx / 3] + 1 < dp[idx]) {
+                        dp[idx] = dp[idx / 3] + 1;
+                        from = idx / 3;
+                        explanation = `dp[${idx}] = dp[${idx}/3]+1 = ${dp[idx]}`;
+                    }
+                    cells[idx - 1].classList.add('filled');
+                    cells[idx - 1].querySelector('.dp-cell-value').textContent = dp[idx];
+                    formula.textContent = explanation;
+
+                    // highlight source cell briefly
+                    cells[from - 1].classList.add('active');
+                    cells[idx - 1].classList.add('active');
+                    setTimeout(() => {
+                        cells[from - 1].classList.remove('active');
+                        cells[idx - 1].classList.remove('active');
+                    }, getDelay() * 0.6);
+                }, step * getDelay());
+                state.timeouts.push(t);
+            }
+
+            // After all steps, show optimal path
+            const pathT = setTimeout(() => {
+                if (!state.running) return;
+                // Trace back
+                const path = [n];
+                let cur = n;
+                while (cur > 1) {
+                    let best = cur - 1, bestVal = dp[cur - 1];
+                    if (cur % 2 === 0 && dp[cur / 2] < bestVal) { best = cur / 2; bestVal = dp[cur / 2]; }
+                    if (cur % 3 === 0 && dp[cur / 3] < bestVal) { best = cur / 3; }
+                    path.push(best);
+                    cur = best;
+                }
+                path.forEach(v => {
+                    cells[v - 1].style.background = 'var(--green)';
+                    cells[v - 1].style.color = '#fff';
+                    cells[v - 1].querySelector('.dp-cell-value').style.color = '#fff';
+                    cells[v - 1].querySelector('.dp-cell-index').style.color = 'rgba(255,255,255,0.8)';
+                });
+                pathEl.textContent = `최적 경로: ${path.join(' → ')} (${dp[n]}번)`;
+            }, (step + 1) * getDelay());
+            state.timeouts.push(pathT);
+        });
+
+        reset();
+    },
+
+    // ===== 계단 오르기 시각화 =====
+    _renderVizStairs(el) {
+        const stairScores = [10, 20, 15, 25, 10, 20];
+        el.innerHTML = `
+            <div class="viz-controls">
+                <div class="viz-control-group" style="flex-direction:column;gap:4px;">
+                    <label>계단 점수 (쉼표 구분)</label>
+                    <input type="text" id="stair-input" value="${stairScores.join(', ')}" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:200px;">
+                </div>
+                <div class="viz-buttons">
+                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
+                    <button id="viz-reset" class="btn">↺ 리셋</button>
+                </div>
+            </div>
+            <div class="viz-panel">
+                <div class="viz-panel-header">
+                    <h3>계단 오르기 (한 칸 또는 두 칸씩)</h3>
+                </div>
+                <div class="viz-panel-body">
+                    <div id="stair-visual" style="display:flex;align-items:flex-end;gap:4px;padding:20px 10px;min-height:200px;"></div>
+                    <div id="stair-dp" class="dp-table-container" style="margin-top:16px;flex-wrap:wrap;gap:8px;"></div>
+                    <div id="stair-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
+                    <div id="stair-path" style="margin-top:12px;font-weight:600;color:var(--accent);min-height:24px;"></div>
+                </div>
+            </div>
+        `;
+        const state = this._vizState;
+
+        const parseScores = () => {
+            const val = el.querySelector('#stair-input').value;
+            return val.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+        };
+
+        const buildStairs = (scores) => {
+            const visual = el.querySelector('#stair-visual');
+            visual.innerHTML = '';
+            const maxScore = Math.max(...scores);
+            scores.forEach((s, i) => {
+                const block = document.createElement('div');
+                block.className = 'stair-block';
+                block.style.height = Math.max(30, (s / maxScore) * 120) + 'px';
+                block.style.width = '50px';
+                block.innerHTML = `<div class="stair-label">${s}</div><div style="font-size:11px;color:var(--text3);">${i + 1}</div>`;
+                visual.appendChild(block);
+            });
+        };
+
+        const buildDP = (n) => {
+            const dpEl = el.querySelector('#stair-dp');
+            dpEl.innerHTML = '';
+            const cells = [];
+            for (let i = 0; i <= n; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'dp-cell';
+                cell.innerHTML = `<div class="dp-cell-index">dp[${i}]</div><div class="dp-cell-value">?</div>`;
+                dpEl.appendChild(cell);
+                cells.push(cell);
+            }
+            return cells;
+        };
+
+        const reset = () => {
+            state.timeouts.forEach(t => clearTimeout(t));
+            state.timeouts = [];
+            state.running = false;
+            const scores = parseScores();
+            buildStairs(scores);
+            buildDP(scores.length);
+            el.querySelector('#stair-formula').textContent = '';
+            el.querySelector('#stair-path').textContent = '';
+            el.querySelector('#viz-play').disabled = false;
+        };
+
+        el.querySelector('#viz-reset').addEventListener('click', reset);
+
+        el.querySelector('#viz-play').addEventListener('click', () => {
+            const scores = parseScores();
+            const n = scores.length;
+            if (n < 2) return;
+            state.running = true;
+            el.querySelector('#viz-play').disabled = true;
+            const cells = buildDP(n);
+            const stairBlocks = el.querySelectorAll('.stair-block');
+            const formula = el.querySelector('#stair-formula');
+            const pathEl = el.querySelector('#stair-path');
+            const dp = new Array(n + 1).fill(0);
+
+            // dp[0] = 0 (바닥에서 시작)
+            cells[0].classList.add('base');
+            cells[0].querySelector('.dp-cell-value').textContent = '0';
+
+            // dp[1] = scores[0]
+            const t1 = setTimeout(() => {
+                if (!state.running) return;
+                dp[1] = scores[0];
+                cells[1].classList.add('filled');
+                cells[1].querySelector('.dp-cell-value').textContent = dp[1];
+                stairBlocks[0].classList.add('active');
+                formula.textContent = `dp[1] = ${scores[0]}`;
+                setTimeout(() => stairBlocks[0].classList.remove('active'), 400);
+            }, 400);
+            state.timeouts.push(t1);
+
+            // dp[2] = max(scores[0] + scores[1], scores[1])
+            const t2 = setTimeout(() => {
+                if (!state.running) return;
+                dp[2] = Math.max(scores[0] + scores[1], scores[1]);
+                cells[2].classList.add('filled');
+                cells[2].querySelector('.dp-cell-value').textContent = dp[2];
+                formula.textContent = `dp[2] = max(dp[1]+${scores[1]}, ${scores[1]}) = ${dp[2]}`;
+            }, 800);
+            state.timeouts.push(t2);
+
+            // dp[i] = max(dp[i-2] + scores[i-1], dp[i-3] + scores[i-2] + scores[i-1]) for i>=3
+            // Using the rule: can't step on 3 consecutive stairs
+            for (let i = 3; i <= n; i++) {
+                const idx = i;
+                const t = setTimeout(() => {
+                    if (!state.running) return;
+                    const opt1 = dp[idx - 2] + scores[idx - 1]; // 2칸 점프
+                    const opt2 = dp[idx - 3] + scores[idx - 2] + scores[idx - 1]; // 1칸+1칸 (이전 2개)
+                    dp[idx] = Math.max(opt1, opt2);
+                    cells[idx].classList.add('filled');
+                    cells[idx].querySelector('.dp-cell-value').textContent = dp[idx];
+                    stairBlocks[idx - 1].classList.add('active');
+                    formula.textContent = `dp[${idx}] = max(dp[${idx-2}]+${scores[idx-1]}, dp[${idx-3}]+${scores[idx-2]}+${scores[idx-1]}) = max(${opt1}, ${opt2}) = ${dp[idx]}`;
+                    setTimeout(() => stairBlocks[idx - 1].classList.remove('active'), 500);
+                }, 800 + (idx - 2) * 600);
+                state.timeouts.push(t);
+            }
+
+            // Show result
+            const totalDelay = 800 + (n - 2) * 600 + 400;
+            const tFinal = setTimeout(() => {
+                if (!state.running) return;
+                cells[n].style.background = 'var(--green)';
+                cells[n].style.color = '#fff';
+                cells[n].querySelector('.dp-cell-value').style.color = '#fff';
+                pathEl.textContent = `최대 점수: ${dp[n]}`;
+            }, totalDelay);
+            state.timeouts.push(tFinal);
+        });
+
+        reset();
+    },
+
+    // ===== LIS 시각화 =====
+    _renderVizLIS(el) {
+        el.innerHTML = `
+            <div class="viz-controls">
+                <div class="viz-control-group" style="flex-direction:column;gap:4px;">
+                    <label>수열 (쉼표 구분)</label>
+                    <input type="text" id="lis-input" value="10, 20, 10, 30, 20, 50" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:240px;">
+                </div>
+                <div class="viz-control-group">
+                    <label>속도</label>
+                    <input type="range" id="viz-speed" min="1" max="5" value="3">
+                </div>
+                <div class="viz-buttons">
+                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
+                    <button id="viz-reset" class="btn">↺ 리셋</button>
+                </div>
+            </div>
+            <div class="viz-panel">
+                <div class="viz-panel-header">
+                    <h3>최장 증가 부분 수열 (LIS)</h3>
+                </div>
+                <div class="viz-panel-body">
+                    <div id="lis-bars" class="viz-barchart"></div>
+                    <div id="lis-dp" class="dp-table-container" style="margin-top:16px;flex-wrap:wrap;gap:8px;"></div>
+                    <div id="lis-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
+                    <div id="lis-result" style="margin-top:12px;font-weight:600;color:var(--accent);min-height:24px;"></div>
+                </div>
+            </div>
+            <div class="viz-legend">
+                <span class="legend-item"><span class="legend-dot new"></span> 현재 검사 중</span>
+                <span class="legend-item"><span class="legend-dot computed"></span> 비교 대상</span>
+                <span class="legend-item" style="color:var(--green);">■ LIS에 포함</span>
+            </div>
+        `;
+        const state = this._vizState;
+        const speedSlider = el.querySelector('#viz-speed');
+        const getDelay = () => [800, 600, 400, 250, 120][parseInt(speedSlider.value) - 1];
+
+        const parseArr = () => el.querySelector('#lis-input').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+
+        const buildBars = (arr) => {
+            const barsEl = el.querySelector('#lis-bars');
+            barsEl.innerHTML = '';
+            const maxVal = Math.max(...arr);
+            arr.forEach((v, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'viz-bar';
+                bar.style.height = Math.max(20, (v / maxVal) * 140) + 'px';
+                bar.innerHTML = `<span class="viz-bar-val">${v}</span><span class="viz-bar-idx">${i}</span>`;
+                barsEl.appendChild(bar);
+            });
+        };
+
+        const buildDP = (n) => {
+            const dpEl = el.querySelector('#lis-dp');
+            dpEl.innerHTML = '';
+            const cells = [];
+            for (let i = 0; i < n; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'dp-cell';
+                cell.innerHTML = `<div class="dp-cell-index">dp[${i}]</div><div class="dp-cell-value">?</div>`;
+                dpEl.appendChild(cell);
+                cells.push(cell);
+            }
+            return cells;
+        };
+
+        const reset = () => {
+            state.timeouts.forEach(t => clearTimeout(t));
+            state.timeouts = [];
+            state.running = false;
+            const arr = parseArr();
+            buildBars(arr);
+            buildDP(arr.length);
+            el.querySelector('#lis-formula').textContent = '';
+            el.querySelector('#lis-result').textContent = '';
+            el.querySelector('#viz-play').disabled = false;
+        };
+
+        el.querySelector('#viz-reset').addEventListener('click', reset);
+
+        el.querySelector('#viz-play').addEventListener('click', () => {
+            const arr = parseArr();
+            const n = arr.length;
+            if (n < 2) return;
+            state.running = true;
+            el.querySelector('#viz-play').disabled = true;
+            const cells = buildDP(n);
+            const bars = el.querySelectorAll('.viz-bar');
+            const formula = el.querySelector('#lis-formula');
+            const resultEl = el.querySelector('#lis-result');
+            const dp = new Array(n).fill(1);
+            const delay = getDelay();
+
+            // Animation steps - collect all compare pairs
+            const steps = [];
+            for (let i = 0; i < n; i++) {
+                // First show dp[i] being initialized to 1
+                steps.push({ type: 'init', i });
+                for (let j = 0; j < i; j++) {
+                    steps.push({ type: 'compare', i, j });
+                }
+                steps.push({ type: 'done', i });
+            }
+
+            steps.forEach((s, stepIdx) => {
+                const t = setTimeout(() => {
+                    if (!state.running) return;
+                    if (s.type === 'init') {
+                        bars[s.i].classList.add('active');
+                        cells[s.i].querySelector('.dp-cell-value').textContent = '1';
+                        formula.textContent = `dp[${s.i}] = 1 (초기값)`;
+                    } else if (s.type === 'compare') {
+                        bars[s.j].classList.add('comparing');
+                        if (arr[s.j] < arr[s.i] && dp[s.j] + 1 > dp[s.i]) {
+                            dp[s.i] = dp[s.j] + 1;
+                            cells[s.i].querySelector('.dp-cell-value').textContent = dp[s.i];
+                            formula.textContent = `arr[${s.j}]=${arr[s.j]} < arr[${s.i}]=${arr[s.i]} → dp[${s.i}] = dp[${s.j}]+1 = ${dp[s.i]}`;
+                        } else if (arr[s.j] < arr[s.i]) {
+                            formula.textContent = `arr[${s.j}]=${arr[s.j]} < arr[${s.i}]=${arr[s.i]}, 하지만 dp[${s.j}]+1=${dp[s.j]+1} ≤ dp[${s.i}]=${dp[s.i]}`;
+                        } else {
+                            formula.textContent = `arr[${s.j}]=${arr[s.j]} ≥ arr[${s.i}]=${arr[s.i]} → 건너뜀`;
+                        }
+                        setTimeout(() => bars[s.j].classList.remove('comparing'), delay * 0.6);
+                    } else if (s.type === 'done') {
+                        bars[s.i].classList.remove('active');
+                        cells[s.i].classList.add('filled');
+                        cells[s.i].querySelector('.dp-cell-value').textContent = dp[s.i];
+                    }
+                }, stepIdx * delay * 0.5);
+                state.timeouts.push(t);
+            });
+
+            // Final: highlight LIS
+            const finalT = setTimeout(() => {
+                if (!state.running) return;
+                const maxLen = Math.max(...dp);
+                // Trace back LIS
+                const lisIndices = [];
+                let target = maxLen;
+                for (let i = n - 1; i >= 0; i--) {
+                    if (dp[i] === target) {
+                        if (lisIndices.length === 0 || arr[i] < arr[lisIndices[lisIndices.length - 1]]) {
+                            lisIndices.push(i);
+                            target--;
+                        }
+                    }
+                }
+                lisIndices.reverse();
+                lisIndices.forEach(idx => {
+                    bars[idx].style.background = 'var(--green)';
+                    bars[idx].style.color = '#fff';
+                    cells[idx].style.background = 'var(--green)';
+                    cells[idx].style.color = '#fff';
+                    cells[idx].querySelector('.dp-cell-value').style.color = '#fff';
+                });
+                resultEl.textContent = `LIS 길이: ${maxLen} → [${lisIndices.map(i => arr[i]).join(', ')}]`;
+            }, steps.length * delay * 0.5 + 300);
+            state.timeouts.push(finalT);
+        });
+
+        reset();
+    },
+
+    // ===== 배낭 시각화 =====
+    _renderVizKnapsack(el) {
+        el.innerHTML = `
+            <div class="viz-controls">
+                <div class="viz-control-group" style="flex-direction:column;gap:4px;">
+                    <label>배낭 용량 (W)</label>
+                    <input type="number" id="knap-cap" value="7" min="1" max="15" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:80px;">
+                </div>
+                <div class="viz-buttons">
+                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
+                    <button id="viz-reset" class="btn">↺ 리셋</button>
+                </div>
+            </div>
+            <div class="viz-panel">
+                <div class="viz-panel-header">
+                    <h3>0/1 배낭 문제</h3>
+                </div>
+                <div class="viz-panel-body">
+                    <div id="knap-items" class="viz-items"></div>
+                    <div id="knap-table-wrap" style="overflow-x:auto;margin-top:16px;">
+                        <table id="knap-table" class="viz-2d-table"></table>
+                    </div>
+                    <div id="knap-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
+                    <div id="knap-result" style="margin-top:12px;font-weight:600;color:var(--accent);min-height:24px;"></div>
+                </div>
+            </div>
+        `;
+        const state = this._vizState;
+        const items = [
+            { name: 'A', weight: 6, value: 13 },
+            { name: 'B', weight: 4, value: 8 },
+            { name: 'C', weight: 3, value: 6 },
+            { name: 'D', weight: 5, value: 12 }
+        ];
+
+        const renderItems = () => {
+            const itemsEl = el.querySelector('#knap-items');
+            itemsEl.innerHTML = '';
+            items.forEach((item, i) => {
+                const card = document.createElement('div');
+                card.className = 'viz-item-card';
+                card.innerHTML = `<strong>${item.name}</strong><br>무게: ${item.weight}<br>가치: ${item.value}`;
+                card.dataset.idx = i;
+                itemsEl.appendChild(card);
+            });
+        };
+
+        const buildTable = (W) => {
+            const table = el.querySelector('#knap-table');
+            table.innerHTML = '';
+            const n = items.length;
+            // Header row
+            let headerHTML = '<tr><th></th>';
+            for (let w = 0; w <= W; w++) headerHTML += `<th>w=${w}</th>`;
+            headerHTML += '</tr>';
+            table.innerHTML = headerHTML;
+
+            const cellMap = {};
+            // Row 0 (no items)
+            let row0 = document.createElement('tr');
+            row0.innerHTML = `<th>0개</th>`;
+            for (let w = 0; w <= W; w++) {
+                const td = document.createElement('td');
+                td.className = 'viz-2d-cell';
+                td.textContent = '0';
+                td.dataset.i = '0';
+                td.dataset.w = w;
+                row0.appendChild(td);
+                cellMap[`0-${w}`] = td;
+            }
+            table.appendChild(row0);
+
+            for (let i = 1; i <= n; i++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<th>${items[i-1].name}</th>`;
+                for (let w = 0; w <= W; w++) {
+                    const td = document.createElement('td');
+                    td.className = 'viz-2d-cell';
+                    td.textContent = '?';
+                    td.dataset.i = i;
+                    td.dataset.w = w;
+                    tr.appendChild(td);
+                    cellMap[`${i}-${w}`] = td;
+                }
+                table.appendChild(tr);
+            }
+            return cellMap;
+        };
+
+        const reset = () => {
+            state.timeouts.forEach(t => clearTimeout(t));
+            state.timeouts = [];
+            state.running = false;
+            renderItems();
+            const W = parseInt(el.querySelector('#knap-cap').value) || 7;
+            buildTable(W);
+            el.querySelector('#knap-formula').textContent = '';
+            el.querySelector('#knap-result').textContent = '';
+            el.querySelector('#viz-play').disabled = false;
+        };
+
+        el.querySelector('#viz-reset').addEventListener('click', reset);
+
+        el.querySelector('#viz-play').addEventListener('click', () => {
+            const W = parseInt(el.querySelector('#knap-cap').value) || 7;
+            const n = items.length;
+            state.running = true;
+            el.querySelector('#viz-play').disabled = true;
+            const cellMap = buildTable(W);
+            const formula = el.querySelector('#knap-formula');
+            const resultEl = el.querySelector('#knap-result');
+            const itemCards = el.querySelectorAll('.viz-item-card');
+
+            const dp = Array.from({ length: n + 1 }, () => new Array(W + 1).fill(0));
+            let step = 0;
+
+            for (let i = 1; i <= n; i++) {
+                for (let w = 0; w <= W; w++) {
+                    step++;
+                    const ci = i, cw = w;
+                    const t = setTimeout(() => {
+                        if (!state.running) return;
+                        itemCards.forEach(c => c.classList.remove('active'));
+                        if (itemCards[ci - 1]) itemCards[ci - 1].classList.add('active');
+
+                        const cell = cellMap[`${ci}-${cw}`];
+                        cell.classList.add('active');
+
+                        if (items[ci - 1].weight > cw) {
+                            dp[ci][cw] = dp[ci - 1][cw];
+                            formula.textContent = `아이템 ${items[ci-1].name} 무게(${items[ci-1].weight}) > 용량(${cw}) → dp[${ci}][${cw}] = dp[${ci-1}][${cw}] = ${dp[ci][cw]}`;
+                        } else {
+                            const notTake = dp[ci - 1][cw];
+                            const take = dp[ci - 1][cw - items[ci - 1].weight] + items[ci - 1].value;
+                            dp[ci][cw] = Math.max(notTake, take);
+                            formula.textContent = `dp[${ci}][${cw}] = max(안넣기=${notTake}, 넣기=${take}) = ${dp[ci][cw]}`;
+                        }
+
+                        cell.textContent = dp[ci][cw];
+                        setTimeout(() => cell.classList.remove('active'), 200);
+                    }, step * 150);
+                    state.timeouts.push(t);
+                }
+            }
+
+            // Trace back selected items
+            const finalT = setTimeout(() => {
+                if (!state.running) return;
+                const selected = [];
+                let cw = W;
+                for (let i = n; i >= 1; i--) {
+                    if (dp[i][cw] !== dp[i - 1][cw]) {
+                        selected.push(i - 1);
+                        cw -= items[i - 1].weight;
+                        // Highlight row
+                        for (let w = 0; w <= W; w++) {
+                            cellMap[`${i}-${w}`].style.background = 'rgba(0,184,148,0.15)';
+                        }
+                        if (itemCards[i - 1]) {
+                            itemCards[i - 1].style.background = 'var(--green)';
+                            itemCards[i - 1].style.color = '#fff';
+                        }
+                    }
+                }
+                cellMap[`${n}-${W}`].style.background = 'var(--green)';
+                cellMap[`${n}-${W}`].style.color = '#fff';
+                resultEl.textContent = `최대 가치: ${dp[n][W]} → 선택: ${selected.reverse().map(i => items[i].name).join(', ')}`;
+            }, (step + 1) * 150 + 300);
+            state.timeouts.push(finalT);
+        });
+
+        reset();
     },
 
     // ===== 5단계 문제 구성 =====

@@ -1093,6 +1093,11 @@ input[type="range"]::-webkit-slider-thumb {
 
     .viz-buttons { margin-left: 0; }
     .hero h2 { font-size: 1.8rem; }
+    .dp-roadmap { grid-template-columns: 1fr 1fr; }
+    .viz-type-selector { gap: 4px; }
+    .viz-2d-cell { width: 34px; height: 30px; font-size: 0.65rem; }
+    .viz-bar { width: 32px; }
+    .stair-block { width: 40px; }
 }
 
 /* ===== Animations ===== */
@@ -1319,6 +1324,406 @@ input[type="range"]::-webkit-slider-thumb {
     content: '🔒';
     font-size: 0.8rem;
 }
+
+/* ===== Think Box (개념 탭 Q&A) ===== */
+.think-box {
+    background: var(--bg2);
+    border: 2px solid var(--bg3);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow);
+    transition: border-color 0.3s;
+}
+
+.think-box:hover { border-color: rgba(108, 92, 231, 0.3); }
+
+.think-box-question {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.think-box-question-icon {
+    background: var(--yellow);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.think-box-question-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.think-box-trigger {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.think-box-trigger:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
+
+.think-box-answer {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: rgba(108, 92, 231, 0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    color: var(--text2);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    animation: fadeIn 0.3s ease;
+}
+
+.think-box.revealed .think-box-answer { display: block; }
+.think-box.revealed .think-box-trigger { background: var(--bg3); color: var(--text2); cursor: default; pointer-events: none; }
+
+.think-box-answer code {
+    background: #eee5ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--accent);
+}
+
+/* Concept Sections */
+.concept-section {
+    margin: 2.5rem 0;
+}
+
+.concept-section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--bg3);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.concept-section-title .section-num {
+    background: var(--accent);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.analogy-box {
+    background: linear-gradient(135deg, rgba(249, 156, 18, 0.08), rgba(9, 132, 227, 0.08));
+    border: 1px solid rgba(249, 156, 18, 0.3);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text);
+}
+
+.analogy-box strong { color: var(--accent); }
+
+/* DP Identification Quiz */
+.quiz-cards { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+
+.quiz-card {
+    background: var(--bg2);
+    border: 2px solid var(--bg3);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s;
+    gap: 1rem;
+}
+
+.quiz-card:hover:not(.answered) { border-color: var(--accent); box-shadow: var(--shadow); }
+.quiz-card.answered.correct { border-color: var(--green); background: rgba(0, 184, 148, 0.05); }
+.quiz-card.answered.wrong { border-color: var(--red); background: rgba(224, 82, 70, 0.05); }
+.quiz-card .quiz-text { flex: 1; font-size: 0.9rem; }
+.quiz-card .quiz-badge { font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 10px; background: var(--bg3); color: var(--text2); }
+.quiz-card.answered .quiz-badge { display: none; }
+.quiz-card .quiz-result { display: none; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+.quiz-card.answered .quiz-result { display: inline; }
+.quiz-card.answered.correct .quiz-result { color: var(--green); }
+.quiz-card.answered.wrong .quiz-result { color: var(--red); }
+.quiz-card .quiz-explain { display: none; font-size: 0.8rem; color: var(--text2); margin-top: 0.5rem; }
+.quiz-card.answered .quiz-explain { display: block; }
+
+/* Steps Flow */
+.steps-flow { display: flex; flex-direction: column; gap: 1rem; margin: 1rem 0; }
+
+.step-card {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--bg3);
+    box-shadow: var(--shadow);
+}
+
+.step-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.step-card-header .step-num {
+    background: var(--accent);
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-card-header h4 { font-size: 1rem; color: var(--text); }
+
+.step-card p { color: var(--text2); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+/* DP Type Roadmap */
+.dp-roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.roadmap-item {
+    background: var(--bg2);
+    border: 1px solid var(--bg3);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+}
+
+.roadmap-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+.roadmap-item .roadmap-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+.roadmap-item h4 { font-size: 0.85rem; color: var(--accent); margin-bottom: 0.3rem; }
+.roadmap-item p { font-size: 0.75rem; color: var(--text2); }
+
+/* ===== Viz Type Selector ===== */
+.viz-type-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.5rem;
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+}
+
+.viz-type-btn {
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: none;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.viz-type-btn:hover { background: var(--bg); color: var(--text); }
+.viz-type-btn.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+/* ===== MakeOne Viz (1로 만들기) ===== */
+.viz-numberline {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.viz-numnode {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.viz-numnode.active { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+.viz-numnode.computed { background: var(--accent); color: #fff; }
+.viz-numnode.on-path { background: var(--green); color: #fff; border-color: var(--green); }
+
+.viz-numnode .node-dp {
+    position: absolute;
+    bottom: -18px;
+    font-size: 0.6rem;
+    color: var(--text2);
+    font-weight: 600;
+}
+
+/* ===== Staircase Viz (계단 오르기) ===== */
+.viz-staircase {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    padding: 1rem;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.stair-step { display: flex; flex-direction: column; align-items: center; }
+
+.stair-block {
+    width: 50px;
+    background: var(--bg3);
+    border: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+    padding: 4px 2px;
+}
+
+.stair-block.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.stair-block.on-path { background: var(--green); color: #fff; }
+
+.stair-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* ===== LIS Viz (바 차트) ===== */
+.viz-barchart {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    justify-content: center;
+    min-height: 200px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.viz-bar {
+    width: 42px;
+    background: var(--bg3);
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 4px;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.viz-bar .viz-bar-val { font-size: 0.75rem; font-weight: 700; }
+.viz-bar .viz-bar-idx { position: absolute; bottom: -20px; font-size: 0.7rem; color: var(--text2); }
+.viz-bar.active { background: var(--accent); color: #fff; }
+.viz-bar.comparing { background: var(--yellow); color: #fff; }
+.viz-bar.in-lis { background: var(--green); color: #fff; }
+
+/* ===== Knapsack Viz (2D 테이블) ===== */
+.viz-2d-table {
+    border-collapse: separate;
+    border-spacing: 2px;
+    margin: 1rem auto;
+}
+
+.viz-2d-table th {
+    min-width: 42px;
+    height: 32px;
+    background: var(--bg);
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--text2);
+    border-radius: 3px;
+    padding: 4px 6px;
+    text-align: center;
+}
+
+.viz-2d-cell {
+    min-width: 42px;
+    height: 36px;
+    background: var(--bg3);
+    border-radius: 3px;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+    padding: 4px 6px;
+}
+
+.viz-2d-cell.active { border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); transform: scale(1.08); }
+.viz-2d-cell.filled { background: var(--accent); color: #fff; }
+.viz-2d-cell.selected { background: var(--green); color: #fff; }
+.viz-2d-cell.comparing { background: var(--yellow); color: #fff; }
+
+.viz-items {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.viz-item-card {
+    background: var(--bg2);
+    border: 1px solid var(--bg3);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    text-align: center;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.viz-item-card.active { border-color: var(--accent); background: rgba(108, 92, 231, 0.05); }
+.viz-item-card.selected { border-color: var(--green); background: rgba(0, 184, 148, 0.1); }
 
 /* ===== Overlay for mobile sidebar ===== */
 .sidebar-overlay {
