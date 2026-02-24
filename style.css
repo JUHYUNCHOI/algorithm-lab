@@ -3312,3 +3312,318 @@ input[type="range"]::-webkit-slider-thumb {
     .dc-exp-node { padding: 6px 12px; font-size: 0.8rem; margin-left: 0 !important; }
     .dc-exp-tree { gap: 4px; }
 }
+
+/* =========================================================
+   이분 탐색 (Binary Search) 시각화
+   ========================================================= */
+
+/* ===== 배열 시각화 ===== */
+.bs-array {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+}
+
+.bs-cell {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.bs-cell.in-range {
+    border-color: var(--primary);
+    background: rgba(108, 92, 231, 0.08);
+}
+
+.bs-cell.mid {
+    border-color: var(--yellow);
+    background: rgba(243, 156, 18, 0.15);
+    box-shadow: 0 0 10px var(--yellow-vivid);
+    transform: scale(1.08);
+    z-index: 2;
+}
+
+.bs-cell.found {
+    border-color: var(--green);
+    background: rgba(0, 184, 148, 0.18);
+    box-shadow: 0 0 12px var(--green-glow);
+    transform: scale(1.12);
+    z-index: 3;
+    animation: bs-found-pulse 0.8s ease-in-out;
+}
+
+.bs-cell.excluded {
+    border-color: var(--red);
+    background: rgba(231, 76, 60, 0.1);
+    opacity: 0.45;
+    transform: scale(0.92);
+}
+
+.bs-cell.not-found {
+    border-color: var(--red);
+    background: rgba(231, 76, 60, 0.15);
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+}
+
+@keyframes bs-found-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1.12); }
+}
+
+/* ===== 포인터 (lo / hi / mid) ===== */
+.bs-pointers {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.bs-pointer-slot {
+    width: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.bs-pointer {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.bs-pointer.lo {
+    background: var(--primary);
+}
+
+.bs-pointer.hi {
+    background: var(--secondary);
+}
+
+.bs-pointer.mid {
+    background: var(--yellow-vivid);
+    color: #222;
+}
+
+/* ===== 나무 자르기 시각화 ===== */
+.bs-tree-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 24px;
+    min-height: 260px;
+    padding: 20px 0;
+    position: relative;
+}
+
+.bs-tree-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+}
+
+.bs-tree-bar {
+    width: 48px;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--green) 0%, #27ae60 100%);
+    transition: all 0.3s ease;
+    position: relative;
+    min-height: 8px;
+}
+
+.bs-tree-cut {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--yellow-vivid) 0%, #e67e22 100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.bs-tree-cut.visible {
+    opacity: 0.85;
+}
+
+.bs-tree-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.bs-cut-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 3px dashed var(--red);
+    z-index: 5;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.bs-cut-line::after {
+    content: attr(data-label);
+    position: absolute;
+    right: -8px;
+    top: -20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--red);
+    white-space: nowrap;
+}
+
+/* ===== 탐색 정보 패널 ===== */
+.bs-search-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.bs-info-item {
+    text-align: center;
+}
+
+.bs-info-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.bs-info-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.bs-info-value.success {
+    color: var(--green);
+}
+
+.bs-info-value.fail {
+    color: var(--red);
+}
+
+/* ===== 탭 전환 ===== */
+.bs-viz-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.bs-viz-tab {
+    padding: 8px 20px;
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bs-viz-tab:hover {
+    border-color: var(--primary);
+}
+
+.bs-viz-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* ===== 입력 영역 ===== */
+.bs-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.bs-input-row label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.bs-input-row input {
+    padding: 6px 10px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9rem;
+    width: 80px;
+    transition: border-color 0.2s;
+}
+
+.bs-input-row input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.bs-input-row button {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bs-input-row button:hover {
+    background: var(--primary-dark, #5b4cdb);
+}
+
+/* ===== 반응형: 이분 탐색 ===== */
+@media (max-width: 768px) {
+    .bs-cell {
+        width: 40px;
+        height: 40px;
+        font-size: 0.8rem;
+    }
+    .bs-pointer-slot {
+        width: 40px;
+    }
+    .bs-tree-chart {
+        gap: 12px;
+        min-height: 200px;
+    }
+    .bs-tree-bar {
+        width: 36px;
+    }
+    .bs-viz-tab {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+    }
+    .bs-input-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
