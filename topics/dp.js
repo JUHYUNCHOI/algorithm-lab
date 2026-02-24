@@ -3,6 +3,8 @@ const dpTopic = {
     id: 'dp',
     title: 'Dynamic Programming',
     icon: '🧩',
+    category: '알고리즘',
+    order: 1,
     description: '중복 계산을 제거하여 효율적으로 문제를 푸는 기법',
 
     // ===== 개념 설명 렌더링 =====
@@ -34,7 +36,7 @@ const dpTopic = {
                         fib(5) → fib(4) + fib(3)<br>
                         fib(4) → fib(3) + fib(2)<br>
                         이렇게 fib(3)이 2번 호출됩니다. n이 커지면 중복은 폭발적으로 늘어납니다.<br>
-                        이것이 바로 <code>중복되는 부분 문제</code>이고, DP가 필요한 이유입니다.
+                        이렇게 <code>같은 계산이 반복</code>됩니다. DP는 이 반복을 없애 줍니다.
                     </div>
                 </div>
             </div>
@@ -50,8 +52,8 @@ const dpTopic = {
                                 <circle cx="50" cy="40" r="20" fill="none" stroke="var(--accent2)" stroke-width="2" opacity="0.6"/>
                             </svg>
                         </div>
-                        <h3>중복되는 부분 문제</h3>
-                        <p>같은 작은 문제가 여러 번 반복 등장합니다. 재귀로 풀면 같은 계산을 수없이 반복합니다. DP는 한 번 계산한 결과를 저장해서 재사용합니다.</p>
+                        <h3>같은 계산이 반복됨</h3>
+                        <p>같은 작은 문제가 여러 번 반복 등장합니다. 재귀로 풀면 같은 계산을 수없이 반복합니다. DP는 한 번 계산한 결과를 저장해서 다시 씁니다.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
@@ -61,8 +63,8 @@ const dpTopic = {
                                 <rect x="54" y="15" width="15" height="55" rx="2" fill="var(--accent)" opacity="0.9"/>
                             </svg>
                         </div>
-                        <h3>최적 부분 구조</h3>
-                        <p>큰 문제의 최적 해가 작은 부분 문제의 최적 해로 구성됩니다. 작은 것을 최적으로 풀면, 그 조합으로 큰 문제도 최적으로 풀립니다.</p>
+                        <h3>작은 문제로 큰 문제 풀기</h3>
+                        <p>큰 문제의 답이 작은 문제의 답으로 만들어집니다. 작은 문제를 잘 풀면, 그것을 모아서 큰 문제도 풀 수 있습니다.</p>
                     </div>
                 </div>
 
@@ -73,19 +75,19 @@ const dpTopic = {
                     </div>
                     <div class="quiz-cards">
                         <div class="quiz-card" data-isdp="true">
-                            <div><span class="quiz-text">"계단을 1칸 또는 2칸씩 올라갈 때, n번째 계단까지 가는 방법의 수"</span><div class="quiz-explain">부분 문제(n-1, n-2번째 계단)의 해가 반복되고, 최적 부분 구조를 가집니다.</div></div>
+                            <div><span class="quiz-text">"계단을 1칸 또는 2칸씩 올라갈 때, n번째 계단까지 가는 방법의 수"</span><div class="quiz-explain">작은 문제(n-1, n-2번째 계단)의 답이 반복되고, 작은 답으로 큰 답을 만들 수 있습니다.</div></div>
                             <span class="quiz-badge">클릭!</span><span class="quiz-result">✅ DP 가능!</span>
                         </div>
                         <div class="quiz-card" data-isdp="false">
-                            <div><span class="quiz-text">"배열에서 가장 큰 수 찾기"</span><div class="quiz-explain">단순히 하나씩 비교하면 되는 O(n) 문제. 부분 문제가 중복되지 않습니다.</div></div>
+                            <div><span class="quiz-text">"배열에서 가장 큰 수 찾기"</span><div class="quiz-explain">하나씩 비교하면 되는 간단한 문제. 같은 계산이 반복되지 않습니다.</div></div>
                             <span class="quiz-badge">클릭!</span><span class="quiz-result">❌ DP 불필요</span>
                         </div>
                         <div class="quiz-card" data-isdp="true">
-                            <div><span class="quiz-text">"동전 종류가 주어질 때, 금액 n을 만드는 최소 동전 수"</span><div class="quiz-explain">금액 n을 만드는 문제가 더 작은 금액의 부분 문제로 나뉘며, 중복됩니다.</div></div>
+                            <div><span class="quiz-text">"동전 종류가 주어질 때, 금액 n을 만드는 최소 동전 수"</span><div class="quiz-explain">금액 n을 만드는 문제가 더 작은 금액의 문제로 나뉘며, 같은 금액이 반복 등장합니다.</div></div>
                             <span class="quiz-badge">클릭!</span><span class="quiz-result">✅ DP 가능!</span>
                         </div>
                         <div class="quiz-card" data-isdp="false">
-                            <div><span class="quiz-text">"주어진 배열을 오름차순으로 정렬하기"</span><div class="quiz-explain">정렬은 분할정복이나 비교 기반 알고리즘으로 풀지, DP의 영역은 아닙니다.</div></div>
+                            <div><span class="quiz-text">"주어진 배열을 오름차순으로 정렬하기"</span><div class="quiz-explain">정렬은 비교해서 순서를 바꾸는 방식으로 풀지, DP로 푸는 문제가 아닙니다.</div></div>
                             <span class="quiz-badge">클릭!</span><span class="quiz-result">❌ DP 불필요</span>
                         </div>
                     </div>
@@ -99,8 +101,8 @@ const dpTopic = {
 
                 <div class="steps-flow">
                     <div class="step-card">
-                        <div class="step-card-header"><span class="step-num">1</span><h4>상태 정의하기</h4></div>
-                        <p>"dp[i]가 무엇을 의미하는지" 명확히 정의합니다. 이것이 가장 중요한 단계입니다.</p>
+                        <div class="step-card-header"><span class="step-num">1</span><h4>칸의 의미 정하기</h4></div>
+                        <p>"dp[i]에 어떤 값을 저장할 것인지" 정합니다. 이것이 가장 중요한 단계입니다.</p>
                         <div class="think-box" style="margin:0.8rem 0 0">
                             <div class="think-box-question">
                                 <span class="think-box-question-icon">Q</span>
@@ -112,12 +114,12 @@ const dpTopic = {
                     </div>
 
                     <div class="step-card">
-                        <div class="step-card-header"><span class="step-num">2</span><h4>점화식 세우기</h4></div>
-                        <p>dp[i]를 더 작은 부분 문제(dp[i-1], dp[i-2] 등)로 표현하는 관계식을 세웁니다.</p>
+                        <div class="step-card-header"><span class="step-num">2</span><h4>계산 규칙 찾기</h4></div>
+                        <p>dp[i]를 이전 값(dp[i-1], dp[i-2] 등)으로 어떻게 구할 수 있는지 규칙을 찾습니다.</p>
                         <div class="think-box" style="margin:0.8rem 0 0">
                             <div class="think-box-question">
                                 <span class="think-box-question-icon">Q</span>
-                                <span class="think-box-question-text">피보나치의 점화식은 무엇일까요?</span>
+                                <span class="think-box-question-text">피보나치의 계산 규칙은 무엇일까요?</span>
                             </div>
                             <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
                             <div class="think-box-answer"><code>dp[i] = dp[i-1] + dp[i-2]</code><br>i번째 피보나치 수 = 직전 두 수의 합</div>
@@ -126,7 +128,7 @@ const dpTopic = {
 
                     <div class="step-card">
                         <div class="step-card-header"><span class="step-num">3</span><h4>초기값 설정</h4></div>
-                        <p>점화식을 시작하기 위한 기저 조건(base case)을 설정합니다.</p>
+                        <p>계산 규칙을 시작하기 위한 첫 번째 값(시작값)을 정합니다.</p>
                         <div class="think-box" style="margin:0.8rem 0 0">
                             <div class="think-box-question">
                                 <span class="think-box-question-icon">Q</span>
@@ -154,10 +156,10 @@ const dpTopic = {
 
             <!-- ④ Top-Down vs Bottom-Up -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">4</span> Top-Down vs Bottom-Up</div>
+                <div class="concept-section-title"><span class="section-num">4</span> 위에서 아래로 vs 아래에서 위로</div>
                 <div class="approach-grid">
                     <div class="approach-card">
-                        <h3>🔽 Top-Down (메모이제이션)</h3>
+                        <h3>🔽 위에서 아래로 (Top-Down)</h3>
                         <p class="approach-desc">재귀 + 결과 저장. 큰 문제에서 시작해서 필요할 때만 작은 문제를 풂</p>
                         <div class="code-block"><pre><code class="language-python">memo = {}
 def fib(n):
@@ -169,8 +171,8 @@ def fib(n):
     return memo[n]</code></pre></div>
                     </div>
                     <div class="approach-card">
-                        <h3>🔼 Bottom-Up (타뷸레이션)</h3>
-                        <p class="approach-desc">반복문 + 테이블. 작은 문제부터 차례로 채워나감</p>
+                        <h3>🔼 아래에서 위로 (Bottom-Up)</h3>
+                        <p class="approach-desc">반복문 + 표 채우기. 작은 문제부터 차례로 채워나감</p>
                         <div class="code-block"><pre><code class="language-python">def fib(n):
     dp = [0] * (n+1)
     dp[1] = dp[2] = 1
@@ -180,16 +182,54 @@ def fib(n):
                     </div>
                 </div>
 
+                <div class="execution-flow-compare">
+                    <h4>fib(5)를 각 방식으로 실행하면?</h4>
+                    <div class="flow-grid">
+                        <div class="flow-card topdown-flow">
+                            <div class="flow-label">🔽 Top-Down 실행 흐름</div>
+                            <div class="flow-trace">
+                                <div>fib(5) 호출</div>
+                                <div>&nbsp;&nbsp;→ fib(4) 필요 → fib(3) 필요</div>
+                                <div>&nbsp;&nbsp;&nbsp;&nbsp;→ fib(2) = 1 ✓ fib(1) = 1 ✓</div>
+                                <div>&nbsp;&nbsp;&nbsp;&nbsp;← fib(3) = 2 저장!</div>
+                                <div>&nbsp;&nbsp;→ fib(2) = <strong>memo!</strong> 바로 반환</div>
+                                <div>&nbsp;&nbsp;← fib(4) = 3 저장!</div>
+                                <div>→ fib(3) = <strong>memo!</strong> 바로 반환</div>
+                                <div>← fib(5) = 5</div>
+                            </div>
+                            <div class="flow-point">위에서 아래로 파고들며, 필요한 것만 계산</div>
+                        </div>
+                        <div class="flow-card bottomup-flow">
+                            <div class="flow-label">🔼 Bottom-Up 실행 흐름</div>
+                            <div class="flow-trace">
+                                <div>dp[1] = 1</div>
+                                <div>dp[2] = 1</div>
+                                <div>dp[3] = dp[2] + dp[1] = 2</div>
+                                <div>dp[4] = dp[3] + dp[2] = 3</div>
+                                <div>dp[5] = dp[4] + dp[3] = 5</div>
+                            </div>
+                            <div class="flow-point">작은 것부터 순서대로, 전부 계산해서 쌓아올림</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-difference-box">
+                    <div>🔽 <strong>Top-Down</strong>: "큰 문제가 뭘 필요로 하는지" 따라가면서 계산 (필요할 때만)</div>
+                    <div>🔼 <strong>Bottom-Up</strong>: "작은 문제부터 미리 다 준비"해놓고 쌓아올림 (전부 계산)</div>
+                    <div>💡 결과는 같지만, Top-Down은 <strong>재귀</strong>, Bottom-Up은 <strong>반복문</strong>. 대부분 Bottom-Up이 빠르고 안전합니다.</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">그러면 언제 Top-Down을, 언제 Bottom-Up을 쓸까요?</span>
+                        <span class="think-box-question-text">fib(5000)을 파이썬 Top-Down으로 풀면 무슨 문제가 생길까요?</span>
                     </div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
                     <div class="think-box-answer">
-                        <strong>Top-Down이 좋을 때:</strong> 모든 상태를 다 계산할 필요 없을 때, 점화식이 복잡할 때<br>
-                        <strong>Bottom-Up이 좋을 때:</strong> 재귀 깊이 제한이 걱정될 때(파이썬!), 모든 상태를 순서대로 채울 수 있을 때<br><br>
-                        실전 팁: <strong>대부분의 대회/코딩테스트에서는 Bottom-Up을 더 많이 씁니다.</strong> 함수 호출 오버헤드가 없고, 스택 오버플로 걱정이 없기 때문이에요.
+                        파이썬은 <strong>재귀 깊이 기본 제한이 1000</strong>입니다.<br>
+                        fib(100)은 재귀 깊이 100이라 괜찮지만, fib(5000)이면 <code>RecursionError</code>로 터집니다!<br><br>
+                        아래에서 위로(Bottom-Up)는 <strong>for문</strong>이라 이런 걱정이 없습니다.<br>
+                        <strong>실전 팁:</strong> 대부분의 대회/코딩테스트에서는 아래에서 위로 방식을 더 많이 씁니다. 반복문이라 빠르고, 재귀처럼 너무 많이 쌓여서 터지는 문제가 없기 때문입니다.
                     </div>
                 </div>
             </div>
@@ -204,7 +244,7 @@ def fib(n):
                     </div>
                     <div class="vs-badge">VS</div>
                     <div class="compare-card good">
-                        <div class="compare-header"><span class="compare-emoji">🚀</span><h3>DP (메모이제이션)</h3></div>
+                        <div class="compare-header"><span class="compare-emoji">🚀</span><h3>DP (저장하며 풀기)</h3></div>
                         <div class="compare-body"><div class="complexity">O(n)</div><p>한 번 계산, 저장, 재활용</p></div>
                     </div>
                 </div>
@@ -226,9 +266,9 @@ def fib(n):
                     <div class="roadmap-item"><div class="roadmap-icon">🔢</div><h4>1차원 DP</h4><p>피보나치, 01타일, 1로 만들기</p></div>
                     <div class="roadmap-item"><div class="roadmap-icon">🪜</div><h4>조건부 1차원 DP</h4><p>계단 오르기, 포도주, 연속합</p></div>
                     <div class="roadmap-item"><div class="roadmap-icon">📊</div><h4>2차원 DP</h4><p>RGB거리, 정수 삼각형, 계단 수</p></div>
-                    <div class="roadmap-item"><div class="roadmap-icon">📈</div><h4>LIS (최장 증가 부분 수열)</h4><p>LIS, 바이토닉, 전깃줄</p></div>
-                    <div class="roadmap-item"><div class="roadmap-icon">🔤</div><h4>LCS (최장 공통 부분 수열)</h4><p>두 문자열 비교, 2D 테이블</p></div>
-                    <div class="roadmap-item"><div class="roadmap-icon">🎒</div><h4>배낭 문제 (Knapsack)</h4><p>무게 제한 내 최대 가치</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">📈</div><h4>가장 긴 증가 수열 (LIS)</h4><p>증가 수열, 올라갔다 내려가는 수열, 전깃줄</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">🔤</div><h4>가장 긴 공통 수열 (LCS)</h4><p>두 문자열 비교, 2차원 표</p></div>
+                    <div class="roadmap-item"><div class="roadmap-icon">🎒</div><h4>배낭 문제</h4><p>무게 제한 안에서 가장 값어치 있게 고르기</p></div>
                 </div>
 
                 <div class="think-box">
@@ -301,7 +341,7 @@ def fib(n):
                 <button class="viz-type-btn active" data-viz="fibonacci">피보나치</button>
                 <button class="viz-type-btn" data-viz="makeone">1로 만들기</button>
                 <button class="viz-type-btn" data-viz="stairs">계단 오르기</button>
-                <button class="viz-type-btn" data-viz="lis">LIS</button>
+                <button class="viz-type-btn" data-viz="lis">가장 긴 증가 수열</button>
                 <button class="viz-type-btn" data-viz="knapsack">배낭 문제</button>
             </div>
             <div id="viz-content"></div>
@@ -324,12 +364,13 @@ def fib(n):
     },
 
     _clearVizState() {
-        if (this._vizState) {
-            this._vizState.timeouts.forEach(t => clearTimeout(t));
-            this._vizState.timeouts = [];
-            this._vizState.running = false;
-            this._vizState.paused = false;
+        const s = this._vizState;
+        if (s.keydownHandler) {
+            document.removeEventListener('keydown', s.keydownHandler);
+            s.keydownHandler = null;
         }
+        s.steps = [];
+        s.currentStep = -1;
     },
 
     _renderVizType(el, type) {
@@ -342,98 +383,360 @@ def fib(n):
         }
     },
 
-    // ===== 피보나치 시각화 =====
-    _renderVizFibonacci(el) {
-        el.innerHTML = `
-            <div class="viz-controls">
-                <div class="viz-control-group">
-                    <label>n = <span id="viz-n-label">5</span></label>
-                    <input type="range" id="viz-n-slider" min="1" max="10" value="5">
-                </div>
-                <div class="viz-control-group">
-                    <label>속도</label>
-                    <input type="range" id="viz-speed" min="1" max="5" value="3">
-                </div>
-                <div class="viz-buttons">
-                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
-                    <button id="viz-pause" class="btn" disabled>⏸ 일시정지</button>
-                    <button id="viz-reset" class="btn">↺ 리셋</button>
-                </div>
+    _createStepControls() {
+        return `
+            <div class="viz-step-controls">
+                <button class="btn viz-step-btn" id="viz-prev" disabled>&larr; 이전</button>
+                <span id="viz-step-counter" class="viz-step-counter">시작 전</span>
+                <button class="btn btn-primary viz-step-btn" id="viz-next">다음 &rarr;</button>
             </div>
-            <div class="viz-panels">
-                <div class="viz-panel">
-                    <div class="viz-panel-header">
-                        <h3>재귀 호출 트리</h3>
-                        <div class="counter">호출 횟수: <span id="recursive-call-count" class="counter-num">0</span></div>
-                    </div>
-                    <div class="viz-panel-body">
-                        <svg id="tree-svg" width="100%" height="400"></svg>
-                    </div>
-                </div>
-                <div class="viz-panel">
-                    <div class="viz-panel-header">
-                        <h3>DP 테이블 (Bottom-Up)</h3>
-                        <div class="counter">연산 횟수: <span id="dp-call-count" class="counter-num">0</span></div>
-                    </div>
-                    <div class="viz-panel-body">
-                        <div id="dp-table-container" class="dp-table-container"></div>
-                        <div id="dp-formula" class="dp-formula"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="viz-legend">
-                <span class="legend-item"><span class="legend-dot new"></span> 새로운 계산</span>
-                <span class="legend-item"><span class="legend-dot duplicate"></span> 중복 계산</span>
-                <span class="legend-item"><span class="legend-dot base"></span> 기저 조건 (n=1,2)</span>
-                <span class="legend-item"><span class="legend-dot computed"></span> 계산 완료</span>
-            </div>
+            <div id="viz-step-desc" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>
         `;
-        this._initVisualization(el);
     },
 
-    // ===== 1로 만들기 시각화 =====
-    _renderVizMakeOne(el) {
-        el.innerHTML = `
-            <div class="viz-controls">
-                <div class="viz-control-group">
-                    <label>N = <span id="viz-n-label">10</span></label>
-                    <input type="range" id="viz-n-slider" min="2" max="20" value="10">
-                </div>
-                <div class="viz-control-group">
-                    <label>속도</label>
-                    <input type="range" id="viz-speed" min="1" max="5" value="3">
-                </div>
-                <div class="viz-buttons">
-                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
-                    <button id="viz-reset" class="btn">↺ 리셋</button>
-                </div>
-            </div>
-            <div class="viz-panel">
-                <div class="viz-panel-header">
-                    <h3>dp[i] = i를 1로 만드는 최소 연산 횟수</h3>
-                </div>
-                <div class="viz-panel-body">
-                    <div id="makeone-table" class="dp-table-container" style="flex-wrap:wrap;gap:8px;"></div>
-                    <div id="makeone-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
-                    <div id="makeone-path" style="margin-top:16px;font-weight:600;color:var(--accent);min-height:24px;"></div>
-                </div>
-            </div>
-            <div class="viz-legend">
-                <span class="legend-item"><span class="legend-dot base"></span> 기저 조건</span>
-                <span class="legend-item"><span class="legend-dot new"></span> 현재 계산 중</span>
-                <span class="legend-item"><span class="legend-dot computed"></span> 계산 완료</span>
-                <span class="legend-item" style="color:var(--green);">━ 최적 경로</span>
-            </div>
-        `;
+    _initStepController(el, steps) {
         const state = this._vizState;
-        const nSlider = el.querySelector('#viz-n-slider');
-        const nLabel = el.querySelector('#viz-n-label');
-        const speedSlider = el.querySelector('#viz-speed');
-        const getDelay = () => [600, 450, 300, 180, 80][parseInt(speedSlider.value) - 1];
+        state.steps = steps;
+        state.currentStep = -1;
 
-        const buildTable = (n) => {
+        const prevBtn = el.querySelector('#viz-prev');
+        const nextBtn = el.querySelector('#viz-next');
+        const counter = el.querySelector('#viz-step-counter');
+        const desc = el.querySelector('#viz-step-desc');
+
+        const updateUI = () => {
+            const idx = state.currentStep;
+            const total = state.steps.length;
+            prevBtn.disabled = (idx < 0);
+            nextBtn.disabled = (idx >= total - 1);
+            if (idx < 0) {
+                counter.textContent = '시작 전';
+                desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
+            } else {
+                counter.textContent = `Step ${idx + 1} / ${total}`;
+                desc.textContent = state.steps[idx].description;
+            }
+        };
+
+        nextBtn.addEventListener('click', () => {
+            if (state.currentStep >= state.steps.length - 1) return;
+            state.currentStep++;
+            state.steps[state.currentStep].action();
+            updateUI();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (state.currentStep < 0) return;
+            state.steps[state.currentStep].undo();
+            state.currentStep--;
+            updateUI();
+        });
+
+        const handleKeydown = (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
+        };
+        document.addEventListener('keydown', handleKeydown);
+        state.keydownHandler = handleKeydown;
+
+        updateUI();
+    },
+
+    // ===== 피보나치 시각화 (단계별, Bottom-Up / Top-Down 모드) =====
+    _renderVizFibonacci(el) {
+        let mode = 'bottomup';
+        let currentN = 5;
+
+        const initViz = (n) => {
+            currentN = n;
+            el.innerHTML = `
+                <div class="viz-controls">
+                    <div class="viz-mode-toggle">
+                        <button class="viz-mode-btn ${mode==='bottomup'?'active':''}" data-mode="bottomup">Bottom-Up</button>
+                        <button class="viz-mode-btn ${mode==='topdown'?'active':''}" data-mode="topdown">Top-Down</button>
+                    </div>
+                    <div class="viz-control-group">
+                        <label>n = <span id="viz-n-label">${n}</span></label>
+                        <input type="range" id="viz-n-slider" min="2" max="10" value="${n}">
+                    </div>
+                </div>
+                ${mode === 'bottomup' ? `
+                <div class="viz-panel">
+                    <div class="viz-panel-header"><h3>DP 테이블 (Bottom-Up)</h3></div>
+                    <div class="viz-panel-body">
+                        <div id="dp-table-container" class="dp-table-container" style="flex-wrap:wrap;gap:8px;"></div>
+                    </div>
+                </div>
+                ` : `
+                <div class="viz-panels-grid">
+                    <div class="viz-panel">
+                        <div class="viz-panel-header"><h3>memo 테이블</h3></div>
+                        <div class="viz-panel-body">
+                            <div id="memo-table" class="dp-table-container" style="flex-wrap:wrap;gap:8px;"></div>
+                        </div>
+                    </div>
+                    <div class="viz-panel">
+                        <div class="viz-panel-header"><h3>호출 로그</h3></div>
+                        <div class="viz-panel-body">
+                            <div id="call-log" class="viz-call-log"></div>
+                        </div>
+                    </div>
+                </div>
+                `}
+                ${this._createStepControls()}
+            `;
+
+            // 모드 토글 이벤트
+            el.querySelectorAll('.viz-mode-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.dataset.mode === mode) return;
+                    mode = btn.dataset.mode;
+                    this._clearVizState();
+                    initViz(currentN);
+                });
+            });
+
+            // n 슬라이더 이벤트
+            const nSlider = el.querySelector('#viz-n-slider');
+            const nLabel = el.querySelector('#viz-n-label');
+            nSlider.addEventListener('input', () => {
+                nLabel.textContent = nSlider.value;
+                this._clearVizState();
+                initViz(parseInt(nSlider.value));
+            });
+
+            // 모드에 따라 steps 생성
+            const steps = mode === 'bottomup'
+                ? this._buildFibBottomUpSteps(n, el)
+                : this._buildFibTopDownSteps(n, el);
+
+            this._initStepController(el, steps);
+        };
+
+        initViz(5);
+    },
+
+    _buildFibBottomUpSteps(n, el) {
+        const tableEl = el.querySelector('#dp-table-container');
+        const cells = [];
+        for (let i = 1; i <= n; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'dp-cell';
+            cell.innerHTML = `<div class="dp-cell-index">f(${i})</div><div class="dp-cell-value">?</div>`;
+            tableEl.appendChild(cell);
+            cells.push(cell);
+        }
+
+        const fib = [0, 1, 1];
+        for (let i = 3; i <= n; i++) fib[i] = fib[i - 1] + fib[i - 2];
+
+        const steps = [];
+        steps.push({
+            description: `시작값: f(1) = 1`,
+            action() { cells[0].classList.add('base'); cells[0].querySelector('.dp-cell-value').textContent = '1'; },
+            undo() { cells[0].classList.remove('base'); cells[0].querySelector('.dp-cell-value').textContent = '?'; }
+        });
+        if (n >= 2) {
+            steps.push({
+                description: `시작값: f(2) = 1`,
+                action() { cells[1].classList.add('base'); cells[1].querySelector('.dp-cell-value').textContent = '1'; },
+                undo() { cells[1].classList.remove('base'); cells[1].querySelector('.dp-cell-value').textContent = '?'; }
+            });
+        }
+        for (let i = 3; i <= n; i++) {
+            const idx = i;
+            steps.push({
+                description: `f(${idx}) = f(${idx-1}) + f(${idx-2}) = ${fib[idx-1]} + ${fib[idx-2]} = ${fib[idx]}  ← 이전 두 값을 더합니다`,
+                action() {
+                    cells[idx - 1].classList.add('filled');
+                    cells[idx - 1].querySelector('.dp-cell-value').textContent = fib[idx];
+                    cells[idx - 2].classList.add('active');
+                    cells[idx - 3].classList.add('active');
+                },
+                undo() {
+                    cells[idx - 1].classList.remove('filled');
+                    cells[idx - 1].querySelector('.dp-cell-value').textContent = '?';
+                    cells[idx - 2].classList.remove('active');
+                    cells[idx - 3].classList.remove('active');
+                }
+            });
+        }
+        steps.push({
+            description: `✅ 완료! f(${n}) = ${fib[n]}  (총 ${Math.max(0, n - 2)}번의 덧셈으로 순서대로 계산)`,
+            action() {
+                cells[n - 1].style.background = 'var(--green)';
+                cells[n - 1].style.color = '#fff';
+                cells[n - 1].querySelector('.dp-cell-value').style.color = '#fff';
+            },
+            undo() {
+                cells[n - 1].style.background = '';
+                cells[n - 1].style.color = '';
+                cells[n - 1].querySelector('.dp-cell-value').style.color = '';
+            }
+        });
+        return steps;
+    },
+
+    _buildFibTopDownSteps(n, el) {
+        // memo 셀 생성
+        const memoTable = el.querySelector('#memo-table');
+        const logEl = el.querySelector('#call-log');
+        const cells = [];
+        for (let i = 1; i <= n; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'dp-cell';
+            cell.innerHTML = `<div class="dp-cell-index">memo[${i}]</div><div class="dp-cell-value">?</div>`;
+            memoTable.appendChild(cell);
+            cells.push(cell);
+        }
+
+        // 재귀 시뮬레이션으로 호출 순서를 기록
+        const rawSteps = [];
+        const memo = {};
+        const fib = [0, 1, 1];
+        for (let i = 3; i <= n; i++) fib[i] = fib[i - 1] + fib[i - 2];
+
+        const simulate = (k, depth) => {
+            if (memo[k] !== undefined) {
+                rawSteps.push({ type: 'memo_hit', k, depth, value: memo[k] });
+                return memo[k];
+            }
+            rawSteps.push({ type: 'call', k, depth });
+            if (k <= 2) {
+                memo[k] = 1;
+                rawSteps.push({ type: 'base', k, depth });
+                return 1;
+            }
+            const v1 = simulate(k - 1, depth + 1);
+            const v2 = simulate(k - 2, depth + 1);
+            memo[k] = v1 + v2;
+            rawSteps.push({ type: 'return', k, depth, v1, v2, result: memo[k] });
+            return memo[k];
+        };
+        simulate(n, 0);
+
+        // rawSteps → action/undo 형태로 변환
+        const steps = [];
+        let logLines = []; // 현재까지 추가된 로그 라인 추적
+
+        rawSteps.forEach((s) => {
+            const indent = '\u00A0\u00A0'.repeat(s.depth);
+
+            if (s.type === 'call') {
+                steps.push({
+                    description: `fib(${s.k}) 호출 → memo에 없음, 계산 시작`,
+                    action() {
+                        const line = document.createElement('div');
+                        line.className = 'log-line call';
+                        line.textContent = `${indent}→ fib(${s.k}) 호출`;
+                        logEl.appendChild(line);
+                        logLines.push(line);
+                        logEl.scrollTop = logEl.scrollHeight;
+                    },
+                    undo() {
+                        const line = logLines.pop();
+                        if (line) line.remove();
+                    }
+                });
+            } else if (s.type === 'base') {
+                steps.push({
+                    description: `fib(${s.k}) = 1  (시작값) → memo에 저장`,
+                    action() {
+                        cells[s.k - 1].classList.add('base');
+                        cells[s.k - 1].querySelector('.dp-cell-value').textContent = '1';
+                        const line = document.createElement('div');
+                        line.className = 'log-line base-case';
+                        line.textContent = `${indent}← fib(${s.k}) = 1 ✓ 저장`;
+                        logEl.appendChild(line);
+                        logLines.push(line);
+                        logEl.scrollTop = logEl.scrollHeight;
+                    },
+                    undo() {
+                        cells[s.k - 1].classList.remove('base');
+                        cells[s.k - 1].querySelector('.dp-cell-value').textContent = '?';
+                        const line = logLines.pop();
+                        if (line) line.remove();
+                    }
+                });
+            } else if (s.type === 'memo_hit') {
+                steps.push({
+                    description: `fib(${s.k}) → memo에 있음! 바로 ${s.value} 반환 ⚡ 중복 제거!`,
+                    action() {
+                        cells[s.k - 1].classList.add('memo-hit');
+                        const line = document.createElement('div');
+                        line.className = 'log-line memo-hit';
+                        line.textContent = `${indent}→ fib(${s.k}) = memo[${s.k}] = ${s.value} ⚡`;
+                        logEl.appendChild(line);
+                        logLines.push(line);
+                        logEl.scrollTop = logEl.scrollHeight;
+                    },
+                    undo() {
+                        cells[s.k - 1].classList.remove('memo-hit');
+                        const line = logLines.pop();
+                        if (line) line.remove();
+                    }
+                });
+            } else if (s.type === 'return') {
+                steps.push({
+                    description: `fib(${s.k}) = fib(${s.k-1}) + fib(${s.k-2}) = ${s.v1} + ${s.v2} = ${s.result} → memo에 저장!`,
+                    action() {
+                        cells[s.k - 1].classList.add('filled');
+                        cells[s.k - 1].querySelector('.dp-cell-value').textContent = s.result;
+                        const line = document.createElement('div');
+                        line.className = 'log-line return-val';
+                        line.textContent = `${indent}← fib(${s.k}) = ${s.result} 저장!`;
+                        logEl.appendChild(line);
+                        logLines.push(line);
+                        logEl.scrollTop = logEl.scrollHeight;
+                    },
+                    undo() {
+                        cells[s.k - 1].classList.remove('filled');
+                        cells[s.k - 1].querySelector('.dp-cell-value').textContent = '?';
+                        const line = logLines.pop();
+                        if (line) line.remove();
+                    }
+                });
+            }
+        });
+
+        // 완료 단계
+        steps.push({
+            description: `✅ 완료! fib(${n}) = ${fib[n]}  (memo 덕분에 중복 호출 없이 계산)`,
+            action() {
+                cells[n - 1].style.background = 'var(--green)';
+                cells[n - 1].style.color = '#fff';
+                cells[n - 1].querySelector('.dp-cell-value').style.color = '#fff';
+            },
+            undo() {
+                cells[n - 1].style.background = '';
+                cells[n - 1].style.color = '';
+                cells[n - 1].querySelector('.dp-cell-value').style.color = '';
+            }
+        });
+
+        return steps;
+    },
+
+    // ===== 1로 만들기 시각화 (단계별) =====
+    _renderVizMakeOne(el) {
+        const initViz = (n) => {
+            el.innerHTML = `
+                <div class="viz-controls">
+                    <div class="viz-control-group">
+                        <label>N = <span id="viz-n-label">${n}</span></label>
+                        <input type="range" id="viz-n-slider" min="2" max="20" value="${n}">
+                    </div>
+                </div>
+                <div class="viz-panel">
+                    <div class="viz-panel-header"><h3>dp[i] = i를 1로 만드는 최소 연산 횟수</h3></div>
+                    <div class="viz-panel-body">
+                        <div id="makeone-table" class="dp-table-container" style="flex-wrap:wrap;gap:8px;"></div>
+                    </div>
+                </div>
+                ${this._createStepControls()}
+            `;
             const tableEl = el.querySelector('#makeone-table');
-            tableEl.innerHTML = '';
             const cells = [];
             for (let i = 1; i <= n; i++) {
                 const cell = document.createElement('div');
@@ -442,133 +745,120 @@ def fib(n):
                 tableEl.appendChild(cell);
                 cells.push(cell);
             }
-            return cells;
-        };
 
-        const reset = () => {
-            state.timeouts.forEach(t => clearTimeout(t));
-            state.timeouts = [];
-            state.running = false;
-            el.querySelector('#makeone-formula').textContent = '';
-            el.querySelector('#makeone-path').textContent = '';
-            el.querySelector('#viz-play').disabled = false;
-            buildTable(parseInt(nSlider.value));
-        };
-
-        nSlider.addEventListener('input', () => { nLabel.textContent = nSlider.value; reset(); });
-        el.querySelector('#viz-reset').addEventListener('click', reset);
-
-        el.querySelector('#viz-play').addEventListener('click', () => {
-            const n = parseInt(nSlider.value);
-            state.running = true;
-            el.querySelector('#viz-play').disabled = true;
-            const cells = buildTable(n);
+            // DP 미리 계산
             const dp = new Array(n + 1).fill(Infinity);
             dp[1] = 0;
-            const formula = el.querySelector('#makeone-formula');
-            const pathEl = el.querySelector('#makeone-path');
-
-            // Base case
-            cells[0].classList.add('base');
-            cells[0].querySelector('.dp-cell-value').textContent = '0';
-
-            let step = 0;
+            const from = new Array(n + 1).fill(0); // 어디서 왔는지
             for (let i = 2; i <= n; i++) {
-                step++;
-                const idx = i;
-                const t = setTimeout(() => {
-                    if (!state.running) return;
-                    dp[idx] = dp[idx - 1] + 1;
-                    let from = idx - 1;
-                    let explanation = `dp[${idx}] = dp[${idx}-1]+1 = ${dp[idx]}`;
-                    if (idx % 2 === 0 && dp[idx / 2] + 1 < dp[idx]) {
-                        dp[idx] = dp[idx / 2] + 1;
-                        from = idx / 2;
-                        explanation = `dp[${idx}] = dp[${idx}/2]+1 = ${dp[idx]}`;
-                    }
-                    if (idx % 3 === 0 && dp[idx / 3] + 1 < dp[idx]) {
-                        dp[idx] = dp[idx / 3] + 1;
-                        from = idx / 3;
-                        explanation = `dp[${idx}] = dp[${idx}/3]+1 = ${dp[idx]}`;
-                    }
-                    cells[idx - 1].classList.add('filled');
-                    cells[idx - 1].querySelector('.dp-cell-value').textContent = dp[idx];
-                    formula.textContent = explanation;
+                dp[i] = dp[i - 1] + 1; from[i] = i - 1;
+                if (i % 2 === 0 && dp[i / 2] + 1 < dp[i]) { dp[i] = dp[i / 2] + 1; from[i] = i / 2; }
+                if (i % 3 === 0 && dp[i / 3] + 1 < dp[i]) { dp[i] = dp[i / 3] + 1; from[i] = i / 3; }
+            }
+            // 경로 추적
+            const path = [n];
+            let cur = n;
+            while (cur > 1) { cur = from[cur]; path.push(cur); }
 
-                    // highlight source cell briefly
-                    cells[from - 1].classList.add('active');
-                    cells[idx - 1].classList.add('active');
-                    setTimeout(() => {
-                        cells[from - 1].classList.remove('active');
-                        cells[idx - 1].classList.remove('active');
-                    }, getDelay() * 0.6);
-                }, step * getDelay());
-                state.timeouts.push(t);
+            const steps = [];
+            // 시작값
+            steps.push({
+                description: `시작값: dp[1] = 0 (1은 이미 1이므로 연산 불필요)`,
+                action() {
+                    cells[0].classList.add('base');
+                    cells[0].querySelector('.dp-cell-value').textContent = '0';
+                },
+                undo() {
+                    cells[0].classList.remove('base');
+                    cells[0].querySelector('.dp-cell-value').textContent = '?';
+                }
+            });
+
+            // 각 i에 대한 단계
+            for (let i = 2; i <= n; i++) {
+                const idx = i;
+                // 설명 텍스트 생성
+                const opts = [`${idx}-1=${idx-1} → dp[${idx-1}]+1=${dp[idx-1]+1}`];
+                if (idx % 2 === 0) opts.push(`${idx}/2=${idx/2} → dp[${idx/2}]+1=${dp[idx/2]+1}`);
+                if (idx % 3 === 0) opts.push(`${idx}/3=${idx/3} → dp[${idx/3}]+1=${dp[idx/3]+1}`);
+                const opStr = from[idx] === idx - 1 ? `-1` : from[idx] === idx / 2 ? `÷2` : `÷3`;
+                const desc = `dp[${idx}]: ${opts.join(', ')}  →  최솟값 ${dp[idx]} (${opStr})`;
+
+                steps.push({
+                    description: desc,
+                    action() {
+                        cells[idx - 1].classList.add('filled');
+                        cells[idx - 1].querySelector('.dp-cell-value').textContent = dp[idx];
+                        // 출발지 셀 하이라이트
+                        cells[from[idx] - 1].classList.add('active');
+                    },
+                    undo() {
+                        cells[idx - 1].classList.remove('filled');
+                        cells[idx - 1].querySelector('.dp-cell-value').textContent = '?';
+                        cells[from[idx] - 1].classList.remove('active');
+                    }
+                });
             }
 
-            // After all steps, show optimal path
-            const pathT = setTimeout(() => {
-                if (!state.running) return;
-                // Trace back
-                const path = [n];
-                let cur = n;
-                while (cur > 1) {
-                    let best = cur - 1, bestVal = dp[cur - 1];
-                    if (cur % 2 === 0 && dp[cur / 2] < bestVal) { best = cur / 2; bestVal = dp[cur / 2]; }
-                    if (cur % 3 === 0 && dp[cur / 3] < bestVal) { best = cur / 3; }
-                    path.push(best);
-                    cur = best;
+            // 최적 경로 표시
+            steps.push({
+                description: `✅ 최적 경로: ${path.join(' → ')} (${dp[n]}번)`,
+                action() {
+                    path.forEach(v => {
+                        cells[v - 1].style.background = 'var(--green)';
+                        cells[v - 1].style.color = '#fff';
+                        cells[v - 1].querySelector('.dp-cell-value').style.color = '#fff';
+                        cells[v - 1].querySelector('.dp-cell-index').style.color = 'rgba(255,255,255,0.8)';
+                    });
+                },
+                undo() {
+                    path.forEach(v => {
+                        cells[v - 1].style.background = '';
+                        cells[v - 1].style.color = '';
+                        cells[v - 1].querySelector('.dp-cell-value').style.color = '';
+                        cells[v - 1].querySelector('.dp-cell-index').style.color = '';
+                    });
                 }
-                path.forEach(v => {
-                    cells[v - 1].style.background = 'var(--green)';
-                    cells[v - 1].style.color = '#fff';
-                    cells[v - 1].querySelector('.dp-cell-value').style.color = '#fff';
-                    cells[v - 1].querySelector('.dp-cell-index').style.color = 'rgba(255,255,255,0.8)';
-                });
-                pathEl.textContent = `최적 경로: ${path.join(' → ')} (${dp[n]}번)`;
-            }, (step + 1) * getDelay());
-            state.timeouts.push(pathT);
-        });
+            });
 
-        reset();
-    },
-
-    // ===== 계단 오르기 시각화 =====
-    _renderVizStairs(el) {
-        const stairScores = [10, 20, 15, 25, 10, 20];
-        el.innerHTML = `
-            <div class="viz-controls">
-                <div class="viz-control-group" style="flex-direction:column;gap:4px;">
-                    <label>계단 점수 (쉼표 구분)</label>
-                    <input type="text" id="stair-input" value="${stairScores.join(', ')}" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:200px;">
-                </div>
-                <div class="viz-buttons">
-                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
-                    <button id="viz-reset" class="btn">↺ 리셋</button>
-                </div>
-            </div>
-            <div class="viz-panel">
-                <div class="viz-panel-header">
-                    <h3>계단 오르기 (한 칸 또는 두 칸씩)</h3>
-                </div>
-                <div class="viz-panel-body">
-                    <div id="stair-visual" style="display:flex;align-items:flex-end;gap:4px;padding:20px 10px;min-height:200px;"></div>
-                    <div id="stair-dp" class="dp-table-container" style="margin-top:16px;flex-wrap:wrap;gap:8px;"></div>
-                    <div id="stair-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
-                    <div id="stair-path" style="margin-top:12px;font-weight:600;color:var(--accent);min-height:24px;"></div>
-                </div>
-            </div>
-        `;
-        const state = this._vizState;
-
-        const parseScores = () => {
-            const val = el.querySelector('#stair-input').value;
-            return val.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+            this._initStepController(el, steps);
         };
 
-        const buildStairs = (scores) => {
+        initViz(10);
+        el.addEventListener('input', (e) => {
+            if (e.target.id === 'viz-n-slider') {
+                this._clearVizState();
+                initViz(parseInt(e.target.value));
+            }
+        });
+    },
+
+    // ===== 계단 오르기 시각화 (단계별) =====
+    _renderVizStairs(el) {
+        const initViz = (scores) => {
+            const n = scores.length;
+            el.innerHTML = `
+                <div class="viz-controls">
+                    <div class="viz-control-group" style="flex-direction:column;gap:4px;">
+                        <label>계단 점수 (쉼표 구분)</label>
+                        <input type="text" id="stair-input" value="${scores.join(', ')}" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:200px;">
+                    </div>
+                    <div class="viz-buttons">
+                        <button id="stair-apply" class="btn">적용</button>
+                    </div>
+                </div>
+                <div class="viz-panel">
+                    <div class="viz-panel-header"><h3>계단 오르기 (연속 3칸 불가)</h3></div>
+                    <div class="viz-panel-body">
+                        <div id="stair-visual" style="display:flex;align-items:flex-end;gap:4px;padding:20px 10px;min-height:200px;"></div>
+                        <div id="stair-dp" class="dp-table-container" style="margin-top:16px;flex-wrap:wrap;gap:8px;"></div>
+                    </div>
+                </div>
+                ${this._createStepControls()}
+            `;
+
+            // 계단 시각 생성
             const visual = el.querySelector('#stair-visual');
-            visual.innerHTML = '';
             const maxScore = Math.max(...scores);
             scores.forEach((s, i) => {
                 const block = document.createElement('div');
@@ -578,11 +868,10 @@ def fib(n):
                 block.innerHTML = `<div class="stair-label">${s}</div><div style="font-size:11px;color:var(--text3);">${i + 1}</div>`;
                 visual.appendChild(block);
             });
-        };
+            const stairBlocks = visual.querySelectorAll('.stair-block');
 
-        const buildDP = (n) => {
+            // DP 셀 생성
             const dpEl = el.querySelector('#stair-dp');
-            dpEl.innerHTML = '';
             const cells = [];
             for (let i = 0; i <= n; i++) {
                 const cell = document.createElement('div');
@@ -591,137 +880,125 @@ def fib(n):
                 dpEl.appendChild(cell);
                 cells.push(cell);
             }
-            return cells;
-        };
 
-        const reset = () => {
-            state.timeouts.forEach(t => clearTimeout(t));
-            state.timeouts = [];
-            state.running = false;
-            const scores = parseScores();
-            buildStairs(scores);
-            buildDP(scores.length);
-            el.querySelector('#stair-formula').textContent = '';
-            el.querySelector('#stair-path').textContent = '';
-            el.querySelector('#viz-play').disabled = false;
-        };
-
-        el.querySelector('#viz-reset').addEventListener('click', reset);
-
-        el.querySelector('#viz-play').addEventListener('click', () => {
-            const scores = parseScores();
-            const n = scores.length;
-            if (n < 2) return;
-            state.running = true;
-            el.querySelector('#viz-play').disabled = true;
-            const cells = buildDP(n);
-            const stairBlocks = el.querySelectorAll('.stair-block');
-            const formula = el.querySelector('#stair-formula');
-            const pathEl = el.querySelector('#stair-path');
+            // DP 미리 계산
             const dp = new Array(n + 1).fill(0);
-
-            // dp[0] = 0 (바닥에서 시작)
-            cells[0].classList.add('base');
-            cells[0].querySelector('.dp-cell-value').textContent = '0';
-
-            // dp[1] = scores[0]
-            const t1 = setTimeout(() => {
-                if (!state.running) return;
-                dp[1] = scores[0];
-                cells[1].classList.add('filled');
-                cells[1].querySelector('.dp-cell-value').textContent = dp[1];
-                stairBlocks[0].classList.add('active');
-                formula.textContent = `dp[1] = ${scores[0]}`;
-                setTimeout(() => stairBlocks[0].classList.remove('active'), 400);
-            }, 400);
-            state.timeouts.push(t1);
-
-            // dp[2] = max(scores[0] + scores[1], scores[1])
-            const t2 = setTimeout(() => {
-                if (!state.running) return;
-                dp[2] = Math.max(scores[0] + scores[1], scores[1]);
-                cells[2].classList.add('filled');
-                cells[2].querySelector('.dp-cell-value').textContent = dp[2];
-                formula.textContent = `dp[2] = max(dp[1]+${scores[1]}, ${scores[1]}) = ${dp[2]}`;
-            }, 800);
-            state.timeouts.push(t2);
-
-            // dp[i] = max(dp[i-2] + scores[i-1], dp[i-3] + scores[i-2] + scores[i-1]) for i>=3
-            // Using the rule: can't step on 3 consecutive stairs
+            dp[1] = scores[0];
+            if (n >= 2) dp[2] = Math.max(scores[0] + scores[1], scores[1]);
             for (let i = 3; i <= n; i++) {
-                const idx = i;
-                const t = setTimeout(() => {
-                    if (!state.running) return;
-                    const opt1 = dp[idx - 2] + scores[idx - 1]; // 2칸 점프
-                    const opt2 = dp[idx - 3] + scores[idx - 2] + scores[idx - 1]; // 1칸+1칸 (이전 2개)
-                    dp[idx] = Math.max(opt1, opt2);
-                    cells[idx].classList.add('filled');
-                    cells[idx].querySelector('.dp-cell-value').textContent = dp[idx];
-                    stairBlocks[idx - 1].classList.add('active');
-                    formula.textContent = `dp[${idx}] = max(dp[${idx-2}]+${scores[idx-1]}, dp[${idx-3}]+${scores[idx-2]}+${scores[idx-1]}) = max(${opt1}, ${opt2}) = ${dp[idx]}`;
-                    setTimeout(() => stairBlocks[idx - 1].classList.remove('active'), 500);
-                }, 800 + (idx - 2) * 600);
-                state.timeouts.push(t);
+                dp[i] = Math.max(dp[i - 2] + scores[i - 1], dp[i - 3] + scores[i - 2] + scores[i - 1]);
             }
 
-            // Show result
-            const totalDelay = 800 + (n - 2) * 600 + 400;
-            const tFinal = setTimeout(() => {
-                if (!state.running) return;
-                cells[n].style.background = 'var(--green)';
-                cells[n].style.color = '#fff';
-                cells[n].querySelector('.dp-cell-value').style.color = '#fff';
-                pathEl.textContent = `최대 점수: ${dp[n]}`;
-            }, totalDelay);
-            state.timeouts.push(tFinal);
-        });
+            const steps = [];
 
-        reset();
+            // dp[0] = 0
+            steps.push({
+                description: `dp[0] = 0 (바닥에서 시작, 아직 계단을 밟지 않음)`,
+                action() { cells[0].classList.add('base'); cells[0].querySelector('.dp-cell-value').textContent = '0'; },
+                undo() { cells[0].classList.remove('base'); cells[0].querySelector('.dp-cell-value').textContent = '?'; }
+            });
+
+            // dp[1]
+            if (n >= 1) {
+                steps.push({
+                    description: `dp[1] = ${scores[0]} (첫 번째 계단만 밟음)`,
+                    action() {
+                        cells[1].classList.add('filled'); cells[1].querySelector('.dp-cell-value').textContent = dp[1];
+                        stairBlocks[0].classList.add('active');
+                    },
+                    undo() {
+                        cells[1].classList.remove('filled'); cells[1].querySelector('.dp-cell-value').textContent = '?';
+                        stairBlocks[0].classList.remove('active');
+                    }
+                });
+            }
+
+            // dp[2]
+            if (n >= 2) {
+                const o1 = scores[0] + scores[1], o2 = scores[1];
+                steps.push({
+                    description: `dp[2] = max(1→2: ${o1}, 바닥→2: ${o2}) = ${dp[2]}`,
+                    action() {
+                        cells[2].classList.add('filled'); cells[2].querySelector('.dp-cell-value').textContent = dp[2];
+                        stairBlocks[1].classList.add('active');
+                    },
+                    undo() {
+                        cells[2].classList.remove('filled'); cells[2].querySelector('.dp-cell-value').textContent = '?';
+                        stairBlocks[1].classList.remove('active');
+                    }
+                });
+            }
+
+            // dp[3] ~ dp[n]
+            for (let i = 3; i <= n; i++) {
+                const idx = i;
+                const opt1 = dp[idx - 2] + scores[idx - 1];
+                const opt2 = dp[idx - 3] + scores[idx - 2] + scores[idx - 1];
+                steps.push({
+                    description: `dp[${idx}] = max(dp[${idx-2}]+${scores[idx-1]}=${opt1}, dp[${idx-3}]+${scores[idx-2]}+${scores[idx-1]}=${opt2}) = ${dp[idx]}`,
+                    action() {
+                        cells[idx].classList.add('filled'); cells[idx].querySelector('.dp-cell-value').textContent = dp[idx];
+                        stairBlocks[idx - 1].classList.add('active');
+                    },
+                    undo() {
+                        cells[idx].classList.remove('filled'); cells[idx].querySelector('.dp-cell-value').textContent = '?';
+                        stairBlocks[idx - 1].classList.remove('active');
+                    }
+                });
+            }
+
+            // 완료
+            steps.push({
+                description: `✅ 최대 점수: ${dp[n]}`,
+                action() {
+                    cells[n].style.background = 'var(--green)'; cells[n].style.color = '#fff';
+                    cells[n].querySelector('.dp-cell-value').style.color = '#fff';
+                },
+                undo() {
+                    cells[n].style.background = ''; cells[n].style.color = '';
+                    cells[n].querySelector('.dp-cell-value').style.color = '';
+                }
+            });
+
+            this._initStepController(el, steps);
+
+            // 적용 버튼
+            el.querySelector('#stair-apply').addEventListener('click', () => {
+                const val = el.querySelector('#stair-input').value;
+                const newScores = val.split(',').map(s => parseInt(s.trim())).filter(v => !isNaN(v));
+                if (newScores.length >= 2) { this._clearVizState(); initViz(newScores); }
+            });
+        };
+
+        initViz([10, 20, 15, 25, 10, 20]);
     },
 
-    // ===== LIS 시각화 =====
+    // ===== LIS 시각화 (단계별) =====
     _renderVizLIS(el) {
-        el.innerHTML = `
-            <div class="viz-controls">
-                <div class="viz-control-group" style="flex-direction:column;gap:4px;">
-                    <label>수열 (쉼표 구분)</label>
-                    <input type="text" id="lis-input" value="10, 20, 10, 30, 20, 50" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:240px;">
+        const initViz = (arr) => {
+            const n = arr.length;
+            el.innerHTML = `
+                <div class="viz-controls">
+                    <div class="viz-control-group" style="flex-direction:column;gap:4px;">
+                        <label>수열 (쉼표 구분)</label>
+                        <input type="text" id="lis-input" value="${arr.join(', ')}" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:240px;">
+                    </div>
+                    <div class="viz-buttons">
+                        <button id="lis-apply" class="btn">적용</button>
+                    </div>
                 </div>
-                <div class="viz-control-group">
-                    <label>속도</label>
-                    <input type="range" id="viz-speed" min="1" max="5" value="3">
+                <div class="viz-panel">
+                    <div class="viz-panel-header"><h3>가장 긴 증가 수열 (LIS)</h3></div>
+                    <div class="viz-panel-body">
+                        <div id="lis-bars" class="viz-barchart"></div>
+                        <div id="lis-dp" class="dp-table-container" style="margin-top:16px;flex-wrap:wrap;gap:8px;"></div>
+                    </div>
                 </div>
-                <div class="viz-buttons">
-                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
-                    <button id="viz-reset" class="btn">↺ 리셋</button>
-                </div>
-            </div>
-            <div class="viz-panel">
-                <div class="viz-panel-header">
-                    <h3>최장 증가 부분 수열 (LIS)</h3>
-                </div>
-                <div class="viz-panel-body">
-                    <div id="lis-bars" class="viz-barchart"></div>
-                    <div id="lis-dp" class="dp-table-container" style="margin-top:16px;flex-wrap:wrap;gap:8px;"></div>
-                    <div id="lis-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
-                    <div id="lis-result" style="margin-top:12px;font-weight:600;color:var(--accent);min-height:24px;"></div>
-                </div>
-            </div>
-            <div class="viz-legend">
-                <span class="legend-item"><span class="legend-dot new"></span> 현재 검사 중</span>
-                <span class="legend-item"><span class="legend-dot computed"></span> 비교 대상</span>
-                <span class="legend-item" style="color:var(--green);">■ LIS에 포함</span>
-            </div>
-        `;
-        const state = this._vizState;
-        const speedSlider = el.querySelector('#viz-speed');
-        const getDelay = () => [800, 600, 400, 250, 120][parseInt(speedSlider.value) - 1];
+                ${this._createStepControls()}
+            `;
 
-        const parseArr = () => el.querySelector('#lis-input').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
-
-        const buildBars = (arr) => {
+            // 바 차트
             const barsEl = el.querySelector('#lis-bars');
-            barsEl.innerHTML = '';
             const maxVal = Math.max(...arr);
             arr.forEach((v, i) => {
                 const bar = document.createElement('div');
@@ -730,11 +1007,10 @@ def fib(n):
                 bar.innerHTML = `<span class="viz-bar-val">${v}</span><span class="viz-bar-idx">${i}</span>`;
                 barsEl.appendChild(bar);
             });
-        };
+            const bars = barsEl.querySelectorAll('.viz-bar');
 
-        const buildDP = (n) => {
+            // DP 셀
             const dpEl = el.querySelector('#lis-dp');
-            dpEl.innerHTML = '';
             const cells = [];
             for (let i = 0; i < n; i++) {
                 const cell = document.createElement('div');
@@ -743,134 +1019,139 @@ def fib(n):
                 dpEl.appendChild(cell);
                 cells.push(cell);
             }
-            return cells;
-        };
 
-        const reset = () => {
-            state.timeouts.forEach(t => clearTimeout(t));
-            state.timeouts = [];
-            state.running = false;
-            const arr = parseArr();
-            buildBars(arr);
-            buildDP(arr.length);
-            el.querySelector('#lis-formula').textContent = '';
-            el.querySelector('#lis-result').textContent = '';
-            el.querySelector('#viz-play').disabled = false;
-        };
-
-        el.querySelector('#viz-reset').addEventListener('click', reset);
-
-        el.querySelector('#viz-play').addEventListener('click', () => {
-            const arr = parseArr();
-            const n = arr.length;
-            if (n < 2) return;
-            state.running = true;
-            el.querySelector('#viz-play').disabled = true;
-            const cells = buildDP(n);
-            const bars = el.querySelectorAll('.viz-bar');
-            const formula = el.querySelector('#lis-formula');
-            const resultEl = el.querySelector('#lis-result');
+            // DP 미리 계산
             const dp = new Array(n).fill(1);
-            const delay = getDelay();
-
-            // Animation steps - collect all compare pairs
-            const steps = [];
-            for (let i = 0; i < n; i++) {
-                // First show dp[i] being initialized to 1
-                steps.push({ type: 'init', i });
+            for (let i = 1; i < n; i++) {
                 for (let j = 0; j < i; j++) {
-                    steps.push({ type: 'compare', i, j });
+                    if (arr[j] < arr[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
-                steps.push({ type: 'done', i });
+            }
+            const maxLen = Math.max(...dp);
+
+            // LIS 역추적
+            const lisIndices = [];
+            let target = maxLen;
+            for (let i = n - 1; i >= 0; i--) {
+                if (dp[i] === target) {
+                    if (lisIndices.length === 0 || arr[i] < arr[lisIndices[lisIndices.length - 1]]) {
+                        lisIndices.push(i); target--;
+                    }
+                }
+            }
+            lisIndices.reverse();
+
+            // Steps 생성
+            const steps = [];
+
+            for (let i = 0; i < n; i++) {
+                const ci = i;
+                // dp[i] = 1 초기화
+                steps.push({
+                    description: `dp[${ci}] = 1 (arr[${ci}]=${arr[ci]}, 자기 자신만으로 길이 1)`,
+                    action() {
+                        bars[ci].classList.add('active');
+                        cells[ci].querySelector('.dp-cell-value').textContent = '1';
+                    },
+                    undo() {
+                        bars[ci].classList.remove('active');
+                        cells[ci].querySelector('.dp-cell-value').textContent = '?';
+                    }
+                });
+
+                // j와 비교
+                let runningDp = 1;
+                for (let j = 0; j < i; j++) {
+                    const cj = j;
+                    const prevDp = runningDp;
+                    let updated = false;
+                    if (arr[cj] < arr[ci] && dp[cj] + 1 > prevDp) {
+                        runningDp = dp[cj] + 1;
+                        updated = true;
+                    }
+                    const curRunning = runningDp;
+
+                    if (arr[cj] < arr[ci] && updated) {
+                        steps.push({
+                            description: `  arr[${cj}]=${arr[cj]} < arr[${ci}]=${arr[ci]} → dp[${ci}] = dp[${cj}]+1 = ${curRunning} ✓ 갱신!`,
+                            action() {
+                                bars[cj].classList.add('comparing');
+                                cells[ci].querySelector('.dp-cell-value').textContent = curRunning;
+                            },
+                            undo() {
+                                bars[cj].classList.remove('comparing');
+                                cells[ci].querySelector('.dp-cell-value').textContent = prevDp;
+                            }
+                        });
+                    } else if (arr[cj] < arr[ci]) {
+                        steps.push({
+                            description: `  arr[${cj}]=${arr[cj]} < arr[${ci}]=${arr[ci]}, 하지만 dp[${cj}]+1=${dp[cj]+1} ≤ ${curRunning} → 유지`,
+                            action() { bars[cj].classList.add('comparing'); },
+                            undo() { bars[cj].classList.remove('comparing'); }
+                        });
+                    } else {
+                        steps.push({
+                            description: `  arr[${cj}]=${arr[cj]} ≥ arr[${ci}]=${arr[ci]} → 건너뜀`,
+                            action() { bars[cj].classList.add('comparing'); },
+                            undo() { bars[cj].classList.remove('comparing'); }
+                        });
+                    }
+                }
+
+                // dp[i] 확정
+                steps.push({
+                    description: `dp[${ci}] = ${dp[ci]} 확정`,
+                    action() {
+                        bars[ci].classList.remove('active');
+                        // 이전 비교 하이라이트 제거
+                        bars.forEach(b => b.classList.remove('comparing'));
+                        cells[ci].classList.add('filled');
+                        cells[ci].querySelector('.dp-cell-value').textContent = dp[ci];
+                    },
+                    undo() {
+                        bars[ci].classList.add('active');
+                        cells[ci].classList.remove('filled');
+                    }
+                });
             }
 
-            steps.forEach((s, stepIdx) => {
-                const t = setTimeout(() => {
-                    if (!state.running) return;
-                    if (s.type === 'init') {
-                        bars[s.i].classList.add('active');
-                        cells[s.i].querySelector('.dp-cell-value').textContent = '1';
-                        formula.textContent = `dp[${s.i}] = 1 (초기값)`;
-                    } else if (s.type === 'compare') {
-                        bars[s.j].classList.add('comparing');
-                        if (arr[s.j] < arr[s.i] && dp[s.j] + 1 > dp[s.i]) {
-                            dp[s.i] = dp[s.j] + 1;
-                            cells[s.i].querySelector('.dp-cell-value').textContent = dp[s.i];
-                            formula.textContent = `arr[${s.j}]=${arr[s.j]} < arr[${s.i}]=${arr[s.i]} → dp[${s.i}] = dp[${s.j}]+1 = ${dp[s.i]}`;
-                        } else if (arr[s.j] < arr[s.i]) {
-                            formula.textContent = `arr[${s.j}]=${arr[s.j]} < arr[${s.i}]=${arr[s.i]}, 하지만 dp[${s.j}]+1=${dp[s.j]+1} ≤ dp[${s.i}]=${dp[s.i]}`;
-                        } else {
-                            formula.textContent = `arr[${s.j}]=${arr[s.j]} ≥ arr[${s.i}]=${arr[s.i]} → 건너뜀`;
-                        }
-                        setTimeout(() => bars[s.j].classList.remove('comparing'), delay * 0.6);
-                    } else if (s.type === 'done') {
-                        bars[s.i].classList.remove('active');
-                        cells[s.i].classList.add('filled');
-                        cells[s.i].querySelector('.dp-cell-value').textContent = dp[s.i];
-                    }
-                }, stepIdx * delay * 0.5);
-                state.timeouts.push(t);
+            // LIS 결과 표시
+            steps.push({
+                description: `✅ 가장 긴 증가 수열 길이: ${maxLen} → [${lisIndices.map(i => arr[i]).join(', ')}]`,
+                action() {
+                    lisIndices.forEach(idx => {
+                        bars[idx].style.background = 'var(--green)';
+                        bars[idx].style.color = '#fff';
+                        cells[idx].style.background = 'var(--green)';
+                        cells[idx].style.color = '#fff';
+                        cells[idx].querySelector('.dp-cell-value').style.color = '#fff';
+                    });
+                },
+                undo() {
+                    lisIndices.forEach(idx => {
+                        bars[idx].style.background = '';
+                        bars[idx].style.color = '';
+                        cells[idx].style.background = '';
+                        cells[idx].style.color = '';
+                        cells[idx].querySelector('.dp-cell-value').style.color = '';
+                    });
+                }
             });
 
-            // Final: highlight LIS
-            const finalT = setTimeout(() => {
-                if (!state.running) return;
-                const maxLen = Math.max(...dp);
-                // Trace back LIS
-                const lisIndices = [];
-                let target = maxLen;
-                for (let i = n - 1; i >= 0; i--) {
-                    if (dp[i] === target) {
-                        if (lisIndices.length === 0 || arr[i] < arr[lisIndices[lisIndices.length - 1]]) {
-                            lisIndices.push(i);
-                            target--;
-                        }
-                    }
-                }
-                lisIndices.reverse();
-                lisIndices.forEach(idx => {
-                    bars[idx].style.background = 'var(--green)';
-                    bars[idx].style.color = '#fff';
-                    cells[idx].style.background = 'var(--green)';
-                    cells[idx].style.color = '#fff';
-                    cells[idx].querySelector('.dp-cell-value').style.color = '#fff';
-                });
-                resultEl.textContent = `LIS 길이: ${maxLen} → [${lisIndices.map(i => arr[i]).join(', ')}]`;
-            }, steps.length * delay * 0.5 + 300);
-            state.timeouts.push(finalT);
-        });
+            this._initStepController(el, steps);
 
-        reset();
+            el.querySelector('#lis-apply').addEventListener('click', () => {
+                const val = el.querySelector('#lis-input').value;
+                const newArr = val.split(',').map(s => parseInt(s.trim())).filter(v => !isNaN(v));
+                if (newArr.length >= 2) { this._clearVizState(); initViz(newArr); }
+            });
+        };
+
+        initViz([10, 20, 10, 30, 20, 50]);
     },
 
-    // ===== 배낭 시각화 =====
+    // ===== 배낭 시각화 (단계별) =====
     _renderVizKnapsack(el) {
-        el.innerHTML = `
-            <div class="viz-controls">
-                <div class="viz-control-group" style="flex-direction:column;gap:4px;">
-                    <label>배낭 용량 (W)</label>
-                    <input type="number" id="knap-cap" value="7" min="1" max="15" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:80px;">
-                </div>
-                <div class="viz-buttons">
-                    <button id="viz-play" class="btn btn-primary">▶ 시작</button>
-                    <button id="viz-reset" class="btn">↺ 리셋</button>
-                </div>
-            </div>
-            <div class="viz-panel">
-                <div class="viz-panel-header">
-                    <h3>0/1 배낭 문제</h3>
-                </div>
-                <div class="viz-panel-body">
-                    <div id="knap-items" class="viz-items"></div>
-                    <div id="knap-table-wrap" style="overflow-x:auto;margin-top:16px;">
-                        <table id="knap-table" class="viz-2d-table"></table>
-                    </div>
-                    <div id="knap-formula" class="dp-formula" style="margin-top:12px;min-height:24px;"></div>
-                    <div id="knap-result" style="margin-top:12px;font-weight:600;color:var(--accent);min-height:24px;"></div>
-                </div>
-            </div>
-        `;
-        const state = this._vizState;
         const items = [
             { name: 'A', weight: 6, value: 13 },
             { name: 'B', weight: 4, value: 8 },
@@ -878,38 +1159,55 @@ def fib(n):
             { name: 'D', weight: 5, value: 12 }
         ];
 
-        const renderItems = () => {
+        const initViz = (W) => {
+            const n = items.length;
+            el.innerHTML = `
+                <div class="viz-controls">
+                    <div class="viz-control-group" style="flex-direction:column;gap:4px;">
+                        <label>배낭 용량 (W)</label>
+                        <input type="number" id="knap-cap" value="${W}" min="1" max="15" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;width:80px;">
+                    </div>
+                    <div class="viz-buttons">
+                        <button id="knap-apply" class="btn">적용</button>
+                    </div>
+                </div>
+                <div class="viz-panel">
+                    <div class="viz-panel-header"><h3>0/1 배낭 문제</h3></div>
+                    <div class="viz-panel-body">
+                        <div id="knap-items" class="viz-items"></div>
+                        <div id="knap-table-wrap" style="overflow-x:auto;margin-top:16px;">
+                            <table id="knap-table" class="viz-2d-table"></table>
+                        </div>
+                    </div>
+                </div>
+                ${this._createStepControls()}
+            `;
+
+            // 아이템 카드
             const itemsEl = el.querySelector('#knap-items');
-            itemsEl.innerHTML = '';
-            items.forEach((item, i) => {
+            items.forEach((item) => {
                 const card = document.createElement('div');
                 card.className = 'viz-item-card';
                 card.innerHTML = `<strong>${item.name}</strong><br>무게: ${item.weight}<br>가치: ${item.value}`;
-                card.dataset.idx = i;
                 itemsEl.appendChild(card);
             });
-        };
+            const itemCards = el.querySelectorAll('.viz-item-card');
 
-        const buildTable = (W) => {
+            // 2D 테이블
             const table = el.querySelector('#knap-table');
-            table.innerHTML = '';
-            const n = items.length;
-            // Header row
             let headerHTML = '<tr><th></th>';
             for (let w = 0; w <= W; w++) headerHTML += `<th>w=${w}</th>`;
             headerHTML += '</tr>';
             table.innerHTML = headerHTML;
 
             const cellMap = {};
-            // Row 0 (no items)
-            let row0 = document.createElement('tr');
+            // Row 0
+            const row0 = document.createElement('tr');
             row0.innerHTML = `<th>0개</th>`;
             for (let w = 0; w <= W; w++) {
                 const td = document.createElement('td');
                 td.className = 'viz-2d-cell';
                 td.textContent = '0';
-                td.dataset.i = '0';
-                td.dataset.w = w;
                 row0.appendChild(td);
                 cellMap[`0-${w}`] = td;
             }
@@ -922,108 +1220,107 @@ def fib(n):
                     const td = document.createElement('td');
                     td.className = 'viz-2d-cell';
                     td.textContent = '?';
-                    td.dataset.i = i;
-                    td.dataset.w = w;
                     tr.appendChild(td);
                     cellMap[`${i}-${w}`] = td;
                 }
                 table.appendChild(tr);
             }
-            return cellMap;
-        };
 
-        const reset = () => {
-            state.timeouts.forEach(t => clearTimeout(t));
-            state.timeouts = [];
-            state.running = false;
-            renderItems();
-            const W = parseInt(el.querySelector('#knap-cap').value) || 7;
-            buildTable(W);
-            el.querySelector('#knap-formula').textContent = '';
-            el.querySelector('#knap-result').textContent = '';
-            el.querySelector('#viz-play').disabled = false;
-        };
-
-        el.querySelector('#viz-reset').addEventListener('click', reset);
-
-        el.querySelector('#viz-play').addEventListener('click', () => {
-            const W = parseInt(el.querySelector('#knap-cap').value) || 7;
-            const n = items.length;
-            state.running = true;
-            el.querySelector('#viz-play').disabled = true;
-            const cellMap = buildTable(W);
-            const formula = el.querySelector('#knap-formula');
-            const resultEl = el.querySelector('#knap-result');
-            const itemCards = el.querySelectorAll('.viz-item-card');
-
+            // DP 미리 계산
             const dp = Array.from({ length: n + 1 }, () => new Array(W + 1).fill(0));
-            let step = 0;
-
             for (let i = 1; i <= n; i++) {
                 for (let w = 0; w <= W; w++) {
-                    step++;
-                    const ci = i, cw = w;
-                    const t = setTimeout(() => {
-                        if (!state.running) return;
-                        itemCards.forEach(c => c.classList.remove('active'));
-                        if (itemCards[ci - 1]) itemCards[ci - 1].classList.add('active');
-
-                        const cell = cellMap[`${ci}-${cw}`];
-                        cell.classList.add('active');
-
-                        if (items[ci - 1].weight > cw) {
-                            dp[ci][cw] = dp[ci - 1][cw];
-                            formula.textContent = `아이템 ${items[ci-1].name} 무게(${items[ci-1].weight}) > 용량(${cw}) → dp[${ci}][${cw}] = dp[${ci-1}][${cw}] = ${dp[ci][cw]}`;
-                        } else {
-                            const notTake = dp[ci - 1][cw];
-                            const take = dp[ci - 1][cw - items[ci - 1].weight] + items[ci - 1].value;
-                            dp[ci][cw] = Math.max(notTake, take);
-                            formula.textContent = `dp[${ci}][${cw}] = max(안넣기=${notTake}, 넣기=${take}) = ${dp[ci][cw]}`;
-                        }
-
-                        cell.textContent = dp[ci][cw];
-                        setTimeout(() => cell.classList.remove('active'), 200);
-                    }, step * 150);
-                    state.timeouts.push(t);
+                    if (items[i - 1].weight > w) {
+                        dp[i][w] = dp[i - 1][w];
+                    } else {
+                        dp[i][w] = Math.max(dp[i - 1][w], dp[i - 1][w - items[i - 1].weight] + items[i - 1].value);
+                    }
                 }
             }
 
-            // Trace back selected items
-            const finalT = setTimeout(() => {
-                if (!state.running) return;
-                const selected = [];
-                let cw = W;
-                for (let i = n; i >= 1; i--) {
-                    if (dp[i][cw] !== dp[i - 1][cw]) {
-                        selected.push(i - 1);
-                        cw -= items[i - 1].weight;
-                        // Highlight row
-                        for (let w = 0; w <= W; w++) {
-                            cellMap[`${i}-${w}`].style.background = 'rgba(0,184,148,0.15)';
-                        }
-                        if (itemCards[i - 1]) {
-                            itemCards[i - 1].style.background = 'var(--green)';
-                            itemCards[i - 1].style.color = '#fff';
-                        }
-                    }
-                }
-                cellMap[`${n}-${W}`].style.background = 'var(--green)';
-                cellMap[`${n}-${W}`].style.color = '#fff';
-                resultEl.textContent = `최대 가치: ${dp[n][W]} → 선택: ${selected.reverse().map(i => items[i].name).join(', ')}`;
-            }, (step + 1) * 150 + 300);
-            state.timeouts.push(finalT);
-        });
+            // 선택된 아이템 역추적
+            const selected = [];
+            let cw = W;
+            for (let i = n; i >= 1; i--) {
+                if (dp[i][cw] !== dp[i - 1][cw]) { selected.push(i - 1); cw -= items[i - 1].weight; }
+            }
+            selected.reverse();
 
-        reset();
+            // Steps 생성
+            const steps = [];
+
+            for (let i = 1; i <= n; i++) {
+                for (let w = 0; w <= W; w++) {
+                    const ci = i, cw2 = w;
+                    let desc;
+                    if (items[ci - 1].weight > cw2) {
+                        desc = `아이템 ${items[ci-1].name}(무게${items[ci-1].weight}) > 용량(${cw2}) → 못 넣음, dp[${ci}][${cw2}] = ${dp[ci][cw2]}`;
+                    } else {
+                        const notTake = dp[ci - 1][cw2];
+                        const take = dp[ci - 1][cw2 - items[ci - 1].weight] + items[ci - 1].value;
+                        desc = `${items[ci-1].name}(무게${items[ci-1].weight}, 가치${items[ci-1].value}) w=${cw2}: 넣기(${take}) vs 안넣기(${notTake}) → ${dp[ci][cw2]}`;
+                    }
+
+                    steps.push({
+                        description: desc,
+                        action() {
+                            const cell = cellMap[`${ci}-${cw2}`];
+                            cell.textContent = dp[ci][cw2];
+                            cell.classList.add('active');
+                            itemCards.forEach(c => c.classList.remove('active'));
+                            if (itemCards[ci - 1]) itemCards[ci - 1].classList.add('active');
+                        },
+                        undo() {
+                            const cell = cellMap[`${ci}-${cw2}`];
+                            cell.textContent = '?';
+                            cell.classList.remove('active');
+                            itemCards.forEach(c => c.classList.remove('active'));
+                        }
+                    });
+                }
+            }
+
+            // 결과 표시
+            steps.push({
+                description: `✅ 최대 가치: ${dp[n][W]} → 선택: ${selected.map(i => items[i].name).join(', ')}`,
+                action() {
+                    selected.forEach(si => {
+                        const ri = si + 1;
+                        for (let w = 0; w <= W; w++) cellMap[`${ri}-${w}`].style.background = 'rgba(0,184,148,0.15)';
+                        if (itemCards[si]) { itemCards[si].style.background = 'var(--green)'; itemCards[si].style.color = '#fff'; }
+                    });
+                    cellMap[`${n}-${W}`].style.background = 'var(--green)';
+                    cellMap[`${n}-${W}`].style.color = '#fff';
+                },
+                undo() {
+                    selected.forEach(si => {
+                        const ri = si + 1;
+                        for (let w = 0; w <= W; w++) cellMap[`${ri}-${w}`].style.background = '';
+                        if (itemCards[si]) { itemCards[si].style.background = ''; itemCards[si].style.color = ''; }
+                    });
+                    cellMap[`${n}-${W}`].style.background = '';
+                    cellMap[`${n}-${W}`].style.color = '';
+                }
+            });
+
+            this._initStepController(el, steps);
+
+            el.querySelector('#knap-apply').addEventListener('click', () => {
+                const newW = parseInt(el.querySelector('#knap-cap').value);
+                if (newW >= 1 && newW <= 15) { this._clearVizState(); initViz(newW); }
+            });
+        };
+
+        initViz(7);
     },
 
     // ===== 5단계 문제 구성 =====
     stages: [
-        { num: 1, title: 'DP 입문', desc: '기본 점화식 연습', problemIds: ['boj-24416', 'boj-9184', 'boj-1463', 'boj-1904'] },
+        { num: 1, title: 'DP 입문', desc: '기본 계산 규칙 연습', problemIds: ['boj-24416', 'boj-9184', 'boj-1463', 'boj-1904'] },
         { num: 2, title: '1차원 DP 심화', desc: '조건이 있는 1차원 DP', problemIds: ['boj-2579', 'boj-2156', 'boj-1912', 'boj-10844'] },
         { num: 3, title: '2차원 DP', desc: '테이블을 2차원으로 확장', problemIds: ['boj-1149', 'boj-1932'] },
-        { num: 4, title: 'LIS 계열', desc: '최장 증가 부분 수열', problemIds: ['boj-11053', 'boj-11054', 'boj-2565'] },
-        { num: 5, title: '고전 DP', desc: 'LCS, 배낭 문제', problemIds: ['boj-9251', 'boj-12865'] }
+        { num: 4, title: '가장 긴 증가 수열', desc: '증가 수열 찾기', problemIds: ['boj-11053', 'boj-11054', 'boj-2565'] },
+        { num: 5, title: '고전 DP', desc: '가장 긴 공통 수열, 배낭 문제', problemIds: ['boj-9251', 'boj-12865'] }
     ],
 
     // ===== 문제 목록 =====
@@ -1102,7 +1399,7 @@ if a > 20 or b > 20 or c > 20, return w(20, 20, 20)
 if a < b and b < c, return w(a, b, c-1) + w(a, b-1, c-1) - w(a, b-1, c)
 otherwise, return w(a-1, b, c) + w(a-1, b-1, c) + w(a-1, b, c-1) - w(a-1, b-1, c-1)</code></pre>
                 </div>
-                <p>이 함수를 구현하면 매우 느리다. 메모이제이션을 적용하여 빠르게 동작하도록 하라.</p>
+                <p>이 함수를 구현하면 매우 느리다. 한 번 계산한 값을 저장해두는 방법(메모이제이션)을 적용하여 빠르게 동작하도록 하라.</p>
                 <div class="problem-io">
                     <div><h4>입력</h4><p>각 줄에 a, b, c가 주어진다. (끝은 -1 -1 -1)</p></div>
                     <div><h4>출력</h4><p>각 입력에 대해 w(a, b, c)의 값을 출력한다.</p></div>
@@ -1119,10 +1416,10 @@ w(2, 2, 2) = 4</pre></div>
                 </div>
             `,
             hints: [
-                { title: '접근법', content: '이 문제는 재귀 함수가 이미 주어져 있습니다. 그대로 구현하되 <strong>메모이제이션</strong>만 추가하면 됩니다. 3차원 배열이나 딕셔너리를 사용하세요.' },
-                { title: '상태 정의', content: '<code>dp[a][b][c]</code> = w(a, b, c)의 결과값. a, b, c가 0~20 범위이므로 <code>dp[21][21][21]</code> 크기면 충분합니다.' },
-                { title: '점화식', content: '문제에서 주어진 조건 그대로:<br>• a,b,c 중 하나가 ≤ 0이면 1<br>• 하나라도 > 20이면 w(20,20,20)<br>• a < b < c이면 w(a,b,c-1) + w(a,b-1,c-1) - w(a,b-1,c)<br>• 나머지: w(a-1,b,c) + w(a-1,b-1,c) + w(a-1,b,c-1) - w(a-1,b-1,c-1)' },
-                { title: '구현 팁', content: '함수 시작에서 <code>dp[a][b][c]</code>가 이미 계산되었는지 확인하고, 계산된 값이 있으면 바로 리턴합니다. 출력 형식에 주의: <code>w(a, b, c) = 결과</code> 형태입니다.' }
+                { title: '접근법', content: '이 문제는 재귀 함수가 이미 주어져 있습니다. 그대로 구현하되 <strong>한 번 계산한 값을 저장하는 방법</strong>만 추가하면 됩니다. 3차원 배열이나 딕셔너리를 사용하세요.' },
+                { title: '칸의 의미', content: '<code>dp[a][b][c]</code> = w(a, b, c)의 결과값. a, b, c가 0~20 범위이므로 <code>dp[21][21][21]</code> 크기면 충분합니다.' },
+                { title: '계산 규칙', content: '문제에서 주어진 조건 그대로:<br>• a,b,c 중 하나가 ≤ 0이면 1<br>• 하나라도 > 20이면 w(20,20,20)<br>• a < b < c이면 w(a,b,c-1) + w(a,b-1,c-1) - w(a,b-1,c)<br>• 나머지: w(a-1,b,c) + w(a-1,b-1,c) + w(a-1,b,c-1) - w(a-1,b-1,c-1)' },
+                { title: '구현 팁', content: '함수 시작에서 <code>dp[a][b][c]</code>에 이미 값이 있는지 확인하고, 있으면 바로 리턴합니다. 출력 형식에 주의: <code>w(a, b, c) = 결과</code> 형태입니다.' }
             ],
             inputLabel: 'a 값',
             inputMin: -1, inputMax: 50, inputDefault: 1,
@@ -1142,9 +1439,9 @@ w(2, 2, 2) = 4</pre></div>
                 return `w(${a}, ${a}, ${a}) = ${w(a, a, a)}`;
             },
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\n# 메모이제이션을 위한 3차원 배열 또는 딕셔너리\n# dp = [[[0]*21 for _ in range(21)] for _ in range(21)]\n\ndef w(a, b, c):\n    # 여기에 메모이제이션 적용한 함수를 작성하세요\n    pass\n\nwhile True:\n    a, b, c = map(int, input().split())\n    if a == -1 and b == -1 and c == -1:\n        break\n    print(f"w({a}, {b}, {c}) = {w(a, b, c)}")\n`,
-                cpp: `#include <iostream>\nusing namespace std;\n\nint dp[21][21][21];\nbool visited[21][21][21];\n\nint w(int a, int b, int c) {\n    // 여기에 메모이제이션 적용한 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int a, b, c;\n    while (cin >> a >> b >> c) {\n        if (a == -1 && b == -1 && c == -1) break;\n        printf("w(%d, %d, %d) = %d\\n", a, b, c, w(a, b, c));\n    }\n    return 0;\n}`,
-                java: `import java.util.Scanner;\n\npublic class Main {\n    static int[][][] dp = new int[21][21][21];\n    static boolean[][][] visited = new boolean[21][21][21];\n    \n    static int w(int a, int b, int c) {\n        // 여기에 메모이제이션 적용한 함수를 작성하세요\n        return 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        while (sc.hasNextInt()) {\n            int a = sc.nextInt(), b = sc.nextInt(), c = sc.nextInt();\n            if (a == -1 && b == -1 && c == -1) break;\n            System.out.printf("w(%d, %d, %d) = %d%n", a, b, c, w(a, b, c));\n        }\n    }\n}`
+                python: `import sys\ninput = sys.stdin.readline\n\n# 값을 저장할 3차원 배열 또는 딕셔너리\n# dp = [[[0]*21 for _ in range(21)] for _ in range(21)]\n\ndef w(a, b, c):\n    # 여기에 저장하며 풀기를 적용한 함수를 작성하세요\n    pass\n\nwhile True:\n    a, b, c = map(int, input().split())\n    if a == -1 and b == -1 and c == -1:\n        break\n    print(f"w({a}, {b}, {c}) = {w(a, b, c)}")\n`,
+                cpp: `#include <iostream>\nusing namespace std;\n\nint dp[21][21][21];\nbool visited[21][21][21];\n\nint w(int a, int b, int c) {\n    // 여기에 저장하며 풀기를 적용한 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int a, b, c;\n    while (cin >> a >> b >> c) {\n        if (a == -1 && b == -1 && c == -1) break;\n        printf("w(%d, %d, %d) = %d\\n", a, b, c, w(a, b, c));\n    }\n    return 0;\n}`,
+                java: `import java.util.Scanner;\n\npublic class Main {\n    static int[][][] dp = new int[21][21][21];\n    static boolean[][][] visited = new boolean[21][21][21];\n    \n    static int w(int a, int b, int c) {\n        // 여기에 저장하며 풀기를 적용한 함수를 작성하세요\n        return 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        while (sc.hasNextInt()) {\n            int a = sc.nextInt(), b = sc.nextInt(), c = sc.nextInt();\n            if (a == -1 && b == -1 && c == -1) break;\n            System.out.printf("w(%d, %d, %d) = %d%n", a, b, c, w(a, b, c));\n        }\n    }\n}`
             }
         },
         {
@@ -1175,8 +1472,8 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '그리디하게 큰 수로 나누는 것이 항상 최적은 아닙니다 (예: 10). DP로 모든 경우를 고려해야 합니다.' },
-                { title: '상태 정의', content: '<code>dp[i]</code> = 정수 i를 1로 만드는 데 필요한 <strong>최소 연산 횟수</strong>. dp[1] = 0 (이미 1이므로).' },
-                { title: '점화식', content: '<code>dp[i] = dp[i-1] + 1</code> (1을 빼기)<br>i가 2로 나누어지면: <code>dp[i] = min(dp[i], dp[i/2] + 1)</code><br>i가 3으로 나누어지면: <code>dp[i] = min(dp[i], dp[i/3] + 1)</code>' },
+                { title: '칸의 의미', content: '<code>dp[i]</code> = 정수 i를 1로 만드는 데 필요한 <strong>최소 연산 횟수</strong>. dp[1] = 0 (이미 1이므로).' },
+                { title: '계산 규칙', content: '<code>dp[i] = dp[i-1] + 1</code> (1을 빼기)<br>i가 2로 나누어지면: <code>dp[i] = min(dp[i], dp[i/2] + 1)</code><br>i가 3으로 나누어지면: <code>dp[i] = min(dp[i], dp[i/3] + 1)</code>' },
                 { title: '구현 팁', content: 'Bottom-Up으로 i=2부터 N까지 순회하면서 dp를 채웁니다. 초기값 dp[1]=0. 각 i에서 세 가지 연산을 모두 고려해서 최솟값을 저장합니다.' }
             ],
             inputLabel: '정수 N',
@@ -1223,8 +1520,8 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '길이 N인 수열의 마지막에 올 수 있는 타일을 생각해보세요. 마지막이 "1" 타일이면 나머지 길이는? "00" 타일이면?' },
-                { title: '상태 정의', content: '<code>dp[i]</code> = 길이 i인 올바른 2진 수열의 개수' },
-                { title: '점화식', content: '마지막에 "1"을 놓으면 앞에 길이 i-1의 수열이 와야 하고, "00"을 놓으면 앞에 길이 i-2의 수열이 와야 합니다.<br><code>dp[i] = (dp[i-1] + dp[i-2]) % 15746</code><br>이것은 피보나치 수열과 동일한 구조입니다!' },
+                { title: '칸의 의미', content: '<code>dp[i]</code> = 길이 i인 올바른 2진 수열의 개수' },
+                { title: '계산 규칙', content: '마지막에 "1"을 놓으면 앞에 길이 i-1의 수열이 와야 하고, "00"을 놓으면 앞에 길이 i-2의 수열이 와야 합니다.<br><code>dp[i] = (dp[i-1] + dp[i-2]) % 15746</code><br>이것은 피보나치 수열과 동일한 구조입니다!' },
                 { title: '구현 팁', content: 'dp[1] = 1 ("1"), dp[2] = 2 ("11", "00"). 매 계산마다 <strong>15746으로 나머지</strong>를 취해야 합니다. N이 최대 100만이므로 배열 대신 변수 2개로 공간 최적화도 가능합니다.' }
             ],
             inputLabel: '길이 N',
@@ -1278,9 +1575,9 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '"연속 3개 불가" 조건이 핵심입니다. i번째 계단을 밟을 때, 바로 직전(i-1)도 밟았는지 여부에 따라 경우가 나뉩니다.' },
-                { title: '상태 정의', content: '<code>dp[i]</code> = i번째 계단을 밟았을 때의 최대 점수.<br>i번째에 도달하는 방법은 두 가지:<br>① i-2에서 2칸 점프<br>② i-1에서 1칸 (단, i-1도 직전에서 1칸 온 건 불가)' },
-                { title: '점화식', content: '경우 1: i-2 → i (2칸 점프): <code>dp[i-2] + score[i]</code><br>경우 2: i-3 → i-1 → i (1칸+1칸, 단 i-2는 안 밟음): <code>dp[i-3] + score[i-1] + score[i]</code><br><code>dp[i] = max(dp[i-2] + score[i], dp[i-3] + score[i-1] + score[i])</code>' },
-                { title: '구현 팁', content: '초기값: dp[1] = score[1], dp[2] = score[1]+score[2], dp[3] = max(score[1], score[2])+score[3]. i=4부터 점화식을 적용하세요. 1-indexed가 편합니다.' }
+                { title: '칸의 의미', content: '<code>dp[i]</code> = i번째 계단을 밟았을 때의 최대 점수.<br>i번째에 도달하는 방법은 두 가지:<br>① i-2에서 2칸 점프<br>② i-1에서 1칸 (단, i-1도 직전에서 1칸 온 건 불가)' },
+                { title: '계산 규칙', content: '경우 1: i-2 → i (2칸 점프): <code>dp[i-2] + score[i]</code><br>경우 2: i-3 → i-1 → i (1칸+1칸, 단 i-2는 안 밟음): <code>dp[i-3] + score[i-1] + score[i]</code><br><code>dp[i] = max(dp[i-2] + score[i], dp[i-3] + score[i-1] + score[i])</code>' },
+                { title: '구현 팁', content: '초기값: dp[1] = score[1], dp[2] = score[1]+score[2], dp[3] = max(score[1], score[2])+score[3]. i=4부터 계산 규칙을 적용하세요. 1-indexed가 편합니다.' }
             ],
             inputLabel: '계단 수 N',
             inputMin: 1, inputMax: 300, inputDefault: 6,
@@ -1335,9 +1632,9 @@ w(2, 2, 2) = 4</pre></div>
                 </div>
             `,
             hints: [
-                { title: '접근법', content: '계단 오르기와 비슷하지만 중요한 차이가 있습니다: <strong>마지막 잔을 반드시 마실 필요가 없습니다.</strong> 이 차이 때문에 점화식이 달라집니다.' },
-                { title: '상태 정의', content: '<code>dp[i]</code> = 1번째부터 i번째 잔까지 고려했을 때 마실 수 있는 최대 양. (i번째를 안 마실 수도 있음!)' },
-                { title: '점화식', content: 'i번째 잔에 대해 3가지 경우:<br>① i번째를 안 마심: <code>dp[i-1]</code><br>② i번째만 마심 (i-1은 안 마심): <code>dp[i-2] + wine[i]</code><br>③ i-1과 i를 연속 마심 (i-2는 안 마심): <code>dp[i-3] + wine[i-1] + wine[i]</code><br><code>dp[i] = max(dp[i-1], dp[i-2]+wine[i], dp[i-3]+wine[i-1]+wine[i])</code>' },
+                { title: '접근법', content: '계단 오르기와 비슷하지만 중요한 차이가 있습니다: <strong>마지막 잔을 반드시 마실 필요가 없습니다.</strong> 이 차이 때문에 계산 규칙이 달라집니다.' },
+                { title: '칸의 의미', content: '<code>dp[i]</code> = 1번째부터 i번째 잔까지 고려했을 때 마실 수 있는 최대 양. (i번째를 안 마실 수도 있음!)' },
+                { title: '계산 규칙', content: 'i번째 잔에 대해 3가지 경우:<br>① i번째를 안 마심: <code>dp[i-1]</code><br>② i번째만 마심 (i-1은 안 마심): <code>dp[i-2] + wine[i]</code><br>③ i-1과 i를 연속 마심 (i-2는 안 마심): <code>dp[i-3] + wine[i-1] + wine[i]</code><br><code>dp[i] = max(dp[i-1], dp[i-2]+wine[i], dp[i-3]+wine[i-1]+wine[i])</code>' },
                 { title: '구현 팁', content: '계단 오르기와 달리 "안 마시는" 경우(<code>dp[i-1]</code>)가 추가됩니다. 초기값 처리에 주의하고, n이 작을 때(1, 2)의 예외 처리를 잊지 마세요.' }
             ],
             inputLabel: '잔 수 n',
@@ -1382,9 +1679,9 @@ w(2, 2, 2) = 4</pre></div>
                 </div>
             `,
             hints: [
-                { title: '접근법', content: '이 문제는 "최대 부분 배열 합" (Maximum Subarray) 문제입니다. 카데인 알고리즘(Kadane\'s Algorithm)이라는 유명한 DP 기법으로 풀 수 있습니다.' },
-                { title: '상태 정의', content: '<code>dp[i]</code> = i번째 원소를 <strong>마지막 원소로 포함하는</strong> 연속 부분 배열의 최대 합.' },
-                { title: '점화식', content: 'i번째 원소에서 두 가지 선택:<br>① 이전 연속합에 이어 붙이기: <code>dp[i-1] + a[i]</code><br>② 여기서 새로 시작: <code>a[i]</code><br><code>dp[i] = max(dp[i-1] + a[i], a[i])</code><br>최종 답은 <code>max(dp[1], dp[2], ..., dp[n])</code>' },
+                { title: '접근법', content: '이 문제는 "연속된 수들의 합 중 최대를 찾는" 문제입니다. 각 위치에서 "이어 붙일지, 새로 시작할지"만 결정하면 됩니다.' },
+                { title: '칸의 의미', content: '<code>dp[i]</code> = i번째 원소를 <strong>마지막 원소로 포함하는</strong> 연속 부분의 최대 합.' },
+                { title: '계산 규칙', content: 'i번째 원소에서 두 가지 선택:<br>① 이전 연속합에 이어 붙이기: <code>dp[i-1] + a[i]</code><br>② 여기서 새로 시작: <code>a[i]</code><br><code>dp[i] = max(dp[i-1] + a[i], a[i])</code><br>최종 답은 <code>max(dp[1], dp[2], ..., dp[n])</code>' },
                 { title: '구현 팁', content: '배열 없이 변수 하나로도 가능합니다. <code>cur = max(cur + a[i], a[i])</code>, <code>ans = max(ans, cur)</code>. 음수만 있는 경우도 처리해야 합니다 (한 개는 반드시 선택).' }
             ],
             inputLabel: 'n 값',
@@ -1428,8 +1725,8 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '마지막 자릿수가 무엇인지에 따라 다음에 올 수 있는 숫자가 달라집니다. 마지막 자릿수를 상태에 포함시켜야 합니다.' },
-                { title: '상태 정의', content: '<code>dp[i][j]</code> = 길이가 i이고 마지막 자릿수가 j인 계단 수의 개수' },
-                { title: '점화식', content: '마지막 자릿수가 j인 수 뒤에는 j-1 또는 j+1이 올 수 있습니다.<br>• j = 0일 때: 앞에 1만 가능 → <code>dp[i][0] = dp[i-1][1]</code><br>• j = 9일 때: 앞에 8만 가능 → <code>dp[i][9] = dp[i-1][8]</code><br>• 그 외: <code>dp[i][j] = dp[i-1][j-1] + dp[i-1][j+1]</code><br>결과: <code>sum(dp[N][0..9])</code> (단, 0으로 시작 불가는 초기값에서 처리)' },
+                { title: '칸의 의미', content: '<code>dp[i][j]</code> = 길이가 i이고 마지막 자릿수가 j인 계단 수의 개수' },
+                { title: '계산 규칙', content: '마지막 자릿수가 j인 수 뒤에는 j-1 또는 j+1이 올 수 있습니다.<br>• j = 0일 때: 앞에 1만 가능 → <code>dp[i][0] = dp[i-1][1]</code><br>• j = 9일 때: 앞에 8만 가능 → <code>dp[i][9] = dp[i-1][8]</code><br>• 그 외: <code>dp[i][j] = dp[i-1][j-1] + dp[i-1][j+1]</code><br>결과: <code>sum(dp[N][0..9])</code> (단, 0으로 시작 불가는 초기값에서 처리)' },
                 { title: '구현 팁', content: '초기값: dp[1][1~9] = 1, dp[1][0] = 0 (0으로 시작 불가). 매 계산마다 <code>% 1000000000</code>. 답은 dp[N][0]~dp[N][9]의 합입니다.' }
             ],
             inputLabel: '길이 N',
@@ -1484,8 +1781,8 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: 'i번째 집의 색을 정할 때, i-1번째 집이 어떤 색인지에 따라 선택지가 달라집니다. 따라서 <strong>마지막에 칠한 색</strong>을 상태에 포함시켜야 합니다.' },
-                { title: '상태 정의', content: '<code>dp[i][c]</code> = 1번째~i번째 집까지 칠했을 때, i번째 집을 색 c(R=0,G=1,B=2)로 칠한 경우의 최소 비용' },
-                { title: '점화식', content: '이웃한 집은 다른 색이어야 하므로:<br><code>dp[i][0] = min(dp[i-1][1], dp[i-1][2]) + cost[i][0]</code><br><code>dp[i][1] = min(dp[i-1][0], dp[i-1][2]) + cost[i][1]</code><br><code>dp[i][2] = min(dp[i-1][0], dp[i-1][1]) + cost[i][2]</code><br>답: <code>min(dp[N][0], dp[N][1], dp[N][2])</code>' },
+                { title: '칸의 의미', content: '<code>dp[i][c]</code> = 1번째~i번째 집까지 칠했을 때, i번째 집을 색 c(R=0,G=1,B=2)로 칠한 경우의 최소 비용' },
+                { title: '계산 규칙', content: '이웃한 집은 다른 색이어야 하므로:<br><code>dp[i][0] = min(dp[i-1][1], dp[i-1][2]) + cost[i][0]</code><br><code>dp[i][1] = min(dp[i-1][0], dp[i-1][2]) + cost[i][1]</code><br><code>dp[i][2] = min(dp[i-1][0], dp[i-1][1]) + cost[i][2]</code><br>답: <code>min(dp[N][0], dp[N][1], dp[N][2])</code>' },
                 { title: '구현 팁', content: '초기값: dp[1][c] = cost[1][c]. 이전 행만 참조하므로 공간 최적화로 1차원 배열 2개만 써도 됩니다.' }
             ],
             inputLabel: '집의 수 N',
@@ -1538,8 +1835,8 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '위에서 아래로 내려가면서, 각 위치까지 도달했을 때의 최대 합을 구합니다. 각 위치는 위쪽의 왼쪽 또는 오른쪽에서 올 수 있습니다.' },
-                { title: '상태 정의', content: '<code>dp[i][j]</code> = i행 j열까지 도달했을 때의 최대 합' },
-                { title: '점화식', content: '<code>dp[i][j] = max(dp[i-1][j-1], dp[i-1][j]) + tri[i][j]</code><br>단, j=0이면 왼쪽 위는 없으므로 dp[i-1][j]만, j=i이면 오른쪽 위는 없으므로 dp[i-1][j-1]만 고려합니다.<br>답: <code>max(dp[n-1][0], dp[n-1][1], ..., dp[n-1][n-1])</code>' },
+                { title: '칸의 의미', content: '<code>dp[i][j]</code> = i행 j열까지 도달했을 때의 최대 합' },
+                { title: '계산 규칙', content: '<code>dp[i][j] = max(dp[i-1][j-1], dp[i-1][j]) + tri[i][j]</code><br>단, j=0이면 왼쪽 위는 없으므로 dp[i-1][j]만, j=i이면 오른쪽 위는 없으므로 dp[i-1][j-1]만 고려합니다.<br>답: <code>max(dp[n-1][0], dp[n-1][1], ..., dp[n-1][n-1])</code>' },
                 { title: '구현 팁', content: 'Bottom-up으로 아래에서 위로 올라가며 풀 수도 있습니다. 그러면 마지막에 dp[0][0]이 답이 되어 더 간단합니다. 삼각형 배열을 직접 수정해도 됩니다.' }
             ],
             inputLabel: '삼각형 크기 n',
@@ -1586,9 +1883,9 @@ w(2, 2, 2) = 4</pre></div>
                 </div>
             `,
             hints: [
-                { title: '접근법', content: '각 위치에서 끝나는 LIS의 길이를 구합니다. i번째 원소 앞에 있는 원소들 중, 자기보다 작은 것들의 LIS 길이를 참고합니다.' },
-                { title: '상태 정의', content: '<code>dp[i]</code> = i번째 원소를 <strong>마지막으로 포함하는</strong> 가장 긴 증가하는 부분 수열의 길이' },
-                { title: '점화식', content: '0 ≤ j < i인 모든 j에 대해, <code>A[j] < A[i]</code>이면:<br><code>dp[i] = max(dp[i], dp[j] + 1)</code><br>초기값: dp[i] = 1 (자기 자신만 포함)<br>답: <code>max(dp[0], dp[1], ..., dp[n-1])</code>' },
+                { title: '접근법', content: '각 위치에서 끝나는 증가 수열의 길이를 구합니다. i번째 원소 앞에 있는 원소들 중, 자기보다 작은 것들의 증가 수열 길이를 참고합니다.' },
+                { title: '칸의 의미', content: '<code>dp[i]</code> = i번째 원소를 <strong>마지막으로 포함하는</strong> 가장 긴 증가 수열의 길이' },
+                { title: '계산 규칙', content: '0 ≤ j < i인 모든 j에 대해, <code>A[j] < A[i]</code>이면:<br><code>dp[i] = max(dp[i], dp[j] + 1)</code><br>초기값: dp[i] = 1 (자기 자신만 포함)<br>답: <code>max(dp[0], dp[1], ..., dp[n-1])</code>' },
                 { title: '구현 팁', content: '이중 for문으로 O(N²)에 풀 수 있습니다. N ≤ 1000이므로 충분합니다. 더 빠른 O(N log N) 풀이도 있지만, 이 문제에서는 O(N²)이면 됩니다.' }
             ],
             inputLabel: '수열 크기 N',
@@ -1605,24 +1902,24 @@ w(2, 2, 2) = 4</pre></div>
                 return `${Math.max(...dp)}`;
             },
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# dp[i] = a[i]를 마지막으로 하는 LIS의 길이\n# 여기에 풀이를 작성하세요\n`,
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# dp[i] = a[i]를 마지막으로 하는 가장 긴 증가 수열의 길이\n# 여기에 풀이를 작성하세요\n`,
                 cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint a[1001], dp[1001];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
                 java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        int[] dp = new int[n];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
             }
         },
         {
             id: 'boj-11054',
-            title: 'BOJ 11054 - 가장 긴 바이토닉 부분 수열',
+            title: 'BOJ 11054 - 가장 긴 올라갔다 내려가는 수열',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/11054',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>바이토닉 수열이란 어떤 수를 기준으로 앞부분은 증가하고 뒷부분은 감소하는 수열이다.</p>
-                <p>예를 들어, {1, 5, 2, 1}은 바이토닉 수열이다 (5를 기준).</p>
-                <p>수열 A가 주어질 때, 가장 긴 바이토닉 부분 수열의 길이를 구하시오.</p>
+                <p>바이토닉 수열이란 어떤 수를 기준으로 앞부분은 올라가고(증가) 뒷부분은 내려가는(감소) 수열입니다.</p>
+                <p>예를 들어, {1, 5, 2, 1}은 바이토닉 수열입니다 (5를 기준으로 올라갔다 내려감).</p>
+                <p>수열 A가 주어질 때, 가장 긴 올라갔다 내려가는 수열의 길이를 구하시오.</p>
                 <div class="problem-io">
                     <div><h4>입력</h4><p>첫째 줄에 수열 크기 N (1 ≤ N ≤ 1,000), 둘째 줄에 수열 A</p></div>
-                    <div><h4>출력</h4><p>가장 긴 바이토닉 부분 수열의 길이</p></div>
+                    <div><h4>출력</h4><p>가장 긴 올라갔다 내려가는 수열의 길이</p></div>
                 </div>
                 <div class="problem-example">
                     <h4>예제</h4>
@@ -1634,10 +1931,10 @@ w(2, 2, 2) = 4</pre></div>
                 </div>
             `,
             hints: [
-                { title: '접근법', content: '바이토닉 = 증가 + 감소. LIS를 응용하면 됩니다. 왼쪽에서의 LIS와 오른쪽에서의 LIS를 각각 구한 뒤 합치면 됩니다.' },
-                { title: '상태 정의', content: '<code>lis[i]</code> = 왼쪽→오른쪽으로 보았을 때 a[i]로 끝나는 LIS 길이<br><code>lds[i]</code> = 오른쪽→왼쪽으로 보았을 때 a[i]로 끝나는 LIS 길이 (= a[i]에서 시작하는 최장 감소 수열)' },
-                { title: '점화식', content: 'lis[i]: 앞에서와 동일한 LIS 점화식<br>lds[i]: 뒤에서부터 LIS를 구하는 것 (j > i이고 a[j] < a[i]이면 lds[i] = max(lds[i], lds[j]+1))<br>답: <code>max(lis[i] + lds[i] - 1)</code> (꼭짓점 i를 기준으로)' },
-                { title: '구현 팁', content: 'LIS를 정방향, 역방향으로 두 번 구합니다. 두 배열의 합에서 1을 빼면 (꼭짓점이 중복이므로) 바이토닉 수열의 길이입니다.' }
+                { title: '접근법', content: '올라갔다 내려가는 수열 = 증가 + 감소. 가장 긴 증가 수열을 응용하면 됩니다. 왼쪽에서의 증가 수열과 오른쪽에서의 증가 수열을 각각 구한 뒤 합치면 됩니다.' },
+                { title: '칸의 의미', content: '<code>lis[i]</code> = 왼쪽→오른쪽으로 보았을 때 a[i]로 끝나는 가장 긴 증가 수열 길이<br><code>lds[i]</code> = 오른쪽→왼쪽으로 보았을 때 a[i]로 끝나는 가장 긴 증가 수열 길이 (= a[i]에서 시작하는 가장 긴 감소 수열)' },
+                { title: '계산 규칙', content: 'lis[i]: 앞에서와 동일한 증가 수열 계산 규칙<br>lds[i]: 뒤에서부터 증가 수열을 구하는 것 (j > i이고 a[j] < a[i]이면 lds[i] = max(lds[i], lds[j]+1))<br>답: <code>max(lis[i] + lds[i] - 1)</code> (꼭짓점 i를 기준으로)' },
+                { title: '구현 팁', content: '가장 긴 증가 수열을 정방향, 역방향으로 두 번 구합니다. 두 배열의 합에서 1을 빼면 (꼭짓점이 중복이므로) 올라갔다 내려가는 수열의 길이입니다.' }
             ],
             inputLabel: '수열 크기 N',
             inputMin: 1, inputMax: 1000, inputDefault: 10,
@@ -1657,7 +1954,7 @@ w(2, 2, 2) = 4</pre></div>
                 return `${ans}`;
             },
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# lis[i] = 왼→우 LIS, lds[i] = 우→좌 LIS\n# 여기에 풀이를 작성하세요\n`,
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\na = list(map(int, input().split()))\n\n# lis[i] = 왼→우 증가 수열, lds[i] = 우→좌 증가 수열\n# 여기에 풀이를 작성하세요\n`,
                 cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint a[1001], lis[1001], lds[1001];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> a[i];\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
                 java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] a = new int[n], lis = new int[n], lds = new int[n];\n        for (int i = 0; i < n; i++) a[i] = sc.nextInt();\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
             }
@@ -1692,9 +1989,9 @@ w(2, 2, 2) = 4</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '이 문제를 "교차하지 않는 전깃줄의 최대 개수"로 바꿔 생각하세요. 교차하지 않는 줄의 최대 개수를 K라 하면 답은 N - K입니다.' },
-                { title: '상태 정의', content: 'A 전봇대 기준으로 오름차순 정렬합니다. 그러면 B의 값이 증가하는 순서대로 선택하면 교차가 없습니다. 이것은 <strong>B 배열의 LIS</strong> 문제와 같습니다!' },
-                { title: '점화식', content: 'A 기준 정렬 후 B 배열에 대한 LIS를 구합니다.<br><code>dp[i]</code> = i번째 전깃줄을 마지막으로 포함하는 교차 없는 최대 전깃줄 수<br>LIS와 동일한 점화식을 적용합니다.<br>답: <code>N - max(dp)</code>' },
-                { title: '구현 팁', content: '정렬이 핵심입니다! A 기준 정렬 후 B 값으로 LIS를 구하세요. N ≤ 100이므로 O(N²)이면 충분합니다.' }
+                { title: '칸의 의미', content: 'A 전봇대 기준으로 오름차순 정렬합니다. 그러면 B의 값이 증가하는 순서대로 선택하면 교차가 없습니다. 이것은 <strong>B 배열에서 가장 긴 증가 수열 찾기</strong> 문제와 같습니다!' },
+                { title: '계산 규칙', content: 'A 기준 정렬 후 B 배열에서 가장 긴 증가 수열을 구합니다.<br><code>dp[i]</code> = i번째 전깃줄을 마지막으로 포함하는 교차 없는 최대 전깃줄 수<br>증가 수열과 동일한 계산 규칙을 적용합니다.<br>답: <code>N - max(dp)</code>' },
+                { title: '구현 팁', content: '정렬이 핵심입니다! A 기준 정렬 후 B 값으로 가장 긴 증가 수열을 구하세요. N ≤ 100이므로 O(N²)이면 충분합니다.' }
             ],
             inputLabel: '전깃줄 수 N',
             inputMin: 1, inputMax: 100, inputDefault: 8,
@@ -1710,7 +2007,7 @@ w(2, 2, 2) = 4</pre></div>
                 return `${n - Math.max(...dp)}`;
             },
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nwires = [list(map(int, input().split())) for _ in range(n)]\n\n# A 기준 정렬 후 B에 대한 LIS\n# 여기에 풀이를 작성하세요\n`,
+                python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nwires = [list(map(int, input().split())) for _ in range(n)]\n\n# A 기준 정렬 후 B에서 가장 긴 증가 수열 찾기\n# 여기에 풀이를 작성하세요\n`,
                 cpp: `#include <iostream>\n#include <algorithm>\nusing namespace std;\n\npair<int,int> wires[101];\nint dp[101];\n\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        cin >> wires[i].first >> wires[i].second;\n    sort(wires, wires + n);\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
                 java: `import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[][] wires = new int[n][2];\n        for (int i = 0; i < n; i++) {\n            wires[i][0] = sc.nextInt();\n            wires[i][1] = sc.nextInt();\n        }\n        Arrays.sort(wires, (a, b) -> a[0] - b[0]);\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
             }
@@ -1724,8 +2021,8 @@ w(2, 2, 2) = 4</pre></div>
             link: 'https://www.acmicpc.net/problem/9251',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>LCS(Longest Common Subsequence, 최장 공통 부분 수열)은 두 수열 모두의 부분 수열 중 가장 긴 것을 찾는 문제이다.</p>
-                <p>예를 들어, ACAYKP와 CAPCAK의 LCS는 ACAK이고 길이는 4이다.</p>
+                <p>LCS(Longest Common Subsequence)는 두 수열에서 공통으로 들어있는 부분 중 가장 긴 것을 찾는 문제입니다.</p>
+                <p>예를 들어, ACAYKP와 CAPCAK에서 공통으로 골라낼 수 있는 가장 긴 수열은 ACAK이고 길이는 4입니다.</p>
                 <div class="problem-io">
                     <div><h4>입력</h4><p>두 줄에 걸쳐 두 문자열이 주어진다. (길이 ≤ 1,000, 대문자)</p></div>
                     <div><h4>출력</h4><p>LCS의 길이</p></div>
@@ -1740,10 +2037,10 @@ CAPCAK</pre></div>
                 </div>
             `,
             hints: [
-                { title: '접근법', content: '두 문자열의 문자를 하나씩 비교해가며 2차원 테이블을 채웁니다. 문자가 같으면 대각선+1, 다르면 왼쪽이나 위쪽의 최대값을 취합니다.' },
-                { title: '상태 정의', content: '<code>dp[i][j]</code> = 문자열 A의 처음 i글자와 문자열 B의 처음 j글자의 LCS 길이' },
-                { title: '점화식', content: '• <code>A[i] == B[j]</code>이면: <code>dp[i][j] = dp[i-1][j-1] + 1</code><br>• <code>A[i] != B[j]</code>이면: <code>dp[i][j] = max(dp[i-1][j], dp[i][j-1])</code><br>답: <code>dp[len(A)][len(B)]</code>' },
-                { title: '구현 팁', content: 'dp 테이블의 0행, 0열은 모두 0 (빈 문자열과의 LCS는 0). 1-indexed로 구현하면 편합니다. 공간 최적화로 2행만 써도 됩니다.' }
+                { title: '접근법', content: '두 문자열의 문자를 하나씩 비교해가며 2차원 표를 채웁니다. 문자가 같으면 대각선+1, 다르면 왼쪽이나 위쪽의 최대값을 취합니다.' },
+                { title: '칸의 의미', content: '<code>dp[i][j]</code> = 문자열 A의 처음 i글자와 문자열 B의 처음 j글자에서 찾을 수 있는 가장 긴 공통 수열의 길이' },
+                { title: '계산 규칙', content: '• <code>A[i] == B[j]</code>이면: <code>dp[i][j] = dp[i-1][j-1] + 1</code><br>• <code>A[i] != B[j]</code>이면: <code>dp[i][j] = max(dp[i-1][j], dp[i][j-1])</code><br>답: <code>dp[len(A)][len(B)]</code>' },
+                { title: '구현 팁', content: 'dp 표의 0행, 0열은 모두 0 (빈 문자열과의 공통 수열은 0). 1-indexed로 구현하면 편합니다. 공간 최적화로 2행만 써도 됩니다.' }
             ],
             inputLabel: '(내장 예제 사용)',
             inputMin: 0, inputMax: 0, inputDefault: 0,
@@ -1760,7 +2057,7 @@ CAPCAK</pre></div>
                 return `${dp[m][n]}`;
             },
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\na = input().strip()\nb = input().strip()\n\n# dp[i][j] = a[:i]와 b[:j]의 LCS 길이\n# 여기에 풀이를 작성하세요\n`,
+                python: `import sys\ninput = sys.stdin.readline\n\na = input().strip()\nb = input().strip()\n\n# dp[i][j] = a[:i]와 b[:j]의 가장 긴 공통 수열 길이\n# 여기에 풀이를 작성하세요\n`,
                 cpp: `#include <iostream>\n#include <algorithm>\n#include <cstring>\nusing namespace std;\n\nint dp[1001][1001];\n\nint main() {\n    string a, b;\n    cin >> a >> b;\n    // 여기에 풀이를 작성하세요\n    \n    return 0;\n}`,
                 java: `import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String a = sc.next();\n        String b = sc.next();\n        int[][] dp = new int[a.length() + 1][b.length() + 1];\n        // 여기에 풀이를 작성하세요\n        \n    }\n}`
             }
@@ -1792,8 +2089,8 @@ CAPCAK</pre></div>
             `,
             hints: [
                 { title: '접근법', content: '각 물건을 넣거나 안 넣거나 (0/1) 선택합니다. 물건을 하나씩 고려하면서, 현재 남은 용량에 따라 최적의 선택을 합니다.' },
-                { title: '상태 정의', content: '<code>dp[i][w]</code> = 처음 i개 물건까지 고려하고 배낭 용량이 w일 때의 최대 가치' },
-                { title: '점화식', content: '• i번째 물건을 넣지 않는 경우: <code>dp[i][w] = dp[i-1][w]</code><br>• i번째 물건을 넣는 경우 (w ≥ W[i]): <code>dp[i][w] = dp[i-1][w - W[i]] + V[i]</code><br><code>dp[i][w] = max(dp[i-1][w], dp[i-1][w - W[i]] + V[i])</code><br>답: <code>dp[N][K]</code>' },
+                { title: '칸의 의미', content: '<code>dp[i][w]</code> = 처음 i개 물건까지 고려하고 배낭 용량이 w일 때의 최대 가치' },
+                { title: '계산 규칙', content: '• i번째 물건을 넣지 않는 경우: <code>dp[i][w] = dp[i-1][w]</code><br>• i번째 물건을 넣는 경우 (w ≥ W[i]): <code>dp[i][w] = dp[i-1][w - W[i]] + V[i]</code><br><code>dp[i][w] = max(dp[i-1][w], dp[i-1][w - W[i]] + V[i])</code><br>답: <code>dp[N][K]</code>' },
                 { title: '구현 팁', content: '1차원 배열로 공간 최적화가 가능합니다. <code>dp[w]</code>를 w를 K부터 W[i]까지 <strong>역순</strong>으로 순회하면서 갱신합니다. 역순인 이유: 같은 물건을 두 번 넣는 것을 방지합니다.' }
             ],
             inputLabel: '(내장 예제 사용)',
@@ -2028,246 +2325,11 @@ CAPCAK</pre></div>
         return this._fib(n - 1) + this._fib(n - 2);
     },
 
-    // ===== 시각화 내부 로직 =====
+    // ===== 시각화 상태 =====
     _vizState: {
-        running: false,
-        paused: false,
-        timeouts: [],
-        recursiveCalls: 0,
-        dpCalls: 0
-    },
-
-    _initVisualization(container) {
-        const state = this._vizState;
-        const nSlider = container.querySelector('#viz-n-slider');
-        const nLabel = container.querySelector('#viz-n-label');
-        const speedSlider = container.querySelector('#viz-speed');
-
-        const reset = () => {
-            state.timeouts.forEach(t => clearTimeout(t));
-            state.timeouts = [];
-            state.running = false;
-            state.paused = false;
-            state.recursiveCalls = 0;
-            state.dpCalls = 0;
-            container.querySelector('#recursive-call-count').textContent = '0';
-            container.querySelector('#dp-call-count').textContent = '0';
-            container.querySelector('#viz-play').disabled = false;
-            container.querySelector('#viz-pause').disabled = true;
-            container.querySelector('#tree-svg').innerHTML = '';
-            container.querySelector('#dp-table-container').innerHTML = '';
-            container.querySelector('#dp-formula').textContent = '';
-        };
-
-        const getDelay = () => [800, 600, 400, 250, 120][parseInt(speedSlider.value) - 1];
-
-        nSlider.addEventListener('input', () => {
-            nLabel.textContent = nSlider.value;
-            reset();
-        });
-
-        container.querySelector('#viz-reset').addEventListener('click', reset);
-        container.querySelector('#viz-pause').addEventListener('click', () => {
-            if (state.running && !state.paused) {
-                state.paused = true;
-                state.timeouts.forEach(t => clearTimeout(t));
-                state.timeouts = [];
-            }
-        });
-
-        container.querySelector('#viz-play').addEventListener('click', () => {
-            reset();
-            const n = parseInt(nSlider.value);
-            state.running = true;
-            container.querySelector('#viz-play').disabled = true;
-            container.querySelector('#viz-pause').disabled = false;
-
-            const treeSvg = container.querySelector('#tree-svg');
-            const tree = this._buildTree(n);
-            const positions = this._layoutTree(tree);
-            this._drawTree(treeSvg, tree, positions);
-            this._animateTree(container, treeSvg, tree, positions, getDelay());
-
-            const dpContainer = container.querySelector('#dp-table-container');
-            const cells = this._buildDPTable(dpContainer, n);
-            this._animateDPTable(container, cells, n, getDelay());
-        });
-    },
-
-    _buildTree(n, id = 0) {
-        const node = { n, id, children: [] };
-        if (n > 2) {
-            node.children.push(this._buildTree(n - 1, id * 2 + 1));
-            node.children.push(this._buildTree(n - 2, id * 2 + 2));
-        }
-        return node;
-    },
-
-    _layoutTree(node, depth = 0, positions = {}, counter = { val: 0 }) {
-        if (node.children.length > 0) {
-            node.children.forEach(child => this._layoutTree(child, depth + 1, positions, counter));
-        }
-        positions[node.id] = { x: counter.val * 50, y: depth * 60, n: node.n, id: node.id };
-        counter.val++;
-        return positions;
-    },
-
-    _drawTree(svg, tree, positions) {
-        const posArray = Object.values(positions);
-        const minX = Math.min(...posArray.map(p => p.x));
-        const maxX = Math.max(...posArray.map(p => p.x));
-        const maxY = Math.max(...posArray.map(p => p.y));
-        const padding = 30;
-
-        svg.setAttribute('viewBox', `${minX - padding} ${-padding} ${maxX - minX + padding * 2} ${maxY + padding * 2 + 20}`);
-        svg.style.height = Math.min(maxY + padding * 2 + 20, 420) + 'px';
-
-        const drawEdges = (node) => {
-            node.children.forEach(child => {
-                const p1 = positions[node.id], p2 = positions[child.id];
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
-                line.setAttribute('x2', p2.x); line.setAttribute('y2', p2.y);
-                line.classList.add('tree-edge');
-                line.style.opacity = '0';
-                line.dataset.childId = child.id;
-                svg.appendChild(line);
-                drawEdges(child);
-            });
-        };
-        drawEdges(tree);
-
-        for (const pos of posArray) {
-            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            g.classList.add('tree-node');
-            g.style.opacity = '0';
-            g.dataset.nodeId = pos.id;
-
-            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circle.setAttribute('cx', pos.x); circle.setAttribute('cy', pos.y);
-            circle.setAttribute('r', 18);
-            circle.setAttribute('fill', 'var(--bg3)'); circle.setAttribute('stroke', 'var(--bg3)');
-
-            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            text.setAttribute('x', pos.x); text.setAttribute('y', pos.y);
-            text.textContent = `f(${pos.n})`;
-
-            g.appendChild(circle);
-            g.appendChild(text);
-            svg.appendChild(g);
-        }
-    },
-
-    _getTraversalOrder(node, order = []) {
-        order.push(node);
-        if (node.children.length > 0) {
-            this._getTraversalOrder(node.children[0], order);
-            this._getTraversalOrder(node.children[1], order);
-        }
-        return order;
-    },
-
-    _animateTree(container, svg, tree, positions, delay) {
-        const state = this._vizState;
-        const order = this._getTraversalOrder(tree);
-        const seen = new Set();
-
-        order.forEach((node, i) => {
-            const t = setTimeout(() => {
-                if (state.paused) return;
-                const g = svg.querySelector(`[data-node-id="${node.id}"]`);
-                if (!g) return;
-                g.style.opacity = '1';
-                g.style.transition = 'opacity 0.3s';
-
-                const circle = g.querySelector('circle');
-                const isBase = node.n <= 2;
-                const isDup = seen.has(node.n);
-
-                if (isBase) {
-                    circle.setAttribute('fill', 'var(--green)');
-                    circle.setAttribute('stroke', 'var(--green)');
-                    state.recursiveCalls++;
-                    container.querySelector('#recursive-call-count').textContent = state.recursiveCalls;
-                } else if (isDup) {
-                    circle.setAttribute('fill', 'var(--red)');
-                    circle.setAttribute('stroke', 'var(--red)');
-                    circle.style.animation = 'pulse 0.5s';
-                } else {
-                    circle.setAttribute('fill', 'var(--accent)');
-                    circle.setAttribute('stroke', 'var(--accent)');
-                }
-                seen.add(node.n);
-
-                const edge = svg.querySelector(`line[data-child-id="${node.id}"]`);
-                if (edge) {
-                    edge.style.opacity = '1';
-                    edge.style.transition = 'opacity 0.3s';
-                    edge.style.stroke = (isDup && !isBase) ? 'var(--red)' : 'var(--text2)';
-                }
-            }, i * delay);
-            state.timeouts.push(t);
-        });
-    },
-
-    _buildDPTable(container, n) {
-        container.innerHTML = '';
-        const cells = [];
-        for (let i = 1; i <= n; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'dp-cell';
-            cell.innerHTML = `<div class="dp-cell-index">f(${i})</div><div class="dp-cell-value">?</div>`;
-            container.appendChild(cell);
-            cells.push(cell);
-        }
-        return cells;
-    },
-
-    _animateDPTable(container, cells, n, delay) {
-        const state = this._vizState;
-        const dpFormula = container.querySelector('#dp-formula');
-        const dpValues = new Array(n + 1).fill(0);
-        dpValues[1] = 1; dpValues[2] = 1;
-
-        const t1 = setTimeout(() => {
-            if (state.paused) return;
-            cells[0].classList.add('base');
-            cells[0].querySelector('.dp-cell-value').textContent = '1';
-            dpFormula.textContent = 'f(1) = 1 (기저 조건)';
-        }, delay);
-        state.timeouts.push(t1);
-
-        if (n >= 2) {
-            const t2 = setTimeout(() => {
-                if (state.paused) return;
-                cells[1].classList.add('base');
-                cells[1].querySelector('.dp-cell-value').textContent = '1';
-                dpFormula.textContent = 'f(2) = 1 (기저 조건)';
-            }, delay * 2);
-            state.timeouts.push(t2);
-        }
-
-        for (let i = 3; i <= n; i++) {
-            const step = i;
-            const t = setTimeout(() => {
-                if (state.paused) return;
-                dpValues[step] = dpValues[step - 1] + dpValues[step - 2];
-                cells[step - 2].classList.add('active');
-                cells[step - 3].classList.add('active');
-                cells[step - 1].classList.add('active', 'filled');
-                cells[step - 1].querySelector('.dp-cell-value').textContent = dpValues[step];
-                dpFormula.textContent = `f(${step}) = f(${step-1}) + f(${step-2}) = ${dpValues[step-1]} + ${dpValues[step-2]} = ${dpValues[step]}`;
-                state.dpCalls++;
-                container.querySelector('#dp-call-count').textContent = state.dpCalls;
-
-                setTimeout(() => {
-                    cells[step - 2].classList.remove('active');
-                    cells[step - 3].classList.remove('active');
-                    cells[step - 1].classList.remove('active');
-                }, delay * 0.7);
-            }, delay * step);
-            state.timeouts.push(t);
-        }
+        steps: [],
+        currentStep: -1,
+        keydownHandler: null
     }
 };
 

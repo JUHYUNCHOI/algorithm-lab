@@ -27,22 +27,47 @@
         overlay.classList.toggle('active');
     });
 
-    // ===== 주제 목록 렌더링 =====
+    // ===== 주제 목록 렌더링 (카테고리 그룹) =====
+    const categoryOrder = ['기초 개념', '알고리즘'];
+
     function renderSidebar() {
         const topics = window.AlgoTopics || {};
         sidebarNav.innerHTML = '';
 
+        // 카테고리별 그룹화
+        const grouped = {};
         Object.values(topics).forEach(topic => {
-            const btn = document.createElement('button');
-            btn.className = 'sidebar-item';
-            btn.dataset.topicId = topic.id;
-            btn.innerHTML = `
-                <span class="item-icon">${topic.icon}</span>
-                <span class="item-label">${topic.title}</span>
-                <span class="item-badge">${topic.problems ? topic.problems.length + '문제' : ''}</span>
-            `;
-            btn.addEventListener('click', () => selectTopic(topic.id));
-            sidebarNav.appendChild(btn);
+            const cat = topic.category || '기타';
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push(topic);
+        });
+
+        // 카테고리 내 order 정렬
+        Object.values(grouped).forEach(arr => arr.sort((a, b) => (a.order || 0) - (b.order || 0)));
+
+        // 정의된 순서대로 렌더링, 미정의 카테고리는 뒤에
+        const cats = [...categoryOrder, ...Object.keys(grouped).filter(c => !categoryOrder.includes(c))];
+
+        cats.forEach(cat => {
+            if (!grouped[cat]) return;
+
+            const header = document.createElement('div');
+            header.className = 'sidebar-category';
+            header.textContent = cat;
+            sidebarNav.appendChild(header);
+
+            grouped[cat].forEach(topic => {
+                const btn = document.createElement('button');
+                btn.className = 'sidebar-item';
+                btn.dataset.topicId = topic.id;
+                btn.innerHTML = `
+                    <span class="item-icon">${topic.icon}</span>
+                    <span class="item-label">${topic.title}</span>
+                    <span class="item-badge">${topic.problems ? topic.problems.length + '문제' : ''}</span>
+                `;
+                btn.addEventListener('click', () => selectTopic(topic.id));
+                sidebarNav.appendChild(btn);
+            });
         });
     }
 
