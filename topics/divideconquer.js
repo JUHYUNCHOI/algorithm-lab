@@ -3,9 +3,10 @@ const divideConquerTopic = {
     id: 'divideconquer',
     title: '분할정복',
     icon: '🔪',
-    category: '알고리즘',
-    order: 4,
+    category: '알고리즘 기법',
+    order: 11,
     description: '큰 문제를 작게 나눠서 풀고 합치는 기법',
+    relatedNote: '분할정복은 병합 정렬, 퀵 정렬의 기반이며, FFT, 카라츠바 곱셈 등 고급 알고리즘에도 쓰입니다.',
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {

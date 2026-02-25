@@ -46,7 +46,7 @@ body {
 /* ===== Sidebar ===== */
 .sidebar {
     width: var(--sidebar-w);
-    min-height: 100vh;
+    height: 100vh;
     background: var(--bg2);
     border-right: 1px solid var(--bg3);
     display: flex;
@@ -150,6 +150,86 @@ body {
     color: #fff;
 }
 
+/* ===== 사이드바 확장형 서브아이템 ===== */
+.sidebar-item .item-chevron {
+    font-size: 0.6rem;
+    color: var(--text2);
+    transition: transform 0.25s ease;
+    margin-left: 2px;
+    opacity: 0.7;
+}
+
+.sidebar-item.expanded .item-chevron {
+    transform: rotate(90deg);
+}
+
+.sidebar-item.expanded {
+    background: var(--bg3);
+    color: var(--text);
+    font-weight: 600;
+}
+
+.sidebar-sub-list {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.2s ease;
+    padding-left: 0.3rem;
+}
+
+.sidebar-sub-list.expanded {
+    max-height: 1200px;
+    opacity: 1;
+}
+
+.sidebar-sub-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.7rem 0.4rem 2.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: var(--text2);
+    transition: all 0.15s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    line-height: 1.4;
+}
+
+.sidebar-sub-item:hover {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.sidebar-sub-item.active {
+    background: rgba(108, 92, 231, 0.12);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.sub-item-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sub-item-dot.easy    { background: var(--green); }
+.sub-item-dot.silver  { background: #5c6bc0; }
+.sub-item-dot.medium  { background: #e67e22; }
+.sub-item-dot.gold    { background: #f57f17; }
+.sub-item-dot.hard    { background: #e74c3c; }
+
+.sub-item-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .sidebar-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--bg3);
@@ -159,6 +239,323 @@ body {
 .sidebar-badge {
     font-size: 0.75rem;
     color: var(--text2);
+}
+
+/* ===== 토픽 랜딩 페이지 ===== */
+.landing-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.landing-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: inherit;
+}
+
+.landing-btn:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.landing-btn-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.landing-btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.landing-btn-text strong {
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.landing-btn-text small {
+    font-size: 0.8rem;
+    color: var(--text2);
+}
+
+.landing-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.landing-section-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.landing-problem-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.landing-problem-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.2rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    width: 100%;
+    text-align: left;
+}
+
+.landing-problem-card:hover {
+    border-color: var(--accent);
+    background: var(--bg);
+}
+
+.lpc-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.lpc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.lpc-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.lpc-title {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+}
+
+.lpc-source {
+    font-size: 0.75rem;
+    color: var(--text2);
+}
+
+.lpc-diff {
+    font-size: 0.78rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* ===== 알고리즘 유형 카드 ===== */
+.landing-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.type-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+}
+
+.type-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 12px var(--accent-glow);
+    transform: translateY(-1px);
+}
+
+.type-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    font-weight: 700;
+}
+
+.type-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.type-card-title {
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.type-card-desc {
+    font-size: 0.75rem;
+    color: var(--text2);
+    line-height: 1.4;
+}
+
+.type-card-count {
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-top: 2px;
+}
+
+.landing-related-note {
+    font-size: 0.82rem;
+    color: var(--text2);
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* ===== 학습 로드맵 (스테이지별 문제 목록) ===== */
+.roadmap-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 2rem;
+}
+
+.roadmap-stage-group {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem 0.8rem;
+}
+
+.roadmap-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--bg3);
+    flex-wrap: wrap;
+}
+
+.roadmap-stage-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+}
+
+.roadmap-stage-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.roadmap-stage-desc {
+    font-size: 0.75rem;
+    color: var(--text2);
+    margin-left: auto;
+}
+
+.roadmap-prob-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.roadmap-seq-num {
+    font-size: 1rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    min-width: 1.4rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.roadmap-stage-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0;
+}
+
+.roadmap-connector-arrow {
+    font-size: 1.3rem;
+    color: var(--accent);
+    opacity: 0.5;
+    line-height: 1;
+}
+
+/* ===== 사이드바 스테이지 구분 ===== */
+.sidebar-stage-divider {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    padding: 0.6rem 0.7rem 0.2rem 2.2rem;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.sidebar-seq-num {
+    font-size: 0.72rem;
+    color: var(--text3);
+    flex-shrink: 0;
+    min-width: 16px;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .landing-actions {
+        grid-template-columns: 1fr;
+    }
+    .landing-types {
+        grid-template-columns: 1fr;
+    }
+    .roadmap-stage-header {
+        gap: 0.4rem;
+    }
+    .roadmap-stage-desc {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 /* ===== Layout ===== */
@@ -1321,6 +1718,97 @@ input[type="range"]::-webkit-slider-thumb {
 .card-diff.bronze { background: #efebe9; color: #8d6e63; }
 .card-diff.silver { background: #e8eaf6; color: #5c6bc0; }
 .card-diff.gold { background: #fff8e1; color: #f57f17; }
+
+/* ===== Problem Stages Layout (new topics) ===== */
+.problem-stages {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.stage-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.stage-card .stage-header {
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+}
+
+.stage-card .stage-header p {
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-top: 0.2rem;
+    margin-left: 2.2rem;
+}
+
+.stage-problems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+button.problem-card {
+    width: 100%;
+    font-family: inherit;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+button.problem-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow);
+    transform: translateX(4px);
+}
+
+.problem-card .problem-title {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.problem-card .problem-diff {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* 난이도별 색상 — BOJ */
+.problem-card.silver {
+    border-left: 4px solid #5c6bc0;
+}
+.problem-card.silver .problem-diff {
+    color: #5c6bc0;
+    background: rgba(92, 107, 192, 0.1);
+}
+.problem-card.gold {
+    border-left: 4px solid #f57f17;
+}
+.problem-card.gold .problem-diff {
+    color: #f57f17;
+    background: rgba(245, 127, 23, 0.1);
+}
+.problem-card.platinum {
+    border-left: 4px solid #26c6da;
+}
+.problem-card.platinum .problem-diff {
+    color: #0097a7;
+    background: rgba(38, 198, 218, 0.1);
+}
 
 /* Back Button */
 .back-btn {
@@ -4030,5 +4518,295 @@ input[type="range"]::-webkit-slider-thumb {
     .graph-legend {
         gap: 10px;
         font-size: 0.78rem;
+    }
+}
+
+/* =========================================================
+   위상 정렬 (Topological Sort) 시각화
+   ========================================================= */
+
+/* ===== In-degree 디스플레이 ===== */
+.ts-indegree-display {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+}
+
+.ts-indegree-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    transition: all 0.3s ease;
+    min-width: 40px;
+}
+
+.ts-indegree-cell .ts-node-id {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text2);
+}
+
+.ts-indegree-cell .ts-deg-val {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.ts-indegree-cell.zero {
+    border-color: var(--green, #00b894);
+    background: rgba(0, 184, 148, 0.1);
+}
+
+.ts-indegree-cell.zero .ts-deg-val {
+    color: var(--green, #00b894);
+}
+
+.ts-indegree-cell.processed {
+    border-color: var(--accent-vivid, #6c5ce7);
+    background: rgba(108, 92, 231, 0.1);
+    opacity: 0.5;
+}
+
+/* ===== 방향 화살표 간선 ===== */
+.graph-edge.ts-directed {
+    marker-end: url(#ts-arrowhead);
+}
+
+.graph-edge.ts-directed.active {
+    marker-end: url(#ts-arrowhead-active);
+}
+
+.graph-edge.ts-directed.visited {
+    marker-end: url(#ts-arrowhead-visited);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .ts-indegree-cell {
+        min-width: 34px;
+        padding: 3px 6px;
+    }
+    .ts-indegree-cell .ts-node-id {
+        font-size: 0.65rem;
+    }
+    .ts-indegree-cell .ts-deg-val {
+        font-size: 0.85rem;
+    }
+}
+
+/* =========================================================
+   문자열 조작 시각화 (String Manipulation)
+   ========================================================= */
+
+/* 글자 박스 */
+.str-char-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 44px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    padding: 4px 8px;
+    transition: all 0.3s ease;
+}
+
+.str-char-box .str-char-idx {
+    font-size: 0.65rem;
+    color: var(--text3);
+    font-weight: 600;
+}
+
+.str-char-box .str-char-val {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+}
+
+/* 현재 비교 중 */
+.str-char-box.comparing {
+    border-color: var(--yellow);
+    background: rgba(253, 203, 110, 0.25);
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(253, 203, 110, 0.4);
+}
+
+/* 일치 */
+.str-char-box.matched {
+    border-color: var(--green);
+    background: rgba(0, 184, 148, 0.15);
+}
+
+.str-char-box.matched .str-char-val {
+    color: var(--green);
+}
+
+/* 불일치 */
+.str-char-box.mismatch {
+    border-color: var(--red, #e17055);
+    background: rgba(225, 112, 85, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(225, 112, 85, 0.4);
+}
+
+.str-char-box.mismatch .str-char-val {
+    color: var(--red, #e17055);
+}
+
+/* LeetCode 난이도 색상 */
+.problem-card.easy {
+    border-left: 4px solid var(--green);
+}
+
+.problem-card.easy .problem-diff {
+    color: var(--green);
+    background: rgba(0, 184, 148, 0.1);
+}
+
+.problem-card.medium {
+    border-left: 4px solid var(--yellow);
+}
+
+.problem-card.medium .problem-diff {
+    color: #e67e22;
+    background: rgba(253, 203, 110, 0.15);
+}
+
+.problem-card.hard {
+    border-left: 4px solid var(--red, #e17055);
+}
+
+.problem-card.hard .problem-diff {
+    color: var(--red, #e17055);
+    background: rgba(225, 112, 85, 0.1);
+}
+
+/* ===== 문자열 시각화 반응형 ===== */
+@media (max-width: 768px) {
+    .str-char-box {
+        min-width: 36px;
+        padding: 3px 5px;
+    }
+    .str-char-box .str-char-val {
+        font-size: 1rem;
+    }
+}
+
+/* ===== 문자열 토픽 - 통합 학습 흐름 ===== */
+.str-algo-section {
+    margin-bottom: 1.8rem;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+}
+
+.str-algo-header {
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.str-algo-header h3 {
+    margin: 0;
+    font-size: 1.08rem;
+}
+
+#str-problem-list > .str-problem-card {
+    margin-bottom: 1.2rem;
+}
+
+.str-problem-card {
+    border-radius: 12px;
+    background: var(--bg2);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.str-problem-header {
+    padding: 0.7rem 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.str-sub-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 5px 6px;
+    background: var(--bg3, var(--bg2));
+    border-bottom: 1px solid var(--border);
+}
+
+.str-sub-tab {
+    flex: 1;
+    padding: 7px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.83rem;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-weight: 500;
+}
+
+.str-sub-tab:hover {
+    background: var(--card);
+    color: var(--text);
+}
+
+.str-sub-tab.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+.str-sub-content {
+    padding: 1.1rem;
+    min-height: 80px;
+}
+
+.str-sub-content .problem-detail {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.str-sub-content .code-block {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .str-algo-header {
+        padding: 0.9rem 1rem;
+    }
+    .str-problem-card {
+        margin: 0 0.5rem 0.7rem;
+    }
+    .str-sub-tab {
+        padding: 6px 6px;
+        font-size: 0.78rem;
+    }
+    .str-sub-content {
+        padding: 0.8rem;
     }
 }

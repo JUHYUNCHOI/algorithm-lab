@@ -3,9 +3,10 @@ const dpTopic = {
     id: 'dp',
     title: 'Dynamic Programming',
     icon: '🧩',
-    category: '알고리즘',
-    order: 1,
+    category: '알고리즘 기법',
+    order: 13,
     description: '중복 계산을 제거하여 효율적으로 문제를 푸는 기법',
+    relatedNote: 'DP는 비트마스크 DP, 트리 DP, 구간 DP, 확률 DP 등 다양한 변형이 있으며, 거의 모든 코딩테스트에 출제됩니다.',
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {

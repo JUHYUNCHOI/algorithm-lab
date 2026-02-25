@@ -3,9 +3,10 @@ const graphTopic = {
     id: 'graph',
     title: '그래프와 순회',
     icon: '🕸️',
-    category: '알고리즘',
-    order: 7,
+    category: '고급 자료구조와 그래프',
+    order: 16,
     description: '정점과 간선으로 이루어진 그래프를 DFS/BFS로 탐색하는 기법',
+    relatedNote: '이 외에도 위상 정렬, 최단 경로, 최소 신장 트리, 강한 연결 요소 등의 심화 그래프 알고리즘이 있습니다.',
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {

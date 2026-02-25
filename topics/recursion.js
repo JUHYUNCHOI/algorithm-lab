@@ -3,9 +3,10 @@ const recursionTopic = {
     id: 'recursion',
     title: '재귀 함수',
     icon: '🔄',
-    category: '기초 개념',
-    order: 1,
+    category: '재귀와 트리',
+    order: 8,
     description: '자기 자신을 호출하여 문제를 쪼개는 기법',
+    relatedNote: '재귀는 트리 순회, 백트래킹, 분할정복, DP(메모이제이션) 등 거의 모든 알고리즘의 기반이 됩니다.',
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {

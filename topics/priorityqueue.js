@@ -3,9 +3,10 @@ const priorityQueueTopic = {
     id: 'priorityqueue',
     title: '우선순위 큐',
     icon: '🏥',
-    category: '알고리즘',
-    order: 6,
+    category: '고급 자료구조와 그래프',
+    order: 15,
     description: '가장 중요한 것부터 꺼내는 자료구조',
+    relatedNote: '우선순위 큐는 다익스트라, 허프만 코딩, 중앙값 유지, 작업 스케줄링 등 다양한 알고리즘의 핵심 도구입니다.',
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {

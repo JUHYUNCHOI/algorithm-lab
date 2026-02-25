@@ -3,9 +3,10 @@ const backtrackingTopic = {
     id: 'backtracking',
     title: '백트래킹',
     icon: '🔙',
-    category: '기초 개념',
-    order: 2,
+    category: '알고리즘 기법',
+    order: 10,
     description: '끝까지 해보고, 안 되면 돌아와서 다른 길을 가보는 기법',
+    relatedNote: '백트래킹은 순열/조합 생성, 제약 충족 문제(CSP), 게임 트리 탐색 등에 광범위하게 활용됩니다.',
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {
