@@ -574,8 +574,8 @@ header {
     padding: 0 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 60px;
+    justify-content: flex-start;
+    height: 52px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -603,9 +603,9 @@ header {
     padding: 4px;
 }
 
+/* Old header tab-nav — hidden, tabs now in main content */
 .tab-nav {
-    display: flex;
-    gap: 4px;
+    display: none;
 }
 
 .tab-btn {
@@ -629,6 +629,174 @@ header {
     background: var(--accent);
     color: #fff;
     font-weight: 600;
+}
+
+/* ===== Main-Area Tab Bar ===== */
+.tab-bar-main {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--bg3);
+    box-shadow: var(--shadow);
+}
+
+.tab-progress {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.tab-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #5b8def);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+
+.tab-nav-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tab-btn-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0.7rem 1.1rem;
+    border-radius: 12px;
+    border: 2px solid var(--bg3);
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    min-width: 88px;
+}
+
+.tab-btn-main:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 106, 239, 0.15);
+}
+
+.tab-btn-main.active {
+    background: linear-gradient(135deg, var(--accent), #5b4cc4);
+    color: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(124, 106, 239, 0.3);
+    transform: translateY(-2px);
+}
+
+.tab-btn-main.completed {
+    border-color: var(--green);
+    background: rgba(0, 184, 148, 0.06);
+}
+
+.tab-btn-main .tab-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg3);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.tab-btn-main.active .tab-num {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.tab-btn-main.completed .tab-num {
+    background: var(--green);
+    color: #fff;
+}
+
+.tab-btn-main .tab-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.tab-btn-main .tab-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text2);
+    white-space: nowrap;
+}
+
+.tab-btn-main.active .tab-label {
+    color: #fff;
+}
+
+.tab-btn-main.completed .tab-label {
+    color: var(--green);
+}
+
+.tab-arrow {
+    color: var(--text3);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin: 0 0.15rem;
+}
+
+/* Tab bar responsive */
+@media (max-width: 768px) {
+    .tab-bar-main {
+        padding: 0.8rem 1rem 0.7rem;
+        margin-bottom: 1rem;
+    }
+
+    .tab-btn-main {
+        min-width: 70px;
+        padding: 0.5rem 0.7rem;
+    }
+
+    .tab-btn-main .tab-icon {
+        font-size: 1rem;
+    }
+
+    .tab-btn-main .tab-label {
+        font-size: 0.72rem;
+    }
+
+    .tab-arrow {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-nav-main {
+        gap: 0.3rem;
+    }
+
+    .tab-btn-main {
+        min-width: 58px;
+        padding: 0.4rem 0.5rem;
+    }
+
+    .tab-btn-main .tab-num {
+        width: 22px;
+        height: 22px;
+        font-size: 0.65rem;
+    }
+
+    .tab-btn-main .tab-icon {
+        font-size: 0.9rem;
+    }
+
+    .tab-arrow {
+        font-size: 0.8rem;
+        margin: 0;
+    }
 }
 
 /* ===== Main ===== */
@@ -1350,7 +1518,7 @@ pre code.hljs {
 
 .problem-io h4 {
     color: var(--accent);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.6rem;
     font-size: 0.9rem;
 }
 
@@ -1399,11 +1567,11 @@ pre code.hljs {
     color: var(--text2);
 }
 
-.hint-content p { margin-bottom: 0.5rem; }
+.hint-content p { margin-bottom: 0.8rem; }
 
 .hint-content code {
     background: #eee5ff;
-    padding: 2px 6px;
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 0.9rem;
     color: var(--accent);
@@ -1842,7 +2010,7 @@ button.problem-card:hover {
 .hint-steps {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.8rem;
 }
 
 .hint-step {
@@ -1862,7 +2030,7 @@ button.problem-card:hover {
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    padding: 0.8rem 1.2rem;
+    padding: 1rem 1.4rem;
     cursor: pointer;
     transition: background 0.2s;
     user-select: none;
@@ -1922,7 +2090,7 @@ button.problem-card:hover {
 
 .hint-step-body code {
     background: #eee5ff;
-    padding: 2px 6px;
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 0.85rem;
     color: var(--accent);
@@ -2246,7 +2414,7 @@ button.problem-card:hover {
 }
 
 /* DP Identification Quiz */
-.quiz-cards { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.quiz-cards { display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0; }
 
 .quiz-card {
     background: var(--bg2);
@@ -2289,7 +2457,7 @@ button.problem-card:hover {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.1rem;
 }
 
 .step-card-header .step-num {
@@ -2308,7 +2476,7 @@ button.problem-card:hover {
 
 .step-card-header h4 { font-size: 1rem; color: var(--text); }
 
-.step-card p { color: var(--text2); font-size: 0.9rem; margin-bottom: 0.5rem; }
+.step-card p { color: var(--text2); font-size: 0.9rem; margin-bottom: 0.8rem; }
 
 /* DP Type Roadmap */
 .dp-roadmap {

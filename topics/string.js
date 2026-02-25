@@ -37,10 +37,10 @@ const stringTopic = {
     // ===== 문제별 탭 정의 (app.js에서 호출) =====
     getProblemTabs(problemId) {
         return [
-            { id: 'problem', label: '문제' },
-            { id: 'think', label: '생각해볼것' },
-            { id: 'sim', label: '시뮬레이션' },
-            { id: 'code', label: '코드' }
+            { id: 'problem', label: '문제', icon: '📋' },
+            { id: 'think', label: '생각해볼것', icon: '💡' },
+            { id: 'sim', label: '시뮬레이션', icon: '🎮' },
+            { id: 'code', label: '코드', icon: '💻' }
         ];
     },
 

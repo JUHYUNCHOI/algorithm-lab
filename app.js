@@ -260,45 +260,82 @@
         renderContent();
     }
 
-    // ===== 탭 버튼 렌더링 =====
+    // ===== 탭 데이터 + 메인 탭바 빌드 =====
+    let tabBarElement = null;
+
+    function getTabsData() {
+        if (currentProblemId && currentTopic) {
+            if (currentTopic.getProblemTabs) {
+                return currentTopic.getProblemTabs(currentProblemId);
+            }
+            return [
+                { id: 'problem', label: '문제', icon: '📋' },
+                { id: 'think', label: '생각해볼것', icon: '💡' },
+                { id: 'code', label: '코드', icon: '💻' }
+            ];
+        }
+        return (currentTopic && currentTopic.tabs) || [
+            { id: 'concept', label: '개념 설명', icon: '📖' },
+            { id: 'visualize', label: '시각화', icon: '🎮' },
+            { id: 'problem', label: '문제풀이', icon: '✏️' }
+        ];
+    }
+
     function renderTabs() {
         tabNav.innerHTML = '';
 
-        // 랜딩 페이지에서는 탭 숨김
-        if (currentTab === 'landing') return;
+        // 랜딩 페이지에서는 탭바 없음
+        if (currentTab === 'landing') { tabBarElement = null; return; }
 
-        let tabs;
+        const tabs = getTabsData();
+        const activeIdx = tabs.findIndex(t => t.id === currentTab);
 
-        if (currentProblemId && currentTopic) {
-            if (currentTopic.getProblemTabs) {
-                tabs = currentTopic.getProblemTabs(currentProblemId);
-            } else {
-                tabs = [
-                    { id: 'problem', label: '문제' },
-                    { id: 'think', label: '생각해볼것' },
-                    { id: 'code', label: '코드' }
-                ];
-            }
-        } else {
-            tabs = (currentTopic && currentTopic.tabs) || [
-                { id: 'concept', label: '개념 설명' },
-                { id: 'visualize', label: '시각화' },
-                { id: 'problem', label: '문제풀이' }
-            ];
-        }
+        // 프로그레스 바
+        const bar = document.createElement('div');
+        bar.className = 'tab-bar-main';
 
-        tabs.forEach(tab => {
+        const progress = document.createElement('div');
+        progress.className = 'tab-progress';
+        const pct = tabs.length > 1 ? (activeIdx / (tabs.length - 1)) * 100 : 0;
+        progress.innerHTML = '<div class="tab-progress-fill" style="width:' + pct + '%"></div>';
+        bar.appendChild(progress);
+
+        // 탭 버튼 행
+        const navRow = document.createElement('div');
+        navRow.className = 'tab-nav-main';
+
+        tabs.forEach((tab, i) => {
+            const isActive = tab.id === currentTab;
+            const isPast = i < activeIdx;
+
             const btn = document.createElement('button');
-            btn.className = 'tab-btn' + (tab.id === currentTab ? ' active' : '');
-            btn.textContent = tab.label;
+            btn.className = 'tab-btn-main' + (isActive ? ' active' : '') + (isPast ? ' completed' : '');
+
+            const num = i + 1;
+            const icon = tab.icon || '';
+            btn.innerHTML =
+                '<span class="tab-num">' + (isPast ? '✓' : num) + '</span>' +
+                '<span class="tab-icon">' + icon + '</span>' +
+                '<span class="tab-label">' + tab.label + '</span>';
+
             btn.addEventListener('click', () => {
                 currentTab = tab.id;
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                renderTabs();
                 renderContent();
             });
-            tabNav.appendChild(btn);
+            navRow.appendChild(btn);
+
+            // 화살표 (마지막 탭 제외)
+            if (i < tabs.length - 1) {
+                const arrow = document.createElement('span');
+                arrow.className = 'tab-arrow';
+                arrow.textContent = '→';
+                navRow.appendChild(arrow);
+            }
         });
+
+        bar.appendChild(navRow);
+        tabBarElement = bar;
     }
 
     // ===== 콘텐츠 렌더링 =====
@@ -306,6 +343,12 @@
         if (!currentTopic) return;
 
         content.innerHTML = '';
+
+        // 메인 탭바 삽입 (랜딩이 아닐 때)
+        if (tabBarElement) {
+            content.appendChild(tabBarElement);
+        }
+
         const section = document.createElement('div');
         section.className = 'tab-content active';
 
@@ -627,9 +670,9 @@
         prob.hints.forEach((hint, i) => {
             const card = document.createElement('div');
             const locked = i > 0;
-            card.style.cssText = 'background:var(--bg2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.8rem;border:1px solid var(--border);';
+            card.style.cssText = 'background:var(--bg2);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.2rem;border:1px solid var(--border);';
             card.innerHTML = `
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
                     <span style="width:24px;height:24px;border-radius:50%;background:${locked ? 'var(--bg3)' : 'var(--accent)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">${i + 1}</span>
                     <span style="font-weight:600;flex:1;">${hint.title}</span>
                     <span class="hint-toggle" style="cursor:pointer;">▶</span>
