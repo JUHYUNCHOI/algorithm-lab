@@ -1979,7 +1979,7 @@ button.problem-card:hover {
 .hint-steps {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.8rem;
 }
 
 .hint-steps-guide {
@@ -2014,7 +2014,7 @@ button.problem-card:hover {
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    padding: 1rem 1.4rem;
+    padding: 1.2rem 1.6rem;
     cursor: pointer;
     transition: background 0.2s;
     user-select: none;
@@ -2069,7 +2069,7 @@ button.problem-card:hover {
 
 .hint-step-body {
     display: none;
-    padding: 0 1.2rem 1rem 3.2rem;
+    padding: 0.4rem 1.6rem 1.4rem 3.4rem;
     color: var(--text2);
     font-size: 0.9rem;
     line-height: 1.7;
