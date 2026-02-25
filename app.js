@@ -675,7 +675,7 @@
         el.appendChild(guide);
 
         const wrap = document.createElement('div');
-        wrap.className = 'hints-steps';
+        wrap.className = 'hint-steps';
         prob.hints.forEach((hint, i) => {
             const card = document.createElement('div');
             const locked = i > 0;
@@ -684,7 +684,7 @@
                 <div class="hint-step-header">
                     <span class="hint-step-num">${i + 1}</span>
                     <span class="hint-step-title">${hint.title}</span>
-                    <span class="hint-step-toggle">열기</span>
+                    <span class="hint-step-toggle">▾</span>
                 </div>
                 <div class="hint-step-body">${hint.content}</div>
             `;
@@ -696,7 +696,7 @@
                 }
                 card.classList.toggle('opened');
                 card.querySelector('.hint-step-toggle').textContent =
-                    card.classList.contains('opened') ? '닫기' : '열기';
+                    card.classList.contains('opened') ? '▴' : '▾';
 
                 // 다음 스텝 잠금 해제
                 if (card.classList.contains('opened') && i + 1 < prob.hints.length) {

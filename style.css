@@ -2050,21 +2050,17 @@ button.problem-card:hover {
 }
 
 .hint-step-toggle {
-    font-size: 0.75rem;
-    color: var(--accent);
-    background: rgba(124, 106, 239, 0.1);
-    padding: 4px 10px;
-    border-radius: 6px;
+    font-size: 1.1rem;
+    color: var(--text2);
     transition: all 0.2s;
-    font-weight: 600;
 }
 
 .hint-step-header:hover .hint-step-toggle {
-    background: rgba(124, 106, 239, 0.2);
+    color: var(--accent);
 }
 
 .hint-step.opened .hint-step-toggle {
-    transform: rotate(180deg);
+    color: var(--accent);
 }
 
 .hint-step-body {

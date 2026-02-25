@@ -198,7 +198,7 @@ const stringTopic = {
         contentEl.appendChild(guide);
 
         const hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hints-steps';
+        hintsDiv.className = 'hint-steps';
         const openedState = {};
 
         prob.hints.forEach((hint, idx) => {
@@ -208,16 +208,16 @@ const stringTopic = {
                 <div class="hint-step-header">
                     <span class="hint-step-num">${idx + 1}</span>
                     <span class="hint-step-title">${hint.title}</span>
-                    <span class="hint-step-toggle">열기</span>
+                    <span class="hint-step-toggle">▾</span>
                 </div>
-                <div class="hint-step-content">${hint.content}</div>
+                <div class="hint-step-body">${hint.content}</div>
             `;
 
             step.querySelector('.hint-step-header').addEventListener('click', () => {
                 if (step.classList.contains('locked')) return;
-                step.classList.toggle('open');
+                step.classList.toggle('opened');
                 step.querySelector('.hint-step-toggle').textContent =
-                    step.classList.contains('open') ? '닫기' : '열기';
+                    step.classList.contains('opened') ? '▴' : '▾';
 
                 if (!openedState[idx]) {
                     openedState[idx] = true;
