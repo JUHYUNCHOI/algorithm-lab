@@ -84,13 +84,13 @@ body {
 }
 
 .sidebar-category {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--text3);
-    padding: 1rem 0.8rem 0.4rem;
-    margin-top: 0.2rem;
+    padding: 1.2rem 0.8rem 0.35rem;
+    margin-top: 0.3rem;
 }
 
 .sidebar-category:first-child {
@@ -105,8 +105,9 @@ body {
     padding: 0.7rem 1rem;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text2);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
     transition: all 0.2s;
     border: none;
     background: none;
@@ -167,6 +168,8 @@ body {
     background: var(--bg3);
     color: var(--text);
     font-weight: 600;
+    border-bottom-left-radius: 2px;
+    margin-bottom: 0;
 }
 
 .sidebar-sub-list {
@@ -180,16 +183,24 @@ body {
 .sidebar-sub-list.expanded {
     max-height: 1200px;
     opacity: 1;
+    margin-left: 1.1rem;
+    margin-top: 2px;
+    margin-bottom: 0.4rem;
+    padding: 0.3rem 0;
+    border-left: 2px solid var(--accent);
+    border-radius: 0 0 0 2px;
+    background: rgba(108, 92, 231, 0.04);
 }
 
 .sidebar-sub-item {
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    padding: 0.4rem 0.7rem 0.4rem 2.2rem;
-    border-radius: 8px;
+    padding: 0.35rem 0.7rem 0.35rem 1rem;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
+    font-weight: 400;
     color: var(--text2);
     transition: all 0.15s;
     border: none;
@@ -206,9 +217,11 @@ body {
 }
 
 .sidebar-sub-item.active {
-    background: rgba(108, 92, 231, 0.12);
+    background: rgba(108, 92, 231, 0.1);
     color: var(--accent);
     font-weight: 600;
+    border-left: 2px solid var(--accent);
+    padding-left: calc(1rem - 2px);
 }
 
 .sub-item-dot {
@@ -527,11 +540,18 @@ body {
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--accent);
-    padding: 0.6rem 0.7rem 0.2rem 2.2rem;
-    opacity: 0.7;
+    padding: 0.7rem 0.7rem 0.25rem 1rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.15rem;
+    opacity: 1;
     pointer-events: none;
+    border-bottom: 1px solid rgba(108, 92, 231, 0.12);
+}
+
+.sidebar-stage-divider:first-child {
+    margin-top: 0.15rem;
 }
 
 .sidebar-seq-num {
