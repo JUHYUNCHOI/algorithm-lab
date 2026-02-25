@@ -1,6 +1,87 @@
 // =========================================================
 // 문자열 조작 (String Manipulation) 토픽 모듈
 // =========================================================
+
+// ===== 다중 풀이 접근법 렌더링 (공유 함수) =====
+window.renderSolutionsCodeTab = function(el, prob) {
+    const wrapper = document.createElement('div');
+    const tabBar = document.createElement('div');
+    tabBar.className = 'approach-tabs';
+
+    prob.solutions.forEach((sol, i) => {
+        const tab = document.createElement('button');
+        tab.className = 'approach-tab' + (i === 0 ? ' active' : '');
+        tab.dataset.index = i;
+        tab.innerHTML =
+            '<span class="approach-num">' + (i + 1) + '</span>' +
+            '<span>' + sol.approach + '</span>' +
+            '<span class="approach-complexity">' + sol.timeComplexity + '</span>';
+        tab.addEventListener('click', () => showApproach(i));
+        tabBar.appendChild(tab);
+    });
+    wrapper.appendChild(tabBar);
+
+    const panel = document.createElement('div');
+    panel.className = 'approach-panel';
+    wrapper.appendChild(panel);
+
+    function showApproach(idx) {
+        const sol = prob.solutions[idx];
+        tabBar.querySelectorAll('.approach-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === idx);
+        });
+        panel.innerHTML = '';
+
+        // 설명
+        if (sol.description) {
+            const desc = document.createElement('div');
+            desc.className = 'approach-desc';
+            desc.textContent = sol.description;
+            panel.appendChild(desc);
+        }
+
+        // 복잡도 뱃지
+        const meta = document.createElement('div');
+        meta.className = 'approach-meta';
+        meta.innerHTML =
+            '<span class="approach-meta-badge time">⏱ ' + sol.timeComplexity + '</span>' +
+            '<span class="approach-meta-badge space">💾 ' + sol.spaceComplexity + '</span>';
+        panel.appendChild(meta);
+
+        // 언어 셀렉터 + 코드
+        const langs = Object.keys(sol.templates);
+        const langNames = { python: 'Python', cpp: 'C++', java: 'Java' };
+        const isLC = prob.link && prob.link.includes('leetcode');
+
+        const controls = document.createElement('div');
+        controls.style.cssText = 'display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;';
+        controls.innerHTML =
+            '<select class="lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--bg2);color:var(--text);font-family:inherit;">' +
+            langs.map(l => '<option value="' + l + '">' + (langNames[l] || l) + '</option>').join('') +
+            '</select>';
+        panel.appendChild(controls);
+
+        const codeBlock = document.createElement('div');
+        codeBlock.className = 'code-block';
+        codeBlock.innerHTML = '<pre><code></code></pre>';
+        panel.appendChild(codeBlock);
+
+        const codeEl = codeBlock.querySelector('code');
+        const select = controls.querySelector('.lang-select');
+
+        function showCode(lang) {
+            codeEl.textContent = sol.templates[lang] || '// 이 언어의 풀이가 없습니다.';
+            codeEl.className = 'language-' + (lang === 'cpp' ? 'cpp' : lang);
+            if (window.hljs) hljs.highlightElement(codeEl);
+        }
+        select.addEventListener('change', () => showCode(select.value));
+        showCode(langs[0]);
+    }
+
+    showApproach(0);
+    el.appendChild(wrapper);
+};
+
 const stringTopic = {
     id: 'string',
     title: '문자열 조작',
@@ -235,6 +316,10 @@ const stringTopic = {
 
     // ===== 문제 서브탭: 코드 =====
     _renderCodeTab(contentEl, prob) {
+        if (prob.solutions && prob.solutions.length > 0) {
+            window.renderSolutionsCodeTab(contentEl, prob);
+            return;
+        }
         const isLC = prob.link.includes('leetcode');
         const wrapper = document.createElement('div');
 
@@ -972,7 +1057,96 @@ public class Main {
         System.out.println(dup > 1 ? "?" : (char)('A' + idx));
     }
 }`
-            }
+            },
+            solutions: [
+                {
+                    approach: '배열 카운팅',
+                    description: '크기 26 배열로 각 알파벳 빈도를 세고, 최댓값을 가진 문자를 찾는다',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `word = input().upper()
+cnt = [0] * 26
+for c in word:
+    cnt[ord(c) - ord('A')] += 1
+
+mx = max(cnt)
+if cnt.count(mx) > 1:
+    print('?')
+else:
+    print(chr(cnt.index(mx) + ord('A')))`,
+                        cpp: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int cnt[26] = {};
+    for (char c : s) cnt[toupper(c) - 'A']++;
+
+    int mx = 0, idx = 0, dup = 0;
+    for (int i = 0; i < 26; i++) {
+        if (cnt[i] > mx) { mx = cnt[i]; idx = i; dup = 1; }
+        else if (cnt[i] == mx && mx > 0) dup++;
+    }
+    cout << (dup > 1 ? "?" : string(1, 'A' + idx)) << endl;
+}`,
+                        java: `import java.util.*;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String word = br.readLine().toUpperCase();
+        int[] cnt = new int[26];
+        for (char c : word.toCharArray()) cnt[c - 'A']++;
+
+        int mx = 0, idx = 0, dup = 0;
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] > mx) { mx = cnt[i]; idx = i; dup = 1; }
+            else if (cnt[i] == mx && mx > 0) dup++;
+        }
+        System.out.println(dup > 1 ? "?" : (char)('A' + idx));
+    }
+}`
+                    }
+                },
+                {
+                    approach: '딕셔너리',
+                    description: '딕셔너리(해시맵)로 문자별 빈도를 세고, 최댓값을 찾는다',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `word = input().upper()
+freq = {}
+for c in word:
+    freq[c] = freq.get(c, 0) + 1
+
+mx = max(freq.values())
+candidates = [k for k, v in freq.items() if v == mx]
+print('?' if len(candidates) > 1 else candidates[0])`
+                    }
+                },
+                {
+                    approach: 'collections.Counter',
+                    description: 'Counter의 most_common()으로 가장 빈도 높은 문자를 바로 구한다',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `from collections import Counter
+
+word = input().upper()
+counter = Counter(word)
+top = counter.most_common()
+
+if len(top) > 1 and top[0][1] == top[1][1]:
+    print('?')
+else:
+    print(top[0][0])`
+                    }
+                }
+            ]
         },
         {
             id: 'lc-125',
@@ -1056,7 +1230,109 @@ public:
         return true;
     }
 }`
+            },
+            solutions: [
+                {
+                    approach: '정제 + 뒤집기',
+                    description: '영숫자만 남기고 소문자로 변환 후, 뒤집은 문자열과 비교한다',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(n)',
+                    templates: {
+                        python: `class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        cleaned = ''
+        for c in s:
+            if c.isalnum():
+                cleaned += c.lower()
+        return cleaned == cleaned[::-1]`,
+                        cpp: `class Solution {
+public:
+    bool isPalindrome(string s) {
+        string cleaned;
+        for (char c : s) {
+            if (isalnum(c)) cleaned += tolower(c);
+        }
+        string rev = cleaned;
+        reverse(rev.begin(), rev.end());
+        return cleaned == rev;
+    }
+};`,
+                        java: `class Solution {
+    public boolean isPalindrome(String s) {
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (Character.isLetterOrDigit(c)) {
+                sb.append(Character.toLowerCase(c));
             }
+        }
+        String cleaned = sb.toString();
+        return cleaned.equals(sb.reverse().toString());
+    }
+}`
+                    }
+                },
+                {
+                    approach: '투 포인터',
+                    description: '양쪽 끝에서 좁혀가며 비교 — 추가 문자열 생성 없이 O(1) 공간',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        left, right = 0, len(s) - 1
+        while left < right:
+            while left < right and not s[left].isalnum():
+                left += 1
+            while left < right and not s[right].isalnum():
+                right -= 1
+            if s[left].lower() != s[right].lower():
+                return False
+            left += 1
+            right -= 1
+        return True`,
+                        cpp: `class Solution {
+public:
+    bool isPalindrome(string s) {
+        int l = 0, r = s.size() - 1;
+        while (l < r) {
+            while (l < r && !isalnum(s[l])) l++;
+            while (l < r && !isalnum(s[r])) r--;
+            if (tolower(s[l]) != tolower(s[r])) return false;
+            l++; r--;
+        }
+        return true;
+    }
+};`,
+                        java: `class Solution {
+    public boolean isPalindrome(String s) {
+        int l = 0, r = s.length() - 1;
+        while (l < r) {
+            while (l < r && !Character.isLetterOrDigit(s.charAt(l))) l++;
+            while (l < r && !Character.isLetterOrDigit(s.charAt(r))) r--;
+            if (Character.toLowerCase(s.charAt(l)) !=
+                Character.toLowerCase(s.charAt(r))) return false;
+            l++; r--;
+        }
+        return true;
+    }
+}`
+                    }
+                },
+                {
+                    approach: '정규식 + 슬라이싱',
+                    description: 're.sub()으로 한 줄 정제 후 슬라이싱 비교 — 가장 Pythonic한 풀이',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(n)',
+                    templates: {
+                        python: `import re
+
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        s = re.sub(r'[^a-zA-Z0-9]', '', s).lower()
+        return s == s[::-1]`
+                    }
+                }
+            ]
         },
         {
             id: 'lc-49',
@@ -1139,7 +1415,100 @@ public:
         return new ArrayList<>(map.values());
     }
 }`
-            }
+            },
+            solutions: [
+                {
+                    approach: '정렬 키',
+                    description: '각 단어를 정렬한 결과를 키로 사용하여 같은 애너그램끼리 그룹화',
+                    timeComplexity: 'O(NK log K)',
+                    spaceComplexity: 'O(NK)',
+                    templates: {
+                        python: `class Solution:
+    def groupAnagrams(self, strs):
+        groups = {}
+        for s in strs:
+            key = ''.join(sorted(s))
+            if key not in groups:
+                groups[key] = []
+            groups[key].append(s)
+        return list(groups.values())`,
+                        cpp: `class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> mp;
+        for (auto& s : strs) {
+            string key = s;
+            sort(key.begin(), key.end());
+            mp[key].push_back(s);
+        }
+        vector<vector<string>> res;
+        for (auto& [k, v] : mp) res.push_back(v);
+        return res;
+    }
+};`,
+                        java: `class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            char[] arr = s.toCharArray();
+            Arrays.sort(arr);
+            String key = new String(arr);
+            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+}`
+                    }
+                },
+                {
+                    approach: '빈도수 튜플 키',
+                    description: '각 문자의 출현 횟수를 튜플로 만들어 키로 사용 — 정렬 없이 O(NK)',
+                    timeComplexity: 'O(NK)',
+                    spaceComplexity: 'O(NK)',
+                    templates: {
+                        python: `from collections import defaultdict
+
+class Solution:
+    def groupAnagrams(self, strs):
+        groups = defaultdict(list)
+        for s in strs:
+            count = [0] * 26
+            for c in s:
+                count[ord(c) - ord('a')] += 1
+            groups[tuple(count)].append(s)
+        return list(groups.values())`,
+                        cpp: `class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> mp;
+        for (auto& s : strs) {
+            int cnt[26] = {};
+            for (char c : s) cnt[c - 'a']++;
+            string key;
+            for (int i = 0; i < 26; i++)
+                key += to_string(cnt[i]) + '#';
+            mp[key].push_back(s);
+        }
+        vector<vector<string>> res;
+        for (auto& [k, v] : mp) res.push_back(v);
+        return res;
+    }
+};`,
+                        java: `class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            int[] cnt = new int[26];
+            for (char c : s.toCharArray()) cnt[c - 'a']++;
+            String key = Arrays.toString(cnt);
+            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+}`
+                    }
+                }
+            ]
         },
         {
             id: 'boj-1213',
@@ -1246,7 +1615,107 @@ public class Main {
         System.out.println(half.toString() + mid + half.reverse().toString());
     }
 }`
-            }
+            },
+            solutions: [
+                {
+                    approach: '배열 카운팅',
+                    description: '크기 26 배열로 빈도를 세고, 홀수 개인 문자가 2개 이상이면 불가능',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(n)',
+                    templates: {
+                        python: `import sys
+input = sys.stdin.readline
+
+name = input().strip()
+cnt = [0] * 26
+for c in name:
+    cnt[ord(c) - ord('A')] += 1
+
+odd_count = sum(1 for x in cnt if x % 2 != 0)
+if odd_count > 1:
+    print("I'm Sorry Hansoo")
+else:
+    half = ''
+    mid = ''
+    for i in range(26):
+        if cnt[i] % 2 == 1:
+            mid = chr(i + ord('A'))
+        half += chr(i + ord('A')) * (cnt[i] // 2)
+    print(half + mid + half[::-1])`,
+                        cpp: `#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int cnt[26] = {};
+    for (char c : s) cnt[c - 'A']++;
+
+    int odd = 0;
+    for (int i = 0; i < 26; i++) if (cnt[i] % 2) odd++;
+    if (odd > 1) { cout << "I'm Sorry Hansoo" << endl; return 0; }
+
+    string half = "", mid = "";
+    for (int i = 0; i < 26; i++) {
+        if (cnt[i] % 2) mid = string(1, 'A' + i);
+        half += string(cnt[i] / 2, 'A' + i);
+    }
+    string rev = half;
+    reverse(rev.begin(), rev.end());
+    cout << half + mid + rev << endl;
+}`,
+                        java: `import java.util.*;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String name = br.readLine().trim();
+        int[] cnt = new int[26];
+        for (char c : name.toCharArray()) cnt[c - 'A']++;
+
+        int odd = 0;
+        for (int c : cnt) if (c % 2 != 0) odd++;
+        if (odd > 1) { System.out.println("I'm Sorry Hansoo"); return; }
+
+        StringBuilder half = new StringBuilder();
+        String mid = "";
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] % 2 == 1) mid = String.valueOf((char)('A' + i));
+            for (int j = 0; j < cnt[i] / 2; j++) half.append((char)('A' + i));
+        }
+        System.out.println(half.toString() + mid + half.reverse().toString());
+    }
+}`
+                    }
+                },
+                {
+                    approach: 'Counter 활용',
+                    description: 'collections.Counter로 빈도를 세고 Pythonic하게 팰린드롬 구성',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(n)',
+                    templates: {
+                        python: `from collections import Counter
+
+name = input().strip()
+counter = Counter(name)
+
+odd_chars = [c for c, v in counter.items() if v % 2 != 0]
+if len(odd_chars) > 1:
+    print("I'm Sorry Hansoo")
+else:
+    half = ''
+    mid = ''
+    for c in sorted(counter):
+        if counter[c] % 2 == 1:
+            mid = c
+        half += c * (counter[c] // 2)
+    print(half + mid + half[::-1])`
+                    }
+                }
+            ]
         }
     ]
 };

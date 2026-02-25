@@ -710,6 +710,10 @@
     }
 
     function renderGenericCodeTab(el, prob) {
+        if (prob.solutions && prob.solutions.length > 0 && window.renderSolutionsCodeTab) {
+            window.renderSolutionsCodeTab(el, prob);
+            return;
+        }
         if (!prob.templates) {
             el.innerHTML = '<p style="color:var(--text2);">코드 템플릿이 준비되지 않았습니다.</p>';
             return;

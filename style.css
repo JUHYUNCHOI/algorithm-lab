@@ -4986,3 +4986,134 @@ button.problem-card:hover {
         padding: 0.8rem;
     }
 }
+
+/* ===== Approach Tabs (다중 풀이 접근법) ===== */
+.approach-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid var(--bg3);
+    overflow-x: auto;
+}
+
+.approach-tab {
+    padding: 8px 16px 10px;
+    border: none;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.85rem;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-weight: 500;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.approach-tab:hover {
+    color: var(--text);
+    background: var(--bg);
+}
+
+.approach-tab.active {
+    color: var(--accent);
+    font-weight: 700;
+    border-bottom-color: var(--accent);
+    background: rgba(108, 92, 231, 0.05);
+}
+
+.approach-tab .approach-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg3);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.approach-tab.active .approach-num {
+    background: var(--accent);
+    color: #fff;
+}
+
+.approach-tab .approach-complexity {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+.approach-tab.active .approach-complexity {
+    background: rgba(108, 92, 231, 0.12);
+    color: var(--accent);
+}
+
+.approach-panel {
+    animation: fadeIn 0.25s ease;
+}
+
+.approach-desc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.5;
+}
+
+.approach-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.approach-meta-badge {
+    font-size: 0.78rem;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+.approach-meta-badge.time {
+    background: rgba(0, 184, 148, 0.1);
+    color: var(--green);
+}
+
+.approach-meta-badge.space {
+    background: rgba(9, 132, 227, 0.1);
+    color: #3867d6;
+}
+
+@media (max-width: 768px) {
+    .approach-tab {
+        padding: 6px 12px 8px;
+        font-size: 0.8rem;
+        gap: 6px;
+    }
+    .approach-tab .approach-complexity {
+        display: none;
+    }
+    .approach-desc {
+        font-size: 0.82rem;
+        padding: 8px 12px;
+    }
+}
