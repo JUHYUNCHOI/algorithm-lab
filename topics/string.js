@@ -177,10 +177,12 @@ const stringTopic = {
     _renderProblemTab(contentEl, prob) {
         const isLC = prob.link.includes('leetcode');
         contentEl.innerHTML = `
-            <a href="${prob.link}" target="_blank" class="btn btn-primary" style="margin-bottom:12px;display:inline-block;font-size:0.88rem;">
-                ${isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}
-            </a>
             ${prob.descriptionHTML}
+            <div style="text-align:right;margin-top:1.2rem;">
+                <a href="${prob.link}" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">
+                    ${isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}
+                </a>
+            </div>
         `;
         contentEl.querySelectorAll('pre code').forEach(codeEl => {
             if (window.hljs) hljs.highlightElement(codeEl);
@@ -189,6 +191,12 @@ const stringTopic = {
 
     // ===== 문제 서브탭: 생각해볼것 =====
     _renderThinkTab(contentEl, prob) {
+        // 안내 텍스트
+        const guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
+        contentEl.appendChild(guide);
+
         const hintsDiv = document.createElement('div');
         hintsDiv.className = 'hints-steps';
         const openedState = {};
@@ -200,7 +208,7 @@ const stringTopic = {
                 <div class="hint-step-header">
                     <span class="hint-step-num">${idx + 1}</span>
                     <span class="hint-step-title">${hint.title}</span>
-                    <span class="hint-step-toggle">▶</span>
+                    <span class="hint-step-toggle">열기</span>
                 </div>
                 <div class="hint-step-content">${hint.content}</div>
             `;
@@ -209,7 +217,7 @@ const stringTopic = {
                 if (step.classList.contains('locked')) return;
                 step.classList.toggle('open');
                 step.querySelector('.hint-step-toggle').textContent =
-                    step.classList.contains('open') ? '▼' : '▶';
+                    step.classList.contains('open') ? '닫기' : '열기';
 
                 if (!openedState[idx]) {
                     openedState[idx] = true;

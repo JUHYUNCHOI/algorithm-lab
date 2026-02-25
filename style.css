@@ -660,23 +660,26 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    gap: 0.3rem;
+    flex-wrap: nowrap;
 }
 
 .tab-btn-main {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 4px;
-    padding: 0.7rem 1.1rem;
-    border-radius: 12px;
+    gap: 6px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
     border: 2px solid var(--bg3);
     background: var(--bg);
     cursor: pointer;
     transition: all 0.25s ease;
     font-family: inherit;
-    min-width: 88px;
+    white-space: nowrap;
+    flex: 1;
+    justify-content: center;
+    max-width: 160px;
 }
 
 .tab-btn-main:hover {
@@ -699,35 +702,17 @@ header {
 }
 
 .tab-btn-main .tab-num {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--bg3);
-    color: var(--text2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-}
-
-.tab-btn-main.active .tab-num {
-    background: rgba(255, 255, 255, 0.3);
-    color: #fff;
-}
-
-.tab-btn-main.completed .tab-num {
-    background: var(--green);
-    color: #fff;
+    display: none;
 }
 
 .tab-btn-main .tab-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .tab-btn-main .tab-label {
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text2);
     white-space: nowrap;
@@ -751,51 +736,35 @@ header {
 /* Tab bar responsive */
 @media (max-width: 768px) {
     .tab-bar-main {
-        padding: 0.8rem 1rem 0.7rem;
+        padding: 0.7rem 0.8rem 0.6rem;
         margin-bottom: 1rem;
     }
 
     .tab-btn-main {
-        min-width: 70px;
-        padding: 0.5rem 0.7rem;
-    }
-
-    .tab-btn-main .tab-icon {
-        font-size: 1rem;
+        padding: 0.45rem 0.6rem;
+        gap: 4px;
     }
 
     .tab-btn-main .tab-label {
-        font-size: 0.72rem;
+        font-size: 0.75rem;
     }
 
     .tab-arrow {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 }
 
 @media (max-width: 480px) {
-    .tab-nav-main {
-        gap: 0.3rem;
-    }
-
-    .tab-btn-main {
-        min-width: 58px;
-        padding: 0.4rem 0.5rem;
-    }
-
-    .tab-btn-main .tab-num {
-        width: 22px;
-        height: 22px;
-        font-size: 0.65rem;
-    }
-
     .tab-btn-main .tab-icon {
         font-size: 0.9rem;
     }
 
+    .tab-btn-main .tab-label {
+        font-size: 0.7rem;
+    }
+
     .tab-arrow {
-        font-size: 0.8rem;
-        margin: 0;
+        display: none;
     }
 }
 
@@ -2010,7 +1979,22 @@ button.problem-card:hover {
 .hint-steps {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1.2rem;
+}
+
+.hint-steps-guide {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+.hint-steps-guide::before {
+    content: '👆';
+    font-size: 1rem;
 }
 
 .hint-step {
@@ -2066,9 +2050,17 @@ button.problem-card:hover {
 }
 
 .hint-step-toggle {
-    font-size: 0.8rem;
-    color: var(--text2);
-    transition: transform 0.2s;
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: rgba(124, 106, 239, 0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.hint-step-header:hover .hint-step-toggle {
+    background: rgba(124, 106, 239, 0.2);
 }
 
 .hint-step.opened .hint-step-toggle {

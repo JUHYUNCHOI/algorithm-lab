@@ -651,10 +651,12 @@
     function renderGenericProblemTab(el, prob) {
         const isLC = prob.link && prob.link.includes('leetcode');
         el.innerHTML = `
-            <a href="${prob.link}" target="_blank" class="btn btn-primary" style="margin-bottom:12px;display:inline-block;font-size:0.88rem;">
-                ${isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}
-            </a>
             ${prob.descriptionHTML || '<p>문제 설명이 없습니다.</p>'}
+            <div style="text-align:right;margin-top:1.2rem;">
+                <a href="${prob.link}" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">
+                    ${isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}
+                </a>
+            </div>
         `;
         el.querySelectorAll('pre code').forEach(codeEl => {
             if (window.hljs) hljs.highlightElement(codeEl);
@@ -666,40 +668,44 @@
             el.innerHTML = '<p style="color:var(--text2);">힌트가 준비되지 않았습니다.</p>';
             return;
         }
+        // 안내 텍스트
+        const guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
+        el.appendChild(guide);
+
         const wrap = document.createElement('div');
+        wrap.className = 'hints-steps';
         prob.hints.forEach((hint, i) => {
             const card = document.createElement('div');
             const locked = i > 0;
-            card.style.cssText = 'background:var(--bg2);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.2rem;border:1px solid var(--border);';
+            card.className = 'hint-step' + (locked ? ' locked' : '');
             card.innerHTML = `
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
-                    <span style="width:24px;height:24px;border-radius:50%;background:${locked ? 'var(--bg3)' : 'var(--accent)'};color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">${i + 1}</span>
-                    <span style="font-weight:600;flex:1;">${hint.title}</span>
-                    <span class="hint-toggle" style="cursor:pointer;">▶</span>
-                    ${locked ? '<span style="font-size:0.8rem;">🔒</span>' : ''}
+                <div class="hint-step-header">
+                    <span class="hint-step-num">${i + 1}</span>
+                    <span class="hint-step-title">${hint.title}</span>
+                    <span class="hint-step-toggle">열기</span>
                 </div>
-                <div class="hint-body" style="display:none;">${hint.content}</div>
+                <div class="hint-step-body">${hint.content}</div>
             `;
-            const toggle = card.querySelector('.hint-toggle');
-            const body = card.querySelector('.hint-body');
-            const lockIcon = card.querySelector('span:last-child');
-            if (locked) card.style.opacity = '0.6';
-            toggle.addEventListener('click', () => {
-                if (locked && card.style.opacity === '0.6') {
-                    const prevBody = wrap.children[i - 1] && wrap.children[i - 1].querySelector('.hint-body');
-                    if (!prevBody || prevBody.style.display === 'none') return;
-                    card.style.opacity = '1';
-                    if (lockIcon && lockIcon.textContent === '🔒') lockIcon.textContent = '🔓';
+            card.querySelector('.hint-step-header').addEventListener('click', () => {
+                if (card.classList.contains('locked')) {
+                    const prev = wrap.children[i - 1];
+                    if (!prev || !prev.classList.contains('opened')) return;
+                    card.classList.remove('locked');
                 }
-                const isOpen = body.style.display !== 'none';
-                body.style.display = isOpen ? 'none' : 'block';
-                toggle.textContent = isOpen ? '▶' : '▼';
+                card.classList.toggle('opened');
+                card.querySelector('.hint-step-toggle').textContent =
+                    card.classList.contains('opened') ? '닫기' : '열기';
+
+                // 다음 스텝 잠금 해제
+                if (card.classList.contains('opened') && i + 1 < prob.hints.length) {
+                    const next = wrap.children[i + 1];
+                    if (next) next.classList.remove('locked');
+                }
             });
             wrap.appendChild(card);
         });
-        const firstBody = wrap.querySelector('.hint-body');
-        const firstToggle = wrap.querySelector('.hint-toggle');
-        if (firstBody) { firstBody.style.display = 'block'; firstToggle.textContent = '▼'; }
         el.appendChild(wrap);
     }
 
