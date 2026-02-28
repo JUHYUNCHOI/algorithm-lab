@@ -338,6 +338,13 @@
         tabBarElement = bar;
     }
 
+    // ===== 탭 전환 유틸 (외부에서 호출 가능) =====
+    window._switchToTab = function(tabId) {
+        currentTab = tabId;
+        renderTabs();
+        renderContent();
+    };
+
     // ===== 콘텐츠 렌더링 =====
     function renderContent() {
         if (!currentTopic) return;
@@ -626,6 +633,42 @@
         }
     }
 
+    // ===== Flow Bridge 헬퍼 =====
+    function getFlowTexts(tabs) {
+        var texts = {};
+        tabs.forEach(function(tab, i) {
+            var next = tabs[i + 1] || null;
+            switch (tab.id) {
+                case 'problem':
+                    texts[tab.id] = { intro: '먼저 문제를 읽고 입출력 형식을 파악해보세요.', icon: '📋', nextLabel: next ? '문제를 이해했다면 → ' + next.label : null, nextTab: next ? next.id : null }; break;
+                case 'think':
+                    texts[tab.id] = { intro: '바로 코드를 짜지 말고, 단계별 힌트를 열어보며 풀이 전략을 세워보세요.', icon: '💡', nextLabel: next ? '힌트를 모두 확인했다면 → ' + next.label : null, nextTab: next ? next.id : null }; break;
+                case 'sim':
+                    texts[tab.id] = { intro: null, icon: '🎮', nextLabel: next ? '동작 원리를 파악했다면 → ' + next.label : null, nextTab: next ? next.id : null }; break;
+                case 'code':
+                    texts[tab.id] = { intro: '이제 앞에서 정리한 풀이를 코드로 옮겨봅시다!', icon: '💻', nextLabel: null, nextTab: null }; break;
+            }
+        });
+        return texts;
+    }
+
+    function renderFlowIntro(container, text, icon) {
+        if (!text) return;
+        var div = document.createElement('div');
+        div.className = 'flow-intro';
+        div.innerHTML = '<span class="flow-intro-icon">' + (icon || '💬') + '</span><span>' + text + '</span>';
+        container.appendChild(div);
+    }
+
+    function renderFlowNext(container, label, tabId) {
+        if (!label || !tabId) return;
+        var div = document.createElement('div');
+        div.className = 'flow-next';
+        div.innerHTML = '<button class="flow-next-btn">' + label + ' →</button>';
+        div.querySelector('button').addEventListener('click', function() { window._switchToTab(tabId); });
+        container.appendChild(div);
+    }
+
     // ===== 제네릭 문제 콘텐츠 렌더링 =====
     function renderGenericProblemContent(container, topic, problemId, tabId) {
         const prob = topic.problems.find(p => p.id === problemId);
@@ -639,6 +682,15 @@
         header.innerHTML = `<span class="problem-diff ${prob.difficulty}">${diffMap[prob.difficulty] || prob.difficulty}</span>`;
         container.appendChild(header);
 
+        // Flow Intro (container에 직접 추가 — 탭 렌더러의 innerHTML 덮어쓰기 방지)
+        const tabs = getTabsData();
+        const flowTexts = getFlowTexts(tabs);
+        const ft = flowTexts[tabId];
+        if (ft) {
+            const introText = (tabId === 'sim' && prob.simIntro) ? prob.simIntro : (ft.intro || null);
+            renderFlowIntro(container, introText, ft.icon);
+        }
+
         const contentDiv = document.createElement('div');
         switch (tabId) {
             case 'problem': renderGenericProblemTab(contentDiv, prob); break;
@@ -646,6 +698,11 @@
             case 'code':    renderGenericCodeTab(contentDiv, prob); break;
         }
         container.appendChild(contentDiv);
+
+        // Flow Next CTA
+        if (ft && ft.nextLabel) {
+            renderFlowNext(container, ft.nextLabel, ft.nextTab);
+        }
     }
 
     function renderGenericProblemTab(el, prob) {
