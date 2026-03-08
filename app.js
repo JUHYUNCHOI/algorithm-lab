@@ -322,6 +322,7 @@
                 currentTab = tab.id;
                 renderTabs();
                 renderContent();
+                setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
             });
             navRow.appendChild(btn);
 
@@ -343,6 +344,7 @@
         currentTab = tabId;
         renderTabs();
         renderContent();
+        setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     };
 
     // ===== 콘텐츠 렌더링 =====
@@ -379,6 +381,18 @@
                     if (currentTopic.renderProblem) currentTopic.renderProblem(section);
                     break;
             }
+            // 개념/시각화 드릴다운 → 상단에 뒤로가기 버튼 삽입
+            const backBtn = document.createElement('button');
+            backBtn.className = 'back-to-landing-btn';
+            backBtn.innerHTML = '← ' + currentTopic.icon + ' ' + currentTopic.title + ' 홈으로';
+            backBtn.addEventListener('click', () => {
+                currentTab = 'landing';
+                updateSidebarActiveStates();
+                renderTabs();
+                renderContent();
+                window.scrollTo(0, 0);
+            });
+            section.insertBefore(backBtn, section.firstChild);
         }
 
         content.appendChild(section);
@@ -586,7 +600,19 @@
             </button>
         `;
         actions.querySelector('.landing-btn-concept').addEventListener('click', () => drillIntoTab('concept'));
-        actions.querySelector('.landing-btn-viz').addEventListener('click', () => drillIntoTab('visualize'));
+        // 시각화 체험이 빈 토픽이면 버튼 숨기기
+        const vizBtn = actions.querySelector('.landing-btn-viz');
+        if (topic.renderVisualize) {
+            const testDiv = document.createElement('div');
+            topic.renderVisualize(testDiv);
+            if (testDiv.innerHTML.trim().length === 0) {
+                vizBtn.style.display = 'none';
+            } else {
+                vizBtn.addEventListener('click', () => drillIntoTab('visualize'));
+            }
+        } else {
+            vizBtn.style.display = 'none';
+        }
         container.appendChild(actions);
 
         // ===== 알고리즘 유형 섹션 =====
@@ -745,7 +771,9 @@
                 </div>
                 <div class="hint-step-body">${hint.content}</div>
             `;
-            card.querySelector('.hint-step-header').addEventListener('click', () => {
+            const header = card.querySelector('.hint-step-header');
+            const body = card.querySelector('.hint-step-body');
+            header.addEventListener('click', function() {
                 if (card.classList.contains('locked')) {
                     const prev = wrap.children[i - 1];
                     if (!prev || !prev.classList.contains('opened')) return;
@@ -754,6 +782,15 @@
                 card.classList.toggle('opened');
                 card.querySelector('.hint-step-toggle').textContent =
                     card.classList.contains('opened') ? '▴' : '▾';
+
+                // 열렸을 때 페이지 맨 아래로 스크롤
+                if (card.classList.contains('opened')) {
+                    body.addEventListener('animationend', function scrollAfterOpen() {
+                        body.removeEventListener('animationend', scrollAfterOpen);
+                        var last = wrap.children[wrap.children.length - 1];
+                        last.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    });
+                }
 
                 // 다음 스텝 잠금 해제
                 if (card.classList.contains('opened') && i + 1 < prob.hints.length) {
@@ -764,6 +801,18 @@
             wrap.appendChild(card);
         });
         el.appendChild(wrap);
+
+        // 코드 블록에 hljs 하이라이팅 + 라인별 애니메이션 적용
+        if (window.hljs) {
+            el.querySelectorAll('.hint-step-body pre code').forEach(codeEl => {
+                codeEl.classList.add('language-python');
+                hljs.highlightElement(codeEl);
+                const lines = codeEl.innerHTML.split('\n');
+                codeEl.innerHTML = lines.map((line, i) =>
+                    `<div class="code-line" style="--i:${i}">${line || '&nbsp;'}</div>`
+                ).join('');
+            });
+        }
     }
 
     function renderGenericCodeTab(el, prob) {
@@ -793,6 +842,7 @@
         function showCode(lang) {
             codeEl.textContent = prob.templates[lang] || '';
             codeEl.className = 'code-display language-' + (lang === 'cpp' ? 'cpp' : lang);
+            codeEl.removeAttribute('data-highlighted');
             if (window.hljs) hljs.highlightElement(codeEl);
         }
         select.addEventListener('change', () => showCode(select.value));

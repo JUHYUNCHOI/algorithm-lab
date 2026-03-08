@@ -1,5 +1,5 @@
 // ===== 그리디 알고리즘 토픽 모듈 =====
-const greedyTopic = {
+var greedyTopic = {
     id: 'greedy',
     title: '그리디',
     icon: '🏆',
@@ -7,6 +7,128 @@ const greedyTopic = {
     order: 12,
     description: '지금 당장 가장 좋은 선택을 반복하는 기법',
     relatedNote: '그리디는 정렬, 우선순위 큐와 함께 사용되는 경우가 많으며, 최적해를 보장하는지 증명하는 것이 핵심입니다.',
+
+    sidebarExpandable: true,
+
+    tabs: [{ id: 'concept', label: '학습하기' }],
+
+    problemMeta: {
+        'boj-11047': { type: '동전 문제', color: 'var(--accent)', vizMethod: '_renderVizCoin', suffix: '-coin' },
+        'boj-11399': { type: '정렬 기반', color: 'var(--green)', vizMethod: '_renderVizATM', suffix: '-atm' },
+        'boj-1931':  { type: '활동 선택', color: '#e17055', vizMethod: '_renderVizMeeting', suffix: '-meet' },
+        'boj-1541':  { type: '괄호 배치', color: '#6c5ce7', vizMethod: '_renderVizBracket', suffix: '-brk' },
+        'boj-13305': { type: '최소 비용', color: '#00b894', vizMethod: '_renderVizGas', suffix: '-gas' }
+    },
+
+    getProblemTabs(problemId) {
+        return [
+            { id: 'problem', label: '문제', icon: '📋' },
+            { id: 'think', label: '생각해볼것', icon: '💡' },
+            { id: 'sim', label: '시뮬레이션', icon: '🎮' },
+            { id: 'code', label: '코드', icon: '💻' }
+        ];
+    },
+
+    renderProblemContent(container, problemId, tabId) {
+        var self = this;
+        var prob = self.problems.find(function(p) { return p.id === problemId; });
+        if (!prob) { container.innerHTML = '<p>문제를 찾을 수 없습니다.</p>'; return; }
+        var meta = self.problemMeta[problemId];
+        if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
+        self._clearVizState();
+        var diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        var header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
+        header.innerHTML =
+            '<span style="padding:4px 12px;background:' + meta.color + '15;border-radius:8px;font-size:0.85rem;color:' + meta.color + ';font-weight:600;">' + meta.type + '</span>' +
+            '<span class="problem-diff ' + prob.difficulty + '">' + (diffMap[prob.difficulty] || '') + '</span>';
+        container.appendChild(header);
+        var flowMap = {
+            problem: { intro: '먼저 문제를 읽고 입출력 형식을 파악해보세요.', icon: '📋' },
+            think:   { intro: '바로 코드를 짜지 말고, 단계별 힌트를 열어보며 풀이 전략을 세워보세요.', icon: '💡' },
+            sim:     { intro: prob.simIntro || '그리디 알고리즘이 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            code:    { intro: '이제 앞에서 정리한 풀이를 코드로 옮겨봅시다!', icon: '💻' }
+        };
+        var ft = flowMap[tabId];
+        if (ft) {
+            var introDiv = document.createElement('div');
+            introDiv.className = 'flow-intro';
+            introDiv.innerHTML = '<span class="flow-intro-icon">' + ft.icon + '</span><span>' + ft.intro + '</span>';
+            container.appendChild(introDiv);
+        }
+        var contentDiv = document.createElement('div');
+        container.appendChild(contentDiv);
+        switch (tabId) {
+            case 'problem': self._renderProblemTab(contentDiv, prob); break;
+            case 'think':   self._renderThinkTab(contentDiv, prob); break;
+            case 'sim':     self[meta.vizMethod](contentDiv); break;
+            case 'code':    self._renderCodeTab(contentDiv, prob); break;
+        }
+        var tabOrder = ['problem', 'think', 'sim', 'code'];
+        var tabLabels = { problem: '문제', think: '생각해볼것', sim: '시뮬레이션', code: '코드' };
+        var ctaTexts = { problem: '문제를 이해했다면', think: '힌트를 모두 확인했다면', sim: '동작 원리를 파악했다면' };
+        var curIdx = tabOrder.indexOf(tabId);
+        if (curIdx >= 0 && curIdx < tabOrder.length - 1) {
+            var nextId = tabOrder[curIdx + 1];
+            var nextDiv = document.createElement('div');
+            nextDiv.className = 'flow-next';
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaTexts[tabId] + ' → ' + tabLabels[nextId] + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextId); });
+            container.appendChild(nextDiv);
+        }
+    },
+
+    _renderProblemTab(contentEl, prob) {
+        var isLC = prob.link.includes('leetcode');
+        contentEl.innerHTML =
+            prob.descriptionHTML +
+            '<div style="text-align:right;margin-top:1.2rem;">' +
+            '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
+            (isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗') + '</a></div>';
+        contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
+    },
+
+    _renderThinkTab(contentEl, prob) {
+        var guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
+        contentEl.appendChild(guide);
+        var hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+        var openedState = {};
+        prob.hints.forEach(function(hint, idx) {
+            var step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML =
+                '<div class="hint-step-header">' +
+                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
+                '<span class="hint-step-title">' + hint.title + '</span>' +
+                '<span class="hint-step-toggle">▶</span></div>' +
+                '<div class="hint-step-content">' + hint.content + '</div>';
+            step.querySelector('.hint-step-header').addEventListener('click', function() {
+                if (step.classList.contains('locked')) return;
+                step.classList.toggle('open');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
+                if (!openedState[idx]) {
+                    openedState[idx] = true;
+                    if (idx + 1 < prob.hints.length) {
+                        var nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+            });
+            hintsDiv.appendChild(step);
+        });
+        contentEl.appendChild(hintsDiv);
+    },
+
+    _renderCodeTab(contentEl, prob) {
+        if (window.renderSolutionsCodeTab) {
+            window.renderSolutionsCodeTab(contentEl, prob);
+        } else {
+            contentEl.innerHTML = '<p>코드 탭 로딩 중...</p>';
+        }
+    },
 
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {
@@ -273,339 +395,395 @@ print(count)  # 5개</code></pre></div>
         this._initConceptInteractions(container);
     },
 
-    // ===== 개념 인터랙션 초기화 =====
     _initConceptInteractions(container) {
-        container.querySelectorAll('.think-box-trigger').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const box = btn.closest('.think-box');
-                box.classList.toggle('revealed');
+        container.querySelectorAll('.think-box-trigger').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var ans = btn.nextElementSibling;
+                ans.classList.toggle('show');
+                btn.textContent = ans.classList.contains('show') ? '🔼 접기' : '🤔 생각해보고 클릭!';
             });
         });
-        container.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+        container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
     },
 
-    // ===== 시각화 렌더링 =====
-    renderVisualize(container) {
-        container.innerHTML = `
-            <h2>그리디 시각화</h2>
-            <div class="viz-type-selector">
-                <button class="viz-type-btn active" data-viz="coin">동전 거스름돈</button>
-                <button class="viz-type-btn" data-viz="meeting">회의실 배정</button>
-            </div>
-            <div id="viz-content"></div>
-        `;
-        const vizContent = container.querySelector('#viz-content');
-        const buttons = container.querySelectorAll('.viz-type-btn');
-
-        const switchViz = (type) => {
-            this._clearVizState();
-            buttons.forEach(b => b.classList.toggle('active', b.dataset.viz === type));
-            vizContent.innerHTML = '';
-            this._renderVizType(vizContent, type);
-        };
-
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => switchViz(btn.dataset.viz));
-        });
-
-        switchViz('coin');
-    },
-
-    _renderVizType(container, type) {
-        if (type === 'coin') this._renderVizCoin(container);
-        else if (type === 'meeting') this._renderVizMeeting(container);
-    },
-
-    // ===== 동전 거스름돈 시각화 =====
-    _renderVizCoin(container) {
-        const defaultCoins = [500, 100, 50, 10];
-        let targetAmount = 4200;
-
-        container.innerHTML = `
-            <div class="viz-card">
-                <h3>동전 거스름돈 (그리디)</h3>
-                <div class="ps-input-group">
-                    <label>거슬러 줄 금액:</label>
-                    <input type="number" id="gr-coin-amount" value="${targetAmount}" min="10" max="99990" step="10" class="ps-input" style="width:120px;">
-                    <span>원</span>
-                    <button class="btn" id="gr-coin-apply">적용</button>
-                </div>
-                <div class="gr-viz-area">
-                    <div class="gr-amount-display" id="gr-remaining">남은 금액: <strong>${targetAmount}원</strong></div>
-                    <div class="gr-coin-area" id="gr-coin-area"></div>
-                    <div class="gr-total-display" id="gr-total" style="display:none;"></div>
-                </div>
-                ${this._createStepControls()}
-            </div>
-        `;
-
-        const self = this;
-
-        const buildAndInit = () => {
-            self._clearVizState();
-            const remaining = container.querySelector('#gr-remaining');
-            const coinArea = container.querySelector('#gr-coin-area');
-            const totalDisplay = container.querySelector('#gr-total');
-
-            coinArea.innerHTML = defaultCoins.map(coin =>
-                `<div class="gr-coin-row" data-coin="${coin}">
-                    <div class="gr-coin">${coin}</div>
-                    <span class="gr-coin-count">× <strong id="gr-cnt-${coin}">0</strong>개</span>
-                </div>`
-            ).join('');
-            totalDisplay.style.display = 'none';
-
-            const steps = [];
-            let rem = targetAmount;
-            let totalCoins = 0;
-            const usedCoins = {};
-
-            defaultCoins.forEach(coin => {
-                const cnt = Math.floor(rem / coin);
-                if (cnt > 0) {
-                    const coinVal = coin;
-                    const coinCnt = cnt;
-                    const prevRem = rem;
-                    rem -= coinCnt * coinVal;
-                    totalCoins += coinCnt;
-
-                    const afterRem = rem;
-                    const afterTotal = totalCoins;
-
-                    steps.push({
-                        description: `${coinVal}원짜리: ${prevRem} ÷ ${coinVal} = ${coinCnt}개 사용 → 남은 금액: ${afterRem}원`,
-                        action() {
-                            container.querySelector(`#gr-cnt-${coinVal}`).textContent = coinCnt;
-                            container.querySelector(`[data-coin="${coinVal}"]`).classList.add('active');
-                            remaining.innerHTML = `남은 금액: <strong>${afterRem}원</strong>`;
-                            usedCoins[coinVal] = coinCnt;
-                        },
-                        undo() {
-                            container.querySelector(`#gr-cnt-${coinVal}`).textContent = '0';
-                            container.querySelector(`[data-coin="${coinVal}"]`).classList.remove('active');
-                            remaining.innerHTML = `남은 금액: <strong>${prevRem}원</strong>`;
-                            delete usedCoins[coinVal];
-                        }
-                    });
-                }
-            });
-
-            const finalTotal = totalCoins;
-            steps.push({
-                description: `완성! 총 동전 ${finalTotal}개로 ${targetAmount}원을 거슬러 줄 수 있습니다.`,
-                action() {
-                    remaining.innerHTML = `남은 금액: <strong style="color:var(--green)">0원 ✅</strong>`;
-                    totalDisplay.style.display = 'block';
-                    totalDisplay.innerHTML = `<strong style="font-size:1.2rem; color:var(--green);">총 동전 수: ${finalTotal}개</strong>`;
-                },
-                undo() {
-                    remaining.innerHTML = `남은 금액: <strong>${targetAmount - Object.entries(usedCoins).reduce((s, [c, n]) => s + c * n, 0)}원</strong>`;
-                    totalDisplay.style.display = 'none';
-                }
-            });
-
-            self._initStepController(container, steps);
-        };
-
-        container.querySelector('#gr-coin-apply').addEventListener('click', () => {
-            const val = parseInt(container.querySelector('#gr-coin-amount').value);
-            if (isNaN(val) || val < 10 || val > 99990 || val % 10 !== 0) {
-                alert('10 이상 99990 이하의 10의 배수를 입력해 주세요.');
-                return;
-            }
-            targetAmount = val;
-            container.querySelector('#gr-remaining').innerHTML = `남은 금액: <strong>${targetAmount}원</strong>`;
-            buildAndInit();
-        });
-
-        buildAndInit();
-    },
-
-    // ===== 회의실 배정 시각화 =====
-    _renderVizMeeting(container) {
-        const meetings = [
-            [1,4],[3,5],[0,6],[5,7],[3,8],[5,9],[6,10],[8,11],[8,12],[2,13],[12,14]
-        ];
-
-        container.innerHTML = `
-            <div class="viz-card">
-                <h3>회의실 배정 (Activity Selection)</h3>
-                <p style="color:var(--text2); margin-bottom:12px;">끝나는 시간이 빠른 순서로 정렬한 뒤, 겹치지 않는 회의를 선택합니다.</p>
-                <div class="gr-timeline-container">
-                    <div class="gr-timeline-header" id="gr-timeline-header"></div>
-                    <div class="gr-timeline-area" id="gr-timeline-area"></div>
-                </div>
-                <div class="gr-meeting-info" id="gr-meeting-info"></div>
-                ${this._createStepControls()}
-            </div>
-        `;
-
-        const self = this;
-
-        // 끝나는 시간 기준 정렬 (같으면 시작 시간 기준)
-        const sorted = [...meetings].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
-        const maxTime = Math.max(...sorted.map(m => m[1]));
-
-        // 타임라인 헤더 (시간 눈금)
-        const headerEl = container.querySelector('#gr-timeline-header');
-        let headerHTML = '';
-        for (let t = 0; t <= maxTime; t++) {
-            headerHTML += `<span class="gr-time-tick">${t}</span>`;
-        }
-        headerEl.innerHTML = headerHTML;
-
-        // 회의 바 렌더링
-        const areaEl = container.querySelector('#gr-timeline-area');
-        areaEl.innerHTML = sorted.map((m, i) =>
-            `<div class="gr-meeting-bar waiting" id="gr-m-${i}" style="left:${(m[0] / maxTime) * 100}%; width:${((m[1] - m[0]) / maxTime) * 100}%;">
-                <span class="gr-meeting-label">(${m[0]},${m[1]})</span>
-            </div>`
-        ).join('');
-
-        const infoEl = container.querySelector('#gr-meeting-info');
-        infoEl.innerHTML = `<span style="color:var(--text2)">정렬 완료: 끝나는 시간 기준 오름차순</span>`;
-
-        const steps = [];
-        let lastEnd = -1;
-        let selected = [];
-
-        sorted.forEach((m, i) => {
-            const [start, end] = m;
-            const idx = i;
-
-            if (start >= lastEnd) {
-                // 선택
-                const prevEnd = lastEnd;
-                lastEnd = end;
-                selected.push(idx);
-                const selCount = selected.length;
-
-                steps.push({
-                    description: `회의 (${start}~${end}): 시작(${start}) ≥ 이전 종료(${prevEnd < 0 ? '없음' : prevEnd}) → ✅ 선택! (${selCount}개째)`,
-                    action() {
-                        const bar = container.querySelector(`#gr-m-${idx}`);
-                        bar.classList.remove('waiting');
-                        bar.classList.add('selected');
-                        infoEl.innerHTML = `선택한 회의: <strong style="color:var(--green)">${selCount}개</strong> | 마지막 종료 시각: ${end}`;
-                    },
-                    undo() {
-                        const bar = container.querySelector(`#gr-m-${idx}`);
-                        bar.classList.remove('selected');
-                        bar.classList.add('waiting');
-                        infoEl.innerHTML = prevEnd < 0
-                            ? `<span style="color:var(--text2)">정렬 완료: 끝나는 시간 기준 오름차순</span>`
-                            : `선택한 회의: <strong style="color:var(--green)">${selCount - 1}개</strong> | 마지막 종료 시각: ${prevEnd}`;
-                    }
-                });
-            } else {
-                // 건너뛰기
-                const curEnd = lastEnd;
-                steps.push({
-                    description: `회의 (${start}~${end}): 시작(${start}) < 이전 종료(${curEnd}) → ❌ 겹침! 건너뜁니다.`,
-                    action() {
-                        const bar = container.querySelector(`#gr-m-${idx}`);
-                        bar.classList.remove('waiting');
-                        bar.classList.add('skipped');
-                    },
-                    undo() {
-                        const bar = container.querySelector(`#gr-m-${idx}`);
-                        bar.classList.remove('skipped');
-                        bar.classList.add('waiting');
-                    }
-                });
-            }
-        });
-
-        const finalCount = selected.length;
-        steps.push({
-            description: `완성! 최대 ${finalCount}개의 회의를 겹치지 않게 배정할 수 있습니다.`,
-            action() {
-                infoEl.innerHTML = `<strong style="font-size:1.1rem; color:var(--green);">✅ 최대 ${finalCount}개 회의 배정 완료!</strong>`;
-            },
-            undo() {
-                infoEl.innerHTML = `선택한 회의: <strong style="color:var(--green)">${finalCount}개</strong>`;
-            }
-        });
-
-        this._initStepController(container, steps);
-    },
-
-    // ===== 공유 메서드: 시각화 상태 =====
-    _vizState: {
-        steps: [],
-        currentStep: -1,
-        keydownHandler: null
-    },
+    // ===== 시각화 상태 =====
+    _vizState: { steps: [], currentStep: -1, keydownHandler: null },
 
     _clearVizState() {
-        const s = this._vizState;
-        if (s.keydownHandler) {
-            document.removeEventListener('keydown', s.keydownHandler);
-            s.keydownHandler = null;
-        }
-        s.steps = [];
-        s.currentStep = -1;
+        var s = this._vizState;
+        if (s.keydownHandler) { document.removeEventListener('keydown', s.keydownHandler); s.keydownHandler = null; }
+        s.steps = []; s.currentStep = -1;
     },
 
-    _createStepControls() {
-        return `
-            <div class="viz-step-controls">
-                <button class="btn viz-step-btn" id="viz-prev" disabled>&larr; 이전</button>
-                <span id="viz-step-counter" class="viz-step-counter">시작 전</span>
-                <button class="btn btn-primary viz-step-btn" id="viz-next">다음 &rarr;</button>
-            </div>
-            <div id="viz-step-desc" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>
-        `;
+    _createStepControls(suffix) {
+        return '<div class="viz-step-controls">' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
     },
 
-    _initStepController(el, steps) {
-        const state = this._vizState;
+    _initStepController(container, steps, suffix) {
+        var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-
-        const prevBtn = el.querySelector('#viz-prev');
-        const nextBtn = el.querySelector('#viz-next');
-        const counter = el.querySelector('#viz-step-counter');
-        const desc = el.querySelector('#viz-step-desc');
-
-        const updateUI = () => {
-            const idx = state.currentStep;
-            const total = state.steps.length;
+        var prevBtn = container.querySelector('#str-prev-' + suffix);
+        var nextBtn = container.querySelector('#str-next-' + suffix);
+        var indicator = container.querySelector('#str-indicator-' + suffix);
+        var desc = container.querySelector('#str-desc-' + suffix);
+        if (!prevBtn || !nextBtn) return;
+        function updateUI() {
+            var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) {
-                counter.textContent = '시작 전';
-                desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
-            } else {
-                counter.textContent = `Step ${idx + 1} / ${total}`;
-                desc.textContent = state.steps[idx].description;
-            }
-        };
-
-        nextBtn.addEventListener('click', () => {
+            if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+        }
+        nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++;
-            state.steps[state.currentStep].action();
-            updateUI();
+            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
         });
-
-        prevBtn.addEventListener('click', () => {
+        prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo();
-            state.currentStep--;
-            updateUI();
+            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
         });
-
-        const handleKeydown = (e) => {
+        var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
         };
-        document.addEventListener('keydown', handleKeydown);
-        state.keydownHandler = handleKeydown;
-
+        document.addEventListener('keydown', handleKey);
+        state.keydownHandler = handleKey;
         updateUI();
     },
+
+    // ====================================================================
+    // 시뮬레이션 1: 동전 0 (boj-11047)
+    // ====================================================================
+    _renderVizCoin(container) {
+        var self = this, suffix = '-coin';
+        var coins = [1000, 500, 100, 50, 10, 1];
+        var K = 4200;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">동전 거스름돈 — 큰 동전부터</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">K=<strong>' + K + '</strong>원을 동전 [' + coins.join(', ') + ']으로 거슬러 줍니다.</p>' +
+            '<div id="cn-coins' + suffix + '" style="margin-bottom:12px;"></div>' +
+            '<div id="cn-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var coinsEl = container.querySelector('#cn-coins' + suffix);
+        var infoEl = container.querySelector('#cn-info' + suffix);
+        function renderCoins(usedMap) {
+            coinsEl.innerHTML = coins.map(function(c) {
+                var cnt = usedMap[c] || 0;
+                var active = cnt > 0;
+                return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:4px;border-radius:8px;background:' + (active ? 'var(--accent)10' : 'var(--bg2)') + ';border:2px solid ' + (active ? 'var(--accent)' : 'transparent') + ';">' +
+                    '<div style="width:48px;height:48px;border-radius:50%;background:' + (active ? 'var(--accent)' : 'var(--text3)') + ';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">' + c + '</div>' +
+                    '<span style="font-weight:600;font-size:1rem;">' + (active ? cnt + '개 사용' : '-') + '</span></div>';
+            }).join('');
+        }
+        renderCoins({});
+        infoEl.innerHTML = '<span style="color:var(--text2);">남은 금액: <strong>' + K + '원</strong></span>';
+        var steps = [];
+        var rem = K, totalCount = 0, usedSoFar = {};
+        coins.forEach(function(coin) {
+            var cnt = Math.floor(rem / coin);
+            if (cnt > 0) {
+                var prevRem = rem;
+                rem -= cnt * coin;
+                totalCount += cnt;
+                var afterRem = rem, afterTotal = totalCount;
+                (function(coin, cnt, prevRem, afterRem, afterTotal) {
+                    steps.push({
+                        description: coin + '원: ' + prevRem + ' ÷ ' + coin + ' = ' + cnt + '개 사용 → 남은 금액: ' + afterRem + '원',
+                        action: function() { usedSoFar[coin] = cnt; renderCoins(usedSoFar); infoEl.innerHTML = coin + '원 × ' + cnt + '개 = ' + (coin * cnt) + '원 사용 → 남은: <strong>' + afterRem + '원</strong>'; },
+                        undo: function() { delete usedSoFar[coin]; renderCoins(usedSoFar); infoEl.innerHTML = '<span style="color:var(--text2);">남은 금액: <strong>' + prevRem + '원</strong></span>'; }
+                    });
+                })(coin, cnt, prevRem, afterRem, afterTotal);
+            }
+        });
+        var finalTotal = totalCount;
+        steps.push({
+            description: '완성! 총 ' + finalTotal + '개 동전으로 ' + K + '원을 거슬러 줄 수 있습니다.',
+            action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 총 동전 수: ' + finalTotal + '개</strong>'; },
+            undo: function() { infoEl.innerHTML = '남은: <strong>0원</strong>'; }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 2: ATM (boj-11399)
+    // ====================================================================
+    _renderVizATM(container) {
+        var self = this, suffix = '-atm';
+        var original = [3, 1, 4, 3, 2];
+        var sorted = original.slice().sort(function(a, b) { return a - b; });
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">ATM 대기시간 최소화</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">인출 시간: [' + original.join(', ') + '] → 정렬: [' + sorted.join(', ') + ']</p>' +
+            '<div id="atm-bars' + suffix + '" style="margin-bottom:12px;"></div>' +
+            '<div id="atm-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var barsEl = container.querySelector('#atm-bars' + suffix);
+        var infoEl = container.querySelector('#atm-info' + suffix);
+        var maxVal = Math.max.apply(null, sorted);
+        function renderBars(highlight, accValues) {
+            barsEl.innerHTML = sorted.map(function(v, i) {
+                var pct = (v / maxVal) * 100;
+                var isHl = (highlight === i);
+                var accText = accValues && accValues[i] !== undefined ? ' (누적: ' + accValues[i] + ')' : '';
+                return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">' +
+                    '<div style="width:30px;text-align:right;font-size:0.85rem;font-weight:600;color:' + (isHl ? 'var(--accent)' : 'var(--text2)') + ';">P' + (i + 1) + '</div>' +
+                    '<div style="flex:1;height:28px;border-radius:6px;overflow:hidden;background:var(--bg2);">' +
+                    '<div style="width:' + pct + '%;height:100%;background:' + (isHl ? 'var(--accent)' : 'var(--green)') + ';border-radius:6px;display:flex;align-items:center;padding-left:8px;color:white;font-weight:600;font-size:0.8rem;">' + v + '분' + accText + '</div></div></div>';
+            }).join('');
+        }
+        renderBars(-1, null);
+        infoEl.innerHTML = '<span style="color:var(--text2);">짧은 시간부터 처리하여 총 대기시간을 줄입니다.</span>';
+        var steps = [];
+        var acc = 0, total = 0, accArr = [];
+        sorted.forEach(function(v, i) {
+            acc += v;
+            total += acc;
+            var curAcc = acc, curTotal = total;
+            accArr.push(curAcc);
+            var snapshot = accArr.slice();
+            (function(i, v, curAcc, curTotal, snapshot) {
+                steps.push({
+                    description: 'P' + (i + 1) + '=' + v + '분: 누적 대기 = ' + curAcc + '분, 총합 = ' + curTotal + '분',
+                    action: function() { renderBars(i, snapshot); infoEl.innerHTML = 'P' + (i + 1) + ': 대기 <strong>' + curAcc + '분</strong>, 누적 합계: <strong>' + curTotal + '분</strong>'; },
+                    undo: function() { renderBars(-1, null); infoEl.innerHTML = '<span style="color:var(--text2);">짧은 시간부터 처리하여 총 대기시간을 줄입니다.</span>'; }
+                });
+            })(i, v, curAcc, curTotal, snapshot);
+        });
+        var finalTotal = total;
+        steps.push({
+            description: '완성! 최소 총 대기시간 = ' + finalTotal + '분',
+            action: function() { renderBars(-1, accArr); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최소 총 대기시간: ' + finalTotal + '분</strong>'; },
+            undo: function() { renderBars(-1, null); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 3: 회의실 배정 (boj-1931)
+    // ====================================================================
+    _renderVizMeeting(container) {
+        var self = this, suffix = '-meet';
+        var meetings = [[1,4],[3,5],[0,6],[5,7],[3,8],[5,9],[6,10],[8,11],[8,12],[2,13],[12,14]];
+        var sorted = meetings.slice().sort(function(a, b) { return a[1] !== b[1] ? a[1] - b[1] : a[0] - b[0]; });
+        var maxTime = 0;
+        for (var i = 0; i < sorted.length; i++) { if (sorted[i][1] > maxTime) maxTime = sorted[i][1]; }
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">회의실 배정 — 끝나는 시간 기준 정렬</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">' + sorted.length + '개 회의를 끝나는 시간 기준으로 정렬 후 선택합니다.</p>' +
+            '<div id="mt-area' + suffix + '" style="position:relative;min-height:' + (sorted.length * 32 + 30) + 'px;margin-bottom:12px;border-left:2px solid var(--border);padding-left:40px;"></div>' +
+            '<div id="mt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var areaEl = container.querySelector('#mt-area' + suffix);
+        var infoEl = container.querySelector('#mt-info' + suffix);
+        // render timeline
+        var timelineHTML = '';
+        for (var ti = 0; ti <= maxTime; ti++) {
+            timelineHTML += '<div style="position:absolute;left:' + (40 + (ti / maxTime) * 80) + '%;top:0;font-size:0.65rem;color:var(--text3);transform:translateX(-50%);">' + ti + '</div>';
+        }
+        sorted.forEach(function(m, i) {
+            var left = 40 + (m[0] / maxTime) * 80;
+            var width = ((m[1] - m[0]) / maxTime) * 80;
+            timelineHTML += '<div id="mt-bar-' + i + suffix + '" style="position:absolute;left:' + left + '%;top:' + (18 + i * 30) + 'px;width:' + width + '%;height:24px;border-radius:6px;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;color:var(--text2);transition:all 0.3s;">(' + m[0] + ',' + m[1] + ')</div>';
+        });
+        areaEl.innerHTML = timelineHTML;
+        infoEl.innerHTML = '<span style="color:var(--text2);">끝나는 시간 기준 오름차순 정렬 완료</span>';
+        var steps = [];
+        var lastEnd = -1, selectedCount = 0;
+        sorted.forEach(function(m, i) {
+            var start = m[0], end = m[1];
+            if (start >= lastEnd) {
+                var prevEnd = lastEnd;
+                lastEnd = end;
+                selectedCount++;
+                var cnt = selectedCount;
+                (function(i, start, end, prevEnd, cnt) {
+                    steps.push({
+                        description: '회의 (' + start + '~' + end + '): 시작(' + start + ') >= 이전 종료(' + (prevEnd < 0 ? '없음' : prevEnd) + ') → 선택! (' + cnt + '개째)',
+                        action: function() {
+                            var bar = container.querySelector('#mt-bar-' + i + suffix);
+                            bar.style.background = 'var(--green)'; bar.style.borderColor = 'var(--green)'; bar.style.color = 'white';
+                            infoEl.innerHTML = '선택: <strong style="color:var(--green);">' + cnt + '개</strong> | 마지막 종료: ' + end;
+                        },
+                        undo: function() {
+                            var bar = container.querySelector('#mt-bar-' + i + suffix);
+                            bar.style.background = 'var(--bg2)'; bar.style.borderColor = 'var(--border)'; bar.style.color = 'var(--text2)';
+                            infoEl.innerHTML = prevEnd < 0 ? '<span style="color:var(--text2);">끝나는 시간 기준 오름차순 정렬 완료</span>' : '선택: <strong style="color:var(--green);">' + (cnt - 1) + '개</strong>';
+                        }
+                    });
+                })(i, start, end, prevEnd, cnt);
+            } else {
+                var curEnd = lastEnd;
+                (function(i, start, end, curEnd) {
+                    steps.push({
+                        description: '회의 (' + start + '~' + end + '): 시작(' + start + ') < 이전 종료(' + curEnd + ') → 겹침! 건너뜀',
+                        action: function() {
+                            var bar = container.querySelector('#mt-bar-' + i + suffix);
+                            bar.style.background = 'var(--red)15'; bar.style.borderColor = 'var(--red)'; bar.style.color = 'var(--red)'; bar.style.opacity = '0.5';
+                        },
+                        undo: function() {
+                            var bar = container.querySelector('#mt-bar-' + i + suffix);
+                            bar.style.background = 'var(--bg2)'; bar.style.borderColor = 'var(--border)'; bar.style.color = 'var(--text2)'; bar.style.opacity = '1';
+                        }
+                    });
+                })(i, start, end, curEnd);
+            }
+        });
+        var finalCount = selectedCount;
+        steps.push({
+            description: '완성! 최대 ' + finalCount + '개 회의를 겹치지 않게 배정!',
+            action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 ' + finalCount + '개 회의 배정 완료!</strong>'; },
+            undo: function() { infoEl.innerHTML = '선택: <strong style="color:var(--green);">' + finalCount + '개</strong>'; }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 4: 잃어버린 괄호 (boj-1541)
+    // ====================================================================
+    _renderVizBracket(container) {
+        var self = this, suffix = '-brk';
+        var expr = '55-50+40';
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">잃어버린 괄호 — 최솟값 만들기</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">수식: <strong>' + expr + '</strong></p>' +
+            '<div id="bk-expr' + suffix + '" style="font-size:1.3rem;font-weight:700;text-align:center;padding:16px;background:var(--bg);border-radius:8px;margin-bottom:12px;font-family:monospace;"></div>' +
+            '<div id="bk-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var exprEl = container.querySelector('#bk-expr' + suffix);
+        var infoEl = container.querySelector('#bk-info' + suffix);
+        exprEl.innerHTML = expr;
+        infoEl.innerHTML = '<span style="color:var(--text2);">"-" 뒤에 괄호를 넣어 뺄 수 있는 값을 최대로 만듭니다.</span>';
+        var steps = [
+            {
+                description: 'Step 1: 수식을 "-" 기준으로 분리합니다.',
+                action: function() {
+                    exprEl.innerHTML = '<span style="color:var(--accent);">55</span> <span style="color:var(--red);font-size:1.5rem;">-</span> <span style="color:#e17055;">50+40</span>';
+                    infoEl.innerHTML = '그룹 1: <strong>55</strong>, 그룹 2: <strong>50+40</strong>';
+                },
+                undo: function() { exprEl.innerHTML = expr; infoEl.innerHTML = '<span style="color:var(--text2);">"-" 뒤에 괄호를 넣어 뺄 수 있는 값을 최대로 만듭니다.</span>'; }
+            },
+            {
+                description: 'Step 2: "-" 뒤의 그룹을 괄호로 묶습니다 → 55-(50+40)',
+                action: function() {
+                    exprEl.innerHTML = '<span style="color:var(--accent);">55</span> - <span style="color:#e17055;border:2px dashed #e17055;padding:2px 8px;border-radius:6px;">(50+40)</span>';
+                    infoEl.innerHTML = '괄호를 넣으면: 55 - <strong>(50+40)</strong>';
+                },
+                undo: function() {
+                    exprEl.innerHTML = '<span style="color:var(--accent);">55</span> <span style="color:var(--red);font-size:1.5rem;">-</span> <span style="color:#e17055;">50+40</span>';
+                    infoEl.innerHTML = '그룹 1: <strong>55</strong>, 그룹 2: <strong>50+40</strong>';
+                }
+            },
+            {
+                description: 'Step 3: 각 그룹의 합을 계산합니다.',
+                action: function() {
+                    exprEl.innerHTML = '<span style="color:var(--accent);">55</span> - <span style="color:#e17055;">(90)</span>';
+                    infoEl.innerHTML = '그룹 1 합: <strong>55</strong>, 그룹 2 합: 50+40 = <strong>90</strong>';
+                },
+                undo: function() {
+                    exprEl.innerHTML = '<span style="color:var(--accent);">55</span> - <span style="color:#e17055;border:2px dashed #e17055;padding:2px 8px;border-radius:6px;">(50+40)</span>';
+                    infoEl.innerHTML = '괄호를 넣으면: 55 - <strong>(50+40)</strong>';
+                }
+            },
+            {
+                description: 'Step 4: 첫 그룹은 더하고 나머지는 빼기 → 55 - 90 = -35',
+                action: function() {
+                    exprEl.innerHTML = '55 - 90 = <span style="color:var(--green);font-size:1.5rem;">-35</span>';
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최솟값: -35</strong>';
+                },
+                undo: function() {
+                    exprEl.innerHTML = '<span style="color:var(--accent);">55</span> - <span style="color:#e17055;">(90)</span>';
+                    infoEl.innerHTML = '그룹 1 합: <strong>55</strong>, 그룹 2 합: <strong>90</strong>';
+                }
+            },
+            {
+                description: '완성! 핵심: 첫 번째 "-" 뒤의 모든 수를 괄호로 묶어 빼면 최솟값!',
+                action: function() {
+                    exprEl.innerHTML = '55 - <span style="border:2px solid var(--green);padding:2px 8px;border-radius:6px;color:var(--green);">(50 + 40)</span> = <strong style="color:var(--green);">-35</strong>';
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: -35 (괄호로 "-" 뒤를 전부 빼기!)</strong>';
+                },
+                undo: function() {
+                    exprEl.innerHTML = '55 - 90 = <span style="color:var(--green);font-size:1.5rem;">-35</span>';
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최솟값: -35</strong>';
+                }
+            }
+        ];
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 5: 주유소 (boj-13305)
+    // ====================================================================
+    _renderVizGas(container) {
+        var self = this, suffix = '-gas';
+        var dist = [2, 3, 1];
+        var price = [5, 2, 4, 1];
+        var N = 4;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">주유소 — 최소 비용 이동</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">도시 ' + N + '개, 거리: [' + dist.join(', ') + '], 기름값: [' + price.join(', ') + ']</p>' +
+            '<div id="gs-road' + suffix + '" style="position:relative;height:100px;margin:16px 0;"></div>' +
+            '<div id="gs-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var roadEl = container.querySelector('#gs-road' + suffix);
+        var infoEl = container.querySelector('#gs-info' + suffix);
+        var totalDist = 0;
+        for (var d = 0; d < dist.length; d++) totalDist += dist[d];
+        function renderRoad(curCity, minP, costs) {
+            var html = '<div style="position:absolute;left:5%;right:5%;top:45px;height:4px;background:var(--border);border-radius:2px;"></div>';
+            var cumDist = 0;
+            for (var i = 0; i < N; i++) {
+                var pct = 5 + (cumDist / totalDist) * 90;
+                var isCur = (curCity === i);
+                var usedPrice = costs && costs[i] !== undefined;
+                html += '<div style="position:absolute;left:' + pct + '%;top:20px;transform:translateX(-50%);text-align:center;">' +
+                    '<div style="font-size:0.75rem;color:var(--text3);">도시 ' + (i + 1) + '</div>' +
+                    '<div style="width:16px;height:16px;border-radius:50%;margin:4px auto;background:' + (isCur ? 'var(--accent)' : usedPrice ? 'var(--green)' : 'var(--text3)') + ';"></div>' +
+                    '<div style="font-size:0.8rem;font-weight:600;color:' + (isCur ? 'var(--accent)' : 'var(--text2)') + ';">' + price[i] + '원/L</div></div>';
+                if (i < N - 1) {
+                    var nextPct = 5 + ((cumDist + dist[i]) / totalDist) * 90;
+                    var midPct = (pct + nextPct) / 2;
+                    html += '<div style="position:absolute;left:' + midPct + '%;top:54px;transform:translateX(-50%);font-size:0.7rem;color:var(--text3);">' + dist[i] + 'km</div>';
+                    cumDist += dist[i];
+                }
+            }
+            roadEl.innerHTML = html;
+        }
+        renderRoad(-1, -1, null);
+        infoEl.innerHTML = '<span style="color:var(--text2);">지금까지 본 최소 가격으로 기름을 넣습니다.</span>';
+        var steps = [];
+        var minPrice = price[0], totalCost = 0, costMap = {};
+        for (var ci = 0; ci < N - 1; ci++) {
+            if (price[ci] < minPrice) minPrice = price[ci];
+            var segCost = minPrice * dist[ci];
+            totalCost += segCost;
+            costMap[ci] = segCost;
+            var cMinP = minPrice, cTotal = totalCost, cCity = ci, cSegCost = segCost, cDist = dist[ci];
+            (function(cCity, cMinP, cTotal, cSegCost, cDist) {
+                steps.push({
+                    description: '도시 ' + (cCity + 1) + ': 최소가격 ' + cMinP + '원 × ' + cDist + 'km = ' + cSegCost + '원 (누적: ' + cTotal + '원)',
+                    action: function() { renderRoad(cCity, cMinP, costMap); infoEl.innerHTML = '도시 ' + (cCity + 1) + ': <strong>' + cMinP + '원/L</strong> × ' + cDist + 'km = ' + cSegCost + '원, 누적: <strong>' + cTotal + '원</strong>'; },
+                    undo: function() { renderRoad(-1, -1, null); infoEl.innerHTML = '<span style="color:var(--text2);">지금까지 본 최소 가격으로 기름을 넣습니다.</span>'; }
+                });
+            })(cCity, cMinP, cTotal, cSegCost, cDist);
+        }
+        var finalCost = totalCost;
+        steps.push({
+            description: '완성! 최소 비용 = ' + finalCost + '원',
+            action: function() { renderRoad(N - 1, -1, costMap); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최소 비용: ' + finalCost + '원</strong>'; },
+            undo: function() { renderRoad(-1, -1, null); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ===== 빈 스텁 =====
+    renderVisualize(container) {},
+    renderProblem(container) {},
 
     // ===== 문제 단계 =====
     stages: [
@@ -622,168 +800,65 @@ print(count)  # 5개</code></pre></div>
             title: 'BOJ 11047 - 동전 0',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11047',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>준규가 가지고 있는 동전은 총 N종류이고, 각각의 동전을 매우 많이 가지고 있습니다. 동전을 적절히 사용해서 그 가치의 합을 K로 만들려고 합니다. 이때 필요한 동전 개수의 최솟값을 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 10, 1 ≤ K ≤ 100,000,000)<br>둘째 줄부터 N개의 줄에 동전의 가치 Ai가 오름차순으로 주어진다. (A1 = 1, Ai는 Ai-1의 배수)</p></div>
-                    <div><h4>출력</h4><p>K원을 만드는데 필요한 동전 개수의 최솟값을 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>10 4200\n1\n5\n10\n50\n100\n500\n1000\n5000\n10000\n50000</pre></div>
-                        <div><strong>출력</strong><pre>6</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '큰 동전부터 차례로 사용하는 그리디 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>준규가 가지고 있는 동전은 총 N종류이고, 각각의 동전을 매우 많이 가지고 있습니다. 동전을 적절히 사용해서 그 가치의 합을 K로 만들려고 합니다. 이때 필요한 동전 개수의 최솟값을 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 10, 1 ≤ K ≤ 100,000,000)<br>둘째 줄부터 N개의 줄에 동전의 가치 Ai가 오름차순으로 주어진다. (A1 = 1, Ai는 Ai-1의 배수)</p></div><div><h4>출력</h4><p>K원을 만드는데 필요한 동전 개수의 최솟값을 출력한다.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>10 4200\n1\n5\n10\n50\n100\n500\n1000\n5000\n10000\n50000</pre></div><div><strong>출력</strong><pre>6</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '동전이 항상 이전 동전의 배수이므로, <strong>가장 큰 동전부터</strong> 최대한 많이 사용하면 됩니다.' },
                 { title: '핵심 코드', content: '큰 동전부터 반복하면서 <code>count += K // coin</code>, <code>K %= coin</code>을 반복합니다.' },
                 { title: '왜 그리디가 되나요?', content: '동전이 배수 관계이기 때문에, 작은 동전 여러 개 = 큰 동전 하나로 항상 바꿀 수 있습니다. 따라서 큰 것부터 쓰는 것이 항상 최적입니다.' }
             ],
-            inputDefault: 4200,
-            solve(n) {
-                const coins = [50000,10000,5000,1000,500,100,50,10,5,1];
-                let K = 4200, count = 0;
-                for (const coin of coins) { count += Math.floor(K / coin); K %= coin; }
-                return String(count);
-            },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-N, K = map(int, input().split())
-coins = [int(input()) for _ in range(N)]
-
-count = 0
-for coin in reversed(coins):    # 큰 동전부터
-    count += K // coin
-    K %= coin
-
-print(count)`,
-                cpp: `#include <iostream>
-using namespace std;
-
-int main() {
-    int N, K;
-    cin >> N >> K;
-
-    int coins[10];
-    for (int i = 0; i < N; i++) cin >> coins[i];
-
-    int count = 0;
-    for (int i = N - 1; i >= 0; i--) {
-        count += K / coins[i];
-        K %= coins[i];
-    }
-    cout << count << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt(), K = sc.nextInt();
-        int[] coins = new int[N];
-        for (int i = 0; i < N; i++) coins[i] = sc.nextInt();
-
-        int count = 0;
-        for (int i = N - 1; i >= 0; i--) {
-            count += K / coins[i];
-            K %= coins[i];
-        }
-        System.out.println(count);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\ncoins = [int(input()) for _ in range(N)]\n\ncount = 0\nfor coin in reversed(coins):    # 큰 동전부터\n    count += K // coin\n    K %= coin\n\nprint(count)',
+                cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n\n    int coins[10];\n    for (int i = 0; i < N; i++) cin >> coins[i];\n\n    int count = 0;\n    for (int i = N - 1; i >= 0; i--) {\n        count += K / coins[i];\n        K %= coins[i];\n    }\n    cout << count << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt(), K = sc.nextInt();\n        int[] coins = new int[N];\n        for (int i = 0; i < N; i++) coins[i] = sc.nextInt();\n\n        int count = 0;\n        for (int i = N - 1; i >= 0; i--) {\n            count += K / coins[i];\n            K %= coins[i];\n        }\n        System.out.println(count);\n    }\n}'
+            },
+            solutions: [{
+                approach: '큰 동전부터 그리디',
+                description: '가장 큰 동전부터 최대한 사용하여 동전 수를 최소화합니다.',
+                timeComplexity: 'O(N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'import sys\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\ncoins = [int(input()) for _ in range(N)]' },
+                        { title: '큰 동전부터 그리디', code: 'count = 0\nfor coin in reversed(coins):    # 큰 동전부터\n    count += K // coin\n    K %= coin' },
+                        { title: '출력', code: 'print(count)' }
+                    ]
+                },
+                get templates() { return greedyTopic.problems[0].templates; }
+            }]
         },
         {
             id: 'boj-11399',
             title: 'BOJ 11399 - ATM',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11399',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>ATM 앞에 N명이 줄을 서 있습니다. i번 사람이 돈을 인출하는 데 Pi분이 걸립니다. 각 사람이 돈을 인출하는 데 필요한 시간의 합이 최소가 되도록 줄을 세우고, 그 최솟값을 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 사람의 수 N (1 ≤ N ≤ 1,000)<br>둘째 줄에 각 사람의 인출 시간 Pi (1 ≤ Pi ≤ 1,000)</p></div>
-                    <div><h4>출력</h4><p>각 사람이 돈을 인출하는 데 필요한 시간의 합의 최솟값</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>5\n3 1 4 3 2</pre></div>
-                        <div><strong>출력</strong><pre>32</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '짧은 시간 순서로 정렬하여 총 대기시간을 최소화하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>ATM 앞에 N명이 줄을 서 있습니다. i번 사람이 돈을 인출하는 데 Pi분이 걸립니다. 각 사람이 돈을 인출하는 데 필요한 시간의 합이 최소가 되도록 줄을 세우고, 그 최솟값을 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 사람의 수 N (1 ≤ N ≤ 1,000)<br>둘째 줄에 각 사람의 인출 시간 Pi (1 ≤ Pi ≤ 1,000)</p></div><div><h4>출력</h4><p>각 사람이 돈을 인출하는 데 필요한 시간의 합의 최솟값</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>5\n3 1 4 3 2</pre></div><div><strong>출력</strong><pre>32</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '앞 사람이 오래 걸리면 뒤의 <strong>모든 사람이 기다려야</strong> 합니다. 따라서 <strong>짧은 시간 순서</strong>로 줄을 세워야 합니다.' },
                 { title: '핵심 공식', content: '오름차순 정렬 후, i번째 사람의 대기시간 = <code>P[0] + P[1] + ... + P[i]</code><br>전체 합 = 이 누적합들의 합입니다.' },
                 { title: '간단한 계산법', content: 'i번째(0-indexed) 사람의 시간은 (N-i)번 더해집니다.<br>따라서 답 = <code>Σ P[i] × (N - i)</code> (정렬 후)' }
             ],
-            inputDefault: 5,
-            solve(n) {
-                const arr = [3, 1, 4, 3, 2].sort((a, b) => a - b);
-                let total = 0, acc = 0;
-                for (const p of arr) { acc += p; total += acc; }
-                return String(total);
-            },
             templates: {
-                python: `N = int(input())
-P = list(map(int, input().split()))
-
-P.sort()    # 짧은 시간부터
-
-total = 0
-acc = 0
-for p in P:
-    acc += p        # 누적 대기시간
-    total += acc    # 각 사람의 대기시간 더하기
-
-print(total)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    int N;
-    cin >> N;
-    int P[1000];
-    for (int i = 0; i < N; i++) cin >> P[i];
-
-    sort(P, P + N);
-
-    int total = 0, acc = 0;
-    for (int i = 0; i < N; i++) {
-        acc += P[i];
-        total += acc;
-    }
-    cout << total << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt();
-        int[] P = new int[N];
-        for (int i = 0; i < N; i++) P[i] = sc.nextInt();
-
-        Arrays.sort(P);
-
-        int total = 0, acc = 0;
-        for (int p : P) {
-            acc += p;
-            total += acc;
-        }
-        System.out.println(total);
-    }
-}`
-            }
+                python: 'N = int(input())\nP = list(map(int, input().split()))\n\nP.sort()    # 짧은 시간부터\n\ntotal = 0\nacc = 0\nfor p in P:\n    acc += p        # 누적 대기시간\n    total += acc    # 각 사람의 대기시간 더하기\n\nprint(total)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    int P[1000];\n    for (int i = 0; i < N; i++) cin >> P[i];\n\n    sort(P, P + N);\n\n    int total = 0, acc = 0;\n    for (int i = 0; i < N; i++) {\n        acc += P[i];\n        total += acc;\n    }\n    cout << total << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        int[] P = new int[N];\n        for (int i = 0; i < N; i++) P[i] = sc.nextInt();\n\n        Arrays.sort(P);\n\n        int total = 0, acc = 0;\n        for (int p : P) {\n            acc += p;\n            total += acc;\n        }\n        System.out.println(total);\n    }\n}'
+            },
+            solutions: [{
+                approach: '정렬 + 누적합',
+                description: '오름차순 정렬 후 누적 대기시간의 합을 구합니다.',
+                timeComplexity: 'O(N log N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'N = int(input())\nP = list(map(int, input().split()))' },
+                        { title: '정렬', code: 'P.sort()    # 짧은 시간부터' },
+                        { title: '누적합 계산', code: 'total = 0\nacc = 0\nfor p in P:\n    acc += p        # 누적 대기시간\n    total += acc    # 각 사람의 대기시간 더하기' },
+                        { title: '출력', code: 'print(total)' }
+                    ]
+                },
+                get templates() { return greedyTopic.problems[1].templates; }
+            }]
         },
 
         // ========== 2단계: 정렬 + 그리디 ==========
@@ -792,220 +867,66 @@ public class Main {
             title: 'BOJ 1931 - 회의실 배정',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1931',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>한 개의 회의실에 N개의 회의가 신청되었습니다. 각 회의의 시작시간과 끝나는 시간이 주어집니다. 겹치지 않게 회의실을 사용할 수 있는 회의의 최대 개수를 구하시오.</p>
-                <p>한 회의가 끝나는 것과 동시에 다음 회의가 시작될 수 있습니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 회의의 수 N (1 ≤ N ≤ 100,000)<br>둘째 줄부터 각 회의의 시작시간과 끝나는 시간이 주어진다.</p></div>
-                    <div><h4>출력</h4><p>최대 사용할 수 있는 회의의 수를 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>11\n1 4\n3 5\n0 6\n5 7\n3 8\n5 9\n6 10\n8 11\n8 12\n2 13\n12 14</pre></div>
-                        <div><strong>출력</strong><pre>4</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '끝나는 시간 기준으로 정렬하고 선택하는 활동 선택 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>한 개의 회의실에 N개의 회의가 신청되었습니다. 각 회의의 시작시간과 끝나는 시간이 주어집니다. 겹치지 않게 회의실을 사용할 수 있는 회의의 최대 개수를 구하시오.</p><p>한 회의가 끝나는 것과 동시에 다음 회의가 시작될 수 있습니다.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 회의의 수 N (1 ≤ N ≤ 100,000)<br>둘째 줄부터 각 회의의 시작시간과 끝나는 시간이 주어진다.</p></div><div><h4>출력</h4><p>최대 사용할 수 있는 회의의 수를 출력한다.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>11\n1 4\n3 5\n0 6\n5 7\n3 8\n5 9\n6 10\n8 11\n8 12\n2 13\n12 14</pre></div><div><strong>출력</strong><pre>4</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '회의를 <strong>끝나는 시간</strong> 기준으로 오름차순 정렬합니다. 끝나는 시간이 같으면 시작 시간 기준 오름차순 정렬합니다.' },
                 { title: '선택 기준', content: '이전에 선택한 회의의 끝나는 시간 이후에 시작하는 회의만 선택합니다.<br><code>if start >= last_end: 선택</code>' },
                 { title: '왜 끝나는 시간 기준?', content: '일찍 끝나는 회의를 선택해야 남은 시간이 최대한 확보되어, 더 많은 회의를 넣을 수 있습니다.' }
             ],
-            inputDefault: 11,
-            solve(n) { return '4'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-N = int(input())
-meetings = []
-for _ in range(N):
-    s, e = map(int, input().split())
-    meetings.append((e, s))     # (끝, 시작) 으로 저장
-
-meetings.sort()     # 끝나는 시간 기준 정렬
-
-count = 0
-last_end = 0
-for end, start in meetings:
-    if start >= last_end:
-        count += 1
-        last_end = end
-
-print(count)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-#include <vector>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int N;
-    cin >> N;
-    vector<pair<int,int>> meetings(N);
-    for (int i = 0; i < N; i++) {
-        int s, e;
-        cin >> s >> e;
-        meetings[i] = {e, s};  // {끝, 시작}
-    }
-    sort(meetings.begin(), meetings.end());
-
-    int count = 0, lastEnd = 0;
-    for (auto& [end, start] : meetings) {
-        if (start >= lastEnd) {
-            count++;
-            lastEnd = end;
-        }
-    }
-    cout << count << endl;
-    return 0;
-}`,
-                java: `import java.io.*;
-import java.util.*;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-        int[][] meetings = new int[N][2];
-        for (int i = 0; i < N; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            meetings[i][0] = Integer.parseInt(st.nextToken()); // 시작
-            meetings[i][1] = Integer.parseInt(st.nextToken()); // 끝
-        }
-        Arrays.sort(meetings, (a, b) -> a[1] != b[1] ? a[1] - b[1] : a[0] - b[0]);
-
-        int count = 0, lastEnd = 0;
-        for (int[] m : meetings) {
-            if (m[0] >= lastEnd) {
-                count++;
-                lastEnd = m[1];
-            }
-        }
-        System.out.println(count);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmeetings = []\nfor _ in range(N):\n    s, e = map(int, input().split())\n    meetings.append((e, s))     # (끝, 시작) 으로 저장\n\nmeetings.sort()     # 끝나는 시간 기준 정렬\n\ncount = 0\nlast_end = 0\nfor end, start in meetings:\n    if start >= last_end:\n        count += 1\n        last_end = end\n\nprint(count)',
+                cpp: '#include <iostream>\n#include <algorithm>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N;\n    cin >> N;\n    vector<pair<int,int>> meetings(N);\n    for (int i = 0; i < N; i++) {\n        int s, e;\n        cin >> s >> e;\n        meetings[i] = {e, s};  // {끝, 시작}\n    }\n    sort(meetings.begin(), meetings.end());\n\n    int count = 0, lastEnd = 0;\n    for (auto& [end, start] : meetings) {\n        if (start >= lastEnd) {\n            count++;\n            lastEnd = end;\n        }\n    }\n    cout << count << endl;\n    return 0;\n}',
+                java: 'import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n        int[][] meetings = new int[N][2];\n        for (int i = 0; i < N; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            meetings[i][0] = Integer.parseInt(st.nextToken());\n            meetings[i][1] = Integer.parseInt(st.nextToken());\n        }\n        Arrays.sort(meetings, (a, b) -> a[1] != b[1] ? a[1] - b[1] : a[0] - b[0]);\n\n        int count = 0, lastEnd = 0;\n        for (int[] m : meetings) {\n            if (m[0] >= lastEnd) {\n                count++;\n                lastEnd = m[1];\n            }\n        }\n        System.out.println(count);\n    }\n}'
+            },
+            solutions: [{
+                approach: '끝나는 시간 기준 정렬 + 그리디',
+                description: '끝나는 시간 기준으로 정렬하고 겹치지 않는 회의를 선택합니다.',
+                timeComplexity: 'O(N log N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmeetings = []\nfor _ in range(N):\n    s, e = map(int, input().split())\n    meetings.append((e, s))' },
+                        { title: '끝나는 시간 기준 정렬', code: 'meetings.sort()     # 끝나는 시간 기준 정렬' },
+                        { title: '그리디 선택', code: 'count = 0\nlast_end = 0\nfor end, start in meetings:\n    if start >= last_end:\n        count += 1\n        last_end = end' },
+                        { title: '출력', code: 'print(count)' }
+                    ]
+                },
+                get templates() { return greedyTopic.problems[2].templates; }
+            }]
         },
         {
             id: 'boj-1541',
             title: 'BOJ 1541 - 잃어버린 괄호',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1541',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>양수와 +, -로 이루어진 식이 주어졌을 때, 괄호를 적절히 쳐서 식의 값을 최소로 만드시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 식이 주어진다. 식은 0~9, +, -로만 이루어져 있다. 길이는 50 이하이다.</p></div>
-                    <div><h4>출력</h4><p>괄호를 쳐서 만들 수 있는 식의 최솟값을 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>55-50+40</pre></div>
-                        <div><strong>출력</strong><pre>-35</pre></div>
-                    </div>
-                    <div class="example-grid" style="margin-top:8px;">
-                        <div><strong>입력</strong><pre>10+20+30+40</pre></div>
-                        <div><strong>출력</strong><pre>100</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '수식에서 "-" 뒤에 괄호를 넣어 값을 최소화하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>양수와 +, -로 이루어진 식이 주어졌을 때, 괄호를 적절히 쳐서 식의 값을 최소로 만드시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 식이 주어진다. 식은 0~9, +, -로만 이루어져 있다. 길이는 50 이하이다.</p></div><div><h4>출력</h4><p>괄호를 쳐서 만들 수 있는 식의 최솟값을 출력한다.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>55-50+40</pre></div><div><strong>출력</strong><pre>-35</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '첫 번째 <code>-</code> 뒤에 나오는 모든 수를 빼면 최솟값이 됩니다! <code>-</code> 뒤의 <code>+</code>를 괄호로 묶으면 전부 빼기가 됩니다.' },
                 { title: '핵심 아이디어', content: '식을 <code>-</code> 기준으로 나눕니다. 각 그룹 안의 <code>+</code>로 연결된 수들을 합칩니다.<br>첫 그룹은 더하고, 나머지 그룹은 모두 뺍니다.' },
                 { title: '예시', content: '<code>55-50+40</code> → [55], [50+40=90]<br>55 - 90 = <strong>-35</strong>' }
             ],
-            inputDefault: 0,
-            solve(n) { return '-35'; },
             templates: {
-                python: `expr = input()
-
-# '-' 기준으로 나누기
-groups = expr.split('-')
-
-# 각 그룹 안의 수들을 더하기
-sums = []
-for group in groups:
-    sums.append(sum(map(int, group.split('+'))))
-
-# 첫 그룹은 더하고, 나머지는 빼기
-result = sums[0]
-for i in range(1, len(sums)):
-    result -= sums[i]
-
-print(result)`,
-                cpp: `#include <iostream>
-#include <string>
-#include <sstream>
-using namespace std;
-
-int main() {
-    string expr;
-    cin >> expr;
-
-    // '-' 기준 분리 후 각 그룹의 합 계산
-    int result = 0;
-    bool first = true;
-    bool subtract = false;
-
-    stringstream ss(expr);
-    string group;
-
-    // '-'를 구분자로 분리
-    int pos = 0;
-    string token;
-    bool isFirst = true;
-
-    // 간단한 파싱
-    stringstream full(expr);
-    string segment;
-    while (getline(full, segment, '-')) {
-        // segment 내 '+' 분리 후 합산
-        int groupSum = 0;
-        stringstream gs(segment);
-        string num;
-        while (getline(gs, num, '+')) {
-            groupSum += stoi(num);
-        }
-        if (isFirst) {
-            result += groupSum;
-            isFirst = false;
-        } else {
-            result -= groupSum;
-        }
-    }
-
-    cout << result << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String expr = sc.next();
-
-        String[] groups = expr.split("-");
-        int result = 0;
-
-        for (int g = 0; g < groups.length; g++) {
-            int groupSum = 0;
-            for (String num : groups[g].split("\\\\+")) {
-                groupSum += Integer.parseInt(num);
-            }
-            if (g == 0) result += groupSum;
-            else result -= groupSum;
-        }
-
-        System.out.println(result);
-    }
-}`
-            }
+                python: 'expr = input()\n\n# \'-\' 기준으로 나누기\ngroups = expr.split(\'-\')\n\n# 각 그룹 안의 수들을 더하기\nsums = []\nfor group in groups:\n    sums.append(sum(map(int, group.split(\'+\'))))\n\n# 첫 그룹은 더하고, 나머지는 빼기\nresult = sums[0]\nfor i in range(1, len(sums)):\n    result -= sums[i]\n\nprint(result)',
+                cpp: '#include <iostream>\n#include <string>\n#include <sstream>\nusing namespace std;\n\nint main() {\n    string expr;\n    cin >> expr;\n\n    int result = 0;\n    bool isFirst = true;\n\n    stringstream full(expr);\n    string segment;\n    while (getline(full, segment, \'-\')) {\n        int groupSum = 0;\n        stringstream gs(segment);\n        string num;\n        while (getline(gs, num, \'+\')) {\n            groupSum += stoi(num);\n        }\n        if (isFirst) {\n            result += groupSum;\n            isFirst = false;\n        } else {\n            result -= groupSum;\n        }\n    }\n\n    cout << result << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String expr = sc.next();\n\n        String[] groups = expr.split("-");\n        int result = 0;\n\n        for (int g = 0; g < groups.length; g++) {\n            int groupSum = 0;\n            for (String num : groups[g].split("\\\\+")) {\n                groupSum += Integer.parseInt(num);\n            }\n            if (g == 0) result += groupSum;\n            else result -= groupSum;\n        }\n\n        System.out.println(result);\n    }\n}'
+            },
+            solutions: [{
+                approach: '"- 뒤 전부 빼기" 그리디',
+                description: '"-" 기준으로 그룹을 나누고, 첫 그룹만 더하고 나머지는 전부 뺍니다.',
+                timeComplexity: 'O(N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'expr = input()' },
+                        { title: '"-" 기준 분리', code: 'groups = expr.split(\'-\')' },
+                        { title: '각 그룹 합산', code: 'sums = []\nfor group in groups:\n    sums.append(sum(map(int, group.split(\'+\'))))' },
+                        { title: '첫 그룹 더하고 나머지 빼기', code: 'result = sums[0]\nfor i in range(1, len(sums)):\n    result -= sums[i]\n\nprint(result)' }
+                    ]
+                },
+                get templates() { return greedyTopic.problems[3].templates; }
+            }]
         },
 
         // ========== 3단계: 응용 그리디 ==========
@@ -1014,264 +935,46 @@ public class Main {
             title: 'BOJ 13305 - 주유소',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/13305',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>N개의 도시가 일직선 도로 위에 있습니다. 제일 왼쪽 도시에서 제일 오른쪽 도시로 이동하려고 합니다. 각 도시에 주유소가 있고, 리터당 가격이 다릅니다. 1km마다 1리터를 사용합니다. 최소 비용으로 이동하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 도시의 수 N (2 ≤ N ≤ 100,000)<br>둘째 줄에 인접한 도시 사이 도로 길이 N-1개<br>셋째 줄에 각 도시의 주유소 리터당 가격 N개</p></div>
-                    <div><h4>출력</h4><p>최소 비용을 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>4\n2 3 1\n5 2 4 1</pre></div>
-                        <div><strong>출력</strong><pre>18</pre></div>
-                    </div>
-                    <div class="example-grid" style="margin-top:8px;">
-                        <div><strong>입력</strong><pre>4\n3 3 4\n1 1 1 1</pre></div>
-                        <div><strong>출력</strong><pre>10</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '도시별 기름값을 비교하며 최소 비용으로 이동하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>N개의 도시가 일직선 도로 위에 있습니다. 제일 왼쪽 도시에서 제일 오른쪽 도시로 이동하려고 합니다. 각 도시에 주유소가 있고, 리터당 가격이 다릅니다. 1km마다 1리터를 사용합니다. 최소 비용으로 이동하시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 도시의 수 N (2 ≤ N ≤ 100,000)<br>둘째 줄에 인접한 도시 사이 도로 길이 N-1개<br>셋째 줄에 각 도시의 주유소 리터당 가격 N개</p></div><div><h4>출력</h4><p>최소 비용을 출력한다.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>4\n2 3 1\n5 2 4 1</pre></div><div><strong>출력</strong><pre>18</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '왼쪽에서 오른쪽으로 이동하면서, <strong>지금까지 본 가장 싼 가격</strong>을 기억합니다. 각 구간에서는 그 최소 가격으로 기름을 넣습니다.' },
                 { title: '핵심 아이디어', content: '더 싼 주유소를 만나면 최소 가격을 갱신합니다.<br>각 도로 구간의 비용 = <code>min(지금까지의 최소 가격) × 도로 길이</code>' },
                 { title: '주의할 점', content: '값이 매우 커질 수 있으므로 Python은 자동으로 되지만, C++/Java는 <strong>long long</strong> 타입을 사용해야 합니다. 마지막 도시의 가격은 사용하지 않습니다.' }
             ],
-            inputDefault: 4,
-            solve(n) { return '18'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-N = int(input())
-dist = list(map(int, input().split()))
-price = list(map(int, input().split()))
-
-min_price = price[0]
-total = 0
-
-for i in range(N - 1):
-    min_price = min(min_price, price[i])
-    total += min_price * dist[i]
-
-print(total)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    int N;
-    cin >> N;
-
-    long long dist[100000], price[100000];
-    for (int i = 0; i < N - 1; i++) cin >> dist[i];
-    for (int i = 0; i < N; i++) cin >> price[i];
-
-    long long minPrice = price[0];
-    long long total = 0;
-
-    for (int i = 0; i < N - 1; i++) {
-        minPrice = min(minPrice, price[i]);
-        total += minPrice * dist[i];
-    }
-
-    cout << total << endl;
-    return 0;
-}`,
-                java: `import java.io.*;
-import java.util.*;
-
-public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        long[] dist = new long[N - 1];
-        for (int i = 0; i < N - 1; i++) dist[i] = Long.parseLong(st.nextToken());
-
-        st = new StringTokenizer(br.readLine());
-        long[] price = new long[N];
-        for (int i = 0; i < N; i++) price[i] = Long.parseLong(st.nextToken());
-
-        long minPrice = price[0];
-        long total = 0;
-
-        for (int i = 0; i < N - 1; i++) {
-            minPrice = Math.min(minPrice, price[i]);
-            total += minPrice * dist[i];
-        }
-
-        System.out.println(total);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ndist = list(map(int, input().split()))\nprice = list(map(int, input().split()))\n\nmin_price = price[0]\ntotal = 0\n\nfor i in range(N - 1):\n    min_price = min(min_price, price[i])\n    total += min_price * dist[i]\n\nprint(total)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n\n    long long dist[100000], price[100000];\n    for (int i = 0; i < N - 1; i++) cin >> dist[i];\n    for (int i = 0; i < N; i++) cin >> price[i];\n\n    long long minPrice = price[0];\n    long long total = 0;\n\n    for (int i = 0; i < N - 1; i++) {\n        minPrice = min(minPrice, price[i]);\n        total += minPrice * dist[i];\n    }\n\n    cout << total << endl;\n    return 0;\n}',
+                java: 'import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        long[] dist = new long[N - 1];\n        for (int i = 0; i < N - 1; i++) dist[i] = Long.parseLong(st.nextToken());\n\n        st = new StringTokenizer(br.readLine());\n        long[] price = new long[N];\n        for (int i = 0; i < N; i++) price[i] = Long.parseLong(st.nextToken());\n\n        long minPrice = price[0];\n        long total = 0;\n\n        for (int i = 0; i < N - 1; i++) {\n            minPrice = Math.min(minPrice, price[i]);\n            total += minPrice * dist[i];\n        }\n\n        System.out.println(total);\n    }\n}'
+            },
+            solutions: [{
+                approach: '최소 가격 추적 그리디',
+                description: '지금까지 본 최소 기름값을 유지하며 각 구간 비용을 계산합니다.',
+                timeComplexity: 'O(N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ndist = list(map(int, input().split()))\nprice = list(map(int, input().split()))' },
+                        { title: '초기 최소 가격', code: 'min_price = price[0]\ntotal = 0' },
+                        { title: '그리디 순회', code: 'for i in range(N - 1):\n    min_price = min(min_price, price[i])\n    total += min_price * dist[i]' },
+                        { title: '출력', code: 'print(total)' }
+                    ]
+                },
+                get templates() { return greedyTopic.problems[4].templates; }
+            }]
         }
     ],
 
-    // ===== 문제 렌더링 =====
-    renderProblem(container) {
-        container.innerHTML = '';
-        this.stages.forEach(stage => {
-            const section = document.createElement('div');
-            section.className = 'stage-section';
-            section.innerHTML = `
-                <div class="stage-header">
-                    <span class="stage-num">${stage.num}</span>
-                    <h3>${stage.title}</h3>
-                    <span class="stage-desc">${stage.desc}</span>
-                </div>
-            `;
-            const cardsDiv = document.createElement('div');
-            cardsDiv.className = 'problem-cards';
-
-            stage.problemIds.forEach(pid => {
-                const problem = this.problems.find(p => p.id === pid);
-                if (!problem) return;
-                const bojNum = problem.id.replace('boj-', '');
-                const card = document.createElement('div');
-                card.className = 'problem-card';
-                const diffLabel = problem.difficulty === 'bronze' ? '브론즈' : problem.difficulty === 'silver' ? '실버' : '골드';
-                card.innerHTML = `
-                    <span class="card-num">#${bojNum}</span>
-                    <span class="card-title">${problem.title.replace(/BOJ \d+ - /, '')}</span>
-                    <span class="card-diff ${problem.difficulty}">${diffLabel}</span>
-                `;
-                card.addEventListener('click', () => {
-                    this._renderProblemDetail(container, problem);
-                });
-                cardsDiv.appendChild(card);
-            });
-
-            section.appendChild(cardsDiv);
-            container.appendChild(section);
-        });
-    },
-
+    // ===== 역호환 스텁 =====
     _renderProblemDetail(container, problem) {
         container.innerHTML = '';
-
-        const backBtn = document.createElement('button');
-        backBtn.className = 'back-btn';
-        backBtn.innerHTML = '← 문제 목록으로';
-        backBtn.addEventListener('click', () => this.renderProblem(container));
+        var backBtn = document.createElement('button');
+        backBtn.className = 'btn';
+        backBtn.textContent = '← 문제 목록으로';
+        backBtn.addEventListener('click', function() { greedyTopic.renderProblem(container); });
         container.appendChild(backBtn);
-
-        const header = document.createElement('div');
-        header.className = 'problem-header';
-        header.innerHTML = `
-            <h2>${problem.title}</h2>
-            <a href="${problem.link}" target="_blank" class="btn btn-link">문제 원본 보기 →</a>
-        `;
-        container.appendChild(header);
-
-        const desc = document.createElement('div');
-        desc.className = 'problem-description';
-        desc.innerHTML = problem.descriptionHTML;
-        container.appendChild(desc);
-
-        // 힌트
-        const hintsSection = document.createElement('div');
-        hintsSection.className = 'hints-section';
-        hintsSection.innerHTML = '<h3>💡 단계별 힌트</h3>';
-        const openedState = new Array(problem.hints.length).fill(false);
-        const hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hint-steps';
-
-        problem.hints.forEach((hint, idx) => {
-            const step = document.createElement('div');
-            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
-            step.innerHTML = `
-                <div class="hint-step-header">
-                    <span class="hint-step-num">${idx + 1}</span>
-                    <span class="hint-step-title">${hint.title}</span>
-                    <span class="hint-step-toggle">▼</span>
-                </div>
-                <div class="hint-step-body">${hint.content}</div>
-            `;
-            const headerEl = step.querySelector('.hint-step-header');
-            headerEl.addEventListener('click', () => {
-                if (step.classList.contains('locked')) return;
-                if (openedState[idx]) {
-                    step.classList.remove('opened');
-                    openedState[idx] = false;
-                } else {
-                    step.classList.add('opened');
-                    openedState[idx] = true;
-                    if (idx + 1 < problem.hints.length) {
-                        const nextStep = hintsDiv.children[idx + 1];
-                        if (nextStep) nextStep.classList.remove('locked');
-                    }
-                }
-            });
-            hintsDiv.appendChild(step);
-        });
-
-        hintsSection.appendChild(hintsDiv);
-        container.appendChild(hintsSection);
-
-        // 풀이 영역
-        const solveArea = document.createElement('div');
-        solveArea.className = 'solve-area';
-        solveArea.innerHTML = `
-            <div class="editor-header">
-                <h3>풀이 작성</h3>
-                <select id="lang-select">
-                    <option value="python">Python</option>
-                    <option value="cpp">C++</option>
-                    <option value="java">Java</option>
-                </select>
-            </div>
-            <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
-            <div class="editor-actions">
-                <button id="run-btn" class="btn btn-primary">▶ 실행</button>
-                <button id="check-btn" class="btn btn-success">✓ 정답 확인</button>
-            </div>
-            <div id="output-area" class="output-area">
-                <div class="output-label">실행 결과</div>
-                <pre id="output-text"></pre>
-            </div>
-        `;
-        container.appendChild(solveArea);
-
-        container.querySelectorAll('pre code').forEach(codeEl => hljs.highlightElement(codeEl));
-
-        const editor = container.querySelector('#code-editor');
-        const langSelect = container.querySelector('#lang-select');
-        editor.value = problem.templates.python;
-
-        langSelect.addEventListener('change', () => {
-            editor.value = problem.templates[langSelect.value];
-        });
-
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const s = editor.selectionStart;
-                editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(editor.selectionEnd);
-                editor.selectionStart = editor.selectionEnd = s + 4;
-            }
-        });
-
-        container.querySelector('#run-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
-        });
-
-        container.querySelector('#check-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n💡 코드를 BOJ에 제출하여 정답을 확인하세요!`);
-        });
-    },
-
-    _showOutput(container, text, status = '') {
-        const area = container.querySelector('#output-area');
-        area.querySelector('#output-text').textContent = text;
-        area.className = 'output-area' + (status ? ' ' + status : '');
     }
 };
 
-// ===== 등록 =====
 window.AlgoTopics = window.AlgoTopics || {};
 window.AlgoTopics.greedy = greedyTopic;

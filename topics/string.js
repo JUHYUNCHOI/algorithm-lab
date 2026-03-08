@@ -20,6 +20,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
         tabBar.appendChild(tab);
     });
     wrapper.appendChild(tabBar);
+    tabBar.style.display = 'none';
 
     const panel = document.createElement('div');
     panel.className = 'approach-panel';
@@ -67,7 +68,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
         const langNames = { python: 'Python', cpp: 'C++', java: 'Java' };
 
         const controls = document.createElement('div');
-        controls.style.cssText = 'display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;';
+        controls.style.cssText = 'display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;';
         controls.innerHTML =
             '<select class="lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--bg2);color:var(--text);font-family:inherit;">' +
             langs.map(l => '<option value="' + l + '">' + (langNames[l] || l) + '</option>').join('') +
@@ -81,6 +82,18 @@ window.renderSolutionsCodeTab = function(el, prob) {
             let currentStep = -1;
             let isFullView = false;
 
+            // 위쪽 스텝 컨트롤 — controls 바 안에 오른쪽 정렬
+            const stepCtrlTop = document.createElement('div');
+            stepCtrlTop.style.cssText = 'display:flex;gap:6px;align-items:center;margin-left:auto;';
+            stepCtrlTop.innerHTML =
+                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← 이전</button>' +
+                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">시작 전</span>' +
+                '<button class="btn btn-primary code-step-btn cs-next pulse-hint" style="font-size:0.8rem;padding:4px 10px;">다음 →</button>';
+            controls.appendChild(stepCtrlTop);
+            const topPrev = stepCtrlTop.querySelector('.cs-prev');
+            const topNext = stepCtrlTop.querySelector('.cs-next');
+            const topCounter = stepCtrlTop.querySelector('.code-step-counter');
+
             const stepDesc = document.createElement('div');
             stepDesc.className = 'code-step-desc';
             stepDesc.textContent = '▶ 다음 버튼을 눌러 코드를 단계별로 확인하세요';
@@ -93,39 +106,61 @@ window.renderSolutionsCodeTab = function(el, prob) {
 
             const codeBlock = document.createElement('div');
             codeBlock.className = 'code-block';
-            codeBlock.innerHTML = '<pre><code></code></pre>';
+            codeBlock.innerHTML =
+                '<div class="code-block-header">' +
+                    '<div class="code-block-dots"><span></span><span></span><span></span></div>' +
+                    '<span class="code-block-title">solution.' + (langs[0] === 'python' ? 'py' : langs[0] === 'cpp' ? 'cpp' : 'java') + '</span>' +
+                '</div>' +
+                '<pre><code></code></pre>';
             codeBlock.style.display = 'none';
             panel.appendChild(codeBlock);
             const codeEl = codeBlock.querySelector('code');
+            const codeTitle = codeBlock.querySelector('.code-block-title');
+
+            // 아래쪽 스텝 컨트롤 — 오른쪽 정렬 sticky
+            const stepCtrlBot = document.createElement('div');
+            stepCtrlBot.style.cssText = 'display:flex;gap:6px;align-items:center;justify-content:flex-end;position:sticky;bottom:12px;z-index:100;margin-top:12px;padding:8px 0;';
+            stepCtrlBot.innerHTML =
+                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← 이전</button>' +
+                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">시작 전</span>' +
+                '<button class="btn btn-primary code-step-btn cs-next" style="font-size:0.8rem;padding:4px 10px;">다음 →</button>';
+            panel.appendChild(stepCtrlBot);
+            const botPrev = stepCtrlBot.querySelector('.cs-prev');
+            const botNext = stepCtrlBot.querySelector('.cs-next');
+            const botCounter = stepCtrlBot.querySelector('.code-step-counter');
+
+            // aliases for renderStep compatibility
+            const prevBtn = topPrev;
+            const nextBtn = topNext;
+            const counter = topCounter;
 
             const fullViewBtn = document.createElement('button');
             fullViewBtn.className = 'code-fullview-btn';
             fullViewBtn.textContent = '전체 코드 보기';
             panel.appendChild(fullViewBtn);
 
-            const stepCtrl = document.createElement('div');
-            stepCtrl.className = 'code-step-controls';
-            stepCtrl.innerHTML =
-                '<button class="btn code-step-btn cs-prev" disabled>&larr; 이전</button>' +
-                '<span class="code-step-counter">시작 전</span>' +
-                '<button class="btn btn-primary code-step-btn cs-next">다음 &rarr;</button>';
-            panel.appendChild(stepCtrl);
-
-            const prevBtn = stepCtrl.querySelector('.cs-prev');
-            const nextBtn = stepCtrl.querySelector('.cs-next');
-            const counter = stepCtrl.querySelector('.code-step-counter');
-
             function getSteps() {
                 return (sol.codeSteps[currentLang]) || [];
             }
 
+            function syncControls() {
+                const steps = getSteps();
+                [[topPrev, topNext, topCounter], [botPrev, botNext, botCounter]].forEach(function(trio) {
+                    trio[0].disabled = currentStep < 0;
+                    trio[1].disabled = currentStep >= steps.length - 1;
+                    if (currentStep < 0) {
+                        trio[2].textContent = '시작 전';
+                    } else {
+                        trio[2].textContent = 'Step ' + (currentStep + 1) + ' / ' + steps.length;
+                    }
+                });
+            }
+
             function renderStep() {
                 const steps = getSteps();
-                prevBtn.disabled = currentStep < 0;
-                nextBtn.disabled = currentStep >= steps.length - 1;
+                syncControls();
 
                 if (currentStep < 0) {
-                    counter.textContent = '시작 전';
                     stepDesc.textContent = '▶ 다음 버튼을 눌러 코드를 단계별로 확인하세요';
                     explainerArea.style.display = 'none';
                     codeBlock.style.display = 'none';
@@ -133,8 +168,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
                 }
 
                 const step = steps[currentStep];
-                counter.textContent = 'Step ' + (currentStep + 1) + ' / ' + steps.length;
-                stepDesc.innerHTML = '<strong>' + step.title + '</strong> — ' + step.desc;
+                stepDesc.innerHTML = '<span class="step-desc-title">' + step.title + '</span><span class="step-desc-body">' + step.desc.replace(/\n/g, '<br>') + '</span>';
 
                 // Explanation card
                 if (step.explanation) {
@@ -144,23 +178,39 @@ window.renderSolutionsCodeTab = function(el, prob) {
                     explainerArea.style.display = 'none';
                 }
 
-                // Accumulate code from fragments
-                const fragments = steps.slice(0, currentStep + 1).filter(s => s.code).map(s => s.code);
-                const accumulated = fragments.join('\n\n');
+                // Accumulate code — detect if steps use full-code or fragment style
+                const codeStepsWithCode = steps.slice(0, currentStep + 1).filter(s => s.code);
+                let accumulated = '';
+                if (codeStepsWithCode.length >= 2 && codeStepsWithCode[1].code.includes(codeStepsWithCode[0].code)) {
+                    // Full-code style: each step has complete code, just use the last one
+                    accumulated = codeStepsWithCode[codeStepsWithCode.length - 1].code;
+                } else {
+                    // Fragment style: join all fragments
+                    accumulated = codeStepsWithCode.map(s => s.code).join('\n\n');
+                }
 
                 if (accumulated) {
                     codeBlock.style.display = 'block';
                     codeEl.textContent = accumulated;
                     codeEl.className = 'language-' + langClass(currentLang);
+                    codeEl.removeAttribute('data-highlighted');
                     if (window.hljs) hljs.highlightElement(codeEl);
 
                     // Calculate new lines
                     if (step.code) {
-                        const prevFrags = steps.slice(0, currentStep).filter(s => s.code).map(s => s.code);
-                        const prevAcc = prevFrags.join('\n\n');
-                        const prevCount = prevAcc ? prevAcc.split('\n').length : 0;
+                        const isFullStyle = codeStepsWithCode.length >= 2 && codeStepsWithCode[1].code.includes(codeStepsWithCode[0].code);
+                        let prevCount = 0;
+                        if (isFullStyle) {
+                            // Full-code: compare with previous step's full code
+                            const prevSteps = steps.slice(0, currentStep).filter(s => s.code);
+                            prevCount = prevSteps.length > 0 ? prevSteps[prevSteps.length - 1].code.split('\n').length : 0;
+                        } else {
+                            const prevFrags = steps.slice(0, currentStep).filter(s => s.code).map(s => s.code);
+                            const prevAcc = prevFrags.join('\n\n');
+                            prevCount = prevAcc ? prevAcc.split('\n').length : 0;
+                        }
                         const totalCount = accumulated.split('\n').length;
-                        const startNew = prevCount > 0 ? prevCount + 2 : 1;
+                        const startNew = prevCount > 0 ? prevCount + 1 : 1;
                         const newLines = [];
                         for (let ln = startNew; ln <= totalCount; ln++) newLines.push(ln);
                         highlightNewLines(codeEl, newLines);
@@ -170,39 +220,43 @@ window.renderSolutionsCodeTab = function(el, prob) {
                 }
             }
 
-            nextBtn.addEventListener('click', () => {
+            function doNext() {
                 const steps = getSteps();
                 if (currentStep >= steps.length - 1) return;
+                topNext.classList.remove('pulse-hint');
+                botNext.classList.remove('pulse-hint');
                 currentStep++;
                 if (isFullView) {
                     isFullView = false;
                     fullViewBtn.textContent = '전체 코드 보기';
-                    stepCtrl.style.display = 'flex';
+                    stepCtrlTop.style.display = 'flex';
+                    stepCtrlBot.style.display = 'flex';
                     stepDesc.style.display = 'flex';
                 }
                 renderStep();
-                // 새 코드로 자동 스크롤 — 코드 하단이 보이도록 자연스럽게
                 setTimeout(() => {
                     if (codeBlock.style.display === 'none') return;
                     var cb = codeBlock.getBoundingClientRect();
-                    // 코드 블록 하단이 뷰포트 60% 아래면 올려서 보여주기
                     if (cb.bottom > window.innerHeight * 0.6) {
                         window.scrollBy({ top: cb.bottom - window.innerHeight * 0.6, behavior: 'smooth' });
                     }
                 }, 50);
-            });
-
-            prevBtn.addEventListener('click', () => {
+            }
+            function doPrev() {
                 if (currentStep < 0) return;
                 currentStep--;
                 renderStep();
-            });
+            }
+            topNext.addEventListener('click', doNext);
+            botNext.addEventListener('click', doNext);
+            topPrev.addEventListener('click', doPrev);
+            botPrev.addEventListener('click', doPrev);
 
             fullViewBtn.addEventListener('click', () => {
                 if (isFullView) {
                     isFullView = false;
                     fullViewBtn.textContent = '전체 코드 보기';
-                    stepCtrl.style.display = 'flex';
+                    stepCtrlTop.style.display = 'flex'; stepCtrlBot.style.display = 'flex';
                     stepDesc.style.display = 'flex';
                     renderStep();
                 } else {
@@ -212,8 +266,9 @@ window.renderSolutionsCodeTab = function(el, prob) {
                     codeBlock.style.display = 'block';
                     codeEl.textContent = sol.templates[currentLang] || '';
                     codeEl.className = 'language-' + langClass(currentLang);
+                    codeEl.removeAttribute('data-highlighted');
                     if (window.hljs) hljs.highlightElement(codeEl);
-                    stepCtrl.style.display = 'none';
+                    stepCtrlTop.style.display = 'none'; stepCtrlBot.style.display = 'none';
                     stepDesc.style.display = 'none';
                 }
             });
@@ -223,16 +278,20 @@ window.renderSolutionsCodeTab = function(el, prob) {
                 currentStep = -1;
                 isFullView = false;
                 fullViewBtn.textContent = '전체 코드 보기';
-                stepCtrl.style.display = 'flex';
+                stepCtrlTop.style.display = 'flex'; stepCtrlBot.style.display = 'flex';
                 stepDesc.style.display = 'flex';
+                nextBtn.classList.add('pulse-hint');
+                var extMap = { python: 'py', cpp: 'cpp', java: 'java' };
+                if (codeTitle) codeTitle.textContent = 'solution.' + (extMap[currentLang] || currentLang);
 
                 if (!sol.codeSteps[currentLang]) {
-                    stepCtrl.style.display = 'none';
+                    stepCtrlTop.style.display = 'none'; stepCtrlBot.style.display = 'none';
                     stepDesc.style.display = 'none';
                     explainerArea.style.display = 'none';
                     codeBlock.style.display = 'block';
                     codeEl.textContent = sol.templates[currentLang] || '// 이 언어의 풀이가 없습니다.';
                     codeEl.className = 'language-' + langClass(currentLang);
+                    codeEl.removeAttribute('data-highlighted');
                     if (window.hljs) hljs.highlightElement(codeEl);
                     fullViewBtn.style.display = 'none';
                 } else {
@@ -242,11 +301,12 @@ window.renderSolutionsCodeTab = function(el, prob) {
             });
 
             if (!sol.codeSteps[currentLang]) {
-                stepCtrl.style.display = 'none';
+                stepCtrlTop.style.display = 'none'; stepCtrlBot.style.display = 'none';
                 stepDesc.style.display = 'none';
                 codeBlock.style.display = 'block';
                 codeEl.textContent = sol.templates[currentLang] || '';
                 codeEl.className = 'language-' + langClass(currentLang);
+                codeEl.removeAttribute('data-highlighted');
                 if (window.hljs) hljs.highlightElement(codeEl);
                 fullViewBtn.style.display = 'none';
             } else {
@@ -257,21 +317,119 @@ window.renderSolutionsCodeTab = function(el, prob) {
             // === Fallback: full code display ===
             const codeBlock = document.createElement('div');
             codeBlock.className = 'code-block';
-            codeBlock.innerHTML = '<pre><code></code></pre>';
+            var extMap2 = { python: 'py', cpp: 'cpp', java: 'java' };
+            codeBlock.innerHTML =
+                '<div class="code-block-header">' +
+                    '<div class="code-block-dots"><span></span><span></span><span></span></div>' +
+                    '<span class="code-block-title">solution.' + (extMap2[langs[0]] || langs[0]) + '</span>' +
+                '</div>' +
+                '<pre><code></code></pre>';
             panel.appendChild(codeBlock);
 
             const codeEl = codeBlock.querySelector('code');
+            const codeTitle2 = codeBlock.querySelector('.code-block-title');
             function showCode(lang) {
                 codeEl.textContent = sol.templates[lang] || '// 이 언어의 풀이가 없습니다.';
                 codeEl.className = 'language-' + langClass(lang);
+                codeEl.removeAttribute('data-highlighted');
                 if (window.hljs) hljs.highlightElement(codeEl);
+                if (codeTitle2) codeTitle2.textContent = 'solution.' + (extMap2[lang] || lang);
             }
             select.addEventListener('change', () => showCode(select.value));
             showCode(langs[0]);
         }
     }
 
-    showApproach(0);
+    // 최적 풀이를 메인으로 표시 (마지막 solution)
+    var mainIdx = prob.solutions.length - 1;
+    showApproach(mainIdx);
+
+    // 나머지(브루트포스 등)를 접힌 참고 섹션으로 추가
+    for (var ri = 0; ri < mainIdx; ri++) {
+        (function(refSol) {
+            var details = document.createElement('details');
+            details.className = 'brute-ref';
+
+            var summary = document.createElement('summary');
+            summary.className = 'brute-ref-summary';
+            summary.innerHTML =
+                '<span class="brute-ref-icon">📝</span>' +
+                '<span class="brute-ref-label">' + refSol.approach + ' 코드 참고</span>' +
+                '<span class="brute-ref-badge">' + refSol.timeComplexity + '</span>';
+            details.appendChild(summary);
+
+            var refContent = document.createElement('div');
+            refContent.className = 'brute-ref-content';
+
+            if (refSol.description) {
+                var desc = document.createElement('p');
+                desc.className = 'brute-ref-desc';
+                desc.textContent = refSol.description;
+                refContent.appendChild(desc);
+            }
+
+            var refMeta = document.createElement('div');
+            refMeta.className = 'approach-meta';
+            refMeta.innerHTML =
+                '<span class="approach-meta-badge time">⏱ ' + refSol.timeComplexity + '</span>' +
+                '<span class="approach-meta-badge space">💾 ' + refSol.spaceComplexity + '</span>';
+            refContent.appendChild(refMeta);
+
+            // 언어 셀렉터
+            var refLangs = Object.keys(refSol.templates);
+            var langNamesRef = { python: 'Python', cpp: 'C++', java: 'Java' };
+            var refSelect = document.createElement('select');
+            refSelect.className = 'lang-select';
+            refSelect.style.cssText = 'padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--bg2);color:var(--text);font-family:inherit;margin-bottom:8px;';
+            refLangs.forEach(function(l) {
+                var opt = document.createElement('option');
+                opt.value = l;
+                opt.textContent = langNamesRef[l] || l;
+                refSelect.appendChild(opt);
+            });
+            refContent.appendChild(refSelect);
+
+            // 코드 블록
+            var refCodeBlock = document.createElement('div');
+            refCodeBlock.className = 'code-block';
+            var extMap = { python: 'py', cpp: 'cpp', java: 'java' };
+            refCodeBlock.innerHTML =
+                '<div class="code-block-header">' +
+                    '<div class="code-block-dots"><span></span><span></span><span></span></div>' +
+                    '<span class="code-block-title">brute.' + (extMap[refLangs[0]] || refLangs[0]) + '</span>' +
+                '</div>' +
+                '<pre><code></code></pre>';
+            refContent.appendChild(refCodeBlock);
+
+            var refCodeEl = refCodeBlock.querySelector('code');
+            var refCodeTitle = refCodeBlock.querySelector('.code-block-title');
+
+            function showRefCode(lang) {
+                refCodeEl.textContent = refSol.templates[lang] || '';
+                refCodeEl.className = 'language-' + langClass(lang);
+                refCodeEl.removeAttribute('data-highlighted');
+                if (window.hljs) hljs.highlightElement(refCodeEl);
+                if (refCodeTitle) refCodeTitle.textContent = 'brute.' + (extMap[lang] || lang);
+            }
+
+            refSelect.addEventListener('change', function() {
+                showRefCode(refSelect.value);
+            });
+
+            // 열릴 때 코드 하이라이팅 (lazy)
+            var refInited = false;
+            details.addEventListener('toggle', function() {
+                if (details.open && !refInited) {
+                    refInited = true;
+                    showRefCode(refLangs[0]);
+                }
+            });
+
+            details.appendChild(refContent);
+            wrapper.appendChild(details);
+        })(prob.solutions[ri]);
+    }
+
     el.appendChild(wrapper);
 };
 
@@ -540,6 +698,15 @@ const stringTopic = {
     _renderCodeTab(contentEl, prob) {
         if (prob.solutions && prob.solutions.length > 0) {
             window.renderSolutionsCodeTab(contentEl, prob);
+            if (prob.id === 'boj-1157') {
+                this._renderBonusSpeedComparison(contentEl);
+            }
+            if (prob.id === 'lc-125') {
+                this._renderBonusPalindromeComparison(contentEl);
+            }
+            if (prob.id === 'boj-1213') {
+                this._renderBonusMakePalindromeComparison(contentEl);
+            }
             return;
         }
         const isLC = prob.link.includes('leetcode');
@@ -569,57 +736,531 @@ const stringTopic = {
             const langMap = { python: 'language-python', cpp: 'language-cpp', java: 'language-java' };
             codeEl.className = langMap[lang];
             codeEl.textContent = prob.templates[lang];
+            codeEl.removeAttribute('data-highlighted');
             if (window.hljs) hljs.highlightElement(codeEl);
         });
 
         contentEl.appendChild(wrapper);
     },
 
+    // ===== 번외편: Counter 속도 비교 =====
+    _renderBonusSpeedComparison(contentEl) {
+        const bonus = document.createElement('div');
+        bonus.className = 'bonus-speed-section';
+        bonus.innerHTML = `
+            <div class="bonus-divider">
+                <span class="bonus-divider-line"></span>
+                <span class="bonus-divider-label">📦 번외: 이걸 한 줄로?</span>
+                <span class="bonus-divider-toggle">▼</span>
+                <span class="bonus-divider-line"></span>
+            </div>
+
+            <div class="bonus-content"><div class="bonus-card">
+                <p style="margin-bottom:12px;color:var(--text2);font-size:0.95rem;">
+                    Python의 <code>collections.Counter</code>를 쓰면 빈도수 세기가 한 줄이에요!
+                </p>
+                <div class="code-block" style="margin-bottom:16px;">
+                    <div class="code-block-header">
+                        <div class="code-block-dots"><span></span><span></span><span></span></div>
+                        <div class="code-block-title">counter_solution.py</div>
+                    </div>
+                    <pre style="margin:0;padding:1rem;"><code class="language-python hljs"><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter
+
+word = <span class="hljs-built_in">input</span>().upper()
+cnt = Counter(word)
+top = cnt.most_common(<span class="hljs-number">2</span>)
+
+<span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(top) > <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> top[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] == top[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>]:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"?"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(top[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>])</code></pre>
+                </div>
+
+                <div class="bonus-speed-title">⚡ 속도 비교: 딕셔너리 vs Counter</div>
+                <p style="margin-bottom:16px;color:var(--text2);font-size:0.9rem;">
+                    슬라이더를 움직여서 데이터가 커질수록 속도 차이가 어떻게 변하는지 확인해보세요!
+                </p>
+
+                <div class="speed-slider-row">
+                    <span class="speed-slider-label">데이터 크기</span>
+                    <input type="range" class="speed-slider" min="0" max="100" step="1" value="0">
+                    <span class="speed-size-display">100자</span>
+                </div>
+
+                <div class="speed-bars-container">
+                    <div class="speed-bar-row">
+                        <span class="speed-bar-label">딕셔너리</span>
+                        <div class="speed-bar-track">
+                            <div class="speed-bar-fill dict-bar" style="width:3%"></div>
+                        </div>
+                        <span class="speed-bar-time dict-time">0.02ms</span>
+                    </div>
+                    <div class="speed-bar-row">
+                        <span class="speed-bar-label">Counter</span>
+                        <div class="speed-bar-track">
+                            <div class="speed-bar-fill counter-bar" style="width:2%"></div>
+                        </div>
+                        <span class="speed-bar-time counter-time">0.015ms</span>
+                    </div>
+                </div>
+
+                <div class="speed-ratio-badge">
+                    비슷한 속도 🤝
+                </div>
+
+                <div class="speed-explanation" style="margin-top:16px;padding:14px 18px;background:var(--bg2);border-radius:10px;border:1px solid var(--bg3);">
+                    <p style="font-size:0.9rem;color:var(--text);margin:0 0 10px 0;font-weight:700;">
+                        💡 왜 Counter가 빠를까?
+                    </p>
+                    <div style="display:flex;flex-direction:column;gap:8px;font-size:0.88rem;color:var(--text2);line-height:1.6;">
+                        <div>🐍 <strong>딕셔너리</strong>: Python이 <code>for c in word:</code>로 글자를 하나씩 꺼내고, 매번 <code>freq[c] += 1</code>을 실행해요. 이 반복문은 Python 인터프리터가 한 줄씩 해석하면서 돌아가요.</div>
+                        <div>⚡ <strong>Counter</strong>: <code>Counter(word)</code>를 호출하면, 내부적으로 <strong>C 언어로 작성된 <code>_count_elements</code></strong> 함수가 실행돼요. 같은 반복이지만 컴파일된 C 코드가 돌아가니까 훨씬 빨라요!</div>
+                        <div style="padding:8px 12px;background:rgba(0,184,148,0.08);border-radius:8px;margin-top:4px;">📌 <strong>핵심</strong>: 둘 다 O(n)이지만, Python 반복 vs C 반복의 <strong>상수 차이</strong>가 데이터가 커질수록 드러나요.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        // 번외편 토글
+        const divider1 = bonus.querySelector('.bonus-divider');
+        divider1.addEventListener('click', () => {
+            bonus.classList.toggle('bonus-open');
+            divider1.querySelector('.bonus-divider-toggle').textContent = bonus.classList.contains('bonus-open') ? '▲' : '▼';
+        });
+
+        // Continuous interpolation: slider 0~100 maps to 100 ~ 1,000,000 chars (log scale)
+        const slider = bonus.querySelector('.speed-slider');
+        const sizeDisplay = bonus.querySelector('.speed-size-display');
+        const dictBar = bonus.querySelector('.dict-bar');
+        const counterBar = bonus.querySelector('.counter-bar');
+        const dictTime = bonus.querySelector('.dict-time');
+        const counterTime = bonus.querySelector('.counter-time');
+        const ratioBadge = bonus.querySelector('.speed-ratio-badge');
+
+        function formatSize(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M자';
+            if (n >= 1000) return Math.round(n / 1000).toLocaleString() + 'K자';
+            return n.toLocaleString() + '자';
+        }
+
+        function formatTime(ms) {
+            if (ms >= 1) return ms.toFixed(1) + 'ms';
+            return ms.toFixed(3) + 'ms';
+        }
+
+        function update(val) {
+            // Log scale: 0→100자, 100→1,000,000자
+            const t = val / 100;
+            const size = Math.round(100 * Math.pow(10000, t));  // 100 ~ 1,000,000
+
+            // Realistic speed curves (ms)
+            // Both have ~0.03ms fixed overhead (function call, object creation)
+            // dict: +0.00015ms per char (Python for-loop)
+            // Counter: +0.000015ms per char (C-optimized internal loop)
+            // Small data → overhead dominates → similar speed
+            // Large data → per-char cost dominates → Counter wins big
+            const dictMs = 0.00015 * size + 0.03;
+            const counterMs = 0.000015 * size + 0.03;
+
+            sizeDisplay.textContent = formatSize(size);
+
+            const maxMs = 0.00015 * 1000000 + 0.005; // ~150ms
+            const dictPct = Math.max(3, (dictMs / maxMs) * 100);
+            const counterPct = Math.max(3, (counterMs / maxMs) * 100);
+
+            dictBar.style.width = dictPct + '%';
+            counterBar.style.width = counterPct + '%';
+
+            dictTime.textContent = formatTime(dictMs);
+            counterTime.textContent = formatTime(counterMs);
+
+            const ratio = dictMs / counterMs;
+            if (ratio < 1.5) {
+                ratioBadge.textContent = '비슷한 속도 🤝';
+                ratioBadge.className = 'speed-ratio-badge ratio-similar';
+            } else if (ratio < 5) {
+                ratioBadge.textContent = 'Counter가 ' + ratio.toFixed(1) + '배 빠릅니다! ⚡';
+                ratioBadge.className = 'speed-ratio-badge ratio-fast';
+            } else {
+                ratioBadge.textContent = 'Counter가 ' + ratio.toFixed(1) + '배 빠릅니다! 🚀';
+                ratioBadge.className = 'speed-ratio-badge ratio-super';
+            }
+        }
+
+        slider.addEventListener('input', () => update(parseInt(slider.value)));
+        update(0);
+
+        contentEl.appendChild(bonus);
+    },
+
+    // ===== 번외편: Valid Palindrome 비교 =====
+    _renderBonusPalindromeComparison(contentEl) {
+        const bonus = document.createElement('div');
+        bonus.className = 'bonus-speed-section';
+        bonus.innerHTML = `
+            <div class="bonus-divider">
+                <span class="bonus-divider-line"></span>
+                <span class="bonus-divider-label">📦 번외: 정규식으로 한 방에!</span>
+                <span class="bonus-divider-toggle">▼</span>
+                <span class="bonus-divider-line"></span>
+            </div>
+
+            <div class="bonus-content"><div class="bonus-card">
+                <p style="margin-bottom:12px;color:var(--text2);font-size:0.95rem;">
+                    Python의 <code>re</code> 모듈과 슬라이싱을 쓰면 3줄로 끝나요!
+                </p>
+                <div class="code-block" style="margin-bottom:16px;">
+                    <div class="code-block-header">
+                        <div class="code-block-dots"><span></span><span></span><span></span></div>
+                        <div class="code-block-title">one_liner.py</div>
+                    </div>
+                    <pre style="margin:0;padding:1rem;"><code class="language-python hljs"><span class="hljs-keyword">import</span> re
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">isPalindrome</span>(s):
+    s = re.sub(<span class="hljs-string">r'[^a-zA-Z0-9]'</span>, <span class="hljs-string">''</span>, s).lower()
+    <span class="hljs-keyword">return</span> s == s[::<span class="hljs-number">-1</span>]</code></pre>
+                </div>
+
+                <div class="bonus-speed-title">⚡ 슬라이싱 vs 투 포인터 — 뭐가 다를까?</div>
+                <p style="margin-bottom:16px;color:var(--text2);font-size:0.9rem;">
+                    슬라이더를 움직여서 문자열이 길어질수록 어떤 차이가 나는지 확인해보세요!
+                </p>
+
+                <div class="speed-slider-row">
+                    <span class="speed-slider-label">문자열 길이</span>
+                    <input type="range" class="speed-slider pal-slider" min="0" max="100" step="1" value="0">
+                    <span class="speed-size-display pal-size">100자</span>
+                </div>
+
+                <div class="speed-bars-container">
+                    <div class="speed-bar-row">
+                        <span class="speed-bar-label" style="min-width:80px">슬라이싱</span>
+                        <div class="speed-bar-track">
+                            <div class="speed-bar-fill dict-bar pal-slice-bar" style="width:3%"></div>
+                        </div>
+                        <span class="speed-bar-time pal-slice-time">0.01ms</span>
+                    </div>
+                    <div class="speed-bar-row">
+                        <span class="speed-bar-label" style="min-width:80px">투 포인터</span>
+                        <div class="speed-bar-track">
+                            <div class="speed-bar-fill counter-bar pal-tp-bar" style="width:3%"></div>
+                        </div>
+                        <span class="speed-bar-time pal-tp-time">0.02ms</span>
+                    </div>
+                </div>
+
+                <div class="speed-ratio-badge pal-badge">
+                    비슷한 속도 🤝
+                </div>
+
+                <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:180px;padding:12px;background:rgba(253,203,110,0.08);border:1px solid rgba(253,203,110,0.25);border-radius:10px;">
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;">🔄 슬라이싱 <code>[::-1]</code></div>
+                        <div style="font-size:0.85rem;color:var(--text2);line-height:1.5;">
+                            시간: <strong>빠름</strong> (C 최적화)<br>
+                            메모리: <strong>O(n)</strong> 복사본 생성<br>
+                            코드: 짧고 직관적
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:180px;padding:12px;background:rgba(0,184,148,0.06);border:1px solid rgba(0,184,148,0.2);border-radius:10px;">
+                        <div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;">👆 투 포인터</div>
+                        <div style="font-size:0.85rem;color:var(--text2);line-height:1.5;">
+                            시간: Python 루프 (느림)<br>
+                            메모리: <strong>O(1)</strong> 추가 없음!<br>
+                            코드: 면접에서 선호
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;">
+                    <div class="pal-mem-card" style="flex:1;min-width:120px;text-align:center;padding:10px;background:var(--bg);border-radius:10px;border:1px solid var(--bg3);">
+                        <div style="font-size:0.8rem;color:var(--text2);">슬라이싱 메모리</div>
+                        <div class="pal-mem-slice" style="font-size:1.1rem;font-weight:700;color:#e17055;font-family:'Fira Code',monospace;">~100B</div>
+                    </div>
+                    <div class="pal-mem-card" style="flex:1;min-width:120px;text-align:center;padding:10px;background:var(--bg);border-radius:10px;border:1px solid var(--bg3);">
+                        <div style="font-size:0.8rem;color:var(--text2);">투 포인터 메모리</div>
+                        <div style="font-size:1.1rem;font-weight:700;color:var(--green);font-family:'Fira Code',monospace;">~16B 고정</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:14px;padding:12px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--bg3);">
+                    <p style="font-size:0.9rem;color:var(--text);margin:0 0 8px 0;font-weight:700;">
+                        💡 그래서 뭘 쓰지?
+                    </p>
+                    <div style="font-size:0.88rem;color:var(--text2);line-height:1.6;">
+                        <div>✅ <strong>코딩 테스트</strong>: 슬라이싱이 빠르고 짧아서 유리</div>
+                        <div>✅ <strong>면접</strong>: 투 포인터 — "O(1) 공간"을 설명할 수 있어서 인상적</div>
+                        <div>✅ <strong>실무</strong>: 데이터가 작으면 슬라이싱, 메모리 제한이 있으면 투 포인터</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        // 번외편 토글
+        const divider2 = bonus.querySelector('.bonus-divider');
+        divider2.addEventListener('click', () => {
+            bonus.classList.toggle('bonus-open');
+            divider2.querySelector('.bonus-divider-toggle').textContent = bonus.classList.contains('bonus-open') ? '▲' : '▼';
+        });
+
+        const slider = bonus.querySelector('.pal-slider');
+        const sizeDisplay = bonus.querySelector('.pal-size');
+        const sliceBar = bonus.querySelector('.pal-slice-bar');
+        const tpBar = bonus.querySelector('.pal-tp-bar');
+        const sliceTime = bonus.querySelector('.pal-slice-time');
+        const tpTime = bonus.querySelector('.pal-tp-time');
+        const badge = bonus.querySelector('.pal-badge');
+        const memSlice = bonus.querySelector('.pal-mem-slice');
+
+        function formatSize(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M자';
+            if (n >= 1000) return Math.round(n / 1000).toLocaleString() + 'K자';
+            return n.toLocaleString() + '자';
+        }
+        function formatTime(ms) {
+            return ms >= 1 ? ms.toFixed(1) + 'ms' : ms.toFixed(3) + 'ms';
+        }
+        function formatMem(bytes) {
+            if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + 'MB';
+            if (bytes >= 1024) return (bytes / 1024).toFixed(0) + 'KB';
+            return '~' + bytes + 'B';
+        }
+
+        function update(val) {
+            const t = val / 100;
+            const size = Math.round(100 * Math.pow(2000, t)); // 100 ~ 200,000
+
+            sizeDisplay.textContent = formatSize(size);
+
+            // Slicing: C-optimized, very fast, but O(n) memory
+            const sliceMs = 0.000005 * size + 0.005;
+            // Two pointer: Python loop, slower, but O(1) memory
+            const tpMs = 0.00008 * size + 0.008;
+
+            const maxMs = 0.00008 * 200000 + 0.008; // ~16ms
+            sliceBar.style.width = Math.max(3, (sliceMs / maxMs) * 100) + '%';
+            tpBar.style.width = Math.max(3, (tpMs / maxMs) * 100) + '%';
+
+            sliceTime.textContent = formatTime(sliceMs);
+            tpTime.textContent = formatTime(tpMs);
+
+            memSlice.textContent = formatMem(size);
+
+            const ratio = tpMs / sliceMs;
+            if (ratio < 2) {
+                badge.textContent = '비슷한 속도 🤝';
+                badge.className = 'speed-ratio-badge pal-badge ratio-similar';
+            } else if (ratio < 8) {
+                badge.textContent = '슬라이싱이 ' + ratio.toFixed(1) + '배 빠릅니다! ⚡';
+                badge.className = 'speed-ratio-badge pal-badge ratio-fast';
+            } else {
+                badge.textContent = '슬라이싱이 ' + ratio.toFixed(0) + '배 빠릅니다! 🚀';
+                badge.className = 'speed-ratio-badge pal-badge ratio-super';
+            }
+        }
+
+        slider.addEventListener('input', () => update(parseInt(slider.value)));
+        update(0);
+
+        contentEl.appendChild(bonus);
+    },
+
+    // ===== 번외: 팰린드롬 만들기 — 배열 vs Counter 속도 비교 =====
+    _renderBonusMakePalindromeComparison(contentEl) {
+        const bonus = document.createElement('div');
+        bonus.className = 'bonus-speed-section';
+        bonus.innerHTML = `
+            <div class="bonus-divider">
+                <span class="bonus-divider-line"></span>
+                <span class="bonus-divider-label">📦 번외: Counter로 더 짧게?</span>
+                <span class="bonus-divider-toggle">▼</span>
+                <span class="bonus-divider-line"></span>
+            </div>
+            <div class="bonus-content"><div class="bonus-card">
+                <p style="margin:0 0 12px;color:var(--text-secondary);">Python의 <code>Counter</code>를 쓰면 빈도수 세기 + 홀수 체크가 훨씬 간결해요!</p>
+                <div style="background:#282c34;border-radius:12px;overflow:hidden;">
+                    <div style="display:flex;align-items:center;padding:8px 16px;background:#21252b;">
+                        <span style="display:flex;gap:6px;">
+                            <span style="width:12px;height:12px;border-radius:50%;background:#ff5f56;display:inline-block;"></span>
+                            <span style="width:12px;height:12px;border-radius:50%;background:#ffbd2e;display:inline-block;"></span>
+                            <span style="width:12px;height:12px;border-radius:50%;background:#27c93f;display:inline-block;"></span>
+                        </span>
+                        <span style="flex:1;text-align:center;color:#888;font-size:0.85em;font-family:monospace;">palindrome_counter.py</span>
+                    </div>
+                    <pre style="margin:0;padding:20px;color:#d4d8e0;font-size:0.95rem;line-height:1.8;overflow-x:auto;"><code><span style="color:#c678dd;">from</span> <span style="color:#d4d8e0;">collections</span> <span style="color:#c678dd;">import</span> Counter
+
+<span style="color:#d4d8e0;">cnt</span> = Counter(<span style="color:#56b6c2;">input</span>())
+<span style="color:#d4d8e0;">odds</span> = [c <span style="color:#c678dd;">for</span> c, v <span style="color:#c678dd;">in</span> cnt.items() <span style="color:#c678dd;">if</span> v % <span style="color:#d19a66;">2</span>]
+
+<span style="color:#c678dd;">if</span> <span style="color:#56b6c2;">len</span>(odds) > <span style="color:#d19a66;">1</span>:
+    <span style="color:#56b6c2;">print</span>(<span style="color:#98c379;">"I'm Sorry Hansoo"</span>)
+<span style="color:#c678dd;">else</span>:
+    <span style="color:#d4d8e0;">half</span> = <span style="color:#98c379;">""</span>.join(c * (v // <span style="color:#d19a66;">2</span>) <span style="color:#c678dd;">for</span> c, v <span style="color:#c678dd;">in</span> <span style="color:#56b6c2;">sorted</span>(cnt.items()))
+    <span style="color:#d4d8e0;">mid</span> = odds[<span style="color:#d19a66;">0</span>] <span style="color:#c678dd;">if</span> odds <span style="color:#c678dd;">else</span> <span style="color:#98c379;">""</span>
+    <span style="color:#56b6c2;">print</span>(half + mid + half[::<span style="color:#d19a66;">-1</span>])</code></pre>
+                </div>
+            </div>
+            <h3 style="margin:28px 0 8px;font-size:1.1em;">⚡ 배열 카운팅 vs Counter — 뭐가 다를까?</h3>
+            <p style="color:var(--text-secondary);margin-bottom:16px;">슬라이더를 움직여서 문자열이 길어질수록 어떤 차이가 나는지 확인해보세요!</p>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                <span style="font-weight:600;white-space:nowrap;">문자열 길이</span>
+                <input type="range" min="0" max="100" value="0" class="speed-slider mkpal-slider" />
+                <span class="mkpal-size-label" style="color:var(--accent);font-weight:700;min-width:60px;text-align:right;">10자</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="min-width:70px;text-align:right;font-weight:500;">배열</span>
+                    <div style="flex:1;background:var(--bg-secondary);border-radius:8px;height:28px;overflow:hidden;position:relative;">
+                        <div class="speed-bar-fill mkpal-bar-arr" style="height:100%;border-radius:8px;width:50%;background:linear-gradient(90deg,#e17055,#fdcb6e);"></div>
+                    </div>
+                    <span class="mkpal-time-arr" style="min-width:70px;font-size:0.85em;color:var(--text-secondary);">0.01ms</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="min-width:70px;text-align:right;font-weight:500;">Counter</span>
+                    <div style="flex:1;background:var(--bg-secondary);border-radius:8px;height:28px;overflow:hidden;position:relative;">
+                        <div class="speed-bar-fill mkpal-bar-ctr" style="height:100%;border-radius:8px;width:50%;background:linear-gradient(90deg,#6c5ce7,#a29bfe);"></div>
+                    </div>
+                    <span class="mkpal-time-ctr" style="min-width:70px;font-size:0.85em;color:var(--text-secondary);">0.01ms</span>
+                </div>
+            </div>
+            <div class="speed-ratio-badge mkpal-badge" style="margin-top:16px;">비슷한 속도 🤝</div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;">
+                <div style="background:rgba(225,112,85,0.08);border:1px solid rgba(225,112,85,0.2);border-radius:12px;padding:16px;">
+                    <h4 style="margin:0 0 8px;">📊 배열 카운팅</h4>
+                    <p style="margin:0;font-size:0.9em;color:var(--text-secondary);">방식: <code>[0]*26</code> + <code>ord()</code><br>장점: 메모리 고정, C/Java에도 적용<br>단점: 코드가 좀 길어짐</p>
+                </div>
+                <div style="background:var(--bg2);border:1px solid var(--bg3);border-radius:12px;padding:16px;">
+                    <h4 style="margin:0 0 8px;">⚡ Counter</h4>
+                    <p style="margin:0;font-size:0.9em;color:var(--text-secondary);">방식: <code>Counter(s)</code> 한 줄<br>장점: Pythonic하고 간결!<br>단점: Python 전용</p>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-secondary);border-radius:12px;padding:16px;margin-top:16px;">
+                <h4 style="margin:0 0 8px;">💡 그래서 뭘 쓰지?</h4>
+                <p style="margin:0;font-size:0.9em;color:var(--text-secondary);">
+                    ✅ <strong>Python 코테</strong>: Counter — 짧고 실수 줄임<br>
+                    ✅ <strong>면접 (C++/Java)</strong>: 배열 — 언어 독립적 사고 어필<br>
+                    ✅ <strong>이 문제 (길이 ≤ 50)</strong>: 둘 다 충분히 빠름! 편한 걸로
+                </p>
+            </div>
+        </div>
+        `;
+
+        // 번외편 토글
+        const divider4 = bonus.querySelector('.bonus-divider');
+        divider4.addEventListener('click', () => {
+            bonus.classList.toggle('bonus-open');
+            divider4.querySelector('.bonus-divider-toggle').textContent = bonus.classList.contains('bonus-open') ? '▲' : '▼';
+        });
+
+        const slider = bonus.querySelector('.mkpal-slider');
+        const sizeLabel = bonus.querySelector('.mkpal-size-label');
+        const barArr = bonus.querySelector('.mkpal-bar-arr');
+        const barCtr = bonus.querySelector('.mkpal-bar-ctr');
+        const timeArr = bonus.querySelector('.mkpal-time-arr');
+        const timeCtr = bonus.querySelector('.mkpal-time-ctr');
+        const badge = bonus.querySelector('.mkpal-badge');
+
+        function update(val) {
+            const t = val / 100;
+            // Log scale: 10 ~ 1,000,000
+            const size = Math.round(10 * Math.pow(100000, t));
+            if (size >= 1000000) sizeLabel.textContent = (size/1000000).toFixed(0) + 'M자';
+            else if (size >= 1000) sizeLabel.textContent = (size/1000).toFixed(0) + 'K자';
+            else sizeLabel.textContent = size + '자';
+
+            // 배열: Python loop per char
+            const arrMs = 0.00015 * size + 0.02;
+            // Counter: C-optimized _count_elements
+            const ctrMs = 0.000015 * size + 0.02;
+
+            const maxMs = Math.max(arrMs, ctrMs);
+            barArr.style.width = (arrMs / maxMs * 80 + 10) + '%';
+            barCtr.style.width = (ctrMs / maxMs * 80 + 10) + '%';
+            timeArr.textContent = arrMs < 1 ? arrMs.toFixed(3) + 'ms' : arrMs.toFixed(1) + 'ms';
+            timeCtr.textContent = ctrMs < 1 ? ctrMs.toFixed(3) + 'ms' : ctrMs.toFixed(1) + 'ms';
+
+            const ratio = arrMs / ctrMs;
+            if (ratio < 1.5) {
+                badge.textContent = '비슷한 속도 🤝';
+                badge.className = 'speed-ratio-badge mkpal-badge ratio-similar';
+            } else if (ratio < 5) {
+                badge.textContent = 'Counter가 ' + ratio.toFixed(1) + '배 빠릅니다! ⚡';
+                badge.className = 'speed-ratio-badge mkpal-badge ratio-fast';
+            } else {
+                badge.textContent = 'Counter가 ' + ratio.toFixed(0) + '배 빠릅니다! 🚀';
+                badge.className = 'speed-ratio-badge mkpal-badge ratio-super';
+            }
+        }
+
+        slider.addEventListener('input', () => update(parseInt(slider.value)));
+        update(0);
+
+        contentEl.appendChild(bonus);
+    },
+
     // ===== 빈도수 세기 시각화 =====
     _renderVizFrequency(container) {
         const self = this;
         container.innerHTML = `
-            <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
-                <label style="font-weight:600;">문자열:
-                    <input type="text" id="str-viz-input" value="banana"
-                        style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;">
-                </label>
-                <button class="btn btn-primary" id="str-viz-start">시작</button>
-            </div>
-            <div class="graph-svg-container" style="min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">
-                <div id="str-char-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
-            </div>
-            <div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:200px;">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">빈도수 딕셔너리</div>
-                    <div id="str-freq-display" class="graph-queue-display" style="min-height:50px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">
-                        <span style="color:var(--text2);">시작을 눌러주세요</span>
+            <div id="freq-section" style="padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--accent);">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:1rem;color:var(--accent);">
+                        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--accent);color:#fff;font-size:0.8rem;font-weight:700;">1</span>
+                        빈도수 분석
+                    </span>
+                    <span class="approach-meta-badge time">⏱ O(n)</span>
+                    <span class="approach-meta-badge space">💾 O(1)</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+                    <label style="font-weight:600;">문자열:
+                        <input type="text" id="str-viz-input" value="Mississippi"
+                            style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;">
+                    </label>
+                    <button class="btn btn-primary" id="str-viz-start" style="font-size:1rem;">🔍 탐색 시작</button>
+                </div>
+                <div id="freq-viz-area" style="display:none;">
+                    <div class="graph-svg-container" style="min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">
+                        <div id="str-char-boxes-freq" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                    </div>
+                    <div style="display:flex;gap:24px;margin-bottom:12px;flex-wrap:wrap;">
+                        <div style="flex:1;min-width:200px;">
+                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">빈도수 딕셔너리</div>
+                            <div id="str-freq-display-freq" class="graph-queue-display" style="min-height:50px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">
+                                <span style="color:var(--text2);">{ }</span>
+                            </div>
+                        </div>
+                        <div style="min-width:140px;">
+                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
+                            <div id="str-status-freq" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
+                        </div>
+                    </div>
+                    ${self._createStepControls('-freq')}
+                    <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+                        <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
+                        <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 확인 중</span>
+                        <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>
                     </div>
                 </div>
-                <div style="min-width:140px;">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
-                    <div id="str-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
-                </div>
-            </div>
-            ${self._createStepControls()}
-            <div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 확인 중</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>
             </div>
         `;
 
-        const charBoxes = container.querySelector('#str-char-boxes');
-        const freqDisplay = container.querySelector('#str-freq-display');
-        const statusEl = container.querySelector('#str-status');
+        var section = container.querySelector('#freq-section');
+        var vizArea = section.querySelector('#freq-viz-area');
+        var charBoxes = section.querySelector('#str-char-boxes-freq');
+        var freqDisplay = section.querySelector('#str-freq-display-freq');
+        var statusEl = section.querySelector('#str-status-freq');
 
         function renderBoxes(str) {
             charBoxes.innerHTML = '';
-            for (let i = 0; i < str.length; i++) {
-                const box = document.createElement('div');
+            for (var i = 0; i < str.length; i++) {
+                var box = document.createElement('div');
                 box.className = 'str-char-box';
                 box.dataset.idx = i;
-                box.innerHTML = `<div class="str-char-idx">${i}</div><div class="str-char-val">${str[i]}</div>`;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + str[i] + '</div>';
                 charBoxes.appendChild(box);
             }
         }
@@ -630,53 +1271,60 @@ const stringTopic = {
                 return;
             }
             freqDisplay.innerHTML = Object.entries(freq)
-                .map(([k, v]) => `<span class="graph-queue-item" style="min-width:50px;text-align:center;"><strong>'${k}'</strong>: ${v}</span>`)
+                .map(function(e) { return '<span class="graph-queue-item" style="min-width:50px;text-align:center;"><strong>\'' + e[0] + '\'</strong>: ' + e[1] + '</span>'; })
                 .join('');
         }
 
         function saveState() {
             return {
-                boxes: Array.from(charBoxes.querySelectorAll('.str-char-box')).map(b => b.className),
+                boxes: Array.from(charBoxes.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
                 freq: freqDisplay.innerHTML,
                 status: statusEl.innerHTML
             };
         }
 
         function restoreState(s) {
-            charBoxes.querySelectorAll('.str-char-box').forEach((b, i) => { b.className = s.boxes[i]; });
+            charBoxes.querySelectorAll('.str-char-box').forEach(function(b, i) { b.className = s.boxes[i]; });
             freqDisplay.innerHTML = s.freq;
             statusEl.innerHTML = s.status;
         }
 
-        container.querySelector('#str-viz-start').addEventListener('click', function() {
+        section.querySelector('#str-viz-start').addEventListener('click', function() {
             self._clearVizState();
-            const str = container.querySelector('#str-viz-input').value;
-            if (!str.length) { statusEl.innerHTML = '<span style="color:#e17055;">문자열을 입력해주세요!</span>'; return; }
+            var str = section.querySelector('#str-viz-input').value;
+            if (!str.length) return;
+
+            // 시각화 영역 표시 + 시작 버튼을 "다시 시작"으로 변경
+            vizArea.style.display = '';
+            this.textContent = '🔄 다시 시작';
 
             renderBoxes(str);
             renderFreq({});
             statusEl.innerHTML = '준비 완료';
 
-            const steps = [];
-            const freq = {};
+            var steps = [];
+            var freq = {};
+            var buildFreq = {};
 
             for (let i = 0; i < str.length; i++) {
-                const idx = i, ch = str[i];
+                let idx = i, ch = str[i];
+                let prevCount = buildFreq[ch] || 0;
+                buildFreq[ch] = prevCount + 1;
                 steps.push({
-                    description: `인덱스 ${idx}: '${ch}' 확인 → ${freq[ch] ? `이미 ${freq[ch]}번 → ${freq[ch]+1}번으로 증가` : '처음 등장! 1로 추가'}`,
+                    description: prevCount ? '\'' + ch + '\' → ' + (prevCount+1) + '번째!' : '\'' + ch + '\' 첫 등장!',
                     _before: null,
-                    action() {
+                    action: function() {
                         this._before = saveState();
                         for (let j = 0; j < str.length; j++) {
-                            const box = charBoxes.querySelector(`[data-idx="${j}"]`);
+                            let box = charBoxes.querySelector('[data-idx="' + j + '"]');
                             if (!box) continue;
                             box.className = j < idx ? 'str-char-box matched' : j === idx ? 'str-char-box comparing' : 'str-char-box';
                         }
                         freq[ch] = (freq[ch] || 0) + 1;
                         renderFreq(freq);
-                        statusEl.innerHTML = `'${ch}' → count = <strong>${freq[ch]}</strong>`;
+                        statusEl.innerHTML = '\'' + ch + '\' → count = <strong>' + freq[ch] + '</strong>';
                     },
-                    undo() {
+                    undo: function() {
                         freq[ch]--;
                         if (freq[ch] === 0) delete freq[ch];
                         restoreState(this._before);
@@ -684,22 +1332,25 @@ const stringTopic = {
                 });
             }
 
-            const finalFreq = {};
-            for (const c of str) finalFreq[c] = (finalFreq[c] || 0) + 1;
-            const maxChar = Object.entries(finalFreq).sort((a, b) => b[1] - a[1])[0];
+            var finalFreq = {};
+            for (var c = 0; c < str.length; c++) finalFreq[str[c]] = (finalFreq[str[c]] || 0) + 1;
+            var entries = Object.entries(finalFreq).sort(function(a, b) { return b[1] - a[1]; });
+            var maxChar = entries[0];
 
             steps.push({
-                description: `완료! 가장 많은 글자: '${maxChar[0]}' (${maxChar[1]}번)`,
+                description: '완료! 최다: \'' + maxChar[0] + '\' (' + maxChar[1] + '번) 🎉',
                 _before: null,
-                action() {
+                action: function() {
                     this._before = saveState();
-                    charBoxes.querySelectorAll('.str-char-box').forEach(b => { b.className = 'str-char-box matched'; });
-                    statusEl.innerHTML = `<span style="color:var(--green);font-size:1.1rem;">완료! 가장 많은 글자: <strong>'${maxChar[0]}'</strong> (${maxChar[1]}번)</span>`;
+                    charBoxes.querySelectorAll('.str-char-box').forEach(function(b) { b.className = 'str-char-box matched'; });
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.1rem;">완료! 가장 많은 글자: <strong>\'' + maxChar[0] + '\'</strong> (' + maxChar[1] + '번)</span>';
                 },
-                undo() { restoreState(this._before); }
+                undo: function() { restoreState(this._before); }
             });
 
-            self._initStepController(container, steps);
+            self._initLocalStepController(section, steps, '-freq');
+            // 탐색 시작하면 바로 Step 1 진입
+            section.querySelector('#viz-next-freq').click();
         });
     },
 
@@ -728,7 +1379,7 @@ const stringTopic = {
                 </label>
                 <button class="btn btn-primary" id="str-viz-start">시작</button>
             </div>
-            <div id="palindrome-section-1" style="margin-bottom:8px;padding:16px;background:rgba(108,92,231,0.04);border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--accent);">
+            <div id="palindrome-section-1" style="margin-bottom:8px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--accent);">
                 ${sectionHeader('1', '뒤집어서 비교', 'O(n)', 'O(n)', 'var(--accent)')}
                 <div style="text-align:center;color:var(--text2);padding:1.5rem;">▶ 시작 버튼을 눌러주세요</div>
             </div>
@@ -753,7 +1404,7 @@ const stringTopic = {
             }
 
             section1.innerHTML = sectionHeader('1', '뒤집어서 비교', 'O(n)', 'O(n)', 'var(--accent)') + '<div id="panel-1"></div>';
-            section1.style.cssText = 'margin-bottom:8px;padding:16px;background:rgba(108,92,231,0.04);border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--accent);';
+            section1.style.cssText = 'margin-bottom:8px;padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--accent);';
             section2.innerHTML = sectionHeader('2', '투 포인터', 'O(n)', 'O(1)', 'var(--blue)') + '<div id="panel-2"></div>';
             section2.style.cssText = 'padding:16px;background:rgba(9,132,227,0.04);border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--blue);';
 
@@ -785,7 +1436,7 @@ const stringTopic = {
                 <div id="str-status-1" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
             </div>
             ${self._createStepControls('-1')}
-            <div style="display:flex;gap:16px;padding:10px 16px;background:rgba(108,92,231,0.04);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+            <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
                 <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
                 <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 비교 중</span>
                 <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 일치</span>
@@ -827,7 +1478,7 @@ const stringTopic = {
 
         // Step 1: 알파벳만 남기기 완료
         steps.push({
-            description: '알파벳만 남기기: "' + cleaned + '" (길이 ' + cleaned.length + ')',
+            description: '특수문자 제거 → "' + cleaned + '"',
             _before: null,
             action: function() {
                 this._before = saveState();
@@ -840,7 +1491,7 @@ const stringTopic = {
 
         // Step 2: 뒤집기
         steps.push({
-            description: '뒤집기 완료: "' + reversed + '" — O(n) 추가 공간 사용!',
+            description: '뒤집기 → "' + reversed + '" (공간 O(n))',
             _before: null,
             action: function() {
                 this._before = saveState();
@@ -852,42 +1503,40 @@ const stringTopic = {
 
         // Step 3~n: 비교
         var isPalin = true;
-        for (var i = 0; i < cleaned.length; i++) {
-            (function(idx) {
-                var match = cleaned[idx] === reversed[idx];
-                if (!match) isPalin = false;
-                steps.push({
-                    description: match
-                        ? 'cleaned[' + idx + "]='" + cleaned[idx] + "' == reversed[" + idx + "]='" + reversed[idx] + "' → 일치!"
-                        : 'cleaned[' + idx + "]='" + cleaned[idx] + "' != reversed[" + idx + "]='" + reversed[idx] + "' → 불일치!",
-                    _before: null,
-                    action: function() {
-                        this._before = saveState();
-                        cleanedBoxes.querySelectorAll('.str-char-box').forEach(function(b, j) {
-                            if (j < idx) b.className = 'str-char-box matched';
-                            else if (j === idx) b.className = match ? 'str-char-box comparing' : 'str-char-box comparing';
-                            else b.className = 'str-char-box';
-                        });
-                        reversedBoxes.querySelectorAll('.str-char-box').forEach(function(b, j) {
-                            if (j < idx) b.className = 'str-char-box matched';
-                            else if (j === idx) b.className = match ? 'str-char-box comparing' : 'str-char-box comparing';
-                            else b.className = 'str-char-box';
-                        });
-                        statusEl.innerHTML = match
-                            ? '<span style="color:var(--green);">\'' + cleaned[idx] + "' == '" + reversed[idx] + "' ✓</span>"
-                            : '<span style="color:#e17055;">\'' + cleaned[idx] + "' != '" + reversed[idx] + "' ✗</span>";
-                    },
-                    undo: function() { restoreState(this._before); }
-                });
-                if (!match) return;
-            })(i);
-            if (!isPalin) break;
+        for (let i = 0; i < cleaned.length; i++) {
+            let idx = i;
+            let match = cleaned[idx] === reversed[idx];
+            if (!match) isPalin = false;
+            steps.push({
+                description: match
+                    ? '\'' + cleaned[idx] + '\' == \'' + reversed[idx] + '\' → 일치! ✓'
+                    : '\'' + cleaned[idx] + '\' != \'' + reversed[idx] + '\' → 불일치! ✗',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    cleanedBoxes.querySelectorAll('.str-char-box').forEach(function(b, j) {
+                        if (j < idx) b.className = 'str-char-box matched';
+                        else if (j === idx) b.className = 'str-char-box comparing';
+                        else b.className = 'str-char-box';
+                    });
+                    reversedBoxes.querySelectorAll('.str-char-box').forEach(function(b, j) {
+                        if (j < idx) b.className = 'str-char-box matched';
+                        else if (j === idx) b.className = 'str-char-box comparing';
+                        else b.className = 'str-char-box';
+                    });
+                    statusEl.innerHTML = match
+                        ? '<span style="color:var(--green);">\'' + cleaned[idx] + "' == '" + reversed[idx] + "' ✓</span>"
+                        : '<span style="color:#e17055;">\'' + cleaned[idx] + "' != '" + reversed[idx] + "' ✗</span>";
+                },
+                undo: function() { restoreState(this._before); }
+            });
+            if (!match) break;
         }
 
         // 최종 결과
         var finalIsPalin = isPalin;
         steps.push({
-            description: finalIsPalin ? '팰린드롬입니다! cleaned == reversed' : '팰린드롬이 아닙니다. 불일치 발견!',
+            description: finalIsPalin ? '팰린드롬! 모두 일치 🎉' : '팰린드롬 아님! 불일치 발견 ✗',
             _before: null,
             action: function() {
                 this._before = saveState();
@@ -923,7 +1572,7 @@ const stringTopic = {
                 </div>
             </div>
             ${self._createStepControls('-2')}
-            <div style="display:flex;gap:16px;padding:10px 16px;background:rgba(108,92,231,0.04);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+            <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
                 <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
                 <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> L / R 포인터</span>
                 <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 일치 확인</span>
@@ -964,8 +1613,8 @@ const stringTopic = {
                 var match = cleaned[l] === cleaned[r];
                 steps.push({
                     description: match
-                        ? 'L=' + l + " ('" + cleaned[l] + "') == R=" + r + " ('" + cleaned[r] + "') → 일치! 안쪽으로 이동"
-                        : 'L=' + l + " ('" + cleaned[l] + "') != R=" + r + " ('" + cleaned[r] + "') → 불일치!",
+                        ? '\'' + cleaned[l] + '\' == \'' + cleaned[r] + '\' → 일치! 안쪽으로'
+                        : '\'' + cleaned[l] + '\' != \'' + cleaned[r] + '\' → 불일치!',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -989,7 +1638,7 @@ const stringTopic = {
 
         var isPalin = L >= R;
         steps.push({
-            description: isPalin ? '팰린드롬입니다! 모든 쌍이 일치했습니다.' : '팰린드롬이 아닙니다. 불일치가 발견되었습니다.',
+            description: isPalin ? '팰린드롬! 모든 쌍 일치 🎉' : '팰린드롬 아님! 불일치 발견 ✗',
             _before: null,
             action: function() {
                 this._before = saveState();
@@ -1009,123 +1658,172 @@ const stringTopic = {
     // ===== 애너그램 그룹화 시각화 =====
     _renderVizAnagram(container) {
         const self = this;
-        const words = ['eat', 'tea', 'tan', 'ate', 'nat', 'bat'];
+        self._clearVizState();
+        const DEFAULT_WORDS = ['eat', 'tea', 'tan', 'ate', 'nat', 'bat'];
 
-        container.innerHTML = `
-            <div style="margin-bottom:16px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">단어 목록</div>
-                <div class="graph-svg-container" style="min-height:50px;display:flex;align-items:center;justify-content:center;padding:16px;gap:8px;flex-wrap:wrap;">
-                    ${words.map((w, i) => `<span class="str-char-box" data-widx="${i}" style="padding:6px 14px;font-size:1rem;"><div class="str-char-val">${w}</div></span>`).join('')}
-                </div>
-            </div>
-            <div style="margin-bottom:16px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 처리</div>
-                <div id="str-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">시작 버튼을 눌러주세요</div>
-            </div>
-            <div style="margin-bottom:16px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">그룹 (정렬 키 → 단어들)</div>
-                <div id="str-groups" style="display:flex;flex-direction:column;gap:10px;min-height:60px;"></div>
-            </div>
-            <div style="margin-bottom:12px;">
-                <button class="btn btn-primary" id="str-viz-start">시작</button>
-            </div>
-            ${self._createStepControls()}
-        `;
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">단어들: <input type="text" id="ag-input" value="eat, tea, tan, ate, nat, bat" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+            '<button class="viz-input-reset" id="ag-reset" title="입력 변경 후 다시 시작">🔄</button></div>' +
+            '<div style="margin-bottom:16px;">' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">단어 목록</div>' +
+            '<div class="graph-svg-container" style="min-height:50px;display:flex;align-items:center;justify-content:center;padding:16px;gap:8px;flex-wrap:wrap;" id="ag-words"></div></div>' +
+            '<div style="margin-bottom:16px;">' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 처리</div>' +
+            '<div id="ag-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div></div>' +
+            '<div style="margin-bottom:16px;">' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">그룹 (정렬 키 → 단어들)</div>' +
+            '<div id="ag-groups" style="display:flex;flex-direction:column;gap:10px;min-height:60px;"></div></div>' +
+            self._createStepControls() +
+            '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);vertical-align:middle;"></span> 현재 처리 중</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--green);vertical-align:middle;"></span> 처리 완료</span></div>';
 
-        const statusEl = container.querySelector('#str-status');
-        const groupsEl = container.querySelector('#str-groups');
-        const wordEls = container.querySelectorAll('[data-widx]');
+        var wordsEl = container.querySelector('#ag-words');
+        var statusEl = container.querySelector('#ag-status');
+        var groupsEl = container.querySelector('#ag-groups');
+        var groupColors = ['var(--accent)', 'var(--green)', 'var(--yellow)', '#e17055', '#00cec9', '#fd79a8'];
 
-        const groupColors = ['var(--accent)', 'var(--green)', 'var(--yellow)', '#e17055', '#00cec9', '#fd79a8'];
-
-        function saveState() {
-            return {
-                words: Array.from(wordEls).map(w => w.className),
-                status: statusEl.innerHTML,
-                groups: groupsEl.innerHTML
-            };
-        }
-
-        function restoreState(s) {
-            wordEls.forEach((w, i) => { w.className = s.words[i]; });
-            statusEl.innerHTML = s.status;
-            groupsEl.innerHTML = s.groups;
+        function renderWords(words) {
+            wordsEl.innerHTML = '';
+            words.forEach(function(w, i) {
+                var span = document.createElement('span');
+                span.className = 'str-char-box';
+                span.dataset.widx = i;
+                span.style.cssText = 'padding:6px 14px;font-size:1rem;';
+                span.innerHTML = '<div class="str-char-val">' + w + '</div>';
+                wordsEl.appendChild(span);
+            });
         }
 
         function renderGroups(groups) {
             groupsEl.innerHTML = '';
-            let colorIdx = 0;
-            for (const [key, vals] of Object.entries(groups)) {
-                const color = groupColors[colorIdx % groupColors.length];
-                const div = document.createElement('div');
+            var colorIdx = 0;
+            for (var key in groups) {
+                var vals = groups[key];
+                var color = groupColors[colorIdx % groupColors.length];
+                var div = document.createElement('div');
                 div.className = 'graph-queue-display';
-                div.style.cssText = `display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap;border-left:4px solid ${color};`;
-                div.innerHTML = `
-                    <span style="font-weight:700;color:${color};min-width:50px;">"${key}"</span>
-                    <span style="color:var(--text2);">→</span>
-                    ${vals.map(v => `<span class="graph-queue-item">${v}</span>`).join('')}
-                `;
+                div.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap;border-left:4px solid ' + color + ';';
+                div.innerHTML = '<span style="font-weight:700;color:' + color + ';min-width:50px;">"' + key + '"</span>' +
+                    '<span style="color:var(--text2);">→</span>' +
+                    vals.map(function(v) { return '<span class="graph-queue-item">' + v + '</span>'; }).join('');
                 groupsEl.appendChild(div);
                 colorIdx++;
             }
         }
 
-        container.querySelector('#str-viz-start').addEventListener('click', function() {
-            self._clearVizState();
+        function saveState() {
+            return {
+                words: Array.from(wordsEl.querySelectorAll('[data-widx]')).map(function(w) { return w.className; }),
+                status: statusEl.innerHTML,
+                groups: groupsEl.innerHTML
+            };
+        }
+        function restoreState(s) {
+            wordsEl.querySelectorAll('[data-widx]').forEach(function(w, i) { w.className = s.words[i]; });
+            statusEl.innerHTML = s.status;
+            groupsEl.innerHTML = s.groups;
+        }
+
+        function buildSteps() {
+            var input = container.querySelector('#ag-input').value;
+            var words = input.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+            if (words.length < 1) words = DEFAULT_WORDS.slice();
+            renderWords(words);
+            statusEl.innerHTML = '—';
             groupsEl.innerHTML = '';
-            wordEls.forEach(w => { w.className = 'str-char-box'; w.style.cssText = 'padding:6px 14px;font-size:1rem;'; });
-            statusEl.innerHTML = '준비 완료';
 
-            const steps = [];
-            const groups = {};
+            var steps = [];
+            var groups = {};
+            var buildGroups = {};
 
-            words.forEach((word, i) => {
-                const sorted = word.split('').sort().join('');
-                const isNew = !groups[sorted];
-                const descSnippet = isNew
-                    ? `"${word}" → sorted: "${sorted}" → 새 그룹 생성!`
-                    : `"${word}" → sorted: "${sorted}" → 기존 그룹에 추가`;
+            // Step 0: 초기 상태
+            steps.push({
+                description: words.length + '개 단어를 애너그램끼리 그룹으로 묶어봐요!',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    statusEl.innerHTML = '단어 ' + words.length + '개 준비 완료!';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            words.forEach(function(word, i) {
+                var sorted = word.split('').sort().join('');
+                var isNew = !buildGroups[sorted];
+                if (!buildGroups[sorted]) buildGroups[sorted] = [];
+                buildGroups[sorted].push(word);
+
+                // 정렬 과정 보여주기
+                var _sorted = sorted, _isNew = isNew, _word = word, _i = i;
+                var _groupSnap = {};
+                for (var k in buildGroups) _groupSnap[k] = buildGroups[k].slice();
 
                 steps.push({
-                    description: descSnippet,
+                    description: '"' + _word + '" → 정렬 → "' + _sorted + '" → ' + (_isNew ? '새 그룹 생성!' : '기존 그룹에 추가!'),
                     _before: null,
-                    action() {
+                    action: function() {
                         this._before = saveState();
-                        wordEls.forEach((w, j) => {
-                            if (j < i) w.className = 'str-char-box matched';
-                            else if (j === i) w.className = 'str-char-box comparing';
-                            else w.className = 'str-char-box';
+                        var wordEls = wordsEl.querySelectorAll('[data-widx]');
+                        wordEls.forEach(function(w, j) {
+                            if (j < _i) { w.className = 'str-char-box matched'; }
+                            else if (j === _i) { w.className = 'str-char-box comparing'; }
+                            else { w.className = 'str-char-box'; }
                             w.style.cssText = 'padding:6px 14px;font-size:1rem;';
                         });
-                        if (!groups[sorted]) groups[sorted] = [];
-                        groups[sorted].push(word);
+                        if (!groups[_sorted]) groups[_sorted] = [];
+                        groups[_sorted].push(_word);
                         renderGroups(groups);
-                        statusEl.innerHTML = `"${word}" → <strong>sorted("${word}") = "${sorted}"</strong> → ${isNew ? '새 그룹!' : '기존 그룹에 추가'}`;
+                        statusEl.innerHTML = '"<strong>' + _word + '</strong>" → sorted → "<strong>' + _sorted + '</strong>" → ' +
+                            (_isNew ? '<span style="color:var(--accent);">새 그룹!</span>' : '<span style="color:var(--green);">기존 그룹에 추가!</span>');
                     },
-                    undo() {
-                        groups[sorted].pop();
-                        if (groups[sorted].length === 0) delete groups[sorted];
+                    undo: function() {
+                        groups[_sorted].pop();
+                        if (groups[_sorted].length === 0) delete groups[_sorted];
                         restoreState(this._before);
                     }
                 });
             });
 
-            const totalGroups = {};
-            words.forEach(w => { const k = w.split('').sort().join(''); if (!totalGroups[k]) totalGroups[k] = []; totalGroups[k].push(w); });
+            // 최종 완료 스텝
+            var totalGroups = {};
+            words.forEach(function(w) { var k = w.split('').sort().join(''); if (!totalGroups[k]) totalGroups[k] = []; totalGroups[k].push(w); });
+            var _totalCount = Object.keys(totalGroups).length;
 
             steps.push({
-                description: `완료! 총 ${Object.keys(totalGroups).length}개 그룹으로 분류되었습니다.`,
+                description: '✅ 완료! ' + _totalCount + '개 그룹으로 분류!',
                 _before: null,
-                action() {
+                action: function() {
                     this._before = saveState();
-                    wordEls.forEach(w => { w.className = 'str-char-box matched'; w.style.cssText = 'padding:6px 14px;font-size:1rem;'; });
-                    statusEl.innerHTML = `<span style="color:var(--green);font-size:1.1rem;"><strong>완료!</strong> ${Object.keys(totalGroups).length}개 그룹: ${Object.values(totalGroups).map(g => '[' + g.join(', ') + ']').join(', ')}</span>`;
+                    wordsEl.querySelectorAll('[data-widx]').forEach(function(w) {
+                        w.className = 'str-char-box matched';
+                        w.style.cssText = 'padding:6px 14px;font-size:1rem;';
+                    });
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.1rem;"><strong>✅ 완료!</strong> ' + _totalCount + '개 그룹</span>';
                 },
-                undo() { restoreState(this._before); }
+                undo: function() { restoreState(this._before); }
             });
 
-            self._initStepController(container, steps);
+            return steps;
+        }
+
+        // 리셋 버튼
+        container.querySelector('#ag-reset').addEventListener('click', function() {
+            var state = self._vizState;
+            while (state.currentStep >= 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+            }
+            state.steps = [];
+            renderWords(DEFAULT_WORDS);
+            statusEl.innerHTML = '—';
+            groupsEl.innerHTML = '';
+            self._initStepController(container, buildSteps);
         });
+
+        renderWords(DEFAULT_WORDS);
+        self._initStepController(container, buildSteps);
     },
 
     // ===== 문자열 재구성 시각화 =====
@@ -1134,8 +1832,8 @@ const stringTopic = {
         container.innerHTML = `
             <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
                 <label style="font-weight:600;">입력 문자열:
-                    <input type="text" id="str-viz-input" value="AABB"
-                        style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;text-transform:uppercase;">
+                    <input type="text" id="str-viz-input" value="ABACABA"
+                        style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;text-transform:uppercase;">
                 </label>
                 <button class="btn btn-primary" id="str-viz-start">시작</button>
             </div>
@@ -1203,7 +1901,7 @@ const stringTopic = {
 
             // Step 1: 빈도수 세기
             steps.push({
-                description: `각 알파벳의 빈도수를 셉니다: ${Object.entries(count).sort((a,b) => a[0].localeCompare(b[0])).map(([k,v]) => `${k}:${v}`).join(', ')}`,
+                description: `빈도수 세기 → ${Object.entries(count).sort((a,b) => a[0].localeCompare(b[0])).map(([k,v]) => `${k}:${v}`).join(', ')}`,
                 _before: null,
                 action() {
                     this._before = saveState();
@@ -1223,8 +1921,8 @@ const stringTopic = {
 
             steps.push({
                 description: canMake
-                    ? `홀수 빈도 글자: ${oddChars.length}개 (≤1) → 팰린드롬 만들 수 있습니다!`
-                    : `홀수 빈도 글자: ${oddChars.length}개 (>1) → 팰린드롬 불가능!`,
+                    ? `홀수 ${oddChars.length}개 → 가능! ✓`
+                    : `홀수 ${oddChars.length}개 → 불가능! ✗`,
                 _before: null,
                 action() {
                     this._before = saveState();
@@ -1255,7 +1953,7 @@ const stringTopic = {
                 const revHalf = half.split('').reverse().join('');
 
                 steps.push({
-                    description: `조립: 앞 절반 "${half}" ${mid ? `+ 가운데 "${mid}" ` : ''}+ 뒤 절반 "${revHalf}"`,
+                    description: `"${half}"${mid ? ` + "${mid}"` : ''} + "${revHalf}" 조립!`,
                     _before: null,
                     action() {
                         this._before = saveState();
@@ -1283,7 +1981,7 @@ const stringTopic = {
                 // Step 4: 최종 결과
                 const result = half + mid + revHalf;
                 steps.push({
-                    description: `완료! 결과: "${result}"`,
+                    description: `완료! "${result}" 🎉`,
                     _before: null,
                     action() {
                         this._before = saveState();
@@ -1319,8 +2017,9 @@ const stringTopic = {
 
     _createStepControls(suffix) {
         const s = suffix || '';
+        const inlineClass = s ? ' viz-inline' : '';
         return `
-            <div class="viz-step-controls">
+            <div class="viz-step-controls${inlineClass}">
                 <button class="btn viz-step-btn" id="viz-prev${s}" disabled>&larr; 이전</button>
                 <span id="viz-step-counter${s}" class="viz-step-counter">시작 전</span>
                 <button class="btn btn-primary viz-step-btn" id="viz-next${s}">다음 &rarr;</button>
@@ -1367,9 +2066,9 @@ const stringTopic = {
         updateUI();
     },
 
-    _initStepController(el, steps) {
+    _initStepController(el, stepsOrFn) {
         const state = this._vizState;
-        state.steps = steps;
+        state.steps = typeof stepsOrFn === 'function' ? stepsOrFn() : stepsOrFn;
         state.currentStep = -1;
 
         const prevBtn = el.querySelector('#viz-prev');
@@ -1423,7 +2122,7 @@ const stringTopic = {
             title: 'BOJ 1157 - 단어 공부',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1157',
-            simIntro: '힌트에서 배운 count[26] 배열이 글자마다 어떻게 채워지는지 확인해보세요!',
+            simIntro: '딕셔너리로 글자 빈도를 세는 과정을 확인해보세요! (코드 탭에서는 배열 방식도 볼 수 있어요)',
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>알파벳 대소문자로 이루어진 단어가 주어집니다.
@@ -1442,16 +2141,24 @@ const stringTopic = {
             `,
             hints: [
                 {
-                    title: '어떤 자료구조를 쓸까?',
-                    content: '알파벳은 26개뿐입니다. 크기 26인 <strong>배열(리스트)</strong>을 만들어서 각 알파벳의 개수를 세면 됩니다!'
+                    title: '문제를 쉽게 이해해보자',
+                    content: '<code>"Mississipi"</code>에서 가장 많이 나온 글자는?<br>대소문자를 구분하지 않으니까 먼저 전부 대문자(또는 소문자)로 바꿔야 해요.<br>그 다음 각 글자가 몇 번 나왔는지 세면 됩니다!'
                 },
                 {
-                    title: '핵심 아이디어',
-                    content: '모든 글자를 대문자(또는 소문자)로 바꾼 뒤, <code>count[ord(c) - ord(\'A\')] += 1</code>로 빈도를 셉니다.<br>최댓값을 찾고, 같은 값이 2개 이상이면 <code>?</code>를 출력합니다.'
+                    title: '글자를 숫자로? — ASCII와 ord()',
+                    content: '컴퓨터는 글자를 <strong>숫자(ASCII 코드)</strong>로 저장해요.<br><code>ord(\'A\') = 65</code>, <code>ord(\'B\') = 66</code>, … <code>ord(\'Z\') = 90</code><br><br><code>ord()</code>는 글자 → 숫자로 바꿔주는 함수예요!<br>반대로 <code>chr(65)</code> → <code>\'A\'</code> (숫자 → 글자)<br><br><a href="https://ko.wikipedia.org/wiki/ASCII" target="_blank" style="color: var(--accent); text-decoration: underline; font-size: 0.9em;">📎 ASCII 코드표 전체 보기 →</a>'
                 },
                 {
-                    title: '정답 코드 구조',
-                    content: '<code>count = [0] * 26</code>으로 배열 초기화 → 순회하며 카운트 → <code>max(count)</code>로 최대 빈도 → <code>count.count(max_val)</code>로 개수 확인'
+                    title: '방법 1: 배열로 세기',
+                    content: '알파벳은 A~Z 딱 <strong>26개</strong>니까, 크기 26인 배열을 만들어요.<br><code>count = [0] * 26</code><br><br>A를 0번 칸에 넣고 싶으면?<br><code>ord(\'A\') - ord(\'A\') = 65 - 65 = <strong>0</strong></code> ✓<br><code>ord(\'B\') - ord(\'A\') = 66 - 65 = <strong>1</strong></code> ✓<br><code>ord(\'Z\') - ord(\'A\') = 90 - 65 = <strong>25</strong></code> ✓<br><br>그래서 <code>count[ord(c) - ord(\'A\')] += 1</code> 이렇게 세는 거예요!'
+                },
+                {
+                    title: '방법 2: 딕셔너리로 세기',
+                    content: '딕셔너리를 쓰면 더 직관적이에요!<br><code>freq = {}</code>로 시작해서,<br>글자가 나올 때마다 <code>if c in freq: freq[c] += 1 else: freq[c] = 1</code><br><br>결과: <code>{"M": 1, "I": 4, "S": 4, "P": 1}</code><br>시뮬레이션에서는 이 방법으로 보여줍니다!'
+                },
+                {
+                    title: '최댓값이 여러 개면?',
+                    content: '가장 큰 빈도를 찾은 뒤, 그 빈도를 가진 글자가 <strong>2개 이상</strong>이면 <code>?</code>를 출력해요.<br><br>예: I가 4번, S가 4번 → 둘 다 최대 → <code>?</code> 출력!'
                 }
             ],
             templates: {
@@ -1570,7 +2277,10 @@ public class Main {
                         python: `word = input().upper()
 freq = {}
 for c in word:
-    freq[c] = freq.get(c, 0) + 1
+    if c in freq:
+        freq[c] += 1
+    else:
+        freq[c] = 1
 
 mx = max(freq.values())
 candidates = [k for k, v in freq.items() if v == mx]
@@ -1651,29 +2361,129 @@ else:
                 <strong>영문자와 숫자만</strong> 남기고, 대소문자를 무시했을 때
                 팰린드롬(앞뒤가 같은 문자열)인지 판별하세요.</p>
                 <p>빈 문자열은 팰린드롬으로 간주합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>문자열 s (1 &le; len(s) &le; 200,000)</p></div>
-                    <div><h4>출력</h4>
-                    <p>팰린드롬이면 true, 아니면 false</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>"A man, a plan, a canal: Panama"</pre></div>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>s = "A man, a plan, a canal: Panama"</pre></div>
                     <div><strong>출력</strong><pre>true</pre></div>
-                </div></div>
+                </div>
+                <p class="example-explain">"amanaplanacanalpanama"는 앞뒤가 같은 팰린드롬입니다.</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>s = "race a car"</pre></div>
+                    <div><strong>출력</strong><pre>false</pre></div>
+                </div>
+                <p class="example-explain">"raceacar"는 뒤집으면 "racaecar"이므로 팰린드롬이 아닙니다.</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>s = " "</pre></div>
+                    <div><strong>출력</strong><pre>true</pre></div>
+                </div>
+                <p class="example-explain">영숫자를 제거하면 빈 문자열 ""이 되고, 빈 문자열은 팰린드롬입니다.</p>
+                </div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ s.length ≤ 2 × 10⁵</li>
+                    <li>s는 ASCII 문자로만 이루어져 있습니다.</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>추가 문자열을 만들지 않고 O(1) 공간으로 풀 수 있을까요?</p>
             `,
             hints: [
                 {
-                    title: '전처리가 핵심!',
-                    content: '먼저 영문자/숫자가 아닌 문자를 제거하고, 모두 소문자로 바꿉니다. <code>isalnum()</code>과 <code>lower()</code>를 사용하세요.'
+                    title: '팰린드롬이 뭐야?',
+                    content: `앞에서 읽어도, 뒤에서 읽어도 <strong>같은 문자열</strong>이에요!
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin:16px 0;">
+                        <div style="display:flex;gap:4px;">
+                            ${'racecar'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="font-size:1.3em;">🔄 뒤집으면?</div>
+                        <div style="display:flex;gap:4px;">
+                            ${'racecar'.split('').reverse().map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#00b894;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="color:#00b894;font-weight:700;">✅ 똑같다! → 팰린드롬!</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin:12px 0;padding:12px;background:rgba(255,118,117,0.08);border-radius:10px;">
+                        <div style="display:flex;gap:4px;">
+                            ${'hello'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#e17055;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="font-size:1.3em;">🔄 뒤집으면?</div>
+                        <div style="display:flex;gap:4px;">
+                            ${'olleh'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#636e72;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="color:#e17055;font-weight:700;">❌ 다르다! → 팰린드롬 아님</div>
+                    </div>
+                    <p style="margin-top:24px;margin-bottom:4px;">근데 <code>"A man, a plan, a canal: Panama"</code>도 팰린드롬이에요.<br>공백, 쉼표, 콜론은 무시하고 대소문자도 구분하지 않거든요!</p>
+                    <p style="margin-top:14px;padding:10px 14px;background:rgba(253,203,110,0.15);border-radius:8px;font-size:0.92em;">그럼 이런 문자열은 어떻게 비교하지? 🤔<br>공백이랑 특수문자가 섞여 있으니까 <strong>그냥 뒤집으면 안 맞아요!</strong></p>`
                 },
                 {
-                    title: '풀이 방법 2가지',
-                    content: '방법 1: 정제 후 <code>s == s[::-1]</code> (간단!)<br>방법 2: 투 포인터로 양쪽에서 비교 (메모리 절약!)'
+                    title: '먼저 깔끔하게 정리하자!',
+                    content: `왜 정리가 필요할까요? <code>"A man, a plan..."</code>을 그대로 뒤집으면 <code>"...nalp a ,nam A"</code>가 돼서 원본이랑 달라요. 공백이랑 쉼표 때문이죠!
+                    <p style="margin-top:8px;">그래서 <strong>영문자/숫자만 남기고 나머지는 빼버려요.</strong> 이걸 "전처리"라고 해요.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:3px;margin:14px 0;">
+                        ${'A man, a plan, a canal: Panama'.split('').map(c => {
+                            const keep = /[a-zA-Z0-9]/.test(c);
+                            return `<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:32px;border-radius:6px;font-weight:600;font-size:0.95em;${keep ? 'background:#6c5ce7;color:white;' : 'background:#dfe6e9;color:#b2bec3;text-decoration:line-through;'}">${c === ' ' ? '␣' : c}</span>`;
+                        }).join('')}
+                    </div>
+                    <div style="text-align:center;font-size:1.2em;margin:8px 0;">⬇️</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:3px;margin:8px 0;">
+                        ${'amanaplanacanalpanama'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:32px;background:#00b894;color:white;border-radius:6px;font-weight:600;font-size:0.95em;">${c}</span>`).join('')}
+                    </div>
+                    <p style="margin-top:10px;"><code>isalnum()</code>으로 영문자/숫자 확인 → <code>lower()</code>로 소문자 통일!</p>`
                 },
                 {
-                    title: '투 포인터 풀이',
-                    content: '<code>left, right</code>를 양 끝에서 시작. 영문자/숫자가 아닌 건 건너뛰고, 같으면 이동, 다르면 False'
+                    title: '가장 쉬운 방법: 뒤집어서 비교!',
+                    content: `팰린드롬은 뒤집어도 같으니까, <strong>뒤집어서 원본이랑 같은지 확인</strong>하면 돼요. 가장 직관적이고 쉬운 방법이에요!
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:14px 0;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span style="min-width:40px;font-weight:600;text-align:right;">원본</span>
+                            <div style="display:flex;gap:2px;">
+                                ${'abcba'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">${c}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div style="font-size:1.1em;">🔄 <code>[::-1]</code></div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span style="min-width:40px;font-weight:600;text-align:right;">뒤집기</span>
+                            <div style="display:flex;gap:2px;">
+                                ${'abcba'.split('').reverse().map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#00b894;color:white;border-radius:6px;font-weight:700;">${c}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div style="color:#00b894;font-weight:700;">모두 일치 → True! ✅</div>
+                    </div>
+                    <p style="margin-top:8px;">코딩 테스트에서는 이 방법으로 충분해요! 👍</p>
+                    <p style="margin-top:6px;padding:10px 14px;background:rgba(253,203,110,0.15);border-radius:8px;font-size:0.92em;">다만 뒤집은 문자열을 <strong>새로 만들어야</strong> 해서 메모리를 O(n)만큼 써요.<br>문자열이 아주 길면 부담이 될 수 있는데... 더 효율적인 방법이 있을까요?</p>`
+                },
+                {
+                    title: '더 똑똑한 방법: 투 포인터',
+                    content: `뒤집기도 좋지만, 새 문자열을 안 만들고도 확인할 수 있어요!<br><strong>양쪽 끝에서 출발</strong>해서 가운데로 좁혀가며 비교하는 거예요.
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin:14px 0;padding:16px;background:var(--bg2);border-radius:12px;">
+                        <div style="display:flex;gap:4px;position:relative;">
+                            ${'racecar'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;${i===0||i===6?'background:#6c5ce7;color:white;':'background:#dfe6e9;color:#2d3436;'}border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="display:flex;gap:4px;width:100%;justify-content:center;">
+                            <span style="width:36px;text-align:center;color:#6c5ce7;font-weight:700;">L→</span>
+                            <span style="width:180px;"></span>
+                            <span style="width:36px;text-align:center;color:#6c5ce7;font-weight:700;">←R</span>
+                        </div>
+                        <div style="color:#00b894;font-weight:600;">r == r ✓ → 안쪽으로!</div>
+                        <div style="display:flex;gap:4px;">
+                            ${'racecar'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;${i===1||i===5?'background:#00b894;color:white;':i===0||i===6?'background:#b2bec3;color:white;':'background:#dfe6e9;color:#2d3436;'}border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="display:flex;gap:4px;width:100%;justify-content:center;">
+                            <span style="width:36px;"></span>
+                            <span style="width:36px;text-align:center;color:#00b894;font-weight:700;">L→</span>
+                            <span style="width:108px;"></span>
+                            <span style="width:36px;text-align:center;color:#00b894;font-weight:700;">←R</span>
+                            <span style="width:36px;"></span>
+                        </div>
+                        <div style="color:#00b894;font-weight:600;">a == a ✓ → 계속!</div>
+                    </div>
+                    <p>① 같으면 → 안쪽으로 이동<br>② 다르면 → 바로 <code>False</code>!<br>③ L ≥ R → 전부 일치 → <code>True</code></p>
+                    <p style="margin-top:8px;padding:10px 14px;background:rgba(0,184,148,0.1);border-radius:8px;font-size:0.92em;">새 문자열을 안 만드니까 <strong>추가 메모리가 거의 안 들어요!</strong> O(1) 공간!<br>면접에서 이 방법을 설명하면 "메모리 효율을 생각하는구나" 하고 좋은 인상을 줄 수 있어요.</p>`
                 }
             ],
             templates: {
@@ -1828,29 +2638,124 @@ public:
                 <p>문자열 배열 <code>strs</code>가 주어집니다.
                 <strong>애너그램(같은 글자로 이루어진 단어)</strong>끼리 그룹으로 묶어서 반환하세요.</p>
                 <p>결과의 순서는 상관없습니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>문자열 배열 strs (1 &le; len &le; 10,000)</p></div>
-                    <div><h4>출력</h4>
-                    <p>애너그램 그룹 리스트</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>["eat","tea","tan","ate","nat","bat"]</pre></div>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>strs = ["eat","tea","tan","ate","nat","bat"]</pre></div>
                     <div><strong>출력</strong><pre>[["bat"],["nat","tan"],["ate","eat","tea"]]</pre></div>
+                </div>
+                <p class="example-explain">"eat","tea","ate"는 모두 e,a,t로 이루어진 애너그램</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>strs = [""]</pre></div>
+                    <div><strong>출력</strong><pre>[[""]]</pre></div>
                 </div></div>
+
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>strs = ["a"]</pre></div>
+                    <div><strong>출력</strong><pre>[["a"]]</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ strs.length ≤ 10<sup>4</sup></li>
+                    <li>0 ≤ strs[i].length ≤ 100</li>
+                    <li><code>strs[i]</code>는 영문 소문자로만 이루어져 있습니다.</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>정렬 없이 O(NK) 시간에 풀 수 있을까요?</p>
             `,
             hints: [
                 {
-                    title: '애너그램의 특징은?',
-                    content: '애너그램은 <strong>같은 글자를 재배열</strong>한 것입니다. 정렬하면 모두 같은 문자열이 됩니다! "eat" → "aet", "tea" → "aet"'
+                    title: '애너그램이 뭐야?',
+                    content: `같은 글자들을 <strong>순서만 바꿔서</strong> 만든 단어예요!
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;margin:16px 0;">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div style="display:flex;gap:3px;">
+                                ${'eat'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                            </div>
+                            <span style="font-size:1.3em;">🔄</span>
+                            <div style="display:flex;gap:3px;">
+                                ${'tea'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#00b894;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                            </div>
+                            <span style="color:#00b894;font-weight:700;">✅ 같은 글자!</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div style="display:flex;gap:3px;">
+                                ${'eat'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                            </div>
+                            <span style="font-size:1.3em;">vs</span>
+                            <div style="display:flex;gap:3px;">
+                                ${'bat'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:#e17055;color:white;border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                            </div>
+                            <span style="color:#e17055;font-weight:700;">❌ 글자 다름!</span>
+                        </div>
+                    </div>
+                    <p>이 문제는 애너그램끼리 <strong>같은 그룹으로 묶는</strong> 거예요.</p>
+                    <p style="margin-top:10px;padding:10px 14px;background:rgba(253,203,110,0.15);border-radius:8px;font-size:0.92em;">근데 단어가 수천 개면... 하나하나 글자를 비교할 순 없잖아요? 🤔<br><strong>같은 애너그램이라는 걸 빠르게 판별하는 방법</strong>이 필요해요!</p>`
                 },
                 {
-                    title: '핵심 아이디어',
-                    content: '각 단어를 정렬한 결과를 <strong>키(key)</strong>로, 원본 단어를 <strong>값(value)</strong>으로 딕셔너리에 넣습니다.<br><code>defaultdict(list)</code>를 사용하면 편합니다.'
+                    title: '핵심 아이디어: 글자를 정렬하자!',
+                    content: `애너그램은 글자 구성이 같으니까, <strong>알파벳 순으로 정렬하면 결과가 똑같아져요!</strong>
+                    <div style="display:flex;flex-direction:column;gap:12px;margin:16px 0;padding:16px;background:var(--bg2);border-radius:12px;">
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <code style="min-width:50px;">"eat"</code><span>→ 정렬 →</span>
+                            <div style="display:flex;gap:2px;">${'aet'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">${c}</span>`).join('')}</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <code style="min-width:50px;">"tea"</code><span>→ 정렬 →</span>
+                            <div style="display:flex;gap:2px;">${'aet'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">${c}</span>`).join('')}</div>
+                            <span style="color:#00b894;font-weight:700;">← 같다!</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <code style="min-width:50px;">"ate"</code><span>→ 정렬 →</span>
+                            <div style="display:flex;gap:2px;">${'aet'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">${c}</span>`).join('')}</div>
+                            <span style="color:#00b894;font-weight:700;">← 같다!</span>
+                        </div>
+                        <div style="border-top:1px dashed #ccc;padding-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <code style="min-width:50px;">"bat"</code><span>→ 정렬 →</span>
+                            <div style="display:flex;gap:2px;">${'abt'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:#e17055;color:white;border-radius:6px;font-weight:700;">${c}</span>`).join('')}</div>
+                            <span style="color:#e17055;font-weight:700;">← 다름!</span>
+                        </div>
+                    </div>
+                    <p><strong>정렬 결과가 같으면 = 같은 애너그램!</strong> 이걸 "키(key)"로 쓸 수 있어요.</p>`
                 },
                 {
-                    title: '시간 복잡도',
-                    content: '단어 수 N, 최대 길이 K일 때: <strong>O(N × K log K)</strong> (정렬 때문)<br>Counter 튜플을 키로 쓰면 O(N × K)도 가능합니다.'
+                    title: '딕셔너리에 그룹으로 모아!',
+                    content: `정렬한 결과를 <strong>키(key)</strong>로, 원본 단어를 <strong>리스트에 추가</strong>하면 자동으로 그룹이 만들어져요!
+                    <div style="margin:16px 0;padding:16px;background:var(--bg2);border-radius:12px;font-family:'Fira Code',monospace;font-size:0.9em;line-height:2;">
+                        <div><span style="color:#e17055;">"eat"</span> → key=<span style="color:#6c5ce7;font-weight:700;">"aet"</span> → groups[<span style="color:#6c5ce7;">"aet"</span>] = [<span style="color:#e17055;">"eat"</span>]</div>
+                        <div><span style="color:#e17055;">"tea"</span> → key=<span style="color:#6c5ce7;font-weight:700;">"aet"</span> → groups[<span style="color:#6c5ce7;">"aet"</span>] = [<span style="color:#e17055;">"eat"</span>, <span style="color:#e17055;">"tea"</span>]</div>
+                        <div><span style="color:#00b894;">"tan"</span> → key=<span style="color:#00b894;font-weight:700;">"ant"</span> → groups[<span style="color:#00b894;">"ant"</span>] = [<span style="color:#00b894;">"tan"</span>]</div>
+                        <div><span style="color:#e17055;">"ate"</span> → key=<span style="color:#6c5ce7;font-weight:700;">"aet"</span> → groups[<span style="color:#6c5ce7;">"aet"</span>] = [<span style="color:#e17055;">"eat"</span>, <span style="color:#e17055;">"tea"</span>, <span style="color:#e17055;">"ate"</span>]</div>
+                        <div>...</div>
+                    </div>
+                    <p style="margin-top:8px;">Python의 <code>defaultdict(list)</code>를 쓰면 키가 처음 나와도 자동으로 빈 리스트가 만들어져서 편해요!</p>
+                    <p style="margin-top:10px;padding:10px 14px;background:rgba(0,184,148,0.1);border-radius:8px;font-size:0.92em;">✅ 마지막에 <code>groups.values()</code>를 반환하면 끝! 핵심 로직이 딱 3줄이에요.</p>`
+                },
+                {
+                    title: '정렬 말고 다른 방법도 있을까?',
+                    content: `앞에서 배운 <strong>정렬 키</strong> 방법이면 충분히 풀 수 있어요! 실전에서는 이걸 쓰면 됩니다. 👍
+                    <p style="margin-top:10px;">그런데 면접에서 <em>"정렬보다 더 빠른 방법이 있을까요?"</em>라고 물어볼 수 있어요.</p>
+                    <p>아이디어는 이래요: 정렬 대신 <strong>각 글자가 몇 번 나오는지</strong>를 세서 그걸 키로 쓰는 거예요.</p>
+                    <div style="margin:14px 0;padding:14px;background:var(--bg2);border-radius:12px;">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div><code>"eat"</code> → a가 1번, e가 1번, t가 1번 → <code>(1,0,0,0,1,...,0,0,1,0,0)</code></div>
+                            <div><code>"tea"</code> → a가 1번, e가 1번, t가 1번 → <code>(1,0,0,0,1,...,0,0,1,0,0)</code></div>
+                        </div>
+                        <p style="margin:8px 0 0;font-size:0.9em;">글자 구성이 같으니까 빈도수도 똑같아요 → 같은 키! 정렬 안 해도 됩니다.</p>
+                    </div>
+                    <p style="margin-top:10px;">솔직히 이 방법은 <strong>정렬보다 구현이 더 복잡하고 떠올리기도 어려워요.</strong><br>
+                    하지만 이론적으로 정렬이 O(K log K)인데, 빈도수를 세는 건 O(K)라서 더 빨라요.</p>
+                    <div style="margin-top:14px;padding:14px;background:rgba(0,184,148,0.08);border:1px solid rgba(0,184,148,0.15);border-radius:10px;">
+                        <div style="font-weight:700;margin-bottom:6px;">💡 결론</div>
+                        <div style="font-size:0.9em;color:var(--text-body);">
+                            ✅ <strong>코딩테스트</strong>: <code>sorted()</code>를 키로 쓰세요. 3줄이면 끝!<br>
+                            ✅ <strong>면접</strong>: "빈도수로도 가능합니다"를 언급하면 어필 가능<br>
+                            ⚠️ 빈도수 키는 <strong>알파벳만 쓸 때</strong> (26칸 배열) 잘 먹혀요. 유니코드면 오히려 정렬이 나아요.
+                        </div>
+                    </div>`
                 }
             ],
             templates: {
@@ -1943,54 +2848,6 @@ public:
     }
 }`
                     }
-                },
-                {
-                    approach: '빈도수 튜플 키',
-                    description: '각 문자의 출현 횟수를 튜플로 만들어 키로 사용 — 정렬 없이 O(NK)',
-                    timeComplexity: 'O(NK)',
-                    spaceComplexity: 'O(NK)',
-                    templates: {
-                        python: `from collections import defaultdict
-
-class Solution:
-    def groupAnagrams(self, strs):
-        groups = defaultdict(list)
-        for s in strs:
-            count = [0] * 26
-            for c in s:
-                count[ord(c) - ord('a')] += 1
-            groups[tuple(count)].append(s)
-        return list(groups.values())`,
-                        cpp: `class Solution {
-public:
-    vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        unordered_map<string, vector<string>> mp;
-        for (auto& s : strs) {
-            int cnt[26] = {};
-            for (char c : s) cnt[c - 'a']++;
-            string key;
-            for (int i = 0; i < 26; i++)
-                key += to_string(cnt[i]) + '#';
-            mp[key].push_back(s);
-        }
-        vector<vector<string>> res;
-        for (auto& [k, v] : mp) res.push_back(v);
-        return res;
-    }
-};`,
-                        java: `class Solution {
-    public List<List<String>> groupAnagrams(String[] strs) {
-        Map<String, List<String>> map = new HashMap<>();
-        for (String s : strs) {
-            int[] cnt = new int[26];
-            for (char c : s.toCharArray()) cnt[c - 'a']++;
-            String key = Arrays.toString(cnt);
-            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
-        }
-        return new ArrayList<>(map.values());
-    }
-}`
-                    }
                 }
             ]
         },
@@ -1999,36 +2856,180 @@ public:
             title: 'BOJ 1213 - 팰린드롬 만들기',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1213',
-            simIntro: '글자 빈도를 세고 절반씩 배치하는 과정을 단계별로 확인해보세요!',
+            simIntro: '딕셔너리로 빈도를 세고, 절반씩 배치하는 과정을 확인해보세요! (코드 탭에서는 배열 방식도 볼 수 있어요)',
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>영어 대문자로만 이루어진 이름이 주어집니다.
                 이 이름의 글자들을 재배열해서 <strong>팰린드롬</strong>을 만드세요.
                 가능한 팰린드롬 중 사전순으로 가장 앞서는 것을 출력합니다.</p>
                 <p>팰린드롬을 만들 수 없으면 <code>I'm Sorry Hansoo</code>를 출력합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>영어 대문자로 이루어진 이름 (길이 &le; 50)</p></div>
-                    <div><h4>출력</h4>
-                    <p>사전순 가장 앞서는 팰린드롬 또는 I'm Sorry Hansoo</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>AABB</pre></div>
                     <div><strong>출력</strong><pre>ABBA</pre></div>
-                </div></div>
+                </div>
+                <p class="example-explain">A:2, B:2 → 절반 "AB" + 뒤집기 "BA" = "ABBA"</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>AAABB</pre></div>
+                    <div><strong>출력</strong><pre>ABABA</pre></div>
+                </div>
+                <p class="example-explain">A:3, B:2 → 절반 "AB" + 가운데 "A" + 뒤집기 "BA" = "ABABA"</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>ABACABA</pre></div>
+                    <div><strong>출력</strong><pre>AABCBAA</pre></div>
+                </div>
+                <p class="example-explain">A:4, B:2, C:1 → 절반 "AAB" + 가운데 "C" + 뒤집기 "BAA"</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 4</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>ABC</pre></div>
+                    <div><strong>출력</strong><pre>I'm Sorry Hansoo</pre></div>
+                </div>
+                <p class="example-explain">A:1, B:1, C:1 — 홀수 개인 문자가 3개이므로 불가능</p>
+                </div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>이름은 영어 대문자로만 이루어져 있습니다.</li>
+                    <li>1 ≤ 이름의 길이 ≤ 50</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>홀수 번 나오는 글자의 개수를 먼저 세서 불가능 여부를 빠르게 판단할 수 있을까요?</p>
             `,
             hints: [
                 {
                     title: '팰린드롬이 되려면?',
-                    content: '팰린드롬에서 <strong>홀수 번 등장하는 글자는 최대 1개</strong>여야 합니다!<br>홀수 글자가 2개 이상이면 팰린드롬을 만들 수 없습니다.'
+                    content: `팰린드롬을 만들라고 하니까, 먼저 <strong>팰린드롬이 뭔지</strong> 다시 생각해봐요. 앞뒤로 읽어도 같은 문자열이죠!
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:14px 0;">
+                        <div style="display:flex;gap:4px;">
+                            <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:1.2em;">A</span>
+                            <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#00b894;color:white;border-radius:8px;font-weight:700;font-size:1.2em;">B</span>
+                            <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#fdcb6e;color:#2d3436;border-radius:8px;font-weight:700;font-size:1.2em;">C</span>
+                            <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#00b894;color:white;border-radius:8px;font-weight:700;font-size:1.2em;">B</span>
+                            <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:1.2em;">A</span>
+                        </div>
+                        <div style="display:flex;gap:4px;font-size:0.8em;color:var(--text-secondary);">
+                            <span style="width:40px;text-align:center;">←</span>
+                            <span style="width:40px;text-align:center;">←</span>
+                            <span style="width:40px;text-align:center;">가운데</span>
+                            <span style="width:40px;text-align:center;">→</span>
+                            <span style="width:40px;text-align:center;">→</span>
+                        </div>
+                        <div style="color:#6c5ce7;font-weight:600;">🪞 가운데를 기준으로 거울처럼 대칭!</div>
+                    </div>
+                    <p>거울처럼 대칭이니까, 각 글자가 <strong>양쪽에 똑같이</strong> 있어야 해요. 그래서:</p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0;">
+                        <div style="background:rgba(0,184,148,0.1);border:1px solid rgba(0,184,148,0.3);border-radius:10px;padding:12px;text-align:center;">
+                            <div style="font-weight:700;color:#00b894;">짝수 번 나온 글자</div>
+                            <div style="font-size:0.9em;margin-top:4px;">반반 나눠서 양쪽에 배치 ✅</div>
+                        </div>
+                        <div style="background:rgba(253,203,110,0.15);border:1px solid rgba(253,203,110,0.4);border-radius:10px;padding:12px;text-align:center;">
+                            <div style="font-weight:700;color:#e17055;">홀수 번 나온 글자</div>
+                            <div style="font-size:0.9em;margin-top:4px;">1개 남으니까 가운데에!</div>
+                        </div>
+                    </div>
+                    <p style="padding:10px 14px;background:rgba(253,203,110,0.15);border-radius:8px;font-size:0.92em;">홀수인 글자가 <strong>2개 이상</strong>이면? 가운데 자리는 1개뿐이니까 팰린드롬을 만들 수 없어요! → <code>"I'm Sorry Hansoo"</code></p>`
                 },
                 {
-                    title: '어떻게 구성할까?',
-                    content: '각 글자의 빈도를 센 뒤, <strong>절반씩</strong> 양쪽에 배치합니다.<br>홀수인 글자가 있으면 그건 가운데에 놓습니다. 사전순으로 만들려면 앞부분을 ABC 순서로!'
+                    title: '빈도수를 세자 (배열 or 딕셔너리)',
+                    content: `그럼 각 글자가 짝수 번인지 홀수 번인지 어떻게 알까요? <strong>각 글자가 몇 번 나오는지 세면</strong> 돼요!
+                    <div style="margin:14px 0;padding:14px;background:var(--bg2);border-radius:10px;">
+                        <div style="font-weight:600;margin-bottom:8px;">예: "ABACABA"</div>
+                        <div style="display:flex;gap:4px;margin-bottom:10px;">
+                            ${'ABACABA'.split('').map(c => `<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:${c==='A'?'#6c5ce7':c==='B'?'#00b894':'#fdcb6e'};color:${c==='C'?'#2d3436':'white'};border-radius:6px;font-weight:700;">${c}</span>`).join('')}
+                        </div>
+                        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                            <div><span style="display:inline-block;width:24px;height:24px;background:#6c5ce7;border-radius:4px;vertical-align:middle;"></span> A: <strong>4</strong>번 (짝수 ✅)</div>
+                            <div><span style="display:inline-block;width:24px;height:24px;background:#00b894;border-radius:4px;vertical-align:middle;"></span> B: <strong>2</strong>번 (짝수 ✅)</div>
+                            <div><span style="display:inline-block;width:24px;height:24px;background:#fdcb6e;border-radius:4px;vertical-align:middle;"></span> C: <strong>1</strong>번 (홀수 → 가운데!)</div>
+                        </div>
+                    </div>
+                    <p style="margin-top:10px;">세는 방법은 두 가지가 있어요:</p>
+                    <strong>배열</strong>: 알파벳이 26개니까 <code>count = [0] * 26</code> 크기의 배열을 만들고, <code>ord()</code>로 인덱스 계산<br>
+                    <strong>딕셔너리</strong>: <code>if c in freq: freq[c] += 1 else: freq[c] = 1</code> — 글자를 키로 바로 세기<br>
+                    <p style="margin-top:8px;padding:10px 14px;background:rgba(0,184,148,0.1);border-radius:8px;font-size:0.92em;">어떤 걸 쓰든 결과는 같아요. 배열이 더 빠르고, 딕셔너리가 더 읽기 쉬워요!</p>
+                    <a href="https://ko.wikipedia.org/wiki/ASCII" target="_blank" style="color: var(--accent); text-decoration: underline; font-size: 0.9em;">📎 ASCII 코드표 보기 →</a>`
                 },
                 {
-                    title: '정답 코드 구조',
-                    content: '빈도 배열 count[26] → 홀수 개수 체크 → half = 각 글자 count//2개씩 → mid = 홀수인 글자 → <code>half + mid + reverse(half)</code>'
+                    title: '절반씩 배치하기',
+                    content: `빈도수를 세서 가능하다는 걸 알았으면, 이제 <strong>실제로 팰린드롬을 만들어볼</strong> 차례예요! 어떻게 배치할까요?
+                    <div style="margin:10px 0;">
+                        <div style="font-weight:600;margin-bottom:10px;">예: A:4, B:2, C:1</div>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 0;">
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8em;color:var(--text-secondary);margin-bottom:4px;">왼쪽 절반</div>
+                                <div style="display:flex;gap:3px;">
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">A</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">A</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#00b894;color:white;border-radius:6px;font-weight:700;">B</span>
+                                </div>
+                                <div style="font-size:0.75em;color:var(--text-secondary);margin-top:2px;">A×(4÷2) + B×(2÷2)</div>
+                            </div>
+                            <span style="font-size:1.5em;color:var(--text-secondary);">+</span>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8em;color:var(--text-secondary);margin-bottom:4px;">가운데</div>
+                                <div style="display:flex;gap:3px;">
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#fdcb6e;color:#2d3436;border-radius:6px;font-weight:700;">C</span>
+                                </div>
+                                <div style="font-size:0.75em;color:var(--text-secondary);margin-top:2px;">홀수 1개</div>
+                            </div>
+                            <span style="font-size:1.5em;color:var(--text-secondary);">+</span>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8em;color:var(--text-secondary);margin-bottom:4px;">🔄 뒤집기</div>
+                                <div style="display:flex;gap:3px;">
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#00b894;color:white;border-radius:6px;font-weight:700;">B</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">A</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">A</span>
+                                </div>
+                                <div style="font-size:0.75em;color:var(--text-secondary);margin-top:2px;">왼쪽의 역순</div>
+                            </div>
+                        </div>
+                        <div style="text-align:center;font-size:1.2em;margin:8px 0;">⬇️</div>
+                        <div style="display:flex;justify-content:center;gap:3px;">
+                            ${'AABCBAA'.split('').map((c,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:${c==='A'?'#6c5ce7':c==='B'?'#00b894':'#fdcb6e'};color:${c==='C'?'#2d3436':'white'};border-radius:8px;font-weight:700;font-size:1.1em;">${c}</span>`).join('')}
+                        </div>
+                        <div style="text-align:center;color:#00b894;font-weight:700;margin-top:8px;">AABCBAA 완성! 🎉</div>
+                    </div>
+                    <p style="padding:10px 14px;background:var(--bg2);border-radius:8px;font-size:0.92em;">정리하면: <strong>왼쪽 절반</strong>을 만들고 + 홀수 글자가 있으면 <strong>가운데</strong>에 넣고 + 왼쪽을 <strong>뒤집어서</strong> 오른쪽에 붙이면 끝!</p>`
+                },
+                {
+                    title: '사전순으로 만들려면?',
+                    content: `팰린드롬이 여러 개 가능할 수 있어요. 예를 들어 "AABB"로 ABBA도 되고 BAAB도 되죠. 문제에서는 <strong>사전순으로 가장 앞서는 것</strong>을 원하니까, 왼쪽 절반을 <strong>ABC 순서</strong>로 만들면 자동으로 사전순이 돼요!
+                    <div style="margin:14px 0;padding:14px;background:var(--bg2);border-radius:10px;">
+                        <div style="font-weight:600;margin-bottom:10px;">예: "AABB" → 빈도 A:2, B:2</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-size:0.85em;min-width:50px;text-align:right;color:var(--text-secondary);">절반</span>
+                                <div style="display:flex;gap:3px;">
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">A</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#00b894;color:white;border-radius:6px;font-weight:700;">B</span>
+                                </div>
+                                <span style="font-size:0.85em;color:var(--text-secondary);">← A부터!</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-size:0.85em;min-width:50px;text-align:right;color:var(--text-secondary);">뒤집기</span>
+                                <div style="display:flex;gap:3px;">
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#00b894;color:white;border-radius:6px;font-weight:700;">B</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:6px;font-weight:700;">A</span>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-size:0.85em;min-width:50px;text-align:right;color:#00b894;font-weight:700;">결과</span>
+                                <div style="display:flex;gap:3px;">
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;box-shadow:0 2px 8px rgba(108,92,231,0.3);">A</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#00b894;color:white;border-radius:8px;font-weight:700;box-shadow:0 2px 8px rgba(0,184,148,0.3);">B</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#00b894;color:white;border-radius:8px;font-weight:700;box-shadow:0 2px 8px rgba(0,184,148,0.3);">B</span>
+                                    <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;box-shadow:0 2px 8px rgba(108,92,231,0.3);">A</span>
+                                </div>
+                                <span style="font-size:1.1em;">🎉</span>
+                            </div>
+                        </div>
+                    </div>`
                 }
             ],
             templates: {
@@ -2224,161 +3225,142 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     // ── boj-1157 배열 카운팅 ──
     p[0].solutions[0].codeSteps = {
         python: [
-            { title: '입력 받기', desc: '문자열을 입력받고 대문자로 변환', code: 'word = input().upper()' },
-            { title: '빈도 배열 카운팅', desc: '크기 26 배열에 각 알파벳 등장 횟수 기록', code: 'cnt = [0] * 26\nfor c in word:\n    cnt[ord(c) - ord(\'A\')] += 1' },
-            { title: '최댓값 찾기', desc: '배열에서 가장 큰 값을 찾는다', code: 'mx = max(cnt)' },
-            { title: '중복 체크 + 출력', desc: '최댓값이 여러 개면 ?, 아니면 해당 문자 출력', code: 'if cnt.count(mx) > 1:\n    print(\'?\')\nelse:\n    print(chr(cnt.index(mx) + ord(\'A\')))' }
+            { title: '입력 + 대문자 변환', desc: '대소문자 구분 없이 세야 하므로 upper()로 통일.\n"Mississipi" → "MISSISSIPI"', code: 'word = input().upper()  # 대소문자 통일' },
+            { title: '빈도 배열 카운팅', desc: '핵심: 크기 26 배열로 알파벳 빈도를 셉니다.\nord(c) - ord(\'A\') → A=0, B=1, ..., Z=25 인덱스 변환.', code: 'cnt = [0] * 26  # A~Z 각 빈도\nfor c in word:\n    cnt[ord(c) - ord(\'A\')] += 1  # 해당 알파벳 +1' },
+            { title: '최댓값 찾기', desc: '가장 많이 등장한 횟수를 찾습니다.', code: 'mx = max(cnt)' },
+            { title: '중복 체크 + 출력', desc: '최댓값이 여러 개 → 가장 많은 문자가 둘 이상 → "?" 출력.\n하나뿐이면 해당 문자를 출력합니다.', code: 'if cnt.count(mx) > 1:       # 최댓값이 여러 개?\n    print(\'?\')\nelse:\n    print(chr(cnt.index(mx) + ord(\'A\')))  # 인덱스 → 문자' }
         ],
         cpp: [
-            { title: '입력 받기', desc: '문자열을 입력받는다', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;' },
-            { title: '빈도 배열 카운팅', desc: '크기 26 배열에 대문자 변환 후 카운팅', code: '    int cnt[26] = {};\n    for (char c : s) cnt[toupper(c) - \'A\']++;' },
-            { title: '최댓값 + 중복 체크', desc: '최댓값과 중복 여부를 동시에 추적', code: '    int mx = 0, idx = 0, dup = 0;\n    for (int i = 0; i < 26; i++) {\n        if (cnt[i] > mx) { mx = cnt[i]; idx = i; dup = 1; }\n        else if (cnt[i] == mx && mx > 0) dup++;\n    }' },
-            { title: '출력', desc: '중복이면 ?, 아니면 해당 문자 출력', code: '    cout << (dup > 1 ? "?" : string(1, \'A\' + idx)) << endl;\n}' }
+            { title: '입력 받기', desc: '문자열을 입력받습니다.', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;' },
+            { title: '빈도 배열 카운팅', desc: '크기 26 배열로 알파벳 빈도를 셉니다.\ntoupper()로 대소문자를 통일합니다.', code: '    int cnt[26] = {};  // A~Z 각 빈도\n    for (char c : s) cnt[toupper(c) - \'A\']++;' },
+            { title: '최댓값 + 중복 체크', desc: '한 번의 순회로 최댓값과 중복 여부를 동시에 파악.\n새 최대 발견 → dup 리셋. 같은 최대 → dup 증가.', code: '    int mx = 0, idx = 0, dup = 0;\n    for (int i = 0; i < 26; i++) {\n        if (cnt[i] > mx) { mx = cnt[i]; idx = i; dup = 1; }\n        else if (cnt[i] == mx && mx > 0) dup++;\n    }' },
+            { title: '출력', desc: '중복이면 "?", 아니면 해당 알파벳 출력.', code: '    cout << (dup > 1 ? "?" : string(1, \'A\' + idx)) << endl;\n}' }
         ],
         java: [
-            { title: '입력 받기', desc: '문자열을 입력받고 대문자로 변환', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String word = br.readLine().toUpperCase();' },
-            { title: '빈도 배열 카운팅', desc: '크기 26 배열에 각 알파벳 등장 횟수 기록', code: '        int[] cnt = new int[26];\n        for (char c : word.toCharArray()) cnt[c - \'A\']++;' },
-            { title: '최댓값 + 중복 체크', desc: '최댓값과 중복 여부를 동시에 추적', code: '        int mx = 0, idx = 0, dup = 0;\n        for (int i = 0; i < 26; i++) {\n            if (cnt[i] > mx) { mx = cnt[i]; idx = i; dup = 1; }\n            else if (cnt[i] == mx && mx > 0) dup++;\n        }' },
-            { title: '출력', desc: '중복이면 ?, 아니면 해당 문자 출력', code: '        System.out.println(dup > 1 ? "?" : (char)(\'A\' + idx));\n    }\n}' }
+            { title: '입력 + 대문자 변환', desc: '대소문자 통일을 위해 toUpperCase()로 변환.', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String word = br.readLine().toUpperCase(); // 대소문자 통일' },
+            { title: '빈도 배열 카운팅', desc: '크기 26 배열로 각 알파벳의 등장 횟수를 셉니다.\nc - \'A\' → 알파벳을 0~25 인덱스로 변환.', code: '        int[] cnt = new int[26]; // A~Z 빈도\n        for (char c : word.toCharArray()) cnt[c - \'A\']++;' },
+            { title: '최댓값 + 중복 체크', desc: '한 번의 순회로 최댓값과 중복 여부를 동시에 파악.', code: '        int mx = 0, idx = 0, dup = 0;\n        for (int i = 0; i < 26; i++) {\n            if (cnt[i] > mx) { mx = cnt[i]; idx = i; dup = 1; }\n            else if (cnt[i] == mx && mx > 0) dup++;\n        }' },
+            { title: '출력', desc: '중복이면 "?", 아니면 해당 알파벳 출력.', code: '        System.out.println(dup > 1 ? "?" : (char)(\'A\' + idx));\n    }\n}' }
         ]
     };
 
     // ── boj-1157 딕셔너리 ──
     p[0].solutions[1].codeSteps = {
         python: [
-            { title: '입력 받기', desc: '문자열을 입력받고 대문자로 변환', code: 'word = input().upper()' },
-            { title: '딕셔너리 카운팅', desc: 'dict.get()으로 문자별 빈도 카운팅', code: 'freq = {}\nfor c in word:\n    freq[c] = freq.get(c, 0) + 1' },
-            { title: '최댓값 찾기', desc: '딕셔너리 값 중 최대를 찾는다', code: 'mx = max(freq.values())' },
-            { title: '후보 체크 + 출력', desc: '최댓값 문자가 여러 개면 ?, 아니면 출력', code: 'candidates = [k for k, v in freq.items() if v == mx]\nprint(\'?\' if len(candidates) > 1 else candidates[0])' }
+            { title: '입력 + 대문자 변환', desc: '대소문자 구분 없이 세기 위해 upper()로 통일.', code: 'word = input().upper()  # 대소문자 통일' },
+            { title: '딕셔너리 카운팅', desc: '배열 대신 딕셔너리로 빈도를 셉니다.\n키가 없으면 1로 초기화, 있으면 +1.\n→ 어떤 문자든 셀 수 있어 더 범용적!', code: 'freq = {}  # {문자: 빈도}\nfor c in word:\n    if c in freq:\n        freq[c] += 1   # 이미 있으면 +1\n    else:\n        freq[c] = 1     # 처음 보면 1로 시작' },
+            { title: '최댓값 찾기', desc: '딕셔너리의 모든 값(빈도) 중 최대를 찾습니다.', code: 'mx = max(freq.values())  # 최대 빈도' },
+            { title: '후보 체크 + 출력', desc: '최대 빈도를 가진 문자가 여러 개면 "?" 출력.\n리스트 컴프리헨션으로 후보를 추출합니다.', code: 'candidates = [k for k, v in freq.items() if v == mx]\nprint(\'?\' if len(candidates) > 1 else candidates[0])' }
         ],
         cpp: [
-            { title: '입력 + 해시맵 준비', desc: 'unordered_map으로 빈도 저장 준비', code: '#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;' },
-            { title: '빈도 카운팅', desc: '해시맵에 대문자 변환 후 빈도 기록', code: '    unordered_map<char, int> freq;\n    for (char c : s) freq[toupper(c)]++;' },
-            { title: '최댓값 찾기', desc: '모든 빈도 중 최대값 탐색', code: '    int mx = 0;\n    for (auto& [ch, cnt] : freq) mx = max(mx, cnt);' },
-            { title: '후보 체크 + 출력', desc: '최댓값 문자가 여러 개면 ?, 아니면 출력', code: '    int dup = 0;\n    char ans = \'?\';\n    for (auto& [ch, cnt] : freq) {\n        if (cnt == mx) { ans = ch; dup++; }\n    }\n    cout << (dup > 1 ? \'?\' : ans) << endl;\n}' }
+            { title: '입력 + 해시맵 준비', desc: 'unordered_map으로 문자별 빈도를 저장합니다.\n배열과 달리 어떤 문자든 키로 사용 가능!', code: '#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;' },
+            { title: '빈도 카운팅', desc: 'toupper()로 대문자 변환 후 해시맵에 기록.\nfreq[key]++ → 없으면 0에서 시작, 있으면 +1.', code: '    unordered_map<char, int> freq;\n    for (char c : s) freq[toupper(c)]++; // 대문자로 통일 후 카운팅' },
+            { title: '최댓값 찾기', desc: '해시맵의 모든 빈도를 순회하며 최대값을 찾습니다.', code: '    int mx = 0;\n    for (auto& [ch, cnt] : freq) mx = max(mx, cnt);' },
+            { title: '후보 체크 + 출력', desc: '최대 빈도 문자가 여러 개면 "?", 하나면 해당 문자.', code: '    int dup = 0;\n    char ans = \'?\';\n    for (auto& [ch, cnt] : freq) {\n        if (cnt == mx) { ans = ch; dup++; }\n    }\n    cout << (dup > 1 ? \'?\' : ans) << endl;\n}' }
         ],
         java: [
-            { title: '입력 + 해시맵 준비', desc: 'HashMap으로 빈도 저장 준비', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String word = br.readLine().toUpperCase();' },
-            { title: '빈도 카운팅', desc: 'HashMap에 문자별 빈도 기록', code: '        Map<Character, Integer> freq = new HashMap<>();\n        for (char c : word.toCharArray()) {\n            freq.put(c, freq.getOrDefault(c, 0) + 1);\n        }' },
-            { title: '최댓값 찾기', desc: '모든 빈도 중 최대값 탐색', code: '        int mx = Collections.max(freq.values());' },
-            { title: '후보 체크 + 출력', desc: '최댓값 문자가 여러 개면 ?, 아니면 출력', code: '        int dup = 0;\n        char ans = \'?\';\n        for (var e : freq.entrySet()) {\n            if (e.getValue() == mx) { ans = e.getKey(); dup++; }\n        }\n        System.out.println(dup > 1 ? "?" : ans);\n    }\n}' }
+            { title: '입력 + 해시맵 준비', desc: 'HashMap으로 문자별 빈도를 저장합니다.\ngetOrDefault → 없으면 0, 있으면 기존값 반환.', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String word = br.readLine().toUpperCase(); // 대소문자 통일' },
+            { title: '빈도 카운팅', desc: 'getOrDefault(c, 0) + 1 → 간결한 빈도 카운팅 패턴.\n키가 없으면 0에서 시작합니다.', code: '        Map<Character, Integer> freq = new HashMap<>();\n        for (char c : word.toCharArray()) {\n            freq.put(c, freq.getOrDefault(c, 0) + 1); // 빈도 +1\n        }' },
+            { title: '최댓값 찾기', desc: 'Collections.max()로 모든 빈도 중 최대값을 찾습니다.', code: '        int mx = Collections.max(freq.values());' },
+            { title: '후보 체크 + 출력', desc: '최대 빈도 문자가 여러 개면 "?", 하나면 해당 문자.', code: '        int dup = 0;\n        char ans = \'?\';\n        for (var e : freq.entrySet()) {\n            if (e.getValue() == mx) { ans = e.getKey(); dup++; }\n        }\n        System.out.println(dup > 1 ? "?" : ans);\n    }\n}' }
         ]
     };
 
     // ── boj-1157 Counter ──
     p[0].solutions[2].codeSteps = {
         python: [
-            { title: 'Counter란?', desc: 'Python collections 모듈의 Counter 클래스 소개', explanation: _counterExplainHTML, code: null },
-            { title: 'Counter로 빈도 세기', desc: 'Counter 객체를 만들고 most_common()으로 정렬', code: 'from collections import Counter\n\nword = input().upper()\ncounter = Counter(word)\ntop = counter.most_common()' },
-            { title: '결과 출력', desc: '1위가 동률이면 ?, 아니면 1위 문자 출력', code: 'if len(top) > 1 and top[0][1] == top[1][1]:\n    print(\'?\')\nelse:\n    print(top[0][0])' }
+            { title: 'Counter란?', desc: 'Python의 빈도 카운팅 전용 클래스!\n딕셔너리 직접 만드는 것보다 훨씬 간결합니다.', explanation: _counterExplainHTML, code: null },
+            { title: 'Counter로 빈도 세기', desc: 'Counter(word) 한 줄로 빈도 딕셔너리 완성!\nmost_common() → 빈도 내림차순 정렬된 리스트 반환.', code: 'from collections import Counter\n\nword = input().upper()\ncounter = Counter(word)  # 한 줄로 빈도 카운팅!\ntop = counter.most_common()  # [(문자, 빈도)] 내림차순' },
+            { title: '결과 출력', desc: '1위와 2위의 빈도가 같으면 동률 → "?" 출력.\n1위가 유일하면 해당 문자를 출력합니다.', code: 'if len(top) > 1 and top[0][1] == top[1][1]:  # 1위 == 2위?\n    print(\'?\')\nelse:\n    print(top[0][0])  # 1위 문자 출력' }
         ]
     };
 
     // ── lc-125 뒤집어서 비교 ──
     p[1].solutions[0].codeSteps = {
         python: [
-            { title: '함수 정의', desc: 'Solution 클래스와 메서드 선언', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:' },
-            { title: '영숫자 정제', desc: 'isalnum()으로 영문자/숫자만 남기고 소문자로 변환', code: '        cleaned = \'\'\n        for c in s:\n            if c.isalnum():\n                cleaned += c.lower()' },
-            { title: '뒤집어서 비교', desc: '정제된 문자열을 뒤집어 원본과 비교', code: '        return cleaned == cleaned[::-1]' }
+            { title: '함수 정의', desc: '팰린드롬 여부를 판별하는 함수입니다.', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:' },
+            { title: '영숫자만 추출', desc: '핵심: 공백, 특수문자는 무시하고 영숫자만 남기기!\nisalnum() → 영문자 또는 숫자인지 확인.\nlower() → 대소문자 구분 없이 비교하기 위해.', code: '        cleaned = \'\'\n        for c in s:\n            if c.isalnum():        # 영문자/숫자만\n                cleaned += c.lower()  # 소문자로 통일' },
+            { title: '뒤집어서 비교', desc: 'Python의 [::-1] 슬라이싱으로 문자열 뒤집기!\n원본과 뒤집은 것이 같으면 → 팰린드롬.', code: '        return cleaned == cleaned[::-1]  # 뒤집어도 같으면 팰린드롬!' }
         ],
         cpp: [
-            { title: '함수 정의', desc: 'Solution 클래스와 메서드 선언', code: 'class Solution {\npublic:\n    bool isPalindrome(string s) {' },
-            { title: '영숫자 정제', desc: 'isalnum()으로 걸러내고 tolower()로 변환', code: '        string cleaned;\n        for (char c : s) {\n            if (isalnum(c)) cleaned += tolower(c);\n        }' },
-            { title: '뒤집어서 비교', desc: 'reverse() 후 원본과 비교', code: '        string rev = cleaned;\n        reverse(rev.begin(), rev.end());\n        return cleaned == rev;\n    }\n};' }
+            { title: '함수 정의', desc: '팰린드롬 여부를 판별하는 함수입니다.', code: 'class Solution {\npublic:\n    bool isPalindrome(string s) {' },
+            { title: '영숫자만 추출', desc: 'isalnum()으로 영숫자만 남기고 tolower()로 소문자 통일.\n→ 공백, 특수문자는 무시됩니다.', code: '        string cleaned;\n        for (char c : s) {\n            if (isalnum(c)) cleaned += tolower(c); // 영숫자만, 소문자로\n        }' },
+            { title: '뒤집어서 비교', desc: 'reverse()로 뒤집은 복사본과 비교.\n같으면 팰린드롬입니다.', code: '        string rev = cleaned;\n        reverse(rev.begin(), rev.end());\n        return cleaned == rev;  // 뒤집어도 같으면 팰린드롬!\n    }\n};' }
         ],
         java: [
-            { title: '함수 정의', desc: 'Solution 클래스와 메서드 선언', code: 'class Solution {\n    public boolean isPalindrome(String s) {' },
-            { title: '영숫자 정제', desc: 'isLetterOrDigit()으로 걸러내고 소문자로 변환', code: '        StringBuilder sb = new StringBuilder();\n        for (char c : s.toCharArray()) {\n            if (Character.isLetterOrDigit(c)) {\n                sb.append(Character.toLowerCase(c));\n            }\n        }' },
-            { title: '뒤집어서 비교', desc: 'reverse() 후 원본과 비교', code: '        String cleaned = sb.toString();\n        return cleaned.equals(sb.reverse().toString());\n    }\n}' }
+            { title: '함수 정의', desc: '팰린드롬 여부를 판별하는 함수입니다.', code: 'class Solution {\n    public boolean isPalindrome(String s) {' },
+            { title: '영숫자만 추출', desc: 'isLetterOrDigit()으로 영숫자만 남기고 소문자 통일.\nStringBuilder → 문자열 연결이 빠름!', code: '        StringBuilder sb = new StringBuilder();\n        for (char c : s.toCharArray()) {\n            if (Character.isLetterOrDigit(c)) { // 영숫자만\n                sb.append(Character.toLowerCase(c)); // 소문자로\n            }\n        }' },
+            { title: '뒤집어서 비교', desc: 'reverse()로 뒤집은 것과 비교.\n같으면 팰린드롬입니다.', code: '        String cleaned = sb.toString();\n        return cleaned.equals(sb.reverse().toString()); // 뒤집어도 같으면!\n    }\n}' }
         ]
     };
 
     // ── lc-125 투 포인터 ──
     p[1].solutions[1].codeSteps = {
         python: [
-            { title: '포인터 초기화', desc: '양쪽 끝에서 시작하는 두 포인터 설정', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1' },
-            { title: '양쪽에서 비교', desc: '영숫자가 아닌 문자는 건너뛰고, 양쪽 문자를 비교', code: '        while left < right:\n            while left < right and not s[left].isalnum():\n                left += 1\n            while left < right and not s[right].isalnum():\n                right -= 1\n            if s[left].lower() != s[right].lower():\n                return False\n            left += 1\n            right -= 1' },
-            { title: '결과 반환', desc: '끝까지 다르지 않았으면 팰린드롬', code: '        return True' }
+            { title: '포인터 초기화', desc: '핵심: 양쪽 끝에서 시작하는 두 포인터!\n새 문자열을 만들지 않으므로 O(1) 공간.', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1  # 양쪽 끝에서 시작' },
+            { title: '양쪽에서 비교', desc: '영숫자가 아닌 문자는 건너뛰고 비교.\n다르면 즉시 False! → 전체 정제 없이 바로 판별.\nlower()로 대소문자 무시.', code: '        while left < right:\n            while left < right and not s[left].isalnum():  # 영숫자 아니면 skip\n                left += 1\n            while left < right and not s[right].isalnum(): # 영숫자 아니면 skip\n                right -= 1\n            if s[left].lower() != s[right].lower():  # 다르면 팰린드롬 아님!\n                return False\n            left += 1\n            right -= 1' },
+            { title: '결과 반환', desc: '끝까지 한 번도 다르지 않았으면 팰린드롬!\nO(n) 시간, O(1) 공간 — 뒤집기 방식보다 효율적.', code: '        return True' }
         ],
         cpp: [
-            { title: '포인터 초기화', desc: '양쪽 끝에서 시작하는 두 포인터 설정', code: 'class Solution {\npublic:\n    bool isPalindrome(string s) {\n        int l = 0, r = s.size() - 1;' },
-            { title: '양쪽에서 비교', desc: '영숫자가 아니면 건너뛰고 비교', code: '        while (l < r) {\n            while (l < r && !isalnum(s[l])) l++;\n            while (l < r && !isalnum(s[r])) r--;\n            if (tolower(s[l]) != tolower(s[r])) return false;\n            l++; r--;\n        }' },
-            { title: '결과 반환', desc: '끝까지 통과하면 팰린드롬', code: '        return true;\n    }\n};' }
+            { title: '포인터 초기화', desc: '양쪽 끝에서 시작 → O(1) 공간으로 판별 가능!', code: 'class Solution {\npublic:\n    bool isPalindrome(string s) {\n        int l = 0, r = s.size() - 1; // 양쪽 끝' },
+            { title: '양쪽에서 비교', desc: '영숫자 아니면 skip, 다르면 즉시 false.\ntolower()로 대소문자 무시.', code: '        while (l < r) {\n            while (l < r && !isalnum(s[l])) l++;  // skip\n            while (l < r && !isalnum(s[r])) r--;  // skip\n            if (tolower(s[l]) != tolower(s[r])) return false;\n            l++; r--;\n        }' },
+            { title: '결과 반환', desc: '끝까지 통과 → 팰린드롬! O(n) 시간, O(1) 공간.', code: '        return true;\n    }\n};' }
         ],
         java: [
-            { title: '포인터 초기화', desc: '양쪽 끝에서 시작하는 두 포인터 설정', code: 'class Solution {\n    public boolean isPalindrome(String s) {\n        int l = 0, r = s.length() - 1;' },
-            { title: '양쪽에서 비교', desc: '영숫자가 아니면 건너뛰고 비교', code: '        while (l < r) {\n            while (l < r && !Character.isLetterOrDigit(s.charAt(l))) l++;\n            while (l < r && !Character.isLetterOrDigit(s.charAt(r))) r--;\n            if (Character.toLowerCase(s.charAt(l)) !=\n                Character.toLowerCase(s.charAt(r))) return false;\n            l++; r--;\n        }' },
-            { title: '결과 반환', desc: '끝까지 통과하면 팰린드롬', code: '        return true;\n    }\n}' }
+            { title: '포인터 초기화', desc: '양쪽 끝에서 시작 → O(1) 공간으로 판별 가능!', code: 'class Solution {\n    public boolean isPalindrome(String s) {\n        int l = 0, r = s.length() - 1; // 양쪽 끝' },
+            { title: '양쪽에서 비교', desc: '영숫자 아니면 skip, 다르면 즉시 false.\ntoLowerCase()로 대소문자 무시.', code: '        while (l < r) {\n            while (l < r && !Character.isLetterOrDigit(s.charAt(l))) l++;\n            while (l < r && !Character.isLetterOrDigit(s.charAt(r))) r--;\n            if (Character.toLowerCase(s.charAt(l)) !=\n                Character.toLowerCase(s.charAt(r))) return false;\n            l++; r--;\n        }' },
+            { title: '결과 반환', desc: '끝까지 통과 → 팰린드롬! O(n) 시간, O(1) 공간.', code: '        return true;\n    }\n}' }
         ]
     };
 
     // ── lc-49 정렬 키 ──
     p[2].solutions[0].codeSteps = {
         python: [
-            { title: '해시맵 준비', desc: '결과를 담을 딕셔너리 생성', code: 'class Solution:\n    def groupAnagrams(self, strs):\n        groups = {}' },
-            { title: '정렬 키로 그룹화', desc: '각 단어를 정렬한 결과를 키로 사용하여 그룹핑', code: '        for s in strs:\n            key = \'\'.join(sorted(s))\n            if key not in groups:\n                groups[key] = []\n            groups[key].append(s)' },
-            { title: '결과 반환', desc: '딕셔너리의 값(그룹 리스트)들을 반환', code: '        return list(groups.values())' }
+            { title: '해시맵 준비', desc: '핵심 아이디어: 애너그램은 정렬하면 같은 문자열!\n"eat" → "aet", "tea" → "aet" → 같은 그룹!\n→ 정렬 결과를 키로 쓰면 자동 그룹화.', code: 'class Solution:\n    def groupAnagrams(self, strs):\n        groups = {}  # {정렬된 키: [원본 단어들]}' },
+            { title: '정렬 키로 그룹화', desc: '각 단어를 sorted()로 정렬 → 키로 사용.\n같은 애너그램끼리 같은 키에 모입니다!\nO(n × k log k) — n개 단어, 평균 길이 k.', code: '        for s in strs:\n            key = \'\'.join(sorted(s))  # "eat" → "aet"\n            if key not in groups:\n                groups[key] = []\n            groups[key].append(s)     # 같은 키에 모으기' },
+            { title: '결과 반환', desc: '딕셔너리의 값(그룹 리스트)들을 반환합니다.', code: '        return list(groups.values())' }
         ],
         cpp: [
-            { title: '해시맵 준비', desc: 'unordered_map으로 그룹 저장 준비', code: 'class Solution {\npublic:\n    vector<vector<string>> groupAnagrams(vector<string>& strs) {\n        unordered_map<string, vector<string>> mp;' },
-            { title: '정렬 키로 그룹화', desc: '각 단어를 정렬하여 키로 사용', code: '        for (auto& s : strs) {\n            string key = s;\n            sort(key.begin(), key.end());\n            mp[key].push_back(s);\n        }' },
-            { title: '결과 반환', desc: '맵의 값들을 벡터로 변환하여 반환', code: '        vector<vector<string>> res;\n        for (auto& [k, v] : mp) res.push_back(v);\n        return res;\n    }\n};' }
+            { title: '해시맵 준비', desc: '핵심: 애너그램 → 정렬하면 같은 문자열!\n정렬 결과를 키로 사용하여 그룹화합니다.', code: 'class Solution {\npublic:\n    vector<vector<string>> groupAnagrams(vector<string>& strs) {\n        unordered_map<string, vector<string>> mp; // {정렬키: [단어들]}' },
+            { title: '정렬 키로 그룹화', desc: '각 단어를 sort() → 같은 애너그램은 같은 키.\nmp[key]에 자동으로 push_back됩니다.', code: '        for (auto& s : strs) {\n            string key = s;\n            sort(key.begin(), key.end()); // "eat" → "aet"\n            mp[key].push_back(s);         // 같은 키에 모으기\n        }' },
+            { title: '결과 반환', desc: '맵의 값들(그룹)을 벡터로 모아 반환.', code: '        vector<vector<string>> res;\n        for (auto& [k, v] : mp) res.push_back(v);\n        return res;\n    }\n};' }
         ],
         java: [
-            { title: '해시맵 준비', desc: 'HashMap으로 그룹 저장 준비', code: 'class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> map = new HashMap<>();' },
-            { title: '정렬 키로 그룹화', desc: '각 단어를 정렬하여 키로 사용', code: '        for (String s : strs) {\n            char[] arr = s.toCharArray();\n            Arrays.sort(arr);\n            String key = new String(arr);\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);\n        }' },
-            { title: '결과 반환', desc: '맵의 값들을 리스트로 반환', code: '        return new ArrayList<>(map.values());\n    }\n}' }
-        ]
-    };
-
-    // ── lc-49 빈도수 튜플 키 ──
-    p[2].solutions[1].codeSteps = {
-        python: [
-            { title: '해시맵 준비', desc: 'defaultdict로 그룹 저장 준비', code: 'from collections import defaultdict\n\nclass Solution:\n    def groupAnagrams(self, strs):\n        groups = defaultdict(list)' },
-            { title: '빈도수 키로 그룹화', desc: '각 문자의 출현 횟수를 튜플로 만들어 키로 사용', code: '        for s in strs:\n            count = [0] * 26\n            for c in s:\n                count[ord(c) - ord(\'a\')] += 1\n            groups[tuple(count)].append(s)' },
-            { title: '결과 반환', desc: '딕셔너리의 값들을 리스트로 반환', code: '        return list(groups.values())' }
-        ],
-        cpp: [
-            { title: '해시맵 준비', desc: 'unordered_map으로 그룹 저장 준비', code: 'class Solution {\npublic:\n    vector<vector<string>> groupAnagrams(vector<string>& strs) {\n        unordered_map<string, vector<string>> mp;' },
-            { title: '빈도수 키로 그룹화', desc: '각 문자의 빈도를 문자열 키로 변환하여 그룹핑', code: '        for (auto& s : strs) {\n            int cnt[26] = {};\n            for (char c : s) cnt[c - \'a\']++;\n            string key;\n            for (int i = 0; i < 26; i++)\n                key += to_string(cnt[i]) + \'#\';\n            mp[key].push_back(s);\n        }' },
-            { title: '결과 반환', desc: '맵의 값들을 벡터로 변환하여 반환', code: '        vector<vector<string>> res;\n        for (auto& [k, v] : mp) res.push_back(v);\n        return res;\n    }\n};' }
-        ],
-        java: [
-            { title: '해시맵 준비', desc: 'HashMap으로 그룹 저장 준비', code: 'class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> map = new HashMap<>();' },
-            { title: '빈도수 키로 그룹화', desc: '각 문자의 빈도를 배열 → 문자열 키로 변환', code: '        for (String s : strs) {\n            int[] cnt = new int[26];\n            for (char c : s.toCharArray()) cnt[c - \'a\']++;\n            String key = Arrays.toString(cnt);\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);\n        }' },
-            { title: '결과 반환', desc: '맵의 값들을 리스트로 반환', code: '        return new ArrayList<>(map.values());\n    }\n}' }
+            { title: '해시맵 준비', desc: '핵심: 애너그램 → 정렬하면 같은 문자열!\n정렬 결과를 키로 사용하여 그룹화합니다.', code: 'class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> map = new HashMap<>(); // {정렬키: [단어들]}' },
+            { title: '정렬 키로 그룹화', desc: '각 단어를 sort() → 같은 애너그램은 같은 키.\ncomputeIfAbsent → 키가 없으면 새 리스트 생성.', code: '        for (String s : strs) {\n            char[] arr = s.toCharArray();\n            Arrays.sort(arr);              // "eat" → "aet"\n            String key = new String(arr);\n            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);\n        }' },
+            { title: '결과 반환', desc: '맵의 값들(그룹)을 리스트로 반환.', code: '        return new ArrayList<>(map.values());\n    }\n}' }
         ]
     };
 
     // ── boj-1213 배열 카운팅 ──
     p[3].solutions[0].codeSteps = {
         python: [
-            { title: '입력 + 빈도 세기', desc: '문자열 입력 후 크기 26 배열로 빈도 카운팅', code: 'import sys\ninput = sys.stdin.readline\n\nname = input().strip()\ncnt = [0] * 26\nfor c in name:\n    cnt[ord(c) - ord(\'A\')] += 1' },
-            { title: '홀수 개수 체크', desc: '홀수 번 등장하는 문자가 2개 이상이면 불가능', code: 'odd_count = sum(1 for x in cnt if x % 2 != 0)\nif odd_count > 1:\n    print("I\'m Sorry Hansoo")' },
-            { title: '팰린드롬 절반 구성', desc: '각 문자를 절반씩 배치, 홀수인 문자는 가운데로', code: 'else:\n    half = \'\'\n    mid = \'\'\n    for i in range(26):\n        if cnt[i] % 2 == 1:\n            mid = chr(i + ord(\'A\'))\n        half += chr(i + ord(\'A\')) * (cnt[i] // 2)' },
-            { title: '조립 + 출력', desc: '앞절반 + 가운데 + 뒤집은 절반 = 팰린드롬', code: '    print(half + mid + half[::-1])' }
+            { title: '입력 + 빈도 세기', desc: '각 알파벳이 몇 번 등장하는지 크기 26 배열로 셉니다.\nord(c) - ord(\'A\') → A=0, B=1, ..., Z=25', code: 'import sys\ninput = sys.stdin.readline\n\nname = input().strip()\ncnt = [0] * 26  # A~Z 빈도\nfor c in name:\n    cnt[ord(c) - ord(\'A\')] += 1' },
+            { title: '홀수 개수 체크', desc: '핵심: 팰린드롬에서 홀수 빈도 문자는 최대 1개!\n(가운데 한 자리만 홀수 가능)\n홀수가 2개 이상이면 팰린드롬 불가능.', code: 'odd_count = sum(1 for x in cnt if x % 2 != 0)\nif odd_count > 1:  # 홀수 빈도 문자가 2개 이상 → 불가능\n    print("I\'m Sorry Hansoo")' },
+            { title: '팰린드롬 절반 구성', desc: '각 문자를 절반씩(cnt//2) 앞쪽에 배치.\n홀수 빈도 문자는 가운데(mid)에 놓습니다.\ni=0~25 순서 → 사전순 보장!', code: 'else:\n    half = \'\'\n    mid = \'\'\n    for i in range(26):\n        if cnt[i] % 2 == 1:  # 홀수면 → 가운데\n            mid = chr(i + ord(\'A\'))\n        half += chr(i + ord(\'A\')) * (cnt[i] // 2)  # 절반씩' },
+            { title: '조립 + 출력', desc: '앞절반 + 가운데 + 뒤집은절반 = 팰린드롬!\n예: "AB" + "C" + "BA" = "ABCBA"', code: '    print(half + mid + half[::-1])  # 앞 + 중 + 뒤(뒤집기)' }
         ],
         cpp: [
-            { title: '입력 + 빈도 세기', desc: '문자열 입력 후 배열로 빈도 카운팅', code: '#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int cnt[26] = {};\n    for (char c : s) cnt[c - \'A\']++;' },
-            { title: '홀수 개수 체크', desc: '홀수 빈도 문자가 2개 이상이면 불가능', code: '    int odd = 0;\n    for (int i = 0; i < 26; i++) if (cnt[i] % 2) odd++;\n    if (odd > 1) { cout << "I\'m Sorry Hansoo" << endl; return 0; }' },
-            { title: '팰린드롬 절반 구성', desc: '각 문자를 절반씩 배치', code: '    string half = "", mid = "";\n    for (int i = 0; i < 26; i++) {\n        if (cnt[i] % 2) mid = string(1, \'A\' + i);\n        half += string(cnt[i] / 2, \'A\' + i);\n    }' },
-            { title: '조립 + 출력', desc: '앞절반 + 가운데 + 뒤집은 절반 출력', code: '    string rev = half;\n    reverse(rev.begin(), rev.end());\n    cout << half + mid + rev << endl;\n}' }
+            { title: '입력 + 빈도 세기', desc: '각 대문자 알파벳의 빈도를 크기 26 배열로 셉니다.', code: '#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int cnt[26] = {}; // A~Z 빈도\n    for (char c : s) cnt[c - \'A\']++;' },
+            { title: '홀수 개수 체크', desc: '팰린드롬에서 홀수 빈도 문자는 최대 1개만 가능!\n2개 이상이면 팰린드롬 불가능.', code: '    int odd = 0;\n    for (int i = 0; i < 26; i++) if (cnt[i] % 2) odd++;\n    if (odd > 1) { cout << "I\'m Sorry Hansoo" << endl; return 0; }' },
+            { title: '팰린드롬 절반 구성', desc: '각 문자를 절반(cnt/2)씩 배치.\n홀수 빈도 문자는 가운데(mid)로.\ni=0~25 순서 → 사전순 보장.', code: '    string half = "", mid = "";\n    for (int i = 0; i < 26; i++) {\n        if (cnt[i] % 2) mid = string(1, \'A\' + i);  // 홀수 → 가운데\n        half += string(cnt[i] / 2, \'A\' + i);        // 절반씩\n    }' },
+            { title: '조립 + 출력', desc: '앞절반 + 가운데 + 뒤집은절반 = 팰린드롬!\n"AB" + "C" + "BA" = "ABCBA"', code: '    string rev = half;\n    reverse(rev.begin(), rev.end());\n    cout << half + mid + rev << endl; // 앞 + 중 + 뒤\n}' }
         ],
         java: [
-            { title: '입력 + 빈도 세기', desc: '문자열 입력 후 배열로 빈도 카운팅', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String name = br.readLine().trim();\n        int[] cnt = new int[26];\n        for (char c : name.toCharArray()) cnt[c - \'A\']++;' },
-            { title: '홀수 개수 체크', desc: '홀수 빈도 문자가 2개 이상이면 불가능', code: '        int odd = 0;\n        for (int c : cnt) if (c % 2 != 0) odd++;\n        if (odd > 1) { System.out.println("I\'m Sorry Hansoo"); return; }' },
-            { title: '팰린드롬 절반 구성', desc: '각 문자를 절반씩 배치', code: '        StringBuilder half = new StringBuilder();\n        String mid = "";\n        for (int i = 0; i < 26; i++) {\n            if (cnt[i] % 2 == 1) mid = String.valueOf((char)(\'A\' + i));\n            for (int j = 0; j < cnt[i] / 2; j++) half.append((char)(\'A\' + i));\n        }' },
-            { title: '조립 + 출력', desc: '앞절반 + 가운데 + 뒤집은 절반 출력', code: '        System.out.println(half.toString() + mid + half.reverse().toString());\n    }\n}' }
+            { title: '입력 + 빈도 세기', desc: '각 대문자 알파벳의 빈도를 크기 26 배열로 셉니다.', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String name = br.readLine().trim();\n        int[] cnt = new int[26]; // A~Z 빈도\n        for (char c : name.toCharArray()) cnt[c - \'A\']++;' },
+            { title: '홀수 개수 체크', desc: '팰린드롬에서 홀수 빈도 문자는 최대 1개만 가능!\n2개 이상이면 팰린드롬 불가능.', code: '        int odd = 0;\n        for (int c : cnt) if (c % 2 != 0) odd++;\n        if (odd > 1) { System.out.println("I\'m Sorry Hansoo"); return; }' },
+            { title: '팰린드롬 절반 구성', desc: '각 문자를 절반(cnt/2)씩 배치.\n홀수 빈도 문자는 가운데(mid)로.\ni=0~25 순서 → 사전순 보장.', code: '        StringBuilder half = new StringBuilder();\n        String mid = "";\n        for (int i = 0; i < 26; i++) {\n            if (cnt[i] % 2 == 1) mid = String.valueOf((char)(\'A\' + i)); // 홀수 → 가운데\n            for (int j = 0; j < cnt[i] / 2; j++) half.append((char)(\'A\' + i)); // 절반씩\n        }' },
+            { title: '조립 + 출력', desc: '앞절반 + 가운데 + 뒤집은절반 = 팰린드롬!\n"AB" + "C" + "BA" = "ABCBA"', code: '        System.out.println(half.toString() + mid + half.reverse().toString());\n    }\n}' }
         ]
     };
 
     // ── boj-1213 Counter 활용 ──
     p[3].solutions[1].codeSteps = {
         python: [
-            { title: 'Counter란?', desc: 'Python collections 모듈의 Counter 클래스 소개', explanation: _counterExplainHTML, code: null },
-            { title: 'Counter로 빈도 세기', desc: 'Counter 객체로 각 문자의 빈도를 한 줄에 파악', code: 'from collections import Counter\n\nname = input().strip()\ncounter = Counter(name)' },
-            { title: '홀수 체크', desc: '홀수 빈도 문자가 2개 이상이면 팰린드롬 불가', code: 'odd_chars = [c for c, v in counter.items() if v % 2 != 0]\nif len(odd_chars) > 1:\n    print("I\'m Sorry Hansoo")' },
-            { title: '조립 + 출력', desc: '사전순 정렬 후 절반 구성 → 팰린드롬 완성', code: 'else:\n    half = \'\'\n    mid = \'\'\n    for c in sorted(counter):\n        if counter[c] % 2 == 1:\n            mid = c\n        half += c * (counter[c] // 2)\n    print(half + mid + half[::-1])' }
+            { title: 'Counter란?', desc: 'Python의 빈도 카운팅 전용 클래스!\n배열 대신 Counter를 쓰면 더 간결합니다.', explanation: _counterExplainHTML, code: null },
+            { title: 'Counter로 빈도 세기', desc: 'Counter(name) 한 줄로 {문자: 빈도} 완성!\n배열 만들고 ord() 변환하는 과정이 사라집니다.', code: 'from collections import Counter\n\nname = input().strip()\ncounter = Counter(name)  # 한 줄로 빈도 카운팅!' },
+            { title: '홀수 체크', desc: '홀수 빈도 문자가 2개 이상 → 팰린드롬 불가능.\n리스트 컴프리헨션으로 홀수 빈도 문자를 추출합니다.', code: 'odd_chars = [c for c, v in counter.items() if v % 2 != 0]\nif len(odd_chars) > 1:  # 홀수 빈도 2개 이상 → 불가능\n    print("I\'m Sorry Hansoo")' },
+            { title: '조립 + 출력', desc: 'sorted(counter)로 사전순 정렬 보장.\n절반 구성 후 앞 + 가운데 + 뒤집기 = 팰린드롬!', code: 'else:\n    half = \'\'\n    mid = \'\'\n    for c in sorted(counter):       # 사전순 보장\n        if counter[c] % 2 == 1:\n            mid = c                 # 홀수 → 가운데\n        half += c * (counter[c] // 2)  # 절반씩\n    print(half + mid + half[::-1])  # 앞 + 중 + 뒤' }
         ]
     };
 })();

@@ -1,7 +1,7 @@
 // =========================================================
 // 비트 조작 (Bit Manipulation) 토픽 모듈
 // =========================================================
-const bitManipulationTopic = {
+var bitManipulationTopic = {
     id: 'bitmanipulation',
     title: '비트 조작',
     icon: '💻',
@@ -10,7 +10,128 @@ const bitManipulationTopic = {
     description: '비트 연산과 비트 마스크를 활용한 효율적인 문제 해결 기법',
     relatedNote: '비트 연산은 비트마스크 DP, 부분집합 열거, XOR 트릭 등 다양한 최적화 기법의 기반이 됩니다.',
 
-    // ===== 개념 설명 탭 =====
+    sidebarExpandable: true,
+
+    tabs: [{ id: 'concept', label: '학습하기' }],
+
+    problemMeta: {
+        'lc-191':    { type: '비트 세기',     color: 'var(--accent)', vizMethod: '_renderVizHammingWeight' },
+        'lc-136':    { type: 'XOR 트릭',      color: 'var(--green)',  vizMethod: '_renderVizSingleNumber' },
+        'boj-11723': { type: '비트 마스크',    color: '#e17055',       vizMethod: '_renderVizBitmaskSet' },
+        'lc-78':     { type: '부분집합 열거',  color: '#6c5ce7',       vizMethod: '_renderVizSubsets' }
+    },
+
+    getProblemTabs(problemId) {
+        return [
+            { id: 'problem', label: '문제', icon: '📋' },
+            { id: 'think', label: '생각해볼것', icon: '💡' },
+            { id: 'sim', label: '시뮬레이션', icon: '🎮' },
+            { id: 'code', label: '코드', icon: '💻' }
+        ];
+    },
+
+    renderProblemContent(container, problemId, tabId) {
+        var self = this;
+        var prob = self.problems.find(function(p) { return p.id === problemId; });
+        if (!prob) { container.innerHTML = '<p>문제를 찾을 수 없습니다.</p>'; return; }
+        var meta = self.problemMeta[problemId];
+        if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
+        self._clearVizState();
+        var diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        var header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
+        header.innerHTML =
+            '<span style="padding:4px 12px;background:' + meta.color + '15;border-radius:8px;font-size:0.85rem;color:' + meta.color + ';font-weight:600;">' + meta.type + '</span>' +
+            '<span class="problem-diff ' + prob.difficulty + '">' + (diffMap[prob.difficulty] || '') + '</span>';
+        container.appendChild(header);
+        var flowMap = {
+            problem: { intro: '먼저 문제를 읽고 입출력 형식을 파악해보세요.', icon: '📋' },
+            think:   { intro: '바로 코드를 짜지 말고, 단계별 힌트를 열어보며 풀이 전략을 세워보세요.', icon: '💡' },
+            sim:     { intro: prob.simIntro || '비트 연산이 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            code:    { intro: '이제 앞에서 정리한 풀이를 코드로 옮겨봅시다!', icon: '💻' }
+        };
+        var ft = flowMap[tabId];
+        if (ft) {
+            var introDiv = document.createElement('div');
+            introDiv.className = 'flow-intro';
+            introDiv.innerHTML = '<span class="flow-intro-icon">' + ft.icon + '</span><span>' + ft.intro + '</span>';
+            container.appendChild(introDiv);
+        }
+        var contentDiv = document.createElement('div');
+        container.appendChild(contentDiv);
+        switch (tabId) {
+            case 'problem': self._renderProblemTab(contentDiv, prob); break;
+            case 'think':   self._renderThinkTab(contentDiv, prob); break;
+            case 'sim':     self[meta.vizMethod](contentDiv); break;
+            case 'code':    self._renderCodeTab(contentDiv, prob); break;
+        }
+        var tabOrder = ['problem', 'think', 'sim', 'code'];
+        var tabLabels = { problem: '문제', think: '생각해볼것', sim: '시뮬레이션', code: '코드' };
+        var ctaTexts = { problem: '문제를 이해했다면', think: '힌트를 모두 확인했다면', sim: '동작 원리를 파악했다면' };
+        var curIdx = tabOrder.indexOf(tabId);
+        if (curIdx >= 0 && curIdx < tabOrder.length - 1) {
+            var nextId = tabOrder[curIdx + 1];
+            var nextDiv = document.createElement('div');
+            nextDiv.className = 'flow-next';
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaTexts[tabId] + ' → ' + tabLabels[nextId] + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextId); });
+            container.appendChild(nextDiv);
+        }
+    },
+
+    _renderProblemTab(contentEl, prob) {
+        var isLC = prob.link.includes('leetcode');
+        contentEl.innerHTML =
+            prob.descriptionHTML +
+            '<div style="text-align:right;margin-top:1.2rem;">' +
+            '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
+            (isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗') + '</a></div>';
+        contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
+    },
+
+    _renderThinkTab(contentEl, prob) {
+        var guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
+        contentEl.appendChild(guide);
+        var hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+        var openedState = {};
+        prob.hints.forEach(function(hint, idx) {
+            var step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML =
+                '<div class="hint-step-header">' +
+                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
+                '<span class="hint-step-title">' + hint.title + '</span>' +
+                '<span class="hint-step-toggle">▶</span></div>' +
+                '<div class="hint-step-content">' + hint.content + '</div>';
+            step.querySelector('.hint-step-header').addEventListener('click', function() {
+                if (step.classList.contains('locked')) return;
+                step.classList.toggle('open');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
+                if (!openedState[idx]) {
+                    openedState[idx] = true;
+                    if (idx + 1 < prob.hints.length) {
+                        var nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+            });
+            hintsDiv.appendChild(step);
+        });
+        contentEl.appendChild(hintsDiv);
+    },
+
+    _renderCodeTab(contentEl, prob) {
+        if (window.renderSolutionsCodeTab) {
+            window.renderSolutionsCodeTab(contentEl, prob);
+        } else {
+            contentEl.innerHTML = '<p>코드 탭 로딩 중...</p>';
+        }
+    },
+
+    // ===== 개념 설명 렌더링 =====
     renderConcept(container) {
         container.innerHTML = `
             <div class="hero">
@@ -319,129 +440,121 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                 </div>
             </div>
         `;
+        this._initConceptInteractions(container);
+    },
 
-        container.querySelectorAll('pre code').forEach(codeEl => {
-            if (window.hljs) hljs.highlightElement(codeEl);
-        });
-
-        container.querySelectorAll('.think-box-trigger').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const box = btn.closest('.think-box');
-                box.classList.toggle('open');
-                btn.style.display = 'none';
+    _initConceptInteractions(container) {
+        container.querySelectorAll('.think-box-trigger').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var ans = btn.nextElementSibling;
+                ans.classList.toggle('show');
+                btn.textContent = ans.classList.contains('show') ? '🔼 접기' : '🤔 생각해보고 클릭!';
             });
         });
+        container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
     },
 
     // ===== 시각화 탭 =====
     renderVisualize(container) {
-        const self = this;
+        var self = this;
         self._clearVizState();
+        var suffix = 'concept-bit';
 
-        container.innerHTML = `
-            <div class="hero" style="padding-bottom:12px;">
-                <h2>XOR로 중복 없는 수 찾기 시각화</h2>
-                <p class="hero-sub">배열의 모든 원소를 XOR하면 짝이 없는 수만 남는 과정을 단계별로 봅시다.</p>
-            </div>
+        container.innerHTML =
+            '<div class="hero" style="padding-bottom:12px;">' +
+            '<h2>XOR로 중복 없는 수 찾기 시각화</h2>' +
+            '<p class="hero-sub">배열의 모든 원소를 XOR하면 짝이 없는 수만 남는 과정을 단계별로 봅시다.</p>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">배열: ' +
+            '<input type="text" id="bit-viz-input-' + suffix + '" value="4, 1, 2, 1, 2, 3, 4" ' +
+            'style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;">' +
+            '</label>' +
+            '<button class="btn btn-primary" id="bit-viz-start-' + suffix + '">시작</button>' +
+            '</div>' +
+            '<div class="graph-svg-container" style="min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">' +
+            '<div id="bit-array-display-' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="bit-xor-display-' + suffix + '" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;"></div>' +
+            '</div>' +
+            '<div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:150px;">' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">상태</div>' +
+            '<div id="bit-status-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">시작을 눌러주세요</div>' +
+            '</div></div>' +
+            self._createStepControls(suffix) +
+            '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 XOR 중</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(108,92,231,0.3);border:2px solid var(--accent);vertical-align:middle;"></span> 변경된 비트</span>' +
+            '</div>';
 
-            <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
-                <label style="font-weight:600;">배열:
-                    <input type="text" id="bit-viz-input" value="2, 3, 1, 3, 2"
-                        style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;">
-                </label>
-                <button class="btn btn-primary" id="bit-viz-start">시작</button>
-            </div>
+        var arrayDisplay = container.querySelector('#bit-array-display-' + suffix);
+        var xorDisplay = container.querySelector('#bit-xor-display-' + suffix);
+        var statusEl = container.querySelector('#bit-status-' + suffix);
 
-            <div class="graph-svg-container" style="min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">
-                <div id="bit-array-display" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>
-                <div id="bit-xor-display" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;"></div>
-            </div>
-
-            <div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:150px;">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">상태</div>
-                    <div id="bit-status" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">시작을 눌러주세요</div>
-                </div>
-            </div>
-
-            ${self._createStepControls()}
-
-            <div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 XOR 중</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(108,92,231,0.3);border:2px solid var(--accent);vertical-align:middle;"></span> 변경된 비트</span>
-            </div>
-        `;
-
-        const arrayDisplay = container.querySelector('#bit-array-display');
-        const xorDisplay = container.querySelector('#bit-xor-display');
-        const statusEl = container.querySelector('#bit-status');
-
-        const MAX_BITS = 8;
+        var MAX_BITS = 8;
 
         function toBinStr(num) {
-            let s = (num >>> 0).toString(2);
+            var s = (num >>> 0).toString(2);
             while (s.length < MAX_BITS) s = '0' + s;
             return s.slice(-MAX_BITS);
         }
 
         function renderArrayBoxes(nums) {
             arrayDisplay.innerHTML = '';
-            nums.forEach((n, idx) => {
-                const box = document.createElement('div');
+            nums.forEach(function(n, idx) {
+                var box = document.createElement('div');
                 box.className = 'str-char-box';
                 box.dataset.idx = idx;
-                box.innerHTML = `
-                    <div class="str-char-idx">[${idx}]</div>
-                    <div class="str-char-val">${n}</div>
-                `;
+                box.innerHTML =
+                    '<div class="str-char-idx">[' + idx + ']</div>' +
+                    '<div class="str-char-val">' + n + '</div>';
                 arrayDisplay.appendChild(box);
             });
         }
 
         function renderBitRow(label, num, highlightBits) {
-            const binStr = toBinStr(num);
-            let html = `<div style="display:flex;align-items:center;gap:8px;">`;
-            html += `<span style="min-width:100px;text-align:right;font-weight:600;color:var(--text2);font-size:0.9rem;">${label}</span>`;
-            html += `<div style="display:flex;gap:3px;">`;
-            for (let i = 0; i < binStr.length; i++) {
-                const hl = highlightBits && highlightBits.has(i);
-                html += `<div class="str-char-box${hl ? ' comparing' : ''}" style="width:32px;height:36px;font-size:1rem;">
-                    <div class="str-char-val">${binStr[i]}</div>
-                </div>`;
+            var binStr = toBinStr(num);
+            var html = '<div style="display:flex;align-items:center;gap:8px;">';
+            html += '<span style="min-width:100px;text-align:right;font-weight:600;color:var(--text2);font-size:0.9rem;">' + label + '</span>';
+            html += '<div style="display:flex;gap:3px;">';
+            for (var i = 0; i < binStr.length; i++) {
+                var hl = highlightBits && highlightBits.has(i);
+                html += '<div class="str-char-box' + (hl ? ' comparing' : '') + '" style="width:32px;height:36px;font-size:1rem;">' +
+                    '<div class="str-char-val">' + binStr[i] + '</div></div>';
             }
-            html += `</div>`;
-            html += `<span style="min-width:40px;font-weight:700;color:var(--accent);font-size:1rem;">= ${num}</span>`;
-            html += `</div>`;
+            html += '</div>';
+            html += '<span style="min-width:40px;font-weight:700;color:var(--accent);font-size:1rem;">= ' + num + '</span>';
+            html += '</div>';
             return html;
         }
 
         function setArrayBoxState(idx, cls) {
-            const box = arrayDisplay.querySelector(`[data-idx="${idx}"]`);
+            var box = arrayDisplay.querySelector('[data-idx="' + idx + '"]');
             if (box) box.className = 'str-char-box' + (cls ? ' ' + cls : '');
         }
 
         function saveState() {
             return {
-                arrayBoxes: Array.from(arrayDisplay.querySelectorAll('.str-char-box')).map(b => b.className),
+                arrayBoxes: Array.from(arrayDisplay.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
                 xorHTML: xorDisplay.innerHTML,
                 status: statusEl.innerHTML
             };
         }
 
         function restoreState(s) {
-            const boxes = arrayDisplay.querySelectorAll('.str-char-box');
-            boxes.forEach((b, i) => { if (s.arrayBoxes[i]) b.className = s.arrayBoxes[i]; });
+            var boxes = arrayDisplay.querySelectorAll('.str-char-box');
+            boxes.forEach(function(b, i) { if (s.arrayBoxes[i]) b.className = s.arrayBoxes[i]; });
             xorDisplay.innerHTML = s.xorHTML;
             statusEl.innerHTML = s.status;
         }
 
-        container.querySelector('#bit-viz-start').addEventListener('click', function() {
+        container.querySelector('#bit-viz-start-' + suffix).addEventListener('click', function() {
             self._clearVizState();
 
-            const raw = container.querySelector('#bit-viz-input').value;
-            const nums = raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+            var raw = container.querySelector('#bit-viz-input-' + suffix).value;
+            var nums = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
             if (nums.length === 0) {
                 statusEl.innerHTML = '<span style="color:var(--red,#e17055);">숫자를 입력해주세요!</span>';
                 return;
@@ -451,10 +564,9 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             xorDisplay.innerHTML = '';
             statusEl.innerHTML = '준비 완료';
 
-            const steps = [];
-            let runningXor = 0;
+            var steps = [];
+            var runningXor = 0;
 
-            // Initial step: show result = 0
             steps.push({
                 description: 'result = 0 으로 시작합니다.',
                 _before: null,
@@ -466,146 +578,537 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                 undo: function() { restoreState(this._before); }
             });
 
-            // XOR each element
-            for (let i = 0; i < nums.length; i++) {
-                const idx = i;
-                const num = nums[i];
-                const prevXor = runningXor;
-                const newXor = prevXor ^ num;
-                const prevBin = toBinStr(prevXor);
-                const numBin = toBinStr(num);
-                const newBin = toBinStr(newXor);
+            for (var i = 0; i < nums.length; i++) {
+                var num = nums[i];
+                var prevXor = runningXor;
+                var newXor = prevXor ^ num;
+                var prevBin = toBinStr(prevXor);
+                var numBin = toBinStr(num);
+                var newBin = toBinStr(newXor);
 
-                // Find which bits changed
-                const changedBits = new Set();
-                for (let b = 0; b < MAX_BITS; b++) {
+                var changedBits = new Set();
+                for (var b = 0; b < MAX_BITS; b++) {
                     if (prevBin[b] !== newBin[b]) changedBits.add(b);
                 }
 
-                steps.push({
-                    description: `result ^= ${num} → ${prevXor} ^ ${num} = ${newXor} (2진수: ${prevBin} ^ ${numBin} = ${newBin})`,
-                    _before: null,
-                    action: function() {
-                        this._before = saveState();
-                        // Highlight current element in array
-                        for (let j = 0; j < nums.length; j++) {
-                            if (j < idx) setArrayBoxState(j, 'matched');
-                            else if (j === idx) setArrayBoxState(j, 'comparing');
-                            else setArrayBoxState(j, '');
-                        }
-                        // Show XOR computation
-                        let html = '';
-                        html += renderBitRow('result', prevXor, null);
-                        html += `<div style="font-weight:700;color:var(--yellow);font-size:1.1rem;">XOR (^)</div>`;
-                        html += renderBitRow('nums[' + idx + '] = ' + num, num, null);
-                        html += `<div style="border-top:2px solid var(--border);width:80%;margin:4px 0;"></div>`;
-                        html += renderBitRow('result = ' + newXor, newXor, changedBits);
-                        xorDisplay.innerHTML = html;
-                        statusEl.innerHTML = `result ^= ${num} → <strong>${newXor}</strong> (2진수: ${newBin})`;
-                    },
-                    undo: function() { restoreState(this._before); }
-                });
+                (function(idx, num, prevXor, newXor, prevBin, numBin, newBin, changedBits) {
+                    steps.push({
+                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor + ' (2진수: ' + prevBin + ' ^ ' + numBin + ' = ' + newBin + ')',
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (var j = 0; j < nums.length; j++) {
+                                if (j < idx) setArrayBoxState(j, 'matched');
+                                else if (j === idx) setArrayBoxState(j, 'comparing');
+                                else setArrayBoxState(j, '');
+                            }
+                            var html = '';
+                            html += renderBitRow('result', prevXor, null);
+                            html += '<div style="font-weight:700;color:var(--yellow);font-size:1.1rem;">XOR (^)</div>';
+                            html += renderBitRow('nums[' + idx + '] = ' + num, num, null);
+                            html += '<div style="border-top:2px solid var(--border);width:80%;margin:4px 0;"></div>';
+                            html += renderBitRow('result = ' + newXor, newXor, changedBits);
+                            xorDisplay.innerHTML = html;
+                            statusEl.innerHTML = 'result ^= ' + num + ' → <strong>' + newXor + '</strong> (2진수: ' + newBin + ')';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                })(i, num, prevXor, newXor, prevBin, numBin, newBin, changedBits);
 
                 runningXor = newXor;
             }
 
-            // Final step
-            const finalResult = runningXor;
+            var finalResult = runningXor;
             steps.push({
-                description: `완료! 모든 원소를 XOR한 결과: ${finalResult} — 이것이 짝이 없는 수입니다!`,
+                description: '완료! 모든 원소를 XOR한 결과: ' + finalResult + ' — 이것이 짝이 없는 수입니다!',
                 _before: null,
                 action: function() {
                     this._before = saveState();
-                    for (let j = 0; j < nums.length; j++) setArrayBoxState(j, 'matched');
-                    let html = renderBitRow('최종 result', finalResult, null);
+                    for (var j = 0; j < nums.length; j++) setArrayBoxState(j, 'matched');
+                    var html = renderBitRow('최종 result', finalResult, null);
                     xorDisplay.innerHTML = html;
-                    statusEl.innerHTML = `<span style="color:var(--green);font-size:1.2rem;">✓ 짝이 없는 수는 <strong>${finalResult}</strong>입니다!</span>`;
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.2rem;">✓ 짝이 없는 수는 <strong>' + finalResult + '</strong>입니다!</span>';
                 },
                 undo: function() { restoreState(this._before); }
             });
 
-            self._initStepController(container, steps);
+            self._initStepController(container, steps, suffix);
         });
     },
 
     // ===== 시각화 상태 관리 =====
-    _vizState: {
-        steps: [],
-        currentStep: -1,
-        keydownHandler: null
-    },
+    _vizState: { steps: [], currentStep: -1, keydownHandler: null },
 
     _clearVizState() {
-        const s = this._vizState;
-        if (s.keydownHandler) {
-            document.removeEventListener('keydown', s.keydownHandler);
-            s.keydownHandler = null;
-        }
-        s.steps = [];
-        s.currentStep = -1;
+        var s = this._vizState;
+        if (s.keydownHandler) { document.removeEventListener('keydown', s.keydownHandler); s.keydownHandler = null; }
+        s.steps = []; s.currentStep = -1;
     },
 
-    _createStepControls() {
-        return `
-            <div class="viz-step-controls">
-                <button class="btn viz-step-btn" id="viz-prev" disabled>&larr; 이전</button>
-                <span id="viz-step-counter" class="viz-step-counter">시작 전</span>
-                <button class="btn btn-primary viz-step-btn" id="viz-next">다음 &rarr;</button>
-            </div>
-            <div id="viz-step-desc" class="viz-step-desc">▶ 위의 버튼을 눌러 시작하세요</div>
-        `;
+    _createStepControls(suffix) {
+        return '<div class="viz-step-controls">' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
     },
 
-    _initStepController(el, steps) {
-        const state = this._vizState;
+    _initStepController(container, steps, suffix) {
+        var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-
-        const prevBtn = el.querySelector('#viz-prev');
-        const nextBtn = el.querySelector('#viz-next');
-        const counter = el.querySelector('#viz-step-counter');
-        const desc = el.querySelector('#viz-step-desc');
-
-        const updateUI = () => {
-            const idx = state.currentStep;
-            const total = state.steps.length;
+        var prevBtn = container.querySelector('#str-prev-' + suffix);
+        var nextBtn = container.querySelector('#str-next-' + suffix);
+        var indicator = container.querySelector('#str-indicator-' + suffix);
+        var desc = container.querySelector('#str-desc-' + suffix);
+        if (!prevBtn || !nextBtn) return;
+        function updateUI() {
+            var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) {
-                counter.textContent = '시작 전';
-                desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
-            } else {
-                counter.textContent = `Step ${idx + 1} / ${total}`;
-                desc.textContent = state.steps[idx].description;
-            }
-        };
-
-        nextBtn.addEventListener('click', () => {
+            if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+        }
+        nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++;
-            state.steps[state.currentStep].action();
-            updateUI();
+            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
         });
-
-        prevBtn.addEventListener('click', () => {
+        prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo();
-            state.currentStep--;
-            updateUI();
+            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
         });
-
-        const handleKeydown = (e) => {
+        var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
         };
-        document.addEventListener('keydown', handleKeydown);
-        state.keydownHandler = handleKeydown;
-
+        document.addEventListener('keydown', handleKey);
+        state.keydownHandler = handleKey;
         updateUI();
     },
 
-    // ===== 문제풀이 탭 =====
+    // ====================================================================
+    // 시뮬레이션 1: Number of 1 Bits (lc-191)
+    // ====================================================================
+    _renderVizHammingWeight(container) {
+        var self = this, suffix = '-hw1';
+        var n = 11;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">n & (n-1) 트릭으로 1 비트 세기</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">n = <strong>' + n + '</strong> (2진수: ' + (n >>> 0).toString(2) + ')의 1 비트 개수를 셉니다.</p>' +
+            '<div id="hw-bits' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="hw-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var bitsEl = container.querySelector('#hw-bits' + suffix);
+        var infoEl = container.querySelector('#hw-info' + suffix);
+
+        function renderBits(val, highlightIdx) {
+            var s = (val >>> 0).toString(2);
+            while (s.length < 8) s = '0' + s;
+            bitsEl.innerHTML = s.split('').map(function(bit, i) {
+                var style = 'width:48px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:700;font-size:1.1rem;transition:all 0.3s;';
+                if (highlightIdx === i) style += 'background:var(--yellow);color:white;';
+                else if (bit === '1') style += 'background:var(--accent)15;border:2px solid var(--accent);color:var(--accent);';
+                else style += 'background:var(--bg2);color:var(--text3);';
+                return '<div style="' + style + '"><div>' + bit + '</div><div style="font-size:0.65rem;color:var(--text3);">2<sup>' + (7 - i) + '</sup></div></div>';
+            }).join('');
+        }
+
+        renderBits(n, -1);
+        infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — n & (n-1)을 반복합니다.</span>';
+
+        var steps = [];
+        var cur = n, count = 0;
+        while (cur > 0) {
+            var prev = cur;
+            var next = cur & (cur - 1);
+            count++;
+            var prevBin = (prev >>> 0).toString(2);
+            var prevMinusBin = ((prev - 1) >>> 0).toString(2);
+            while (prevBin.length < 8) prevBin = '0' + prevBin;
+            while (prevMinusBin.length < 8) prevMinusBin = '0' + prevMinusBin;
+            // Find which bit was removed
+            var removedBit = -1;
+            var nextBin = (next >>> 0).toString(2);
+            while (nextBin.length < 8) nextBin = '0' + nextBin;
+            for (var b = 7; b >= 0; b--) {
+                if (prevBin[b] === '1' && nextBin[b] === '0') { removedBit = b; break; }
+            }
+            (function(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin) {
+                steps.push({
+                    description: 'count=' + count + ': n=' + prev + ' (' + prevBin + ') & (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ') = ' + next + ' (' + nextBin + ')',
+                    action: function() { renderBits(next, removedBit); infoEl.innerHTML = 'n = ' + prev + ' & ' + (prev - 1) + ' = <strong>' + next + '</strong> — count = <strong>' + count + '</strong>'; },
+                    undo: function() { renderBits(prev, -1); infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + prev + ', count = ' + (count - 1) + '</span>'; }
+                });
+            })(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin);
+            cur = next;
+        }
+        var finalCount = count;
+        steps.push({
+            description: '완료! n = 0이 되었으므로 종료. 1 비트 개수 = ' + finalCount,
+            action: function() { renderBits(0, -1); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 1 비트 개수 = ' + finalCount + '</strong>'; },
+            undo: function() { renderBits(0, -1); infoEl.innerHTML = 'n = 0, count = ' + finalCount; }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 2: Single Number — XOR (lc-136)
+    // ====================================================================
+    _renderVizSingleNumber(container) {
+        var self = this, suffix = '-sn1';
+        var nums = [2, 3, 1, 3, 2];
+        var MAX_BITS = 8;
+
+        function toBinStr(num) {
+            var s = (num >>> 0).toString(2);
+            while (s.length < MAX_BITS) s = '0' + s;
+            return s.slice(-MAX_BITS);
+        }
+
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">XOR로 짝 없는 수 찾기</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">배열 [' + nums.join(', ') + ']의 모든 원소를 XOR합니다.</p>' +
+            '<div id="sn-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="sn-xor' + suffix + '" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;margin-bottom:8px;"></div>' +
+            '<div id="sn-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var arrEl = container.querySelector('#sn-arr' + suffix);
+        var xorEl = container.querySelector('#sn-xor' + suffix);
+        var infoEl = container.querySelector('#sn-info' + suffix);
+
+        // Render array boxes
+        arrEl.innerHTML = nums.map(function(n, i) {
+            return '<div class="str-char-box" data-idx="' + i + '">' +
+                '<div class="str-char-idx">[' + i + ']</div>' +
+                '<div class="str-char-val">' + n + '</div></div>';
+        }).join('');
+
+        function setArrState(idx, cls) {
+            var box = arrEl.querySelector('[data-idx="' + idx + '"]');
+            if (box) box.className = 'str-char-box' + (cls ? ' ' + cls : '');
+        }
+
+        function renderBitRow(label, num, hlBits) {
+            var bin = toBinStr(num);
+            var html = '<div style="display:flex;align-items:center;gap:8px;">';
+            html += '<span style="min-width:100px;text-align:right;font-weight:600;color:var(--text2);font-size:0.9rem;">' + label + '</span>';
+            html += '<div style="display:flex;gap:3px;">';
+            for (var i = 0; i < bin.length; i++) {
+                var hl = hlBits && hlBits.has(i);
+                html += '<div class="str-char-box' + (hl ? ' comparing' : '') + '" style="width:32px;height:36px;font-size:1rem;">' +
+                    '<div class="str-char-val">' + bin[i] + '</div></div>';
+            }
+            html += '</div>';
+            html += '<span style="min-width:40px;font-weight:700;color:var(--accent);font-size:1rem;">= ' + num + '</span>';
+            html += '</div>';
+            return html;
+        }
+
+        function saveState() {
+            return {
+                arr: Array.from(arrEl.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
+                xor: xorEl.innerHTML,
+                info: infoEl.innerHTML
+            };
+        }
+        function restoreState(s) {
+            arrEl.querySelectorAll('.str-char-box').forEach(function(b, i) { if (s.arr[i]) b.className = s.arr[i]; });
+            xorEl.innerHTML = s.xor;
+            infoEl.innerHTML = s.info;
+        }
+
+        infoEl.innerHTML = '<span style="color:var(--text2);">result = 0 부터 시작합니다.</span>';
+
+        var steps = [];
+        var runXor = 0;
+
+        steps.push({
+            description: 'result = 0 으로 시작합니다.',
+            _before: null,
+            action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'result를 0으로 초기화했습니다.'; },
+            undo: function() { restoreState(this._before); }
+        });
+
+        for (var i = 0; i < nums.length; i++) {
+            var num = nums[i];
+            var prevXor = runXor;
+            var newXor = prevXor ^ num;
+            var prevBin = toBinStr(prevXor);
+            var newBin = toBinStr(newXor);
+            var changed = new Set();
+            for (var b = 0; b < MAX_BITS; b++) { if (prevBin[b] !== newBin[b]) changed.add(b); }
+
+            (function(idx, num, prevXor, newXor, prevBin, newBin, changed) {
+                steps.push({
+                    description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor,
+                    _before: null,
+                    action: function() {
+                        this._before = saveState();
+                        for (var j = 0; j < nums.length; j++) {
+                            if (j < idx) setArrState(j, 'matched');
+                            else if (j === idx) setArrState(j, 'comparing');
+                            else setArrState(j, '');
+                        }
+                        var html = renderBitRow('result', prevXor, null);
+                        html += '<div style="font-weight:700;color:var(--yellow);font-size:1.1rem;">XOR (^)</div>';
+                        html += renderBitRow('nums[' + idx + '] = ' + num, num, null);
+                        html += '<div style="border-top:2px solid var(--border);width:80%;margin:4px 0;"></div>';
+                        html += renderBitRow('result = ' + newXor, newXor, changed);
+                        xorEl.innerHTML = html;
+                        infoEl.innerHTML = 'result ^= ' + num + ' → <strong>' + newXor + '</strong>';
+                    },
+                    undo: function() { restoreState(this._before); }
+                });
+            })(i, num, prevXor, newXor, prevBin, newBin, changed);
+
+            runXor = newXor;
+        }
+
+        var finalResult = runXor;
+        steps.push({
+            description: '완료! 짝이 없는 수는 ' + finalResult + '입니다!',
+            _before: null,
+            action: function() {
+                this._before = saveState();
+                for (var j = 0; j < nums.length; j++) setArrState(j, 'matched');
+                xorEl.innerHTML = renderBitRow('최종 result', finalResult, null);
+                infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 짝이 없는 수 = ' + finalResult + '</strong>';
+            },
+            undo: function() { restoreState(this._before); }
+        });
+
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 3: 비트마스크 집합 (boj-11723)
+    // ====================================================================
+    _renderVizBitmaskSet(container) {
+        var self = this, suffix = '-bms';
+        var ops = [
+            { cmd: 'add', x: 1 }, { cmd: 'add', x: 2 }, { cmd: 'check', x: 1 },
+            { cmd: 'toggle', x: 3 }, { cmd: 'remove', x: 2 }, { cmd: 'all' },
+            { cmd: 'check', x: 10 }, { cmd: 'empty' }
+        ];
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">비트마스크로 집합 연산</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">정수 하나로 집합을 표현하고 add/remove/toggle/check 연산을 수행합니다.</p>' +
+            '<div id="bms-bits' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="bms-set' + suffix + '" style="text-align:center;margin-bottom:8px;font-weight:600;color:var(--accent);"></div>' +
+            '<div id="bms-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var bitsEl = container.querySelector('#bms-bits' + suffix);
+        var setEl = container.querySelector('#bms-set' + suffix);
+        var infoEl = container.querySelector('#bms-info' + suffix);
+
+        var SHOW_BITS = 8;
+
+        function renderBits(S, hlBit) {
+            var html = '';
+            for (var i = SHOW_BITS - 1; i >= 0; i--) {
+                var on = (S >> i) & 1;
+                var style = 'width:42px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:700;font-size:1rem;transition:all 0.3s;';
+                if (i === hlBit) style += 'background:var(--yellow);color:white;';
+                else if (on) style += 'background:var(--accent)15;border:2px solid var(--accent);color:var(--accent);';
+                else style += 'background:var(--bg2);color:var(--text3);';
+                html += '<div style="' + style + '"><div>' + on + '</div><div style="font-size:0.6rem;color:var(--text3);">' + i + '</div></div>';
+            }
+            bitsEl.innerHTML = html;
+        }
+
+        function renderSet(S) {
+            var elems = [];
+            for (var i = 0; i < SHOW_BITS; i++) { if ((S >> i) & 1) elems.push(i); }
+            setEl.textContent = 'S = {' + elems.join(', ') + '} (정수: ' + S + ')';
+        }
+
+        renderBits(0, -1);
+        renderSet(0);
+        infoEl.innerHTML = '<span style="color:var(--text2);">S = 0 (공집합)에서 시작합니다.</span>';
+
+        var steps = [];
+        var S = 0;
+
+        for (var i = 0; i < ops.length; i++) {
+            var op = ops[i];
+            var prevS = S;
+            var desc = '', hlBit = -1, newS = S, infoText = '';
+
+            if (op.cmd === 'add') {
+                newS = S | (1 << op.x);
+                desc = 'add ' + op.x + ': S |= (1 << ' + op.x + ') → S = ' + newS;
+                hlBit = op.x;
+                infoText = 'add ' + op.x + ': S |= (1 << ' + op.x + ') — ' + op.x + '번 비트를 1로 설정';
+            } else if (op.cmd === 'remove') {
+                newS = S & ~(1 << op.x);
+                desc = 'remove ' + op.x + ': S &= ~(1 << ' + op.x + ') → S = ' + newS;
+                hlBit = op.x;
+                infoText = 'remove ' + op.x + ': S &= ~(1 << ' + op.x + ') — ' + op.x + '번 비트를 0으로';
+            } else if (op.cmd === 'toggle') {
+                newS = S ^ (1 << op.x);
+                desc = 'toggle ' + op.x + ': S ^= (1 << ' + op.x + ') → S = ' + newS;
+                hlBit = op.x;
+                infoText = 'toggle ' + op.x + ': S ^= (1 << ' + op.x + ') — ' + op.x + '번 비트 반전';
+            } else if (op.cmd === 'check') {
+                var result = (S >> op.x) & 1;
+                newS = S;
+                desc = 'check ' + op.x + ': (S >> ' + op.x + ') & 1 = ' + result;
+                hlBit = op.x;
+                infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? '있음' : '없음') + ')';
+            } else if (op.cmd === 'all') {
+                newS = (1 << (SHOW_BITS)) - 1;
+                desc = 'all: S = (1 << ' + SHOW_BITS + ') - 1 → S = ' + newS;
+                infoText = 'all: 모든 비트를 1로 설정 → S = ' + newS;
+            } else if (op.cmd === 'empty') {
+                newS = 0;
+                desc = 'empty: S = 0';
+                infoText = 'empty: 모든 비트를 0으로 → S = 0';
+            }
+
+            (function(prevS, newS, desc, hlBit, infoText) {
+                steps.push({
+                    description: desc,
+                    action: function() { renderBits(newS, hlBit); renderSet(newS); infoEl.innerHTML = infoText; },
+                    undo: function() { renderBits(prevS, -1); renderSet(prevS); infoEl.innerHTML = '<span style="color:var(--text2);">S = ' + prevS + '</span>'; }
+                });
+            })(prevS, newS, desc, hlBit, infoText);
+
+            S = newS;
+        }
+
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 4: 부분집합 열거 (lc-78)
+    // ====================================================================
+    _renderVizSubsets(container) {
+        var self = this, suffix = '-sub';
+        var nums = [1, 2, 3];
+        var n = nums.length;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">비트마스크로 부분집합 열거</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">nums = [' + nums.join(', ') + ']의 모든 부분집합을 비트 마스크 0~' + ((1 << n) - 1) + '로 열거합니다.</p>' +
+            '<div id="sub-mask' + suffix + '" style="display:flex;gap:4px;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="sub-arr' + suffix + '" style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="sub-result' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div id="sub-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var maskEl = container.querySelector('#sub-mask' + suffix);
+        var arrEl = container.querySelector('#sub-arr' + suffix);
+        var resultEl = container.querySelector('#sub-result' + suffix);
+        var infoEl = container.querySelector('#sub-info' + suffix);
+
+        function renderMask(mask) {
+            var html = '';
+            for (var i = n - 1; i >= 0; i--) {
+                var on = (mask >> i) & 1;
+                var style = 'width:44px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:700;font-size:1.1rem;transition:all 0.3s;';
+                if (on) style += 'background:var(--accent);color:white;';
+                else style += 'background:var(--bg2);color:var(--text3);';
+                html += '<div style="' + style + '"><div>' + on + '</div><div style="font-size:0.6rem;color:' + (on ? 'rgba(255,255,255,0.7)' : 'var(--text3)') + ';">bit ' + i + '</div></div>';
+            }
+            maskEl.innerHTML = html;
+        }
+
+        function renderArr(mask) {
+            arrEl.innerHTML = nums.map(function(v, i) {
+                var selected = (mask >> i) & 1;
+                var style = 'width:52px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:700;font-size:1.1rem;transition:all 0.3s;';
+                if (selected) style += 'background:var(--green);color:white;';
+                else style += 'background:var(--bg2);color:var(--text3);opacity:0.5;';
+                return '<div style="' + style + '"><div>' + v + '</div><div style="font-size:0.65rem;">nums[' + i + ']</div></div>';
+            }).join('');
+        }
+
+        var collectedSubsets = [];
+        function renderCollected() {
+            resultEl.innerHTML = collectedSubsets.map(function(sub) {
+                return '<span style="padding:4px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:0.85rem;">[' + sub.join(', ') + ']</span>';
+            }).join('');
+        }
+
+        renderMask(0);
+        renderArr(0);
+        infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회하며 부분집합을 생성합니다.</span>';
+
+        var steps = [];
+
+        for (var mask = 0; mask < (1 << n); mask++) {
+            var subset = [];
+            for (var j = 0; j < n; j++) { if (mask & (1 << j)) subset.push(nums[j]); }
+            var maskBin = '';
+            for (var b = n - 1; b >= 0; b--) maskBin += ((mask >> b) & 1);
+
+            (function(mask, subset, maskBin, snapSubsets) {
+                steps.push({
+                    description: 'mask = ' + mask + ' (' + maskBin + ') → 부분집합: [' + subset.join(', ') + ']',
+                    action: function() {
+                        renderMask(mask);
+                        renderArr(mask);
+                        collectedSubsets = snapSubsets.concat([subset]);
+                        renderCollected();
+                        infoEl.innerHTML = 'mask = ' + mask + ' (' + maskBin + ') → <strong>[' + subset.join(', ') + ']</strong>';
+                    },
+                    undo: function() {
+                        collectedSubsets = snapSubsets;
+                        renderCollected();
+                        if (mask > 0) {
+                            renderMask(mask - 1);
+                            renderArr(mask - 1);
+                        } else {
+                            renderMask(0);
+                            renderArr(0);
+                        }
+                        infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회합니다.</span>';
+                    }
+                });
+            })(mask, subset, maskBin, collectedSubsets.slice());
+            collectedSubsets.push(subset);
+        }
+
+        // Reset collectedSubsets for interactivity
+        collectedSubsets = [];
+
+        var total = (1 << n);
+        steps.push({
+            description: '완료! 총 ' + total + '개의 부분집합을 모두 열거했습니다.',
+            action: function() {
+                // rebuild all
+                collectedSubsets = [];
+                for (var m = 0; m < (1 << n); m++) {
+                    var s = [];
+                    for (var j = 0; j < n; j++) { if (m & (1 << j)) s.push(nums[j]); }
+                    collectedSubsets.push(s);
+                }
+                renderCollected();
+                renderMask((1 << n) - 1);
+                renderArr((1 << n) - 1);
+                infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 총 ' + total + '개의 부분집합 열거 완료!</strong>';
+            },
+            undo: function() {
+                collectedSubsets = [];
+                for (var m = 0; m < (1 << n); m++) {
+                    var s = [];
+                    for (var j = 0; j < n; j++) { if (m & (1 << j)) s.push(nums[j]); }
+                    collectedSubsets.push(s);
+                }
+                renderCollected();
+                renderMask((1 << n) - 1);
+                renderArr((1 << n) - 1);
+                infoEl.innerHTML = 'mask = ' + ((1 << n) - 1);
+            }
+        });
+
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ===== 문제 목록 =====
     stages: [
         {
             num: 1,
@@ -628,21 +1131,16 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             title: 'LeetCode 191 - Number of 1 Bits',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/number-of-1-bits/',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>양의 정수 <code>n</code>이 주어집니다.
-                이 수의 2진수 표현에서 <strong>1인 비트의 개수</strong>(해밍 가중치)를 반환하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>양의 정수 n</p></div>
-                    <div><h4>출력</h4>
-                    <p>2진수에서 1의 개수</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>n = 11 (2진수: 1011)</pre></div>
-                    <div><strong>출력</strong><pre>3</pre></div>
-                </div></div>
-            `,
+            simIntro: 'n & (n-1) 트릭으로 1 비트를 하나씩 제거하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3>' +
+                '<p>양의 정수 <code>n</code>이 주어집니다. ' +
+                '이 수의 2진수 표현에서 <strong>1인 비트의 개수</strong>(해밍 가중치)를 반환하세요.</p>' +
+                '<div class="problem-io">' +
+                '<div><h4>입력</h4><p>양의 정수 n</p></div>' +
+                '<div><h4>출력</h4><p>2진수에서 1의 개수</p></div></div>' +
+                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
+                '<div><strong>입력</strong><pre>n = 11 (2진수: 1011)</pre></div>' +
+                '<div><strong>출력</strong><pre>3</pre></div></div></div>',
             hints: [
                 {
                     title: '가장 간단한 방법은?',
@@ -657,66 +1155,43 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                     content: '<code>count = 0</code> → <code>while n: n &= (n-1); count += 1</code> → count 반환. 매번 가장 낮은 1비트를 하나씩 제거합니다.'
                 }
             ],
-            inputDefault: 0,
-            solve() { return '3'; },
             templates: {
-                python: `class Solution:
-    def hammingWeight(self, n: int) -> int:
-        # 방법 1: n & (n-1) 트릭
-        count = 0
-        while n:
-            n &= (n - 1)  # 가장 낮은 1 비트 제거
-            count += 1
-        return count
-
-    # 방법 2: 간단한 방법
-    # def hammingWeight(self, n: int) -> int:
-    #     return bin(n).count('1')`,
-                cpp: `class Solution {
-public:
-    int hammingWeight(int n) {
-        int count = 0;
-        while (n) {
-            n &= (n - 1);  // 가장 낮은 1 비트 제거
-            count++;
-        }
-        return count;
-    }
-};`,
-                java: `class Solution {
-    public int hammingWeight(int n) {
-        int count = 0;
-        while (n != 0) {
-            n &= (n - 1);  // 가장 낮은 1 비트 제거
-            count++;
-        }
-        return count;
-    }
-}`
-            }
+                python: 'class Solution:\n    def hammingWeight(self, n: int) -> int:\n        # 방법 1: n & (n-1) 트릭\n        count = 0\n        while n:\n            n &= (n - 1)  # 가장 낮은 1 비트 제거\n            count += 1\n        return count\n\n    # 방법 2: 간단한 방법\n    # def hammingWeight(self, n: int) -> int:\n    #     return bin(n).count(\'1\')',
+                cpp: 'class Solution {\npublic:\n    int hammingWeight(int n) {\n        int count = 0;\n        while (n) {\n            n &= (n - 1);  // 가장 낮은 1 비트 제거\n            count++;\n        }\n        return count;\n    }\n};',
+                java: 'class Solution {\n    public int hammingWeight(int n) {\n        int count = 0;\n        while (n != 0) {\n            n &= (n - 1);  // 가장 낮은 1 비트 제거\n            count++;\n        }\n        return count;\n    }\n}'
+            },
+            solutions: [{
+                approach: 'n & (n-1) 트릭',
+                description: 'n & (n-1)로 가장 낮은 1 비트를 하나씩 제거하며 카운트합니다.',
+                timeComplexity: 'O(k) (k = 1 비트 개수)',
+                spaceComplexity: 'O(1)',
+                codeSteps: {
+                    python: [
+                        { title: '초기화', code: 'count = 0' },
+                        { title: 'n & (n-1) 반복', code: 'while n:\n    n &= (n - 1)  # 가장 낮은 1 비트 제거\n    count += 1' },
+                        { title: '결과 반환', code: 'return count' }
+                    ]
+                },
+                get templates() { return bitManipulationTopic.problems[0].templates; }
+            }]
         },
         {
             id: 'lc-136',
             title: 'LeetCode 136 - Single Number',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/single-number/',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>비어 있지 않은 정수 배열 <code>nums</code>가 주어집니다.
-                모든 원소가 <strong>정확히 2번</strong> 나타나고, <strong>딱 하나만 1번</strong> 나타납니다.
-                그 하나의 원소를 찾으세요.</p>
-                <p>시간 복잡도 O(n), 공간 복잡도 O(1)로 풀어야 합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>정수 배열 nums (1 &le; len &le; 30,000)</p></div>
-                    <div><h4>출력</h4>
-                    <p>1번만 나타나는 원소</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>[2, 2, 1]</pre></div>
-                    <div><strong>출력</strong><pre>1</pre></div>
-                </div></div>
-            `,
+            simIntro: 'XOR로 배열의 모든 원소를 순회하며 짝 없는 수를 찾는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3>' +
+                '<p>비어 있지 않은 정수 배열 <code>nums</code>가 주어집니다. ' +
+                '모든 원소가 <strong>정확히 2번</strong> 나타나고, <strong>딱 하나만 1번</strong> 나타납니다. ' +
+                '그 하나의 원소를 찾으세요.</p>' +
+                '<p>시간 복잡도 O(n), 공간 복잡도 O(1)로 풀어야 합니다.</p>' +
+                '<div class="problem-io">' +
+                '<div><h4>입력</h4><p>정수 배열 nums (1 &le; len &le; 30,000)</p></div>' +
+                '<div><h4>출력</h4><p>1번만 나타나는 원소</p></div></div>' +
+                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
+                '<div><strong>입력</strong><pre>[2, 2, 1]</pre></div>' +
+                '<div><strong>출력</strong><pre>1</pre></div></div></div>',
             hints: [
                 {
                     title: 'XOR의 성질을 떠올려봅시다!',
@@ -731,39 +1206,25 @@ public:
                     content: '<code>result = 0; for n in nums: result ^= n; return result</code> — 단 3줄이면 됩니다! O(n) 시간, O(1) 공간.'
                 }
             ],
-            inputDefault: 0,
-            solve() { return '1'; },
             templates: {
-                python: `class Solution:
-    def singleNumber(self, nums: list[int]) -> int:
-        result = 0
-        for n in nums:
-            result ^= n  # 같은 수끼리 상쇄 → 혼자인 수만 남음
-        return result
-
-    # 한 줄 풀이:
-    # from functools import reduce
-    # def singleNumber(self, nums): return reduce(lambda a,b: a^b, nums)`,
-                cpp: `class Solution {
-public:
-    int singleNumber(vector<int>& nums) {
-        int result = 0;
-        for (int n : nums) {
-            result ^= n;  // 같은 수끼리 상쇄
-        }
-        return result;
-    }
-};`,
-                java: `class Solution {
-    public int singleNumber(int[] nums) {
-        int result = 0;
-        for (int n : nums) {
-            result ^= n;  // 같은 수끼리 상쇄
-        }
-        return result;
-    }
-}`
-            }
+                python: 'class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        result = 0\n        for n in nums:\n            result ^= n  # 같은 수끼리 상쇄 → 혼자인 수만 남음\n        return result\n\n    # 한 줄 풀이:\n    # from functools import reduce\n    # def singleNumber(self, nums): return reduce(lambda a,b: a^b, nums)',
+                cpp: 'class Solution {\npublic:\n    int singleNumber(vector<int>& nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // 같은 수끼리 상쇄\n        }\n        return result;\n    }\n};',
+                java: 'class Solution {\n    public int singleNumber(int[] nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // 같은 수끼리 상쇄\n        }\n        return result;\n    }\n}'
+            },
+            solutions: [{
+                approach: 'XOR 전체 순회',
+                description: '모든 원소를 XOR하면 짝이 있는 수는 상쇄되고 유일한 수만 남습니다.',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                codeSteps: {
+                    python: [
+                        { title: '초기화', code: 'result = 0' },
+                        { title: '전체 XOR', code: 'for n in nums:\n    result ^= n  # 같은 수끼리 상쇄' },
+                        { title: '결과 반환', code: 'return result' }
+                    ]
+                },
+                get templates() { return bitManipulationTopic.problems[1].templates; }
+            }]
         },
 
         // ===== 2단계: 비트 마스크 응용 =====
@@ -772,69 +1233,22 @@ public:
             title: 'BOJ 11723 - 집합',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11723',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>비어있는 공집합 S가 주어졌을 때, 아래 연산을 수행하세요.</p>
-                <ul style="margin:8px 0 8px 20px;">
-                    <li><code>add x</code>: S에 x를 추가 (1 &le; x &le; 20)</li>
-                    <li><code>remove x</code>: S에서 x를 제거</li>
-                    <li><code>check x</code>: S에 x가 있으면 1, 없으면 0 출력</li>
-                    <li><code>toggle x</code>: S에 x가 있으면 제거, 없으면 추가</li>
-                    <li><code>all</code>: S = {1, 2, ..., 20}</li>
-                    <li><code>empty</code>: S = 공집합</li>
-                </ul>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>연산의 수 M (1 &le; M &le; 3,000,000)</p></div>
-                    <div><h4>출력</h4>
-                    <p>check 연산의 결과를 한 줄에 하나씩 출력</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>26
-add 1
-add 2
-check 1
-check 2
-remove 2
-check 1
-check 2
-toggle 3
-check 1
-check 2
-check 3
-check 4
-all
-check 10
-check 20
-toggle 10
-remove 20
-check 10
-check 20
-empty
-check 1
-toggle 3
-check 3
-check 4
-all
-check 20</pre></div>
-                    <div><strong>출력</strong><pre>1
-1
-1
-0
-1
-0
-1
-0
-1
-1
-0
-0
-0
-1
-0
-1</pre></div>
-                </div></div>
-            `,
+            simIntro: '비트마스크로 add, remove, toggle, check, all, empty 연산이 동작하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3>' +
+                '<p>비어있는 공집합 S가 주어졌을 때, 아래 연산을 수행하세요.</p>' +
+                '<ul style="margin:8px 0 8px 20px;">' +
+                '<li><code>add x</code>: S에 x를 추가 (1 &le; x &le; 20)</li>' +
+                '<li><code>remove x</code>: S에서 x를 제거</li>' +
+                '<li><code>check x</code>: S에 x가 있으면 1, 없으면 0 출력</li>' +
+                '<li><code>toggle x</code>: S에 x가 있으면 제거, 없으면 추가</li>' +
+                '<li><code>all</code>: S = {1, 2, ..., 20}</li>' +
+                '<li><code>empty</code>: S = 공집합</li></ul>' +
+                '<div class="problem-io">' +
+                '<div><h4>입력</h4><p>연산의 수 M (1 &le; M &le; 3,000,000)</p></div>' +
+                '<div><h4>출력</h4><p>check 연산의 결과를 한 줄에 하나씩 출력</p></div></div>' +
+                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
+                '<div><strong>입력</strong><pre>26\nadd 1\nadd 2\ncheck 1\ncheck 2\nremove 2\ncheck 1\ncheck 2\ntoggle 3\ncheck 1\ncheck 2\ncheck 3\ncheck 4\nall\ncheck 10\ncheck 20\ntoggle 10\nremove 20\ncheck 10\ncheck 20\nempty\ncheck 1\ntoggle 3\ncheck 3\ncheck 4\nall\ncheck 20</pre></div>' +
+                '<div><strong>출력</strong><pre>1\n1\n1\n0\n1\n0\n1\n0\n1\n1\n0\n0\n0\n1\n0\n1</pre></div></div></div>',
             hints: [
                 {
                     title: '비트 마스크로 집합을 표현하자!',
@@ -849,130 +1263,42 @@ check 20</pre></div>
                     content: 'M이 최대 300만이므로 <strong>sys.stdin.readline</strong>을 사용해야 합니다.<br>출력도 리스트에 모아서 한 번에 출력하면 더 빠릅니다.'
                 }
             ],
-            inputDefault: 0,
-            solve() { return '1'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-M = int(input())
-S = 0
-out = []
-
-for _ in range(M):
-    line = input().split()
-    cmd = line[0]
-
-    if cmd == 'add':
-        x = int(line[1])
-        S |= (1 << x)
-    elif cmd == 'remove':
-        x = int(line[1])
-        S &= ~(1 << x)
-    elif cmd == 'check':
-        x = int(line[1])
-        out.append('1' if (S >> x) & 1 else '0')
-    elif cmd == 'toggle':
-        x = int(line[1])
-        S ^= (1 << x)
-    elif cmd == 'all':
-        S = (1 << 21) - 1
-    elif cmd == 'empty':
-        S = 0
-
-print('\\n'.join(out))`,
-                cpp: `#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int M;
-    cin >> M;
-    int S = 0;
-
-    while (M--) {
-        string cmd;
-        cin >> cmd;
-
-        if (cmd == "add") {
-            int x; cin >> x;
-            S |= (1 << x);
-        } else if (cmd == "remove") {
-            int x; cin >> x;
-            S &= ~(1 << x);
-        } else if (cmd == "check") {
-            int x; cin >> x;
-            cout << ((S >> x) & 1) << '\\n';
-        } else if (cmd == "toggle") {
-            int x; cin >> x;
-            S ^= (1 << x);
-        } else if (cmd == "all") {
-            S = (1 << 21) - 1;
-        } else { // empty
-            S = 0;
-        }
-    }
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        int M = Integer.parseInt(br.readLine().trim());
-        int S = 0;
-
-        while (M-- > 0) {
-            String[] line = br.readLine().split(" ");
-            String cmd = line[0];
-
-            if (cmd.equals("add")) {
-                int x = Integer.parseInt(line[1]);
-                S |= (1 << x);
-            } else if (cmd.equals("remove")) {
-                int x = Integer.parseInt(line[1]);
-                S &= ~(1 << x);
-            } else if (cmd.equals("check")) {
-                int x = Integer.parseInt(line[1]);
-                sb.append((S >> x) & 1).append('\\n');
-            } else if (cmd.equals("toggle")) {
-                int x = Integer.parseInt(line[1]);
-                S ^= (1 << x);
-            } else if (cmd.equals("all")) {
-                S = (1 << 21) - 1;
-            } else { // empty
-                S = 0;
-            }
-        }
-        System.out.print(sb);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []\n\nfor _ in range(M):\n    line = input().split()\n    cmd = line[0]\n\n    if cmd == \'add\':\n        x = int(line[1])\n        S |= (1 << x)\n    elif cmd == \'remove\':\n        x = int(line[1])\n        S &= ~(1 << x)\n    elif cmd == \'check\':\n        x = int(line[1])\n        out.append(\'1\' if (S >> x) & 1 else \'0\')\n    elif cmd == \'toggle\':\n        x = int(line[1])\n        S ^= (1 << x)\n    elif cmd == \'all\':\n        S = (1 << 21) - 1\n    elif cmd == \'empty\':\n        S = 0\n\nprint(\'\\n\'.join(out))',
+                cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int M;\n    cin >> M;\n    int S = 0;\n\n    while (M--) {\n        string cmd;\n        cin >> cmd;\n\n        if (cmd == "add") {\n            int x; cin >> x;\n            S |= (1 << x);\n        } else if (cmd == "remove") {\n            int x; cin >> x;\n            S &= ~(1 << x);\n        } else if (cmd == "check") {\n            int x; cin >> x;\n            cout << ((S >> x) & 1) << \'\\n\';\n        } else if (cmd == "toggle") {\n            int x; cin >> x;\n            S ^= (1 << x);\n        } else if (cmd == "all") {\n            S = (1 << 21) - 1;\n        } else { // empty\n            S = 0;\n        }\n    }\n}',
+                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int M = Integer.parseInt(br.readLine().trim());\n        int S = 0;\n\n        while (M-- > 0) {\n            String[] line = br.readLine().split(" ");\n            String cmd = line[0];\n\n            if (cmd.equals("add")) {\n                int x = Integer.parseInt(line[1]);\n                S |= (1 << x);\n            } else if (cmd.equals("remove")) {\n                int x = Integer.parseInt(line[1]);\n                S &= ~(1 << x);\n            } else if (cmd.equals("check")) {\n                int x = Integer.parseInt(line[1]);\n                sb.append((S >> x) & 1).append(\'\\n\');\n            } else if (cmd.equals("toggle")) {\n                int x = Integer.parseInt(line[1]);\n                S ^= (1 << x);\n            } else if (cmd.equals("all")) {\n                S = (1 << 21) - 1;\n            } else { // empty\n                S = 0;\n            }\n        }\n        System.out.print(sb);\n    }\n}'
+            },
+            solutions: [{
+                approach: '비트마스크 집합 연산',
+                description: '정수 하나의 비트로 집합을 표현하여 각 연산을 O(1)로 처리합니다.',
+                timeComplexity: 'O(M)',
+                spaceComplexity: 'O(1)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 초기화', code: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []' },
+                        { title: '연산 처리', code: 'for _ in range(M):\n    line = input().split()\n    cmd = line[0]\n    if cmd == \'add\':     S |= (1 << int(line[1]))\n    elif cmd == \'remove\': S &= ~(1 << int(line[1]))\n    elif cmd == \'check\':  out.append(str((S >> int(line[1])) & 1))\n    elif cmd == \'toggle\': S ^= (1 << int(line[1]))\n    elif cmd == \'all\':    S = (1 << 21) - 1\n    elif cmd == \'empty\':  S = 0' },
+                        { title: '출력', code: 'print(\'\\n\'.join(out))' }
+                    ]
+                },
+                get templates() { return bitManipulationTopic.problems[2].templates; }
+            }]
         },
         {
             id: 'lc-78',
             title: 'LeetCode 78 - Subsets',
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/subsets/',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>중복이 없는 정수 배열 <code>nums</code>가 주어집니다.
-                모든 가능한 <strong>부분집합(power set)</strong>을 반환하세요.</p>
-                <p>결과에 중복된 부분집합이 없어야 합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>정수 배열 nums (1 &le; len &le; 10)</p></div>
-                    <div><h4>출력</h4>
-                    <p>모든 부분집합의 리스트</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>[1, 2, 3]</pre></div>
-                    <div><strong>출력</strong><pre>[[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]</pre></div>
-                </div></div>
-            `,
+            simIntro: '비트 마스크 0부터 2^n-1까지 순회하며 모든 부분집합을 열거하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3>' +
+                '<p>중복이 없는 정수 배열 <code>nums</code>가 주어집니다. ' +
+                '모든 가능한 <strong>부분집합(power set)</strong>을 반환하세요.</p>' +
+                '<p>결과에 중복된 부분집합이 없어야 합니다.</p>' +
+                '<div class="problem-io">' +
+                '<div><h4>입력</h4><p>정수 배열 nums (1 &le; len &le; 10)</p></div>' +
+                '<div><h4>출력</h4><p>모든 부분집합의 리스트</p></div></div>' +
+                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
+                '<div><strong>입력</strong><pre>[1, 2, 3]</pre></div>' +
+                '<div><strong>출력</strong><pre>[[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]</pre></div></div></div>',
             hints: [
                 {
                     title: '부분집합의 개수는?',
@@ -987,234 +1313,32 @@ public class Main {
                     content: '<code>for mask in range(1 &lt;&lt; n):</code> → 내부에서 <code>for j in range(n): if mask & (1 &lt;&lt; j):</code>로 선택된 원소를 모읍니다.'
                 }
             ],
-            inputDefault: 0,
-            solve() { return '[[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]'; },
             templates: {
-                python: `class Solution:
-    def subsets(self, nums: list[int]) -> list[list[int]]:
-        n = len(nums)
-        result = []
-
-        for mask in range(1 << n):  # 0 ~ 2^n - 1
-            subset = []
-            for j in range(n):
-                if mask & (1 << j):  # j번째 비트가 1이면 선택
-                    subset.append(nums[j])
-            result.append(subset)
-
-        return result
-
-    # 백트래킹 풀이 (비교용):
-    # def subsets(self, nums):
-    #     res = []
-    #     def bt(start, curr):
-    #         res.append(curr[:])
-    #         for i in range(start, len(nums)):
-    #             curr.append(nums[i])
-    #             bt(i + 1, curr)
-    #             curr.pop()
-    #     bt(0, [])
-    #     return res`,
-                cpp: `class Solution {
-public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int>> result;
-
-        for (int mask = 0; mask < (1 << n); mask++) {
-            vector<int> subset;
-            for (int j = 0; j < n; j++) {
-                if (mask & (1 << j)) {
-                    subset.push_back(nums[j]);
-                }
-            }
-            result.push_back(subset);
-        }
-
-        return result;
-    }
-};`,
-                java: `class Solution {
-    public List<List<Integer>> subsets(int[] nums) {
-        int n = nums.length;
-        List<List<Integer>> result = new ArrayList<>();
-
-        for (int mask = 0; mask < (1 << n); mask++) {
-            List<Integer> subset = new ArrayList<>();
-            for (int j = 0; j < n; j++) {
-                if ((mask & (1 << j)) != 0) {
-                    subset.add(nums[j]);
-                }
-            }
-            result.add(subset);
-        }
-
-        return result;
-    }
-}`
-            }
+                python: 'class Solution:\n    def subsets(self, nums: list[int]) -> list[list[int]]:\n        n = len(nums)\n        result = []\n\n        for mask in range(1 << n):  # 0 ~ 2^n - 1\n            subset = []\n            for j in range(n):\n                if mask & (1 << j):  # j번째 비트가 1이면 선택\n                    subset.append(nums[j])\n            result.append(subset)\n\n        return result\n\n    # 백트래킹 풀이 (비교용):\n    # def subsets(self, nums):\n    #     res = []\n    #     def bt(start, curr):\n    #         res.append(curr[:])\n    #         for i in range(start, len(nums)):\n    #             curr.append(nums[i])\n    #             bt(i + 1, curr)\n    #             curr.pop()\n    #     bt(0, [])\n    #     return res',
+                cpp: 'class Solution {\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        int n = nums.size();\n        vector<vector<int>> result;\n\n        for (int mask = 0; mask < (1 << n); mask++) {\n            vector<int> subset;\n            for (int j = 0; j < n; j++) {\n                if (mask & (1 << j)) {\n                    subset.push_back(nums[j]);\n                }\n            }\n            result.push_back(subset);\n        }\n\n        return result;\n    }\n};',
+                java: 'class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        int n = nums.length;\n        List<List<Integer>> result = new ArrayList<>();\n\n        for (int mask = 0; mask < (1 << n); mask++) {\n            List<Integer> subset = new ArrayList<>();\n            for (int j = 0; j < n; j++) {\n                if ((mask & (1 << j)) != 0) {\n                    subset.add(nums[j]);\n                }\n            }\n            result.add(subset);\n        }\n\n        return result;\n    }\n}'
+            },
+            solutions: [{
+                approach: '비트마스크 부분집합 열거',
+                description: '0 ~ 2^n-1까지 순회하며 각 비트에 대응하는 원소를 선택합니다.',
+                timeComplexity: 'O(n * 2^n)',
+                spaceComplexity: 'O(n * 2^n)',
+                codeSteps: {
+                    python: [
+                        { title: '초기화', code: 'n = len(nums)\nresult = []' },
+                        { title: '마스크 순회', code: 'for mask in range(1 << n):  # 0 ~ 2^n - 1\n    subset = []\n    for j in range(n):\n        if mask & (1 << j):  # j번째 비트가 1이면 선택\n            subset.append(nums[j])\n    result.append(subset)' },
+                        { title: '결과 반환', code: 'return result' }
+                    ]
+                },
+                get templates() { return bitManipulationTopic.problems[3].templates; }
+            }]
         }
     ],
 
-    renderProblem(container) {
-        container.innerHTML = '';
-        const stageList = document.createElement('div');
-        stageList.className = 'problem-stages';
-
-        this.stages.forEach(stage => {
-            const stageCard = document.createElement('div');
-            stageCard.className = 'stage-card';
-            stageCard.innerHTML = `
-                <div class="stage-header">
-                    <span class="stage-num">단계 ${stage.num}</span>
-                    <h3>${stage.title}</h3>
-                    <p>${stage.desc}</p>
-                </div>
-                <div class="stage-problems"></div>
-            `;
-
-            const problemsDiv = stageCard.querySelector('.stage-problems');
-            stage.problemIds.forEach(pid => {
-                const prob = this.problems.find(p => p.id === pid);
-                if (!prob) return;
-                const btn = document.createElement('button');
-                const diffMap = {gold:'Gold',silver:'Silver',platinum:'Platinum',easy:'Easy',medium:'Medium',hard:'Hard'};
-                btn.className = 'problem-card ' + prob.difficulty;
-                btn.innerHTML = `
-                    <span class="problem-title">${prob.title}</span>
-                    <span class="problem-diff">${diffMap[prob.difficulty] || prob.difficulty}</span>
-                `;
-                btn.addEventListener('click', () => this._renderProblemDetail(container, prob));
-                problemsDiv.appendChild(btn);
-            });
-
-            stageList.appendChild(stageCard);
-        });
-
-        container.appendChild(stageList);
-    },
-
-    // ===== 문제 상세 렌더링 =====
-    _renderProblemDetail(container, problem) {
-        container.innerHTML = '';
-
-        const backBtn = document.createElement('button');
-        backBtn.className = 'btn';
-        backBtn.textContent = '← 문제 목록으로';
-        backBtn.addEventListener('click', () => this.renderProblem(container));
-        container.appendChild(backBtn);
-
-        const isLeetCode = problem.link.includes('leetcode');
-        const descDiv = document.createElement('div');
-        descDiv.className = 'problem-detail';
-        descDiv.innerHTML = `
-            <div class="problem-meta">
-                <a href="${problem.link}" target="_blank" class="btn btn-primary">${isLeetCode ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}</a>
-            </div>
-            ${problem.descriptionHTML}
-        `;
-        container.appendChild(descDiv);
-
-        // 힌트 섹션
-        const hintsSection = document.createElement('div');
-        hintsSection.className = 'hints-section';
-        hintsSection.innerHTML = '<h3>단계별 힌트</h3>';
-
-        const hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hints-steps';
-        const openedState = {};
-
-        problem.hints.forEach((hint, idx) => {
-            const step = document.createElement('div');
-            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
-            step.innerHTML = `
-                <div class="hint-step-header">
-                    <span class="hint-step-num">${idx + 1}</span>
-                    <span class="hint-step-title">${hint.title}</span>
-                    <span class="hint-step-toggle">▶</span>
-                </div>
-                <div class="hint-step-content">${hint.content}</div>
-            `;
-
-            step.querySelector('.hint-step-header').addEventListener('click', () => {
-                if (step.classList.contains('locked')) return;
-                step.classList.toggle('open');
-                step.querySelector('.hint-step-toggle').textContent =
-                    step.classList.contains('open') ? '▼' : '▶';
-
-                if (!openedState[idx]) {
-                    openedState[idx] = true;
-                    if (idx + 1 < problem.hints.length) {
-                        const nextStep = hintsDiv.children[idx + 1];
-                        if (nextStep) nextStep.classList.remove('locked');
-                    }
-                }
-            });
-            hintsDiv.appendChild(step);
-        });
-
-        hintsSection.appendChild(hintsDiv);
-        container.appendChild(hintsSection);
-
-        // 코드 에디터
-        const solveArea = document.createElement('div');
-        solveArea.className = 'solve-area';
-        solveArea.innerHTML = `
-            <div class="editor-header">
-                <h3>풀이 작성</h3>
-                <select id="lang-select">
-                    <option value="python">Python</option>
-                    <option value="cpp">C++</option>
-                    <option value="java">Java</option>
-                </select>
-            </div>
-            <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
-            <div class="editor-actions">
-                <button id="run-btn" class="btn btn-primary">▶ 실행</button>
-                <button id="check-btn" class="btn btn-success">✓ 정답 확인</button>
-            </div>
-            <div id="output-area" class="output-area">
-                <div class="output-label">실행 결과</div>
-                <pre id="output-text"></pre>
-            </div>
-        `;
-        container.appendChild(solveArea);
-
-        container.querySelectorAll('pre code').forEach(codeEl => {
-            if (window.hljs) hljs.highlightElement(codeEl);
-        });
-
-        const editor = container.querySelector('#code-editor');
-        const langSelect = container.querySelector('#lang-select');
-        editor.value = problem.templates.python;
-
-        langSelect.addEventListener('change', () => {
-            editor.value = problem.templates[langSelect.value];
-        });
-
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const s = editor.selectionStart;
-                editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(editor.selectionEnd);
-                editor.selectionStart = editor.selectionEnd = s + 4;
-            }
-        });
-
-        container.querySelector('#run-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
-        });
-
-        container.querySelector('#check-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            const site = isLeetCode ? 'LeetCode' : 'BOJ';
-            this._showOutput(container, `예상 정답:\n${expected}\n\n💡 코드를 ${site}에 제출하여 정답을 확인하세요!`);
-        });
-    },
+    renderProblem(container) {},
 
     _showOutput(container, text, status) {
-        const area = container.querySelector('#output-area');
+        var area = container.querySelector('#output-area');
         area.querySelector('#output-text').textContent = text;
         area.className = 'output-area' + (status ? ' ' + status : '');
     }

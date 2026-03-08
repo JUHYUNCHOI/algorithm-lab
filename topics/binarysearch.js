@@ -8,6 +8,130 @@ const binarySearchTopic = {
     description: '정렬된 데이터에서 원하는 값을 빠르게 찾는 기법',
     relatedNote: '이분 탐색은 최적화 문제에서 결정 문제로 변환하는 매개변수 탐색(Parametric Search) 기법으로 자주 확장됩니다.',
 
+    sidebarExpandable: true,
+
+    tabs: [{ id: 'concept', label: '학습하기' }],
+
+    problemMeta: {
+        'boj-1920':  { type: '기본 탐색',       color: 'var(--accent)', vizMethod: '_renderVizBasicSearch' },
+        'boj-10816': { type: 'Lower/Upper Bound', color: 'var(--green)',  vizMethod: '_renderVizBounds' },
+        'boj-1654':  { type: '매개변수 탐색',    color: '#e17055',       vizMethod: '_renderVizCable' },
+        'boj-2805':  { type: '매개변수 탐색',    color: '#e17055',       vizMethod: '_renderVizTreeCut' },
+        'boj-2110':  { type: '최적화 탐색',      color: '#6c5ce7',       vizMethod: '_renderVizRouter' },
+        'boj-1300':  { type: '결정 문제',        color: '#fdcb6e',       vizMethod: '_renderVizKth' },
+        'boj-12015': { type: 'LIS + 이분 탐색',  color: '#00b894',       vizMethod: '_renderVizLIS' }
+    },
+
+    getProblemTabs(problemId) {
+        return [
+            { id: 'problem', label: '문제', icon: '📋' },
+            { id: 'think', label: '생각해볼것', icon: '💡' },
+            { id: 'sim', label: '시뮬레이션', icon: '🎮' },
+            { id: 'code', label: '코드', icon: '💻' }
+        ];
+    },
+
+    renderProblemContent(container, problemId, tabId) {
+        var self = this;
+        var prob = self.problems.find(function(p) { return p.id === problemId; });
+        if (!prob) { container.innerHTML = '<p>문제를 찾을 수 없습니다.</p>'; return; }
+        var meta = self.problemMeta[problemId];
+        if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
+        self._clearVizState();
+        var diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        var header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
+        header.innerHTML =
+            '<span style="padding:4px 12px;background:' + meta.color + '15;border-radius:8px;font-size:0.85rem;color:' + meta.color + ';font-weight:600;">' + meta.type + '</span>' +
+            '<span class="problem-diff ' + prob.difficulty + '">' + (diffMap[prob.difficulty] || '') + '</span>';
+        container.appendChild(header);
+        var flowMap = {
+            problem: { intro: '먼저 문제를 읽고 입출력 형식을 파악해보세요.', icon: '📋' },
+            think:   { intro: '바로 코드를 짜지 말고, 단계별 힌트를 열어보며 풀이 전략을 세워보세요.', icon: '💡' },
+            sim:     { intro: prob.simIntro || '이분 탐색이 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            code:    { intro: '이제 앞에서 정리한 풀이를 코드로 옮겨봅시다!', icon: '💻' }
+        };
+        var ft = flowMap[tabId];
+        if (ft) {
+            var introDiv = document.createElement('div');
+            introDiv.className = 'flow-intro';
+            introDiv.innerHTML = '<span class="flow-intro-icon">' + ft.icon + '</span><span>' + ft.intro + '</span>';
+            container.appendChild(introDiv);
+        }
+        var contentDiv = document.createElement('div');
+        container.appendChild(contentDiv);
+        switch (tabId) {
+            case 'problem': self._renderProblemTab(contentDiv, prob); break;
+            case 'think':   self._renderThinkTab(contentDiv, prob); break;
+            case 'sim':     self[meta.vizMethod](contentDiv); break;
+            case 'code':    self._renderCodeTab(contentDiv, prob); break;
+        }
+        var tabOrder = ['problem', 'think', 'sim', 'code'];
+        var tabLabels = { problem: '문제', think: '생각해볼것', sim: '시뮬레이션', code: '코드' };
+        var ctaTexts = { problem: '문제를 이해했다면', think: '힌트를 모두 확인했다면', sim: '동작 원리를 파악했다면' };
+        var curIdx = tabOrder.indexOf(tabId);
+        if (curIdx >= 0 && curIdx < tabOrder.length - 1) {
+            var nextId = tabOrder[curIdx + 1];
+            var nextDiv = document.createElement('div');
+            nextDiv.className = 'flow-next';
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaTexts[tabId] + ' → ' + tabLabels[nextId] + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextId); });
+            container.appendChild(nextDiv);
+        }
+    },
+
+    _renderProblemTab(contentEl, prob) {
+        var isLC = prob.link.includes('leetcode');
+        contentEl.innerHTML =
+            prob.descriptionHTML +
+            '<div style="text-align:right;margin-top:1.2rem;">' +
+            '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
+            (isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗') + '</a></div>';
+        contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
+    },
+
+    _renderThinkTab(contentEl, prob) {
+        var guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
+        contentEl.appendChild(guide);
+        var hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+        var openedState = {};
+        prob.hints.forEach(function(hint, idx) {
+            var step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML =
+                '<div class="hint-step-header">' +
+                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
+                '<span class="hint-step-title">' + hint.title + '</span>' +
+                '<span class="hint-step-toggle">▶</span></div>' +
+                '<div class="hint-step-content">' + hint.content + '</div>';
+            step.querySelector('.hint-step-header').addEventListener('click', function() {
+                if (step.classList.contains('locked')) return;
+                step.classList.toggle('open');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
+                if (!openedState[idx]) {
+                    openedState[idx] = true;
+                    if (idx + 1 < prob.hints.length) {
+                        var nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+            });
+            hintsDiv.appendChild(step);
+        });
+        contentEl.appendChild(hintsDiv);
+    },
+
+    _renderCodeTab(contentEl, prob) {
+        if (window.renderSolutionsCodeTab) {
+            window.renderSolutionsCodeTab(contentEl, prob);
+        } else {
+            contentEl.innerHTML = '<p>코드 탭 로딩 중...</p>';
+        }
+    },
+
     // ===== 개념 설명 렌더링 =====
     renderConcept(container) {
         container.innerHTML = `
@@ -16,7 +140,6 @@ const binarySearchTopic = {
                 <p class="hero-sub">절반씩 버리면, 아무리 많은 데이터에서도 빠르게 찾을 수 있습니다</p>
             </div>
 
-            <!-- ① 이분 탐색이란? -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 이분 탐색이란?</div>
                 <div class="analogy-box">
@@ -27,22 +150,18 @@ const binarySearchTopic = {
                     다시 남은 절반의 중간을 펴고... 이것을 반복하면 금방 찾습니다!<br><br>
                     이것이 바로 <strong>이분 탐색</strong>입니다. 매번 <strong>절반을 버리기</strong> 때문에 매우 빠릅니다.
                 </div>
-
                 <div class="code-block"><pre><code class="language-python"># 이분 탐색 기본 코드
 def binary_search(arr, target):
     lo, hi = 0, len(arr) - 1
-
     while lo <= hi:
         mid = (lo + hi) // 2
         if arr[mid] == target:
-            return mid          # 찾았다!
+            return mid
         elif arr[mid] < target:
-            lo = mid + 1        # 오른쪽 절반으로
+            lo = mid + 1
         else:
-            hi = mid - 1        # 왼쪽 절반으로
-
-    return -1  # 못 찾음</code></pre></div>
-
+            hi = mid - 1
+    return -1</code></pre></div>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -58,152 +177,55 @@ def binary_search(arr, target):
                 </div>
             </div>
 
-            <!-- ② 이분 탐색의 동작 원리 -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> 이분 탐색의 동작 원리</div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <rect x="5" y="30" width="70" height="20" rx="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
-                                <text x="10" y="44" font-size="10" fill="var(--accent)">1 3 5 7 9</text>
-                            </svg>
-                        </div>
                         <h3>① 정렬 필수!</h3>
-                        <p>이분 탐색은 <strong>정렬된 배열</strong>에서만 작동합니다. 정렬이 안 되어 있으면 먼저 정렬해야 합니다.</p>
+                        <p>이분 탐색은 <strong>정렬된 배열</strong>에서만 작동합니다.</p>
                     </div>
                     <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="8" y="35" font-size="10" fill="var(--green)">lo</text>
-                                <text x="32" y="35" font-size="10" fill="var(--yellow)">mid</text>
-                                <text x="58" y="35" font-size="10" fill="var(--red)">hi</text>
-                                <rect x="5" y="40" width="70" height="16" rx="4" fill="none" stroke="var(--border)" stroke-width="2"/>
-                            </svg>
-                        </div>
-                        <h3>② 세 개의 포인터</h3>
-                        <p><strong>lo</strong>(시작), <strong>hi</strong>(끝), <strong>mid</strong>(중간).<br>mid = (lo + hi) / 2로 중간 위치를 계산합니다.</p>
+                        <h3>② 중간값 확인</h3>
+                        <p><strong>mid = (lo + hi) / 2</strong><br>중간값과 비교하여 절반을 버립니다.</p>
                     </div>
                     <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <rect x="5" y="30" width="30" height="20" rx="4" fill="rgba(224,82,70,0.15)" stroke="var(--red)" stroke-width="1.5"/>
-                                <rect x="45" y="30" width="30" height="20" rx="4" fill="rgba(0,184,148,0.15)" stroke="var(--green)" stroke-width="1.5"/>
-                                <text x="35" y="55" font-size="20" fill="var(--text2)">✂</text>
-                            </svg>
-                        </div>
-                        <h3>③ 절반 버리기</h3>
-                        <p>mid와 비교 후, <strong>필요 없는 절반을 버립니다</strong>.<br>target이 더 크면 lo = mid + 1<br>target이 더 작으면 hi = mid - 1</p>
-                    </div>
-                </div>
-
-                <div class="code-block"><pre><code class="language-python"># 예시: [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]에서 23 찾기
-
-# 1회차: lo=0, hi=9, mid=4 → arr[4]=16 < 23 → lo=5
-# 2회차: lo=5, hi=9, mid=7 → arr[7]=56 > 23 → hi=6
-# 3회차: lo=5, hi=6, mid=5 → arr[5]=23 == 23 → 찾았다! (인덱스 5)</code></pre></div>
-
-                <div class="think-box">
-                    <div class="think-box-question">
-                        <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">[1, 3, 5, 7, 9, 11, 13, 15]에서 7을 찾으려면 몇 번 비교해야 할까요?</span>
-                    </div>
-                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
-                    <div class="think-box-answer">
-                        <strong>2번</strong>이면 찾습니다!<br>
-                        1회차: lo=0, hi=7, mid=3 → arr[3]=<strong>7</strong> == 7 → 찾았습니다!<br><br>
-                        사실 운이 좋으면 1번에 찾을 수도 있습니다. <strong>최악의 경우</strong>가 log₂(8) = 3번입니다.
+                        <h3>③ 범위 축소</h3>
+                        <p>target이 mid보다 크면 <strong>lo = mid+1</strong><br>작으면 <strong>hi = mid-1</strong></p>
                     </div>
                 </div>
             </div>
 
-            <!-- ③ lower_bound와 upper_bound -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> lower_bound와 upper_bound</div>
+                <div class="concept-section-title"><span class="section-num">3</span> 시간 복잡도</div>
                 <div class="concept-grid">
-                    <div class="concept-card" style="border-color: var(--accent);">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="6" y="40" font-size="12" fill="var(--accent)">1 3 [5] 5 5 7</text>
-                                <path d="M24 50 L24 60" stroke="var(--accent)" stroke-width="2"/>
-                                <text x="12" y="72" font-size="10" fill="var(--accent)">lower</text>
-                            </svg>
-                        </div>
-                        <h3>lower_bound</h3>
-                        <p>target <strong>이상</strong>인 값이 처음 나타나는 위치.<br>같은 값이 여러 개면 <strong>가장 왼쪽</strong> 위치를 반환합니다.</p>
+                    <div class="concept-card">
+                        <h3>O(log N)</h3>
+                        <p>매번 탐색 범위가 <strong>절반</strong>으로 줄어듭니다.<br>N=10억이어도 최대 <strong>30번</strong>이면 찾습니다!</p>
                     </div>
-                    <div class="concept-card" style="border-color: var(--green);">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="6" y="40" font-size="12" fill="var(--green)">1 3 5 5 5 [7]</text>
-                                <path d="M56 50 L56 60" stroke="var(--green)" stroke-width="2"/>
-                                <text x="44" y="72" font-size="10" fill="var(--green)">upper</text>
-                            </svg>
-                        </div>
-                        <h3>upper_bound</h3>
-                        <p>target을 <strong>초과</strong>하는 값이 처음 나타나는 위치.<br>같은 값의 <strong>다음 위치</strong>를 반환합니다.</p>
-                    </div>
-                </div>
-
-                <div class="code-block"><pre><code class="language-python"># [1, 3, 5, 5, 5, 7, 9]에서 5의 개수 구하기
-from bisect import bisect_left, bisect_right
-
-arr = [1, 3, 5, 5, 5, 7, 9]
-lower = bisect_left(arr, 5)   # 2 (첫 번째 5의 위치)
-upper = bisect_right(arr, 5)  # 5 (마지막 5 다음 위치)
-
-count = upper - lower          # 5 - 2 = 3개!</code></pre></div>
-
-                <div class="think-box">
-                    <div class="think-box-question">
-                        <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">[1, 2, 2, 2, 3, 3, 4]에서 2는 몇 개 있을까요? lower_bound와 upper_bound를 사용해 보세요.</span>
-                    </div>
-                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
-                    <div class="think-box-answer">
-                        lower_bound(2) = <strong>1</strong> (인덱스 1에서 처음 등장)<br>
-                        upper_bound(2) = <strong>4</strong> (인덱스 4에서 2보다 큰 값 등장)<br>
-                        개수 = 4 - 1 = <strong>3개</strong>입니다!
+                    <div class="concept-card">
+                        <h3>vs 순차 탐색 O(N)</h3>
+                        <p>하나씩 찾으면 최악 N번.<br>이분 탐색은 <strong>log₂N번</strong>이면 충분합니다.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ④ 매개변수 탐색 -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">4</span> 매개변수 탐색 (Parametric Search)</div>
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> "업다운 게임"을 생각해 보세요!<br><br>
-                    친구가 1~100 중 하나를 정했습니다. 여러분이 숫자를 말하면 "업!" 또는 "다운!"이라고 알려줍니다.<br>
-                    매개변수 탐색도 똑같습니다!<br><br>
                     <strong>"최적값을 구하라"</strong> → <strong>"이 값이 가능한가? (YES/NO)"</strong>로 바꿉니다.<br>
                     그리고 YES/NO 경계를 이분 탐색으로 찾으면 됩니다!
                 </div>
-
                 <div class="concept-grid">
                     <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="15" y="45" font-size="16" fill="var(--green)">✓ ✓ ✓</text>
-                                <text x="15" y="65" font-size="16" fill="var(--red)">✗ ✗ ✗</text>
-                            </svg>
-                        </div>
                         <h3>YES/NO 판별</h3>
-                        <p>"길이 x로 잘라서 N개를 만들 수 있나?"<br>"높이 H로 잘라서 M미터를 얻을 수 있나?"<br>YES/NO로 답할 수 있으면 매개변수 탐색!</p>
+                        <p>"길이 x로 잘라서 N개를 만들 수 있나?"<br>"높이 H로 잘라서 M미터를 얻을 수 있나?"</p>
                     </div>
                     <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="5" y="35" font-size="9" fill="var(--green)">YES YES YES</text>
-                                <text x="5" y="50" font-size="9" fill="var(--red)">NO  NO  NO</text>
-                                <line x1="38" y1="20" x2="38" y2="62" stroke="var(--yellow)" stroke-width="2" stroke-dasharray="4,3"/>
-                                <text x="22" y="75" font-size="9" fill="var(--yellow)">경계!</text>
-                            </svg>
-                        </div>
                         <h3>경계 찾기</h3>
                         <p>YES와 NO의 <strong>경계</strong>에 최적값이 있습니다.<br>이 경계를 이분 탐색으로 빠르게 찾습니다!</p>
                     </div>
                 </div>
-
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -213,491 +235,521 @@ count = upper - lower          # 5 - 2 = 3개!</code></pre></div>
                     <div class="think-box-answer">
                         <strong>"길이 x cm로 잘랐을 때 11개 이상 만들 수 있는가?"</strong>로 바꿉니다!<br><br>
                         x=200이면? 802/200 + 743/200 + 457/200 + 539/200 = 4+3+2+2 = <strong>11개 → YES</strong><br>
-                        x=201이면? 3+3+2+2 = <strong>10개 → NO</strong><br><br>
+                        x=201이면? 3+3+2+2 = <strong>10개 → NO</strong><br>
                         따라서 YES→NO 경계인 <strong>200</strong>이 정답입니다!
                     </div>
                 </div>
             </div>
-
-            <!-- ⑤ 이분 탐색 문제 푸는 3단계 -->
-            <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">5</span> 이분 탐색 문제 푸는 3단계</div>
-                <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="12" y="35" font-size="10" fill="var(--green)">lo</text>
-                                <text x="52" y="35" font-size="10" fill="var(--red)">hi</text>
-                                <rect x="10" y="40" width="60" height="14" rx="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
-                                <line x1="10" y1="47" x2="70" y2="47" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3,3"/>
-                            </svg>
-                        </div>
-                        <h3>① 탐색 범위 정하기</h3>
-                        <p><strong>lo</strong>와 <strong>hi</strong>를 정합니다. 가능한 답의 최솟값과 최댓값이 범위입니다. 배열이면 0~N-1, 값이면 1~최대값.</p>
-                    </div>
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <text x="8" y="35" font-size="10" fill="var(--accent)">check(mid)</text>
-                                <text x="8" y="52" font-size="10" fill="var(--green)">→ YES?</text>
-                                <text x="8" y="68" font-size="10" fill="var(--red)">→ NO?</text>
-                            </svg>
-                        </div>
-                        <h3>② 판별 함수 만들기</h3>
-                        <p><strong>check(mid)</strong> 함수를 만듭니다. 이 값이 조건을 만족하면 YES, 아니면 NO를 반환합니다.</p>
-                    </div>
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <rect x="10" y="30" width="25" height="20" rx="4" fill="rgba(0,184,148,0.15)" stroke="var(--green)" stroke-width="1.5"/>
-                                <rect x="45" y="30" width="25" height="20" rx="4" fill="rgba(224,82,70,0.15)" stroke="var(--red)" stroke-width="1.5"/>
-                                <text x="30" y="62" font-size="18" fill="var(--accent)">→</text>
-                            </svg>
-                        </div>
-                        <h3>③ 범위 좁히기</h3>
-                        <p>YES면 <strong>더 큰 값 시도</strong> (lo = mid + 1)<br>NO면 <strong>더 작은 값 시도</strong> (hi = mid - 1)<br>문제에 따라 방향이 반대일 수도 있습니다.</p>
-                    </div>
-                </div>
-
-                <div class="think-box">
-                    <div class="think-box-question">
-                        <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">"나무 높이 [20, 15, 10, 17]에서 최소 7m를 얻으려면?"의 3단계를 적용하면?</span>
-                    </div>
-                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
-                    <div class="think-box-answer">
-                        ① <strong>탐색 범위</strong>: lo=0, hi=20 (가장 높은 나무)<br>
-                        ② <strong>판별 함수</strong>: check(H) = 각 나무에서 max(0, 높이-H)의 합 ≥ 7인가?<br>
-                        ③ <strong>범위 좁히기</strong>: YES면 lo = mid + 1 (더 높은 H 시도), NO면 hi = mid - 1<br><br>
-                        정답은 <strong>H = 15</strong>입니다! (잘린 양: 5+0+0+2 = 7)
-                    </div>
-                </div>
-            </div>
         `;
-
         this._initConceptInteractions(container);
     },
 
     _initConceptInteractions(container) {
-        container.querySelectorAll('.think-box-trigger').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const ans = btn.nextElementSibling;
+        container.querySelectorAll('.think-box-trigger').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var ans = btn.nextElementSibling;
                 ans.classList.toggle('show');
                 btn.textContent = ans.classList.contains('show') ? '🔼 접기' : '🤔 생각해보고 클릭!';
             });
         });
-        container.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+        container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
     },
 
-    // ===== 시각화 렌더링 =====
-    renderVisualize(container) {
-        this._clearVizState();
-
-        container.innerHTML = `
-            <div class="viz-tabs">
-                <button class="viz-tab active" data-viz="basic">기본 이분 탐색</button>
-                <button class="viz-tab" data-viz="parametric">매개변수 탐색 (나무 자르기)</button>
-            </div>
-            <div id="bs-viz-content"></div>
-        `;
-
-        const vizContent = container.querySelector('#bs-viz-content');
-        const tabs = container.querySelectorAll('.viz-tab');
-        const self = this;
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                self._clearVizState();
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                if (tab.dataset.viz === 'basic') self._renderVizBasic(vizContent);
-                else self._renderVizParametric(vizContent);
-            });
-        });
-
-        this._renderVizBasic(vizContent);
-    },
-
-    // ===== 기본 이분 탐색 시각화 =====
-    _renderVizBasic(container) {
-        let arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
-        let target = 23;
-
-        container.innerHTML = `
-            <div class="viz-card">
-                <h3>기본 이분 탐색</h3>
-                <p style="color:var(--text2);margin-bottom:12px;">정렬된 배열에서 원하는 값을 절반씩 버리며 찾습니다.</p>
-                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
-                    <label>찾을 값: <input type="number" id="bs-target" value="23" style="width:70px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;"></label>
-                    <button class="btn btn-primary" id="bs-basic-apply">시작</button>
-                </div>
-                <div class="bs-array" id="bs-array"></div>
-                <div class="bs-pointers" id="bs-pointers"></div>
-                <div class="bs-info" id="bs-info" style="margin-top:12px;padding:10px;background:var(--bg);border-radius:var(--radius);min-height:36px;text-align:center;"></div>
-                ${this._createStepControls()}
-            </div>
-        `;
-
-        const self = this;
-        const arrayEl = container.querySelector('#bs-array');
-        const pointersEl = container.querySelector('#bs-pointers');
-        const infoEl = container.querySelector('#bs-info');
-
-        function renderArray() {
-            arrayEl.innerHTML = arr.map((v, i) =>
-                `<div class="bs-cell in-range" id="bs-c-${i}">
-                    <div class="bs-cell-val">${v}</div>
-                    <div class="bs-cell-idx">${i}</div>
-                </div>`
-            ).join('');
-            pointersEl.innerHTML = '';
-        }
-
-        function buildAndInit() {
-            self._clearVizState();
-            target = parseInt(container.querySelector('#bs-target').value);
-            if (isNaN(target)) { alert('숫자를 입력해 주세요.'); return; }
-
-            renderArray();
-            infoEl.innerHTML = `<span style="color:var(--text2)">배열에서 <strong>${target}</strong>을 찾습니다.</span>`;
-
-            const steps = [];
-            let lo = 0, hi = arr.length - 1;
-            let found = false;
-            let round = 0;
-
-            while (lo <= hi) {
-                const curLo = lo, curHi = hi;
-                const mid = Math.floor((lo + hi) / 2);
-                round++;
-
-                if (arr[mid] === target) {
-                    steps.push({
-                        description: `${round}회차: lo=${curLo}, hi=${curHi}, mid=${mid} → arr[${mid}]=${arr[mid]} == ${target} → 찾았습니다! ✅`,
-                        action() {
-                            for (let i = 0; i < arr.length; i++) {
-                                const cell = container.querySelector(`#bs-c-${i}`);
-                                cell.className = 'bs-cell' + (i >= curLo && i <= curHi ? ' in-range' : ' excluded');
-                            }
-                            container.querySelector(`#bs-c-${mid}`).className = 'bs-cell found';
-                            updatePointers(curLo, curHi, mid);
-                            infoEl.innerHTML = `<strong style="color:var(--green);font-size:1.1rem;">✅ 찾았습니다! arr[${mid}] = ${target}</strong>`;
-                        },
-                        undo() {
-                            for (let i = 0; i < arr.length; i++) {
-                                const cell = container.querySelector(`#bs-c-${i}`);
-                                cell.className = 'bs-cell' + (i >= curLo && i <= curHi ? ' in-range' : ' excluded');
-                            }
-                            if (round > 1) {
-                                updatePointers(curLo, curHi, mid);
-                            } else {
-                                pointersEl.innerHTML = '';
-                            }
-                            infoEl.innerHTML = `<span style="color:var(--text2)">배열에서 <strong>${target}</strong>을 찾습니다.</span>`;
-                        }
-                    });
-                    found = true;
-                    break;
-                } else if (arr[mid] < target) {
-                    const prevLo = lo;
-                    lo = mid + 1;
-                    steps.push({
-                        description: `${round}회차: lo=${curLo}, hi=${curHi}, mid=${mid} → arr[${mid}]=${arr[mid]} < ${target} → 오른쪽으로! (lo=${lo})`,
-                        action() {
-                            for (let i = 0; i < arr.length; i++) {
-                                const cell = container.querySelector(`#bs-c-${i}`);
-                                if (i < curLo || i > curHi) cell.className = 'bs-cell excluded';
-                                else if (i === mid) cell.className = 'bs-cell mid';
-                                else if (i >= curLo && i <= mid) cell.className = 'bs-cell excluded';
-                                else cell.className = 'bs-cell in-range';
-                            }
-                            updatePointers(curLo, curHi, mid);
-                            infoEl.innerHTML = `arr[${mid}]=${arr[mid]} < ${target} → <strong>왼쪽 절반 제거!</strong> 다음: lo=${mid + 1}, hi=${curHi}`;
-                        },
-                        undo() {
-                            for (let i = 0; i < arr.length; i++) {
-                                const cell = container.querySelector(`#bs-c-${i}`);
-                                cell.className = 'bs-cell' + (i >= curLo && i <= curHi ? ' in-range' : ' excluded');
-                            }
-                            infoEl.innerHTML = `<span style="color:var(--text2)">배열에서 <strong>${target}</strong>을 찾습니다.</span>`;
-                            pointersEl.innerHTML = '';
-                        }
-                    });
-                } else {
-                    const prevHi = hi;
-                    hi = mid - 1;
-                    steps.push({
-                        description: `${round}회차: lo=${curLo}, hi=${curHi}, mid=${mid} → arr[${mid}]=${arr[mid]} > ${target} → 왼쪽으로! (hi=${hi})`,
-                        action() {
-                            for (let i = 0; i < arr.length; i++) {
-                                const cell = container.querySelector(`#bs-c-${i}`);
-                                if (i < curLo || i > curHi) cell.className = 'bs-cell excluded';
-                                else if (i === mid) cell.className = 'bs-cell mid';
-                                else if (i >= mid && i <= curHi) cell.className = 'bs-cell excluded';
-                                else cell.className = 'bs-cell in-range';
-                            }
-                            updatePointers(curLo, curHi, mid);
-                            infoEl.innerHTML = `arr[${mid}]=${arr[mid]} > ${target} → <strong>오른쪽 절반 제거!</strong> 다음: lo=${curLo}, hi=${mid - 1}`;
-                        },
-                        undo() {
-                            for (let i = 0; i < arr.length; i++) {
-                                const cell = container.querySelector(`#bs-c-${i}`);
-                                cell.className = 'bs-cell' + (i >= curLo && i <= curHi ? ' in-range' : ' excluded');
-                            }
-                            infoEl.innerHTML = `<span style="color:var(--text2)">배열에서 <strong>${target}</strong>을 찾습니다.</span>`;
-                            pointersEl.innerHTML = '';
-                        }
-                    });
-                }
-            }
-
-            if (!found) {
-                steps.push({
-                    description: `탐색 종료: lo > hi → ${target}은 배열에 없습니다! ❌`,
-                    action() {
-                        infoEl.innerHTML = `<strong style="color:var(--red);font-size:1.1rem;">❌ ${target}은 배열에 없습니다.</strong>`;
-                    },
-                    undo() {
-                        infoEl.innerHTML = `<span style="color:var(--text2)">배열에서 <strong>${target}</strong>을 찾습니다.</span>`;
-                    }
-                });
-            }
-
-            self._initStepController(container, steps);
-        }
-
-        function updatePointers(lo, hi, mid) {
-            const cells = container.querySelectorAll('.bs-cell');
-            if (cells.length === 0) return;
-            const containerRect = arrayEl.getBoundingClientRect();
-            pointersEl.innerHTML = '';
-            const cellWidth = 100 / arr.length;
-
-            const loLabel = document.createElement('span');
-            loLabel.className = 'bs-pointer lo';
-            loLabel.textContent = `lo=${lo}`;
-            loLabel.style.left = `${lo * cellWidth + cellWidth / 2}%`;
-            pointersEl.appendChild(loLabel);
-
-            const hiLabel = document.createElement('span');
-            hiLabel.className = 'bs-pointer hi';
-            hiLabel.textContent = `hi=${hi}`;
-            hiLabel.style.left = `${hi * cellWidth + cellWidth / 2}%`;
-            pointersEl.appendChild(hiLabel);
-
-            const midLabel = document.createElement('span');
-            midLabel.className = 'bs-pointer mid';
-            midLabel.textContent = `mid=${mid}`;
-            midLabel.style.left = `${mid * cellWidth + cellWidth / 2}%`;
-            pointersEl.appendChild(midLabel);
-        }
-
-        container.querySelector('#bs-basic-apply').addEventListener('click', buildAndInit);
-        buildAndInit();
-    },
-
-    // ===== 매개변수 탐색 시각화 (나무 자르기) =====
-    _renderVizParametric(container) {
-        const trees = [20, 15, 10, 17];
-        let M = 7;
-
-        container.innerHTML = `
-            <div class="viz-card">
-                <h3>매개변수 탐색 — 나무 자르기</h3>
-                <p style="color:var(--text2);margin-bottom:12px;">절단기 높이 H를 이분 탐색합니다. H보다 높은 부분만 잘립니다.</p>
-                <p style="color:var(--text3);margin-bottom:12px;font-size:0.85rem;">나무 높이: [${trees.join(', ')}], 필요한 나무: ${M}m</p>
-                <div class="bs-tree-chart" id="bs-tree-chart"></div>
-                <div class="bs-search-info" id="bs-search-info" style="margin-top:12px;padding:10px;background:var(--bg);border-radius:var(--radius);text-align:center;min-height:36px;"></div>
-                ${this._createStepControls()}
-            </div>
-        `;
-
-        const self = this;
-        const chartEl = container.querySelector('#bs-tree-chart');
-        const infoEl = container.querySelector('#bs-search-info');
-        const maxH = Math.max(...trees);
-
-        // 나무 바 렌더링
-        chartEl.innerHTML = trees.map((h, i) =>
-            `<div class="bs-tree-wrapper">
-                <div class="bs-tree-bar" id="bs-tree-${i}" style="height:${(h / maxH) * 100}%;">
-                    <span class="bs-tree-label">${h}m</span>
-                </div>
-                <div class="bs-tree-cut" id="bs-cut-${i}" style="display:none;"></div>
-            </div>`
-        ).join('') + '<div class="bs-cut-line" id="bs-cut-line" style="display:none;"></div>';
-
-        infoEl.innerHTML = `<span style="color:var(--text2)">높이 H를 이분 탐색하여 최소 ${M}m의 나무를 얻을 수 있는 최대 H를 찾습니다.</span>`;
-
-        // 이분 탐색 시뮬레이션
-        const steps = [];
-        let lo = 0, hi = maxH;
-        let answer = 0;
-        let round = 0;
-
-        while (lo <= hi) {
-            const curLo = lo, curHi = hi;
-            const mid = Math.floor((lo + hi) / 2);
-            const gained = trees.reduce((sum, h) => sum + Math.max(0, h - mid), 0);
-            round++;
-
-            if (gained >= M) {
-                answer = mid;
-                const prevLo = lo;
-                lo = mid + 1;
-
-                steps.push({
-                    description: `${round}회차: lo=${curLo}, hi=${curHi}, mid=${mid} → 잘린 양=${gained}m ≥ ${M}m → YES! (lo=${lo}, 정답 후보=${mid})`,
-                    action() {
-                        showCutLine(mid, curLo, curHi, gained, true);
-                    },
-                    undo() {
-                        hideCutLine();
-                        infoEl.innerHTML = `<span style="color:var(--text2)">높이 H를 이분 탐색하여 최소 ${M}m의 나무를 얻을 수 있는 최대 H를 찾습니다.</span>`;
-                    }
-                });
-            } else {
-                hi = mid - 1;
-
-                steps.push({
-                    description: `${round}회차: lo=${curLo}, hi=${curHi}, mid=${mid} → 잘린 양=${gained}m < ${M}m → NO! (hi=${mid - 1})`,
-                    action() {
-                        showCutLine(mid, curLo, curHi, gained, false);
-                    },
-                    undo() {
-                        hideCutLine();
-                        infoEl.innerHTML = `<span style="color:var(--text2)">높이 H를 이분 탐색하여 최소 ${M}m의 나무를 얻을 수 있는 최대 H를 찾습니다.</span>`;
-                    }
-                });
-            }
-        }
-
-        const finalAns = answer;
-        const finalGained = trees.reduce((sum, h) => sum + Math.max(0, h - finalAns), 0);
-        steps.push({
-            description: `완성! 최대 높이 H = ${finalAns}m (잘린 양: ${finalGained}m)`,
-            action() {
-                showCutLine(finalAns, 0, 0, finalGained, true);
-                infoEl.innerHTML = `<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: H = ${finalAns}m (잘린 양: ${finalGained}m ≥ ${M}m)</strong>`;
-            },
-            undo() {
-                hideCutLine();
-            }
-        });
-
-        function showCutLine(H, lo, hi, gained, isYes) {
-            const cutLine = container.querySelector('#bs-cut-line');
-            const pct = ((maxH - H) / maxH) * 100;
-            cutLine.style.display = 'block';
-            cutLine.style.top = `${pct}%`;
-            cutLine.innerHTML = `H=${H}`;
-
-            trees.forEach((h, i) => {
-                const bar = container.querySelector(`#bs-tree-${i}`);
-                const cutSection = container.querySelector(`#bs-cut-${i}`);
-                if (h > H) {
-                    const cutPct = ((h - H) / maxH) * 100;
-                    cutSection.style.display = 'block';
-                    cutSection.style.height = `${cutPct / (h / maxH * 100) * 100}%`;
-                    cutSection.className = 'bs-tree-cut ' + (isYes ? 'yes' : 'no');
-                    cutSection.textContent = `${h - H}`;
-                } else {
-                    cutSection.style.display = 'none';
-                }
-            });
-
-            infoEl.innerHTML = `H=${H} | 잘린 양: ${trees.map(h => Math.max(0, h - H)).join('+')} = <strong>${gained}m</strong> | ` +
-                (isYes ? `<span style="color:var(--green)">≥ ${M} → YES</span> (lo=${lo+1})` : `<span style="color:var(--red)">< ${M} → NO</span> (hi=${H-1})`);
-        }
-
-        function hideCutLine() {
-            const cutLine = container.querySelector('#bs-cut-line');
-            if (cutLine) cutLine.style.display = 'none';
-            trees.forEach((h, i) => {
-                const cutSection = container.querySelector(`#bs-cut-${i}`);
-                if (cutSection) cutSection.style.display = 'none';
-            });
-        }
-
-        self._initStepController(container, steps);
-    },
-
-    // ===== 공유 메서드: 시각화 상태 =====
-    _vizState: {
-        steps: [],
-        currentStep: -1,
-        keydownHandler: null
-    },
+    // ===== 시각화 상태 =====
+    _vizState: { steps: [], currentStep: -1, keydownHandler: null },
 
     _clearVizState() {
-        const s = this._vizState;
-        if (s.keydownHandler) {
-            document.removeEventListener('keydown', s.keydownHandler);
-            s.keydownHandler = null;
-        }
-        s.steps = [];
-        s.currentStep = -1;
+        var s = this._vizState;
+        if (s.keydownHandler) { document.removeEventListener('keydown', s.keydownHandler); s.keydownHandler = null; }
+        s.steps = []; s.currentStep = -1;
     },
 
-    _createStepControls() {
-        return `
-            <div class="viz-step-controls">
-                <button class="btn viz-step-btn" id="viz-prev" disabled>&larr; 이전</button>
-                <span id="viz-step-counter" class="viz-step-counter">시작 전</span>
-                <button class="btn btn-primary viz-step-btn" id="viz-next">다음 &rarr;</button>
-            </div>
-            <div id="viz-step-desc" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>
-        `;
+    _createStepControls(suffix) {
+        return '<div class="viz-step-controls">' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
     },
 
-    _initStepController(el, steps) {
-        const state = this._vizState;
+    _initStepController(container, steps, suffix) {
+        var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-
-        const prevBtn = el.querySelector('#viz-prev');
-        const nextBtn = el.querySelector('#viz-next');
-        const counter = el.querySelector('#viz-step-counter');
-        const desc = el.querySelector('#viz-step-desc');
-
-        const updateUI = () => {
-            const idx = state.currentStep;
-            const total = state.steps.length;
+        var prevBtn = container.querySelector('#str-prev-' + suffix);
+        var nextBtn = container.querySelector('#str-next-' + suffix);
+        var indicator = container.querySelector('#str-indicator-' + suffix);
+        var desc = container.querySelector('#str-desc-' + suffix);
+        if (!prevBtn || !nextBtn) return;
+        function updateUI() {
+            var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) {
-                counter.textContent = '시작 전';
-                desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
-            } else {
-                counter.textContent = `Step ${idx + 1} / ${total}`;
-                desc.textContent = state.steps[idx].description;
-            }
-        };
-
-        nextBtn.addEventListener('click', () => {
+            if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+        }
+        nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++;
-            state.steps[state.currentStep].action();
-            updateUI();
+            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
         });
-
-        prevBtn.addEventListener('click', () => {
+        prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo();
-            state.currentStep--;
-            updateUI();
+            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
         });
-
-        const handleKeydown = (e) => {
+        var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
         };
-        document.addEventListener('keydown', handleKeydown);
-        state.keydownHandler = handleKeydown;
-
+        document.addEventListener('keydown', handleKey);
+        state.keydownHandler = handleKey;
         updateUI();
     },
+
+    // ====================================================================
+    // 시뮬레이션 1: 기본 이분 탐색 (boj-1920)
+    // ====================================================================
+    _renderVizBasicSearch(container) {
+        var self = this;
+        var arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+        var target = 23;
+        var suffix = '-bs1';
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">기본 이분 탐색</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">정렬된 배열에서 <strong>' + target + '</strong>을 찾습니다.</p>' +
+            '<div id="bs-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="bs-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var arrEl = container.querySelector('#bs-arr' + suffix);
+        var infoEl = container.querySelector('#bs-info' + suffix);
+        function cell(v, i, cls) { return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;font-size:0.9rem;transition:all 0.3s;' + cls + '"><div>' + v + '</div><div style="font-size:0.7rem;color:var(--text3);">[' + i + ']</div></div>'; }
+        function renderArr(lo, hi, mid, foundIdx) {
+            arrEl.innerHTML = arr.map(function(v, i) {
+                if (foundIdx === i) return cell(v, i, 'background:var(--green);color:white;');
+                if (i === mid) return cell(v, i, 'background:var(--accent);color:white;');
+                if (i >= lo && i <= hi) return cell(v, i, 'background:var(--accent)15;border:2px solid var(--accent);');
+                return cell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.5;');
+            }).join('');
+        }
+        renderArr(0, arr.length - 1, -1, -1);
+        infoEl.innerHTML = '<span style="color:var(--text2)">배열에서 <strong>' + target + '</strong>을 찾습니다.</span>';
+        var steps = [];
+        var lo = 0, hi = arr.length - 1, round = 0;
+        while (lo <= hi) {
+            var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
+            round++;
+            if (arr[mid] === target) {
+                (function(cLo, cHi, mid, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + arr[mid] + ' == ' + target + ' → 찾았습니다! ✅',
+                        action: function() { renderArr(cLo, cHi, -1, mid); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">✅ 찾았습니다! arr[' + mid + '] = ' + target + '</strong>'; },
+                        undo: function() { renderArr(cLo, cHi, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">배열에서 <strong>' + target + '</strong>을 찾습니다.</span>'; }
+                    });
+                })(cLo, cHi, mid, round);
+                break;
+            } else if (arr[mid] < target) {
+                (function(cLo, cHi, mid, newLo, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + arr[mid] + ' < ' + target + ' → 오른쪽! (lo=' + newLo + ')',
+                        action: function() { renderArr(newLo, cHi, mid, -1); infoEl.innerHTML = 'arr[' + mid + ']=' + arr[mid] + ' < ' + target + ' → <strong>왼쪽 절반 제거!</strong>'; },
+                        undo: function() { renderArr(cLo, cHi, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">배열에서 <strong>' + target + '</strong>을 찾습니다.</span>'; }
+                    });
+                })(cLo, cHi, mid, mid + 1, round);
+                lo = mid + 1;
+            } else {
+                (function(cLo, cHi, mid, newHi, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + arr[mid] + ' > ' + target + ' → 왼쪽! (hi=' + newHi + ')',
+                        action: function() { renderArr(cLo, newHi, mid, -1); infoEl.innerHTML = 'arr[' + mid + ']=' + arr[mid] + ' > ' + target + ' → <strong>오른쪽 절반 제거!</strong>'; },
+                        undo: function() { renderArr(cLo, cHi, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">배열에서 <strong>' + target + '</strong>을 찾습니다.</span>'; }
+                    });
+                })(cLo, cHi, mid, mid - 1, round);
+                hi = mid - 1;
+            }
+        }
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 2: Lower/Upper Bound (boj-10816)
+    // ====================================================================
+    _renderVizBounds(container) {
+        var self = this, suffix = '-bound';
+        var arr = [-10, -10, 2, 3, 3, 6, 7, 10, 10, 10];
+        var target = 10;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">Lower/Upper Bound</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">정렬 배열에서 <strong>' + target + '</strong>의 개수를 bisect_left/right로 구합니다.</p>' +
+            '<div id="bd-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="bd-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var arrEl = container.querySelector('#bd-arr' + suffix);
+        var infoEl = container.querySelector('#bd-info' + suffix);
+        function renderArr(highlights) {
+            arrEl.innerHTML = arr.map(function(v, i) {
+                var st = 'width:48px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;font-size:0.85rem;transition:all 0.3s;';
+                if (highlights && highlights[i]) st += highlights[i];
+                else st += 'background:var(--bg2);';
+                return '<div style="' + st + '"><div>' + v + '</div><div style="font-size:0.65rem;color:var(--text3);">[' + i + ']</div></div>';
+            }).join('');
+        }
+        renderArr(null);
+        infoEl.innerHTML = '<span style="color:var(--text2);">bisect_left와 bisect_right로 ' + target + '의 개수를 구합니다.</span>';
+        var leftIdx = 7, rightIdx = 10; // bisect_left=7, bisect_right=10
+        var steps = [
+            { description: 'bisect_left(' + target + '): ' + target + ' 이상인 첫 위치를 찾습니다.',
+              action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (arr[i] >= target) h[i] = 'background:var(--accent)20;border:2px solid var(--accent);'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } h[leftIdx] = 'background:var(--accent);color:white;'; renderArr(h); infoEl.innerHTML = 'bisect_left = <strong>' + leftIdx + '</strong> (arr[' + leftIdx + ']=' + arr[leftIdx] + '이 처음으로 ' + target + ' ≥)'; },
+              undo: function() { renderArr(null); infoEl.innerHTML = '<span style="color:var(--text2);">bisect_left와 bisect_right로 ' + target + '의 개수를 구합니다.</span>'; }
+            },
+            { description: 'bisect_right(' + target + '): ' + target + ' 초과인 첫 위치를 찾습니다.',
+              action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } renderArr(h); infoEl.innerHTML = 'bisect_right = <strong>' + rightIdx + '</strong> (배열 끝 다음). 범위: [' + leftIdx + ', ' + rightIdx + ')'; },
+              undo: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (arr[i] >= target) h[i] = 'background:var(--accent)20;border:2px solid var(--accent);'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } h[leftIdx] = 'background:var(--accent);color:white;'; renderArr(h); infoEl.innerHTML = 'bisect_left = <strong>' + leftIdx + '</strong>'; }
+            },
+            { description: '개수 = bisect_right - bisect_left = ' + rightIdx + ' - ' + leftIdx + ' = ' + (rightIdx - leftIdx),
+              action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;box-shadow:0 0 8px var(--green)40;'; else h[i] = 'background:var(--bg2);opacity:0.4;'; } renderArr(h); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ ' + target + '의 개수 = ' + rightIdx + ' - ' + leftIdx + ' = ' + (rightIdx - leftIdx) + '개</strong>'; },
+              undo: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } renderArr(h); infoEl.innerHTML = 'bisect_right = <strong>' + rightIdx + '</strong>'; }
+            }
+        ];
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 3: 랜선 자르기 (boj-1654)
+    // ====================================================================
+    _renderVizCable(container) {
+        var self = this, suffix = '-cable';
+        var cables = [802, 743, 457, 539], N = 11;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">랜선 자르기 — 매개변수 탐색</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">길이 x로 잘라 ' + N + '개 이상 만들 수 있는 최대 x를 찾습니다.</p>' +
+            '<div id="cb-bars' + suffix + '" style="margin-bottom:12px;"></div>' +
+            '<div id="cb-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var barsEl = container.querySelector('#cb-bars' + suffix);
+        var infoEl = container.querySelector('#cb-info' + suffix);
+        var maxC = Math.max.apply(null, cables);
+        function renderBars(cutLen) {
+            barsEl.innerHTML = cables.map(function(c, i) {
+                var pct = (c / maxC) * 100;
+                var pieces = cutLen > 0 ? Math.floor(c / cutLen) : 0;
+                var segs = '';
+                if (cutLen > 0) {
+                    for (var j = 0; j < pieces; j++) {
+                        var segPct = (cutLen / c) * 100;
+                        segs += '<div style="width:' + segPct + '%;height:100%;background:var(--accent);border-right:2px solid white;"></div>';
+                    }
+                }
+                return '<div style="margin-bottom:6px;">' +
+                    '<div style="font-size:0.8rem;color:var(--text3);margin-bottom:2px;">' + c + 'cm → ' + pieces + '조각</div>' +
+                    '<div style="width:' + pct + '%;height:24px;border-radius:6px;overflow:hidden;display:flex;background:var(--bg2);">' + segs + '</div></div>';
+            }).join('');
+        }
+        renderBars(0);
+        infoEl.innerHTML = '<span style="color:var(--text2);">이분 탐색으로 최적 길이를 찾습니다.</span>';
+        var steps = [], lo = 1, hi = maxC, answer = 0, round = 0;
+        while (lo <= hi) {
+            var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
+            var count = cables.reduce(function(s, c) { return s + Math.floor(c / mid); }, 0);
+            round++;
+            if (count >= N) {
+                answer = mid; lo = mid + 1;
+                (function(cLo, cHi, mid, count, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + count + '개 ≥ ' + N + ' → YES! (lo=' + (mid + 1) + ')',
+                        action: function() { renderBars(mid); infoEl.innerHTML = 'x=' + mid + 'cm → <strong>' + count + '개</strong> ≥ ' + N + ' → <span style="color:var(--green);">YES</span> (정답 후보)'; },
+                        undo: function() { renderBars(0); infoEl.innerHTML = '<span style="color:var(--text2);">이분 탐색으로 최적 길이를 찾습니다.</span>'; }
+                    });
+                })(cLo, cHi, mid, count, round);
+            } else {
+                hi = mid - 1;
+                (function(cLo, cHi, mid, count, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + count + '개 < ' + N + ' → NO! (hi=' + (mid - 1) + ')',
+                        action: function() { renderBars(mid); infoEl.innerHTML = 'x=' + mid + 'cm → <strong>' + count + '개</strong> < ' + N + ' → <span style="color:var(--red);">NO</span>'; },
+                        undo: function() { renderBars(0); infoEl.innerHTML = '<span style="color:var(--text2);">이분 탐색으로 최적 길이를 찾습니다.</span>'; }
+                    });
+                })(cLo, cHi, mid, count, round);
+            }
+        }
+        var fa = answer, fc = cables.reduce(function(s, c) { return s + Math.floor(c / fa); }, 0);
+        steps.push({ description: '완성! 최대 길이 = ' + fa + 'cm (' + fc + '조각)',
+            action: function() { renderBars(fa); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: x = ' + fa + 'cm (' + fc + '조각 ≥ ' + N + ')</strong>'; },
+            undo: function() { renderBars(0); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 4: 나무 자르기 (boj-2805)
+    // ====================================================================
+    _renderVizTreeCut(container) {
+        var self = this, suffix = '-tree';
+        var trees = [20, 15, 10, 17], M = 7;
+        var maxH = Math.max.apply(null, trees);
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">나무 자르기 — 매개변수 탐색</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">절단기 높이 H를 이분 탐색합니다. 필요: ' + M + 'm</p>' +
+            '<div id="tr-chart' + suffix + '" style="display:flex;gap:16px;justify-content:center;align-items:flex-end;height:160px;margin-bottom:12px;position:relative;"></div>' +
+            '<div id="tr-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var chartEl = container.querySelector('#tr-chart' + suffix);
+        var infoEl = container.querySelector('#tr-info' + suffix);
+        function renderTrees(H) {
+            chartEl.innerHTML = trees.map(function(h) {
+                var pct = (h / maxH) * 100;
+                var cutPct = H >= 0 && h > H ? ((h - H) / maxH) * 100 : 0;
+                var mainPct = pct - cutPct;
+                return '<div style="display:flex;flex-direction:column;align-items:center;width:48px;">' +
+                    '<div style="font-size:0.8rem;font-weight:600;margin-bottom:2px;">' + h + 'm</div>' +
+                    (cutPct > 0 ? '<div style="width:100%;height:' + (cutPct / 100 * 160) + 'px;background:var(--red)30;border:2px dashed var(--red);border-radius:4px 4px 0 0;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--red);font-weight:600;">' + (h - H) + '</div>' : '') +
+                    '<div style="width:100%;height:' + (mainPct / 100 * 160) + 'px;background:var(--green);border-radius:' + (cutPct > 0 ? '0 0' : '4px 4px') + ' 4px 4px;"></div></div>';
+            }).join('');
+            if (H >= 0) {
+                var lineTop = ((maxH - H) / maxH) * 160;
+                chartEl.innerHTML += '<div style="position:absolute;left:0;right:0;top:' + lineTop + 'px;border-top:2px dashed var(--accent);font-size:0.75rem;color:var(--accent);text-align:right;padding-right:4px;">H=' + H + '</div>';
+            }
+        }
+        renderTrees(-1);
+        infoEl.innerHTML = '<span style="color:var(--text2);">높이 H를 이분 탐색하여 최소 ' + M + 'm를 얻습니다.</span>';
+        var steps = [], lo = 0, hi = maxH, answer = 0, round = 0;
+        while (lo <= hi) {
+            var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
+            var gained = trees.reduce(function(s, h) { return s + Math.max(0, h - mid); }, 0);
+            round++;
+            if (gained >= M) {
+                answer = mid; lo = mid + 1;
+                (function(mid, gained, cLo, cHi, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + gained + 'm ≥ ' + M + ' → YES (lo=' + (mid + 1) + ')',
+                        action: function() { renderTrees(mid); infoEl.innerHTML = 'H=' + mid + ' → 잘린 양 = <strong>' + gained + 'm</strong> ≥ ' + M + ' → <span style="color:var(--green);">YES</span>'; },
+                        undo: function() { renderTrees(-1); infoEl.innerHTML = '<span style="color:var(--text2);">높이 H를 이분 탐색합니다.</span>'; }
+                    });
+                })(mid, gained, cLo, cHi, round);
+            } else {
+                hi = mid - 1;
+                (function(mid, gained, cLo, cHi, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + gained + 'm < ' + M + ' → NO (hi=' + (mid - 1) + ')',
+                        action: function() { renderTrees(mid); infoEl.innerHTML = 'H=' + mid + ' → 잘린 양 = <strong>' + gained + 'm</strong> < ' + M + ' → <span style="color:var(--red);">NO</span>'; },
+                        undo: function() { renderTrees(-1); infoEl.innerHTML = '<span style="color:var(--text2);">높이 H를 이분 탐색합니다.</span>'; }
+                    });
+                })(mid, gained, cLo, cHi, round);
+            }
+        }
+        var fa = answer, fg = trees.reduce(function(s, h) { return s + Math.max(0, h - fa); }, 0);
+        steps.push({ description: '완성! H = ' + fa + 'm (잘린 양: ' + fg + 'm)',
+            action: function() { renderTrees(fa); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: H = ' + fa + 'm (잘린 양: ' + fg + 'm ≥ ' + M + ')</strong>'; },
+            undo: function() { renderTrees(-1); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 5: 공유기 설치 (boj-2110)
+    // ====================================================================
+    _renderVizRouter(container) {
+        var self = this, suffix = '-router';
+        var houses = [1, 2, 4, 8, 9], C = 3;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">공유기 설치 — 최적화 탐색</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">집 위치: [' + houses.join(', ') + '], 공유기 ' + C + '개. 최소 거리 d 이상으로 설치 가능?</p>' +
+            '<div id="rt-line' + suffix + '" style="position:relative;height:80px;margin:16px 0;"></div>' +
+            '<div id="rt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var lineEl = container.querySelector('#rt-line' + suffix);
+        var infoEl = container.querySelector('#rt-info' + suffix);
+        var maxPos = houses[houses.length - 1];
+        function renderLine(d, placed) {
+            var html = '<div style="position:absolute;left:5%;right:5%;top:35px;height:4px;background:var(--border);border-radius:2px;"></div>';
+            houses.forEach(function(h) {
+                var pct = 5 + (h / maxPos) * 90;
+                var isPlaced = placed && placed.indexOf(h) >= 0;
+                html += '<div style="position:absolute;left:' + pct + '%;top:20px;transform:translateX(-50%);text-align:center;">' +
+                    '<div style="width:12px;height:12px;border-radius:50%;margin:0 auto;background:' + (isPlaced ? 'var(--accent)' : 'var(--text3)') + ';"></div>' +
+                    (isPlaced ? '<div style="font-size:1.2rem;margin-top:2px;">📡</div>' : '') +
+                    '<div style="font-size:0.75rem;color:var(--text3);margin-top:2px;">' + h + '</div></div>';
+            });
+            if (d > 0 && placed && placed.length >= 2) {
+                html += '<div style="position:absolute;left:5%;right:5%;top:62px;font-size:0.75rem;color:var(--text2);text-align:center;">최소 거리 d = ' + d + '</div>';
+            }
+            lineEl.innerHTML = html;
+        }
+        renderLine(0, []);
+        infoEl.innerHTML = '<span style="color:var(--text2);">최소 거리 d를 이분 탐색합니다.</span>';
+        function tryPlace(d) {
+            var placed = [houses[0]], last = houses[0];
+            for (var i = 1; i < houses.length; i++) {
+                if (houses[i] - last >= d) { placed.push(houses[i]); last = houses[i]; }
+            }
+            return placed;
+        }
+        var steps = [], lo = 1, hi = maxPos - houses[0], answer = 0, round = 0;
+        while (lo <= hi) {
+            var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
+            var placed = tryPlace(mid);
+            round++;
+            if (placed.length >= C) {
+                answer = mid; lo = mid + 1;
+                (function(mid, placed, cLo, cHi, round) {
+                    steps.push({ description: round + '회차: d=' + mid + ' → ' + placed.length + '개 설치 [' + placed.join(',') + '] ≥ ' + C + ' → YES',
+                        action: function() { renderLine(mid, placed); infoEl.innerHTML = 'd=' + mid + ' → <strong>' + placed.length + '개 설치</strong> → <span style="color:var(--green);">YES</span> (lo=' + (mid + 1) + ')'; },
+                        undo: function() { renderLine(0, []); infoEl.innerHTML = '<span style="color:var(--text2);">최소 거리 d를 이분 탐색합니다.</span>'; }
+                    });
+                })(mid, placed, cLo, cHi, round);
+            } else {
+                hi = mid - 1;
+                (function(mid, placed, cLo, cHi, round) {
+                    steps.push({ description: round + '회차: d=' + mid + ' → ' + placed.length + '개 설치 < ' + C + ' → NO',
+                        action: function() { renderLine(mid, placed); infoEl.innerHTML = 'd=' + mid + ' → <strong>' + placed.length + '개 설치</strong> → <span style="color:var(--red);">NO</span> (hi=' + (mid - 1) + ')'; },
+                        undo: function() { renderLine(0, []); infoEl.innerHTML = '<span style="color:var(--text2);">최소 거리 d를 이분 탐색합니다.</span>'; }
+                    });
+                })(mid, placed, cLo, cHi, round);
+            }
+        }
+        var fp = tryPlace(answer);
+        steps.push({ description: '완성! 최대 최소 거리 d = ' + answer,
+            action: function() { renderLine(answer, fp); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: d = ' + answer + ' (설치: [' + fp.join(', ') + '])</strong>'; },
+            undo: function() { renderLine(0, []); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 6: K번째 수 (boj-1300)
+    // ====================================================================
+    _renderVizKth(container) {
+        var self = this, suffix = '-kth';
+        var N = 3, k = 7;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">K번째 수 — N×N 곱셈표</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">' + N + '×' + N + ' 곱셈표에서 k=' + k + '번째로 작은 수를 구합니다.</p>' +
+            '<div id="kt-table' + suffix + '" style="margin-bottom:12px;"></div>' +
+            '<div id="kt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var tableEl = container.querySelector('#kt-table' + suffix);
+        var infoEl = container.querySelector('#kt-info' + suffix);
+        function renderTable(x) {
+            var html = '<table style="border-collapse:collapse;margin:0 auto;">';
+            html += '<tr><td style="padding:6px 12px;font-weight:600;color:var(--text3);">×</td>';
+            for (var j = 1; j <= N; j++) html += '<td style="padding:6px 12px;font-weight:600;color:var(--text3);">' + j + '</td>';
+            html += '</tr>';
+            for (var i = 1; i <= N; i++) {
+                html += '<tr><td style="padding:6px 12px;font-weight:600;color:var(--text3);">' + i + '</td>';
+                for (var j = 1; j <= N; j++) {
+                    var v = i * j;
+                    var bg = x >= 0 && v <= x ? 'background:var(--accent)20;' : '';
+                    html += '<td style="padding:6px 12px;text-align:center;border:1px solid var(--border);border-radius:4px;' + bg + '">' + v + '</td>';
+                }
+                html += '</tr>';
+            }
+            html += '</table>';
+            if (x >= 0) {
+                var cnt = 0;
+                for (var i = 1; i <= N; i++) cnt += Math.min(Math.floor(x / i), N);
+                html += '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--text2);">' + x + ' 이하: <strong>' + cnt + '개</strong></div>';
+            }
+            tableEl.innerHTML = html;
+        }
+        renderTable(-1);
+        infoEl.innerHTML = '<span style="color:var(--text2);">x 이하인 수가 ' + k + '개 이상인 최소 x를 찾습니다.</span>';
+        var steps = [], lo = 1, hi = k, round = 0;
+        while (lo < hi) {
+            var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
+            var cnt = 0;
+            for (var i = 1; i <= N; i++) cnt += Math.min(Math.floor(mid / i), N);
+            round++;
+            if (cnt >= k) {
+                hi = mid;
+                (function(mid, cnt, cLo, cHi, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + cnt + '개 ≥ ' + k + ' → hi=' + mid,
+                        action: function() { renderTable(mid); infoEl.innerHTML = 'x=' + mid + ' → <strong>' + cnt + '개</strong> ≥ ' + k + ' → <span style="color:var(--green);">hi=' + mid + '</span>'; },
+                        undo: function() { renderTable(-1); infoEl.innerHTML = '<span style="color:var(--text2);">x 이하인 수가 ' + k + '개 이상인 최소 x를 찾습니다.</span>'; }
+                    });
+                })(mid, cnt, cLo, cHi, round);
+            } else {
+                lo = mid + 1;
+                (function(mid, cnt, cLo, cHi, round) {
+                    steps.push({ description: round + '회차: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + cnt + '개 < ' + k + ' → lo=' + (mid + 1),
+                        action: function() { renderTable(mid); infoEl.innerHTML = 'x=' + mid + ' → <strong>' + cnt + '개</strong> < ' + k + ' → <span style="color:var(--red);">lo=' + (mid + 1) + '</span>'; },
+                        undo: function() { renderTable(-1); infoEl.innerHTML = '<span style="color:var(--text2);">x 이하인 수가 ' + k + '개 이상인 최소 x를 찾습니다.</span>'; }
+                    });
+                })(mid, cnt, cLo, cHi, round);
+            }
+        }
+        steps.push({ description: '완성! k=' + k + '번째 수 = ' + lo,
+            action: function() { renderTable(lo); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: ' + k + '번째 수 = ' + lo + '</strong>'; },
+            undo: function() { renderTable(-1); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 7: LIS (boj-12015)
+    // ====================================================================
+    _renderVizLIS(container) {
+        var self = this, suffix = '-lis';
+        var A = [10, 20, 10, 30, 20, 50];
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">LIS + 이분 탐색</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">수열: [' + A.join(', ') + ']. tails 배열을 이분 탐색으로 구축합니다.</p>' +
+            '<div style="margin-bottom:8px;"><strong>원본 수열</strong></div>' +
+            '<div id="lis-arr' + suffix + '" style="display:flex;gap:4px;margin-bottom:16px;"></div>' +
+            '<div style="margin-bottom:8px;"><strong>tails 배열</strong></div>' +
+            '<div id="lis-tails' + suffix + '" style="display:flex;gap:4px;margin-bottom:12px;min-height:48px;"></div>' +
+            '<div id="lis-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var arrEl = container.querySelector('#lis-arr' + suffix);
+        var tailsEl = container.querySelector('#lis-tails' + suffix);
+        var infoEl = container.querySelector('#lis-info' + suffix);
+        function box(v, hl) { return '<div style="width:48px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:600;' + (hl || 'background:var(--bg2);') + '">' + v + '</div>'; }
+        function renderArr(curIdx) {
+            arrEl.innerHTML = A.map(function(v, i) {
+                if (i === curIdx) return box(v, 'background:var(--accent);color:white;');
+                if (i < curIdx) return box(v, 'background:var(--bg2);opacity:0.5;');
+                return box(v, 'background:var(--bg2);');
+            }).join('');
+        }
+        function renderTails(tails, hlIdx) {
+            if (tails.length === 0) { tailsEl.innerHTML = '<div style="color:var(--text3);padding:10px;">비어있음</div>'; return; }
+            tailsEl.innerHTML = tails.map(function(v, i) {
+                if (i === hlIdx) return box(v, 'background:var(--green);color:white;');
+                return box(v, 'background:var(--green)20;border:2px solid var(--green);');
+            }).join('');
+        }
+        renderArr(-1);
+        renderTails([], -1);
+        infoEl.innerHTML = '<span style="color:var(--text2);">각 원소를 순회하며 tails 배열을 구축합니다.</span>';
+        var steps = [], tails = [];
+        A.forEach(function(x, idx) {
+            var prevTails = tails.slice();
+            // bisect_left
+            var pos = 0, lo2 = 0, hi2 = tails.length;
+            while (lo2 < hi2) { var m = Math.floor((lo2 + hi2) / 2); if (tails[m] < x) lo2 = m + 1; else hi2 = m; }
+            pos = lo2;
+            if (pos === tails.length) {
+                tails.push(x);
+                var newTails = tails.slice();
+                (function(idx, x, pos, prevTails, newTails) {
+                    steps.push({ description: 'A[' + idx + ']=' + x + ': tails 끝보다 큼 → append. tails=[' + newTails.join(',') + '] (길이 ' + newTails.length + ')',
+                        action: function() { renderArr(idx); renderTails(newTails, pos); infoEl.innerHTML = x + ' > tails 끝 → <strong>append</strong>. LIS 길이 = ' + newTails.length; },
+                        undo: function() { renderArr(-1); renderTails(prevTails, -1); infoEl.innerHTML = '<span style="color:var(--text2);">각 원소를 순회하며 tails 배열을 구축합니다.</span>'; }
+                    });
+                })(idx, x, pos, prevTails, newTails);
+            } else {
+                tails[pos] = x;
+                var newTails = tails.slice();
+                (function(idx, x, pos, prevTails, newTails) {
+                    steps.push({ description: 'A[' + idx + ']=' + x + ': bisect_left → pos=' + pos + ', tails[' + pos + ']=' + x + '로 교체. tails=[' + newTails.join(',') + ']',
+                        action: function() { renderArr(idx); renderTails(newTails, pos); infoEl.innerHTML = x + ' → tails[' + pos + ']에 <strong>교체</strong>. LIS 길이 = ' + newTails.length; },
+                        undo: function() { renderArr(-1); renderTails(prevTails, -1); infoEl.innerHTML = '<span style="color:var(--text2);">각 원소를 순회하며 tails 배열을 구축합니다.</span>'; }
+                    });
+                })(idx, x, pos, prevTails, newTails);
+            }
+        });
+        var ft = tails.slice();
+        steps.push({ description: '완성! LIS 길이 = ' + ft.length,
+            action: function() { renderArr(A.length); renderTails(ft, -1); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ LIS 길이 = ' + ft.length + ' (tails=[' + ft.join(',') + '])</strong>'; },
+            undo: function() { renderArr(-1); renderTails(ft, -1); }
+        });
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ===== 빈 스텁 =====
+    renderVisualize(container) {},
+    renderProblem(container) {},
 
     // ===== 문제 단계 =====
     stages: [
@@ -709,859 +761,230 @@ count = upper - lower          # 5 - 2 = 3개!</code></pre></div>
 
     // ===== 문제 목록 =====
     problems: [
-        // ========== 1단계: 기본 이분 탐색 ==========
         {
-            id: 'boj-1920',
-            title: 'BOJ 1920 - 수 찾기',
-            difficulty: 'silver',
+            id: 'boj-1920', title: 'BOJ 1920 - 수 찾기', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1920',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>N개의 정수 A[1]~A[N]이 주어져 있을 때, X라는 정수가 A 안에 존재하는지 알아내는 프로그램을 작성하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 100,000). 다음 줄에 N개의 정수. 다음 줄에 M (1 ≤ M ≤ 100,000). 다음 줄에 M개의 정수.</p></div>
-                    <div><h4>출력</h4><p>M개의 줄에 존재하면 1, 존재하지 않으면 0을 출력.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>5\n4 1 5 2 3\n5\n1 3 7 9 5</pre></div>
-                        <div><strong>출력</strong><pre>1\n1\n0\n0\n1</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '정렬된 배열에서 이분 탐색으로 값을 찾는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>N개의 정수 A[1]~A[N]이 주어져 있을 때, X라는 정수가 A 안에 존재하는지 알아내는 프로그램을 작성하시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 100,000). 다음 줄에 N개의 정수. 다음 줄에 M. 다음 줄에 M개의 정수.</p></div><div><h4>출력</h4><p>M개의 줄에 존재하면 1, 존재하지 않으면 0을 출력.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>5\n4 1 5 2 3\n5\n1 3 7 9 5</pre></div><div><strong>출력</strong><pre>1\n1\n0\n0\n1</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '배열을 <strong>정렬</strong>한 뒤, 각 질문에 대해 <strong>이분 탐색</strong>으로 존재 여부를 확인합니다.' },
-                { title: '핵심 코드', content: 'Python의 <code>bisect_left</code>를 사용하거나, 직접 이분 탐색을 구현합니다. set()을 사용해도 됩니다.' },
+                { title: '핵심 코드', content: 'Python의 <code>bisect_left</code>를 사용하거나, 직접 이분 탐색을 구현합니다.' },
                 { title: '시간 복잡도', content: '정렬 O(N log N) + 탐색 M × O(log N) = <strong>O((N+M) log N)</strong>' }
             ],
-            inputDefault: 5,
-            solve() { return '1\n1\n0\n0\n1'; },
             templates: {
-                python: `import sys
-from bisect import bisect_left
-input = sys.stdin.readline
-
-N = int(input())
-A = sorted(list(map(int, input().split())))
-M = int(input())
-queries = list(map(int, input().split()))
-
-for x in queries:
-    idx = bisect_left(A, x)
-    if idx < N and A[idx] == x:
-        print(1)
-    else:
-        print(0)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-
-int N, M, A[100001];
-
-bool bsearch(int target) {
-    int lo = 0, hi = N - 1;
-    while (lo <= hi) {
-        int mid = (lo + hi) / 2;
-        if (A[mid] == target) return true;
-        else if (A[mid] < target) lo = mid + 1;
-        else hi = mid - 1;
-    }
-    return false;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cin >> N;
-    for (int i = 0; i < N; i++) cin >> A[i];
-    sort(A, A + N);
-    cin >> M;
-    for (int i = 0; i < M; i++) {
-        int x; cin >> x;
-        cout << (bsearch(x) ? 1 : 0) << "\\n";
-    }
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int[] A = new int[N];
-        for (int i = 0; i < N; i++) A[i] = Integer.parseInt(st.nextToken());
-        Arrays.sort(A);
-        int M = Integer.parseInt(br.readLine().trim());
-        st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < M; i++) {
-            int x = Integer.parseInt(st.nextToken());
-            sb.append(Arrays.binarySearch(A, x) >= 0 ? 1 : 0).append('\\n');
-        }
-        System.out.print(sb);
-    }
-}`
-            }
+                python: 'import sys\nfrom bisect import bisect_left\ninput = sys.stdin.readline\n\nN = int(input())\nA = sorted(list(map(int, input().split())))\nM = int(input())\nqueries = list(map(int, input().split()))\n\nfor x in queries:\n    idx = bisect_left(A, x)\n    if idx < N and A[idx] == x:\n        print(1)\n    else:\n        print(0)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\nint N, M, A[100001];\nbool bsearch(int target) {\n    int lo = 0, hi = N - 1;\n    while (lo <= hi) {\n        int mid = (lo + hi) / 2;\n        if (A[mid] == target) return true;\n        else if (A[mid] < target) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    return false;\n}\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    cin >> N;\n    for (int i = 0; i < N; i++) cin >> A[i];\n    sort(A, A + N);\n    cin >> M;\n    for (int i = 0; i < M; i++) { int x; cin >> x; cout << (bsearch(x) ? 1 : 0) << "\\n"; }\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int[] A = new int[N];\n        for (int i = 0; i < N; i++) A[i] = Integer.parseInt(st.nextToken());\n        Arrays.sort(A);\n        int M = Integer.parseInt(br.readLine().trim());\n        st = new StringTokenizer(br.readLine());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < M; i++) {\n            int x = Integer.parseInt(st.nextToken());\n            sb.append(Arrays.binarySearch(A, x) >= 0 ? 1 : 0).append(\'\\n\');\n        }\n        System.out.print(sb);\n    }\n}'
+            },
+            solutions: [{
+                approach: '정렬 + 이분 탐색',
+                description: '배열을 정렬한 뒤 bisect_left로 존재 여부를 확인합니다.',
+                timeComplexity: 'O((N+M) log N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 정렬', code: 'import sys\nfrom bisect import bisect_left\ninput = sys.stdin.readline\n\nN = int(input())\nA = sorted(list(map(int, input().split())))' },
+                        { title: '쿼리 입력', code: 'M = int(input())\nqueries = list(map(int, input().split()))' },
+                        { title: '이분 탐색으로 탐색', code: 'for x in queries:\n    idx = bisect_left(A, x)\n    if idx < N and A[idx] == x:\n        print(1)\n    else:\n        print(0)' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[0].templates; }
+            }]
         },
         {
-            id: 'boj-10816',
-            title: 'BOJ 10816 - 숫자 카드 2',
-            difficulty: 'silver',
+            id: 'boj-10816', title: 'BOJ 10816 - 숫자 카드 2', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/10816',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>숫자 카드 N장이 있습니다. 정수 M개가 주어졌을 때, 각 정수가 적힌 숫자 카드를 몇 장 가지고 있는지 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 500,000). 다음 줄에 N개의 정수. 다음 줄에 M. 다음 줄에 M개의 정수.</p></div>
-                    <div><h4>출력</h4><p>각 수가 적힌 카드의 개수를 공백으로 구분하여 출력.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>10\n6 3 2 10 10 10 -10 -10 7 3\n8\n10 9 -5 2 3 4 5 -10</pre></div>
-                        <div><strong>출력</strong><pre>3 0 0 1 2 0 0 2</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: 'bisect_left와 bisect_right의 차이를 시각적으로 확인하세요.',
+            descriptionHTML: '<h3>문제</h3><p>숫자 카드 N장이 있습니다. 정수 M개가 주어졌을 때, 각 정수가 적힌 숫자 카드를 몇 장 가지고 있는지 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 500,000). 다음 줄에 N개의 정수. 다음 줄에 M. 다음 줄에 M개의 정수.</p></div><div><h4>출력</h4><p>각 수가 적힌 카드의 개수를 공백으로 구분하여 출력.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>10\n6 3 2 10 10 10 -10 -10 7 3\n8\n10 9 -5 2 3 4 5 -10</pre></div><div><strong>출력</strong><pre>3 0 0 1 2 0 0 2</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '<strong>lower_bound와 upper_bound</strong>를 사용합니다. 개수 = upper_bound - lower_bound' },
-                { title: '핵심 코드', content: 'Python: <code>bisect_right(x) - bisect_left(x)</code><br>C++: <code>upper_bound - lower_bound</code>' }
+                { title: '핵심 코드', content: 'Python: <code>bisect_right(x) - bisect_left(x)</code>' }
             ],
-            inputDefault: 10,
-            solve() { return '3 0 0 1 2 0 0 2'; },
             templates: {
-                python: `import sys
-from bisect import bisect_left, bisect_right
-input = sys.stdin.readline
-
-N = int(input())
-cards = sorted(list(map(int, input().split())))
-M = int(input())
-queries = list(map(int, input().split()))
-
-result = []
-for x in queries:
-    result.append(bisect_right(cards, x) - bisect_left(cards, x))
-
-print(' '.join(map(str, result)))`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int N; cin >> N;
-    int cards[500001];
-    for (int i = 0; i < N; i++) cin >> cards[i];
-    sort(cards, cards + N);
-
-    int M; cin >> M;
-    for (int i = 0; i < M; i++) {
-        int x; cin >> x;
-        int cnt = upper_bound(cards, cards + N, x) - lower_bound(cards, cards + N, x);
-        cout << cnt << (i < M - 1 ? " " : "\\n");
-    }
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static int lowerBound(int[] arr, int target) {
-        int lo = 0, hi = arr.length;
-        while (lo < hi) {
-            int mid = (lo + hi) / 2;
-            if (arr[mid] < target) lo = mid + 1;
-            else hi = mid;
-        }
-        return lo;
-    }
-    static int upperBound(int[] arr, int target) {
-        int lo = 0, hi = arr.length;
-        while (lo < hi) {
-            int mid = (lo + hi) / 2;
-            if (arr[mid] <= target) lo = mid + 1;
-            else hi = mid;
-        }
-        return lo;
-    }
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-        int[] cards = new int[N];
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) cards[i] = Integer.parseInt(st.nextToken());
-        Arrays.sort(cards);
-        int M = Integer.parseInt(br.readLine().trim());
-        st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < M; i++) {
-            int x = Integer.parseInt(st.nextToken());
-            if (i > 0) sb.append(' ');
-            sb.append(upperBound(cards, x) - lowerBound(cards, x));
-        }
-        System.out.println(sb);
-    }
-}`
-            }
+                python: 'import sys\nfrom bisect import bisect_left, bisect_right\ninput = sys.stdin.readline\n\nN = int(input())\ncards = sorted(list(map(int, input().split())))\nM = int(input())\nqueries = list(map(int, input().split()))\n\nresult = []\nfor x in queries:\n    result.append(bisect_right(cards, x) - bisect_left(cards, x))\n\nprint(\' \'.join(map(str, result)))',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; cin >> N;\n    int cards[500001];\n    for (int i = 0; i < N; i++) cin >> cards[i];\n    sort(cards, cards + N);\n    int M; cin >> M;\n    for (int i = 0; i < M; i++) {\n        int x; cin >> x;\n        int cnt = upper_bound(cards, cards + N, x) - lower_bound(cards, cards + N, x);\n        cout << cnt << (i < M - 1 ? " " : "\\n");\n    }\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\npublic class Main {\n    static int lowerBound(int[] a, int t) { int lo=0,hi=a.length; while(lo<hi){int m=(lo+hi)/2;if(a[m]<t)lo=m+1;else hi=m;} return lo; }\n    static int upperBound(int[] a, int t) { int lo=0,hi=a.length; while(lo<hi){int m=(lo+hi)/2;if(a[m]<=t)lo=m+1;else hi=m;} return lo; }\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n        int[] cards = new int[N];\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) cards[i] = Integer.parseInt(st.nextToken());\n        Arrays.sort(cards);\n        int M = Integer.parseInt(br.readLine().trim());\n        st = new StringTokenizer(br.readLine());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < M; i++) {\n            int x = Integer.parseInt(st.nextToken());\n            if (i > 0) sb.append(\' \');\n            sb.append(upperBound(cards, x) - lowerBound(cards, x));\n        }\n        System.out.println(sb);\n    }\n}'
+            },
+            solutions: [{
+                approach: 'bisect_left + bisect_right',
+                description: '정렬 후 upper_bound - lower_bound로 개수를 구합니다.',
+                timeComplexity: 'O((N+M) log N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 정렬', code: 'import sys\nfrom bisect import bisect_left, bisect_right\ninput = sys.stdin.readline\n\nN = int(input())\ncards = sorted(list(map(int, input().split())))' },
+                        { title: '쿼리 처리', code: 'M = int(input())\nqueries = list(map(int, input().split()))' },
+                        { title: '개수 계산 및 출력', code: 'result = []\nfor x in queries:\n    result.append(bisect_right(cards, x) - bisect_left(cards, x))\n\nprint(\' \'.join(map(str, result)))' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[1].templates; }
+            }]
         },
-
-        // ========== 2단계: 매개변수 탐색 입문 ==========
         {
-            id: 'boj-1654',
-            title: 'BOJ 1654 - 랜선 자르기',
-            difficulty: 'silver',
+            id: 'boj-1654', title: 'BOJ 1654 - 랜선 자르기', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1654',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>이미 가지고 있는 K개의 랜선을 잘라서 N개의 같은 길이의 랜선을 만들려 합니다. 만들 수 있는 최대 랜선의 길이를 구하시오. (N개보다 많이 만드는 것도 N개를 만드는 것에 포함)</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 K (1 ≤ K ≤ 10,000)과 N (1 ≤ N ≤ 1,000,000). K ≤ N.<br>이후 K줄에 각 랜선의 길이 (자연수, ≤ 2^31-1)</p></div>
-                    <div><h4>출력</h4><p>N개를 만들 수 있는 랜선의 최대 길이 (정수)</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>4 11\n802\n743\n457\n539</pre></div>
-                        <div><strong>출력</strong><pre>200</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '랜선 길이를 이분 탐색으로 결정하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>이미 가지고 있는 K개의 랜선을 잘라서 N개의 같은 길이의 랜선을 만들려 합니다. 만들 수 있는 최대 랜선의 길이를 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 K, N. 이후 K줄에 각 랜선의 길이.</p></div><div><h4>출력</h4><p>N개를 만들 수 있는 랜선의 최대 길이.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>4 11\n802\n743\n457\n539</pre></div><div><strong>출력</strong><pre>200</pre></div></div></div>',
             hints: [
-                { title: '접근법', content: '<strong>매개변수 탐색!</strong> "길이 x로 잘랐을 때 N개 이상 만들 수 있는가?"를 이분 탐색합니다.' },
-                { title: '판별 함수', content: '<code>check(x) = sum(각 랜선 // x) >= N</code><br>YES면 lo = mid + 1 (더 긴 길이 시도), NO면 hi = mid - 1' },
-                { title: '범위 주의', content: 'lo=1, hi=max(랜선). <strong>lo=0이면 0으로 나누기 에러!</strong> 또한 hi가 int 범위를 넘을 수 있으므로 long 사용.' }
+                { title: '접근법', content: '<strong>매개변수 탐색!</strong> "길이 x로 잘랐을 때 N개 이상 만들 수 있는가?"' },
+                { title: '판별 함수', content: '<code>check(x) = sum(각 랜선 // x) >= N</code>' },
+                { title: '범위 주의', content: 'lo=1, hi=max(랜선). <strong>lo=0이면 0으로 나누기 에러!</strong>' }
             ],
-            inputDefault: 4,
-            solve() { return '200'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-K, N = map(int, input().split())
-cables = [int(input()) for _ in range(K)]
-
-lo, hi = 1, max(cables)
-answer = 0
-
-while lo <= hi:
-    mid = (lo + hi) // 2
-    count = sum(c // mid for c in cables)
-    if count >= N:
-        answer = mid
-        lo = mid + 1    # 더 긴 길이 시도
-    else:
-        hi = mid - 1    # 더 짧은 길이 시도
-
-print(answer)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-typedef long long ll;
-
-int main() {
-    int K, N;
-    cin >> K >> N;
-    ll cables[10001], maxLen = 0;
-    for (int i = 0; i < K; i++) {
-        cin >> cables[i];
-        maxLen = max(maxLen, cables[i]);
-    }
-
-    ll lo = 1, hi = maxLen, answer = 0;
-    while (lo <= hi) {
-        ll mid = (lo + hi) / 2;
-        ll count = 0;
-        for (int i = 0; i < K; i++) count += cables[i] / mid;
-        if (count >= N) {
-            answer = mid;
-            lo = mid + 1;
-        } else {
-            hi = mid - 1;
-        }
-    }
-    cout << answer << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int K = sc.nextInt(), N = sc.nextInt();
-        long[] cables = new long[K];
-        long maxLen = 0;
-        for (int i = 0; i < K; i++) {
-            cables[i] = sc.nextLong();
-            maxLen = Math.max(maxLen, cables[i]);
-        }
-        long lo = 1, hi = maxLen, answer = 0;
-        while (lo <= hi) {
-            long mid = (lo + hi) / 2;
-            long count = 0;
-            for (long c : cables) count += c / mid;
-            if (count >= N) { answer = mid; lo = mid + 1; }
-            else hi = mid - 1;
-        }
-        System.out.println(answer);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nK, N = map(int, input().split())\ncables = [int(input()) for _ in range(K)]\n\nlo, hi = 1, max(cables)\nanswer = 0\n\nwhile lo <= hi:\n    mid = (lo + hi) // 2\n    count = sum(c // mid for c in cables)\n    if count >= N:\n        answer = mid\n        lo = mid + 1\n    else:\n        hi = mid - 1\n\nprint(answer)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\ntypedef long long ll;\nint main() {\n    int K, N; cin >> K >> N;\n    ll cables[10001], maxLen = 0;\n    for (int i = 0; i < K; i++) { cin >> cables[i]; maxLen = max(maxLen, cables[i]); }\n    ll lo = 1, hi = maxLen, answer = 0;\n    while (lo <= hi) {\n        ll mid = (lo + hi) / 2, count = 0;\n        for (int i = 0; i < K; i++) count += cables[i] / mid;\n        if (count >= N) { answer = mid; lo = mid + 1; } else hi = mid - 1;\n    }\n    cout << answer << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int K = sc.nextInt(), N = sc.nextInt();\n        long[] cables = new long[K]; long maxLen = 0;\n        for (int i = 0; i < K; i++) { cables[i] = sc.nextLong(); maxLen = Math.max(maxLen, cables[i]); }\n        long lo = 1, hi = maxLen, answer = 0;\n        while (lo <= hi) {\n            long mid = (lo + hi) / 2, count = 0;\n            for (long c : cables) count += c / mid;\n            if (count >= N) { answer = mid; lo = mid + 1; } else hi = mid - 1;\n        }\n        System.out.println(answer);\n    }\n}'
+            },
+            solutions: [{
+                approach: '매개변수 탐색',
+                description: '길이 x로 잘랐을 때 N개 이상 가능한지 이분 탐색합니다.',
+                timeComplexity: 'O(K log max)',
+                spaceComplexity: 'O(K)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'import sys\ninput = sys.stdin.readline\n\nK, N = map(int, input().split())\ncables = [int(input()) for _ in range(K)]' },
+                        { title: '이분 탐색 범위', code: 'lo, hi = 1, max(cables)\nanswer = 0' },
+                        { title: '이분 탐색 + 판별', code: 'while lo <= hi:\n    mid = (lo + hi) // 2\n    count = sum(c // mid for c in cables)\n    if count >= N:\n        answer = mid\n        lo = mid + 1\n    else:\n        hi = mid - 1' },
+                        { title: '출력', code: 'print(answer)' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[2].templates; }
+            }]
         },
         {
-            id: 'boj-2805',
-            title: 'BOJ 2805 - 나무 자르기',
-            difficulty: 'silver',
+            id: 'boj-2805', title: 'BOJ 2805 - 나무 자르기', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2805',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>목재절단기에 높이 H를 설정하면 H보다 높은 나무의 윗부분이 잘립니다. 적어도 M미터의 나무를 집에 가져가기 위해 설정할 수 있는 높이의 최댓값을 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 1,000,000)과 M (1 ≤ M ≤ 2,000,000,000).<br>둘째 줄에 나무 높이들 (≤ 1,000,000,000)</p></div>
-                    <div><h4>출력</h4><p>절단기 높이의 최댓값</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>4 7\n20 15 10 17</pre></div>
-                        <div><strong>출력</strong><pre>15</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '절단기 높이를 이분 탐색으로 결정하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>목재절단기에 높이 H를 설정하면 H보다 높은 나무의 윗부분이 잘립니다. 적어도 M미터의 나무를 가져가기 위한 높이의 최댓값을 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>N, M. 둘째 줄에 나무 높이들.</p></div><div><h4>출력</h4><p>절단기 높이의 최댓값.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>4 7\n20 15 10 17</pre></div><div><strong>출력</strong><pre>15</pre></div></div></div>',
             hints: [
-                { title: '접근법', content: '<strong>매개변수 탐색!</strong> "높이 H로 잘랐을 때 M미터 이상 얻을 수 있는가?"를 이분 탐색합니다.' },
-                { title: '판별 함수', content: '<code>check(H) = sum(max(0, tree - H) for tree in trees) >= M</code>' },
-                { title: '범위', content: 'lo=0, hi=max(나무). YES면 lo=mid+1, NO면 hi=mid-1. <strong>합계가 int 범위를 넘을 수 있으므로 long 사용!</strong>' }
+                { title: '접근법', content: '<strong>매개변수 탐색!</strong> "높이 H로 잘랐을 때 M미터 이상 얻을 수 있는가?"' },
+                { title: '판별 함수', content: '<code>check(H) = sum(max(0, tree - H)) >= M</code>' },
+                { title: '범위', content: 'lo=0, hi=max(나무). <strong>합계가 int 범위를 넘을 수 있으므로 long 사용!</strong>' }
             ],
-            inputDefault: 4,
-            solve() { return '15'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-N, M = map(int, input().split())
-trees = list(map(int, input().split()))
-
-lo, hi = 0, max(trees)
-answer = 0
-
-while lo <= hi:
-    mid = (lo + hi) // 2
-    gained = sum(max(0, t - mid) for t in trees)
-    if gained >= M:
-        answer = mid
-        lo = mid + 1
-    else:
-        hi = mid - 1
-
-print(answer)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-typedef long long ll;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int N; ll M;
-    cin >> N >> M;
-    int trees[1000001];
-    int maxH = 0;
-    for (int i = 0; i < N; i++) {
-        cin >> trees[i];
-        maxH = max(maxH, trees[i]);
-    }
-
-    ll lo = 0, hi = maxH, answer = 0;
-    while (lo <= hi) {
-        ll mid = (lo + hi) / 2;
-        ll gained = 0;
-        for (int i = 0; i < N; i++)
-            if (trees[i] > mid) gained += trees[i] - mid;
-        if (gained >= M) { answer = mid; lo = mid + 1; }
-        else hi = mid - 1;
-    }
-    cout << answer << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        long M = Long.parseLong(st.nextToken());
-        st = new StringTokenizer(br.readLine());
-        int[] trees = new int[N];
-        int maxH = 0;
-        for (int i = 0; i < N; i++) {
-            trees[i] = Integer.parseInt(st.nextToken());
-            maxH = Math.max(maxH, trees[i]);
-        }
-        long lo = 0, hi = maxH, answer = 0;
-        while (lo <= hi) {
-            long mid = (lo + hi) / 2;
-            long gained = 0;
-            for (int t : trees) if (t > mid) gained += t - mid;
-            if (gained >= M) { answer = mid; lo = mid + 1; }
-            else hi = mid - 1;
-        }
-        System.out.println(answer);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ntrees = list(map(int, input().split()))\n\nlo, hi = 0, max(trees)\nanswer = 0\n\nwhile lo <= hi:\n    mid = (lo + hi) // 2\n    gained = sum(max(0, t - mid) for t in trees)\n    if gained >= M:\n        answer = mid\n        lo = mid + 1\n    else:\n        hi = mid - 1\n\nprint(answer)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\ntypedef long long ll;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; ll M; cin >> N >> M;\n    int trees[1000001]; int maxH = 0;\n    for (int i = 0; i < N; i++) { cin >> trees[i]; maxH = max(maxH, trees[i]); }\n    ll lo = 0, hi = maxH, answer = 0;\n    while (lo <= hi) {\n        ll mid = (lo + hi) / 2, gained = 0;\n        for (int i = 0; i < N; i++) if (trees[i] > mid) gained += trees[i] - mid;\n        if (gained >= M) { answer = mid; lo = mid + 1; } else hi = mid - 1;\n    }\n    cout << answer << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken()); long M = Long.parseLong(st.nextToken());\n        st = new StringTokenizer(br.readLine());\n        int[] trees = new int[N]; int maxH = 0;\n        for (int i = 0; i < N; i++) { trees[i] = Integer.parseInt(st.nextToken()); maxH = Math.max(maxH, trees[i]); }\n        long lo = 0, hi = maxH, answer = 0;\n        while (lo <= hi) {\n            long mid = (lo + hi) / 2, gained = 0;\n            for (int t : trees) if (t > mid) gained += t - mid;\n            if (gained >= M) { answer = mid; lo = mid + 1; } else hi = mid - 1;\n        }\n        System.out.println(answer);\n    }\n}'
+            },
+            solutions: [{
+                approach: '매개변수 탐색',
+                description: '절단 높이 H에 대해 잘린 양이 M 이상인지 이분 탐색합니다.',
+                timeComplexity: 'O(N log max)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ntrees = list(map(int, input().split()))' },
+                        { title: '이분 탐색', code: 'lo, hi = 0, max(trees)\nanswer = 0\n\nwhile lo <= hi:\n    mid = (lo + hi) // 2\n    gained = sum(max(0, t - mid) for t in trees)\n    if gained >= M:\n        answer = mid\n        lo = mid + 1\n    else:\n        hi = mid - 1' },
+                        { title: '출력', code: 'print(answer)' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[3].templates; }
+            }]
         },
-
-        // ========== 3단계: 매개변수 탐색 심화 ==========
         {
-            id: 'boj-2110',
-            title: 'BOJ 2110 - 공유기 설치',
-            difficulty: 'gold',
+            id: 'boj-2110', title: 'BOJ 2110 - 공유기 설치', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/2110',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>N개의 집에 C개의 공유기를 설치하려 합니다. 가장 인접한 두 공유기 사이의 거리를 최대화하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (2 ≤ N ≤ 200,000)과 C (2 ≤ C ≤ N).<br>이후 N줄에 집의 좌표 (0 ≤ x ≤ 1,000,000,000)</p></div>
-                    <div><h4>출력</h4><p>가장 인접한 두 공유기 사이의 최대 거리</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>5 3\n1\n2\n8\n4\n9</pre></div>
-                        <div><strong>출력</strong><pre>3</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: '최소 거리 d를 이분 탐색하여 공유기를 배치하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>N개의 집에 C개의 공유기를 설치하려 합니다. 가장 인접한 두 공유기 사이의 거리를 최대화하시오.</p><div class="problem-io"><div><h4>입력</h4><p>N, C. 이후 N줄에 집의 좌표.</p></div><div><h4>출력</h4><p>가장 인접한 두 공유기 사이의 최대 거리.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>5 3\n1\n2\n8\n4\n9</pre></div><div><strong>출력</strong><pre>3</pre></div></div></div>',
             hints: [
                 { title: '접근법', content: '<strong>"최소 거리 d 이상으로 C개를 설치할 수 있는가?"</strong>를 이분 탐색합니다.' },
-                { title: '판별 함수', content: '집을 정렬한 후, 첫 집에 설치하고, 이전 설치 위치에서 d 이상 떨어진 집에 다음 설치. 설치 수 ≥ C면 YES.' },
-                { title: '범위', content: 'lo=1, hi=max(집)-min(집). YES면 lo=mid+1 (더 큰 거리 시도), NO면 hi=mid-1.' }
+                { title: '판별 함수', content: '집을 정렬 후, 첫 집부터 d 이상 떨어진 집에 설치. 설치 수 ≥ C면 YES.' },
+                { title: '범위', content: 'lo=1, hi=max-min. YES면 lo=mid+1, NO면 hi=mid-1.' }
             ],
-            inputDefault: 5,
-            solve() { return '3'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-N, C = map(int, input().split())
-houses = sorted([int(input()) for _ in range(N)])
-
-lo, hi = 1, houses[-1] - houses[0]
-answer = 0
-
-while lo <= hi:
-    mid = (lo + hi) // 2
-    # 거리 mid 이상으로 C개 설치 가능?
-    count = 1
-    last = houses[0]
-    for i in range(1, N):
-        if houses[i] - last >= mid:
-            count += 1
-            last = houses[i]
-    if count >= C:
-        answer = mid
-        lo = mid + 1
-    else:
-        hi = mid - 1
-
-print(answer)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-
-int N, C;
-int houses[200001];
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cin >> N >> C;
-    for (int i = 0; i < N; i++) cin >> houses[i];
-    sort(houses, houses + N);
-
-    long long lo = 1, hi = houses[N-1] - houses[0], answer = 0;
-    while (lo <= hi) {
-        long long mid = (lo + hi) / 2;
-        int count = 1, last = houses[0];
-        for (int i = 1; i < N; i++) {
-            if (houses[i] - last >= mid) {
-                count++;
-                last = houses[i];
-            }
-        }
-        if (count >= C) { answer = mid; lo = mid + 1; }
-        else hi = mid - 1;
-    }
-    cout << answer << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken()), C = Integer.parseInt(st.nextToken());
-        int[] houses = new int[N];
-        for (int i = 0; i < N; i++) houses[i] = Integer.parseInt(br.readLine().trim());
-        Arrays.sort(houses);
-
-        long lo = 1, hi = houses[N-1] - houses[0], answer = 0;
-        while (lo <= hi) {
-            long mid = (lo + hi) / 2;
-            int count = 1, last = houses[0];
-            for (int i = 1; i < N; i++) {
-                if (houses[i] - last >= mid) { count++; last = houses[i]; }
-            }
-            if (count >= C) { answer = mid; lo = mid + 1; }
-            else hi = mid - 1;
-        }
-        System.out.println(answer);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\nN, C = map(int, input().split())\nhouses = sorted([int(input()) for _ in range(N)])\n\nlo, hi = 1, houses[-1] - houses[0]\nanswer = 0\n\nwhile lo <= hi:\n    mid = (lo + hi) // 2\n    count = 1\n    last = houses[0]\n    for i in range(1, N):\n        if houses[i] - last >= mid:\n            count += 1\n            last = houses[i]\n    if count >= C:\n        answer = mid\n        lo = mid + 1\n    else:\n        hi = mid - 1\n\nprint(answer)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\nint N, C, houses[200001];\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    cin >> N >> C;\n    for (int i = 0; i < N; i++) cin >> houses[i];\n    sort(houses, houses + N);\n    long long lo = 1, hi = houses[N-1] - houses[0], answer = 0;\n    while (lo <= hi) {\n        long long mid = (lo + hi) / 2;\n        int count = 1, last = houses[0];\n        for (int i = 1; i < N; i++) { if (houses[i] - last >= mid) { count++; last = houses[i]; } }\n        if (count >= C) { answer = mid; lo = mid + 1; } else hi = mid - 1;\n    }\n    cout << answer << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken()), C = Integer.parseInt(st.nextToken());\n        int[] houses = new int[N];\n        for (int i = 0; i < N; i++) houses[i] = Integer.parseInt(br.readLine().trim());\n        Arrays.sort(houses);\n        long lo = 1, hi = houses[N-1] - houses[0], answer = 0;\n        while (lo <= hi) {\n            long mid = (lo + hi) / 2;\n            int count = 1, last = houses[0];\n            for (int i = 1; i < N; i++) { if (houses[i] - last >= mid) { count++; last = houses[i]; } }\n            if (count >= C) { answer = mid; lo = mid + 1; } else hi = mid - 1;\n        }\n        System.out.println(answer);\n    }\n}'
+            },
+            solutions: [{
+                approach: '매개변수 탐색 (거리)',
+                description: '최소 거리 d 이상으로 C개를 설치할 수 있는지 이분 탐색합니다.',
+                timeComplexity: 'O(N log(max-min))',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 정렬', code: 'import sys\ninput = sys.stdin.readline\n\nN, C = map(int, input().split())\nhouses = sorted([int(input()) for _ in range(N)])' },
+                        { title: '이분 탐색 범위', code: 'lo, hi = 1, houses[-1] - houses[0]\nanswer = 0' },
+                        { title: '탐색 + 그리디 판별', code: 'while lo <= hi:\n    mid = (lo + hi) // 2\n    count = 1\n    last = houses[0]\n    for i in range(1, N):\n        if houses[i] - last >= mid:\n            count += 1\n            last = houses[i]\n    if count >= C:\n        answer = mid\n        lo = mid + 1\n    else:\n        hi = mid - 1' },
+                        { title: '출력', code: 'print(answer)' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[4].templates; }
+            }]
         },
         {
-            id: 'boj-1300',
-            title: 'BOJ 1300 - K번째 수',
-            difficulty: 'gold',
+            id: 'boj-1300', title: 'BOJ 1300 - K번째 수', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1300',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>N×N 배열 A에서 A[i][j] = i × j입니다. 이 배열을 일차원으로 펼치고 오름차순 정렬했을 때, k번째 수를 구하시오. (인덱스는 1부터)</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (≤ 10^5). 둘째 줄에 k (≤ min(10^9, N^2)).</p></div>
-                    <div><h4>출력</h4><p>k번째 수</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>3\n7</pre></div>
-                        <div><strong>출력</strong><pre>6</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: 'N×N 곱셈표에서 x 이하인 수의 개수를 이분 탐색으로 구하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>N×N 배열 A에서 A[i][j] = i × j입니다. 이 배열을 일차원으로 펼치고 오름차순 정렬했을 때, k번째 수를 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>N (≤ 10^5). k (≤ min(10^9, N^2)).</p></div><div><h4>출력</h4><p>k번째 수.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>3\n7</pre></div><div><strong>출력</strong><pre>6</pre></div></div></div>',
             hints: [
-                { title: '접근법', content: '<strong>"x 이하인 수가 k개 이상인가?"</strong>를 이분 탐색합니다. 배열을 실제로 만들 필요 없습니다!' },
-                { title: '판별 함수', content: 'i행에서 i×j ≤ x인 j의 개수 = min(x÷i, N).<br>전체 개수 = <code>sum(min(x//i, N) for i in 1..N)</code>' },
-                { title: '범위', content: 'lo=1, hi=k (답은 항상 k 이하). YES면 hi=mid, NO면 lo=mid+1 (lower_bound 형태).' }
+                { title: '접근법', content: '<strong>"x 이하인 수가 k개 이상인가?"</strong>를 이분 탐색합니다.' },
+                { title: '판별 함수', content: 'i행에서 i×j ≤ x인 j의 개수 = min(x÷i, N).<br><code>sum(min(x//i, N) for i in 1..N)</code>' },
+                { title: '범위', content: 'lo=1, hi=k (답은 항상 k 이하). lower_bound 형태.' }
             ],
-            inputDefault: 3,
-            solve() { return '6'; },
             templates: {
-                python: `N = int(input())
-k = int(input())
-
-lo, hi = 1, k  # 답은 항상 k 이하
-
-while lo < hi:
-    mid = (lo + hi) // 2
-    # mid 이하인 수의 개수
-    count = 0
-    for i in range(1, N + 1):
-        count += min(mid // i, N)
-    if count >= k:
-        hi = mid
-    else:
-        lo = mid + 1
-
-print(lo)`,
-                cpp: `#include <iostream>
-#include <algorithm>
-using namespace std;
-typedef long long ll;
-
-int main() {
-    ll N, k;
-    cin >> N >> k;
-
-    ll lo = 1, hi = k;
-    while (lo < hi) {
-        ll mid = (lo + hi) / 2;
-        ll count = 0;
-        for (ll i = 1; i <= N; i++)
-            count += min(mid / i, N);
-        if (count >= k) hi = mid;
-        else lo = mid + 1;
-    }
-    cout << lo << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        long N = sc.nextLong(), k = sc.nextLong();
-
-        long lo = 1, hi = k;
-        while (lo < hi) {
-            long mid = (lo + hi) / 2;
-            long count = 0;
-            for (long i = 1; i <= N; i++)
-                count += Math.min(mid / i, N);
-            if (count >= k) hi = mid;
-            else lo = mid + 1;
-        }
-        System.out.println(lo);
-    }
-}`
-            }
+                python: 'N = int(input())\nk = int(input())\n\nlo, hi = 1, k\n\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    count = 0\n    for i in range(1, N + 1):\n        count += min(mid // i, N)\n    if count >= k:\n        hi = mid\n    else:\n        lo = mid + 1\n\nprint(lo)',
+                cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\ntypedef long long ll;\nint main() {\n    ll N, k; cin >> N >> k;\n    ll lo = 1, hi = k;\n    while (lo < hi) {\n        ll mid = (lo + hi) / 2, count = 0;\n        for (ll i = 1; i <= N; i++) count += min(mid / i, N);\n        if (count >= k) hi = mid; else lo = mid + 1;\n    }\n    cout << lo << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        long N = sc.nextLong(), k = sc.nextLong();\n        long lo = 1, hi = k;\n        while (lo < hi) {\n            long mid = (lo + hi) / 2, count = 0;\n            for (long i = 1; i <= N; i++) count += Math.min(mid / i, N);\n            if (count >= k) hi = mid; else lo = mid + 1;\n        }\n        System.out.println(lo);\n    }\n}'
+            },
+            solutions: [{
+                approach: '결정 문제 + 이분 탐색',
+                description: 'x 이하인 수의 개수를 O(N)에 세고, 그 값이 k 이상인 최소 x를 이분 탐색합니다.',
+                timeComplexity: 'O(N log k)',
+                spaceComplexity: 'O(1)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'N = int(input())\nk = int(input())' },
+                        { title: '이분 탐색 (lower_bound)', code: 'lo, hi = 1, k\n\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    count = 0\n    for i in range(1, N + 1):\n        count += min(mid // i, N)\n    if count >= k:\n        hi = mid\n    else:\n        lo = mid + 1' },
+                        { title: '출력', code: 'print(lo)' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[5].templates; }
+            }]
         },
-
-        // ========== 4단계: 응용 ==========
         {
-            id: 'boj-12015',
-            title: 'BOJ 12015 - 가장 긴 증가하는 부분 수열 2',
-            difficulty: 'gold',
+            id: 'boj-12015', title: 'BOJ 12015 - 가장 긴 증가하는 부분 수열 2', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/12015',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열(LIS)의 길이를 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (1 ≤ N ≤ 1,000,000).<br>둘째 줄에 수열 A (1 ≤ Ai ≤ 1,000,000)</p></div>
-                    <div><h4>출력</h4><p>LIS의 길이</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>6\n10 20 10 30 20 50</pre></div>
-                        <div><strong>출력</strong><pre>4</pre></div>
-                    </div>
-                </div>
-            `,
+            simIntro: 'tails 배열에 이분 탐색으로 원소를 삽입하는 LIS 알고리즘을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열(LIS)의 길이를 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>N (1 ≤ N ≤ 1,000,000). 수열 A.</p></div><div><h4>출력</h4><p>LIS의 길이.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>6\n10 20 10 30 20 50</pre></div><div><strong>출력</strong><pre>4</pre></div></div></div>',
             hints: [
-                { title: '접근법', content: 'DP로 O(N²)은 N=100만에서 시간 초과. <strong>이분 탐색</strong>으로 O(N log N)에 풀어야 합니다.' },
-                { title: '핵심 아이디어', content: '<code>tails</code> 배열을 유지합니다. tails[i] = 길이 i+1인 증가 수열의 마지막 원소 중 최솟값.<br>새 값이 오면 <strong>bisect_left</strong>로 들어갈 위치를 찾습니다.' },
-                { title: '구현', content: 'tails의 끝보다 크면 append, 아니면 bisect_left로 찾은 위치에 덮어쓰기. 최종 답 = len(tails).' }
+                { title: '접근법', content: 'DP O(N²)은 시간 초과. <strong>이분 탐색</strong>으로 O(N log N)에 풀어야 합니다.' },
+                { title: '핵심 아이디어', content: '<code>tails</code> 배열: tails[i] = 길이 i+1인 LIS의 마지막 최솟값.<br>bisect_left로 위치를 찾습니다.' },
+                { title: '구현', content: 'tails 끝보다 크면 append, 아니면 교체. 최종 답 = len(tails).' }
             ],
-            inputDefault: 6,
-            solve() { return '4'; },
             templates: {
-                python: `import sys
-from bisect import bisect_left
-input = sys.stdin.readline
-
-N = int(input())
-A = list(map(int, input().split()))
-
-tails = []  # tails[i] = 길이 i+1인 LIS의 마지막 최솟값
-
-for x in A:
-    pos = bisect_left(tails, x)
-    if pos == len(tails):
-        tails.append(x)    # LIS 길이 증가
-    else:
-        tails[pos] = x     # 더 작은 값으로 교체
-
-print(len(tails))`,
-                cpp: `#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int N; cin >> N;
-    vector<int> tails;
-
-    for (int i = 0; i < N; i++) {
-        int x; cin >> x;
-        auto it = lower_bound(tails.begin(), tails.end(), x);
-        if (it == tails.end()) tails.push_back(x);
-        else *it = x;
-    }
-    cout << tails.size() << endl;
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        List<Integer> tails = new ArrayList<>();
-
-        for (int i = 0; i < N; i++) {
-            int x = Integer.parseInt(st.nextToken());
-            int pos = Collections.binarySearch(tails, x);
-            if (pos < 0) pos = -(pos + 1);
-            if (pos == tails.size()) tails.add(x);
-            else tails.set(pos, x);
-        }
-        System.out.println(tails.size());
-    }
-}`
-            }
+                python: 'import sys\nfrom bisect import bisect_left\ninput = sys.stdin.readline\n\nN = int(input())\nA = list(map(int, input().split()))\n\ntails = []\n\nfor x in A:\n    pos = bisect_left(tails, x)\n    if pos == len(tails):\n        tails.append(x)\n    else:\n        tails[pos] = x\n\nprint(len(tails))',
+                cpp: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N; cin >> N;\n    vector<int> tails;\n    for (int i = 0; i < N; i++) {\n        int x; cin >> x;\n        auto it = lower_bound(tails.begin(), tails.end(), x);\n        if (it == tails.end()) tails.push_back(x);\n        else *it = x;\n    }\n    cout << tails.size() << endl;\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        List<Integer> tails = new ArrayList<>();\n        for (int i = 0; i < N; i++) {\n            int x = Integer.parseInt(st.nextToken());\n            int pos = Collections.binarySearch(tails, x);\n            if (pos < 0) pos = -(pos + 1);\n            if (pos == tails.size()) tails.add(x);\n            else tails.set(pos, x);\n        }\n        System.out.println(tails.size());\n    }\n}'
+            },
+            solutions: [{
+                approach: 'tails 배열 + bisect_left',
+                description: 'tails 배열을 유지하며 이분 탐색으로 O(N log N)에 LIS 길이를 구합니다.',
+                timeComplexity: 'O(N log N)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', code: 'import sys\nfrom bisect import bisect_left\ninput = sys.stdin.readline\n\nN = int(input())\nA = list(map(int, input().split()))' },
+                        { title: 'tails 배열 초기화', code: 'tails = []' },
+                        { title: 'LIS 구축', code: 'for x in A:\n    pos = bisect_left(tails, x)\n    if pos == len(tails):\n        tails.append(x)    # LIS 길이 증가\n    else:\n        tails[pos] = x     # 더 작은 값으로 교체' },
+                        { title: '출력', code: 'print(len(tails))' }
+                    ]
+                },
+                get templates() { return binarySearchTopic.problems[6].templates; }
+            }]
         }
     ],
 
-    // ===== 문제풀이 탭 렌더링 =====
-    renderProblem(container) {
-        container.innerHTML = '';
-
-        const stageList = document.createElement('div');
-        stageList.className = 'problem-stages';
-
-        this.stages.forEach(stage => {
-            const stageCard = document.createElement('div');
-            stageCard.className = 'stage-card';
-            stageCard.innerHTML = `
-                <div class="stage-header">
-                    <span class="stage-num">단계 ${stage.num}</span>
-                    <h3>${stage.title}</h3>
-                    <p>${stage.desc}</p>
-                </div>
-                <div class="stage-problems"></div>
-            `;
-
-            const problemsDiv = stageCard.querySelector('.stage-problems');
-            stage.problemIds.forEach(pid => {
-                const prob = this.problems.find(p => p.id === pid);
-                if (!prob) return;
-                const btn = document.createElement('button');
-                btn.className = 'problem-card ' + prob.difficulty;
-                btn.innerHTML = `
-                    <span class="problem-title">${prob.title}</span>
-                    <span class="problem-diff">${prob.difficulty === 'platinum' ? 'Platinum' : prob.difficulty === 'gold' ? 'Gold' : 'Silver'}</span>
-                `;
-                btn.addEventListener('click', () => this._renderProblemDetail(container, prob));
-                problemsDiv.appendChild(btn);
-            });
-
-            stageList.appendChild(stageCard);
-        });
-
-        container.appendChild(stageList);
-    },
-
+    // ===== 역호환 스텁 =====
     _renderProblemDetail(container, problem) {
         container.innerHTML = '';
-
-        const backBtn = document.createElement('button');
+        var backBtn = document.createElement('button');
         backBtn.className = 'btn';
         backBtn.textContent = '← 문제 목록으로';
-        backBtn.addEventListener('click', () => this.renderProblem(container));
+        backBtn.addEventListener('click', function() { binarySearchTopic.renderProblem(container); });
         container.appendChild(backBtn);
-
-        const descDiv = document.createElement('div');
-        descDiv.className = 'problem-detail';
-        descDiv.innerHTML = `
-            <div class="problem-meta">
-                <a href="${problem.link}" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">BOJ에서 풀기 ↗</a>
-            </div>
-            ${problem.descriptionHTML}
-        `;
-        container.appendChild(descDiv);
-
-        const hintsSection = document.createElement('div');
-        hintsSection.className = 'hints-section';
-        hintsSection.innerHTML = '<h3>단계별 힌트</h3>';
-
-        const hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hints-steps';
-        const openedState = {};
-
-        problem.hints.forEach((hint, idx) => {
-            const step = document.createElement('div');
-            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
-            step.innerHTML = `
-                <div class="hint-step-header">
-                    <span class="hint-step-num">${idx + 1}</span>
-                    <span class="hint-step-title">${hint.title}</span>
-                    <span class="hint-step-toggle">▶</span>
-                </div>
-                <div class="hint-step-content">${hint.content}</div>
-            `;
-            step.querySelector('.hint-step-header').addEventListener('click', () => {
-                if (step.classList.contains('locked')) return;
-                step.classList.toggle('open');
-                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
-                if (!openedState[idx]) {
-                    openedState[idx] = true;
-                    if (idx + 1 < problem.hints.length) {
-                        const nextStep = hintsDiv.children[idx + 1];
-                        if (nextStep) nextStep.classList.remove('locked');
-                    }
-                }
-            });
-            hintsDiv.appendChild(step);
-        });
-
-        hintsSection.appendChild(hintsDiv);
-        container.appendChild(hintsSection);
-
-        const solveArea = document.createElement('div');
-        solveArea.className = 'solve-area';
-        solveArea.innerHTML = `
-            <div class="editor-header">
-                <h3>풀이 작성</h3>
-                <select id="lang-select">
-                    <option value="python">Python</option>
-                    <option value="cpp">C++</option>
-                    <option value="java">Java</option>
-                </select>
-            </div>
-            <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
-            <div class="editor-actions">
-                <button id="run-btn" class="btn btn-primary">▶ 실행</button>
-                <button id="check-btn" class="btn btn-success">✓ 정답 확인</button>
-            </div>
-            <div id="output-area" class="output-area">
-                <div class="output-label">실행 결과</div>
-                <pre id="output-text"></pre>
-            </div>
-        `;
-        container.appendChild(solveArea);
-
-        container.querySelectorAll('pre code').forEach(codeEl => hljs.highlightElement(codeEl));
-
-        const editor = container.querySelector('#code-editor');
-        const langSelect = container.querySelector('#lang-select');
-        editor.value = problem.templates.python;
-
-        langSelect.addEventListener('change', () => {
-            editor.value = problem.templates[langSelect.value];
-        });
-
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const s = editor.selectionStart;
-                editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(editor.selectionEnd);
-                editor.selectionStart = editor.selectionEnd = s + 4;
-            }
-        });
-
-        container.querySelector('#run-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
-        });
-
-        container.querySelector('#check-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n💡 코드를 BOJ에 제출하여 정답을 확인하세요!`);
-        });
-    },
-
-    _showOutput(container, text, status = '') {
-        const area = container.querySelector('#output-area');
-        area.querySelector('#output-text').textContent = text;
-        area.className = 'output-area' + (status ? ' ' + status : '');
     }
 };
 
-// ===== 등록 =====
 window.AlgoTopics = window.AlgoTopics || {};
 window.AlgoTopics.binarysearch = binarySearchTopic;

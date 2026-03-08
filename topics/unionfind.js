@@ -1,7 +1,7 @@
 // =========================================================
 // 유니온 파인드 (Union-Find) 토픽 모듈
 // =========================================================
-const unionFindTopic = {
+var unionFindTopic = {
     id: 'unionfind',
     title: '유니온 파인드',
     icon: '🤝',
@@ -10,8 +10,129 @@ const unionFindTopic = {
     description: '서로소 집합을 효율적으로 관리하는 자료구조',
     relatedNote: '유니온 파인드는 크루스칼 MST, 네트워크 연결성, 동적 연결 쿼리 등에 핵심적으로 사용됩니다.',
 
-    // ===== 개념 설명 탭 =====
-    renderConcept(container) {
+    sidebarExpandable: true,
+
+    tabs: [{ id: 'concept', label: '학습하기' }],
+
+    problemMeta: {
+        'boj-1717':  { type: '기본 구현',         color: 'var(--accent)', vizMethod: '_renderVizBasicUF' },
+        'boj-1976':  { type: '연결 요소 판별',     color: 'var(--green)',  vizMethod: '_renderVizTravel' },
+        'lc-200':    { type: '격자 연결 요소',     color: '#e17055',       vizMethod: '_renderVizIslands' },
+        'boj-4195':  { type: '집합 크기 추적',     color: '#6c5ce7',       vizMethod: '_renderVizFriendNet' }
+    },
+
+    getProblemTabs: function(problemId) {
+        return [
+            { id: 'problem', label: '문제', icon: '📋' },
+            { id: 'think', label: '생각해볼것', icon: '💡' },
+            { id: 'sim', label: '시뮬레이션', icon: '🎮' },
+            { id: 'code', label: '코드', icon: '💻' }
+        ];
+    },
+
+    renderProblemContent: function(container, problemId, tabId) {
+        var self = this;
+        var prob = self.problems.find(function(p) { return p.id === problemId; });
+        if (!prob) { container.innerHTML = '<p>문제를 찾을 수 없습니다.</p>'; return; }
+        var meta = self.problemMeta[problemId];
+        if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
+        self._clearVizState();
+        var diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        var header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
+        header.innerHTML =
+            '<span style="padding:4px 12px;background:' + meta.color + '15;border-radius:8px;font-size:0.85rem;color:' + meta.color + ';font-weight:600;">' + meta.type + '</span>' +
+            '<span class="problem-diff ' + prob.difficulty + '">' + (diffMap[prob.difficulty] || '') + '</span>';
+        container.appendChild(header);
+        var flowMap = {
+            problem: { intro: '먼저 문제를 읽고 입출력 형식을 파악해보세요.', icon: '📋' },
+            think:   { intro: '바로 코드를 짜지 말고, 단계별 힌트를 열어보며 풀이 전략을 세워보세요.', icon: '💡' },
+            sim:     { intro: prob.simIntro || '유니온 파인드가 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            code:    { intro: '이제 앞에서 정리한 풀이를 코드로 옮겨봅시다!', icon: '💻' }
+        };
+        var ft = flowMap[tabId];
+        if (ft) {
+            var introDiv = document.createElement('div');
+            introDiv.className = 'flow-intro';
+            introDiv.innerHTML = '<span class="flow-intro-icon">' + ft.icon + '</span><span>' + ft.intro + '</span>';
+            container.appendChild(introDiv);
+        }
+        var contentDiv = document.createElement('div');
+        container.appendChild(contentDiv);
+        switch (tabId) {
+            case 'problem': self._renderProblemTab(contentDiv, prob); break;
+            case 'think':   self._renderThinkTab(contentDiv, prob); break;
+            case 'sim':     self[meta.vizMethod](contentDiv); break;
+            case 'code':    self._renderCodeTab(contentDiv, prob); break;
+        }
+        var tabOrder = ['problem', 'think', 'sim', 'code'];
+        var tabLabels = { problem: '문제', think: '생각해볼것', sim: '시뮬레이션', code: '코드' };
+        var ctaTexts = { problem: '문제를 이해했다면', think: '힌트를 모두 확인했다면', sim: '동작 원리를 파악했다면' };
+        var curIdx = tabOrder.indexOf(tabId);
+        if (curIdx >= 0 && curIdx < tabOrder.length - 1) {
+            var nextId = tabOrder[curIdx + 1];
+            var nextDiv = document.createElement('div');
+            nextDiv.className = 'flow-next';
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaTexts[tabId] + ' → ' + tabLabels[nextId] + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextId); });
+            container.appendChild(nextDiv);
+        }
+    },
+
+    _renderProblemTab: function(contentEl, prob) {
+        var isLC = prob.link.includes('leetcode');
+        contentEl.innerHTML =
+            prob.descriptionHTML +
+            '<div style="text-align:right;margin-top:1.2rem;">' +
+            '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
+            (isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗') + '</a></div>';
+        contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
+    },
+
+    _renderThinkTab: function(contentEl, prob) {
+        var guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
+        contentEl.appendChild(guide);
+        var hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+        var openedState = {};
+        prob.hints.forEach(function(hint, idx) {
+            var step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML =
+                '<div class="hint-step-header">' +
+                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
+                '<span class="hint-step-title">' + hint.title + '</span>' +
+                '<span class="hint-step-toggle">▶</span></div>' +
+                '<div class="hint-step-content">' + hint.content + '</div>';
+            step.querySelector('.hint-step-header').addEventListener('click', function() {
+                if (step.classList.contains('locked')) return;
+                step.classList.toggle('open');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
+                if (!openedState[idx]) {
+                    openedState[idx] = true;
+                    if (idx + 1 < prob.hints.length) {
+                        var nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+            });
+            hintsDiv.appendChild(step);
+        });
+        contentEl.appendChild(hintsDiv);
+    },
+
+    _renderCodeTab: function(contentEl, prob) {
+        if (window.renderSolutionsCodeTab) {
+            window.renderSolutionsCodeTab(contentEl, prob);
+        } else {
+            contentEl.innerHTML = '<p>코드 탭 로딩 중...</p>';
+        }
+    },
+
+    // ===== 개념 설명 렌더링 =====
+    renderConcept: function(container) {
         container.innerHTML = `
             <div class="hero">
                 <h2>🤝 유니온 파인드 (Union-Find)</h2>
@@ -230,100 +351,141 @@ print(mst_cost)</code></pre>
         this._initConceptInteractions(container);
     },
 
-    _initConceptInteractions(container) {
-        container.querySelectorAll('.think-box').forEach(box => {
-            const trigger = box.querySelector('.think-box-trigger');
-            const answer = box.querySelector('.think-box-answer');
-            if (trigger && answer) {
-                trigger.addEventListener('click', () => {
-                    answer.classList.toggle('show');
-                    trigger.textContent = answer.classList.contains('show') ? '🔼 접기' : '🤔 생각해보고 클릭!';
-                });
-            }
+    _initConceptInteractions: function(container) {
+        container.querySelectorAll('.think-box-trigger').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var ans = btn.nextElementSibling;
+                ans.classList.toggle('show');
+                btn.textContent = ans.classList.contains('show') ? '🔼 접기' : '🤔 생각해보고 클릭!';
+            });
         });
-        container.querySelectorAll('pre code').forEach(el => {
-            if (window.hljs) hljs.highlightElement(el);
-        });
+        container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
     },
 
-    // ===== 시각화 탭 =====
-    renderVisualize(container) {
-        this._clearVizState();
+    // ===== 시각화 상태 =====
+    _vizState: { steps: [], currentStep: -1, keydownHandler: null },
 
-        container.innerHTML = `
-            <div class="viz-card">
-                <h3>Union-Find 연산 시각화</h3>
-                <p style="color:var(--text2);margin-bottom:12px;">6개 노드(1~6)에서 union/find 연산을 단계별로 확인합니다.</p>
-                <div style="display:flex;gap:8px;margin-bottom:12px;">
-                    <button class="btn btn-primary" id="uf-start-btn">시각화 시작</button>
-                </div>
-                <div style="margin-bottom:12px;">
-                    <div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">parent 배열</div>
-                    <div id="uf-parent-display" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
-                </div>
-                <div style="margin-bottom:12px;">
-                    <div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">트리 구조</div>
-                    <div id="uf-tree-display" style="min-height:160px;background:var(--bg);border-radius:var(--radius);padding:12px;font-family:var(--font-mono, monospace);white-space:pre;line-height:1.6;font-size:0.92rem;"></div>
-                </div>
-                <div id="uf-info" style="padding:10px;background:var(--bg);border-radius:var(--radius);min-height:36px;text-align:center;"></div>
-                ${this._createStepControls()}
-            </div>
-            <div class="graph-legend" style="margin-top:12px;">
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 개별 노드</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--yellow-vivid, #f9a825);vertical-align:middle;"></span> 현재 처리 중</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--accent-vivid, #6c5ce7);border:2px solid var(--accent2, #a29bfe);vertical-align:middle;"></span> 합쳐진 집합</span>
-            </div>
-        `;
+    _clearVizState: function() {
+        var s = this._vizState;
+        if (s.keydownHandler) { document.removeEventListener('keydown', s.keydownHandler); s.keydownHandler = null; }
+        s.steps = []; s.currentStep = -1;
+    },
 
-        const self = this;
-        const parentDisplay = container.querySelector('#uf-parent-display');
-        const treeDisplay = container.querySelector('#uf-tree-display');
-        const infoEl = container.querySelector('#uf-info');
+    _createStepControls: function(suffix) {
+        return '<div class="viz-step-controls">' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
+    _initStepController: function(container, steps, suffix) {
+        var state = this._vizState;
+        state.steps = steps;
+        state.currentStep = -1;
+        var prevBtn = container.querySelector('#str-prev-' + suffix);
+        var nextBtn = container.querySelector('#str-next-' + suffix);
+        var indicator = container.querySelector('#str-indicator-' + suffix);
+        var desc = container.querySelector('#str-desc-' + suffix);
+        if (!prevBtn || !nextBtn) return;
+        function updateUI() {
+            var idx = state.currentStep, total = state.steps.length;
+            prevBtn.disabled = (idx < 0);
+            nextBtn.disabled = (idx >= total - 1);
+            if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+        }
+        nextBtn.addEventListener('click', function() {
+            if (state.currentStep >= state.steps.length - 1) return;
+            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
+        });
+        prevBtn.addEventListener('click', function() {
+            if (state.currentStep < 0) return;
+            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
+        });
+        var handleKey = function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
+        };
+        document.addEventListener('keydown', handleKey);
+        state.keydownHandler = handleKey;
+        updateUI();
+    },
+
+    // ===== 시각화 탭 (개념 시각화) =====
+    renderVisualize: function(container) {
+        var self = this;
+        self._clearVizState();
+        var suffix = 'concept-uf';
+
+        container.innerHTML =
+            '<div class="viz-card">' +
+            '<h3>Union-Find 연산 시각화</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">6개 노드(1~6)에서 union/find 연산을 단계별로 확인합니다.</p>' +
+            '<div style="margin-bottom:12px;">' +
+            '<div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">parent 배열</div>' +
+            '<div id="uf-parent-' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;"></div>' +
+            '</div>' +
+            '<div style="margin-bottom:12px;">' +
+            '<div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">트리 구조</div>' +
+            '<div id="uf-tree-' + suffix + '" style="min-height:160px;background:var(--bg);border-radius:var(--radius);padding:12px;font-family:var(--font-mono, monospace);white-space:pre;line-height:1.6;font-size:0.92rem;"></div>' +
+            '</div>' +
+            '<div id="uf-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:var(--radius);min-height:36px;text-align:center;"></div>' +
+            self._createStepControls(suffix) +
+            '</div>' +
+            '<div class="graph-legend" style="margin-top:12px;">' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 개별 노드</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--yellow-vivid, #f9a825);vertical-align:middle;"></span> 현재 처리 중</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--accent-vivid, #6c5ce7);border:2px solid var(--accent2, #a29bfe);vertical-align:middle;"></span> 합쳐진 집합</span>' +
+            '</div>';
+
+        var parentDisplay = container.querySelector('#uf-parent-' + suffix);
+        var treeDisplay = container.querySelector('#uf-tree-' + suffix);
+        var infoEl = container.querySelector('#uf-info-' + suffix);
 
         function renderParent(par, highlights) {
             highlights = highlights || {};
-            let html = '';
-            for (let i = 1; i <= 6; i++) {
-                let cls = 'str-char-box';
+            var html = '';
+            for (var i = 1; i <= 6; i++) {
+                var cls = 'str-char-box';
                 if (highlights[i] === 'active') cls += ' active';
                 else if (highlights[i] === 'changed') cls += ' highlight';
-                html += `<div class="${cls}" style="min-width:48px;text-align:center;">
-                    <div style="font-size:0.75rem;color:var(--text3);">p[${i}]</div>
-                    <div style="font-weight:700;font-size:1.05rem;">${par[i]}</div>
-                </div>`;
+                html += '<div class="' + cls + '" style="min-width:48px;text-align:center;">' +
+                    '<div style="font-size:0.75rem;color:var(--text3);">p[' + i + ']</div>' +
+                    '<div style="font-weight:700;font-size:1.05rem;">' + par[i] + '</div>' +
+                    '</div>';
             }
             parentDisplay.innerHTML = html;
         }
 
         function buildTreeText(par) {
-            // Build children map
-            const children = {};
-            const roots = [];
-            for (let i = 1; i <= 6; i++) children[i] = [];
-            for (let i = 1; i <= 6; i++) {
+            var children = {};
+            var roots = [];
+            for (var i = 1; i <= 6; i++) children[i] = [];
+            for (var i = 1; i <= 6; i++) {
                 if (par[i] === i) roots.push(i);
                 else children[par[i]].push(i);
             }
-
-            let text = '';
-            roots.forEach((root, ri) => {
+            var text = '';
+            for (var ri = 0; ri < roots.length; ri++) {
                 if (ri > 0) text += '\n';
-                text += renderNode(root, '', true);
-            });
+                text += renderNode(roots[ri], '', true);
+            }
             return text;
 
             function renderNode(node, prefix, isLast) {
-                let line = '';
+                var line = '';
                 if (prefix === '') {
-                    line = `[${node}] (루트)\n`;
+                    line = '[' + node + '] (루트)\n';
                 } else {
-                    line = prefix + (isLast ? '└── ' : '├── ') + `[${node}]\n`;
+                    line = prefix + (isLast ? '└── ' : '├── ') + '[' + node + ']\n';
                 }
-                const kids = children[node];
-                kids.forEach((child, ci) => {
-                    const childPrefix = prefix === '' ? '    ' : prefix + (isLast ? '    ' : '│   ');
-                    line += renderNode(child, childPrefix, ci === kids.length - 1);
-                });
+                var kids = children[node];
+                for (var ci = 0; ci < kids.length; ci++) {
+                    var childPrefix = prefix === '' ? '    ' : prefix + (isLast ? '    ' : '│   ');
+                    line += renderNode(kids[ci], childPrefix, ci === kids.length - 1);
+                }
                 return line;
             }
         }
@@ -333,1025 +495,506 @@ print(mst_cost)</code></pre>
         }
 
         // Initialize
-        const initPar = [0, 1, 2, 3, 4, 5, 6];
+        var initPar = [0, 1, 2, 3, 4, 5, 6];
         renderParent(initPar);
         renderTree(initPar);
-        infoEl.innerHTML = '<span style="color:var(--text2)">시작 버튼을 눌러 Union-Find 연산을 확인하세요.</span>';
+        infoEl.innerHTML = '<span style="color:var(--text2)">6개 노드가 각각 독립된 집합입니다. parent[i] = i</span>';
 
-        container.querySelector('#uf-start-btn').addEventListener('click', function() {
-            self._clearVizState();
+        var steps = [];
 
-            const steps = [];
-
-            // We'll track parent states for undo/action
-            // Operations: union(1,2), union(3,4), union(5,6), union(1,3), find(4), union(1,5)
-
-            // State 0: initial
-            const s0 = [0, 1, 2, 3, 4, 5, 6];
-            renderParent(s0);
-            renderTree(s0);
-            infoEl.innerHTML = '<span style="color:var(--text2)">6개 노드가 각각 독립된 집합입니다. parent[i] = i</span>';
-
-            // Step 1: union(1, 2) → parent[2] = 1
-            steps.push({
-                description: 'union(1, 2): 노드 1과 2를 합칩니다. parent[2] = 1',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 2, 3, 4, 5, 6];
-                    const par = [0, 1, 1, 3, 4, 5, 6];
-                    renderParent(par, {1: 'active', 2: 'changed'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(1, 2): 2의 부모를 1로 변경합니다. {1, 2}가 같은 집합이 됩니다.';
-                },
-                undo() {
-                    renderParent(this._prevPar);
-                    renderTree(this._prevPar);
-                    infoEl.innerHTML = '<span style="color:var(--text2)">6개 노드가 각각 독립된 집합입니다.</span>';
-                }
-            });
-
-            // Step 2: union(3, 4) → parent[4] = 3
-            steps.push({
-                description: 'union(3, 4): 노드 3과 4를 합칩니다. parent[4] = 3',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 1, 3, 4, 5, 6];
-                    const par = [0, 1, 1, 3, 3, 5, 6];
-                    renderParent(par, {3: 'active', 4: 'changed'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(3, 4): 4의 부모를 3으로 변경합니다. {3, 4}가 같은 집합이 됩니다.';
-                },
-                undo() {
-                    const par = [0, 1, 1, 3, 4, 5, 6];
-                    renderParent(par);
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(1, 2): 2의 부모를 1로 변경합니다. {1, 2}가 같은 집합이 됩니다.';
-                }
-            });
-
-            // Step 3: union(5, 6) → parent[6] = 5
-            steps.push({
-                description: 'union(5, 6): 노드 5와 6을 합칩니다. parent[6] = 5',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 1, 3, 3, 5, 6];
-                    const par = [0, 1, 1, 3, 3, 5, 5];
-                    renderParent(par, {5: 'active', 6: 'changed'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(5, 6): 6의 부모를 5로 변경합니다. {5, 6}이 같은 집합이 됩니다.';
-                },
-                undo() {
-                    const par = [0, 1, 1, 3, 3, 5, 6];
-                    renderParent(par);
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(3, 4): 4의 부모를 3으로 변경합니다. {3, 4}가 같은 집합이 됩니다.';
-                }
-            });
-
-            // Step 4: union(1, 3) → find(1)=1, find(3)=3, parent[3] = 1
-            steps.push({
-                description: 'union(1, 3): {1,2}와 {3,4}를 합칩니다. parent[3] = 1',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 1, 3, 3, 5, 5];
-                    const par = [0, 1, 1, 1, 3, 5, 5];
-                    renderParent(par, {1: 'active', 3: 'changed'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(1, 3): find(1)=1, find(3)=3. 3의 부모를 1로 변경합니다. {1, 2, 3, 4}가 같은 집합이 됩니다.';
-                },
-                undo() {
-                    const par = [0, 1, 1, 3, 3, 5, 5];
-                    renderParent(par);
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(5, 6): 6의 부모를 5로 변경합니다. {5, 6}이 같은 집합이 됩니다.';
-                }
-            });
-
-            // Step 5: find(4) → 4→3→1 (경로 압축: parent[4]=1)
-            steps.push({
-                description: 'find(4): 4→3→1 경로를 따라 루트 1을 찾습니다. 경로 압축으로 parent[4] = 1',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 1, 1, 3, 5, 5];
-                    const par = [0, 1, 1, 1, 1, 5, 5];
-                    renderParent(par, {4: 'changed', 1: 'active'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'find(4): 4→3→1 경로를 따라갑니다. <strong>경로 압축!</strong> parent[4]을 1로 직접 연결합니다. 다음 find(4)는 바로 1을 반환합니다.';
-                },
-                undo() {
-                    const par = [0, 1, 1, 1, 3, 5, 5];
-                    renderParent(par);
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(1, 3): find(1)=1, find(3)=3. 3의 부모를 1로 변경합니다. {1, 2, 3, 4}가 같은 집합이 됩니다.';
-                }
-            });
-
-            // Step 6: union(1, 5) → find(1)=1, find(5)=5, parent[5] = 1
-            steps.push({
-                description: 'union(1, 5): {1,2,3,4}와 {5,6}을 합칩니다. parent[5] = 1',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 1, 1, 1, 5, 5];
-                    const par = [0, 1, 1, 1, 1, 1, 5];
-                    renderParent(par, {1: 'active', 5: 'changed'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(1, 5): 5의 부모를 1로 변경합니다. 이제 <strong>모든 노드가 하나의 집합</strong>입니다!';
-                },
-                undo() {
-                    const par = [0, 1, 1, 1, 1, 5, 5];
-                    renderParent(par);
-                    renderTree(par);
-                    infoEl.innerHTML = 'find(4): 경로 압축으로 parent[4]을 1로 직접 연결합니다.';
-                }
-            });
-
-            // Final step
-            steps.push({
-                description: '완료! 모든 노드가 루트 1 아래 하나의 집합으로 합쳐졌습니다.',
-                _prevPar: null,
-                action() {
-                    this._prevPar = [0, 1, 1, 1, 1, 1, 5];
-                    const par = [0, 1, 1, 1, 1, 1, 5];
-                    renderParent(par);
-                    renderTree(par);
-                    infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.05rem;">✅ 완료! 6개 노드가 모두 하나의 집합으로 합쳐졌습니다. 대표는 1입니다.</strong>';
-                },
-                undo() {
-                    const par = [0, 1, 1, 1, 1, 1, 5];
-                    renderParent(par, {1: 'active', 5: 'changed'});
-                    renderTree(par);
-                    infoEl.innerHTML = 'union(1, 5): 5의 부모를 1로 변경합니다. 이제 모든 노드가 하나의 집합입니다!';
-                }
-            });
-
-            self._initStepController(container, steps);
-        });
-    },
-
-    // ===== 시각화 상태 관리 =====
-    _vizState: {
-        steps: [],
-        currentStep: -1,
-        keydownHandler: null
-    },
-
-    _clearVizState() {
-        const s = this._vizState;
-        if (s.keydownHandler) {
-            document.removeEventListener('keydown', s.keydownHandler);
-            s.keydownHandler = null;
-        }
-        s.steps = [];
-        s.currentStep = -1;
-    },
-
-    _createStepControls() {
-        return `
-            <div class="viz-step-controls">
-                <button class="btn viz-step-btn" id="viz-prev" disabled>&larr; 이전</button>
-                <span id="viz-step-counter" class="viz-step-counter">시작 전</span>
-                <button class="btn btn-primary viz-step-btn" id="viz-next">다음 &rarr;</button>
-            </div>
-            <div id="viz-step-desc" class="viz-step-desc">▶ 위의 버튼을 눌러 시작하세요</div>
-        `;
-    },
-
-    _initStepController(el, steps) {
-        const state = this._vizState;
-        state.steps = steps;
-        state.currentStep = -1;
-
-        const prevBtn = el.querySelector('#viz-prev');
-        const nextBtn = el.querySelector('#viz-next');
-        const counter = el.querySelector('#viz-step-counter');
-        const desc = el.querySelector('#viz-step-desc');
-
-        const updateUI = () => {
-            const idx = state.currentStep;
-            const total = state.steps.length;
-            prevBtn.disabled = (idx < 0);
-            nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) {
-                counter.textContent = '시작 전';
-                desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
-            } else {
-                counter.textContent = `Step ${idx + 1} / ${total}`;
-                desc.textContent = state.steps[idx].description;
+        // Step 1: union(1, 2)
+        steps.push({
+            description: 'union(1, 2): 노드 1과 2를 합칩니다. parent[2] = 1',
+            action: function() {
+                var par = [0, 1, 1, 3, 4, 5, 6];
+                renderParent(par, {1: 'active', 2: 'changed'});
+                renderTree(par);
+                infoEl.innerHTML = 'union(1, 2): 2의 부모를 1로 변경합니다. {1, 2}가 같은 집합이 됩니다.';
+            },
+            undo: function() {
+                var par = [0, 1, 2, 3, 4, 5, 6];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = '<span style="color:var(--text2)">6개 노드가 각각 독립된 집합입니다.</span>';
             }
-        };
-
-        nextBtn.addEventListener('click', () => {
-            if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++;
-            state.steps[state.currentStep].action();
-            updateUI();
         });
 
-        prevBtn.addEventListener('click', () => {
-            if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo();
-            state.currentStep--;
-            updateUI();
+        // Step 2: union(3, 4)
+        steps.push({
+            description: 'union(3, 4): 노드 3과 4를 합칩니다. parent[4] = 3',
+            action: function() {
+                var par = [0, 1, 1, 3, 3, 5, 6];
+                renderParent(par, {3: 'active', 4: 'changed'});
+                renderTree(par);
+                infoEl.innerHTML = 'union(3, 4): 4의 부모를 3으로 변경합니다. {3, 4}가 같은 집합이 됩니다.';
+            },
+            undo: function() {
+                var par = [0, 1, 1, 3, 4, 5, 6];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = 'union(1, 2): 2의 부모를 1로 변경합니다. {1, 2}가 같은 집합이 됩니다.';
+            }
         });
 
-        const handleKeydown = (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
-            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
-        };
-        document.addEventListener('keydown', handleKeydown);
-        state.keydownHandler = handleKeydown;
+        // Step 3: union(5, 6)
+        steps.push({
+            description: 'union(5, 6): 노드 5와 6을 합칩니다. parent[6] = 5',
+            action: function() {
+                var par = [0, 1, 1, 3, 3, 5, 5];
+                renderParent(par, {5: 'active', 6: 'changed'});
+                renderTree(par);
+                infoEl.innerHTML = 'union(5, 6): 6의 부모를 5로 변경합니다. {5, 6}이 같은 집합이 됩니다.';
+            },
+            undo: function() {
+                var par = [0, 1, 1, 3, 3, 5, 6];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = 'union(3, 4): 4의 부모를 3으로 변경합니다. {3, 4}가 같은 집합이 됩니다.';
+            }
+        });
 
-        updateUI();
+        // Step 4: union(1, 3)
+        steps.push({
+            description: 'union(1, 3): {1,2}와 {3,4}를 합칩니다. parent[3] = 1',
+            action: function() {
+                var par = [0, 1, 1, 1, 3, 5, 5];
+                renderParent(par, {1: 'active', 3: 'changed'});
+                renderTree(par);
+                infoEl.innerHTML = 'union(1, 3): find(1)=1, find(3)=3. 3의 부모를 1로 변경합니다. {1, 2, 3, 4}가 같은 집합이 됩니다.';
+            },
+            undo: function() {
+                var par = [0, 1, 1, 3, 3, 5, 5];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = 'union(5, 6): 6의 부모를 5로 변경합니다. {5, 6}이 같은 집합이 됩니다.';
+            }
+        });
+
+        // Step 5: find(4) with path compression
+        steps.push({
+            description: 'find(4): 4→3→1 경로를 따라 루트 1을 찾습니다. 경로 압축으로 parent[4] = 1',
+            action: function() {
+                var par = [0, 1, 1, 1, 1, 5, 5];
+                renderParent(par, {4: 'changed', 1: 'active'});
+                renderTree(par);
+                infoEl.innerHTML = 'find(4): 4→3→1 경로를 따라갑니다. <strong>경로 압축!</strong> parent[4]을 1로 직접 연결합니다.';
+            },
+            undo: function() {
+                var par = [0, 1, 1, 1, 3, 5, 5];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = 'union(1, 3): find(1)=1, find(3)=3. 3의 부모를 1로 변경합니다.';
+            }
+        });
+
+        // Step 6: union(1, 5)
+        steps.push({
+            description: 'union(1, 5): {1,2,3,4}와 {5,6}을 합칩니다. parent[5] = 1',
+            action: function() {
+                var par = [0, 1, 1, 1, 1, 1, 5];
+                renderParent(par, {1: 'active', 5: 'changed'});
+                renderTree(par);
+                infoEl.innerHTML = 'union(1, 5): 5의 부모를 1로 변경합니다. 이제 <strong>모든 노드가 하나의 집합</strong>입니다!';
+            },
+            undo: function() {
+                var par = [0, 1, 1, 1, 1, 5, 5];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = 'find(4): 경로 압축으로 parent[4]을 1로 직접 연결합니다.';
+            }
+        });
+
+        // Step 7: final
+        steps.push({
+            description: '완료! 모든 노드가 루트 1 아래 하나의 집합으로 합쳐졌습니다.',
+            action: function() {
+                var par = [0, 1, 1, 1, 1, 1, 5];
+                renderParent(par);
+                renderTree(par);
+                infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.05rem;">✅ 완료! 6개 노드가 모두 하나의 집합으로 합쳐졌습니다. 대표는 1입니다.</strong>';
+            },
+            undo: function() {
+                var par = [0, 1, 1, 1, 1, 1, 5];
+                renderParent(par, {1: 'active', 5: 'changed'});
+                renderTree(par);
+                infoEl.innerHTML = 'union(1, 5): 5의 부모를 1로 변경합니다. 이제 모든 노드가 하나의 집합입니다!';
+            }
+        });
+
+        self._initStepController(container, steps, suffix);
     },
 
-    // ===== 문제풀이 탭 =====
-    stages: [
-        {
-            num: 1,
-            title: '기본 유니온 파인드',
-            desc: '유니온 파인드의 기본 구현과 집합 판별 (Gold IV~V)',
-            problemIds: ['boj-1717', 'boj-1976']
-        },
-        {
-            num: 2,
-            title: '유니온 파인드 응용',
-            desc: '섬 개수, 네트워크 크기 등 응용 문제 (Medium~Gold)',
-            problemIds: ['lc-200', 'boj-4195']
+    // ====================================================================
+    // 시뮬레이션 1: 기본 유니온 파인드 (boj-1717)
+    // ====================================================================
+    _renderVizBasicUF: function(container) {
+        var self = this, suffix = '-uf1';
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">집합의 표현 — 기본 Union-Find</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">7개 노드(0~7)에서 union/find 연산을 수행합니다.</p>' +
+            '<div id="uf-par' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="uf-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var parEl = container.querySelector('#uf-par' + suffix);
+        var infoEl = container.querySelector('#uf-info' + suffix);
+        function renderPar(par, highlights) {
+            highlights = highlights || {};
+            var html = '';
+            for (var i = 0; i <= 7; i++) {
+                var cls = 'str-char-box';
+                if (highlights[i] === 'active') cls += ' active';
+                else if (highlights[i] === 'changed') cls += ' highlight';
+                html += '<div class="' + cls + '" style="min-width:44px;text-align:center;">' +
+                    '<div style="font-size:0.7rem;color:var(--text3);">p[' + i + ']</div>' +
+                    '<div style="font-weight:700;font-size:1rem;">' + par[i] + '</div></div>';
+            }
+            parEl.innerHTML = html;
         }
+        var p0 = [0,1,2,3,4,5,6,7];
+        renderPar(p0);
+        infoEl.innerHTML = '<span style="color:var(--text2);">8개 노드가 각각 독립된 집합입니다.</span>';
+        var steps = [
+            { description: 'union(1, 3): parent[3] = 1',
+              action: function() { var p=[0,1,2,1,4,5,6,7]; renderPar(p,{1:'active',3:'changed'}); infoEl.innerHTML='union(1,3): parent[3]=1. {1,3} 같은 집합.'; },
+              undo: function() { renderPar(p0); infoEl.innerHTML='<span style="color:var(--text2);">8개 노드가 각각 독립된 집합입니다.</span>'; }
+            },
+            { description: 'union(7, 6): parent[6] = 7',
+              action: function() { var p=[0,1,2,1,4,5,7,7]; renderPar(p,{7:'active',6:'changed'}); infoEl.innerHTML='union(7,6): parent[6]=7. {7,6} 같은 집합.'; },
+              undo: function() { var p=[0,1,2,1,4,5,6,7]; renderPar(p); infoEl.innerHTML='union(1,3): parent[3]=1. {1,3} 같은 집합.'; }
+            },
+            { description: 'union(3, 7): find(3)=1, find(7)=7 → parent[7]=1',
+              action: function() { var p=[0,1,2,1,4,5,7,1]; renderPar(p,{1:'active',7:'changed'}); infoEl.innerHTML='union(3,7): find(3)=1, find(7)=7. parent[7]=1. {1,3,7,6} 같은 집합.'; },
+              undo: function() { var p=[0,1,2,1,4,5,7,7]; renderPar(p); infoEl.innerHTML='union(7,6): parent[6]=7. {7,6} 같은 집합.'; }
+            },
+            { description: 'find(6): 6→7→1 경로 압축! parent[6]=1',
+              action: function() { var p=[0,1,2,1,4,5,1,1]; renderPar(p,{6:'changed',1:'active'}); infoEl.innerHTML='find(6): 6→7→1. <strong>경로 압축!</strong> parent[6]=1 직접 연결.'; },
+              undo: function() { var p=[0,1,2,1,4,5,7,1]; renderPar(p); infoEl.innerHTML='union(3,7): parent[7]=1. {1,3,7,6} 같은 집합.'; }
+            },
+            { description: 'find(1)==find(6)? → 1==1 → YES ✅',
+              action: function() { var p=[0,1,2,1,4,5,1,1]; renderPar(p,{1:'active',6:'active'}); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.05rem;">✅ find(1)=1, find(6)=1 → 같은 집합! YES</strong>'; },
+              undo: function() { var p=[0,1,2,1,4,5,1,1]; renderPar(p,{6:'changed',1:'active'}); infoEl.innerHTML='find(6): 경로 압축으로 parent[6]=1.'; }
+            }
+        ];
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 2: 여행 가자 (boj-1976)
+    // ====================================================================
+    _renderVizTravel: function(container) {
+        var self = this, suffix = '-travel';
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">여행 가자 — 연결 요소 판별</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">3개 도시, 여행경로 1→2→3. 연결: 1-2, 2-3</p>' +
+            '<div id="tv-par' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="tv-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var parEl = container.querySelector('#tv-par' + suffix);
+        var infoEl = container.querySelector('#tv-info' + suffix);
+        function renderPar(par, highlights) {
+            highlights = highlights || {};
+            var html = '';
+            for (var i = 1; i <= 3; i++) {
+                var cls = 'str-char-box';
+                if (highlights[i] === 'active') cls += ' active';
+                else if (highlights[i] === 'changed') cls += ' highlight';
+                html += '<div class="' + cls + '" style="min-width:56px;text-align:center;">' +
+                    '<div style="font-size:0.7rem;color:var(--text3);">p[' + i + ']</div>' +
+                    '<div style="font-weight:700;font-size:1.05rem;">' + par[i] + '</div></div>';
+            }
+            parEl.innerHTML = html;
+        }
+        var p0 = [0,1,2,3];
+        renderPar(p0);
+        infoEl.innerHTML = '<span style="color:var(--text2);">3개 도시를 각각 초기화합니다.</span>';
+        var steps = [
+            { description: '인접행렬: 1-2 연결 → union(1,2)',
+              action: function() { var p=[0,1,1,3]; renderPar(p,{1:'active',2:'changed'}); infoEl.innerHTML='union(1,2): parent[2]=1. 도시 1과 2가 연결됩니다.'; },
+              undo: function() { renderPar(p0); infoEl.innerHTML='<span style="color:var(--text2);">3개 도시를 각각 초기화합니다.</span>'; }
+            },
+            { description: '인접행렬: 2-3 연결 → union(2,3): find(2)=1, parent[3]=1',
+              action: function() { var p=[0,1,1,1]; renderPar(p,{1:'active',3:'changed'}); infoEl.innerHTML='union(2,3): find(2)=1, find(3)=3. parent[3]=1. 모든 도시가 연결!'; },
+              undo: function() { var p=[0,1,1,3]; renderPar(p); infoEl.innerHTML='union(1,2): parent[2]=1. 도시 1과 2가 연결됩니다.'; }
+            },
+            { description: '여행 경로 확인: find(1)=1, find(2)=1, find(3)=1',
+              action: function() { var p=[0,1,1,1]; renderPar(p,{1:'active',2:'active',3:'active'}); infoEl.innerHTML='모든 여행 도시의 대표가 <strong>1</strong>로 같습니다!'; },
+              undo: function() { var p=[0,1,1,1]; renderPar(p); infoEl.innerHTML='union(2,3): 모든 도시가 연결!'; }
+            },
+            { description: '결과: 모든 도시가 같은 집합 → YES ✅',
+              action: function() { var p=[0,1,1,1]; renderPar(p,{1:'active',2:'active',3:'active'}); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.05rem;">✅ 여행 가능! YES</strong>'; },
+              undo: function() { var p=[0,1,1,1]; renderPar(p,{1:'active',2:'active',3:'active'}); infoEl.innerHTML='모든 여행 도시의 대표가 1로 같습니다!'; }
+            }
+        ];
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 3: 섬의 개수 (lc-200)
+    // ====================================================================
+    _renderVizIslands: function(container) {
+        var self = this, suffix = '-island';
+        var grid = [
+            ['1','1','0','0'],
+            ['1','0','0','1'],
+            ['0','0','1','1']
+        ];
+        var R = 3, C = 4;
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">섬의 개수 — 격자 Union-Find</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">3x4 격자에서 인접한 \'1\' 칸을 union하여 섬 개수를 셉니다.</p>' +
+            '<div id="is-grid' + suffix + '" style="display:inline-grid;grid-template-columns:repeat(4,48px);gap:4px;margin-bottom:12px;"></div>' +
+            '<div id="is-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var gridEl = container.querySelector('#is-grid' + suffix);
+        var infoEl = container.querySelector('#is-info' + suffix);
+        function renderGrid(parent, highlights) {
+            highlights = highlights || {};
+            var colors = ['var(--accent)', 'var(--green)', '#e17055', '#fdcb6e', '#6c5ce7'];
+            // group roots to colors
+            var rootColor = {};
+            var ci = 0;
+            var html = '';
+            for (var r = 0; r < R; r++) {
+                for (var c = 0; c < C; c++) {
+                    var idx = r * C + c;
+                    var bg = 'var(--bg2)';
+                    var clr = 'var(--text3)';
+                    if (grid[r][c] === '1' && parent) {
+                        var root = findRoot(parent, idx);
+                        if (!(root in rootColor)) { rootColor[root] = colors[ci % colors.length]; ci++; }
+                        bg = rootColor[root] + '25';
+                        clr = rootColor[root];
+                        if (highlights[idx]) { bg = rootColor[root]; clr = 'white'; }
+                    }
+                    html += '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:700;font-size:0.95rem;background:' + bg + ';color:' + clr + ';border:2px solid ' + (highlights[idx] ? clr : 'transparent') + ';">' + grid[r][c] + '</div>';
+                }
+            }
+            gridEl.innerHTML = html;
+        }
+        function findRoot(par, x) {
+            while (par[x] !== x) x = par[x];
+            return x;
+        }
+        // Initial parent: each cell is own parent
+        var initPar = []; for (var i = 0; i < R*C; i++) initPar[i] = i;
+        renderGrid(null);
+        infoEl.innerHTML = '<span style="color:var(--text2);">\'1\' 칸 수 = 6 → 초기 섬 개수 = 6</span>';
+        var steps = [
+            { description: '초기: \'1\' 칸 6개. 각각 독립된 섬. count=6',
+              action: function() { renderGrid(initPar.slice()); infoEl.innerHTML = '각 \'1\' 칸이 독립적인 섬. <strong>count = 6</strong>'; },
+              undo: function() { renderGrid(null); infoEl.innerHTML = '<span style="color:var(--text2);">\'1\' 칸 수 = 6 → 초기 섬 개수 = 6</span>'; }
+            },
+            { description: 'union(0,1): (0,0)과 (0,1) 합침. count=5',
+              action: function() { var p=initPar.slice(); p[1]=0; renderGrid(p,{0:true,1:true}); infoEl.innerHTML='(0,0)↔(0,1) union! <strong>count = 5</strong>'; },
+              undo: function() { renderGrid(initPar.slice()); infoEl.innerHTML='각 \'1\' 칸이 독립적인 섬. count = 6'; }
+            },
+            { description: 'union(0,4): (0,0)과 (1,0) 합침. count=4',
+              action: function() { var p=initPar.slice(); p[1]=0; p[4]=0; renderGrid(p,{0:true,4:true}); infoEl.innerHTML='(0,0)↔(1,0) union! <strong>count = 4</strong>'; },
+              undo: function() { var p=initPar.slice(); p[1]=0; renderGrid(p); infoEl.innerHTML='(0,0)↔(0,1) union! count = 5'; }
+            },
+            { description: 'union(7,11): (1,3)과 (2,3) 합침. count=3',
+              action: function() { var p=initPar.slice(); p[1]=0; p[4]=0; p[11]=7; renderGrid(p,{7:true,11:true}); infoEl.innerHTML='(1,3)↔(2,3) union! <strong>count = 3</strong>'; },
+              undo: function() { var p=initPar.slice(); p[1]=0; p[4]=0; renderGrid(p); infoEl.innerHTML='(0,0)↔(1,0) union! count = 4'; }
+            },
+            { description: 'union(10,11): (2,2)와 (2,3) 합침. count=2. find(11)=7 → union(10,7)',
+              action: function() { var p=initPar.slice(); p[1]=0; p[4]=0; p[11]=7; p[10]=7; renderGrid(p,{10:true,11:true}); infoEl.innerHTML='(2,2)↔(2,3) union! <strong>count = 2</strong>'; },
+              undo: function() { var p=initPar.slice(); p[1]=0; p[4]=0; p[11]=7; renderGrid(p); infoEl.innerHTML='(1,3)↔(2,3) union! count = 3'; }
+            },
+            { description: '완료! 섬 2개: {(0,0),(0,1),(1,0)}과 {(1,3),(2,2),(2,3)}',
+              action: function() { var p=initPar.slice(); p[1]=0; p[4]=0; p[11]=7; p[10]=7; renderGrid(p); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.05rem;">✅ 정답: 섬 2개</strong>'; },
+              undo: function() { var p=initPar.slice(); p[1]=0; p[4]=0; p[11]=7; p[10]=7; renderGrid(p,{10:true,11:true}); infoEl.innerHTML='(2,2)↔(2,3) union! count = 2'; }
+            }
+        ];
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 4: 친구 네트워크 (boj-4195)
+    // ====================================================================
+    _renderVizFriendNet: function(container) {
+        var self = this, suffix = '-friend';
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">친구 네트워크 — 집합 크기 추적</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">이름→번호 매핑 + size 배열로 네트워크 크기를 추적합니다.</p>' +
+            '<div id="fn-names' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="fn-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+        var namesEl = container.querySelector('#fn-names' + suffix);
+        var infoEl = container.querySelector('#fn-info' + suffix);
+        var names = ['Fred', 'Barney', 'Betty', 'Wilma'];
+        function renderNames(par, sz, nameMap, highlights) {
+            highlights = highlights || {};
+            var html = '';
+            var keys = Object.keys(nameMap);
+            for (var k = 0; k < keys.length; k++) {
+                var name = keys[k];
+                var id = nameMap[name];
+                var cls = 'str-char-box';
+                if (highlights[id] === 'active') cls += ' active';
+                else if (highlights[id] === 'changed') cls += ' highlight';
+                html += '<div class="' + cls + '" style="min-width:70px;text-align:center;">' +
+                    '<div style="font-size:0.7rem;color:var(--text3);">' + name + '</div>' +
+                    '<div style="font-weight:700;font-size:1rem;">p=' + par[id] + ' s=' + sz[findR(par,id)] + '</div></div>';
+            }
+            namesEl.innerHTML = html;
+        }
+        function findR(par, x) { while (par[x] !== x) x = par[x]; return x; }
+        namesEl.innerHTML = '';
+        infoEl.innerHTML = '<span style="color:var(--text2);">친구 관계를 하나씩 추가합니다.</span>';
+        var steps = [
+            { description: 'Fred-Barney: union → 네트워크 크기 = 2',
+              action: function() { var nm={Fred:0,Barney:1}; var p=[0,0]; var s=[2,1]; renderNames(p,s,nm,{0:'active',1:'changed'}); infoEl.innerHTML='Fred↔Barney union! 네트워크 크기 = <strong>2</strong>'; },
+              undo: function() { namesEl.innerHTML=''; infoEl.innerHTML='<span style="color:var(--text2);">친구 관계를 하나씩 추가합니다.</span>'; }
+            },
+            { description: 'Barney-Betty: find(Barney)=Fred → union(Fred,Betty) → 크기 = 3',
+              action: function() { var nm={Fred:0,Barney:1,Betty:2}; var p=[0,0,0]; var s=[3,1,1]; renderNames(p,s,nm,{0:'active',2:'changed'}); infoEl.innerHTML='Barney↔Betty: find(Barney)=Fred. union(Fred,Betty). 크기 = <strong>3</strong>'; },
+              undo: function() { var nm={Fred:0,Barney:1}; var p=[0,0]; var s=[2,1]; renderNames(p,s,nm); infoEl.innerHTML='Fred↔Barney union! 네트워크 크기 = 2'; }
+            },
+            { description: 'Betty-Wilma: find(Betty)=Fred → union(Fred,Wilma) → 크기 = 4',
+              action: function() { var nm={Fred:0,Barney:1,Betty:2,Wilma:3}; var p=[0,0,0,0]; var s=[4,1,1,1]; renderNames(p,s,nm,{0:'active',3:'changed'}); infoEl.innerHTML='Betty↔Wilma: find(Betty)=Fred. union(Fred,Wilma). 크기 = <strong>4</strong>'; },
+              undo: function() { var nm={Fred:0,Barney:1,Betty:2}; var p=[0,0,0]; var s=[3,1,1]; renderNames(p,s,nm); infoEl.innerHTML='Barney↔Betty: 크기 = 3'; }
+            },
+            { description: '완료! 출력: 2, 3, 4',
+              action: function() { var nm={Fred:0,Barney:1,Betty:2,Wilma:3}; var p=[0,0,0,0]; var s=[4,1,1,1]; renderNames(p,s,nm); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.05rem;">✅ 출력: 2 → 3 → 4</strong>'; },
+              undo: function() { var nm={Fred:0,Barney:1,Betty:2,Wilma:3}; var p=[0,0,0,0]; var s=[4,1,1,1]; renderNames(p,s,nm,{0:'active',3:'changed'}); infoEl.innerHTML='Betty↔Wilma: 크기 = 4'; }
+            }
+        ];
+        self._initStepController(container, steps, suffix);
+    },
+
+    // ===== 문제 목록 =====
+    renderProblem: function(container) {},
+
+    stages: [
+        { num: 1, title: '기본 유니온 파인드', desc: '유니온 파인드의 기본 구현과 집합 판별 (Gold IV~V)', problemIds: ['boj-1717', 'boj-1976'] },
+        { num: 2, title: '유니온 파인드 응용', desc: '섬 개수, 네트워크 크기 등 응용 문제 (Medium~Gold)', problemIds: ['lc-200', 'boj-4195'] }
     ],
 
     problems: [
         // ===== 1단계: 기본 유니온 파인드 =====
         {
-            id: 'boj-1717',
-            title: 'BOJ 1717 - 집합의 표현',
-            difficulty: 'gold',
+            id: 'boj-1717', title: 'BOJ 1717 - 집합의 표현', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1717',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>초기에 n+1개의 집합 {0}, {1}, {2}, ..., {n}이 있습니다.
-                여기에 합집합 연산과, 두 원소가 같은 집합에 포함되어 있는지를 확인하는 연산을 수행합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>첫째 줄: n m (n&le;1,000,000, m&le;100,000)<br>
-                    이후 m줄: 0 a b (합집합) 또는 1 a b (같은 집합인지 확인)</p></div>
-                    <div><h4>출력</h4>
-                    <p>1로 시작하는 연산마다 같으면 YES, 다르면 NO를 출력합니다.</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>7 8\n0 1 3\n1 1 7\n0 7 6\n1 7 1\n0 3 7\n0 4 2\n0 1 1\n1 1 1</pre></div>
-                    <div><strong>출력</strong><pre>NO\nNO\nYES</pre></div>
-                </div></div>
-            `,
+            simIntro: '기본 Union-Find 연산(union, find)이 어떻게 동작하는지 확인하세요.',
+            descriptionHTML: '<h3>문제</h3><p>초기에 n+1개의 집합 {0}, {1}, {2}, ..., {n}이 있습니다. 여기에 합집합 연산과, 두 원소가 같은 집합에 포함되어 있는지를 확인하는 연산을 수행합니다.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: n m (n&le;1,000,000, m&le;100,000)<br>이후 m줄: 0 a b (합집합) 또는 1 a b (같은 집합인지 확인)</p></div><div><h4>출력</h4><p>1로 시작하는 연산마다 같으면 YES, 다르면 NO를 출력합니다.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>7 8\n0 1 3\n1 1 7\n0 7 6\n1 7 1\n0 3 7\n0 4 2\n0 1 1\n1 1 1</pre></div><div><strong>출력</strong><pre>NO\nNO\nYES</pre></div></div></div>',
             hints: [
-                {
-                    title: '어떤 자료구조를 쓸까?',
-                    content: '합집합(union)과 같은 집합 확인(find)을 빠르게 해야 합니다. 바로 <strong>유니온 파인드(Disjoint Set)</strong>입니다!'
-                },
-                {
-                    title: '핵심 아이디어',
-                    content: 'parent 배열을 만들고, <strong>경로 압축</strong>이 있는 find와 <strong>랭크 기반</strong> union을 구현합니다.<br>0이면 union(a, b), 1이면 find(a) == find(b) 여부를 출력합니다.'
-                },
-                {
-                    title: '주의할 점',
-                    content: 'n이 최대 1,000,000이므로 <strong>sys.stdin.readline</strong>과 <strong>sys.setrecursionlimit</strong>을 사용해야 합니다.<br>또는 재귀 대신 반복문으로 find를 구현합니다.'
-                }
+                { title: '어떤 자료구조를 쓸까?', content: '합집합(union)과 같은 집합 확인(find)을 빠르게 해야 합니다. 바로 <strong>유니온 파인드(Disjoint Set)</strong>입니다!' },
+                { title: '핵심 아이디어', content: 'parent 배열을 만들고, <strong>경로 압축</strong>이 있는 find와 <strong>랭크 기반</strong> union을 구현합니다.<br>0이면 union(a, b), 1이면 find(a) == find(b) 여부를 출력합니다.' },
+                { title: '주의할 점', content: 'n이 최대 1,000,000이므로 <strong>sys.stdin.readline</strong>과 <strong>sys.setrecursionlimit</strong>을 사용해야 합니다.<br>또는 재귀 대신 반복문으로 find를 구현합니다.' }
             ],
-            inputDefault: 0,
-            solve() { return 'NO\nNO\nYES'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-sys.setrecursionlimit(200000)
-
-def find(x):
-    if parent[x] != x:
-        parent[x] = find(parent[x])
-    return parent[x]
-
-def union(a, b):
-    a, b = find(a), find(b)
-    if a == b:
-        return
-    if rank[a] < rank[b]:
-        a, b = b, a
-    parent[b] = a
-    if rank[a] == rank[b]:
-        rank[a] += 1
-
-n, m = map(int, input().split())
-parent = list(range(n + 1))
-rank = [0] * (n + 1)
-
-for _ in range(m):
-    op, a, b = map(int, input().split())
-    if op == 0:
-        union(a, b)
-    else:
-        print("YES" if find(a) == find(b) else "NO")`,
-                cpp: `#include <bits/stdc++.h>
-using namespace std;
-
-int parent[1000001], rnk[1000001];
-
-int find(int x) {
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
-
-void unite(int a, int b) {
-    a = find(a); b = find(b);
-    if (a == b) return;
-    if (rnk[a] < rnk[b]) swap(a, b);
-    parent[b] = a;
-    if (rnk[a] == rnk[b]) rnk[a]++;
-}
-
-int main() {
-    int n, m;
-    scanf("%d %d", &n, &m);
-    for (int i = 0; i <= n; i++) {
-        parent[i] = i;
-        rnk[i] = 0;
-    }
-    while (m--) {
-        int op, a, b;
-        scanf("%d %d %d", &op, &a, &b);
-        if (op == 0) unite(a, b);
-        else printf("%s\\n", find(a) == find(b) ? "YES" : "NO");
-    }
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static int[] parent, rank;
-
-    static int find(int x) {
-        if (parent[x] != x)
-            parent[x] = find(parent[x]);
-        return parent[x];
-    }
-
-    static void union(int a, int b) {
-        a = find(a); b = find(b);
-        if (a == b) return;
-        if (rank[a] < rank[b]) { int t = a; a = b; b = t; }
-        parent[b] = a;
-        if (rank[a] == rank[b]) rank[a]++;
-    }
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        parent = new int[n + 1];
-        rank = new int[n + 1];
-        for (int i = 0; i <= n; i++) parent[i] = i;
-
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int op = Integer.parseInt(st.nextToken());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            if (op == 0) union(a, b);
-            else sb.append(find(a) == find(b) ? "YES" : "NO").append("\\n");
-        }
-        System.out.print(sb);
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\nsys.setrecursionlimit(200000)\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a == b:\n        return\n    if rank[a] < rank[b]:\n        a, b = b, a\n    parent[b] = a\n    if rank[a] == rank[b]:\n        rank[a] += 1\n\nn, m = map(int, input().split())\nparent = list(range(n + 1))\nrank = [0] * (n + 1)\n\nfor _ in range(m):\n    op, a, b = map(int, input().split())\n    if op == 0:\n        union(a, b)\n    else:\n        print("YES" if find(a) == find(b) else "NO")',
+                cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint parent[1000001], rnk[1000001];\n\nint find(int x) {\n    if (parent[x] != x)\n        parent[x] = find(parent[x]);\n    return parent[x];\n}\n\nvoid unite(int a, int b) {\n    a = find(a); b = find(b);\n    if (a == b) return;\n    if (rnk[a] < rnk[b]) swap(a, b);\n    parent[b] = a;\n    if (rnk[a] == rnk[b]) rnk[a]++;\n}\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    for (int i = 0; i <= n; i++) {\n        parent[i] = i;\n        rnk[i] = 0;\n    }\n    while (m--) {\n        int op, a, b;\n        scanf("%d %d %d", &op, &a, &b);\n        if (op == 0) unite(a, b);\n        else printf("%s\\n", find(a) == find(b) ? "YES" : "NO");\n    }\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int[] parent, rank;\n\n    static int find(int x) {\n        if (parent[x] != x)\n            parent[x] = find(parent[x]);\n        return parent[x];\n    }\n\n    static void union(int a, int b) {\n        a = find(a); b = find(b);\n        if (a == b) return;\n        if (rank[a] < rank[b]) { int t = a; a = b; b = t; }\n        parent[b] = a;\n        if (rank[a] == rank[b]) rank[a]++;\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int n = Integer.parseInt(st.nextToken());\n        int m = Integer.parseInt(st.nextToken());\n        parent = new int[n + 1];\n        rank = new int[n + 1];\n        for (int i = 0; i <= n; i++) parent[i] = i;\n\n        for (int i = 0; i < m; i++) {\n            st = new StringTokenizer(br.readLine());\n            int op = Integer.parseInt(st.nextToken());\n            int a = Integer.parseInt(st.nextToken());\n            int b = Integer.parseInt(st.nextToken());\n            if (op == 0) union(a, b);\n            else sb.append(find(a) == find(b) ? "YES" : "NO").append("\\n");\n        }\n        System.out.print(sb);\n    }\n}'
+            },
+            solutions: [{
+                approach: '경로 압축 + 랭크 기반 Union-Find',
+                description: 'parent 배열과 rank 배열로 union/find를 구현합니다.',
+                timeComplexity: 'O(m * α(n))',
+                spaceComplexity: 'O(n)',
+                codeSteps: {
+                    python: [
+                        { title: 'find/union 구현', code: 'import sys\ninput = sys.stdin.readline\nsys.setrecursionlimit(200000)\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a == b: return\n    if rank[a] < rank[b]: a, b = b, a\n    parent[b] = a\n    if rank[a] == rank[b]: rank[a] += 1' },
+                        { title: '초기화', code: 'n, m = map(int, input().split())\nparent = list(range(n + 1))\nrank = [0] * (n + 1)' },
+                        { title: '쿼리 처리', code: 'for _ in range(m):\n    op, a, b = map(int, input().split())\n    if op == 0:\n        union(a, b)\n    else:\n        print("YES" if find(a) == find(b) else "NO")' }
+                    ]
+                },
+                get templates() { return unionFindTopic.problems[0].templates; }
+            }]
         },
         {
-            id: 'boj-1976',
-            title: 'BOJ 1976 - 여행 가자',
-            difficulty: 'gold',
+            id: 'boj-1976', title: 'BOJ 1976 - 여행 가자', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1976',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>N개의 도시가 있고, 도시 간 연결 정보가 주어집니다.
-                M개의 도시를 순서대로 여행하려고 할 때, 여행이 가능한지 판단하세요.</p>
-                <p>연결된 도시 사이에는 어떤 경로로든 이동할 수 있습니다(직접 연결이 아니어도 됩니다).</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>첫째 줄: N (도시 수, &le;200)<br>
-                    둘째 줄: M (여행 도시 수, &le;1000)<br>
-                    이후 N줄: N×N 인접행렬 (1이면 연결)<br>
-                    마지막 줄: 여행할 M개 도시 번호</p></div>
-                    <div><h4>출력</h4>
-                    <p>여행 가능하면 YES, 불가능하면 NO</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>3\n3\n0 1 0\n1 0 1\n0 1 0\n1 2 3</pre></div>
-                    <div><strong>출력</strong><pre>YES</pre></div>
-                </div></div>
-            `,
+            simIntro: '인접행렬로 도시를 union한 뒤, 여행 경로를 확인하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>N개의 도시가 있고, 도시 간 연결 정보가 주어집니다. M개의 도시를 순서대로 여행하려고 할 때, 여행이 가능한지 판단하세요.</p><p>연결된 도시 사이에는 어떤 경로로든 이동할 수 있습니다(직접 연결이 아니어도 됩니다).</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: N (도시 수, &le;200)<br>둘째 줄: M (여행 도시 수, &le;1000)<br>이후 N줄: N&times;N 인접행렬 (1이면 연결)<br>마지막 줄: 여행할 M개 도시 번호</p></div><div><h4>출력</h4><p>여행 가능하면 YES, 불가능하면 NO</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>3\n3\n0 1 0\n1 0 1\n0 1 0\n1 2 3</pre></div><div><strong>출력</strong><pre>YES</pre></div></div></div>',
             hints: [
-                {
-                    title: '핵심 관찰',
-                    content: '여행 경로의 모든 도시가 <strong>같은 연결 요소</strong>에 있으면 여행이 가능합니다! 경로가 어떻든 연결만 되어 있으면 됩니다.'
-                },
-                {
-                    title: '어떤 자료구조를 쓸까?',
-                    content: '인접 행렬에서 연결된 도시 쌍을 모두 <strong>union</strong>합니다.<br>여행 도시들의 <strong>find</strong> 값이 모두 같으면 YES입니다.'
-                },
-                {
-                    title: '구현 순서',
-                    content: '① parent 배열 초기화<br>② 인접 행렬을 읽으며 1인 쌍을 union<br>③ 여행 도시를 읽고 모든 도시의 find 값이 같은지 확인'
-                }
+                { title: '핵심 관찰', content: '여행 경로의 모든 도시가 <strong>같은 연결 요소</strong>에 있으면 여행이 가능합니다! 경로가 어떻든 연결만 되어 있으면 됩니다.' },
+                { title: '어떤 자료구조를 쓸까?', content: '인접 행렬에서 연결된 도시 쌍을 모두 <strong>union</strong>합니다.<br>여행 도시들의 <strong>find</strong> 값이 모두 같으면 YES입니다.' },
+                { title: '구현 순서', content: '① parent 배열 초기화<br>② 인접 행렬을 읽으며 1인 쌍을 union<br>③ 여행 도시를 읽고 모든 도시의 find 값이 같은지 확인' }
             ],
-            inputDefault: 0,
-            solve() { return 'YES'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-def find(x):
-    if parent[x] != x:
-        parent[x] = find(parent[x])
-    return parent[x]
-
-def union(a, b):
-    a, b = find(a), find(b)
-    if a != b:
-        parent[b] = a
-
-N = int(input())
-M = int(input())
-parent = list(range(N + 1))
-
-for i in range(1, N + 1):
-    row = list(map(int, input().split()))
-    for j in range(N):
-        if row[j] == 1:
-            union(i, j + 1)
-
-cities = list(map(int, input().split()))
-root = find(cities[0])
-if all(find(c) == root for c in cities):
-    print("YES")
-else:
-    print("NO")`,
-                cpp: `#include <bits/stdc++.h>
-using namespace std;
-
-int parent[201];
-
-int find(int x) {
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
-
-void unite(int a, int b) {
-    a = find(a); b = find(b);
-    if (a != b) parent[b] = a;
-}
-
-int main() {
-    int N, M;
-    scanf("%d %d", &N, &M);
-    for (int i = 1; i <= N; i++) parent[i] = i;
-
-    for (int i = 1; i <= N; i++) {
-        for (int j = 1; j <= N; j++) {
-            int v;
-            scanf("%d", &v);
-            if (v == 1) unite(i, j);
-        }
-    }
-
-    int first, city;
-    scanf("%d", &first);
-    bool ok = true;
-    for (int i = 1; i < M; i++) {
-        scanf("%d", &city);
-        if (find(city) != find(first)) ok = false;
-    }
-    printf("%s\\n", ok ? "YES" : "NO");
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static int[] parent;
-
-    static int find(int x) {
-        if (parent[x] != x)
-            parent[x] = find(parent[x]);
-        return parent[x];
-    }
-
-    static void union(int a, int b) {
-        a = find(a); b = find(b);
-        if (a != b) parent[b] = a;
-    }
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-        int M = Integer.parseInt(br.readLine().trim());
-        parent = new int[N + 1];
-        for (int i = 1; i <= N; i++) parent[i] = i;
-
-        for (int i = 1; i <= N; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int j = 1; j <= N; j++) {
-                if (Integer.parseInt(st.nextToken()) == 1)
-                    union(i, j);
-            }
-        }
-
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int first = Integer.parseInt(st.nextToken());
-        boolean ok = true;
-        for (int i = 1; i < M; i++) {
-            int city = Integer.parseInt(st.nextToken());
-            if (find(city) != find(first)) ok = false;
-        }
-        System.out.println(ok ? "YES" : "NO");
-    }
-}`
-            }
+                python: 'import sys\ninput = sys.stdin.readline\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a != b:\n        parent[b] = a\n\nN = int(input())\nM = int(input())\nparent = list(range(N + 1))\n\nfor i in range(1, N + 1):\n    row = list(map(int, input().split()))\n    for j in range(N):\n        if row[j] == 1:\n            union(i, j + 1)\n\ncities = list(map(int, input().split()))\nroot = find(cities[0])\nif all(find(c) == root for c in cities):\n    print("YES")\nelse:\n    print("NO")',
+                cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint parent[201];\n\nint find(int x) {\n    if (parent[x] != x)\n        parent[x] = find(parent[x]);\n    return parent[x];\n}\n\nvoid unite(int a, int b) {\n    a = find(a); b = find(b);\n    if (a != b) parent[b] = a;\n}\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    for (int i = 1; i <= N; i++) parent[i] = i;\n\n    for (int i = 1; i <= N; i++) {\n        for (int j = 1; j <= N; j++) {\n            int v;\n            scanf("%d", &v);\n            if (v == 1) unite(i, j);\n        }\n    }\n\n    int first, city;\n    scanf("%d", &first);\n    bool ok = true;\n    for (int i = 1; i < M; i++) {\n        scanf("%d", &city);\n        if (find(city) != find(first)) ok = false;\n    }\n    printf("%s\\n", ok ? "YES" : "NO");\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int[] parent;\n\n    static int find(int x) {\n        if (parent[x] != x)\n            parent[x] = find(parent[x]);\n        return parent[x];\n    }\n\n    static void union(int a, int b) {\n        a = find(a); b = find(b);\n        if (a != b) parent[b] = a;\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n        int M = Integer.parseInt(br.readLine().trim());\n        parent = new int[N + 1];\n        for (int i = 1; i <= N; i++) parent[i] = i;\n\n        for (int i = 1; i <= N; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            for (int j = 1; j <= N; j++) {\n                if (Integer.parseInt(st.nextToken()) == 1)\n                    union(i, j);\n            }\n        }\n\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int first = Integer.parseInt(st.nextToken());\n        boolean ok = true;\n        for (int i = 1; i < M; i++) {\n            int city = Integer.parseInt(st.nextToken());\n            if (find(city) != find(first)) ok = false;\n        }\n        System.out.println(ok ? "YES" : "NO");\n    }\n}'
+            },
+            solutions: [{
+                approach: '인접행렬 + Union-Find',
+                description: '인접행렬에서 연결된 도시를 union하고, 여행 도시의 find 값이 모두 같은지 확인합니다.',
+                timeComplexity: 'O(N^2 * α(N))',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: 'find/union 구현', code: 'import sys\ninput = sys.stdin.readline\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a != b: parent[b] = a' },
+                        { title: '입력 및 인접행렬 union', code: 'N = int(input())\nM = int(input())\nparent = list(range(N + 1))\n\nfor i in range(1, N + 1):\n    row = list(map(int, input().split()))\n    for j in range(N):\n        if row[j] == 1: union(i, j + 1)' },
+                        { title: '여행 가능 여부 확인', code: 'cities = list(map(int, input().split()))\nroot = find(cities[0])\nif all(find(c) == root for c in cities):\n    print("YES")\nelse:\n    print("NO")' }
+                    ]
+                },
+                get templates() { return unionFindTopic.problems[1].templates; }
+            }]
         },
 
         // ===== 2단계: 유니온 파인드 응용 =====
         {
-            id: 'lc-200',
-            title: 'LeetCode 200 - Number of Islands',
-            difficulty: 'medium',
+            id: 'lc-200', title: 'LeetCode 200 - Number of Islands', difficulty: 'medium',
             link: 'https://leetcode.com/problems/number-of-islands/',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>2D 격자(grid)가 주어지고, '1'은 땅, '0'은 물입니다.
-                상하좌우로 연결된 '1'들이 하나의 섬(island)을 이룹니다.</p>
-                <p>격자에 있는 섬의 개수를 구하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>m x n 크기의 2D 격자 (grid[i][j]는 '0' 또는 '1')</p></div>
-                    <div><h4>출력</h4>
-                    <p>섬의 개수 (정수)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>[["1","1","0","0","0"],
- ["1","1","0","0","0"],
- ["0","0","1","0","0"],
- ["0","0","0","1","1"]]</pre></div>
-                    <div><strong>출력</strong><pre>3</pre></div>
-                </div></div>
-            `,
+            simIntro: '격자에서 인접한 땅을 union하여 섬 개수를 세는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>2D 격자(grid)가 주어지고, \'1\'은 땅, \'0\'은 물입니다. 상하좌우로 연결된 \'1\'들이 하나의 섬(island)을 이룹니다.</p><p>격자에 있는 섬의 개수를 구하세요.</p><div class="problem-io"><div><h4>입력</h4><p>m x n 크기의 2D 격자 (grid[i][j]는 \'0\' 또는 \'1\')</p></div><div><h4>출력</h4><p>섬의 개수 (정수)</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>[["1","1","0","0","0"],\n ["1","1","0","0","0"],\n ["0","0","1","0","0"],\n ["0","0","0","1","1"]]</pre></div><div><strong>출력</strong><pre>3</pre></div></div></div>',
             hints: [
-                {
-                    title: '접근 방법 선택',
-                    content: 'BFS/DFS로도 풀 수 있지만, <strong>유니온 파인드</strong>로도 풀 수 있습니다! 인접한 \'1\' 칸들을 union하고, 남은 집합 수 = 섬 개수입니다.'
-                },
-                {
-                    title: '유니온 파인드 풀이',
-                    content: '2D 좌표 (r, c)를 <code>r * cols + c</code>로 1D 인덱스로 변환합니다.<br>\'1\'인 칸을 순회하며, 오른쪽/아래 칸도 \'1\'이면 union합니다.'
-                },
-                {
-                    title: '섬 개수 세기',
-                    content: '모든 union이 끝난 후, \'1\'인 칸 중 <code>find(i) == i</code>인 칸의 수가 섬 개수입니다.<br>또는 초기 섬 수 = \'1\' 칸 수로 시작해서, union이 성공할 때마다 1씩 줄입니다.'
-                }
+                { title: '접근 방법 선택', content: 'BFS/DFS로도 풀 수 있지만, <strong>유니온 파인드</strong>로도 풀 수 있습니다! 인접한 \'1\' 칸들을 union하고, 남은 집합 수 = 섬 개수입니다.' },
+                { title: '유니온 파인드 풀이', content: '2D 좌표 (r, c)를 <code>r * cols + c</code>로 1D 인덱스로 변환합니다.<br>\'1\'인 칸을 순회하며, 오른쪽/아래 칸도 \'1\'이면 union합니다.' },
+                { title: '섬 개수 세기', content: '모든 union이 끝난 후, \'1\'인 칸 중 <code>find(i) == i</code>인 칸의 수가 섬 개수입니다.<br>또는 초기 섬 수 = \'1\' 칸 수로 시작해서, union이 성공할 때마다 1씩 줄입니다.' }
             ],
-            inputDefault: 0,
-            solve() { return '3'; },
             templates: {
-                python: `class Solution:
-    def numIslands(self, grid):
-        if not grid:
-            return 0
-        rows, cols = len(grid), len(grid[0])
-        parent = list(range(rows * cols))
-        rank = [0] * (rows * cols)
-
-        def find(x):
-            while parent[x] != x:
-                parent[x] = parent[parent[x]]
-                x = parent[x]
-            return x
-
-        def union(a, b):
-            a, b = find(a), find(b)
-            if a == b:
-                return False
-            if rank[a] < rank[b]:
-                a, b = b, a
-            parent[b] = a
-            if rank[a] == rank[b]:
-                rank[a] += 1
-            return True
-
-        count = sum(grid[r][c] == '1'
-                     for r in range(rows)
-                     for c in range(cols))
-
-        for r in range(rows):
-            for c in range(cols):
-                if grid[r][c] == '1':
-                    idx = r * cols + c
-                    for dr, dc in [(0, 1), (1, 0)]:
-                        nr, nc = r + dr, c + dc
-                        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == '1':
-                            if union(idx, nr * cols + nc):
-                                count -= 1
-        return count`,
-                cpp: `class Solution {
-public:
-    vector<int> parent, rnk;
-
-    int find(int x) {
-        while (parent[x] != x) {
-            parent[x] = parent[parent[x]];
-            x = parent[x];
-        }
-        return x;
-    }
-
-    bool unite(int a, int b) {
-        a = find(a); b = find(b);
-        if (a == b) return false;
-        if (rnk[a] < rnk[b]) swap(a, b);
-        parent[b] = a;
-        if (rnk[a] == rnk[b]) rnk[a]++;
-        return true;
-    }
-
-    int numIslands(vector<vector<char>>& grid) {
-        int rows = grid.size(), cols = grid[0].size();
-        parent.resize(rows * cols);
-        rnk.resize(rows * cols, 0);
-        iota(parent.begin(), parent.end(), 0);
-
-        int count = 0;
-        for (int r = 0; r < rows; r++)
-            for (int c = 0; c < cols; c++)
-                if (grid[r][c] == '1') count++;
-
-        int dr[] = {0, 1}, dc[] = {1, 0};
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (grid[r][c] == '1') {
-                    for (int d = 0; d < 2; d++) {
-                        int nr = r + dr[d], nc = c + dc[d];
-                        if (nr < rows && nc < cols && grid[nr][nc] == '1')
-                            if (unite(r * cols + c, nr * cols + nc))
-                                count--;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-};`,
-                java: `class Solution {
-    int[] parent, rank;
-
-    int find(int x) {
-        while (parent[x] != x) {
-            parent[x] = parent[parent[x]];
-            x = parent[x];
-        }
-        return x;
-    }
-
-    boolean union(int a, int b) {
-        a = find(a); b = find(b);
-        if (a == b) return false;
-        if (rank[a] < rank[b]) { int t = a; a = b; b = t; }
-        parent[b] = a;
-        if (rank[a] == rank[b]) rank[a]++;
-        return true;
-    }
-
-    public int numIslands(char[][] grid) {
-        int rows = grid.length, cols = grid[0].length;
-        parent = new int[rows * cols];
-        rank = new int[rows * cols];
-        for (int i = 0; i < rows * cols; i++) parent[i] = i;
-
-        int count = 0;
-        for (int r = 0; r < rows; r++)
-            for (int c = 0; c < cols; c++)
-                if (grid[r][c] == '1') count++;
-
-        int[] dr = {0, 1}, dc = {1, 0};
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (grid[r][c] == '1') {
-                    for (int d = 0; d < 2; d++) {
-                        int nr = r + dr[d], nc = c + dc[d];
-                        if (nr < rows && nc < cols && grid[nr][nc] == '1')
-                            if (union(r * cols + c, nr * cols + nc))
-                                count--;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-}`
-            }
+                python: 'class Solution:\n    def numIslands(self, grid):\n        if not grid:\n            return 0\n        rows, cols = len(grid), len(grid[0])\n        parent = list(range(rows * cols))\n        rank = [0] * (rows * cols)\n\n        def find(x):\n            while parent[x] != x:\n                parent[x] = parent[parent[x]]\n                x = parent[x]\n            return x\n\n        def union(a, b):\n            a, b = find(a), find(b)\n            if a == b:\n                return False\n            if rank[a] < rank[b]:\n                a, b = b, a\n            parent[b] = a\n            if rank[a] == rank[b]:\n                rank[a] += 1\n            return True\n\n        count = sum(grid[r][c] == \'1\'\n                     for r in range(rows)\n                     for c in range(cols))\n\n        for r in range(rows):\n            for c in range(cols):\n                if grid[r][c] == \'1\':\n                    idx = r * cols + c\n                    for dr, dc in [(0, 1), (1, 0)]:\n                        nr, nc = r + dr, c + dc\n                        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == \'1\':\n                            if union(idx, nr * cols + nc):\n                                count -= 1\n        return count',
+                cpp: 'class Solution {\npublic:\n    vector<int> parent, rnk;\n\n    int find(int x) {\n        while (parent[x] != x) {\n            parent[x] = parent[parent[x]];\n            x = parent[x];\n        }\n        return x;\n    }\n\n    bool unite(int a, int b) {\n        a = find(a); b = find(b);\n        if (a == b) return false;\n        if (rnk[a] < rnk[b]) swap(a, b);\n        parent[b] = a;\n        if (rnk[a] == rnk[b]) rnk[a]++;\n        return true;\n    }\n\n    int numIslands(vector<vector<char>>& grid) {\n        int rows = grid.size(), cols = grid[0].size();\n        parent.resize(rows * cols);\n        rnk.resize(rows * cols, 0);\n        iota(parent.begin(), parent.end(), 0);\n\n        int count = 0;\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++)\n                if (grid[r][c] == \'1\') count++;\n\n        int dr[] = {0, 1}, dc[] = {1, 0};\n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == \'1\') {\n                    for (int d = 0; d < 2; d++) {\n                        int nr = r + dr[d], nc = c + dc[d];\n                        if (nr < rows && nc < cols && grid[nr][nc] == \'1\')\n                            if (unite(r * cols + c, nr * cols + nc))\n                                count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n};',
+                java: 'class Solution {\n    int[] parent, rank;\n\n    int find(int x) {\n        while (parent[x] != x) {\n            parent[x] = parent[parent[x]];\n            x = parent[x];\n        }\n        return x;\n    }\n\n    boolean union(int a, int b) {\n        a = find(a); b = find(b);\n        if (a == b) return false;\n        if (rank[a] < rank[b]) { int t = a; a = b; b = t; }\n        parent[b] = a;\n        if (rank[a] == rank[b]) rank[a]++;\n        return true;\n    }\n\n    public int numIslands(char[][] grid) {\n        int rows = grid.length, cols = grid[0].length;\n        parent = new int[rows * cols];\n        rank = new int[rows * cols];\n        for (int i = 0; i < rows * cols; i++) parent[i] = i;\n\n        int count = 0;\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++)\n                if (grid[r][c] == \'1\') count++;\n\n        int[] dr = {0, 1}, dc = {1, 0};\n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == \'1\') {\n                    for (int d = 0; d < 2; d++) {\n                        int nr = r + dr[d], nc = c + dc[d];\n                        if (nr < rows && nc < cols && grid[nr][nc] == \'1\')\n                            if (union(r * cols + c, nr * cols + nc))\n                                count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n}'
+            },
+            solutions: [{
+                approach: 'Union-Find로 섬 세기',
+                description: '인접한 \'1\' 칸을 union하고, union 성공시 count를 줄여 섬 개수를 구합니다.',
+                timeComplexity: 'O(m * n * α(m*n))',
+                spaceComplexity: 'O(m * n)',
+                codeSteps: {
+                    python: [
+                        { title: 'find/union 구현', code: 'parent = list(range(rows * cols))\nrank = [0] * (rows * cols)\n\ndef find(x):\n    while parent[x] != x:\n        parent[x] = parent[parent[x]]\n        x = parent[x]\n    return x\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a == b: return False\n    if rank[a] < rank[b]: a, b = b, a\n    parent[b] = a\n    if rank[a] == rank[b]: rank[a] += 1\n    return True' },
+                        { title: '초기 섬 수 계산', code: 'count = sum(grid[r][c] == \'1\'\n             for r in range(rows)\n             for c in range(cols))' },
+                        { title: '인접 칸 union', code: 'for r in range(rows):\n    for c in range(cols):\n        if grid[r][c] == \'1\':\n            idx = r * cols + c\n            for dr, dc in [(0,1),(1,0)]:\n                nr, nc = r+dr, c+dc\n                if 0<=nr<rows and 0<=nc<cols and grid[nr][nc]==\'1\':\n                    if union(idx, nr*cols+nc):\n                        count -= 1\nreturn count' }
+                    ]
+                },
+                get templates() { return unionFindTopic.problems[2].templates; }
+            }]
         },
         {
-            id: 'boj-4195',
-            title: 'BOJ 4195 - 친구 네트워크',
-            difficulty: 'gold',
+            id: 'boj-4195', title: 'BOJ 4195 - 친구 네트워크', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/4195',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>소셜 네트워크에서 두 사람이 친구가 될 때마다, 두 사람이 속한 친구 네트워크의 크기를 출력합니다.</p>
-                <p>이름이 문자열로 주어지며, 친구의 친구도 같은 네트워크에 속합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4>
-                    <p>첫째 줄: T (테스트 케이스 수)<br>
-                    각 케이스: F (친구 관계 수, &le;100,000)<br>
-                    이후 F줄: 이름1 이름2 (두 사람이 친구가 됨)</p></div>
-                    <div><h4>출력</h4>
-                    <p>각 친구 관계마다, 두 사람이 속한 네트워크의 크기를 출력합니다.</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>2\n3\nFred Barney\nBarney Betty\nBetty Wilma\n3\nFred Barney\nBetty Wilma\nBarney Betty</pre></div>
-                    <div><strong>출력</strong><pre>2\n3\n4\n2\n2\n4</pre></div>
-                </div></div>
-            `,
+            simIntro: '이름→번호 매핑과 size 배열로 네트워크 크기를 추적하는 과정을 관찰하세요.',
+            descriptionHTML: '<h3>문제</h3><p>소셜 네트워크에서 두 사람이 친구가 될 때마다, 두 사람이 속한 친구 네트워크의 크기를 출력합니다.</p><p>이름이 문자열로 주어지며, 친구의 친구도 같은 네트워크에 속합니다.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: T (테스트 케이스 수)<br>각 케이스: F (친구 관계 수, &le;100,000)<br>이후 F줄: 이름1 이름2 (두 사람이 친구가 됨)</p></div><div><h4>출력</h4><p>각 친구 관계마다, 두 사람이 속한 네트워크의 크기를 출력합니다.</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>2\n3\nFred Barney\nBarney Betty\nBetty Wilma\n3\nFred Barney\nBetty Wilma\nBarney Betty</pre></div><div><strong>출력</strong><pre>2\n3\n4\n2\n2\n4</pre></div></div></div>',
             hints: [
-                {
-                    title: '이름 → 숫자 매핑',
-                    content: '문자열 이름을 <strong>딕셔너리(HashMap)</strong>로 숫자에 매핑합니다. 새로운 이름이 나올 때마다 번호를 부여합니다.'
-                },
-                {
-                    title: '집합 크기 추적',
-                    content: 'parent 배열 외에 <strong>size 배열</strong>을 추가합니다! 루트 노드에 해당 집합의 크기를 저장합니다.<br>union 시 size를 합칩니다.'
-                },
-                {
-                    title: '구현 순서',
-                    content: '① 이름→번호 매핑 (dict)<br>② union 시 size[루트] 갱신<br>③ union 후 find(a)의 size를 출력'
-                }
+                { title: '이름 → 숫자 매핑', content: '문자열 이름을 <strong>딕셔너리(HashMap)</strong>로 숫자에 매핑합니다. 새로운 이름이 나올 때마다 번호를 부여합니다.' },
+                { title: '집합 크기 추적', content: 'parent 배열 외에 <strong>size 배열</strong>을 추가합니다! 루트 노드에 해당 집합의 크기를 저장합니다.<br>union 시 size를 합칩니다.' },
+                { title: '구현 순서', content: '① 이름→번호 매핑 (dict)<br>② union 시 size[루트] 갱신<br>③ union 후 find(a)의 size를 출력' }
             ],
-            inputDefault: 0,
-            solve() { return '2\n3\n4\n2\n2\n4'; },
             templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-def find(x):
-    if parent[x] != x:
-        parent[x] = find(parent[x])
-    return parent[x]
-
-def union(a, b):
-    a, b = find(a), find(b)
-    if a != b:
-        if size[a] < size[b]:
-            a, b = b, a
-        parent[b] = a
-        size[a] += size[b]
-    return size[a]
-
-T = int(input())
-for _ in range(T):
-    F = int(input())
-    parent = {}
-    size = {}
-    name_to_id = {}
-    idx = 0
-
-    for _ in range(F):
-        a, b = input().split()
-        if a not in name_to_id:
-            name_to_id[a] = idx
-            parent[idx] = idx
-            size[idx] = 1
-            idx += 1
-        if b not in name_to_id:
-            name_to_id[b] = idx
-            parent[idx] = idx
-            size[idx] = 1
-            idx += 1
-        print(union(name_to_id[a], name_to_id[b]))`,
-                cpp: `#include <bits/stdc++.h>
-using namespace std;
-
-int parent[200001], sz[200001];
-
-int find(int x) {
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
-
-int unite(int a, int b) {
-    a = find(a); b = find(b);
-    if (a != b) {
-        if (sz[a] < sz[b]) swap(a, b);
-        parent[b] = a;
-        sz[a] += sz[b];
-    }
-    return sz[a];
-}
-
-int main() {
-    int T;
-    scanf("%d", &T);
-    while (T--) {
-        int F;
-        scanf("%d", &F);
-        unordered_map<string, int> nameToId;
-        int idx = 0;
-        char a[21], b[21];
-
-        for (int i = 0; i < F; i++) {
-            scanf("%s %s", a, b);
-            string sa(a), sb(b);
-            if (nameToId.find(sa) == nameToId.end()) {
-                nameToId[sa] = idx;
-                parent[idx] = idx;
-                sz[idx] = 1;
-                idx++;
-            }
-            if (nameToId.find(sb) == nameToId.end()) {
-                nameToId[sb] = idx;
-                parent[idx] = idx;
-                sz[idx] = 1;
-                idx++;
-            }
-            printf("%d\\n", unite(nameToId[sa], nameToId[sb]));
+                python: 'import sys\ninput = sys.stdin.readline\n\ndef find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a != b:\n        if size[a] < size[b]:\n            a, b = b, a\n        parent[b] = a\n        size[a] += size[b]\n    return size[a]\n\nT = int(input())\nfor _ in range(T):\n    F = int(input())\n    parent = {}\n    size = {}\n    name_to_id = {}\n    idx = 0\n\n    for _ in range(F):\n        a, b = input().split()\n        if a not in name_to_id:\n            name_to_id[a] = idx\n            parent[idx] = idx\n            size[idx] = 1\n            idx += 1\n        if b not in name_to_id:\n            name_to_id[b] = idx\n            parent[idx] = idx\n            size[idx] = 1\n            idx += 1\n        print(union(name_to_id[a], name_to_id[b]))',
+                cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint parent[200001], sz[200001];\n\nint find(int x) {\n    if (parent[x] != x)\n        parent[x] = find(parent[x]);\n    return parent[x];\n}\n\nint unite(int a, int b) {\n    a = find(a); b = find(b);\n    if (a != b) {\n        if (sz[a] < sz[b]) swap(a, b);\n        parent[b] = a;\n        sz[a] += sz[b];\n    }\n    return sz[a];\n}\n\nint main() {\n    int T;\n    scanf("%d", &T);\n    while (T--) {\n        int F;\n        scanf("%d", &F);\n        unordered_map<string, int> nameToId;\n        int idx = 0;\n        char a[21], b[21];\n\n        for (int i = 0; i < F; i++) {\n            scanf("%s %s", a, b);\n            string sa(a), sb(b);\n            if (nameToId.find(sa) == nameToId.end()) {\n                nameToId[sa] = idx;\n                parent[idx] = idx;\n                sz[idx] = 1;\n                idx++;\n            }\n            if (nameToId.find(sb) == nameToId.end()) {\n                nameToId[sb] = idx;\n                parent[idx] = idx;\n                sz[idx] = 1;\n                idx++;\n            }\n            printf("%d\\n", unite(nameToId[sa], nameToId[sb]));\n        }\n    }\n    return 0;\n}',
+                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    static int[] parent, size;\n\n    static int find(int x) {\n        if (parent[x] != x)\n            parent[x] = find(parent[x]);\n        return parent[x];\n    }\n\n    static int union(int a, int b) {\n        a = find(a); b = find(b);\n        if (a != b) {\n            if (size[a] < size[b]) { int t = a; a = b; b = t; }\n            parent[b] = a;\n            size[a] += size[b];\n        }\n        return size[a];\n    }\n\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n\n        while (T-- > 0) {\n            int F = Integer.parseInt(br.readLine().trim());\n            parent = new int[F * 2];\n            size = new int[F * 2];\n            Map<String, Integer> nameToId = new HashMap<>();\n            int idx = 0;\n\n            for (int i = 0; i < F; i++) {\n                StringTokenizer st = new StringTokenizer(br.readLine());\n                String a = st.nextToken(), b = st.nextToken();\n                if (!nameToId.containsKey(a)) {\n                    nameToId.put(a, idx);\n                    parent[idx] = idx;\n                    size[idx] = 1;\n                    idx++;\n                }\n                if (!nameToId.containsKey(b)) {\n                    nameToId.put(b, idx);\n                    parent[idx] = idx;\n                    size[idx] = 1;\n                    idx++;\n                }\n                sb.append(union(nameToId.get(a), nameToId.get(b))).append("\\n");\n            }\n        }\n        System.out.print(sb);\n    }\n}'
+            },
+            solutions: [{
+                approach: '이름 매핑 + size 추적 Union-Find',
+                description: '이름→번호 매핑 후 union 시 size 배열을 갱신하여 네트워크 크기를 출력합니다.',
+                timeComplexity: 'O(F * α(F))',
+                spaceComplexity: 'O(F)',
+                codeSteps: {
+                    python: [
+                        { title: 'find/union with size', code: 'def find(x):\n    if parent[x] != x:\n        parent[x] = find(parent[x])\n    return parent[x]\n\ndef union(a, b):\n    a, b = find(a), find(b)\n    if a != b:\n        if size[a] < size[b]: a, b = b, a\n        parent[b] = a\n        size[a] += size[b]\n    return size[a]' },
+                        { title: '이름→번호 매핑', code: 'name_to_id = {}\nidx = 0\nfor name in [a, b]:\n    if name not in name_to_id:\n        name_to_id[name] = idx\n        parent[idx] = idx\n        size[idx] = 1\n        idx += 1' },
+                        { title: 'union 후 크기 출력', code: 'print(union(name_to_id[a], name_to_id[b]))' }
+                    ]
+                },
+                get templates() { return unionFindTopic.problems[3].templates; }
+            }]
         }
-    }
-    return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static int[] parent, size;
-
-    static int find(int x) {
-        if (parent[x] != x)
-            parent[x] = find(parent[x]);
-        return parent[x];
-    }
-
-    static int union(int a, int b) {
-        a = find(a); b = find(b);
-        if (a != b) {
-            if (size[a] < size[b]) { int t = a; a = b; b = t; }
-            parent[b] = a;
-            size[a] += size[b];
-        }
-        return size[a];
-    }
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        int T = Integer.parseInt(br.readLine().trim());
-
-        while (T-- > 0) {
-            int F = Integer.parseInt(br.readLine().trim());
-            parent = new int[F * 2];
-            size = new int[F * 2];
-            Map<String, Integer> nameToId = new HashMap<>();
-            int idx = 0;
-
-            for (int i = 0; i < F; i++) {
-                StringTokenizer st = new StringTokenizer(br.readLine());
-                String a = st.nextToken(), b = st.nextToken();
-                if (!nameToId.containsKey(a)) {
-                    nameToId.put(a, idx);
-                    parent[idx] = idx;
-                    size[idx] = 1;
-                    idx++;
-                }
-                if (!nameToId.containsKey(b)) {
-                    nameToId.put(b, idx);
-                    parent[idx] = idx;
-                    size[idx] = 1;
-                    idx++;
-                }
-                sb.append(union(nameToId.get(a), nameToId.get(b))).append("\\n");
-            }
-        }
-        System.out.print(sb);
-    }
-}`
-            }
-        }
-    ],
-
-    // ===== 문제 목록 렌더링 =====
-    renderProblem(container) {
-        container.innerHTML = '';
-        const stageList = document.createElement('div');
-        stageList.className = 'problem-stages';
-
-        this.stages.forEach(stage => {
-            const stageCard = document.createElement('div');
-            stageCard.className = 'stage-card';
-            stageCard.innerHTML = `
-                <div class="stage-header">
-                    <span class="stage-num">단계 ${stage.num}</span>
-                    <h3>${stage.title}</h3>
-                    <p>${stage.desc}</p>
-                </div>
-                <div class="stage-problems"></div>
-            `;
-            const problemsDiv = stageCard.querySelector('.stage-problems');
-            stage.problemIds.forEach(pid => {
-                const prob = this.problems.find(p => p.id === pid);
-                if (!prob) return;
-                const diffMap = {gold:'Gold',silver:'Silver',platinum:'Platinum',easy:'Easy',medium:'Medium',hard:'Hard'};
-                const btn = document.createElement('button');
-                btn.className = 'problem-card ' + prob.difficulty;
-                btn.innerHTML = `<span class="problem-title">${prob.title}</span><span class="problem-diff">${diffMap[prob.difficulty] || prob.difficulty}</span>`;
-                btn.addEventListener('click', () => this._renderProblemDetail(container, prob));
-                problemsDiv.appendChild(btn);
-            });
-            stageList.appendChild(stageCard);
-        });
-
-        container.appendChild(stageList);
-    },
-
-    // ===== 문제 상세 렌더링 =====
-    _renderProblemDetail(container, problem) {
-        container.innerHTML = '';
-        const backBtn = document.createElement('button');
-        backBtn.className = 'btn'; backBtn.textContent = '← 문제 목록으로';
-        backBtn.addEventListener('click', () => this.renderProblem(container));
-        container.appendChild(backBtn);
-
-        const isLC = problem.link.includes('leetcode');
-        const descDiv = document.createElement('div');
-        descDiv.className = 'problem-detail';
-        descDiv.innerHTML = `<div class="problem-meta"><a href="${problem.link}" target="_blank" class="btn btn-primary">${isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}</a></div>${problem.descriptionHTML}`;
-        container.appendChild(descDiv);
-
-        const hintsSection = document.createElement('div');
-        hintsSection.className = 'hints-section';
-        hintsSection.innerHTML = '<h3>단계별 힌트</h3>';
-        const hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hints-steps';
-        const openedState = {};
-
-        problem.hints.forEach((hint, idx) => {
-            const step = document.createElement('div');
-            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
-            step.innerHTML = `<div class="hint-step-header"><span class="hint-step-num">${idx + 1}</span><span class="hint-step-title">${hint.title}</span><span class="hint-step-toggle">▶</span></div><div class="hint-step-content">${hint.content}</div>`;
-            step.querySelector('.hint-step-header').addEventListener('click', () => {
-                if (step.classList.contains('locked')) return;
-                step.classList.toggle('open');
-                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
-                if (!openedState[idx]) { openedState[idx] = true; if (idx + 1 < problem.hints.length) { const ns = hintsDiv.children[idx + 1]; if (ns) ns.classList.remove('locked'); } }
-            });
-            hintsDiv.appendChild(step);
-        });
-        hintsSection.appendChild(hintsDiv);
-        container.appendChild(hintsSection);
-
-        const solveArea = document.createElement('div');
-        solveArea.className = 'solve-area';
-        solveArea.innerHTML = `
-            <div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option><option value="java">Java</option></select></div>
-            <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
-            <div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ 실행</button><button id="check-btn" class="btn btn-success">✓ 정답 확인</button></div>
-            <div id="output-area" class="output-area"><div class="output-label">실행 결과</div><pre id="output-text"></pre></div>
-        `;
-        container.appendChild(solveArea);
-
-        container.querySelectorAll('pre code').forEach(codeEl => { if (window.hljs) hljs.highlightElement(codeEl); });
-
-        const editor = container.querySelector('#code-editor');
-        const langSelect = container.querySelector('#lang-select');
-        editor.value = problem.templates.python;
-        langSelect.addEventListener('change', () => { editor.value = problem.templates[langSelect.value]; });
-        editor.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') { e.preventDefault(); const s = editor.selectionStart; editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(editor.selectionEnd); editor.selectionStart = editor.selectionEnd = s + 4; }
-        });
-
-        const site = isLC ? 'LeetCode' : 'BOJ';
-        container.querySelector('#run-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
-        });
-        container.querySelector('#check-btn').addEventListener('click', () => {
-            const expected = problem.solve(problem.inputDefault);
-            this._showOutput(container, `예상 정답:\n${expected}\n\n💡 코드를 ${site}에 제출하여 정답을 확인하세요!`);
-        });
-    },
-
-    _showOutput(container, text, status) {
-        const area = container.querySelector('#output-area');
-        area.querySelector('#output-text').textContent = text;
-        area.className = 'output-area' + (status ? ' ' + status : '');
-    }
+    ]
 };
 
 // 모듈 등록
