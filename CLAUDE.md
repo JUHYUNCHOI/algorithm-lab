@@ -93,8 +93,31 @@
 
 ## 10. 시뮬레이션 레이아웃
 
+### 전체 구조 — desc → sim-card → controls
+
+시뮬레이션 영역은 아래 순서로 배치한다 (위에서 아래):
+1. **`viz-step-desc`** — 현재 스텝 설명 (시각화 **위**에 배치, 분할주의 효과 방지)
+2. **`sim-card`** — 시각화 메인 영역 (카드 컨테이너)
+3. **`viz-step-controls`** — 이전/다음 버튼 (sticky, 하단 고정)
+
+```
+container.innerHTML = self._createStepDesc(suffix) + vizHTML + self._createStepControls(suffix);
+```
+
+### sim-card (시각화 카드 컨테이너)
+
+- **클래스**: `.sim-card` — 시각화 콘텐츠를 감싸는 카드
+- **비율**: 가로 대비 세로가 납작하면 불편 → **min-height: max(320px, 40vh)** 로 뷰포트 반응형
+  - 작은 창(800px) → 320px, 큰 창(1080px) → 432px
+  - 편안한 카드 비율: **2.5:1 ~ 3:1** (16:9 ~ 3:2 사이)
+- **내부 정렬**: `display: flex; align-items: center; justify-content: center` → 콘텐츠 중앙 배치
+- **패딩**: `2.5rem 3rem` — 좌우/상하 여유 충분히
+- **스타일**: `background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--radius)`
+
+### 간격과 여백
+
 - **간격과 여백을 충분히** — 요소끼리 붙어있으면 복잡해 보인다.
-  - 시뮬 영역 내부 padding: 최소 1.5rem
+  - sim-card 내부 padding: 최소 2.5rem
   - 요소 간 gap: 최소 12px
   - 설명 텍스트와 시각화 사이: 최소 1rem
 - **색 구분을 확실히** — 현재 확인 중(노랑), 정답/매칭(초록), 실패/제거(빨강), 기본(보라/회색)
@@ -138,16 +161,22 @@ app.js             — 라우팅, 랜딩 페이지, 탭 전환
 
 ### 시뮬레이션 스텝 컨트롤 (통일 패턴)
 
-모든 토픽의 시뮬레이션은 아래 패턴을 따른다. (참고: `hashtable.js`, `stackqueue.js`)
+**적용 완료**: `string.js`, `array.js`, `hashtable.js`, `stackqueue.js` — 4개 토픽 전체 시뮬레이션에 적용됨.
 
-**HTML 생성** — `_createStepControls(suffix)`:
+**HTML 생성** — `_createStepDesc(suffix)` + `_createStepControls(suffix)` (분리):
 ```html
+<!-- _createStepDesc: 시각화 위에 배치 -->
+<div id="viz-step-desc{suffix}" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>
+
+<!-- sim-card: 시각화 메인 영역 -->
+<div class="sim-card">...</div>
+
+<!-- _createStepControls: 시각화 아래에 배치 -->
 <div class="viz-step-controls">
   <button class="btn viz-step-btn" id="viz-prev{suffix}">← 이전</button>
   <span class="viz-step-counter" id="viz-step-counter{suffix}">시작 전</span>
   <button class="btn btn-primary viz-step-btn" id="viz-next{suffix}">다음 →</button>
 </div>
-<div class="viz-step-desc" id="viz-step-desc{suffix}">▶ 위의 버튼을 눌러 시작하세요</div>
 ```
 
 **스텝 객체 구조**:
@@ -165,14 +194,20 @@ app.js             — 라우팅, 랜딩 페이지, 탭 전환
 - 키보드: `→` / `Space` = 다음, `←` = 이전
 
 **CSS 클래스** (style.css에 정의됨):
+- `.sim-card` — 시각화 카드 컨테이너 (`min-height: max(320px, 40vh)`, flex 중앙 정렬, `var(--bg2)` 배경)
 - `.viz-step-controls` — `position: sticky; bottom: 12px` (콘텐츠 안에 위치, ~~`position: fixed` 사용 금지~~)
-- `.viz-step-btn` — 이전/다음 버튼 스타일
-- `.viz-step-counter` — "Step 1 / 12" 카운터 (accent 색상, bold)
-- `.viz-step-desc` — 💬 설명 영역 (연한 보라 배경 + 왼쪽 보더, 겸손한 스타일)
+- `.viz-step-btn` — 이전/다음 버튼 스타일 (컴팩트: font-size 0.82rem, min-width 72px)
+- `.viz-step-counter` — "Step 1 / 12" 카운터 (accent 색상, bold, font-size 0.85rem)
+- `.viz-step-desc` — 설명 영역 (연한 보라 배경 + 왼쪽 보더, 시각화 **위**에 배치)
+
+**파일별 구현 차이**:
+- `stackqueue.js` / `hashtable.js` — id 기반 셀렉터 (`#viz-prev-cd`, `#viz-step-desc-cd` 등)
+- `array.js` — data-attribute 기반 셀렉터 (`data-step-group`, `data-role`), 기존 카드 래퍼에 `class="sim-card"` + `style="overflow:hidden;padding:0;"` 추가
+- `string.js` — id 기반, `_initLocalStepController` 사용 (파일 전용 로컬 스텝 컨트롤러)
 
 **⚠️ 디자인 원칙 — 주인공은 시각화**:
 - 컨트롤/설명은 **보조 역할** → 메인 시각화보다 눈에 띄면 안 됨
 - 컨트롤 바: 컴팩트하게 (버튼 작게, 패딩 최소)
-- 설명 영역: 연한 배경 + 왼쪽 보더 (~~진한 보라 배경에 흰 글씨 금지~~)
-- `position: fixed; bottom: 0`으로 컨트롤을 화면 하단에 고정하지 않는다 (안 보임)
-- 인라인 desc 요소를 따로 만들지 않는다 → `viz-step-desc`에 통합
+- 설명 영역: 연한 배경 + 왼쪽 보더 (진한 보라 배경에 흰 글씨 금지)
+- `position: fixed; bottom: 0` 사용 금지 — sticky로 콘텐츠 안에 배치
+- desc와 controls는 반드시 **별도 메서드**(`_createStepDesc`, `_createStepControls`)로 분리

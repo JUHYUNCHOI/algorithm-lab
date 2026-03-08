@@ -412,19 +412,20 @@ class HashTable:
                 <h2>해시 테이블 삽입 시각화</h2>
                 <p class="hero-sub">키를 해시 함수로 변환하여 테이블에 넣는 과정을 봅시다.</p>
             </div>
-            <button class="btn btn-primary" id="ht-start">삽입 시작</button>
-
-            <div style="display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:200px;">
-                    <div style="font-weight:700;margin-bottom:8px;">해시 테이블 (크기 ${TABLE_SIZE})</div>
-                    <div id="ht-table" style="display:flex;flex-direction:column;gap:4px;"></div>
-                </div>
-                <div style="flex:1;min-width:150px;">
-                    <div style="font-weight:700;margin-bottom:8px;">현재 작업</div>
-                    <div id="ht-info" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">시작을 눌러주세요</div>
+            ${self._createStepDesc()}
+            <div class="sim-card">
+                <button class="btn btn-primary" id="ht-start">삽입 시작</button>
+                <div style="display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;width:100%;">
+                    <div style="flex:1;min-width:200px;">
+                        <div style="font-weight:700;margin-bottom:8px;">해시 테이블 (크기 ${TABLE_SIZE})</div>
+                        <div id="ht-table" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div style="flex:1;min-width:150px;">
+                        <div style="font-weight:700;margin-bottom:8px;">현재 작업</div>
+                        <div id="ht-info" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">시작을 눌러주세요</div>
+                    </div>
                 </div>
             </div>
-
             ${self._createStepControls()}
         `;
 
@@ -526,9 +527,13 @@ class HashTable:
         if (s.keydownHandler) { document.removeEventListener('keydown', s.keydownHandler); s.keydownHandler = null; }
         s.steps = []; s.currentStep = -1;
     },
+    _createStepDesc(suffix) {
+        const s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
     _createStepControls(suffix) {
         const s = suffix || '';
-        return `<div class="viz-step-controls"><button class="btn viz-step-btn" id="viz-prev${s}" disabled>&larr; 이전</button><span id="viz-step-counter${s}" class="viz-step-counter">시작 전</span><button class="btn btn-primary viz-step-btn" id="viz-next${s}">다음 &rarr;</button></div><div id="viz-step-desc${s}" class="viz-step-desc">▶ 위의 버튼을 눌러 시작하세요</div>`;
+        return '<div class="viz-step-controls"><button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; 이전</button><span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span><button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 &rarr;</button></div>';
     },
     _initStepController(el, steps, suffix) {
         const s = suffix || '';
@@ -552,14 +557,17 @@ class HashTable:
         const self = this;
         const DEFAULT_ARR = [3, 1, 4, 1, 5, 9, 2, 6];
         container.innerHTML = `
-            <div style="margin-bottom:16px;">
-                <label>배열: <input type="text" id="ht-cd-input" value="${DEFAULT_ARR.join(', ')}" style="width:280px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
-                <button class="btn btn-primary" id="ht-cd-start" style="margin-left:8px;">🔄</button>
-            </div>
-            <div id="ht-cd-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>
-            <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;">
-                <div>HashSet: <span id="ht-cd-set" style="font-weight:600;color:var(--accent);">{ }</span></div>
-                <div>결과: <span id="ht-cd-result" style="font-weight:600;">—</span></div>
+            ${self._createStepDesc('-cd')}
+            <div class="sim-card">
+                <div style="margin-bottom:16px;">
+                    <label>배열: <input type="text" id="ht-cd-input" value="${DEFAULT_ARR.join(', ')}" style="width:280px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <button class="btn btn-primary" id="ht-cd-start" style="margin-left:8px;">🔄</button>
+                </div>
+                <div id="ht-cd-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>
+                <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;">
+                    <div>HashSet: <span id="ht-cd-set" style="font-weight:600;color:var(--accent);">{ }</span></div>
+                    <div>결과: <span id="ht-cd-result" style="font-weight:600;">—</span></div>
+                </div>
             </div>
             ${self._createStepControls('-cd')}
         `;
@@ -627,15 +635,18 @@ class HashTable:
         const self = this;
         const DEFAULT_STR = 'abcabcbb';
         container.innerHTML = `
-            <div style="margin-bottom:16px;">
-                <label>문자열: <input type="text" id="ht-ls-input" value="${DEFAULT_STR}" style="width:200px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
-                <button class="btn btn-primary" id="ht-ls-start" style="margin-left:8px;">🔄</button>
-            </div>
-            <div id="ht-ls-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>
-            <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;">
-                <div>seen: <span id="ht-ls-map" style="font-weight:600;color:var(--accent);">{ }</span></div>
-                <div>start = <span id="ht-ls-start-val" style="font-weight:600;">0</span></div>
-                <div>최대 길이 = <span id="ht-ls-max" style="font-weight:600;color:var(--green);">0</span></div>
+            ${self._createStepDesc('-ls')}
+            <div class="sim-card">
+                <div style="margin-bottom:16px;">
+                    <label>문자열: <input type="text" id="ht-ls-input" value="${DEFAULT_STR}" style="width:200px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <button class="btn btn-primary" id="ht-ls-start" style="margin-left:8px;">🔄</button>
+                </div>
+                <div id="ht-ls-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>
+                <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;">
+                    <div>seen: <span id="ht-ls-map" style="font-weight:600;color:var(--accent);">{ }</span></div>
+                    <div>start = <span id="ht-ls-start-val" style="font-weight:600;">0</span></div>
+                    <div>최대 길이 = <span id="ht-ls-max" style="font-weight:600;color:var(--green);">0</span></div>
+                </div>
             </div>
             ${self._createStepControls('-ls')}
         `;
@@ -703,26 +714,29 @@ class HashTable:
         const DEFAULT_ARR = [1, 2, 1, 3, 2, 1, 1, 2];
         const DEFAULT_K = 3;
         container.innerHTML = `
-            <div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-                <label>배열: <input type="text" id="ht-ss-input" value="${DEFAULT_ARR.join(', ')}" style="width:280px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
-                <label>k: <input type="number" id="ht-ss-k" value="${DEFAULT_K}" style="width:60px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
-                <button class="btn btn-primary" id="ht-ss-start">🔄</button>
-            </div>
-            <div id="ht-ss-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>
-            <div id="ht-ss-explain" style="padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg);margin-bottom:12px;">
-                <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9rem;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <span style="font-size:0.82rem;color:var(--text2);font-weight:600;">누적합 비교</span>
-                        <span style="font-size:0.82rem;">찾은 부분배열: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
-                    </div>
-                    <div>① 여기까지 합: <span id="ht-ss-sum" style="font-weight:700;">—</span></div>
-                    <div>② 이전 누적합: <span id="ht-ss-lookup" style="font-weight:700;">—</span></div>
-                    <div id="ht-ss-result" style="border-top:1px dashed var(--border);padding-top:6px;margin-top:2px;font-weight:600;color:var(--text3);">—</div>
+            ${self._createStepDesc('-ss')}
+            <div class="sim-card">
+                <div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                    <label>배열: <input type="text" id="ht-ss-input" value="${DEFAULT_ARR.join(', ')}" style="width:280px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <label>k: <input type="number" id="ht-ss-k" value="${DEFAULT_K}" style="width:60px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <button class="btn btn-primary" id="ht-ss-start">🔄</button>
                 </div>
-            </div>
-            <div style="margin-bottom:12px;">
-                <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">③ 합 기록 <span style="font-weight:400;font-size:0.82rem;">(여기까지의 합이 X였던 적이 몇 번?)</span></div>
-                <div id="ht-ss-pc" style="display:flex;flex-direction:column;gap:3px;"></div>
+                <div id="ht-ss-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                <div id="ht-ss-explain" style="padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg);margin-bottom:12px;">
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-size:0.82rem;color:var(--text2);font-weight:600;">누적합 비교</span>
+                            <span style="font-size:0.82rem;">찾은 부분배열: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
+                        </div>
+                        <div>① 여기까지 합: <span id="ht-ss-sum" style="font-weight:700;">—</span></div>
+                        <div>② 이전 누적합: <span id="ht-ss-lookup" style="font-weight:700;">—</span></div>
+                        <div id="ht-ss-result" style="border-top:1px dashed var(--border);padding-top:6px;margin-top:2px;font-weight:600;color:var(--text3);">—</div>
+                    </div>
+                </div>
+                <div style="margin-bottom:12px;width:100%;">
+                    <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">③ 합 기록 <span style="font-weight:400;font-size:0.82rem;">(여기까지의 합이 X였던 적이 몇 번?)</span></div>
+                    <div id="ht-ss-pc" style="display:flex;flex-direction:column;gap:3px;"></div>
+                </div>
             </div>
             ${self._createStepControls('-ss')}
         `;
@@ -905,17 +919,20 @@ class HashTable:
             { name: 'Baha', action: 'leave' }, { name: 'Artem', action: 'enter' }
         ];
         container.innerHTML = `
-            <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;">
-                <div style="flex:1;min-width:180px;">
-                    <div style="font-weight:700;margin-bottom:8px;">출입 기록</div>
-                    <div id="ht-co-logs" style="display:flex;flex-direction:column;gap:4px;"></div>
+            ${self._createStepDesc('-co')}
+            <div class="sim-card">
+                <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;width:100%;">
+                    <div style="flex:1;min-width:180px;">
+                        <div style="font-weight:700;margin-bottom:8px;">출입 기록</div>
+                        <div id="ht-co-logs" style="display:flex;flex-direction:column;gap:4px;"></div>
+                    </div>
+                    <div style="flex:1;min-width:180px;">
+                        <div style="font-weight:700;margin-bottom:8px;">회사에 있는 사람 (Set)</div>
+                        <div id="ht-co-set" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">{ }</div>
+                    </div>
                 </div>
-                <div style="flex:1;min-width:180px;">
-                    <div style="font-weight:700;margin-bottom:8px;">회사에 있는 사람 (Set)</div>
-                    <div id="ht-co-set" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">{ }</div>
-                </div>
+                <div>결과 (사전 역순): <span id="ht-co-result" style="font-weight:600;">—</span></div>
             </div>
-            <div>결과 (사전 역순): <span id="ht-co-result" style="font-weight:600;">—</span></div>
             ${self._createStepControls('-co')}
         `;
         const logsEl = container.querySelector('#ht-co-logs');

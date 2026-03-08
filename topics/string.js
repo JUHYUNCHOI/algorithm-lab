@@ -1223,27 +1223,30 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                     <button class="btn btn-primary" id="str-viz-start" style="font-size:1rem;">🔍 탐색 시작</button>
                 </div>
                 <div id="freq-viz-area" style="display:none;">
-                    <div class="graph-svg-container" style="min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">
-                        <div id="str-char-boxes-freq" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
-                    </div>
-                    <div style="display:flex;gap:24px;margin-bottom:12px;flex-wrap:wrap;">
-                        <div style="flex:1;min-width:200px;">
-                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">빈도수 딕셔너리</div>
-                            <div id="str-freq-display-freq" class="graph-queue-display" style="min-height:50px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">
-                                <span style="color:var(--text2);">{ }</span>
+                    ${self._createStepDesc('-freq')}
+                    <div class="sim-card" style="padding:24px;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
+                            <div id="str-char-boxes-freq" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        </div>
+                        <div style="display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;width:100%;">
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">빈도수 딕셔너리</div>
+                                <div id="str-freq-display-freq" class="graph-queue-display" style="min-height:50px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">
+                                    <span style="color:var(--text2);">{ }</span>
+                                </div>
+                            </div>
+                            <div style="min-width:140px;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
+                                <div id="str-status-freq" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
                             </div>
                         </div>
-                        <div style="min-width:140px;">
-                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
-                            <div id="str-status-freq" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
+                        <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-top:12px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 확인 중</span>
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>
                         </div>
                     </div>
                     ${self._createStepControls('-freq')}
-                    <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
-                        <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
-                        <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 확인 중</span>
-                        <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>
-                    </div>
                 </div>
             </div>
         `;
@@ -1419,28 +1422,31 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
         const reversed = cleaned.split('').reverse().join('');
 
         panel.innerHTML = `
-            <div style="margin-bottom:12px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">알파벳만 남긴 문자열</div>
-                <div class="graph-svg-container" style="min-height:60px;display:flex;align-items:center;justify-content:center;padding:16px;">
-                    <div id="str-cleaned-boxes-1" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;"></div>
+            ${self._createStepDesc('-1')}
+            <div class="sim-card" style="padding:24px;">
+                <div style="margin-bottom:12px;width:100%;">
+                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">알파벳만 남긴 문자열</div>
+                    <div class="graph-svg-container" style="min-height:60px;display:flex;align-items:center;justify-content:center;padding:16px;">
+                        <div id="str-cleaned-boxes-1" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;"></div>
+                    </div>
                 </div>
-            </div>
-            <div style="margin-bottom:12px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">뒤집은 문자열</div>
-                <div class="graph-svg-container" style="min-height:60px;display:flex;align-items:center;justify-content:center;padding:16px;">
-                    <div id="str-reversed-boxes-1" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;"></div>
+                <div style="margin-bottom:12px;width:100%;">
+                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">뒤집은 문자열</div>
+                    <div class="graph-svg-container" style="min-height:60px;display:flex;align-items:center;justify-content:center;padding:16px;">
+                        <div id="str-reversed-boxes-1" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;"></div>
+                    </div>
                 </div>
-            </div>
-            <div style="margin-bottom:16px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">비교 상태</div>
-                <div id="str-status-1" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
+                <div style="width:100%;">
+                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">비교 상태</div>
+                    <div id="str-status-1" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
+                </div>
+                <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-top:12px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+                    <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
+                    <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 비교 중</span>
+                    <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 일치</span>
+                </div>
             </div>
             ${self._createStepControls('-1')}
-            <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 비교 중</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 일치</span>
-            </div>
         `;
 
         var cleanedBoxes = panel.querySelector('#str-cleaned-boxes-1');
@@ -1559,24 +1565,25 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
         const self = this;
 
         panel.innerHTML = `
-            <div style="margin-bottom:12px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">알파벳만 남긴 문자열</div>
-                <div class="graph-svg-container" style="min-height:60px;display:flex;align-items:center;justify-content:center;padding:16px;">
-                    <div id="str-char-boxes-2" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;"></div>
+            ${self._createStepDesc('-2')}
+            <div class="sim-card" style="padding:24px;">
+                <div style="margin-bottom:12px;width:100%;">
+                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">알파벳만 남긴 문자열</div>
+                    <div class="graph-svg-container" style="min-height:60px;display:flex;align-items:center;justify-content:center;padding:16px;">
+                        <div id="str-char-boxes-2" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;"></div>
+                    </div>
                 </div>
-            </div>
-            <div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:200px;">
+                <div style="width:100%;">
                     <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">비교 상태</div>
                     <div id="str-status-2" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
                 </div>
+                <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-top:12px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+                    <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
+                    <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> L / R 포인터</span>
+                    <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 일치 확인</span>
+                </div>
             </div>
             ${self._createStepControls('-2')}
-            <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> L / R 포인터</span>
-                <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 일치 확인</span>
-            </div>
         `;
 
         var charBoxes = panel.querySelector('#str-char-boxes-2');
@@ -1665,19 +1672,22 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">단어들: <input type="text" id="ag-input" value="eat, tea, tan, ate, nat, bat" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="viz-input-reset" id="ag-reset" title="입력 변경 후 다시 시작">🔄</button></div>' +
-            '<div style="margin-bottom:16px;">' +
+            self._createStepDesc() +
+            '<div class="sim-card" style="padding:24px;">' +
+            '<div style="margin-bottom:16px;width:100%;">' +
             '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">단어 목록</div>' +
             '<div class="graph-svg-container" style="min-height:50px;display:flex;align-items:center;justify-content:center;padding:16px;gap:8px;flex-wrap:wrap;" id="ag-words"></div></div>' +
-            '<div style="margin-bottom:16px;">' +
+            '<div style="margin-bottom:16px;width:100%;">' +
             '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 처리</div>' +
             '<div id="ag-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div></div>' +
-            '<div style="margin-bottom:16px;">' +
+            '<div style="margin-bottom:16px;width:100%;">' +
             '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">그룹 (정렬 키 → 단어들)</div>' +
             '<div id="ag-groups" style="display:flex;flex-direction:column;gap:10px;min-height:60px;"></div></div>' +
-            self._createStepControls() +
-            '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
+            '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
             '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);vertical-align:middle;"></span> 현재 처리 중</span>' +
-            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--green);vertical-align:middle;"></span> 처리 완료</span></div>';
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--green);vertical-align:middle;"></span> 처리 완료</span></div>' +
+            '</div>' +
+            self._createStepControls();
 
         var wordsEl = container.querySelector('#ag-words');
         var statusEl = container.querySelector('#ag-status');
@@ -1837,24 +1847,27 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 </label>
                 <button class="btn btn-primary" id="str-viz-start">시작</button>
             </div>
-            <div class="graph-svg-container" style="min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">
-                <div id="str-char-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
-            </div>
-            <div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:180px;">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">빈도수</div>
-                    <div id="str-freq-display" class="graph-queue-display" style="min-height:50px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">
-                        <span style="color:var(--text2);">시작을 눌러주세요</span>
+            ${self._createStepDesc()}
+            <div class="sim-card" style="padding:24px;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
+                    <div id="str-char-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                </div>
+                <div style="display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;width:100%;">
+                    <div style="flex:1;min-width:180px;">
+                        <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">빈도수</div>
+                        <div id="str-freq-display" class="graph-queue-display" style="min-height:50px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">
+                            <span style="color:var(--text2);">시작을 눌러주세요</span>
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:180px;">
+                        <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">결과 조립</div>
+                        <div id="str-result-display" class="graph-queue-display" style="min-height:50px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">—</div>
                     </div>
                 </div>
-                <div style="flex:1;min-width:180px;">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">결과 조립</div>
-                    <div id="str-result-display" class="graph-queue-display" style="min-height:50px;display:flex;gap:4px;flex-wrap:wrap;align-items:center;justify-content:center;padding:12px;">—</div>
+                <div style="margin-top:16px;width:100%;">
+                    <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
+                    <div id="str-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
                 </div>
-            </div>
-            <div style="margin-bottom:16px;">
-                <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
-                <div id="str-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
             </div>
             ${self._createStepControls()}
         `;
@@ -2015,6 +2028,10 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
         s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        const s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
     _createStepControls(suffix) {
         const s = suffix || '';
         const inlineClass = s ? ' viz-inline' : '';
@@ -2024,7 +2041,6 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 <span id="viz-step-counter${s}" class="viz-step-counter">시작 전</span>
                 <button class="btn btn-primary viz-step-btn" id="viz-next${s}">다음 &rarr;</button>
             </div>
-            <div id="viz-step-desc${s}" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>
         `;
     },
 

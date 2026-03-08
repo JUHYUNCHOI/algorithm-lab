@@ -5620,6 +5620,20 @@ button.problem-card:hover {
     color: var(--red, #e17055);
 }
 
+/* ── 시뮬레이션 진입/퇴장 애니메이션 (기존 @keyframes 재사용) ── */
+.str-char-box.anim-enter-stack {
+    animation: demoEnterStack 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.str-char-box.anim-enter-right {
+    animation: demoEnterRight 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.str-char-box.anim-remove-up {
+    animation: demoRemoveUp 0.3s ease forwards;
+}
+.str-char-box.anim-remove-left {
+    animation: demoRemoveLeft 0.3s ease forwards;
+}
+
 /* LeetCode 난이도 색상 */
 .problem-card.easy {
     border-left: 4px solid var(--green);
@@ -6013,6 +6027,19 @@ button.problem-card:hover {
     border: 1px solid var(--bg3);
     border-bottom: none;
     box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sim-card {
+    background: var(--bg2);
+    border: 1px solid var(--bg3);
+    border-radius: var(--radius);
+    padding: 2.5rem 3rem;
+    margin-bottom: 0.5rem;
+    min-height: max(320px, 40vh);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .viz-step-controls {

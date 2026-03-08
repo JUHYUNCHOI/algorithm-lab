@@ -830,7 +830,8 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
                 </label>
             </div>
 
-            <div id="arr-sim-box" style="background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--radius);overflow:hidden;">
+            ${self._createStepDesc()}
+            <div id="arr-sim-box" class="sim-card" style="overflow:hidden;padding:0;">
                 <div style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;">
                     <div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">
                         <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> 확인 중</span>
@@ -1071,6 +1072,10 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
         });
     },
 
+    _createStepDesc(suffix) {
+        const s = suffix || '';
+        return `<div class="viz-step-desc" data-role="desc" data-step-group="${s}" style="display:none;"></div>`;
+    },
     _createStepControls(suffix) {
         const s = suffix || '';
         return `
@@ -1079,7 +1084,6 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
                 <span class="viz-step-counter" data-role="counter"></span>
                 <button class="btn btn-primary viz-step-btn" data-role="next">다음 &rarr;</button>
             </div>
-            <div class="viz-step-desc" data-role="desc" data-step-group="${s}" style="display:none;"></div>
         `;
     },
 
@@ -1194,7 +1198,8 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
             '<label style="font-weight:600;">가격 배열: <input type="text" id="stock-input" value="7, 1, 5, 3, 6, 4, 2, 8, 1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;">' +
             '<button class="viz-input-reset" id="stock-reset" title="입력 변경 후 다시 시작">🔄</button></label></div>' +
 
-            '<div style="background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--radius);overflow:hidden;">' +
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
 
             '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
             '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
@@ -1309,7 +1314,8 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
             '<label style="font-weight:600;">배열: <input type="text" id="three-input" value="-1, 0, 1, 2, -1, -4, 3, -2" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;">' +
             '<button class="viz-input-reset" id="three-reset" title="입력 변경 후 다시 시작">🔄</button></label></div>' +
 
-            '<div style="background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--radius);overflow:hidden;">' +
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
 
             '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
             '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
@@ -1537,7 +1543,8 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
             '<label style="font-weight:600;">목표 합 M: <input type="number" id="sw-target" value="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="viz-input-reset" id="sw-reset" title="입력 변경 후 다시 시작">🔄</button></div>' +
 
-            '<div style="background:var(--bg2);border:1px solid var(--bg3);border-radius:var(--radius);overflow:hidden;">' +
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
 
             '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
             '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +

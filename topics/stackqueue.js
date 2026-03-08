@@ -757,6 +757,147 @@ print(is_valid("([)]"))     # False</code></pre>
 
     renderVisualize(container) { container.innerHTML = ''; },
 
+    // ── 애니메이션 헬퍼: DOM 요소를 HTML 문자열 기준으로 업데이트 ──
+    _updateElFromHTML(existingEl, htmlString) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = htmlString;
+        const newEl = wrapper.firstElementChild;
+        if (!newEl) return;
+        existingEl.className = newEl.className;
+        existingEl.innerHTML = newEl.innerHTML;
+        const newStyle = newEl.getAttribute('style');
+        if (newStyle) existingEl.setAttribute('style', newStyle);
+        else existingEl.removeAttribute('style');
+    },
+
+    // ── 애니메이션 헬퍼: 컨테이너의 자식을 목표 상태로 동기화 ──
+    // targetItems: [{html: '<div class="str-char-box ...">값</div>'}]
+    // opts: { enterClass, removeClass, removePosition('end'|'start'), emptyHTML, animate }
+    _syncContainer(containerEl, targetItems, opts) {
+        const self = this;
+        const o = opts || {};
+        const enterCls = o.enterClass || '';
+        const removeCls = o.removeClass || '';
+        const removePos = o.removePosition || 'end';
+        const emptyHTML = o.emptyHTML || '';
+        const animate = o.animate !== false;
+
+        // 1. 진행 중인 퇴장 애니메이션 즉시 정리
+        containerEl.querySelectorAll('.anim-removing').forEach(el => el.remove());
+        // 진행 중인 진입 애니메이션 클래스도 정리
+        containerEl.querySelectorAll('.anim-enter-stack, .anim-enter-right').forEach(el => {
+            el.classList.remove('anim-enter-stack', 'anim-enter-right');
+        });
+
+        // 2. 빈 상태 플레이스홀더 제거
+        const placeholder = containerEl.querySelector('[data-empty]');
+        if (placeholder) placeholder.remove();
+
+        // 3. 현재 .str-char-box 요소들
+        const currentChildren = Array.from(containerEl.querySelectorAll(':scope > .str-char-box'));
+        const currentCount = currentChildren.length;
+        const targetCount = targetItems.length;
+
+        // 4. 목표가 비어있는 경우
+        if (targetCount === 0) {
+            if (animate && currentCount > 0 && removeCls) {
+                // 마지막/첫 요소에 퇴장 애니메이션
+                const idx = removePos === 'start' ? 0 : currentCount - 1;
+                const el = currentChildren[idx];
+                el.classList.add(removeCls, 'anim-removing');
+                el.addEventListener('animationend', () => {
+                    el.remove();
+                    if (containerEl.querySelectorAll(':scope > .str-char-box').length === 0 && emptyHTML) {
+                        containerEl.innerHTML = emptyHTML;
+                    }
+                }, { once: true });
+                // 나머지는 즉시 제거
+                currentChildren.forEach((c, i) => { if (i !== idx) c.remove(); });
+            } else {
+                containerEl.innerHTML = emptyHTML;
+            }
+            return;
+        }
+
+        // 5. 현재 비어있는 경우 → 전부 새로 생성
+        if (currentCount === 0) {
+            containerEl.innerHTML = '';
+            targetItems.forEach((item, i) => {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = item.html;
+                const el = wrapper.firstElementChild;
+                if (animate && enterCls && i === targetCount - 1) {
+                    el.classList.add(enterCls);
+                    el.addEventListener('animationend', () => el.classList.remove(enterCls), { once: true });
+                }
+                containerEl.appendChild(el);
+            });
+            return;
+        }
+
+        // 6. 요소 추가 (push / enqueue)
+        if (targetCount > currentCount) {
+            // 기존 요소 업데이트
+            for (let i = 0; i < currentCount; i++) {
+                self._updateElFromHTML(currentChildren[i], targetItems[i].html);
+            }
+            // 새 요소 추가
+            for (let i = currentCount; i < targetCount; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = targetItems[i].html;
+                const el = wrapper.firstElementChild;
+                if (animate && enterCls) {
+                    el.classList.add(enterCls);
+                    el.addEventListener('animationend', () => el.classList.remove(enterCls), { once: true });
+                }
+                containerEl.appendChild(el);
+            }
+            return;
+        }
+
+        // 7. 요소 삭제 (pop / dequeue)
+        if (targetCount < currentCount) {
+            if (removePos === 'start') {
+                // 큐: 앞에서 제거
+                const removedCount = currentCount - targetCount;
+                for (let i = 0; i < removedCount; i++) {
+                    const el = currentChildren[i];
+                    if (animate && removeCls) {
+                        el.classList.add(removeCls, 'anim-removing');
+                        el.addEventListener('animationend', () => el.remove(), { once: true });
+                    } else {
+                        el.remove();
+                    }
+                }
+                // 나머지 업데이트
+                for (let i = removedCount; i < currentCount; i++) {
+                    self._updateElFromHTML(currentChildren[i], targetItems[i - removedCount].html);
+                }
+            } else {
+                // 스택: 끝에서 제거
+                for (let i = currentCount - 1; i >= targetCount; i--) {
+                    const el = currentChildren[i];
+                    if (animate && removeCls) {
+                        el.classList.add(removeCls, 'anim-removing');
+                        el.addEventListener('animationend', () => el.remove(), { once: true });
+                    } else {
+                        el.remove();
+                    }
+                }
+                // 나머지 업데이트
+                for (let i = 0; i < targetCount; i++) {
+                    self._updateElFromHTML(currentChildren[i], targetItems[i].html);
+                }
+            }
+            return;
+        }
+
+        // 8. 같은 개수 → in-place 업데이트 (CSS transition이 색 전환 처리)
+        for (let i = 0; i < targetCount; i++) {
+            self._updateElFromHTML(currentChildren[i], targetItems[i].html);
+        }
+    },
+
     _createStepDesc(suffix) {
         const s = suffix || '';
         return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
@@ -771,7 +912,7 @@ print(is_valid("([)]"))     # False</code></pre>
             '</div>';
     },
 
-    _initStepController(container, steps, suffix) {
+    _initStepController(container, steps, suffix, resetAction) {
         const s = suffix || '';
         const state = this._vizState;
         state.steps = steps;
@@ -795,13 +936,17 @@ print(is_valid("([)]"))     # False</code></pre>
         nextBtn.addEventListener('click', () => {
             if (state.currentStep >= state.steps.length - 1) return;
             state.currentStep++;
-            state.steps[state.currentStep].action();
+            state.steps[state.currentStep].action('forward');
             updateUI();
         });
         prevBtn.addEventListener('click', () => {
             if (state.currentStep < 0) return;
             state.currentStep--;
-            if (state.currentStep >= 0) state.steps[state.currentStep].action();
+            if (state.currentStep >= 0) {
+                state.steps[state.currentStep].action('backward');
+            } else if (resetAction) {
+                resetAction();
+            }
             updateUI();
         });
         const keyHandler = (e) => {
@@ -818,7 +963,7 @@ print(is_valid("([)]"))     # False</code></pre>
     _renderVizZero(container) {
         const self = this;
         const nums = [1, 3, 5, 4, 0, 0, 7, 0, 0, 6];
-        const vizHTML = '<div class="viz-area">' +
+        const vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;max-width:320px;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">입력 수열</div>' +
@@ -879,7 +1024,7 @@ print(is_valid("([)]"))     # False</code></pre>
         const input = '([{}])';
         const chars = input.split('');
 
-        const vizHTML = '<div class="viz-area">' +
+        const vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">입력 문자열</div>' +
@@ -935,7 +1080,7 @@ print(is_valid("([)]"))     # False</code></pre>
         const self = this;
         const N = 6;
 
-        const vizHTML = '<div class="viz-area">' +
+        const vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;">' +
             '<div>' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">큐 (앞 ← → 뒤)</div>' +
@@ -1002,18 +1147,18 @@ print(is_valid("([)]"))     # False</code></pre>
             { op: 'getMin', result: -2 }
         ];
 
-        const vizHTML = '<div class="viz-area">' +
+        const vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">메인 스택</div>' +
-            '<div id="sq-main-ms" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:180px;width:80px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
+            '<div id="sq-main-ms" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:120px;width:80px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--green);">최솟값 스택</div>' +
-            '<div id="sq-min-ms" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:180px;width:80px;border:2px solid var(--green);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
+            '<div id="sq-min-ms" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:120px;width:80px;border:2px solid var(--green);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
             '</div>' +
             '<div style="flex:0 0 auto;">' +
-            '<div id="sq-result-ms" style="padding:10px;background:var(--accent)10;border-radius:8px;font-weight:600;color:var(--accent);min-height:30px;"></div>' +
+            '<div id="sq-result-ms" style="padding:10px;background:rgba(108,92,231,0.06);border-radius:8px;font-weight:600;color:var(--accent);min-height:30px;"></div>' +
             '</div></div></div>';
         container.innerHTML = self._createStepDesc('-ms') + vizHTML + self._createStepControls('-ms');
 
