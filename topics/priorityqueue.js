@@ -199,7 +199,8 @@ var priorityQueueTopic = {
                         <p>부모 = i//2<br>왼쪽 자식 = 2*i, 오른쪽 = 2*i+1</p>\
                     </div>\
                 </div>\
-                <div class="code-block"><pre><code class="language-python"># 힙을 배열로 저장하기 (1-indexed)\n#\n#        1          <- 인덱스 1 (루트)\n#       / \\\\\n#      3    5       <- 인덱스 2, 3\n#     / \\\\  /\n#    7   9 8       <- 인덱스 4, 5, 6\n#\n# 배열: [-, 1, 3, 5, 7, 9, 8]  (0번 인덱스는 사용 안 함)\n#\n# 부모 인덱스:    i // 2\n# 왼쪽 자식:      i * 2\n# 오른쪽 자식:    i * 2 + 1</code></pre></div>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 힙을 배열로 저장하기 (1-indexed)\n#\n#        1          <- 인덱스 1 (루트)\n#       / \\\\\n#      3    5       <- 인덱스 2, 3\n#     / \\\\  /\n#    7   9 8       <- 인덱스 4, 5, 6\n#\n# 배열: [-, 1, 3, 5, 7, 9, 8]  (0번 인덱스는 사용 안 함)\n#\n# 부모 인덱스:    i // 2\n# 왼쪽 자식:      i * 2\n# 오른쪽 자식:    i * 2 + 1</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 힙을 배열로 저장하기 (1-indexed)\n//\n//        1          &lt;- 인덱스 1 (루트)\n//       / \\\\\n//      3    5       &lt;- 인덱스 2, 3\n//     / \\\\  /\n//    7   9 8       &lt;- 인덱스 4, 5, 6\n//\n// 배열: {-, 1, 3, 5, 7, 9, 8}  (0번 인덱스는 사용 안 함)\n//\n// 부모 인덱스:    i / 2\n// 왼쪽 자식:      i * 2\n// 오른쪽 자식:    i * 2 + 1</code></pre></div></span>\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -226,7 +227,8 @@ var priorityQueueTopic = {
                         <p>\u2460 루트(최솟값)를 꺼냅니다<br>\u2461 마지막 원소를 루트로 이동합니다<br>\u2462 더 작은 자식과 비교합니다<br>\u2463 자식보다 크면 교환! (Sift-Down)</p>\
                     </div>\
                 </div>\
-                <div class="code-block"><pre><code class="language-python"># 최소 힙 삽입 (Sift-Up)\ndef push(heap, val):\n    heap.append(val)\n    i = len(heap) - 1\n    while i > 1 and heap[i] < heap[i // 2]:\n        heap[i], heap[i // 2] = heap[i // 2], heap[i]\n        i = i // 2\n\n# 최소 힙 삭제 (Sift-Down)\ndef pop(heap):\n    if len(heap) <= 1:\n        return None\n    root = heap[1]\n    heap[1] = heap[-1]\n    heap.pop()\n    i = 1\n    while i * 2 < len(heap):\n        child = i * 2\n        if child + 1 < len(heap) and heap[child + 1] < heap[child]:\n            child += 1\n        if heap[i] > heap[child]:\n            heap[i], heap[child] = heap[child], heap[i]\n            i = child\n        else:\n            break\n    return root</code></pre></div>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 최소 힙 삽입 (Sift-Up)\ndef push(heap, val):\n    heap.append(val)\n    i = len(heap) - 1\n    while i > 1 and heap[i] < heap[i // 2]:\n        heap[i], heap[i // 2] = heap[i // 2], heap[i]\n        i = i // 2\n\n# 최소 힙 삭제 (Sift-Down)\ndef pop(heap):\n    if len(heap) <= 1:\n        return None\n    root = heap[1]\n    heap[1] = heap[-1]\n    heap.pop()\n    i = 1\n    while i * 2 < len(heap):\n        child = i * 2\n        if child + 1 < len(heap) and heap[child + 1] < heap[child]:\n            child += 1\n        if heap[i] > heap[child]:\n            heap[i], heap[child] = heap[child], heap[i]\n            i = child\n        else:\n            break\n    return root</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 최소 힙 삽입 (Sift-Up)\nvoid push(vector&lt;int&gt;&amp; heap, int val) {\n    heap.push_back(val);\n    int i = heap.size() - 1;\n    while (i &gt; 1 &amp;&amp; heap[i] &lt; heap[i / 2]) {\n        swap(heap[i], heap[i / 2]);\n        i = i / 2;\n    }\n}\n\n// 최소 힙 삭제 (Sift-Down)\nint pop(vector&lt;int&gt;&amp; heap) {\n    if (heap.size() &lt;= 1) return -1;\n    int root = heap[1];\n    heap[1] = heap.back();\n    heap.pop_back();\n    int i = 1;\n    while (i * 2 &lt; (int)heap.size()) {\n        int child = i * 2;\n        if (child + 1 &lt; (int)heap.size() &amp;&amp; heap[child + 1] &lt; heap[child])\n            child++;\n        if (heap[i] &gt; heap[child]) {\n            swap(heap[i], heap[child]);\n            i = child;\n        } else break;\n    }\n    return root;\n}</code></pre></div></span>\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -243,8 +245,12 @@ var priorityQueueTopic = {
                 </div>\
             </div>\
 \
-            <div class="concept-section">\
+            <span class="lang-py"><div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">4</span> 파이썬의 heapq 사용법</div>\
+                <div style="margin:0.5rem 0 0.8rem;">\
+                    <a href="https://docs.python.org/3/library/heapq.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: heapq ↗</a>\
+                    <p style="font-size:0.85rem;color:var(--text2);margin-top:4px;"><code>heapq</code> \u2014 Python 표준 라이브러리의 최소 힙 구현 모듈입니다.</p>\
+                </div>\
                 <div class="code-block"><pre><code class="language-python">import heapq\n\nheap = []\nheapq.heappush(heap, 5)\nheapq.heappush(heap, 1)\nheapq.heappush(heap, 3)\nprint(heapq.heappop(heap))  # 1 (가장 작은 값)\n\n# 최대 힙 트릭: -1을 곱해서 넣고, 꺼낼 때 다시 -1을 곱합니다\nmax_heap = []\nheapq.heappush(max_heap, -5)\nprint(-heapq.heappop(max_heap))  # 5\n\n# 튜플로 정렬 기준 바꾸기\nabs_heap = []\nheapq.heappush(abs_heap, (abs(-3), -3))\nheapq.heappush(abs_heap, (abs(2), 2))\nval = heapq.heappop(abs_heap)  # (2, 2)</code></pre></div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
                     <div class="concept-card"><h3>heappush / heappop</h3><p>둘 다 O(log N)입니다.<br>Python heapq는 항상 <strong>최소 힙</strong>입니다!</p></div>\
@@ -262,12 +268,37 @@ var priorityQueueTopic = {
                         이것이 바로 <strong>BOJ 11286 절댓값 힙</strong>의 핵심입니다!\
                     </div>\
                 </div>\
-            </div>\
+            </div></span>\
+            <span class="lang-cpp"><div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">4</span> C++의 priority_queue 사용법</div>\
+                <div style="margin:0.5rem 0 0.8rem;">\
+                    <a href="https://en.cppreference.com/w/cpp/container/priority_queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: priority_queue ↗</a>\
+                    <p style="font-size:0.85rem;color:var(--text2);margin-top:4px;"><code>priority_queue</code> \u2014 &lt;queue&gt; 헤더에 있는 C++ 표준 라이브러리의 힙 기반 컨테이너 어댑터입니다.</p>\
+                </div>\
+                <div class="code-block"><pre><code class="language-cpp">#include &lt;queue&gt;\n#include &lt;vector&gt;\n#include &lt;iostream&gt;\nusing namespace std;\n\n// 기본: 최대 힙\npriority_queue&lt;int&gt; maxPQ;\nmaxPQ.push(5);\nmaxPQ.push(1);\nmaxPQ.push(3);\ncout &lt;&lt; maxPQ.top() &lt;&lt; endl;  // 5 (가장 큰 값)\nmaxPQ.pop();\n\n// 최소 힙: greater 비교자 사용\npriority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; minPQ;\nminPQ.push(5);\nminPQ.push(1);\nminPQ.push(3);\ncout &lt;&lt; minPQ.top() &lt;&lt; endl;  // 1 (가장 작은 값)\nminPQ.pop();\n\n// pair로 정렬 기준 바꾸기\npriority_queue&lt;pair&lt;int,int&gt;, vector&lt;pair&lt;int,int&gt;&gt;, greater&lt;pair&lt;int,int&gt;&gt;&gt; absPQ;\nabsPQ.push({abs(-3), -3});\nabsPQ.push({abs(2), 2});\nauto val = absPQ.top();  // {2, 2}\nabsPQ.pop();</code></pre></div>\
+                <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
+                    <div class="concept-card"><h3>push / top / pop</h3><p>push, pop은 O(log N), top은 O(1)입니다.<br>C++ priority_queue는 기본 <strong>최대 힙</strong>입니다!</p></div>\
+                    <div class="concept-card"><h3>최소 힙 만들기</h3><p><code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code>로<br><strong>최소 힙</strong>을 만들 수 있습니다!</p></div>\
+                </div>\
+                <div class="think-box">\
+                    <div class="think-box-question">\
+                        <span class="think-box-question-icon">Q</span>\
+                        <span class="think-box-question-text">priority_queue로 절댓값이 가장 작은 수를 먼저 꺼내려면 어떻게 해야 할까요?</span>\
+                    </div>\
+                    <button class="think-box-trigger">\uD83E\uDD14 생각해보고 클릭!</button>\
+                    <div class="think-box-answer">\
+                        <strong>{abs(x), x}</strong> pair를 최소 힙에 넣으면 됩니다!<br>\
+                        절댓값이 같으면 두 번째 원소(실제 값)가 작은 것이 먼저 나옵니다.<br>\
+                        이것이 바로 <strong>BOJ 11286 절댓값 힙</strong>의 핵심입니다!\
+                    </div>\
+                </div>\
+            </div></span>\
 \
             <div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">5</span> 우선순위 큐 문제 푸는 팁</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
-                    <div class="concept-card"><h3>\u2460 기본 힙 연산</h3><p>heappush/heappop으로<br>최대\u00B7최소\u00B7절댓값 힙을 구현합니다.</p></div>\
+                    <span class="lang-py"><div class="concept-card"><h3>\u2460 기본 힙 연산</h3><p>heappush/heappop으로<br>최대\u00B7최소\u00B7절댓값 힙을 구현합니다.</p></div></span>\
+                    <span class="lang-cpp"><div class="concept-card"><h3>\u2460 기본 힙 연산</h3><p>push/top/pop으로<br>최대\u00B7최소\u00B7절댓값 힙을 구현합니다.</p></div></span>\
                     <div class="concept-card"><h3>\u2461 크기 제한 힙</h3><p>힙 크기를 N개로 유지하여<br><strong>N번째 큰 수</strong>를 효율적으로 구합니다.</p></div>\
                     <div class="concept-card"><h3>\u2462 두 개의 힙</h3><p>최대 힙 + 최소 힙으로<br><strong>중앙값</strong>을 실시간으로 구합니다.</p></div>\
                 </div>\
@@ -333,13 +364,14 @@ var priorityQueueTopic = {
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
+        var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
+            state.currentStep++; updateUI(); setTimeout(function() { state.steps[state.currentStep].action(); }, actionDelay);
         });
         prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
+            var stepToUndo = state.currentStep; state.currentStep--; updateUI(); setTimeout(function() { state.steps[stepToUndo].undo(); }, actionDelay);
         });
         var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -356,10 +388,12 @@ var priorityQueueTopic = {
     // ====================================================================
     _renderVizMaxHeap: function(container) {
         var self = this, suffix = '-maxheap';
-        var ops = [0, 1, 0, 2, 0, 3, 0, 0, 0];
+        var DEFAULT_OPS = '1 1, 1 2, 1 3, 0, 0, 0';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">최대 힙 동작</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">연산: 삽입(1), 삽입(2), 삽입(3), 삭제 3회</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">연산: <input type="text" id="pq-maxh-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:320px;"></label>' +
+            '<button class="btn btn-primary" id="pq-maxh-reset">\uD83D\uDD04</button></div>' +
+            '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: "1 값" = 삽입, "0" = 삭제 (쉼표 구분). 예: 1 5, 1 3, 0, 1 7, 0</p>' +
             '<div id="mxh-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="mxh-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -370,28 +404,51 @@ var priorityQueueTopic = {
                 h.map(function(v) { return '<div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--accent);color:white;font-weight:700;">' + v + '</div>'; }).join('');
             if (msg !== undefined) infoEl.innerHTML = msg;
         }
-        var heap = [], states = [{ h: [], msg: '최대 힙에 값을 넣고 빼봅니다.' }];
-        var sequence = [1, 2, 3];
-        sequence.forEach(function(v) {
-            heap.push(v); heap.sort(function(a, b) { return b - a; });
-            states.push({ h: heap.slice(), msg: v + '을(를) 삽입! 힙: [' + heap.join(', ') + ']' });
+        function parseOps(str) {
+            return str.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; }).map(function(s) {
+                var parts = s.split(/\s+/);
+                if (parts[0] === '0') return { type: 'pop' };
+                return { type: 'push', val: parseInt(parts[1]) || 0 };
+            });
+        }
+        function buildSteps(ops) {
+            var heap = [], states = [{ h: [], msg: '최대 힙에 값을 넣고 빼봅니다.' }];
+            ops.forEach(function(op) {
+                if (op.type === 'push') {
+                    heap.push(op.val); heap.sort(function(a, b) { return b - a; });
+                    states.push({ h: heap.slice(), msg: op.val + '을(를) 삽입! 힙: [' + heap.join(', ') + ']' });
+                } else {
+                    if (heap.length === 0) {
+                        states.push({ h: [], msg: '힙이 비어있어 0 출력' });
+                    } else {
+                        var popped = heap.shift();
+                        states.push({ h: heap.slice(), msg: '최댓값 ' + popped + '을(를) 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
+                    }
+                }
+            });
+            var steps = [];
+            for (var i = 1; i < states.length; i++) {
+                (function(cur, prev) {
+                    steps.push({
+                        description: cur.msg,
+                        action: function() { renderHeap(cur.h, cur.msg); },
+                        undo: function() { renderHeap(prev.h, prev.msg); }
+                    });
+                })(states[i], states[i - 1]);
+            }
+            return { steps: steps, initial: states[0] };
+        }
+        function runSim(opsStr) {
+            var ops = parseOps(opsStr);
+            var result = buildSteps(ops);
+            renderHeap(result.initial.h, result.initial.msg);
+            self._initStepController(container, result.steps, suffix);
+        }
+        container.querySelector('#pq-maxh-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runSim(container.querySelector('#pq-maxh-input').value);
         });
-        for (var r = 0; r < 3 && heap.length > 0; r++) {
-            var popped = heap.shift();
-            states.push({ h: heap.slice(), msg: '최댓값 ' + popped + '을(를) 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
-        }
-        renderHeap(states[0].h, states[0].msg);
-        var steps = [];
-        for (var i = 1; i < states.length; i++) {
-            (function(cur, prev) {
-                steps.push({
-                    description: cur.msg,
-                    action: function() { renderHeap(cur.h, cur.msg); },
-                    undo: function() { renderHeap(prev.h, prev.msg); }
-                });
-            })(states[i], states[i - 1]);
-        }
-        self._initStepController(container, steps, suffix);
+        runSim(DEFAULT_OPS);
     },
 
     // ====================================================================
@@ -399,9 +456,12 @@ var priorityQueueTopic = {
     // ====================================================================
     _renderVizMinHeap: function(container) {
         var self = this, suffix = '-minheap';
+        var DEFAULT_OPS = '1 5, 1 1, 1 3, 1 2, 0, 0, 0, 0';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">최소 힙 동작</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">삽입: 5, 1, 3, 2 후 삭제 4회</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">연산: <input type="text" id="pq-minh-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:320px;"></label>' +
+            '<button class="btn btn-primary" id="pq-minh-reset">\uD83D\uDD04</button></div>' +
+            '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: "1 값" = 삽입, "0" = 삭제 (쉼표 구분). 예: 1 5, 1 1, 0, 1 3, 0</p>' +
             '<div id="mnh-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="mnh-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -412,28 +472,51 @@ var priorityQueueTopic = {
                 h.map(function(v) { return '<div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--green);color:white;font-weight:700;">' + v + '</div>'; }).join('');
             if (msg !== undefined) infoEl.innerHTML = msg;
         }
-        var heap = [], states = [{ h: [], msg: '최소 힙에 값을 넣고 빼봅니다.' }];
-        var seq = [5, 1, 3, 2];
-        seq.forEach(function(v) {
-            heap.push(v); heap.sort(function(a, b) { return a - b; });
-            states.push({ h: heap.slice(), msg: v + ' 삽입! 힙: [' + heap.join(', ') + ']' });
+        function parseOps(str) {
+            return str.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; }).map(function(s) {
+                var parts = s.split(/\s+/);
+                if (parts[0] === '0') return { type: 'pop' };
+                return { type: 'push', val: parseInt(parts[1]) || 0 };
+            });
+        }
+        function buildSteps(ops) {
+            var heap = [], states = [{ h: [], msg: '최소 힙에 값을 넣고 빼봅니다.' }];
+            ops.forEach(function(op) {
+                if (op.type === 'push') {
+                    heap.push(op.val); heap.sort(function(a, b) { return a - b; });
+                    states.push({ h: heap.slice(), msg: op.val + ' 삽입! 힙: [' + heap.join(', ') + ']' });
+                } else {
+                    if (heap.length === 0) {
+                        states.push({ h: [], msg: '힙이 비어있어 0 출력' });
+                    } else {
+                        var popped = heap.shift();
+                        states.push({ h: heap.slice(), msg: '최솟값 ' + popped + ' 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
+                    }
+                }
+            });
+            var steps = [];
+            for (var i = 1; i < states.length; i++) {
+                (function(cur, prev) {
+                    steps.push({
+                        description: cur.msg,
+                        action: function() { renderHeap(cur.h, cur.msg); },
+                        undo: function() { renderHeap(prev.h, prev.msg); }
+                    });
+                })(states[i], states[i - 1]);
+            }
+            return { steps: steps, initial: states[0] };
+        }
+        function runSim(opsStr) {
+            var ops = parseOps(opsStr);
+            var result = buildSteps(ops);
+            renderHeap(result.initial.h, result.initial.msg);
+            self._initStepController(container, result.steps, suffix);
+        }
+        container.querySelector('#pq-minh-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runSim(container.querySelector('#pq-minh-input').value);
         });
-        for (var r = 0; r < 4 && heap.length > 0; r++) {
-            var popped = heap.shift();
-            states.push({ h: heap.slice(), msg: '최솟값 ' + popped + ' 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
-        }
-        renderHeap(states[0].h, states[0].msg);
-        var steps = [];
-        for (var i = 1; i < states.length; i++) {
-            (function(cur, prev) {
-                steps.push({
-                    description: cur.msg,
-                    action: function() { renderHeap(cur.h, cur.msg); },
-                    undo: function() { renderHeap(prev.h, prev.msg); }
-                });
-            })(states[i], states[i - 1]);
-        }
-        self._initStepController(container, steps, suffix);
+        runSim(DEFAULT_OPS);
     },
 
     // ====================================================================
@@ -441,10 +524,12 @@ var priorityQueueTopic = {
     // ====================================================================
     _renderVizAbsHeap: function(container) {
         var self = this, suffix = '-absheap';
-        var seq = [1, -1, 0, 0, 0];
+        var DEFAULT_OPS = '1, -1, 0, 0, 0';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">절댓값 힙</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">입력: 1, -1, 0(꺼내기), 0, 0 \u2014 절댓값이 작은 것 우선, 같으면 실제 값이 작은 것 우선</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">연산: <input type="text" id="pq-absh-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:320px;"></label>' +
+            '<button class="btn btn-primary" id="pq-absh-reset">\uD83D\uDD04</button></div>' +
+            '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: 0이 아닌 정수 = 삽입, 0 = 삭제 (쉼표 구분). 예: 1, -1, 0, -2, 3, 0</p>' +
             '<div id="abh-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="abh-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -455,29 +540,44 @@ var priorityQueueTopic = {
                 h.map(function(v) { return '<div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--green);color:white;font-weight:700;">' + v + '</div>'; }).join('');
             if (msg !== undefined) infoEl.innerHTML = msg;
         }
-        var heap = [], states = [{ h: [], msg: '절댓값 힙 시뮬레이션을 시작합니다.' }];
         function absSort(a, b) { if (Math.abs(a) !== Math.abs(b)) return Math.abs(a) - Math.abs(b); return a - b; }
-        seq.forEach(function(x) {
-            if (x !== 0) {
-                heap.push(x); heap.sort(absSort);
-                states.push({ h: heap.slice(), msg: x + ' 삽입! 힙: [' + heap.join(', ') + ']' });
-            } else {
-                if (heap.length === 0) {
-                    states.push({ h: [], msg: '힙이 비어있어 0 출력' });
-                } else {
-                    var popped = heap.shift();
-                    states.push({ h: heap.slice(), msg: '절댓값 최소 ' + popped + ' 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
-                }
-            }
-        });
-        renderHeap(states[0].h, states[0].msg);
-        var steps = [];
-        for (var i = 1; i < states.length; i++) {
-            (function(cur, prev) {
-                steps.push({ description: cur.msg, action: function() { renderHeap(cur.h, cur.msg); }, undo: function() { renderHeap(prev.h, prev.msg); } });
-            })(states[i], states[i - 1]);
+        function parseOps(str) {
+            return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
         }
-        self._initStepController(container, steps, suffix);
+        function buildSteps(seq) {
+            var heap = [], states = [{ h: [], msg: '절댓값 힙 시뮬레이션을 시작합니다.' }];
+            seq.forEach(function(x) {
+                if (x !== 0) {
+                    heap.push(x); heap.sort(absSort);
+                    states.push({ h: heap.slice(), msg: x + ' 삽입! 힙: [' + heap.join(', ') + ']' });
+                } else {
+                    if (heap.length === 0) {
+                        states.push({ h: [], msg: '힙이 비어있어 0 출력' });
+                    } else {
+                        var popped = heap.shift();
+                        states.push({ h: heap.slice(), msg: '절댓값 최소 ' + popped + ' 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
+                    }
+                }
+            });
+            var steps = [];
+            for (var i = 1; i < states.length; i++) {
+                (function(cur, prev) {
+                    steps.push({ description: cur.msg, action: function() { renderHeap(cur.h, cur.msg); }, undo: function() { renderHeap(prev.h, prev.msg); } });
+                })(states[i], states[i - 1]);
+            }
+            return { steps: steps, initial: states[0] };
+        }
+        function runSim(opsStr) {
+            var seq = parseOps(opsStr);
+            var result = buildSteps(seq);
+            renderHeap(result.initial.h, result.initial.msg);
+            self._initStepController(container, result.steps, suffix);
+        }
+        container.querySelector('#pq-absh-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runSim(container.querySelector('#pq-absh-input').value);
+        });
+        runSim(DEFAULT_OPS);
     },
 
     // ====================================================================
@@ -485,11 +585,14 @@ var priorityQueueTopic = {
     // ====================================================================
     _renderVizNthLargest: function(container) {
         var self = this, suffix = '-nth';
-        var N = 3;
-        var rows = [[12, 7, 9], [13, 8, 11], [21, 10, 26]];
+        var DEFAULT_N = 3;
+        var DEFAULT_ROWS = '12 7 9, 13 8 11, 21 10 26';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">N번째 큰 수 \u2014 크기 제한 힙</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">N=' + N + '. 크기 ' + N + '인 최소 힙을 유지하면서 각 행을 처리합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="pq-nth-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<label style="font-weight:600;">행 데이터: <input type="text" id="pq-nth-rows" value="' + DEFAULT_ROWS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<button class="btn btn-primary" id="pq-nth-reset">\uD83D\uDD04</button></div>' +
+            '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">행은 쉼표로 구분, 행 내부는 공백으로 구분. 예: 12 7 9, 13 8 11, 21 10 26</p>' +
             '<div id="nth-heap' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="nth-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -500,29 +603,47 @@ var priorityQueueTopic = {
                 h.map(function(v, i) { return '<div style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:' + (i === 0 ? 'var(--accent)' : 'var(--bg2)') + ';color:' + (i === 0 ? 'white' : 'var(--text)') + ';font-weight:700;border:2px solid var(--accent);">' + v + '</div>'; }).join('');
             if (msg !== undefined) infoEl.innerHTML = msg;
         }
-        var heap = [], states = [{ h: [], msg: '크기 ' + N + '인 최소 힙을 유지하면서 처리합니다.' }];
-        rows.forEach(function(row, ri) {
-            row.forEach(function(x) {
-                if (heap.length < N) {
-                    heap.push(x); heap.sort(function(a, b) { return a - b; });
-                    states.push({ h: heap.slice(), msg: x + ' 삽입 (힙 크기 < ' + N + '). 힙: [' + heap.join(', ') + ']' });
-                } else if (x > heap[0]) {
-                    var old = heap[0]; heap[0] = x; heap.sort(function(a, b) { return a - b; });
-                    states.push({ h: heap.slice(), msg: x + ' > 루트(' + old + '). 교체! 힙: [' + heap.join(', ') + ']' });
-                } else {
-                    states.push({ h: heap.slice(), msg: x + ' \u2264 루트(' + heap[0] + '). 무시!' });
-                }
-            });
-        });
-        states.push({ h: heap.slice(), msg: '<strong style="color:var(--green);">\u2705 N번째 큰 수 = ' + heap[0] + ' (힙 루트)</strong>' });
-        renderH(states[0].h, states[0].msg);
-        var steps = [];
-        for (var i = 1; i < states.length; i++) {
-            (function(cur, prev) {
-                steps.push({ description: cur.msg.replace(/<[^>]+>/g, ''), action: function() { renderH(cur.h, cur.msg); }, undo: function() { renderH(prev.h, prev.msg); } });
-            })(states[i], states[i - 1]);
+        function parseRows(str) {
+            return str.split(',').map(function(s) {
+                return s.trim().split(/\s+/).map(Number).filter(function(n) { return !isNaN(n); });
+            }).filter(function(row) { return row.length > 0; });
         }
-        self._initStepController(container, steps, suffix);
+        function buildSteps(N, rows) {
+            var heap = [], states = [{ h: [], msg: '크기 ' + N + '인 최소 힙을 유지하면서 처리합니다.' }];
+            rows.forEach(function(row) {
+                row.forEach(function(x) {
+                    if (heap.length < N) {
+                        heap.push(x); heap.sort(function(a, b) { return a - b; });
+                        states.push({ h: heap.slice(), msg: x + ' 삽입 (힙 크기 &lt; ' + N + '). 힙: [' + heap.join(', ') + ']' });
+                    } else if (x > heap[0]) {
+                        var old = heap[0]; heap[0] = x; heap.sort(function(a, b) { return a - b; });
+                        states.push({ h: heap.slice(), msg: x + ' &gt; 루트(' + old + '). 교체! 힙: [' + heap.join(', ') + ']' });
+                    } else {
+                        states.push({ h: heap.slice(), msg: x + ' \u2264 루트(' + heap[0] + '). 무시!' });
+                    }
+                });
+            });
+            states.push({ h: heap.slice(), msg: '<strong style="color:var(--green);">\u2705 N번째 큰 수 = ' + heap[0] + ' (힙 루트)</strong>' });
+            var steps = [];
+            for (var i = 1; i < states.length; i++) {
+                (function(cur, prev) {
+                    steps.push({ description: cur.msg.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>'), action: function() { renderH(cur.h, cur.msg); }, undo: function() { renderH(prev.h, prev.msg); } });
+                })(states[i], states[i - 1]);
+            }
+            return { steps: steps, initial: states[0] };
+        }
+        function runSim(nVal, rowsStr) {
+            var N = parseInt(nVal) || 1;
+            var rows = parseRows(rowsStr);
+            var result = buildSteps(N, rows);
+            renderH(result.initial.h, result.initial.msg);
+            self._initStepController(container, result.steps, suffix);
+        }
+        container.querySelector('#pq-nth-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runSim(container.querySelector('#pq-nth-n').value, container.querySelector('#pq-nth-rows').value);
+        });
+        runSim(DEFAULT_N, DEFAULT_ROWS);
     },
 
     // ====================================================================
@@ -530,10 +651,12 @@ var priorityQueueTopic = {
     // ====================================================================
     _renderVizMedianHeap: function(container) {
         var self = this, suffix = '-median';
-        var nums = [1, 5, 4, 3, 2];
+        var DEFAULT_NUMS = '1, 5, 4, 3, 2';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">두 개의 힙으로 중앙값</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">수열: [' + nums.join(', ') + ']. 홀수 번째마다 중앙값을 출력합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">수열: <input type="text" id="pq-median-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<button class="btn btn-primary" id="pq-median-reset">\uD83D\uDD04</button></div>' +
+            '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">쉼표로 구분된 정수. 홀수 번째마다 중앙값을 출력합니다.</p>' +
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">' +
             '<div><div style="text-align:center;font-weight:700;padding:6px;border-radius:8px;background:rgba(108,92,231,0.1);color:var(--primary);margin-bottom:4px;">최대 힙 (작은 절반)</div><div id="md-max' + suffix + '" style="min-height:48px;padding:8px;background:var(--bg);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;"></div></div>' +
             '<div><div style="text-align:center;font-weight:700;padding:6px;border-radius:8px;background:rgba(0,184,148,0.1);color:var(--green);margin-bottom:4px;">최소 힙 (큰 절반)</div><div id="md-min' + suffix + '" style="min-height:48px;padding:8px;background:var(--bg);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;"></div></div></div>' +
@@ -556,25 +679,42 @@ var priorityQueueTopic = {
             valEl.innerHTML = med !== null ? '\uD604\uC7AC \uC911\uC559\uAC12: <span style="color:var(--primary);font-size:1.4rem;">' + med + '</span>' : '\uD604\uC7AC \uC911\uC559\uAC12: ?';
             if (msg !== undefined) infoEl.innerHTML = msg;
         }
-        var maxH = [], minH = [];
-        var states = [{ mx: [], mn: [], med: null, msg: '수열을 하나씩 넣으며 중앙값을 구합니다.' }];
-        nums.forEach(function(x, idx) {
-            if (maxH.length === 0 || x <= Math.max.apply(null, maxH)) { maxH.push(x); } else { minH.push(x); }
-            if (maxH.length > minH.length + 1) { var mv = Math.max.apply(null, maxH); maxH.splice(maxH.indexOf(mv), 1); minH.push(mv); }
-            else if (minH.length > maxH.length) { var mv2 = Math.min.apply(null, minH); minH.splice(minH.indexOf(mv2), 1); maxH.push(mv2); }
-            var med = Math.max.apply(null, maxH);
-            var isOdd = (idx + 1) % 2 === 1;
-            states.push({ mx: maxH.slice(), mn: minH.slice(), med: med, msg: x + ' 삽입. ' + (isOdd ? '\uC911\uC559\uAC12 = ' + med : '\uC544\uC9C1 \uD640\uC218 \uBC88\uC9F8 \uC544\uB2D8') });
-        });
-        states.push({ mx: maxH.slice(), mn: minH.slice(), med: Math.max.apply(null, maxH), msg: '<strong style="color:var(--green);">\u2705 \uC644\uB8CC! \uC911\uC559\uAC12 \uCD9C\uB825: 1, 4, 3</strong>' });
-        renderState(states[0].mx, states[0].mn, states[0].med, states[0].msg);
-        var steps = [];
-        for (var i = 1; i < states.length; i++) {
-            (function(cur, prev) {
-                steps.push({ description: cur.msg.replace(/<[^>]+>/g, ''), action: function() { renderState(cur.mx, cur.mn, cur.med, cur.msg); }, undo: function() { renderState(prev.mx, prev.mn, prev.med, prev.msg); } });
-            })(states[i], states[i - 1]);
+        function parseNums(str) {
+            return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
         }
-        self._initStepController(container, steps, suffix);
+        function buildSteps(nums) {
+            var maxH = [], minH = [], medians = [];
+            var states = [{ mx: [], mn: [], med: null, msg: '수열을 하나씩 넣으며 중앙값을 구합니다.' }];
+            nums.forEach(function(x, idx) {
+                if (maxH.length === 0 || x <= Math.max.apply(null, maxH)) { maxH.push(x); } else { minH.push(x); }
+                if (maxH.length > minH.length + 1) { var mv = Math.max.apply(null, maxH); maxH.splice(maxH.indexOf(mv), 1); minH.push(mv); }
+                else if (minH.length > maxH.length) { var mv2 = Math.min.apply(null, minH); minH.splice(minH.indexOf(mv2), 1); maxH.push(mv2); }
+                var med = Math.max.apply(null, maxH);
+                var isOdd = (idx + 1) % 2 === 1;
+                if (isOdd) medians.push(med);
+                states.push({ mx: maxH.slice(), mn: minH.slice(), med: med, msg: x + ' 삽입. ' + (isOdd ? '\uC911\uC559\uAC12 = ' + med : '\uC544\uC9C1 \uD640\uC218 \uBC88\uC9F8 \uC544\uB2D8') });
+            });
+            states.push({ mx: maxH.slice(), mn: minH.slice(), med: Math.max.apply(null, maxH), msg: '<strong style="color:var(--green);">\u2705 \uC644\uB8CC! \uC911\uC559\uAC12 \uCD9C\uB825: ' + medians.join(', ') + '</strong>' });
+            var steps = [];
+            for (var i = 1; i < states.length; i++) {
+                (function(cur, prev) {
+                    steps.push({ description: cur.msg.replace(/<[^>]+>/g, ''), action: function() { renderState(cur.mx, cur.mn, cur.med, cur.msg); }, undo: function() { renderState(prev.mx, prev.mn, prev.med, prev.msg); } });
+                })(states[i], states[i - 1]);
+            }
+            return { steps: steps, initial: states[0] };
+        }
+        function runSim(numsStr) {
+            var nums = parseNums(numsStr);
+            if (nums.length === 0) return;
+            var result = buildSteps(nums);
+            renderState(result.initial.mx, result.initial.mn, result.initial.med, result.initial.msg);
+            self._initStepController(container, result.steps, suffix);
+        }
+        container.querySelector('#pq-median-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runSim(container.querySelector('#pq-median-input').value);
+        });
+        runSim(DEFAULT_NUMS);
     },
 
     // ====================================================================
@@ -582,11 +722,14 @@ var priorityQueueTopic = {
     // ====================================================================
     _renderVizJewelThief: function(container) {
         var self = this, suffix = '-jewel';
-        var jewels = [[1, 65], [5, 23], [2, 99]];
-        var bags = [10, 2];
+        var DEFAULT_JEWELS = '1 65, 5 23, 2 99';
+        var DEFAULT_BAGS = '10, 2';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">보석 도둑 \u2014 그리디 + 힙</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">보석: (무게,가격) = ' + jewels.map(function(j) { return '(' + j[0] + ',' + j[1] + ')'; }).join(', ') + '. 가방 용량: [' + bags.join(', ') + ']</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">보석 (무게 가격): <input type="text" id="pq-jewel-jewels" value="' + DEFAULT_JEWELS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<label style="font-weight:600;">가방 용량: <input type="text" id="pq-jewel-bags" value="' + DEFAULT_BAGS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:120px;"></label>' +
+            '<button class="btn btn-primary" id="pq-jewel-reset">\uD83D\uDD04</button></div>' +
+            '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">보석: "무게 가격" 쌍을 쉼표로 구분. 가방: 용량을 쉼표로 구분.</p>' +
             '<div id="jw-heap' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="jw-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -597,33 +740,56 @@ var priorityQueueTopic = {
                 h.map(function(v) { return '<div style="padding:6px 12px;border-radius:8px;background:var(--accent)15;border:2px solid var(--accent);font-weight:600;">\uAC00\uACA9:' + v + '</div>'; }).join('');
             if (msg !== undefined) infoEl.innerHTML = msg;
         }
-        var sortedJ = jewels.slice().sort(function(a, b) { return a[0] - b[0]; });
-        var sortedB = bags.slice().sort(function(a, b) { return a - b; });
-        var states = [{ h: [], msg: '\uBCF4\uC11D: \uBB34\uAC8C\uC21C \uC815\uB82C ' + sortedJ.map(function(j) { return '(' + j[0] + ',' + j[1] + ')'; }).join(', ') + '. \uAC00\uBC29: \uC6A9\uB7C9\uC21C \uC815\uB82C [' + sortedB.join(', ') + ']' }];
-        var heap2 = [], j2 = 0, answer = 0;
-        sortedB.forEach(function(bag) {
-            while (j2 < sortedJ.length && sortedJ[j2][0] <= bag) {
-                heap2.push(sortedJ[j2][1]); heap2.sort(function(a, b) { return b - a; });
-                states.push({ h: heap2.slice(), msg: '\uAC00\uBC29 \uC6A9\uB7C9 ' + bag + ': \uBCF4\uC11D(\uBB34\uAC8C ' + sortedJ[j2][0] + ', \uAC00\uACA9 ' + sortedJ[j2][1] + ') \uD799\uC5D0 \uCD94\uAC00. \uD799: [' + heap2.join(', ') + ']' });
-                j2++;
-            }
-            if (heap2.length > 0) {
-                var picked = heap2.shift();
-                answer += picked;
-                states.push({ h: heap2.slice(), msg: '\uAC00\uBC29 \uC6A9\uB7C9 ' + bag + ': \uAC00\uC7A5 \uBE44\uC2FC \uBCF4\uC11D ' + picked + ' \uC120\uD0DD! \uB204\uC801: ' + answer });
-            } else {
-                states.push({ h: heap2.slice(), msg: '\uAC00\uBC29 \uC6A9\uB7C9 ' + bag + ': \uB123\uC744 \uBCF4\uC11D \uC5C6\uC74C' });
-            }
-        });
-        states.push({ h: [], msg: '<strong style="color:var(--green);">\u2705 \uCD5C\uB300 \uAC00\uACA9 = ' + answer + '</strong>' });
-        renderH(states[0].h, states[0].msg);
-        var steps = [];
-        for (var i = 1; i < states.length; i++) {
-            (function(cur, prev) {
-                steps.push({ description: cur.msg.replace(/<[^>]+>/g, ''), action: function() { renderH(cur.h, cur.msg); }, undo: function() { renderH(prev.h, prev.msg); } });
-            })(states[i], states[i - 1]);
+        function parseJewels(str) {
+            return str.split(',').map(function(s) {
+                var parts = s.trim().split(/\s+/).map(Number);
+                return parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1]) ? [parts[0], parts[1]] : null;
+            }).filter(function(j) { return j !== null; });
         }
-        self._initStepController(container, steps, suffix);
+        function parseBags(str) {
+            return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+        }
+        function buildSteps(jewels, bags) {
+            var sortedJ = jewels.slice().sort(function(a, b) { return a[0] - b[0]; });
+            var sortedB = bags.slice().sort(function(a, b) { return a - b; });
+            var states = [{ h: [], msg: '\uBCF4\uC11D: \uBB34\uAC8C\uC21C \uC815\uB82C ' + sortedJ.map(function(j) { return '(' + j[0] + ',' + j[1] + ')'; }).join(', ') + '. \uAC00\uBC29: \uC6A9\uB7C9\uC21C \uC815\uB82C [' + sortedB.join(', ') + ']' }];
+            var heap2 = [], j2 = 0, answer = 0;
+            sortedB.forEach(function(bag) {
+                while (j2 < sortedJ.length && sortedJ[j2][0] <= bag) {
+                    heap2.push(sortedJ[j2][1]); heap2.sort(function(a, b) { return b - a; });
+                    states.push({ h: heap2.slice(), msg: '\uAC00\uBC29 \uC6A9\uB7C9 ' + bag + ': \uBCF4\uC11D(\uBB34\uAC8C ' + sortedJ[j2][0] + ', \uAC00\uACA9 ' + sortedJ[j2][1] + ') \uD799\uC5D0 \uCD94\uAC00. \uD799: [' + heap2.join(', ') + ']' });
+                    j2++;
+                }
+                if (heap2.length > 0) {
+                    var picked = heap2.shift();
+                    answer += picked;
+                    states.push({ h: heap2.slice(), msg: '\uAC00\uBC29 \uC6A9\uB7C9 ' + bag + ': \uAC00\uC7A5 \uBE44\uC2FC \uBCF4\uC11D ' + picked + ' \uC120\uD0DD! \uB204\uC801: ' + answer });
+                } else {
+                    states.push({ h: heap2.slice(), msg: '\uAC00\uBC29 \uC6A9\uB7C9 ' + bag + ': \uB123\uC744 \uBCF4\uC11D \uC5C6\uC74C' });
+                }
+            });
+            states.push({ h: [], msg: '<strong style="color:var(--green);">\u2705 \uCD5C\uB300 \uAC00\uACA9 = ' + answer + '</strong>' });
+            var steps = [];
+            for (var i = 1; i < states.length; i++) {
+                (function(cur, prev) {
+                    steps.push({ description: cur.msg.replace(/<[^>]+>/g, ''), action: function() { renderH(cur.h, cur.msg); }, undo: function() { renderH(prev.h, prev.msg); } });
+                })(states[i], states[i - 1]);
+            }
+            return { steps: steps, initial: states[0] };
+        }
+        function runSim(jewelsStr, bagsStr) {
+            var jewels = parseJewels(jewelsStr);
+            var bags = parseBags(bagsStr);
+            if (jewels.length === 0 || bags.length === 0) return;
+            var result = buildSteps(jewels, bags);
+            renderH(result.initial.h, result.initial.msg);
+            self._initStepController(container, result.steps, suffix);
+        }
+        container.querySelector('#pq-jewel-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runSim(container.querySelector('#pq-jewel-jewels').value, container.querySelector('#pq-jewel-bags').value);
+        });
+        runSim(DEFAULT_JEWELS, DEFAULT_BAGS);
     },
 
     // ===== 시각화 탭 =====
@@ -793,16 +959,53 @@ var priorityQueueTopic = {
             id: 'boj-11279', title: 'BOJ 11279 - 최대 힙', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11279',
             simIntro: '최대 힙에서 삽입과 삭제가 어떻게 동작하는지 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>최대 힙을 이용하여 다음과 같은 연산을 지원하는 프로그램을 작성하시오.</p><p>자연수 x를 넣는다. 배열에서 가장 큰 값을 출력하고 제거한다. x가 0이면 가장 큰 값을 출력하고 제거.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 연산의 개수 N (1 \u2264 N \u2264 100,000). 다음 N개의 줄에 정수 x.</p></div><div><h4>출력</h4><p>입력에서 0이 주어질 때마다 가장 큰 값을 출력. 비어있으면 0.</p></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>널리 잘 알려진 자료구조 중 최대 힙이 있다. 최대 힙을 이용하여 다음과 같은 연산을 지원하는 프로그램을 작성하시오.</p>
+                <p>배열에 자연수 x를 넣는다. 배열에서 가장 큰 값을 출력하고, 그 값을 배열에서 제거한다.</p>
+                <p>프로그램은 처음에 비어있는 배열에서 시작하게 된다.</p>
+                <p>x가 자연수라면 배열에 x를 넣는(추가하는) 연산이고, x가 0이라면 배열에서 가장 큰 값을 출력하고 그 값을 배열에서 제거하는 경우이다. 만약 배열이 비어 있는 경우인데 가장 큰 값을 출력하라고 한 경우에는 0을 출력하면 된다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>13
+1
+2
+0
+0
+3
+2
+1
+0
+0
+0
+0
+0
+0</pre></div>
+                    <div><strong>출력</strong><pre>2
+1
+3
+2
+1
+0
+0</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>x는 자연수 또는 0</li>
+                    <li>x ≤ 2<sup>31</sup> - 1</li>
+                </ul>
+            `,
             hints: [
-                { title: '접근법', content: 'Python heapq는 <strong>최소 힙</strong>만 지원합니다. <strong>-1을 곱해서</strong> 넣으면 최대 힙처럼 동작합니다!' },
-                { title: '핵심 코드', content: '<code>heappush(heap, -x)</code>로 넣고 <code>-heappop(heap)</code>로 꺼냅니다.' },
-                { title: '시간 복잡도', content: 'O(N log N)입니다.' }
+                { title: '처음 떠오르는 방법', content: '"가장 큰 값을 출력하라"니까... 배열에 숫자를 넣고, 0이 나올 때마다 <strong>배열 전체를 뒤져서 최댓값</strong>을 찾으면 되지 않을까?<br><br>매번 <code>max()</code>로 찾고, 그 값을 제거하면 될 것 같아!' },
+                { title: '근데 이러면 문제가 있어', content: '배열에서 최댓값 찾기 = <strong>O(N)</strong>, 제거도 <strong>O(N)</strong>이야.<br>연산이 최대 10만 번이고, 매번 O(N)이면 <strong>10만 × 10만 = 100억 번</strong>... 시간 초과!<br><br>넣을 때는 빠르지만, <strong>꺼낼 때마다 전부 뒤지는 게 병목</strong>이야.' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>힙(Heap)</strong>을 쓰면 삽입도 O(log N), 최댓값 꺼내기도 O(log N)이야!<br>힙은 "항상 최댓값(또는 최솟값)이 맨 위에 있는" 특별한 트리 구조거든.<br><br>그런데 주의할 점이 하나 있어:<br><span class="lang-py">Python의 <code>heapq</code>는 <strong>최소 힙</strong>만 지원해. 최대 힙이 필요한데 어떡하지? 🤔<br>→ <strong>-1을 곱해서</strong> 넣으면 돼! 가장 작은 음수 = 원래 가장 큰 수니까!</span><span class="lang-cpp">C++의 <code>priority_queue&lt;int&gt;</code>는 <strong>기본이 최대 힙</strong>이라 그대로 쓰면 돼! Python보다 오히려 간단하지.</span>' },
+                { title: '<span class="lang-py">Python</span><span class="lang-cpp">C++</span>에선 이렇게!', content: '<span class="lang-py"><code>heapq.heappush(heap, <strong>-x</strong>)</code>로 넣고, 꺼낼 때 <code><strong>-</strong>heapq.heappop(heap)</code>으로 부호를 되돌려주면 끝!<br>삽입/삭제 모두 <strong>O(log N)</strong>이라 전체 <strong>O(N log N)</strong>으로 여유있게 통과해.</span><span class="lang-cpp"><code>pq.push(x)</code>로 넣고, <code>pq.top()</code>으로 최댓값 확인 후 <code>pq.pop()</code>으로 제거하면 끝!<br>삽입/삭제 모두 <strong>O(log N)</strong>이라 전체 <strong>O(N log N)</strong>으로 여유있게 통과해.</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []\nfor _ in range(n):\n    x = int(input())\n    if x > 0:\n        heapq.heappush(heap, -x)\n    else:\n        if heap:\n            print(-heapq.heappop(heap))\n        else:\n            print(0)',
-                cpp: '#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int> pq;\n    while (n--) {\n        cin >> x;\n        if (x > 0) pq.push(x);\n        else { if (!pq.empty()) { cout << pq.top() << "\\n"; pq.pop(); } else cout << 0 << "\\n"; }\n    }\n    return 0;\n}',
-                java: 'import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int n = Integer.parseInt(br.readLine().trim());\n        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());\n        for (int i = 0; i < n; i++) {\n            int x = Integer.parseInt(br.readLine().trim());\n            if (x > 0) pq.offer(x);\n            else sb.append(pq.isEmpty() ? 0 : pq.poll()).append(\'\\n\');\n        }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int> pq;\n    while (n--) {\n        cin >> x;\n        if (x > 0) pq.push(x);\n        else { if (!pq.empty()) { cout << pq.top() << "\\n"; pq.pop(); } else cout << 0 << "\\n"; }\n    }\n    return 0;\n}'
             },
             solutions: [{
                 approach: '\uCD5C\uB300 \uD799 (-1 \uACF1\uD558\uAE30)',
@@ -811,9 +1014,14 @@ var priorityQueueTopic = {
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
-                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', code: 'for _ in range(n):\n    x = int(input())\n    if x > 0:\n        heapq.heappush(heap, -x)' },
-                        { title: '\uCD9C\uB825', code: '    else:\n        if heap:\n            print(-heapq.heappop(heap))\n        else:\n            print(0)' }
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: 'heapq는 최소 힙이므로 -1을 곱해 넣으면 최대 힙처럼 동작합니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
+                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', desc: 'x > 0이면 -x를 push하여 최대 힙 효과를 냅니다.', code: 'for _ in range(n):\n    x = int(input())\n    if x > 0:\n        heapq.heappush(heap, -x)' },
+                        { title: '\uCD9C\uB825', desc: '꺼낸 값에 다시 -1을 곱해 원래 값을 복원합니다.', code: '    else:\n        if heap:\n            print(-heapq.heappop(heap))\n        else:\n            print(0)' }
+                    ],
+                    cpp: [
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: 'C++ priority_queue\uB294 \uAE30\uBCF8\uC774 \uCD5C\uB300 \uD799 \u2192 -1 \uACF1\uD560 \uD544\uC694 \uC5C6\uC74C.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, x;\n    cin >> n;\n    priority_queue<int> pq;  // \uAE30\uBCF8: \uCD5C\uB300 \uD799' },
+                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', desc: 'x > 0이면 그대로 push. 기본 최대 힙이라 별도 변환 불필요.', code: '    while (n--) {\n        cin >> x;\n        if (x > 0) {\n            pq.push(x);\n        }' },
+                        { title: '\uCD9C\uB825', desc: 'top()으로 최댓값을 확인하고 pop()으로 제거합니다.', code: '        else {\n            if (!pq.empty()) {\n                cout << pq.top() << \'\\n\';\n                pq.pop();\n            } else {\n                cout << 0 << \'\\n\';\n            }\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return priorityQueueTopic.problems[0].templates; }
@@ -823,16 +1031,45 @@ var priorityQueueTopic = {
             id: 'boj-1927', title: 'BOJ 1927 - 최소 힙', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1927',
             simIntro: '최소 힙에서 삽입과 삭제가 어떻게 동작하는지 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>최소 힙을 이용하여 다음과 같은 연산을 지원하는 프로그램을 작성하시오.</p><p>배열에 자연수 x를 넣는다. 배열에서 가장 작은 값을 출력하고 제거한다.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 연산의 개수 N. 다음 N개의 줄에 정수 x. x가 자연수이면 넣고, 0이면 가장 작은 값을 출력하고 제거.</p></div><div><h4>출력</h4><p>0이 주어질 때마다 가장 작은 값 출력. 비어있으면 0.</p></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>널리 잘 알려진 자료구조 중 최소 힙이 있다. 최소 힙을 이용하여 다음과 같은 연산을 지원하는 프로그램을 작성하시오.</p>
+                <p>배열에 자연수 x를 넣는다. 배열에서 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다.</p>
+                <p>x가 자연수라면 배열에 x를 넣고, x가 0이라면 배열에서 가장 작은 값을 출력하고 제거한다. 배열이 비어있으면 0을 출력한다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>9
+0
+12345678
+1
+2
+0
+0
+0
+0
+32</pre></div>
+                    <div><strong>출력</strong><pre>0
+1
+2
+12345678
+0</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>1 ≤ x ≤ 2<sup>31</sup> - 1</li>
+                </ul>
+            `,
             hints: [
-                { title: '접근법', content: 'Python heapq는 기본이 <strong>최소 힙</strong>이므로 그대로 사용하면 됩니다!' },
-                { title: '핵심 코드', content: '<code>heapq.heappush(heap, x)</code>로 넣고 <code>heapq.heappop(heap)</code>로 꺼냅니다.' },
-                { title: '시간 복잡도', content: 'O(N log N)입니다.' }
+                { title: '처음 떠오르는 방법', content: '"가장 작은 값을 출력하라"니까... 숫자를 배열에 넣고, 0이 나오면 <strong>배열을 정렬해서 맨 앞</strong>을 꺼내면 되지 않을까?<br><br>아니면 매번 <code>min()</code>으로 최솟값을 찾아서 제거하거나!' },
+                { title: '근데 이러면 문제가 있어', content: '매번 정렬하면 <strong>O(N log N)</strong>, min()으로 찾아도 <strong>O(N)</strong>이야.<br>연산이 최대 10만 번이면 <strong>최악 10만 × 10만 = 100억 번</strong>... 너무 느려!<br><br>최대 힙 문제랑 똑같은 상황이야. <strong>"매번 전체를 뒤지는"</strong> 게 문제지.' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>최소 힙</strong>을 쓰면 삽입 O(log N), 최솟값 꺼내기 O(log N)으로 해결돼!<br>힙은 "맨 위에 항상 최솟값(또는 최댓값)이 있는" 구조라서, 매번 전체를 안 뒤져도 바로 꺼낼 수 있어.<br><br>최대 힙 문제에선 -1 곱하기 트릭이 필요했는데, <strong>최소 힙은 그냥 넣으면 돼!</strong>' },
+                { title: '<span class="lang-py">Python</span><span class="lang-cpp">C++</span>에선 이렇게!', content: '<span class="lang-py"><code>heapq</code>가 기본으로 <strong>최소 힙</strong>이라서, 아무 트릭 없이 <code>heappush(heap, x)</code>로 넣고 <code>heappop(heap)</code>으로 꺼내면 끝!<br>최대 힙보다 오히려 더 간단해. 전체 <strong>O(N log N)</strong>.</span><span class="lang-cpp">C++ <code>priority_queue</code>는 기본이 최대 힙이라, 최소 힙으로 바꿔야 해.<br><code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code>처럼 <strong>greater&lt;int&gt;</strong>를 넣어주면 최소 힙이 돼!<br>그 뒤로는 <code>pq.push(x)</code>, <code>pq.top()</code>, <code>pq.pop()</code> 그대로 사용. 전체 <strong>O(N log N)</strong>.</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []\nfor _ in range(n):\n    x = int(input())\n    if x > 0:\n        heapq.heappush(heap, x)\n    else:\n        if heap:\n            print(heapq.heappop(heap))\n        else:\n            print(0)',
-                cpp: '#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int, vector<int>, greater<int>> pq;\n    while (n--) {\n        cin >> x;\n        if (x > 0) pq.push(x);\n        else { if (!pq.empty()) { cout << pq.top() << "\\n"; pq.pop(); } else cout << 0 << "\\n"; }\n    }\n    return 0;\n}',
-                java: 'import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int n = Integer.parseInt(br.readLine().trim());\n        PriorityQueue<Integer> pq = new PriorityQueue<>();\n        for (int i = 0; i < n; i++) {\n            int x = Integer.parseInt(br.readLine().trim());\n            if (x > 0) pq.offer(x);\n            else sb.append(pq.isEmpty() ? 0 : pq.poll()).append(\'\\n\');\n        }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int, vector<int>, greater<int>> pq;\n    while (n--) {\n        cin >> x;\n        if (x > 0) pq.push(x);\n        else { if (!pq.empty()) { cout << pq.top() << "\\n"; pq.pop(); } else cout << 0 << "\\n"; }\n    }\n    return 0;\n}'
             },
             solutions: [{
                 approach: '\uCD5C\uC18C \uD799 (heapq \uAE30\uBCF8)',
@@ -841,9 +1078,14 @@ var priorityQueueTopic = {
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
-                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', code: 'for _ in range(n):\n    x = int(input())\n    if x > 0:\n        heapq.heappush(heap, x)' },
-                        { title: '\uCD9C\uB825', code: '    else:\n        if heap:\n            print(heapq.heappop(heap))\n        else:\n            print(0)' }
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: 'heapq는 기본이 최소 힙이므로 그대로 사용하면 됩니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
+                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', desc: 'x가 자연수이면 heappush로 최소 힙에 삽입합니다.', code: 'for _ in range(n):\n    x = int(input())\n    if x > 0:\n        heapq.heappush(heap, x)' },
+                        { title: '\uCD9C\uB825', desc: 'heappop은 항상 가장 작은 값을 꺼냅니다. 비어있으면 0 출력.', code: '    else:\n        if heap:\n            print(heapq.heappop(heap))\n        else:\n            print(0)' }
+                    ],
+                    cpp: [
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: 'greater<int>\uB97C \uB123\uC73C\uBA74 \uCD5C\uC18C \uD799.\nPython heapq\uC640 \uAC19\uC740 \uB3D9\uC791.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, x;\n    cin >> n;\n    // greater<int> \u2192 \uCD5C\uC18C \uD799 (Python heapq \uAE30\uBCF8\uACFC \uB3D9\uC77C)\n    priority_queue<int, vector<int>, greater<int>> pq;' },
+                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', desc: 'x > 0이면 push. greater<int> 덕분에 자동으로 최솟값이 top.', code: '    while (n--) {\n        cin >> x;\n        if (x > 0) {\n            pq.push(x);\n        }' },
+                        { title: '\uCD9C\uB825', desc: 'top()이 최솟값. pop()으로 제거 후 출력합니다.', code: '        else {\n            if (!pq.empty()) {\n                cout << pq.top() << \'\\n\';\n                pq.pop();\n            } else {\n                cout << 0 << \'\\n\';\n            }\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return priorityQueueTopic.problems[1].templates; }
@@ -853,16 +1095,60 @@ var priorityQueueTopic = {
             id: 'boj-11286', title: 'BOJ 11286 - 절댓값 힙', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11286',
             simIntro: '절댓값 힙에서 (abs(x), x) 튜플이 어떻게 정렬되는지 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>절댓값 힙은 다음과 같은 연산을 지원합니다.</p><p>\u2460 배열에 정수 x를 넣는다. \u2461 절댓값이 가장 작은 값을 출력하고 제거. 같으면 실제 값이 작은 것 우선.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄에 N. 다음 N줄에 정수 x. 0이 아니면 넣고, 0이면 절댓값 최솟값 출력.</p></div><div><h4>출력</h4><p>0이 주어질 때마다 답 출력. 비어있으면 0.</p></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>절댓값 힙은 다음과 같은 연산을 지원하는 자료구조이다.</p>
+                <p>배열에 정수 x (x ≠ 0)를 넣는다. 배열에서 절댓값이 가장 작은 값을 출력하고, 그 값을 배열에서 제거한다. 절댓값이 가장 작은 값이 여러개일 때는, 가장 작은 수를 출력하고 그 값을 배열에서 제거한다.</p>
+                <p>x가 0이 아니라면 배열에 x를 넣고, x가 0이라면 절댓값이 가장 작은 값을 출력하고 제거한다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>18
+1
+-1
+0
+0
+0
+1
+1
+-1
+-1
+2
+-2
+0
+0
+0
+0
+0
+0
+0</pre></div>
+                    <div><strong>출력</strong><pre>-1
+1
+0
+-1
+-1
+1
+1
+-2
+2
+0</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>-2<sup>31</sup> < x < 2<sup>31</sup></li>
+                    <li>x ≠ 0 (입력에서 0은 출력 명령)</li>
+                </ul>
+            `,
             hints: [
-                { title: '접근법', content: '<strong>(abs(x), x)</strong> 튜플을 힙에 넣으면 자동으로 해결됩니다.' },
-                { title: '핵심 코드', content: '<code>heapq.heappush(heap, (abs(x), x))</code>로 넣고 <code>heapq.heappop(heap)[1]</code>로 꺼냅니다.' },
-                { title: '시간 복잡도', content: 'O(N log N)입니다.' }
+                { title: '처음 떠오르는 방법', content: '"절댓값이 가장 작은 값을 꺼내라"니까... 배열에 숫자를 넣고, 0이 나오면 <strong>전부 절댓값을 비교해서</strong> 가장 작은 걸 찾으면 되지 않을까?<br><br>절댓값이 같은 게 여러 개면 그중 실제 값이 작은 걸 고르면 되고!' },
+                { title: '근데 이러면 문제가 있어', content: '매번 전체를 훑으면 <strong>O(N)</strong>이야. 연산이 최대 10만 번이면 또 시간 초과!<br><br>힙을 쓰면 될 것 같은데... 문제는 <strong>"절댓값 기준"</strong>이라는 거야.<br>일반 최소 힙은 실제 값 기준으로 정렬하니까, -1과 1 중에 -1을 먼저 꺼내버려. 우리는 둘 다 절댓값이 1이니까 동점 처리가 필요한데!' },
+                { title: '이렇게 하면 어떨까?', content: '힙에 숫자를 그냥 넣지 말고, <strong>(절댓값, 실제 값)</strong> 쌍으로 넣으면 어떨까?<br><br>예: 1 → (1, 1), -1 → (1, -1), 3 → (3, 3)<br><br>힙이 첫 번째 값(절댓값)으로 먼저 정렬하고, 같으면 두 번째 값(실제 값)으로 정렬하니까, <strong>절댓값이 같을 때 음수가 먼저</strong> 나오게 돼! 정확히 문제가 원하는 동작이야.' },
+                { title: '<span class="lang-py">Python</span><span class="lang-cpp">C++</span>에선 이렇게!', content: '<span class="lang-py"><code>heapq.heappush(heap, (abs(x), x))</code>로 튜플을 넣고, 꺼낼 때 <code>heappop(heap)[1]</code>로 원래 값만 가져오면 끝!<br>Python 튜플 비교가 자동으로 (절댓값 → 실제 값) 순서로 정렬해줘서 코드가 아주 깔끔해.</span><span class="lang-cpp">C++에선 <strong>커스텀 비교 구조체</strong>를 만들어야 해:<br><code>struct cmp { bool operator()(int a, int b) { if(abs(a)==abs(b)) return a&gt;b; return abs(a)&gt;abs(b); } };</code><br>이러면 <code>priority_queue&lt;int, vector&lt;int&gt;, cmp&gt;</code>로 절댓값 기준 최소 힙을 만들 수 있어!<br>Python 튜플처럼 자동 비교가 안 되니까, 비교 함수를 직접 정의하는 거야.</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []\nfor _ in range(n):\n    x = int(input())\n    if x != 0:\n        heapq.heappush(heap, (abs(x), x))\n    else:\n        if heap:\n            print(heapq.heappop(heap)[1])\n        else:\n            print(0)',
-                cpp: '#include <iostream>\n#include <queue>\n#include <cstdlib>\nusing namespace std;\nstruct cmp { bool operator()(int a, int b) { if (abs(a)==abs(b)) return a>b; return abs(a)>abs(b); } };\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int, vector<int>, cmp> pq;\n    while (n--) { cin >> x; if (x!=0) pq.push(x); else { if (!pq.empty()) { cout << pq.top() << "\\n"; pq.pop(); } else cout << 0 << "\\n"; } }\n    return 0;\n}',
-                java: 'import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int n = Integer.parseInt(br.readLine().trim());\n        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> { if (Math.abs(a)!=Math.abs(b)) return Math.abs(a)-Math.abs(b); return a-b; });\n        for (int i = 0; i < n; i++) { int x = Integer.parseInt(br.readLine().trim()); if (x!=0) pq.offer(x); else sb.append(pq.isEmpty()?0:pq.poll()).append(\'\\n\'); }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <queue>\n#include <cstdlib>\nusing namespace std;\nstruct cmp { bool operator()(int a, int b) { if (abs(a)==abs(b)) return a>b; return abs(a)>abs(b); } };\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int, vector<int>, cmp> pq;\n    while (n--) { cin >> x; if (x!=0) pq.push(x); else { if (!pq.empty()) { cout << pq.top() << "\\n"; pq.pop(); } else cout << 0 << "\\n"; } }\n    return 0;\n}'
             },
             solutions: [{
                 approach: '\uD29C\uD50C (abs(x), x)',
@@ -871,9 +1157,14 @@ var priorityQueueTopic = {
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
-                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', code: 'for _ in range(n):\n    x = int(input())\n    if x != 0:\n        heapq.heappush(heap, (abs(x), x))' },
-                        { title: '\uCD9C\uB825', code: '    else:\n        if heap:\n            print(heapq.heappop(heap)[1])\n        else:\n            print(0)' }
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: '(|x|, x) 튜플을 힙에 넣어 절댓값 기준 정렬을 구현합니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
+                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', desc: '튜플 비교: 첫 번째 값(절댓값)으로 정렬, 같으면 두 번째 값(원래 값)으로 정렬.', code: 'for _ in range(n):\n    x = int(input())\n    if x != 0:\n        heapq.heappush(heap, (abs(x), x))' },
+                        { title: '\uCD9C\uB825', desc: 'heappop()[1]로 튜플에서 원래 값만 꺼냅니다.', code: '    else:\n        if heap:\n            print(heapq.heappop(heap)[1])\n        else:\n            print(0)' }
+                    ],
+                    cpp: [
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: '\uCEE4\uC2A4\uD140 \uBE44\uAD50 \uD568\uC218\uB85C \uC808\uB313\uAC12 \uAE30\uC900 \uCD5C\uC18C \uD799 \uAD6C\uD604.\n\uC808\uB313\uAC12 \uAC19\uC73C\uBA74 \uC2E4\uC81C \uAC12\uC774 \uC791\uC740 \uAC83 \uC6B0\uC120.', code: '#include <iostream>\n#include <queue>\n#include <cstdlib>\nusing namespace std;\n\n// \uCEE4\uC2A4\uD140 \uBE44\uAD50: |a|==|b|\uC774\uBA74 \uC2E4\uC81C \uAC12 \uC791\uC740 \uAC83 \uC6B0\uC120\nstruct cmp {\n    bool operator()(int a, int b) {\n        if (abs(a) == abs(b)) return a > b;\n        return abs(a) > abs(b);\n    }\n};\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, x;\n    cin >> n;\n    priority_queue<int, vector<int>, cmp> pq;' },
+                        { title: '\uC5F0\uC0B0 \uCC98\uB9AC', desc: 'cmp 구조체 덕분에 push만 하면 절댓값 기준으로 자동 정렬됩니다.', code: '    while (n--) {\n        cin >> x;\n        if (x != 0) {\n            pq.push(x);\n        }' },
+                        { title: '\uCD9C\uB825', desc: 'top()이 절댓값이 가장 작은 값. Python 튜플 방식과 동일한 결과.', code: '        else {\n            if (!pq.empty()) {\n                cout << pq.top() << \'\\n\';\n                pq.pop();\n            } else {\n                cout << 0 << \'\\n\';\n            }\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return priorityQueueTopic.problems[2].templates; }
@@ -883,16 +1174,37 @@ var priorityQueueTopic = {
             id: 'boj-2075', title: 'BOJ 2075 - N번째 큰 수', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/2075',
             simIntro: '크기 N인 최소 힙을 유지하면서 N번째 큰 수를 구하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>N\u00D7N 표에서 N번째로 큰 수를 찾으시오. 메모리 제한 12MB!</p><div class="problem-io"><div><h4>입력</h4><p>N. 다음 N줄에 각 N개의 수.</p></div><div><h4>출력</h4><p>N번째 큰 수.</p></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>N×N의 표에 수 N<sup>2</sup>개 채워져 있다. 채워진 수에는 한 가지 특징이 있는데, 모든 수는 자신의 한 칸 위에 있는 수보다 크다는 것이다. N번째 큰 수를 찾아라.</p>
+                <p>메모리 제한은 12MB이다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5
+12 22 31 36 44
+11 26 27 28 45
+16 25 33 34 46
+15 29 30 35 47
+14 24 32 39 48</pre></div>
+                    <div><strong>출력</strong><pre>35</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 1,500</li>
+                    <li>표에 채워진 수는 모두 -10억 이상 10억 이하</li>
+                    <li>메모리 제한 12MB</li>
+                </ul>
+            `,
             hints: [
-                { title: '접근법', content: '<strong>크기 N인 최소 힙</strong>을 유지합니다. N\u00B2개를 다 저장하면 메모리 초과!' },
-                { title: '핵심 코드', content: '\uD799 \uD06C\uAE30 < N\uC774\uBA74 heappush, \uC544\uB2C8\uBA74 \uC0C8 \uAC12 > \uD799 \uB8E8\uD2B8\uC77C \uB54C\uB9CC heapreplace.' },
-                { title: '시간 복잡도', content: 'O(N\u00B2 log N). \uD799 \uB8E8\uD2B8 = N\uBC88\uC9F8 \uD070 \uC218.' }
+                { title: '처음 떠오르는 방법', content: 'N번째 큰 수를 찾으라니까... N\u00B2개 숫자를 <strong>전부 배열에 넣고 정렬</strong>해서 N번째를 꺼내면 되지 않을까?<br><br>N이 1,500이면 숫자가 1,500 \u00D7 1,500 = <strong>225만 개</strong>. 정렬하면 답은 나올 것 같아!' },
+                { title: '근데 이러면 문제가 있어', content: '문제를 다시 보면... <strong>메모리 제한이 12MB</strong>야!<br>int 225만 개 = 약 9MB인데, 배열 자체만으로도 빠듯하고 정렬에 추가 메모리까지 필요하면 초과할 수 있어.<br><br>핵심은 "225만 개를 <strong>전부 저장하지 않고</strong>도 N번째 큰 수를 찾을 수 있느냐"야!' },
+                { title: '이렇게 하면 어떨까?', content: '생각해보면, <strong>"상위 N개"만 기억</strong>하면 되잖아!<br><br><strong>크기 N짜리 최소 힙</strong>을 유지하는 거야:<br>1. 힙 크기가 N 미만이면 그냥 넣기<br>2. 힙 크기가 N이면, 새 값이 힙의 최솟값(루트)보다 <strong>클 때만</strong> 교체<br><br>이러면 힙에는 항상 "지금까지 본 숫자 중 가장 큰 N개"만 남아. 다 읽은 후 <strong>힙의 루트(최솟값) = N번째 큰 수</strong>!<br>메모리도 N개만 저장하니까 12MB 여유있게 통과해.' },
+                { title: '<span class="lang-py">Python</span><span class="lang-cpp">C++</span>에선 이렇게!', content: '<span class="lang-py">힙 크기 &lt; N이면 <code>heappush</code>, 아니면 새 값 &gt; <code>heap[0]</code>(루트)일 때만 <code>heapreplace(heap, x)</code>로 교체!<br><code>heapreplace</code>는 pop+push를 한 번에 해줘서 효율적이야.<br>마지막에 <code>heap[0]</code>이 정답. 전체 <strong>O(N\u00B2 log N)</strong>.</span><span class="lang-cpp"><code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code>로 최소 힙을 만들어.<br>힙 크기 &lt; N이면 <code>pq.push(x)</code>, 아니면 <code>x &gt; pq.top()</code>일 때 <code>pq.pop(); pq.push(x);</code>로 교체!<br>마지막에 <code>pq.top()</code>이 정답. 전체 <strong>O(N\u00B2 log N)</strong>.</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []\nfor _ in range(n):\n    row = list(map(int, input().split()))\n    for x in row:\n        if len(heap) < n:\n            heapq.heappush(heap, x)\n        elif x > heap[0]:\n            heapq.heapreplace(heap, x)\nprint(heap[0])',
-                cpp: '#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int i = 0; i < n*n; i++) { cin >> x; if ((int)pq.size()<n) pq.push(x); else if (x>pq.top()) { pq.pop(); pq.push(x); } }\n    cout << pq.top() << endl;\n    return 0;\n}',
-                java: 'import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        PriorityQueue<Integer> pq = new PriorityQueue<>();\n        for (int i = 0; i < n; i++) { StringTokenizer st = new StringTokenizer(br.readLine()); while (st.hasMoreTokens()) { int x = Integer.parseInt(st.nextToken()); if (pq.size()<n) pq.offer(x); else if (x>pq.peek()) { pq.poll(); pq.offer(x); } } }\n        System.out.println(pq.peek());\n    }\n}'
+                cpp: '#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n, x; cin >> n;\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int i = 0; i < n*n; i++) { cin >> x; if ((int)pq.size()<n) pq.push(x); else if (x>pq.top()) { pq.pop(); pq.push(x); } }\n    cout << pq.top() << endl;\n    return 0;\n}'
             },
             solutions: [{
                 approach: '\uD06C\uAE30 \uC81C\uD55C \uCD5C\uC18C \uD799',
@@ -901,9 +1213,14 @@ var priorityQueueTopic = {
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '\uC785\uB825', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
-                        { title: '\uD799 \uC720\uC9C0', code: 'for _ in range(n):\n    row = list(map(int, input().split()))\n    for x in row:\n        if len(heap) < n:\n            heapq.heappush(heap, x)\n        elif x > heap[0]:\n            heapq.heapreplace(heap, x)' },
-                        { title: '\uCD9C\uB825', code: 'print(heap[0])' }
+                        { title: '\uC785\uB825', desc: '힙 크기를 N으로 제한하여 메모리 12MB 제한을 지킵니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nn = int(input())\nheap = []' },
+                        { title: '\uD799 \uC720\uC9C0', desc: '힙 크기 < N이면 push, 아니면 새 값 > 루트일 때만 heapreplace로 교체합니다.', code: 'for _ in range(n):\n    row = list(map(int, input().split()))\n    for x in row:\n        if len(heap) < n:\n            heapq.heappush(heap, x)\n        elif x > heap[0]:\n            heapq.heapreplace(heap, x)' },
+                        { title: '\uCD9C\uB825', desc: '크기 N 최소 힙의 루트가 곧 N번째 큰 수입니다.', code: 'print(heap[0])' }
+                    ],
+                    cpp: [
+                        { title: '\uC785\uB825', desc: '\uCD5C\uC18C \uD799\uC73C\uB85C \uD06C\uAE30 N\uC744 \uC720\uC9C0.\nN\u00B2\uAC1C\uB97C \uB2E4 \uC800\uC7A5\uD558\uBA74 \uBA54\uBAA8\uB9AC \uCD08\uACFC(12MB)!', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n, x;\n    cin >> n;\n    // \uCD5C\uC18C \uD799: \uD06C\uAE30 N\uC744 \uC720\uC9C0\uD558\uBA74 \uB8E8\uD2B8 = N\uBC88\uC9F8 \uD070 \uC218\n    priority_queue<int, vector<int>, greater<int>> pq;' },
+                        { title: '\uD799 \uC720\uC9C0', desc: '\uD799 \uD06C\uAE30 < N\uC774\uBA74 \uADF8\uB0E5 push.\n\uC0C8 \uAC12 > \uD799 \uB8E8\uD2B8\uC77C \uB54C\uB9CC pop \uD6C4 push (heapreplace \uB300\uC751).', code: '    for (int i = 0; i < n * n; i++) {\n        cin >> x;\n        if ((int)pq.size() < n) {\n            pq.push(x);\n        } else if (x > pq.top()) {\n            pq.pop();   // \uAC00\uC7A5 \uC791\uC740 \uAC12 \uC81C\uAC70\n            pq.push(x); // \uB354 \uD070 \uAC12\uC73C\uB85C \uAD50\uCCB4\n        }\n    }' },
+                        { title: '\uCD9C\uB825', desc: 'top()이 N번째 큰 수. Python의 heap[0]과 동일한 역할.', code: '    cout << pq.top() << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return priorityQueueTopic.problems[3].templates; }
@@ -913,16 +1230,46 @@ var priorityQueueTopic = {
             id: 'boj-2696', title: 'BOJ 2696 - 중앙값 구하기', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/2696',
             simIntro: '최대 힙 + 최소 힙으로 중앙값을 실시간으로 구하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>수열을 읽고, 홀수 번째 수를 읽을 때마다 지금까지 읽은 값의 중앙값을 출력합니다.</p><div class="problem-io"><div><h4>입력</h4><p>T. 각 테스트 케이스: M과 수열.</p></div><div><h4>출력</h4><p>중앙값 개수와 중앙값들 (한 줄에 10개씩).</p></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>어떤 수열을 읽고, 홀수 번째 수를 읽을 때마다 지금까지 읽은 값의 중앙값을 출력하는 프로그램을 작성하시오.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3
+9
+1 2 3 4 5 6 7 8 9
+9
+9 8 7 6 5 4 3 2 1
+23
+23 41 13 22 -3 24 -31 -11 -8 -7
+3 5 103 211 -311 -45 0 1 2 3
+0 -2 99</pre></div>
+                    <div><strong>출력</strong><pre>5
+1 2 3 4 5
+5
+9 9 8 7 6
+12
+23 23 22 22 13 3 5 5 3 0 0 -2</pre></div>
+                </div>
+                <p class="example-explain">출력 첫 줄: 중앙값 개수, 이후 줄: 중앙값을 한 줄에 최대 10개씩 출력한다.</p>
+                </div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>T ≤ 1,000 (테스트 케이스 수)</li>
+                    <li>M은 9,999 이하의 홀수</li>
+                    <li>수열의 각 값은 -32,768 ~ 32,767</li>
+                </ul>
+            `,
             hints: [
-                { title: '접근법', content: '<strong>\uB450 \uAC1C\uC758 \uD799</strong>: \uCD5C\uB300 \uD799(\uC791\uC740 \uC808\uBC18) + \uCD5C\uC18C \uD799(\uD070 \uC808\uBC18).' },
-                { title: '핵심 코드', content: '\uCD5C\uB300 \uD799 \uD06C\uAE30 \u2265 \uCD5C\uC18C \uD799 \uD06C\uAE30 \uC720\uC9C0. \uCD5C\uB300 \uD799 \uB8E8\uD2B8 = \uC911\uC559\uAC12.' },
-                { title: '시간 복잡도', content: '\uAC01 \uC0BD\uC785 O(log N), \uC804\uCCB4 O(M log M).' }
+                { title: '처음 떠오르는 방법', content: '홀수 번째 수를 읽을 때마다 "지금까지의 중앙값"을 출력하라니까...<br>매번 <strong>지금까지 읽은 숫자를 정렬</strong>하고 가운데 값을 꺼내면 되지 않을까?<br><br>예: [1, 2, 3, 4, 5] → 정렬 → 가운데(3번째) = 3!' },
+                { title: '근데 이러면 문제가 있어', content: '숫자가 하나 들어올 때마다 전체를 정렬하면 <strong>O(N log N)</strong>이야.<br>M이 최대 9,999이면 매 홀수 번째마다 정렬 → 약 5,000 \u00D7 10,000 \u00D7 log(10,000) \u2248 <strong>6억 번</strong>... 시간 초과 위험!<br><br>숫자가 하나 추가될 때마다 <strong>정렬을 다시 하는 건 낭비</strong>야. 이미 정렬된 상태에서 하나만 추가되는 건데...' },
+                { title: '이렇게 하면 어떨까?', content: '핵심 아이디어: 수열을 <strong>절반으로 나눠서</strong> 관리하자!<br><br>\u2022 <strong>최대 힙(maxH)</strong>: 작은 쪽 절반 → 이 중 가장 큰 값이 루트<br>\u2022 <strong>최소 힙(minH)</strong>: 큰 쪽 절반 → 이 중 가장 작은 값이 루트<br><br>두 힙의 크기를 균형 맞추면 (maxH 크기 \u2265 minH 크기), <strong>maxH의 루트가 바로 중앙값</strong>이야!<br><br>새 숫자가 들어오면:<br>1. maxH 루트보다 작으면 maxH에, 크면 minH에 넣기<br>2. 크기가 불균형하면 한쪽에서 다른 쪽으로 옮기기<br><br>삽입+균형 맞추기가 <strong>O(log N)</strong>이라서 전체 <strong>O(M log M)</strong>으로 해결!' },
+                { title: '<span class="lang-py">Python</span><span class="lang-cpp">C++</span>에선 이렇게!', content: '<span class="lang-py"><code>heapq</code>는 최소 힙이라, maxH는 <strong>-1 곱하기 트릭</strong>을 써야 해.<br><code>heappush(maxH, -x)</code>로 넣고, 루트는 <code>-maxH[0]</code>으로 확인.<br>균형 맞추기: maxH가 2개 더 많으면 minH로, minH가 더 많으면 maxH로 옮기기!</span><span class="lang-cpp">C++은 <code>priority_queue&lt;int&gt;</code>가 기본 최대 힙이라 maxH는 그대로!<br>minH는 <code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code>로 최소 힙.<br><code>maxH.top()</code>이 곧 중앙값. Python처럼 -1 곱할 필요가 없어서 더 직관적이야.</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    M = int(input())\n    nums = []\n    while len(nums) < M:\n        nums.extend(map(int, input().split()))\n    maxH, minH, medians = [], [], []\n    for i, x in enumerate(nums):\n        if not maxH or x <= -maxH[0]:\n            heapq.heappush(maxH, -x)\n        else:\n            heapq.heappush(minH, x)\n        if len(maxH) > len(minH) + 1:\n            heapq.heappush(minH, -heapq.heappop(maxH))\n        elif len(minH) > len(maxH):\n            heapq.heappush(maxH, -heapq.heappop(minH))\n        if (i + 1) % 2 == 1:\n            medians.append(-maxH[0])\n    print(len(medians))\n    for i in range(0, len(medians), 10):\n        print(\' \'.join(map(str, medians[i:i+10])))',
-                cpp: '#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) {\n        int M; cin >> M;\n        priority_queue<int> maxH;\n        priority_queue<int, vector<int>, greater<int>> minH;\n        vector<int> med;\n        for (int i = 0; i < M; i++) {\n            int x; cin >> x;\n            if (maxH.empty()||x<=maxH.top()) maxH.push(x); else minH.push(x);\n            if ((int)maxH.size()>(int)minH.size()+1){minH.push(maxH.top());maxH.pop();}\n            else if ((int)minH.size()>(int)maxH.size()){maxH.push(minH.top());minH.pop();}\n            if ((i+1)%2==1) med.push_back(maxH.top());\n        }\n        cout << med.size() << "\\n";\n        for (int i=0;i<(int)med.size();i++){cout<<med[i];if((i+1)%10==0||i==(int)med.size()-1)cout<<"\\n";else cout<<" ";}\n    }\n    return 0;\n}',
-                java: 'import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int T = Integer.parseInt(br.readLine().trim());\n        while (T-- > 0) {\n            int M = Integer.parseInt(br.readLine().trim());\n            PriorityQueue<Integer> maxH = new PriorityQueue<>(Collections.reverseOrder());\n            PriorityQueue<Integer> minH = new PriorityQueue<>();\n            List<Integer> nums = new ArrayList<>(), med = new ArrayList<>();\n            while (nums.size()<M){StringTokenizer st=new StringTokenizer(br.readLine());while(st.hasMoreTokens())nums.add(Integer.parseInt(st.nextToken()));}\n            for (int i=0;i<M;i++){int x=nums.get(i);if(maxH.isEmpty()||x<=maxH.peek())maxH.offer(x);else minH.offer(x);if(maxH.size()>minH.size()+1){minH.offer(maxH.poll());}else if(minH.size()>maxH.size()){maxH.offer(minH.poll());}if((i+1)%2==1)med.add(maxH.peek());}\n            sb.append(med.size()).append(\'\\n\');\n            for(int i=0;i<med.size();i++){sb.append(med.get(i));if((i+1)%10==0||i==med.size()-1)sb.append(\'\\n\');else sb.append(\' \');}\n        }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int T; cin >> T;\n    while (T--) {\n        int M; cin >> M;\n        priority_queue<int> maxH;\n        priority_queue<int, vector<int>, greater<int>> minH;\n        vector<int> med;\n        for (int i = 0; i < M; i++) {\n            int x; cin >> x;\n            if (maxH.empty()||x<=maxH.top()) maxH.push(x); else minH.push(x);\n            if ((int)maxH.size()>(int)minH.size()+1){minH.push(maxH.top());maxH.pop();}\n            else if ((int)minH.size()>(int)maxH.size()){maxH.push(minH.top());minH.pop();}\n            if ((i+1)%2==1) med.push_back(maxH.top());\n        }\n        cout << med.size() << "\\n";\n        for (int i=0;i<(int)med.size();i++){cout<<med[i];if((i+1)%10==0||i==(int)med.size()-1)cout<<"\\n";else cout<<" ";}\n    }\n    return 0;\n}'
             },
             solutions: [{
                 approach: '\uB450 \uAC1C\uC758 \uD799',
@@ -931,9 +1278,14 @@ var priorityQueueTopic = {
                 spaceComplexity: 'O(M)',
                 codeSteps: {
                     python: [
-                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    M = int(input())\n    nums = []\n    while len(nums) < M:\n        nums.extend(map(int, input().split()))' },
-                        { title: '\uD799 \uC0BD\uC785 \uBC0F \uADE0\uD615', code: '    maxH, minH, medians = [], [], []\n    for i, x in enumerate(nums):\n        if not maxH or x <= -maxH[0]:\n            heapq.heappush(maxH, -x)\n        else:\n            heapq.heappush(minH, x)\n        if len(maxH) > len(minH) + 1:\n            heapq.heappush(minH, -heapq.heappop(maxH))\n        elif len(minH) > len(maxH):\n            heapq.heappush(maxH, -heapq.heappop(minH))' },
-                        { title: '\uC911\uC559\uAC12 \uCD9C\uB825', code: '        if (i + 1) % 2 == 1:\n            medians.append(-maxH[0])\n    print(len(medians))\n    for i in range(0, len(medians), 10):\n        print(\' \'.join(map(str, medians[i:i+10])))' }
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: '두 개의 힙(최대 힙 + 최소 힙)으로 중앙값을 실시간 유지합니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    M = int(input())\n    nums = []\n    while len(nums) < M:\n        nums.extend(map(int, input().split()))' },
+                        { title: '\uD799 \uC0BD\uC785 \uBC0F \uADE0\uD615', desc: 'maxH(작은 절반)과 minH(큰 절반) 크기를 균형 맞춰 maxH 루트 = 중앙값.', code: '    maxH, minH, medians = [], [], []\n    for i, x in enumerate(nums):\n        if not maxH or x <= -maxH[0]:\n            heapq.heappush(maxH, -x)\n        else:\n            heapq.heappush(minH, x)\n        if len(maxH) > len(minH) + 1:\n            heapq.heappush(minH, -heapq.heappop(maxH))\n        elif len(minH) > len(maxH):\n            heapq.heappush(maxH, -heapq.heappop(minH))' },
+                        { title: '\uC911\uC559\uAC12 \uCD9C\uB825', desc: '홀수 번째마다 maxH 루트(-maxH[0])가 중앙값. 10개씩 줄바꿈 출력.', code: '        if (i + 1) % 2 == 1:\n            medians.append(-maxH[0])\n    print(len(medians))\n    for i in range(0, len(medians), 10):\n        print(\' \'.join(map(str, medians[i:i+10])))' }
+                    ],
+                    cpp: [
+                        { title: '\uC785\uB825 \uBC0F \uCD08\uAE30\uD654', desc: 'C++ priority_queue\uB294 \uAE30\uBCF8\uC774 \uCD5C\uB300 \uD799 \u2192 maxH\uB294 \uADF8\uB300\uB85C.\nminH\uB294 greater<int>\uB85C \uCD5C\uC18C \uD799.', code: '#include <iostream>\n#include <queue>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int T;\n    cin >> T;\n    while (T--) {\n        int M;\n        cin >> M;\n        priority_queue<int> maxH;  // \uCD5C\uB300 \uD799 (\uC791\uC740 \uC808\uBC18)\n        priority_queue<int, vector<int>, greater<int>> minH;  // \uCD5C\uC18C \uD799 (\uD070 \uC808\uBC18)\n        vector<int> med;' },
+                        { title: '\uD799 \uC0BD\uC785 \uBC0F \uADE0\uD615', desc: 'maxH \uD06C\uAE30 \u2265 minH \uD06C\uAE30 \uC720\uC9C0.\nmaxH\uC758 top = \uC911\uC559\uAC12.', code: '        for (int i = 0; i < M; i++) {\n            int x;\n            cin >> x;\n            // \uC791\uC740 \uC808\uBC18 \uB610\uB294 \uD070 \uC808\uBC18\uC5D0 \uC0BD\uC785\n            if (maxH.empty() || x <= maxH.top())\n                maxH.push(x);\n            else\n                minH.push(x);\n            // \uADE0\uD615 \uB9DE\uCD94\uAE30: maxH \uD06C\uAE30 \u2265 minH \uD06C\uAE30\n            if ((int)maxH.size() > (int)minH.size() + 1) {\n                minH.push(maxH.top()); maxH.pop();\n            } else if ((int)minH.size() > (int)maxH.size()) {\n                maxH.push(minH.top()); minH.pop();\n            }' },
+                        { title: '\uC911\uC559\uAC12 \uCD9C\uB825', desc: '홀수 번째마다 maxH.top()이 중앙값. 한 줄에 10개씩 출력합니다.', code: '            if ((i + 1) % 2 == 1)\n                med.push_back(maxH.top());\n        }\n        cout << med.size() << \'\\n\';\n        for (int i = 0; i < (int)med.size(); i++) {\n            cout << med[i];\n            if ((i + 1) % 10 == 0 || i == (int)med.size() - 1)\n                cout << \'\\n\';\n            else\n                cout << \' \';\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return priorityQueueTopic.problems[4].templates; }
@@ -943,16 +1295,45 @@ var priorityQueueTopic = {
             id: 'boj-1202', title: 'BOJ 1202 - 보석 도둑', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1202',
             simIntro: '가방을 작은 순서대로 처리하면서 그리디 + 힙으로 최적해를 구하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>N개의 보석(무게, 가격)과 K개의 가방(용량). 가방에는 최대 1개의 보석. 훔칠 수 있는 최대 가격 합을 구하시오.</p><div class="problem-io"><div><h4>입력</h4><p>N, K. N줄에 무게와 가격. K줄에 가방 용량.</p></div><div><h4>출력</h4><p>최대 가격 합.</p></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>세계적인 도둑 상덕이는 보석점을 털기로 했다. 보석점에 있는 보석 개수는 총 N개이다. 각 보석은 무게 M<sub>i</sub>와 가격 V<sub>i</sub>를 가지고 있다. 상덕이는 가방을 K개 가지고 있고, 각 가방에 담을 수 있는 최대 무게는 C<sub>i</sub>이다. 가방에는 최대 한 개의 보석만 넣을 수 있다.</p>
+                <p>상덕이가 훔칠 수 있는 보석의 최대 가격을 구하시오.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>2 1
+5 10
+100 100
+11</pre></div>
+                    <div><strong>출력</strong><pre>10</pre></div>
+                </div></div>
+
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3 2
+1 65
+5 23
+2 99
+10
+2</pre></div>
+                    <div><strong>출력</strong><pre>164</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N, K ≤ 300,000</li>
+                    <li>0 ≤ M<sub>i</sub>, V<sub>i</sub> ≤ 1,000,000</li>
+                    <li>1 ≤ C<sub>i</sub> ≤ 100,000,000</li>
+                </ul>
+            `,
             hints: [
-                { title: '접근법', content: '\uAC00\uBC29\uC744 <strong>\uC6A9\uB7C9\uC774 \uC791\uC740 \uC21C\uC11C</strong>\uB85C, \uBCF4\uC11D\uC744 <strong>\uBB34\uAC8C \uC21C\uC11C</strong>\uB85C \uC815\uB82C\uD569\uB2C8\uB2E4.' },
-                { title: '핵심 코드', content: '\uAC01 \uAC00\uBC29\uB9C8\uB2E4 \uB4E4\uC5B4\uAC08 \uC218 \uC788\uB294 \uBCF4\uC11D\uC744 <strong>\uCD5C\uB300 \uD799</strong>\uC5D0 \uB123\uACE0, \uAC00\uC7A5 \uBE44\uC2FC \uAC83\uC744 \uAEBC\uB0C5\uB2C8\uB2E4.' },
-                { title: '시간 복잡도', content: 'O((N+K) log N)' }
+                { title: '처음 떠오르는 방법', content: '가방마다 보석 하나씩 넣으니까... 각 가방에 <strong>들어갈 수 있는 보석 중 가장 비싼 걸</strong> 넣으면 최대 이득 아닌가?<br><br>가방마다 모든 보석을 확인해서 "무게가 맞고 가장 비싼 것"을 골라 넣자!' },
+                { title: '근데 이러면 문제가 있어', content: 'N, K가 최대 30만이면, 가방 30만 개 \u00D7 보석 30만 개 = <strong>900억 번</strong> 비교... 완전히 시간 초과!<br><br>게다가 한 보석을 가방 A에 넣으면 가방 B에 못 넣으니까, <strong>어떤 가방에 어떤 보석을 배정하느냐</strong>가 중요해. 단순 완전 탐색으론 안 돼.' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>그리디 전략</strong>: 가방을 <strong>용량이 작은 순서</strong>대로 처리하자!<br><br>왜 작은 가방부터? 작은 가방에 들어가는 보석은 큰 가방에도 들어가지만, 반대는 아니거든. 그래서 <strong>선택지가 적은 가방부터</strong> 처리하는 게 최적이야.<br><br>각 가방을 처리할 때:<br>1. 이 가방에 <strong>무게가 맞는 보석</strong>을 전부 최대 힙에 넣기<br>2. 힙에서 <strong>가장 비싼 보석</strong>을 하나 꺼내기<br><br>보석도 무게순 정렬해두면, 포인터 하나로 "아직 안 넣은 보석 중 무게가 맞는 것"을 순서대로 넣을 수 있어!' },
+                { title: '<span class="lang-py">Python</span><span class="lang-cpp">C++</span>에선 이렇게!', content: '<span class="lang-py">보석은 무게순 정렬, 가방은 용량순 정렬.<br>포인터 <code>j</code>로 보석을 순서대로 탐색하면서 <code>heappush(heap, -v)</code>로 가격을 최대 힙에 넣기. (-1 곱하기 트릭!)<br>각 가방마다 <code>-heappop(heap)</code>으로 가장 비싼 보석 선택.<br>전체 <strong>O((N+K) log N)</strong>으로 통과!</span><span class="lang-cpp">C++ <code>priority_queue&lt;int&gt;</code>는 기본이 최대 힙이라 가격을 그대로 넣으면 돼!<br>포인터 <code>j</code>로 보석을 무게순 탐색하면서 <code>pq.push(v)</code>로 넣고, 각 가방마다 <code>pq.top()</code>으로 가장 비싼 보석 선택.<br>답이 int 범위를 넘을 수 있으니 <code>long long</code> 사용! 전체 <strong>O((N+K) log N)</strong>.</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\njewels = []\nfor _ in range(N):\n    m, v = map(int, input().split())\n    jewels.append((m, v))\nbags = [int(input()) for _ in range(K)]\n\njewels.sort()\nbags.sort()\n\nanswer = 0\nheap = []\nj = 0\nfor bag in bags:\n    while j < N and jewels[j][0] <= bag:\n        heapq.heappush(heap, -jewels[j][1])\n        j += 1\n    if heap:\n        answer += -heapq.heappop(heap)\nprint(answer)',
-                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, K; cin >> N >> K;\n    vector<pair<int,int>> jewels(N); vector<int> bags(K);\n    for (int i=0;i<N;i++) cin >> jewels[i].first >> jewels[i].second;\n    for (int i=0;i<K;i++) cin >> bags[i];\n    sort(jewels.begin(),jewels.end()); sort(bags.begin(),bags.end());\n    priority_queue<int> pq; long long ans=0; int j=0;\n    for (int i=0;i<K;i++){while(j<N&&jewels[j].first<=bags[i]){pq.push(jewels[j].second);j++;}if(!pq.empty()){ans+=pq.top();pq.pop();}}\n    cout << ans << endl;\n    return 0;\n}',
-                java: 'import java.io.*;\nimport java.util.*;\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N=Integer.parseInt(st.nextToken()),K=Integer.parseInt(st.nextToken());\n        int[][] jewels=new int[N][2]; for(int i=0;i<N;i++){st=new StringTokenizer(br.readLine());jewels[i][0]=Integer.parseInt(st.nextToken());jewels[i][1]=Integer.parseInt(st.nextToken());}\n        int[] bags=new int[K]; for(int i=0;i<K;i++) bags[i]=Integer.parseInt(br.readLine().trim());\n        Arrays.sort(jewels,(a,b)->a[0]-b[0]); Arrays.sort(bags);\n        PriorityQueue<Integer> pq=new PriorityQueue<>(Collections.reverseOrder()); long ans=0; int j=0;\n        for(int bag:bags){while(j<N&&jewels[j][0]<=bag){pq.offer(jewels[j][1]);j++;}if(!pq.isEmpty())ans+=pq.poll();}\n        System.out.println(ans);\n    }\n}'
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int N, K; cin >> N >> K;\n    vector<pair<int,int>> jewels(N); vector<int> bags(K);\n    for (int i=0;i<N;i++) cin >> jewels[i].first >> jewels[i].second;\n    for (int i=0;i<K;i++) cin >> bags[i];\n    sort(jewels.begin(),jewels.end()); sort(bags.begin(),bags.end());\n    priority_queue<int> pq; long long ans=0; int j=0;\n    for (int i=0;i<K;i++){while(j<N&&jewels[j].first<=bags[i]){pq.push(jewels[j].second);j++;}if(!pq.empty()){ans+=pq.top();pq.pop();}}\n    cout << ans << endl;\n    return 0;\n}'
             },
             solutions: [{
                 approach: '\uADF8\uB9AC\uB514 + \uCD5C\uB300 \uD799',
@@ -961,9 +1342,14 @@ var priorityQueueTopic = {
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '\uC785\uB825 \uBC0F \uC815\uB82C', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\njewels = []\nfor _ in range(N):\n    m, v = map(int, input().split())\n    jewels.append((m, v))\nbags = [int(input()) for _ in range(K)]\njewels.sort()\nbags.sort()' },
-                        { title: '\uADF8\uB9AC\uB514 + \uD799', code: 'answer = 0\nheap = []\nj = 0\nfor bag in bags:\n    while j < N and jewels[j][0] <= bag:\n        heapq.heappush(heap, -jewels[j][1])\n        j += 1\n    if heap:\n        answer += -heapq.heappop(heap)' },
-                        { title: '\uCD9C\uB825', code: 'print(answer)' }
+                        { title: '\uC785\uB825 \uBC0F \uC815\uB82C', desc: '보석은 무게순, 가방은 용량순 정렬. 작은 가방부터 처리하기 위함.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\njewels = []\nfor _ in range(N):\n    m, v = map(int, input().split())\n    jewels.append((m, v))\nbags = [int(input()) for _ in range(K)]\njewels.sort()\nbags.sort()' },
+                        { title: '\uADF8\uB9AC\uB514 + \uD799', desc: '가방마다 담을 수 있는 보석을 최대 힙에 넣고, 가장 비싼 것을 선택합니다.', code: 'answer = 0\nheap = []\nj = 0\nfor bag in bags:\n    while j < N and jewels[j][0] <= bag:\n        heapq.heappush(heap, -jewels[j][1])\n        j += 1\n    if heap:\n        answer += -heapq.heappop(heap)' },
+                        { title: '\uCD9C\uB825', desc: '모든 가방을 처리한 뒤 누적 가격 합을 출력합니다.', code: 'print(answer)' }
+                    ],
+                    cpp: [
+                        { title: '\uC785\uB825 \uBC0F \uC815\uB82C', desc: 'pair<\uBB34\uAC8C, \uAC00\uACA9>\uC73C\uB85C \uC815\uB82C \u2192 \uBB34\uAC8C \uAE30\uC900 \uC790\uB3D9 \uC815\uB82C.\n\uAC00\uBC29\uB3C4 \uC6A9\uB7C9 \uC791\uC740 \uC21C\uC11C\uB85C \uC815\uB82C.', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, K;\n    cin >> N >> K;\n    vector<pair<int,int>> jewels(N);  // {\uBB34\uAC8C, \uAC00\uACA9}\n    vector<int> bags(K);\n    for (int i = 0; i < N; i++)\n        cin >> jewels[i].first >> jewels[i].second;\n    for (int i = 0; i < K; i++)\n        cin >> bags[i];\n    sort(jewels.begin(), jewels.end());\n    sort(bags.begin(), bags.end());' },
+                        { title: '\uADF8\uB9AC\uB514 + \uD799', desc: '\uAC00\uBC29\uB9C8\uB2E4 \uB4E4\uC5B4\uAC08 \uC218 \uC788\uB294 \uBCF4\uC11D\uC744 \uCD5C\uB300 \uD799\uC5D0 \uB123\uACE0,\n\uAC00\uC7A5 \uBE44\uC2FC \uBCF4\uC11D\uC744 \uAEBC\uB0C4.\nC++ priority_queue\uB294 \uAE30\uBCF8\uC774 \uCD5C\uB300 \uD799\uC774\uB77C -1 \uACF1\uD560 \uD544\uC694 \uC5C6\uC74C.', code: '    priority_queue<int> pq;  // \uCD5C\uB300 \uD799: \uAC00\uC7A5 \uBE44\uC2FC \uBCF4\uC11D\uC774 top\n    long long ans = 0;\n    int j = 0;\n    for (int i = 0; i < K; i++) {\n        // \uD604\uC7AC \uAC00\uBC29\uC5D0 \uB4E4\uC5B4\uAC08 \uC218 \uC788\uB294 \uBCF4\uC11D \uBAA8\uB450 \uD799\uC5D0 \uB123\uAE30\n        while (j < N && jewels[j].first <= bags[i]) {\n            pq.push(jewels[j].second);\n            j++;\n        }\n        if (!pq.empty()) {\n            ans += pq.top();\n            pq.pop();\n        }\n    }' },
+                        { title: '\uCD9C\uB825', desc: 'long long으로 누적한 총 가격을 출력합니다.', code: '    cout << ans << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return priorityQueueTopic.problems[5].templates; }

@@ -210,7 +210,7 @@ const arrayTopic = {
         wrapper.innerHTML =
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">' +
             '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
-            '<option value="python">Python</option><option value="cpp">C++</option><option value="java">Java</option></select>' +
+            '<option value="python">Python</option><option value="cpp">C++</option></select>' +
             '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">' +
             (isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗') + '</a></div>' +
             '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
@@ -219,7 +219,7 @@ const arrayTopic = {
         if (window.hljs) hljs.highlightElement(codeEl);
         wrapper.querySelector('.str-lang-select').addEventListener('change', function() {
             var lang = this.value;
-            var langMap = { python: 'language-python', cpp: 'language-cpp', java: 'language-java' };
+            var langMap = { python: 'language-python', cpp: 'language-cpp' };
             codeEl.className = langMap[lang];
             codeEl.textContent = prob.templates[lang];
             if (window.hljs) hljs.highlightElement(codeEl);
@@ -359,7 +359,7 @@ const arrayTopic = {
         var isLC = prob.link.includes('leetcode');
         var wrapper = document.createElement('div');
         var langs = Object.keys(sol.templates);
-        var langNames = { python: 'Python', cpp: 'C++', java: 'Java' };
+        var langNames = { python: 'Python', cpp: 'C++' };
         var currentLang = langs[0] || 'python';
         var currentStep = -1;
 
@@ -435,7 +435,7 @@ const arrayTopic = {
         }
 
         function render() {
-            var titleMap = { python: 'solution.py', cpp: 'solution.cpp', java: 'Solution.java' };
+            var titleMap = { python: 'solution.py', cpp: 'solution.cpp' };
             codeEl.className = 'language-' + langClass(currentLang);
             codeTitle.textContent = titleMap[currentLang] || 'solution';
 
@@ -590,7 +590,7 @@ const arrayTopic = {
                         <p>정렬되어 있으면 이분 탐색(O(log n))이 가능합니다. 투 포인터도 정렬 후 사용합니다.</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 배열(리스트) 기본 조작
 arr = [3, 1, 4, 1, 5, 9, 2, 6]
 
@@ -605,6 +605,33 @@ print(arr)          # [1, 1, 2, 3, 4, 5, 6, 7, 9]
 # 리스트 컴프리헨션 — 짝수만 골라내기
 evens = [x for x in arr if x % 2 == 0]
 print(evens)        # [2, 4, 6]</code></pre>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; arr = {3, 1, 4, 1, 5, 9, 2, 6};
+
+    cout &lt;&lt; arr[0] &lt;&lt; endl;       // 3 — 첫 원소
+    cout &lt;&lt; arr.back() &lt;&lt; endl;   // 6 — 마지막 원소
+    cout &lt;&lt; arr.size() &lt;&lt; endl;   // 8 — 길이
+
+    arr.push_back(7);              // 끝에 추가: O(1)
+    sort(arr.begin(), arr.end());  // 정렬: O(n log n)
+
+    // 짝수만 골라내기
+    vector&lt;int&gt; evens;
+    for (int x : arr) {
+        if (x % 2 == 0) evens.push_back(x);
+    }
+    // evens = {2, 4, 6}
+}</code></pre>
+                </div></span>
+                <div style="margin-top:0.5rem;">
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#list" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: list ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: vector ↗</a></span>
                 </div>
                 <div class="think-box">
                     <div class="think-box-question">
@@ -652,7 +679,7 @@ print(evens)        # [2, 4, 6]</code></pre>
                         <p>합이 크면 right--, 작으면 left++. O(n)에 완료!</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 투 포인터: 정렬된 배열에서 합이 target인 두 수 찾기
 def two_sum_sorted(arr, target):
     left, right = 0, len(arr) - 1
@@ -668,7 +695,33 @@ def two_sum_sorted(arr, target):
 
 arr = [1, 2, 4, 6, 8, 10]
 print(two_sum_sorted(arr, 10))  # [1, 4] → 2+8=10</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 투 포인터: 정렬된 배열에서 합이 target인 두 수 찾기
+vector&lt;int&gt; two_sum_sorted(vector&lt;int&gt;&amp; arr, int target) {
+    int left = 0, right = arr.size() - 1;
+    while (left &lt; right) {
+        int s = arr[left] + arr[right];
+        if (s == target)
+            return {left, right};
+        else if (s &lt; target)
+            left++;        // 합이 작으니 왼쪽을 키움
+        else
+            right--;       // 합이 크니 오른쪽을 줄임
+    }
+    return {-1, -1};       // 못 찾음
+}
+
+int main() {
+    vector&lt;int&gt; arr = {1, 2, 4, 6, 8, 10};
+    auto res = two_sum_sorted(arr, 10);
+    cout &lt;&lt; res[0] &lt;&lt; ", " &lt;&lt; res[1] &lt;&lt; endl;  // 1, 4 → 2+8=10
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -709,7 +762,7 @@ print(two_sum_sorted(arr, 10))  # [1, 4] → 2+8=10</code></pre>
                         <p>조건을 만족하면 왼쪽을 줄이고, 아니면 오른쪽을 늘립니다.</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 슬라이딩 윈도우: 크기 K인 부분 배열의 최대 합
 def max_subarray_sum(arr, k):
     # 처음 윈도우의 합
@@ -724,7 +777,34 @@ def max_subarray_sum(arr, k):
 
 arr = [2, 1, 5, 1, 3, 2]
 print(max_subarray_sum(arr, 3))  # 9 (= 5+1+3)</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 슬라이딩 윈도우: 크기 K인 부분 배열의 최대 합
+int max_subarray_sum(vector&lt;int&gt;&amp; arr, int k) {
+    // 처음 윈도우의 합
+    int window_sum = 0;
+    for (int i = 0; i &lt; k; i++)
+        window_sum += arr[i];
+    int max_sum = window_sum;
+
+    // 한 칸씩 밀기: 새로 들어온 건 더하고, 나간 건 빼기
+    for (int i = k; i &lt; (int)arr.size(); i++) {
+        window_sum += arr[i] - arr[i - k];
+        max_sum = max(max_sum, window_sum);
+    }
+    return max_sum;
+}
+
+int main() {
+    vector&lt;int&gt; arr = {2, 1, 5, 1, 3, 2};
+    cout &lt;&lt; max_subarray_sum(arr, 3) &lt;&lt; endl;  // 9 (= 5+1+3)
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -771,7 +851,7 @@ print(max_subarray_sum(arr, 3))  # 9 (= 5+1+3)</code></pre>
                         <p>순회하면서 최솟값/최댓값/누적값을 변수에 추적하면 한 번에 답을 구할 수 있습니다.</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 예시: 주식 최대 이익 (한 번 순회, 최솟값 추적)
 def max_profit(prices):
     min_price = float('inf')
@@ -783,7 +863,30 @@ def max_profit(prices):
 
 prices = [7, 1, 5, 3, 6, 4]
 print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;climits&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 예시: 주식 최대 이익 (한 번 순회, 최솟값 추적)
+int max_profit(vector&lt;int&gt;&amp; prices) {
+    int min_price = INT_MAX;
+    int profit = 0;
+    for (int price : prices) {
+        min_price = min(min_price, price);        // 지금까지 최저가
+        profit = max(profit, price - min_price);   // 지금 팔면?
+    }
+    return profit;
+}
+
+int main() {
+    vector&lt;int&gt; prices = {7, 1, 5, 3, 6, 4};
+    cout &lt;&lt; max_profit(prices) &lt;&lt; endl;  // 5 (1에 사서 6에 판다)
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -1141,6 +1244,7 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
             }
         };
 
+        var actionDelay = 350;
         nextBtn.addEventListener('click', () => {
             // 마지막 스텝 → 다시 시작
             if (state.steps.length > 0 && state.currentStep >= state.steps.length - 1) {
@@ -1159,22 +1263,26 @@ print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
             }
             if (state.currentStep >= state.steps.length - 1) return;
             state.currentStep++;
-            state.steps[state.currentStep].action();
             updateUI();
+            setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay);
         });
 
         prevBtn.addEventListener('click', () => {
             if (state.currentStep <= 0) {
                 // Step 0에서 이전 → 초기 상태로
-                if (state.currentStep === 0 && state.steps[0].undo) state.steps[0].undo();
+                var stepToUndo = state.currentStep;
                 state.currentStep = -1;
-                if (state.buildSteps) state.steps = [];
                 updateUI();
+                setTimeout(() => {
+                    if (stepToUndo === 0 && state.steps[0] && state.steps[0].undo) state.steps[0].undo();
+                    if (state.buildSteps) state.steps = [];
+                }, actionDelay);
                 return;
             }
-            if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+            var stepToUndo = state.currentStep;
             state.currentStep--;
             updateUI();
+            setTimeout(() => { if (state.steps[stepToUndo] && state.steps[stepToUndo].undo) state.steps[stepToUndo].undo(); }, actionDelay);
         });
 
         const handleKeydown = (e) => {
@@ -1789,18 +1897,7 @@ public:
         }
         return {};
     }
-};`,
-                java: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> seen = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int comp = target - nums[i];
-            if (seen.containsKey(comp)) return new int[]{seen.get(comp), i};
-            seen.put(nums[i], i);
-        }
-        return new int[]{};
-    }
-}`
+};`
             },
             solutions: [{
                 approach: '브루트포스',
@@ -1808,7 +1905,7 @@ public:
                 timeComplexity: 'O(n²)',
                 spaceComplexity: 'O(1)',
                 hints: [
-                    { title: '처음 생각: 이중 for문', content: '<div class="hint-key">💡 가장 단순한 방법: 모든 쌍을 전부 확인!</div><p>배열의 모든 두 수 조합을 하나씩 비교하면 됩니다.</p><pre><code class="language-python">for i in range(len(nums)):\n    for j in range(i+1, len(nums)):\n        if nums[i] + nums[j] == target:\n            return [i, j]</code></pre>' },
+                    { title: '처음 생각: 이중 for문', content: '<div class="hint-key">💡 가장 단순한 방법: 모든 쌍을 전부 확인!</div><p>배열의 모든 두 수 조합을 하나씩 비교하면 됩니다.</p><span class="lang-py"><pre><code class="language-python">for i in range(len(nums)):\n    for j in range(i+1, len(nums)):\n        if nums[i] + nums[j] == target:\n            return [i, j]</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">for (int i = 0; i < nums.size(); i++)\n    for (int j = i+1; j < nums.size(); j++)\n        if (nums[i] + nums[j] == target)\n            return {i, j};</code></pre></span>' },
                     {
                         title: '직접 해보기',
                         content: '<div class="hint-key">🔍 Brute Force로 직접 찾아보자!</div><div class="hint-sub">탭하면서 한 쌍씩 비교해보세요</div>',
@@ -1895,8 +1992,7 @@ public:
                 limitation: '<p>n이 <strong>10,000</strong>이면 약 <strong>5천만 번</strong> 비교! 😱</p><p>매번 나머지 수를 전부 훑어야 하니 시간 초과가 발생합니다.</p><div class="hint-key">💡 "이미 본 수를 기억해둘 수 없을까?"</div>',
                 templates: {
                     python: `class Solution:\n    def twoSum(self, nums, target):\n        for i in range(len(nums)):\n            for j in range(i + 1, len(nums)):\n                if nums[i] + nums[j] == target:\n                    return [i, j]`,
-                    cpp: `class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        for (int i = 0; i < nums.size(); i++) {\n            for (int j = i + 1; j < nums.size(); j++) {\n                if (nums[i] + nums[j] == target)\n                    return {i, j};\n            }\n        }\n        return {};\n    }\n};`,
-                    java: `class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        for (int i = 0; i < nums.length; i++) {\n            for (int j = i + 1; j < nums.length; j++) {\n                if (nums[i] + nums[j] == target)\n                    return new int[]{i, j};\n            }\n        }\n        return new int[]{};\n    }\n}`
+                    cpp: `class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        for (int i = 0; i < nums.size(); i++) {\n            for (int j = i + 1; j < nums.size(); j++) {\n                if (nums[i] + nums[j] == target)\n                    return {i, j};\n            }\n        }\n        return {};\n    }\n};`
                 },
                 codeSteps: {
                     python: [
@@ -1908,11 +2004,6 @@ public:
                         { title: '첫 번째 수 선택', desc: '모든 쌍을 확인하기 위해 i를 고정합니다.\nO(n²)이지만 가장 직관적인 방법입니다.', code: 'class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        // 모든 쌍 (i, j) 확인 → O(n²)\n        for (int i = 0; i < nums.size(); i++) {' },
                         { title: '두 번째 수 탐색', desc: 'j = i+1부터 → 같은 쌍을 두 번 확인하지 않음', code: '            for (int j = i + 1; j < nums.size(); j++) {' },
                         { title: '합 확인 + 반환', desc: '합이 target이면 즉시 반환!', code: '                if (nums[i] + nums[j] == target)\n                    return {i, j};\n            }\n        }\n        return {};\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '첫 번째 수 선택', desc: '모든 쌍을 확인하기 위해 i를 고정합니다.\nO(n²)이지만 가장 직관적인 방법입니다.', code: 'class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // 모든 쌍 (i, j) 확인 → O(n²)\n        for (int i = 0; i < nums.length; i++) {' },
-                        { title: '두 번째 수 탐색', desc: 'j = i+1부터 → 같은 쌍을 두 번 확인하지 않음', code: '            for (int j = i + 1; j < nums.length; j++) {' },
-                        { title: '합 확인 + 반환', desc: '합이 target이면 즉시 반환!', code: '                if (nums[i] + nums[j] == target)\n                    return new int[]{i, j};\n            }\n        }\n        return new int[]{};\n    }\n}' }
                     ]
                 }
             }, {
@@ -2057,8 +2148,7 @@ public:
                 comparison: '<p><strong>O(n²) → O(n)</strong> — 공간(해시맵)으로 시간을 절약!</p><p>브루트포스는 15번 비교했지만, 해시맵은 단 <strong>6번</strong>만에 답을 찾습니다.</p>',
                 templates: {
                     python: `class Solution:\n    def twoSum(self, nums, target):\n        seen = {}  # 값 → 인덱스\n        for i, num in enumerate(nums):\n            complement = target - num\n            if complement in seen:\n                return [seen[complement], i]\n            seen[num] = i`,
-                    cpp: `class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> seen;\n        for (int i = 0; i < nums.size(); i++) {\n            int comp = target - nums[i];\n            if (seen.count(comp)) return {seen[comp], i};\n            seen[nums[i]] = i;\n        }\n        return {};\n    }\n};`,
-                    java: `class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int comp = target - nums[i];\n            if (seen.containsKey(comp)) return new int[]{seen.get(comp), i};\n            seen.put(nums[i], i);\n        }\n        return new int[]{};\n    }\n}`
+                    cpp: `class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> seen;\n        for (int i = 0; i < nums.size(); i++) {\n            int comp = target - nums[i];\n            if (seen.count(comp)) return {seen[comp], i};\n            seen[nums[i]] = i;\n        }\n        return {};\n    }\n};`
                 },
                 codeSteps: {
                     python: [
@@ -2072,12 +2162,6 @@ public:
                         { title: '배열 순회', desc: 'for문으로 인덱스와 값을 순회합니다.', code: '        for (int i = 0; i < nums.size(); i++) {' },
                         { title: 'complement 계산 + 확인', desc: '핵심: target - nums[i] = 짝꿍!\nseen에 짝꿍이 있으면 정답 반환 (O(1) 조회).', code: '            int comp = target - nums[i]; // 짝꿍\n            if (seen.count(comp)) return {seen[comp], i};' },
                         { title: '현재 값 저장 + 마무리', desc: '못 찾으면 현재 값을 기록 → 뒤의 숫자가 찾을 수 있음', code: '            seen[nums[i]] = i; // 나중에 찾아질 수 있도록 저장\n        }\n        return {};\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '해시맵 초기화', desc: 'HashMap → O(1) 조회!\n{값: 인덱스}를 저장하여 짝꿍을 빠르게 찾습니다.', code: 'class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>(); // {값: 인덱스}' },
-                        { title: '배열 순회', desc: 'for문으로 인덱스와 값을 순회합니다.', code: '        for (int i = 0; i < nums.length; i++) {' },
-                        { title: 'complement 계산 + 확인', desc: '핵심: target - nums[i] = 짝꿍!\nseen에 짝꿍이 있으면 정답 반환 (O(1) 조회).', code: '            int comp = target - nums[i]; // 짝꿍\n            if (seen.containsKey(comp)) return new int[]{seen.get(comp), i};' },
-                        { title: '현재 값 저장 + 마무리', desc: '못 찾으면 현재 값을 기록 → 뒤의 숫자가 찾을 수 있음', code: '            seen.put(nums[i], i); // 나중에 찾아질 수 있도록 저장\n        }\n        return new int[]{};\n    }\n}' }
                     ]
                 }
             }]
@@ -2146,17 +2230,7 @@ public:
         }
         return maxP;
     }
-};`,
-                java: `class Solution {
-    public int maxProfit(int[] prices) {
-        int minP = Integer.MAX_VALUE, maxP = 0;
-        for (int p : prices) {
-            minP = Math.min(minP, p);
-            maxP = Math.max(maxP, p - minP);
-        }
-        return maxP;
-    }
-}`
+};`
             },
             solutions: [{
                 approach: '브루트포스',
@@ -2165,8 +2239,7 @@ public:
                 spaceComplexity: 'O(1)',
                 templates: {
                     python: `class Solution:\n    def maxProfit(self, prices):\n        max_profit = 0\n        for i in range(len(prices)):\n            for j in range(i + 1, len(prices)):\n                profit = prices[j] - prices[i]\n                max_profit = max(max_profit, profit)\n        return max_profit`,
-                    cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int maxP = 0;\n        for (int i = 0; i < prices.size(); i++) {\n            for (int j = i + 1; j < prices.size(); j++) {\n                maxP = max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n};`,
-                    java: `class Solution {\n    public int maxProfit(int[] prices) {\n        int maxP = 0;\n        for (int i = 0; i < prices.length; i++) {\n            for (int j = i + 1; j < prices.length; j++) {\n                maxP = Math.max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n}`
+                    cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int maxP = 0;\n        for (int i = 0; i < prices.size(); i++) {\n            for (int j = i + 1; j < prices.size(); j++) {\n                maxP = max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n};`
                 },
                 codeSteps: {
                     python: [
@@ -2179,11 +2252,6 @@ public:
                         { title: '초기화', desc: '이익 없으면 0 반환을 위해 0으로 시작', code: 'class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int maxP = 0; // 이익 없으면 0' },
                         { title: '이중 for문', desc: '모든 (매수일 i, 매도일 j) 조합을 확인.\nj = i+1 → 과거에 팔 수 없으므로', code: '        for (int i = 0; i < prices.size(); i++) {\n            for (int j = i + 1; j < prices.size(); j++) {' },
                         { title: '이익 계산 + 반환', desc: '판매가 - 구매가의 최대값을 갱신하고 반환', code: '                maxP = max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '초기화', desc: '이익 없으면 0 반환을 위해 0으로 시작', code: 'class Solution {\n    public int maxProfit(int[] prices) {\n        int maxP = 0; // 이익 없으면 0' },
-                        { title: '이중 for문', desc: '모든 (매수일 i, 매도일 j) 조합을 확인.\nj = i+1 → 과거에 팔 수 없으므로', code: '        for (int i = 0; i < prices.length; i++) {\n            for (int j = i + 1; j < prices.length; j++) {' },
-                        { title: '이익 계산 + 반환', desc: '판매가 - 구매가의 최대값을 갱신하고 반환', code: '                maxP = Math.max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n}' }
                     ]
                 }
             }, {
@@ -2193,8 +2261,7 @@ public:
                 spaceComplexity: 'O(1)',
                 templates: {
                     python: `class Solution:\n    def maxProfit(self, prices):\n        min_price = float('inf')\n        max_profit = 0\n        for price in prices:\n            min_price = min(min_price, price)\n            max_profit = max(max_profit, price - min_price)\n        return max_profit`,
-                    cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int minP = INT_MAX, maxP = 0;\n        for (int p : prices) {\n            minP = min(minP, p);\n            maxP = max(maxP, p - minP);\n        }\n        return maxP;\n    }\n};`,
-                    java: `class Solution {\n    public int maxProfit(int[] prices) {\n        int minP = Integer.MAX_VALUE, maxP = 0;\n        for (int p : prices) {\n            minP = Math.min(minP, p);\n            maxP = Math.max(maxP, p - minP);\n        }\n        return maxP;\n    }\n}`
+                    cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int minP = INT_MAX, maxP = 0;\n        for (int p : prices) {\n            minP = min(minP, p);\n            maxP = max(maxP, p - minP);\n        }\n        return maxP;\n    }\n};`
                 },
                 codeSteps: {
                     python: [
@@ -2208,11 +2275,6 @@ public:
                         { title: '변수 초기화', desc: '핵심: "지금까지 가장 싼 날"을 기억!\nINT_MAX → 어떤 가격이든 처음에 갱신됨.', code: 'class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int minP = INT_MAX, maxP = 0; // 최저가, 최대이익' },
                         { title: '순회 + 최솟값 갱신', desc: '각 가격에서 최저가를 갱신.\n→ 이후의 날들이 이 가격에 사서 팔 수 있음', code: '        for (int p : prices) {\n            minP = min(minP, p); // 최저가 갱신' },
                         { title: '이익 계산 + 결과', desc: '"오늘 판다면?" → p - minP\nO(n) 한 번 순회로 최적 해를 구합니다.', code: '            maxP = max(maxP, p - minP); // 오늘 팔면?\n        }\n        return maxP;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '변수 초기화', desc: '핵심: "지금까지 가장 싼 날"을 기억!\nMAX_VALUE → 어떤 가격이든 처음에 갱신됨.', code: 'class Solution {\n    public int maxProfit(int[] prices) {\n        int minP = Integer.MAX_VALUE, maxP = 0; // 최저가, 최대이익' },
-                        { title: '순회 + 최솟값 갱신', desc: '각 가격에서 최저가를 갱신.\n→ 이후의 날들이 이 가격에 사서 팔 수 있음', code: '        for (int p : prices) {\n            minP = Math.min(minP, p); // 최저가 갱신' },
-                        { title: '이익 계산 + 결과', desc: '"오늘 판다면?" → p - minP\nO(n) 한 번 순회로 최적 해를 구합니다.', code: '            maxP = Math.max(maxP, p - minP); // 오늘 팔면?\n        }\n        return maxP;\n    }\n}' }
                     ]
                 }
             }]
@@ -2308,28 +2370,7 @@ public:
         }
         return res;
     }
-};`,
-                java: `class Solution {
-    public List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length - 2; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-            int l = i + 1, r = nums.length - 1;
-            while (l < r) {
-                int s = nums[i] + nums[l] + nums[r];
-                if (s == 0) {
-                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));
-                    while (l < r && nums[l] == nums[l + 1]) l++;
-                    while (l < r && nums[r] == nums[r - 1]) r--;
-                    l++; r--;
-                } else if (s < 0) l++;
-                else r--;
-            }
-        }
-        return res;
-    }
-}`
+};`
             },
             solutions: [{
                 approach: '브루트포스',
@@ -2338,8 +2379,7 @@ public:
                 spaceComplexity: 'O(n)',
                 templates: {
                     python: `class Solution:\n    def threeSum(self, nums):\n        result = set()\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):\n                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)\n        return [list(t) for t in result]`,
-                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`,
-                    java: `class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Set<List<Integer>> resultSet = new HashSet<>();\n        int n = nums.length;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        List<Integer> triplet = Arrays.asList(nums[i], nums[j], nums[k]);\n                        Collections.sort(triplet);\n                        resultSet.add(triplet);\n                    }\n                }\n            }\n        }\n        return new ArrayList<>(resultSet);\n    }\n}`
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`
                 },
                 codeSteps: {
                     python: [
@@ -2352,11 +2392,6 @@ public:
                         { title: 'Set 초기화', desc: '중복 제거를 위해 set<vector<int>> 사용.\n정렬된 vector를 넣으면 동일 조합 자동 제거.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet; // 중복 제거\n        int n = nums.size();' },
                         { title: '삼중 for문 + 합 확인', desc: '모든 (i,j,k) 조합을 확인 → O(n³).\n합이 0이면 정렬 후 set에 삽입.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }' },
                         { title: '결과 반환', desc: 'set → vector로 변환하여 반환.', code: '        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};' }
-                    ],
-                    java: [
-                        { title: 'Set 초기화', desc: '중복 제거를 위해 HashSet 사용.\n정렬된 리스트를 넣으면 동일 조합 자동 제거.', code: 'class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Set<List<Integer>> resultSet = new HashSet<>(); // 중복 제거\n        int n = nums.length;' },
-                        { title: '삼중 for문 + 합 확인', desc: '모든 (i,j,k) 조합을 확인 → O(n³).\n합이 0이면 정렬 후 set에 삽입.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        List<Integer> triplet = Arrays.asList(nums[i], nums[j], nums[k]);\n                        Collections.sort(triplet);\n                        resultSet.add(triplet);\n                    }\n                }\n            }\n        }' },
-                        { title: '결과 반환', desc: 'Set → List로 변환하여 반환.', code: '        return new ArrayList<>(resultSet);\n    }\n}' }
                     ]
                 }
             }, {
@@ -2366,8 +2401,7 @@ public:
                 spaceComplexity: 'O(1)',
                 templates: {
                     python: `class Solution:\n    def threeSum(self, nums):\n        nums.sort()\n        result = []\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            left, right = i + 1, len(nums) - 1\n            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:\n                    left += 1\n                else:\n                    right -= 1\n        return result`,
-                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`,
-                    java: `class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}`
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`
                 },
                 codeSteps: {
                     python: [
@@ -2381,11 +2415,6 @@ public:
                         { title: '정렬 + 초기화', desc: '정렬하면 투 포인터 사용 가능!\n합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end()); // 정렬 → 투 포인터!\n        vector<vector<int>> res;' },
                         { title: 'i 고정 + 중복 건너뛰기', desc: 'i를 고정 후 나머지를 투 포인터로 찾음.\n같은 값 건너뛰기 → 중복 조합 방지!', code: '        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue; // 중복 skip' },
                         { title: '투 포인터 탐색', desc: '합 == 0 → 정답! 중복 건너뛰고 양쪽 이동.\n합 < 0 → left++, 합 > 0 → right--', code: '            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // 합 작다 → left 이동\n                else r--;               // 합 크다 → right 이동\n            }\n        }\n        return res;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '정렬 + 초기화', desc: '정렬하면 투 포인터 사용 가능!\n합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums); // 정렬 → 투 포인터!\n        List<List<Integer>> res = new ArrayList<>();' },
-                        { title: 'i 고정 + 중복 건너뛰기', desc: 'i를 고정 후 나머지를 투 포인터로 찾음.\n같은 값 건너뛰기 → 중복 조합 방지!', code: '        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue; // 중복 skip' },
-                        { title: '투 포인터 탐색', desc: '합 == 0 → 정답! 중복 건너뛰고 양쪽 이동.\n합 < 0 → left++, 합 > 0 → right--', code: '            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // 합 작다 → left 이동\n                else r--;               // 합 크다 → right 이동\n            }\n        }\n        return res;\n    }\n}' }
                     ]
                 }
             }]
@@ -2515,7 +2544,8 @@ while True:
         count += 1
 
 print(count)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -2532,29 +2562,6 @@ int main() {
         if (sum == M) cnt++;
     }
     printf("%d\\n", cnt);
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int[] arr = new int[N];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());
-
-        int s = 0, e = 0, sum = 0, cnt = 0;
-        while (true) {
-            if (sum >= M) sum -= arr[s++];
-            else if (e >= N) break;
-            else sum += arr[e++];
-            if (sum == M) cnt++;
-        }
-        System.out.println(cnt);
-    }
 }`
             },
             solutions: [{
@@ -2564,8 +2571,8 @@ public class Main {
                 spaceComplexity: 'O(1)',
                 templates: {
                     python: `import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\ncount = 0\nfor i in range(N):\n    total = 0\n    for j in range(i, N):\n        total += arr[j]\n        if total == M:\n            count += 1\n\nprint(count)`,
-                    cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int cnt = 0;\n    for (int i = 0; i < N; i++) {\n        int total = 0;\n        for (int j = i; j < N; j++) {\n            total += arr[j];\n            if (total == M) cnt++;\n        }\n    }\n    printf("%d\\n", cnt);\n}`,
-                    java: `import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int cnt = 0;\n        for (int i = 0; i < N; i++) {\n            int total = 0;\n            for (int j = i; j < N; j++) {\n                total += arr[j];\n                if (total == M) cnt++;\n            }\n        }\n        System.out.println(cnt);\n    }\n}`
+                    cpp: `#include <iostream>
+#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int cnt = 0;\n    for (int i = 0; i < N; i++) {\n        int total = 0;\n        for (int j = i; j < N; j++) {\n            total += arr[j];\n            if (total == M) cnt++;\n        }\n    }\n    printf("%d\\n", cnt);\n}`
                 },
                 codeSteps: {
                     python: [
@@ -2575,14 +2582,9 @@ public class Main {
                         { title: '결과 출력', desc: '합이 M인 연속 부분 구간의 개수를 출력.', code: 'print(count)' }
                     ],
                     cpp: [
-                        { title: '입력 + 초기화', desc: 'N, M과 배열을 입력받고 카운트 초기화.', code: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int cnt = 0;' },
+                        { title: '입력 + 초기화', desc: 'N, M과 배열을 입력받고 카운트 초기화.', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int cnt = 0;' },
                         { title: '이중 for문으로 부분합 확인', desc: '모든 시작점 i에서 끝점 j까지 누적합 계산.\ntotal을 계속 더해가므로 내부 루프에서 O(1)에 갱신.', code: '    for (int i = 0; i < N; i++) {\n        int total = 0; // 새 시작점마다 리셋\n        for (int j = i; j < N; j++) {\n            total += arr[j]; // 구간 [i..j] 합\n            if (total == M) cnt++;\n        }\n    }' },
                         { title: '결과 출력', desc: '합이 M인 연속 구간의 개수를 출력.', code: '    printf("%d\\n", cnt);\n}' }
-                    ],
-                    java: [
-                        { title: '입력 + 초기화', desc: 'N, M과 배열을 입력받고 카운트 초기화.', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int cnt = 0;' },
-                        { title: '이중 for문으로 부분합 확인', desc: '모든 시작점 i에서 끝점 j까지 누적합 계산.\ntotal을 계속 더해가므로 내부 루프에서 O(1)에 갱신.', code: '        for (int i = 0; i < N; i++) {\n            int total = 0; // 새 시작점마다 리셋\n            for (int j = i; j < N; j++) {\n                total += arr[j]; // 구간 [i..j] 합\n                if (total == M) cnt++;\n            }\n        }' },
-                        { title: '결과 출력', desc: '합이 M인 연속 구간의 개수를 출력.', code: '        System.out.println(cnt);\n    }\n}' }
                     ]
                 }
             }, {
@@ -2592,8 +2594,8 @@ public class Main {
                 spaceComplexity: 'O(1)',
                 templates: {
                     python: `import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\nstart, end = 0, 0\ncurrent_sum = 0\ncount = 0\n\nwhile True:\n    if current_sum >= M:\n        current_sum -= arr[start]\n        start += 1\n    elif end >= N:\n        break\n    else:\n        current_sum += arr[end]\n        end += 1\n\n    if current_sum == M:\n        count += 1\n\nprint(count)`,
-                    cpp: `#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0;\n    while (true) {\n        if (sum >= M) sum -= arr[s++];\n        else if (e >= N) break;\n        else sum += arr[e++];\n        if (sum == M) cnt++;\n    }\n    printf("%d\\n", cnt);\n}`,
-                    java: `import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int s = 0, e = 0, sum = 0, cnt = 0;\n        while (true) {\n            if (sum >= M) sum -= arr[s++];\n            else if (e >= N) break;\n            else sum += arr[e++];\n            if (sum == M) cnt++;\n        }\n        System.out.println(cnt);\n    }\n}`
+                    cpp: `#include <iostream>
+#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0;\n    while (true) {\n        if (sum >= M) sum -= arr[s++];\n        else if (e >= N) break;\n        else sum += arr[e++];\n        if (sum == M) cnt++;\n    }\n    printf("%d\\n", cnt);\n}`
                 },
                 codeSteps: {
                     python: [
@@ -2603,14 +2605,9 @@ public class Main {
                         { title: '결과 출력', desc: 'O(n) 한 번 순회로 모든 구간을 찾았습니다.\nstart, end 각각 최대 N번 이동 → O(2N) = O(n).', code: 'print(count)' }
                     ],
                     cpp: [
-                        { title: '입력 + 포인터 초기화', desc: '두 포인터 s, e로 구간 [s, e)을 관리.\n합이 작으면 e 확장, 크면 s 축소 → O(n).', code: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0; // 구간 [s, e)' },
+                        { title: '입력 + 포인터 초기화', desc: '두 포인터 s, e로 구간 [s, e)을 관리.\n합이 작으면 e 확장, 크면 s 축소 → O(n).', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0; // 구간 [s, e)' },
                         { title: '메인 루프 + 합 확인', desc: '합 ≥ M → s 빼고 전진 (구간 축소).\ne가 끝이면 종료.\n합 < M → e 더하고 확장.\n매 반복 합 == M 확인.', code: '    while (true) {\n        if (sum >= M) sum -= arr[s++];     // 구간 축소\n        else if (e >= N) break;            // 종료\n        else sum += arr[e++];              // 구간 확장\n        if (sum == M) cnt++;               // 합이 M!\n    }' },
                         { title: '결과 출력', desc: 'O(n) — s와 e 각각 최대 N번만 이동.', code: '    printf("%d\\n", cnt);\n}' }
-                    ],
-                    java: [
-                        { title: '입력 + 포인터 초기화', desc: '두 포인터 s, e로 구간 [s, e)을 관리.\n합이 작으면 e 확장, 크면 s 축소 → O(n).', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int N = Integer.parseInt(st.nextToken());\n        int M = Integer.parseInt(st.nextToken());\n        int[] arr = new int[N];\n        st = new StringTokenizer(br.readLine());\n        for (int i = 0; i < N; i++) arr[i] = Integer.parseInt(st.nextToken());\n\n        int s = 0, e = 0, sum = 0, cnt = 0; // 구간 [s, e)' },
-                        { title: '메인 루프 + 합 확인', desc: '합 ≥ M → s 빼고 전진 (구간 축소).\ne가 끝이면 종료.\n합 < M → e 더하고 확장.\n매 반복 합 == M 확인.', code: '        while (true) {\n            if (sum >= M) sum -= arr[s++];     // 구간 축소\n            else if (e >= N) break;            // 종료\n            else sum += arr[e++];              // 구간 확장\n            if (sum == M) cnt++;               // 합이 M!\n        }' },
-                        { title: '결과 출력', desc: 'O(n) — s와 e 각각 최대 N번만 이동.', code: '        System.out.println(cnt);\n    }\n}' }
                     ]
                 }
             }]
@@ -2687,7 +2684,7 @@ public class Main {
         const solveArea = document.createElement('div');
         solveArea.className = 'solve-area';
         solveArea.innerHTML = `
-            <div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option><option value="java">Java</option></select></div>
+            <div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option></select></div>
             <textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea>
             <div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ 실행</button><button id="check-btn" class="btn btn-success">✓ 정답 확인</button></div>
             <div id="output-area" class="output-area"><div class="output-label">실행 결과</div><pre id="output-text"></pre></div>

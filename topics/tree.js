@@ -215,7 +215,15 @@ var treeTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># 이진 트리 노드 정의\n\
+                <div style="margin-top:1.2rem;padding:1.2rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.92rem;line-height:1.75;">\
+                    <strong style="font-size:0.95rem;">트리 종류가 왜 중요할까?</strong><br>\
+                    <strong>완전 이진 트리(Complete)</strong>: 왼쪽부터 빈틈없이 채우기 때문에 <strong>배열로 저장</strong>할 수 있습니다. 이것이 바로 <strong>힙(Heap)</strong>의 기반입니다! (인덱스 i의 자식 = 2i+1, 2i+2)<br>\
+                    <strong>균형 트리</strong>: 높이가 <strong>O(log n)</strong>으로 유지됩니다. 노드가 100만 개여도 높이가 약 20 — 그래서 탐색/삽입이 빠릅니다.<br>\
+                    <strong>편향 트리</strong>: 한쪽으로만 치우치면 사실상 <strong>연결 리스트</strong>와 같습니다. 높이가 O(n)이 되어 모든 연산이 느려집니다.<br>\
+                    <span style="color:var(--accent);font-weight:600;">핵심:</span> "트리가 균형인지 아닌지"가 성능의 핵심입니다! 균형이면 O(log n), 편향이면 O(n)으로 퇴화합니다.\
+                </div>\
+\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 이진 트리 노드 정의\n\
 class TreeNode:\n\
     def __init__(self, val=0, left=None, right=None):\n\
         self.val = val\n\
@@ -224,7 +232,18 @@ class TreeNode:\n\
 \n\
 # 높이가 h인 이진 트리의 최대 노드 수: 2^(h+1) - 1\n\
 # 노드가 N개인 완전 이진 트리의 높이: O(log N)\n\
-# 예) N = 1,000,000이면 높이 ≈ 20 (아주 낮습니다!)</code></pre></div>\
+# 예) N = 1,000,000이면 높이 ≈ 20 (아주 낮습니다!)</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 이진 트리 노드 정의\n\
+struct TreeNode {\n\
+    int val;\n\
+    TreeNode *left, *right;\n\
+    TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}\n\
+};\n\
+\n\
+// 높이가 h인 이진 트리의 최대 노드 수: 2^(h+1) - 1\n\
+// 노드가 N개인 완전 이진 트리의 높이: O(log N)\n\
+// 예) N = 1,000,000이면 높이 ≈ 20 (아주 낮습니다!)</code></pre></div></span>\
+                <div style="margin-top:8px;"><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/nullptr" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: nullptr ↗</a></span></div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -275,7 +294,51 @@ class TreeNode:\n\
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># 전위 순회 (Preorder): 루트 → 왼쪽 → 오른쪽\n\
+                <div style="margin-top:1.5rem;overflow-x:auto;">\
+                    <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">\
+                        <thead><tr style="background:var(--bg2);">\
+                            <th style="padding:10px 12px;text-align:left;border-bottom:2px solid var(--bg3);font-weight:700;">순회 방법</th>\
+                            <th style="padding:10px 12px;text-align:left;border-bottom:2px solid var(--bg3);font-weight:700;">방문 순서</th>\
+                            <th style="padding:10px 12px;text-align:left;border-bottom:2px solid var(--bg3);font-weight:700;">자료구조</th>\
+                            <th style="padding:10px 12px;text-align:left;border-bottom:2px solid var(--bg3);font-weight:700;">대표 활용</th>\
+                        </tr></thead>\
+                        <tbody>\
+                            <tr style="border-bottom:1px solid var(--bg3);">\
+                                <td style="padding:10px 12px;font-weight:600;color:var(--accent);">전위 (Preorder)</td>\
+                                <td style="padding:10px 12px;">루트 → 왼 → 오</td>\
+                                <td style="padding:10px 12px;">스택/재귀</td>\
+                                <td style="padding:10px 12px;">트리 복사, 직렬화</td>\
+                            </tr>\
+                            <tr style="border-bottom:1px solid var(--bg3);">\
+                                <td style="padding:10px 12px;font-weight:600;color:var(--green);">중위 (Inorder)</td>\
+                                <td style="padding:10px 12px;">왼 → 루트 → 오</td>\
+                                <td style="padding:10px 12px;">스택/재귀</td>\
+                                <td style="padding:10px 12px;">BST 정렬 출력</td>\
+                            </tr>\
+                            <tr style="border-bottom:1px solid var(--bg3);">\
+                                <td style="padding:10px 12px;font-weight:600;color:var(--yellow);">후위 (Postorder)</td>\
+                                <td style="padding:10px 12px;">왼 → 오 → 루트</td>\
+                                <td style="padding:10px 12px;">스택/재귀</td>\
+                                <td style="padding:10px 12px;">트리 삭제, 수식 계산</td>\
+                            </tr>\
+                            <tr>\
+                                <td style="padding:10px 12px;font-weight:600;color:var(--red);">레벨 순서 (BFS)</td>\
+                                <td style="padding:10px 12px;">레벨 0→1→2...</td>\
+                                <td style="padding:10px 12px;">큐</td>\
+                                <td style="padding:10px 12px;">레벨별 처리</td>\
+                            </tr>\
+                        </tbody>\
+                    </table>\
+                </div>\
+\
+                <div style="margin-top:1.2rem;padding:1.2rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.92rem;line-height:1.75;">\
+                    <strong style="font-size:0.95rem;">DFS (전/중/후위) vs BFS (레벨) — 언제 뭘 쓸까?</strong><br>\
+                    <span style="color:var(--accent);font-weight:600;">DFS</span>: 리프까지 깊이 탐색해야 할 때 — 높이 계산, 경로 합, 서브트리 판별 등<br>\
+                    <span style="color:var(--red);font-weight:600;">BFS</span>: 레벨별로 처리해야 할 때 — 레벨 순서 출력, 최소 깊이, 레벨 평균 등<br>\
+                    <span style="color:var(--text2);">DFS는 스택(재귀 콜스택 포함)을, BFS는 큐를 사용합니다. 문제가 "깊이/경로" 관련이면 DFS, "레벨/너비" 관련이면 BFS를 먼저 떠올리세요!</span>\
+                </div>\
+\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 전위 순회 (Preorder): 루트 → 왼쪽 → 오른쪽\n\
 def preorder(node):\n\
     if node is None:\n\
         return\n\
@@ -309,7 +372,45 @@ def level_order(root):\n\
         node = queue.popleft()\n\
         print(node.val, end=\' \')\n\
         if node.left:  queue.append(node.left)\n\
-        if node.right: queue.append(node.right)</code></pre></div>\
+        if node.right: queue.append(node.right)</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 전위 순회 (Preorder): 루트 → 왼쪽 → 오른쪽\n\
+void preorder(TreeNode* node) {\n\
+    if (node == nullptr) return;\n\
+    cout &lt;&lt; node-&gt;val &lt;&lt; " ";  // 루트 먼저!\n\
+    preorder(node-&gt;left);\n\
+    preorder(node-&gt;right);\n\
+}\n\
+\n\
+// 중위 순회 (Inorder): 왼쪽 → 루트 → 오른쪽\n\
+void inorder(TreeNode* node) {\n\
+    if (node == nullptr) return;\n\
+    inorder(node-&gt;left);\n\
+    cout &lt;&lt; node-&gt;val &lt;&lt; " ";  // 중간에!\n\
+    inorder(node-&gt;right);\n\
+}\n\
+\n\
+// 후위 순회 (Postorder): 왼쪽 → 오른쪽 → 루트\n\
+void postorder(TreeNode* node) {\n\
+    if (node == nullptr) return;\n\
+    postorder(node-&gt;left);\n\
+    postorder(node-&gt;right);\n\
+    cout &lt;&lt; node-&gt;val &lt;&lt; " ";  // 마지막에!\n\
+}\n\
+\n\
+// 레벨 순회 (BFS): 큐 사용\n\
+#include &lt;queue&gt;\n\
+void level_order(TreeNode* root) {\n\
+    if (!root) return;\n\
+    queue&lt;TreeNode*&gt; q;\n\
+    q.push(root);\n\
+    while (!q.empty()) {\n\
+        TreeNode* node = q.front(); q.pop();\n\
+        cout &lt;&lt; node-&gt;val &lt;&lt; " ";\n\
+        if (node-&gt;left)  q.push(node-&gt;left);\n\
+        if (node-&gt;right) q.push(node-&gt;right);\n\
+    }\n\
+}</code></pre></div></span>\
+                <div style="margin-top:8px;"><span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: collections.deque ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: std::queue ↗</a></span></div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -351,7 +452,17 @@ def level_order(root):\n\
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># 최대 깊이 구하기\n\
+                <div style="margin-top:1.2rem;padding:1.2rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.92rem;line-height:1.75;">\
+                    <strong style="font-size:0.95rem;">왜 이렇게 동작할까?</strong><br><br>\
+                    <strong style="color:var(--accent);">maxDepth: 왜 <code>1 + max(left, right)</code>인가?</strong><br>\
+                    현재 노드가 <strong>1층</strong>을 차지하고, 왼쪽/오른쪽 자식 서브트리 중 <strong>더 깊은 쪽</strong>이 전체 깊이를 결정합니다. 리프 노드(자식 없음)에 도달하면 0을 반환하고, 올라가면서 1씩 더해집니다.<br><br>\
+                    <strong style="color:var(--accent);">invertTree: 왜 재귀가 자연스러운가?</strong><br>\
+                    "서브트리를 뒤집는다"는 작은 문제가 "전체 트리를 뒤집는다"는 큰 문제와 <strong>완전히 동일한 구조</strong>입니다. 현재 노드에서 좌우를 바꾸고, 왼쪽/오른쪽 서브트리도 각각 뒤집으면 끝! 이것이 바로 재귀의 핵심 — <strong>자기 자신을 더 작은 입력으로 호출</strong>하는 것입니다.<br><br>\
+                    <strong style="color:var(--accent);">LCA: 왜 양쪽 다 non-null이면 현재 노드가 LCA인가?</strong><br>\
+                    왼쪽 서브트리에서 p(또는 q)를 찾고, 오른쪽 서브트리에서 q(또는 p)를 찾았다는 것은 두 노드가 <strong>서로 다른 서브트리</strong>에 있다는 뜻입니다. 그러면 현재 노드가 두 노드를 동시에 포함하는 <strong>가장 낮은(가까운) 조상</strong>이 됩니다.\
+                </div>\
+\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 최대 깊이 구하기\n\
 def maxDepth(root):\n\
     if not root:\n\
         return 0\n\
@@ -374,7 +485,31 @@ def lowestCommonAncestor(root, p, q):\n\
     right = lowestCommonAncestor(root.right, p, q)\n\
     if left and right:   # 양쪽 다 발견 → 현재 노드가 LCA\n\
         return root\n\
-    return left or right  # 한쪽에서만 발견</code></pre></div>\
+    return left or right  # 한쪽에서만 발견</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 최대 깊이 구하기\n\
+int maxDepth(TreeNode* root) {\n\
+    if (!root) return 0;\n\
+    return 1 + max(maxDepth(root-&gt;left), maxDepth(root-&gt;right));\n\
+}\n\
+\n\
+// 트리 뒤집기\n\
+TreeNode* invertTree(TreeNode* root) {\n\
+    if (!root) return nullptr;\n\
+    swap(root-&gt;left, root-&gt;right);  // 좌우 교환!\n\
+    invertTree(root-&gt;left);\n\
+    invertTree(root-&gt;right);\n\
+    return root;\n\
+}\n\
+\n\
+// LCA (최소 공통 조상) - 이진 트리\n\
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
+    if (!root || root == p || root == q)\n\
+        return root;\n\
+    TreeNode* left = lowestCommonAncestor(root-&gt;left, p, q);\n\
+    TreeNode* right = lowestCommonAncestor(root-&gt;right, p, q);\n\
+    if (left &amp;&amp; right) return root;  // 양쪽 다 발견 → 현재 노드가 LCA\n\
+    return left ? left : right;       // 한쪽에서만 발견\n\
+}</code></pre></div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -438,13 +573,14 @@ def lowestCommonAncestor(root, p, q):\n\
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
+        var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
+            state.currentStep++; updateUI(); setTimeout(function() { state.steps[state.currentStep].action(); }, actionDelay);
         });
         prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
+            var stepToUndo = state.currentStep; state.currentStep--; updateUI(); setTimeout(function() { state.steps[stepToUndo].undo(); }, actionDelay);
         });
         var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -457,87 +593,266 @@ def lowestCommonAncestor(root, p, q):\n\
     },
 
     // ====================================================================
+    // 공통 헬퍼: level-order 문자열 → 트리 노드 배열
+    // ====================================================================
+    _parseLevelOrder: function(str) {
+        // "3, 9, 20, null, null, 15, 7" → [{val, left, right, idx}, ...]
+        var tokens = str.split(',').map(function(s) { return s.trim(); });
+        if (!tokens.length || tokens[0] === '' || tokens[0] === 'null' || tokens[0] === 'n') return [];
+        var arr = tokens.map(function(t) {
+            if (t === 'null' || t === 'n' || t === '') return null;
+            var n = Number(t);
+            return isNaN(n) ? t : n;  // 숫자면 숫자, 아니면 문자 그대로(A,B,C...)
+        });
+        // Build node objects
+        var nodes = [];
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] !== null) {
+                nodes.push({ val: arr[i], left: null, right: null, idx: i });
+            } else {
+                nodes.push(null);
+            }
+        }
+        // Link children
+        var childIdx = 1;
+        for (var i = 0; i < nodes.length && childIdx < nodes.length; i++) {
+            if (nodes[i] === null) continue;
+            if (childIdx < nodes.length) { nodes[i].left = nodes[childIdx]; childIdx++; }
+            if (childIdx < nodes.length) { nodes[i].right = nodes[childIdx]; childIdx++; }
+        }
+        return nodes;
+    },
+
+    // level-order 트리에서 실제 노드만 추출 (null 제외)
+    _getTreeNodes: function(parsed) {
+        return parsed.filter(function(n) { return n !== null; });
+    },
+
+    // 트리 레이아웃 계산: BFS 기반 좌표 할당
+    _computeTreeLayout: function(root, width, levelHeight, topY) {
+        if (!root) return { positions: {}, edges: [], nodeOrder: [] };
+        width = width || 400;
+        levelHeight = levelHeight || 70;
+        topY = topY || 40;
+        var positions = {};
+        var edges = [];
+        var nodeOrder = [];
+        // BFS with position ranges
+        var queue = [{ node: root, xMin: 0, xMax: width, depth: 0 }];
+        while (queue.length > 0) {
+            var item = queue.shift();
+            var nd = item.node, xMin = item.xMin, xMax = item.xMax, depth = item.depth;
+            var cx = (xMin + xMax) / 2;
+            var cy = topY + depth * levelHeight;
+            var key = String(nd.val);
+            // 같은 값이 여러 개일 수 있으므로 idx 기반 키 사용
+            var uniqueKey = key + '_' + nd.idx;
+            positions[uniqueKey] = { x: cx, y: cy, val: nd.val };
+            nodeOrder.push(uniqueKey);
+            if (nd.left) {
+                var lKey = String(nd.left.val) + '_' + nd.left.idx;
+                edges.push([uniqueKey, lKey]);
+                queue.push({ node: nd.left, xMin: xMin, xMax: cx, depth: depth + 1 });
+            }
+            if (nd.right) {
+                var rKey = String(nd.right.val) + '_' + nd.right.idx;
+                edges.push([uniqueKey, rKey]);
+                queue.push({ node: nd.right, xMin: cx, xMax: xMax, depth: depth + 1 });
+            }
+        }
+        return { positions: positions, edges: edges, nodeOrder: nodeOrder };
+    },
+
+    // SVG 렌더: positions + edges + highlights → SVG 문자열
+    _makeTreeSvg: function(layout, highlights, viewWidth, viewHeight, nodeRadius, extraLabels) {
+        highlights = highlights || {};
+        viewWidth = viewWidth || 460;
+        viewHeight = viewHeight || 220;
+        nodeRadius = nodeRadius || 22;
+        extraLabels = extraLabels || {};
+        var positions = layout.positions;
+        var edges = layout.edges;
+        var nodeOrder = layout.nodeOrder;
+        var svg = '<svg viewBox="0 0 ' + viewWidth + ' ' + viewHeight + '" width="100%" height="' + viewHeight + '">';
+        // edges
+        edges.forEach(function(e) {
+            var p1 = positions[e[0]], p2 = positions[e[1]];
+            if (p1 && p2) {
+                svg += '<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y + '" stroke="var(--border)" stroke-width="2"/>';
+            }
+        });
+        // nodes
+        nodeOrder.forEach(function(key) {
+            var n = positions[key];
+            var hl = highlights[key] || '';
+            var fill = hl === 'active' ? 'var(--accent)' : hl === 'done' ? 'var(--green)' : hl === 'current' ? 'var(--accent)' : hl === 'swap' ? '#e17055' : hl === 'pre' ? 'var(--accent)' : hl === 'in' ? 'var(--green)' : hl === 'post' ? '#e17055' : 'var(--bg2)';
+            var textFill = (hl && hl !== '') ? 'white' : 'var(--text)';
+            if (!hl) textFill = 'var(--text)';
+            svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + nodeRadius + '" fill="' + fill + '" stroke="var(--border)" stroke-width="2"/>';
+            svg += '<text x="' + n.x + '" y="' + (n.y + 5) + '" text-anchor="middle" font-size="14" font-weight="600" fill="' + textFill + '">' + n.val + '</text>';
+            if (extraLabels[key] !== undefined) {
+                svg += '<text x="' + (n.x + nodeRadius + 6) + '" y="' + (n.y - 8) + '" font-size="11" fill="var(--accent)" font-weight="600">' + extraLabels[key] + '</text>';
+            }
+        });
+        svg += '</svg>';
+        return svg;
+    },
+
+    // 트리 높이 계산
+    _getTreeHeight: function(root) {
+        if (!root) return 0;
+        var self = this;
+        return 1 + Math.max(self._getTreeHeight(root.left), self._getTreeHeight(root.right));
+    },
+
+    // ====================================================================
     // 시뮬레이션 1: Maximum Depth (lc-104)
     // ====================================================================
     _renderVizMaxDepth: function(container) {
         var self = this;
         var suffix = '-depth';
-        // Tree: [3, 9, 20, null, null, 15, 7]
-        var nodes = {
-            3:  { x: 200, y: 40,  l: 9,    r: 20 },
-            9:  { x: 100, y: 110, l: null,  r: null },
-            20: { x: 300, y: 110, l: 15,    r: 7 },
-            15: { x: 240, y: 180, l: null,  r: null },
-            7:  { x: 360, y: 180, l: null,  r: null }
-        };
-        var edges = [[3,9],[3,20],[20,15],[20,7]];
+        var DEFAULT_TREE = '3, 9, 20, null, null, 15, 7';
 
-        function makeSvg(highlights, depthLabels) {
-            var svg = '<svg viewBox="0 0 460 220" width="100%" height="220">';
-            edges.forEach(function(e) {
-                svg += '<line x1="' + nodes[e[0]].x + '" y1="' + nodes[e[0]].y + '" x2="' + nodes[e[1]].x + '" y2="' + nodes[e[1]].y + '" stroke="var(--border)" stroke-width="2"/>';
+        function buildDepthSteps(treeStr, svgEl, infoEl) {
+            var parsed = self._parseLevelOrder(treeStr);
+            if (!parsed.length || !parsed[0]) return [];
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var layout = self._computeTreeLayout(root, 460, 70, 40);
+
+            function renderSvg(highlights, depthLabels) {
+                return self._makeTreeSvg(layout, highlights, 460, svgH, 22, depthLabels);
+            }
+
+            // DFS post-order to build steps: visit node, recurse left, recurse right, compute depth
+            var steps = [];
+            var currentHL = {};   // key → 'active'|'done'
+            var depthMap = {};    // key → depth number
+            var depthVals = {};   // key → computed depth value
+
+            function dfs(node, parentKey) {
+                if (!node) return 0;
+                var key = String(node.val) + '_' + node.idx;
+                var isLeaf = (!node.left && !node.right);
+                var childDesc = '';
+                if (node.left && node.right) childDesc = ' → 왼쪽 자식으로 이동';
+                else if (node.left) childDesc = ' → 왼쪽 자식으로 이동';
+                else if (node.right) childDesc = ' → 오른쪽 자식으로 이동';
+
+                // Step: visit this node
+                (function(k, isL, cDesc, v) {
+                    var prevHL = JSON.parse(JSON.stringify(currentHL));
+                    var prevDepth = JSON.parse(JSON.stringify(depthMap));
+                    currentHL[k] = 'active';
+                    var snapHL = JSON.parse(JSON.stringify(currentHL));
+                    var snapDepth = JSON.parse(JSON.stringify(depthMap));
+                    var desc = isL
+                        ? '노드 ' + v + ' 방문 (리프 노드)'
+                        : '노드 ' + v + ' 방문' + cDesc;
+                    var info = isL
+                        ? '노드 <strong>' + v + '</strong> 방문 — 리프 노드 (자식 없음)'
+                        : '노드 <strong>' + v + '</strong> 방문' + cDesc;
+                    steps.push({
+                        description: desc,
+                        action: function() { svgEl.innerHTML = renderSvg(snapHL, snapDepth); infoEl.innerHTML = info; },
+                        undo: function() { svgEl.innerHTML = renderSvg(prevHL, prevDepth); infoEl.innerHTML = steps.length > 1 ? '' : '<span style="color:var(--text2);">현재 깊이: 0</span>'; }
+                    });
+                })(key, isLeaf, childDesc, node.val);
+
+                var leftD = dfs(node.left, key);
+                var rightD = dfs(node.right, key);
+                var d = 1 + Math.max(leftD, rightD);
+
+                // Step: compute depth for this node
+                (function(k, v, leftD, rightD, d) {
+                    var prevHL = JSON.parse(JSON.stringify(currentHL));
+                    var prevDepth = JSON.parse(JSON.stringify(depthMap));
+                    currentHL[k] = 'done';
+                    depthMap[k] = 'd=' + d;
+                    var snapHL = JSON.parse(JSON.stringify(currentHL));
+                    var snapDepth = JSON.parse(JSON.stringify(depthMap));
+                    var desc = '노드 ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = 깊이 ' + d;
+                    var info = '노드 ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = <strong>깊이 ' + d + '</strong>';
+                    steps.push({
+                        description: desc,
+                        action: function() { svgEl.innerHTML = renderSvg(snapHL, snapDepth); infoEl.innerHTML = info; },
+                        undo: function() { svgEl.innerHTML = renderSvg(prevHL, prevDepth); }
+                    });
+                })(key, node.val, leftD, rightD, d);
+
+                depthVals[key] = d;
+                return d;
+            }
+
+            var totalDepth = dfs(root, null);
+
+            // Final step
+            var finalHL = JSON.parse(JSON.stringify(currentHL));
+            var finalDepth = JSON.parse(JSON.stringify(depthMap));
+            var prevHL2 = steps.length > 0 ? null : {};
+            steps.push({
+                description: '완료! 최대 깊이 = ' + totalDepth,
+                action: function() {
+                    svgEl.innerHTML = renderSvg(finalHL, finalDepth);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 깊이 = ' + totalDepth + '</strong>';
+                },
+                undo: function() {}
             });
-            var keys = [3, 9, 20, 15, 7];
-            keys.forEach(function(k) {
-                var n = nodes[k];
-                var hl = highlights[k] || '';
-                var fill = hl === 'active' ? 'var(--accent)' : hl === 'done' ? 'var(--green)' : 'var(--bg2)';
-                var textFill = (hl === 'active' || hl === 'done') ? 'white' : 'var(--text)';
-                svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="22" fill="' + fill + '" stroke="var(--border)" stroke-width="2"/>';
-                svg += '<text x="' + n.x + '" y="' + (n.y + 5) + '" text-anchor="middle" font-size="14" font-weight="600" fill="' + textFill + '">' + k + '</text>';
-                if (depthLabels[k] !== undefined) {
-                    svg += '<text x="' + (n.x + 28) + '" y="' + (n.y - 8) + '" font-size="11" fill="var(--accent)" font-weight="600">d=' + depthLabels[k] + '</text>';
-                }
-            });
-            svg += '</svg>';
-            return svg;
+
+            // Fix undo references: each step's undo should restore the state from the previous step's action
+            for (var i = 1; i < steps.length; i++) {
+                (function(idx) {
+                    var prevAction = steps[idx - 1].action;
+                    steps[idx].undo = function() { prevAction(); };
+                })(i);
+            }
+            steps[0].undo = function() {
+                svgEl.innerHTML = renderSvg({}, {});
+                infoEl.innerHTML = '<span style="color:var(--text2);">현재 깊이: 0</span>';
+            };
+
+            return steps;
         }
 
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">Maximum Depth — DFS 재귀</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">트리 [3, 9, 20, null, null, 15, 7]의 최대 깊이를 DFS로 구합니다.</p>' +
-            '<div id="depth-svg' + suffix + '">' + makeSvg({}, {}) + '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">트리 (level-order): <input type="text" id="tree-depth-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+            '<button class="btn btn-primary" id="tree-depth-reset">🔄</button></div>' +
+            '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">BFS 순서로 입력. null = 빈 노드. 예: 3, 9, 20, null, null, 15, 7</p>' +
+            '<div id="depth-svg' + suffix + '"></div>' +
             '<div id="depth-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">현재 깊이: 0</span></div>' +
             self._createStepControls(suffix);
 
         var svgEl = container.querySelector('#depth-svg' + suffix);
         var infoEl = container.querySelector('#depth-info' + suffix);
 
-        var steps = [
-            { description: 'DFS 시작: 루트 노드 3 방문',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active'}, {}); infoEl.innerHTML = '노드 <strong>3</strong> 방문 → 왼쪽 자식으로 이동'; },
-              undo: function() { svgEl.innerHTML = makeSvg({}, {}); infoEl.innerHTML = '<span style="color:var(--text2);">현재 깊이: 0</span>'; }
-            },
-            { description: '노드 9 방문 (리프 노드)',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active',9:'active'}, {}); infoEl.innerHTML = '노드 <strong>9</strong> 방문 — 리프 노드 (자식 없음)'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active'}, {}); infoEl.innerHTML = '노드 <strong>3</strong> 방문 → 왼쪽 자식으로 이동'; }
-            },
-            { description: '노드 9: 왼쪽=0, 오른쪽=0 → 깊이 = 1',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done'}, {9:1}); infoEl.innerHTML = '노드 9: max(0, 0) + 1 = <strong>깊이 1</strong> 반환'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active',9:'active'}, {}); infoEl.innerHTML = '노드 <strong>9</strong> 방문 — 리프 노드 (자식 없음)'; }
-            },
-            { description: '노드 20 방문 → 왼쪽 자식으로',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'active'}, {9:1}); infoEl.innerHTML = '노드 <strong>20</strong> 방문 → 왼쪽 자식 15로 이동'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done'}, {9:1}); infoEl.innerHTML = '노드 9: max(0, 0) + 1 = <strong>깊이 1</strong> 반환'; }
-            },
-            { description: '노드 15 방문 (리프) → 깊이 1',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'active',15:'done'}, {9:1,15:1}); infoEl.innerHTML = '노드 15: 리프 → max(0, 0) + 1 = <strong>깊이 1</strong>'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'active'}, {9:1}); infoEl.innerHTML = '노드 <strong>20</strong> 방문 → 왼쪽 자식 15로 이동'; }
-            },
-            { description: '노드 7 방문 (리프) → 깊이 1',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'active',15:'done',7:'done'}, {9:1,15:1,7:1}); infoEl.innerHTML = '노드 7: 리프 → max(0, 0) + 1 = <strong>깊이 1</strong>'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'active',15:'done'}, {9:1,15:1}); infoEl.innerHTML = '노드 15: 리프 → max(0, 0) + 1 = <strong>깊이 1</strong>'; }
-            },
-            { description: '노드 20: max(1, 1) + 1 = 깊이 2',
-              action: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'done',15:'done',7:'done'}, {9:1,15:1,7:1,20:2}); infoEl.innerHTML = '노드 20: max(1, 1) + 1 = <strong>깊이 2</strong>'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'active',15:'done',7:'done'}, {9:1,15:1,7:1}); infoEl.innerHTML = '노드 7: 리프 → max(0, 0) + 1 = <strong>깊이 1</strong>'; }
-            },
-            { description: '노드 3: max(1, 2) + 1 = 깊이 3 — 완료!',
-              action: function() { svgEl.innerHTML = makeSvg({3:'done',9:'done',20:'done',15:'done',7:'done'}, {9:1,15:1,7:1,20:2,3:3}); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 깊이 = 3 (루트 3 → 20 → 15 or 7)</strong>'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'active',9:'done',20:'done',15:'done',7:'done'}, {9:1,15:1,7:1,20:2}); infoEl.innerHTML = '노드 20: max(1, 1) + 1 = <strong>깊이 2</strong>'; }
+        function initSim(treeStr) {
+            var steps = buildDepthSteps(treeStr, svgEl, infoEl);
+            if (steps.length === 0) {
+                svgEl.innerHTML = '<p style="color:var(--red);text-align:center;">유효한 트리를 입력하세요.</p>';
+                return;
             }
-        ];
-        self._initStepController(container, steps, suffix);
+            // Show initial SVG
+            var parsed = self._parseLevelOrder(treeStr);
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var layout = self._computeTreeLayout(root, 460, 70, 40);
+            svgEl.innerHTML = self._makeTreeSvg(layout, {}, 460, svgH, 22, {});
+            infoEl.innerHTML = '<span style="color:var(--text2);">현재 깊이: 0</span>';
+            self._initStepController(container, steps, suffix);
+        }
+
+        initSim(DEFAULT_TREE);
+
+        container.querySelector('#tree-depth-reset').addEventListener('click', function() {
+            var val = container.querySelector('#tree-depth-input').value.trim();
+            if (!val) val = DEFAULT_TREE;
+            self._clearVizState();
+            initSim(val);
+        });
     },
 
     // ====================================================================
@@ -546,127 +861,238 @@ def lowestCommonAncestor(root, p, q):\n\
     _renderVizInvert: function(container) {
         var self = this;
         var suffix = '-invert';
-        // Tree: [4, 2, 7, 1, 3, 6, 9]
-        var posOrig = {
-            4: {x:200,y:40}, 2: {x:100,y:110}, 7: {x:300,y:110},
-            1: {x:55,y:180}, 3: {x:145,y:180}, 6: {x:255,y:180}, 9: {x:345,y:180}
-        };
+        var DEFAULT_TREE = '4, 2, 7, 1, 3, 6, 9';
 
-        // Track current tree structure (which child is left/right)
-        var treeState = [
-            { id: 4, l: 2, r: 7 },
-            { id: 2, l: 1, r: 3 },
-            { id: 7, l: 6, r: 9 },
-            { id: 1, l: null, r: null },
-            { id: 3, l: null, r: null },
-            { id: 6, l: null, r: null },
-            { id: 9, l: null, r: null }
-        ];
+        function cloneNode(node) {
+            if (!node) return null;
+            var c = { val: node.val, left: null, right: null, idx: node.idx };
+            c.left = cloneNode(node.left);
+            c.right = cloneNode(node.right);
+            return c;
+        }
 
-        function getPos(treeArr) {
-            // Compute positions based on tree structure using BFS
-            var pos = {};
-            pos[4] = { x: 200, y: 40 };
-            function setChildren(parentId, lx, rx, cy) {
-                var node = null;
-                for (var i = 0; i < treeArr.length; i++) { if (treeArr[i].id === parentId) { node = treeArr[i]; break; } }
+        function invertNode(node) {
+            if (!node) return;
+            var tmp = node.left;
+            node.left = node.right;
+            node.right = tmp;
+            invertNode(node.left);
+            invertNode(node.right);
+        }
+
+        function treeToLevelOrder(root) {
+            if (!root) return '';
+            var result = [];
+            var queue = [root];
+            while (queue.length > 0) {
+                var node = queue.shift();
+                if (node === null) { result.push('null'); continue; }
+                result.push(String(node.val));
+                queue.push(node.left);
+                queue.push(node.right);
+            }
+            // Trim trailing nulls
+            while (result.length > 0 && result[result.length - 1] === 'null') result.pop();
+            return result.join(', ');
+        }
+
+        function buildInvertSteps(treeStr, svgEl, infoEl) {
+            var parsed = self._parseLevelOrder(treeStr);
+            if (!parsed.length || !parsed[0]) return [];
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var svgW = 460;
+
+            // We track tree mutations: at each step we clone, swap, and recompute layout
+            var steps = [];
+            var highlightState = {};  // key → 'swap'|'done'
+
+            // Pre-order traversal to build inversion steps
+            function buildSteps(node) {
                 if (!node) return;
-                if (node.l !== null) { pos[node.l] = { x: lx, y: cy }; }
-                if (node.r !== null) { pos[node.r] = { x: rx, y: cy }; }
-            }
-            setChildren(4, 100, 300, 110);
-            var n4 = null; for (var i = 0; i < treeArr.length; i++) { if (treeArr[i].id === 4) { n4 = treeArr[i]; break; } }
-            if (n4.l !== null) setChildren(n4.l, 55, 145, 180);
-            if (n4.r !== null) setChildren(n4.r, 255, 345, 180);
-            return pos;
-        }
+                var key = String(node.val) + '_' + node.idx;
+                var isLeaf = (!node.left && !node.right);
 
-        function makeSvg(treeArr, highlights) {
-            var pos = getPos(treeArr);
-            var svg = '<svg viewBox="0 0 400 220" width="100%" height="220">';
-            // edges
-            treeArr.forEach(function(n) {
-                if (n.l !== null && pos[n.id] && pos[n.l]) {
-                    svg += '<line x1="' + pos[n.id].x + '" y1="' + pos[n.id].y + '" x2="' + pos[n.l].x + '" y2="' + pos[n.l].y + '" stroke="var(--border)" stroke-width="2"/>';
-                }
-                if (n.r !== null && pos[n.id] && pos[n.r]) {
-                    svg += '<line x1="' + pos[n.id].x + '" y1="' + pos[n.id].y + '" x2="' + pos[n.r].x + '" y2="' + pos[n.r].y + '" stroke="var(--border)" stroke-width="2"/>';
-                }
-            });
-            // nodes
-            var allIds = [4,2,7,1,3,6,9];
-            allIds.forEach(function(k) {
-                if (!pos[k]) return;
-                var hl = highlights[k] || '';
-                var fill = hl === 'swap' ? '#e17055' : hl === 'done' ? 'var(--green)' : 'var(--bg2)';
-                var textFill = (hl === 'swap' || hl === 'done') ? 'white' : 'var(--text)';
-                svg += '<circle cx="' + pos[k].x + '" cy="' + pos[k].y + '" r="22" fill="' + fill + '" stroke="var(--border)" stroke-width="2"/>';
-                svg += '<text x="' + pos[k].x + '" y="' + (pos[k].y + 5) + '" text-anchor="middle" font-size="14" font-weight="600" fill="' + textFill + '">' + k + '</text>';
-            });
-            svg += '</svg>';
-            return svg;
-        }
+                if (isLeaf) {
+                    // Leaf: just mark as done
+                    (function(k, v) {
+                        var prevHL = JSON.parse(JSON.stringify(highlightState));
+                        highlightState[k] = 'done';
+                        var snapHL = JSON.parse(JSON.stringify(highlightState));
+                        steps.push({
+                            description: '노드 ' + v + ': 리프 노드 (교환할 자식 없음)',
+                            hl: snapHL, prevHL: prevHL,
+                            swapNode: null,
+                            info: '노드 ' + v + ': 리프 노드 (교환 불필요)'
+                        });
+                    })(key, node.val);
+                } else {
+                    // Has children: swap them
+                    var leftVal = node.left ? node.left.val : 'null';
+                    var rightVal = node.right ? node.right.val : 'null';
+                    (function(k, v, lv, rv) {
+                        var prevHL = JSON.parse(JSON.stringify(highlightState));
+                        highlightState[k] = 'swap';
+                        var snapHL = JSON.parse(JSON.stringify(highlightState));
+                        steps.push({
+                            description: '노드 ' + v + ': 왼쪽(' + lv + ')과 오른쪽(' + rv + ')을 교환!',
+                            hl: snapHL, prevHL: prevHL,
+                            swapNode: k,
+                            info: '노드 ' + v + ': <strong>' + lv + ' ↔ ' + rv + '</strong> 교환 완료!'
+                        });
+                    })(key, node.val, leftVal, rightVal);
 
-        function cloneTree(t) { return t.map(function(n) { return { id: n.id, l: n.l, r: n.r }; }); }
-        function swapChildren(treeArr, nodeId) {
-            for (var i = 0; i < treeArr.length; i++) {
-                if (treeArr[i].id === nodeId) {
-                    var tmp = treeArr[i].l;
-                    treeArr[i].l = treeArr[i].r;
-                    treeArr[i].r = tmp;
-                    break;
+                    // Actually swap in tree for subsequent steps
+                    var tmp = node.left;
+                    node.left = node.right;
+                    node.right = tmp;
+
+                    highlightState[key] = 'done';
+
+                    // Recurse on children (now swapped)
+                    buildSteps(node.left);
+                    buildSteps(node.right);
                 }
             }
+
+            // Clone so we can mutate
+            var workRoot = cloneNode(root);
+            buildSteps(workRoot);
+
+            // Now build actual step objects with SVG rendering
+            // We need to replay the tree mutations to get correct layouts
+            var actualSteps = [];
+            var replayRoot = cloneNode(root);
+            var replayHL = {};
+
+            // Initial SVG
+            var initLayout = self._computeTreeLayout(replayRoot, svgW, 70, 40);
+            var initSvg = self._makeTreeSvg(initLayout, {}, svgW, svgH, 22);
+
+            for (var si = 0; si < steps.length; si++) {
+                var stepInfo = steps[si];
+                // Apply swap if needed
+                if (stepInfo.swapNode) {
+                    // Find the node to swap in replayRoot
+                    (function swapInTree(node, targetKey) {
+                        if (!node) return;
+                        var k = String(node.val) + '_' + node.idx;
+                        if (k === targetKey) {
+                            var tmp = node.left;
+                            node.left = node.right;
+                            node.right = tmp;
+                            return;
+                        }
+                        swapInTree(node.left, targetKey);
+                        swapInTree(node.right, targetKey);
+                    })(replayRoot, stepInfo.swapNode);
+                }
+
+                // Compute layout after potential swap
+                var layout = self._computeTreeLayout(replayRoot, svgW, 70, 40);
+                // Build highlight map
+                replayHL = JSON.parse(JSON.stringify(stepInfo.hl));
+
+                (function(lay, hl, desc, info, prevLay, prevHL) {
+                    actualSteps.push({
+                        description: desc,
+                        action: function() {
+                            svgEl.innerHTML = self._makeTreeSvg(lay, hl, svgW, svgH, 22);
+                            infoEl.innerHTML = info;
+                        },
+                        undo: function() {} // will be patched below
+                    });
+                })(
+                    JSON.parse(JSON.stringify(layout)),
+                    JSON.parse(JSON.stringify(replayHL)),
+                    stepInfo.description,
+                    stepInfo.info,
+                    null, null
+                );
+            }
+
+            // Get inverted level-order for final message
+            var finalRoot = cloneNode(root);
+            invertNode(finalRoot);
+            var invertedStr = treeToLevelOrder(finalRoot);
+
+            // Final completion step
+            var finalLayout = self._computeTreeLayout(finalRoot, svgW, 70, 40);
+            var allDone = {};
+            var finalNodes = [];
+            (function collectKeys(node) {
+                if (!node) return;
+                var k = String(node.val) + '_' + node.idx;
+                allDone[k] = 'done';
+                finalNodes.push(k);
+                collectKeys(node.left);
+                collectKeys(node.right);
+            })(finalRoot);
+
+            actualSteps.push({
+                description: '완성! 트리가 좌우 반전되었습니다: [' + invertedStr + ']',
+                action: function() {
+                    svgEl.innerHTML = self._makeTreeSvg(finalLayout, allDone, svgW, svgH, 22);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Invert 완료! [' + invertedStr + ']</strong>';
+                },
+                undo: function() {}
+            });
+
+            // Patch undo: each step's undo calls previous step's action
+            for (var i = 1; i < actualSteps.length; i++) {
+                (function(idx) {
+                    var prevAction = actualSteps[idx - 1].action;
+                    actualSteps[idx].undo = function() { prevAction(); };
+                })(i);
+            }
+            actualSteps[0].undo = function() {
+                var origLayout = self._computeTreeLayout(root, svgW, 70, 40);
+                svgEl.innerHTML = self._makeTreeSvg(origLayout, {}, svgW, svgH, 22);
+                infoEl.innerHTML = '<span style="color:var(--text2);">각 노드에서 왼쪽, 오른쪽 자식을 교환합니다.</span>';
+            };
+
+            return actualSteps;
         }
 
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">Invert Binary Tree — 재귀적 좌우 교환</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">트리 [4, 2, 7, 1, 3, 6, 9]의 좌우를 교환합니다.</p>' +
-            '<div id="inv-svg' + suffix + '">' + makeSvg(treeState, {}) + '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">트리 (level-order): <input type="text" id="tree-invert-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+            '<button class="btn btn-primary" id="tree-invert-reset">🔄</button></div>' +
+            '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">BFS 순서로 입력. null = 빈 노드. 예: 4, 2, 7, 1, 3, 6, 9</p>' +
+            '<div id="inv-svg' + suffix + '"></div>' +
             '<div id="inv-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">각 노드에서 왼쪽, 오른쪽 자식을 교환합니다.</span></div>' +
             self._createStepControls(suffix);
 
         var svgEl = container.querySelector('#inv-svg' + suffix);
         var infoEl = container.querySelector('#inv-info' + suffix);
 
-        // Pre-order swap: 4 → 2 → 1 → 3 → 7 → 6 → 9
-        // But leaves (1,3,6,9) have no children to swap, so meaningful swaps at: 4, 2, 7
-        var state0 = cloneTree(treeState);
-        var state1 = cloneTree(state0); swapChildren(state1, 4);   // swap 4's children: l=7,r=2
-        var state2 = cloneTree(state1); swapChildren(state2, 7);   // swap 7 (now left child): l=9,r=6
-        var state3 = cloneTree(state2); // 9 is leaf - no swap needed
-        var state4 = cloneTree(state3); // 6 is leaf - no swap needed
-        var state5 = cloneTree(state4); swapChildren(state5, 2);   // swap 2 (now right child): l=3,r=1
-        var state6 = cloneTree(state5); // 3 is leaf
-        var state7 = cloneTree(state6); // 1 is leaf — done
-
-        var steps = [
-            { description: '루트 노드 4: 왼쪽(2)과 오른쪽(7)을 교환!',
-              action: function() { svgEl.innerHTML = makeSvg(state1, {4:'swap'}); infoEl.innerHTML = '노드 4: <strong>2 ↔ 7</strong> 교환 완료!'; },
-              undo: function() { svgEl.innerHTML = makeSvg(state0, {}); infoEl.innerHTML = '<span style="color:var(--text2);">각 노드에서 왼쪽, 오른쪽 자식을 교환합니다.</span>'; }
-            },
-            { description: '노드 7 (현재 왼쪽): 왼쪽(6)과 오른쪽(9)을 교환!',
-              action: function() { svgEl.innerHTML = makeSvg(state2, {4:'done',7:'swap'}); infoEl.innerHTML = '노드 7: <strong>6 ↔ 9</strong> 교환 완료!'; },
-              undo: function() { svgEl.innerHTML = makeSvg(state1, {4:'swap'}); infoEl.innerHTML = '노드 4: <strong>2 ↔ 7</strong> 교환 완료!'; }
-            },
-            { description: '노드 9, 6은 리프 — 교환할 자식 없음',
-              action: function() { svgEl.innerHTML = makeSvg(state4, {4:'done',7:'done',9:'done',6:'done'}); infoEl.innerHTML = '노드 9, 6: 리프 노드 (교환 불필요)'; },
-              undo: function() { svgEl.innerHTML = makeSvg(state2, {4:'done',7:'swap'}); infoEl.innerHTML = '노드 7: <strong>6 ↔ 9</strong> 교환 완료!'; }
-            },
-            { description: '노드 2 (현재 오른쪽): 왼쪽(1)과 오른쪽(3)을 교환!',
-              action: function() { svgEl.innerHTML = makeSvg(state5, {4:'done',7:'done',9:'done',6:'done',2:'swap'}); infoEl.innerHTML = '노드 2: <strong>1 ↔ 3</strong> 교환 완료!'; },
-              undo: function() { svgEl.innerHTML = makeSvg(state4, {4:'done',7:'done',9:'done',6:'done'}); infoEl.innerHTML = '노드 9, 6: 리프 노드 (교환 불필요)'; }
-            },
-            { description: '노드 3, 1은 리프 — 교환할 자식 없음',
-              action: function() { svgEl.innerHTML = makeSvg(state7, {4:'done',7:'done',9:'done',6:'done',2:'done',3:'done',1:'done'}); infoEl.innerHTML = '노드 3, 1: 리프 노드 (교환 불필요)'; },
-              undo: function() { svgEl.innerHTML = makeSvg(state5, {4:'done',7:'done',9:'done',6:'done',2:'swap'}); infoEl.innerHTML = '노드 2: <strong>1 ↔ 3</strong> 교환 완료!'; }
-            },
-            { description: '완성! 트리가 좌우 반전되었습니다: [4, 7, 2, 9, 6, 3, 1]',
-              action: function() { svgEl.innerHTML = makeSvg(state7, {4:'done',7:'done',9:'done',6:'done',2:'done',3:'done',1:'done'}); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Invert 완료! [4, 7, 2, 9, 6, 3, 1]</strong>'; },
-              undo: function() { svgEl.innerHTML = makeSvg(state7, {4:'done',7:'done',9:'done',6:'done',2:'done',3:'done',1:'done'}); infoEl.innerHTML = '노드 3, 1: 리프 노드 (교환 불필요)'; }
+        function initSim(treeStr) {
+            var steps = buildInvertSteps(treeStr, svgEl, infoEl);
+            if (steps.length === 0) {
+                svgEl.innerHTML = '<p style="color:var(--red);text-align:center;">유효한 트리를 입력하세요.</p>';
+                return;
             }
-        ];
-        self._initStepController(container, steps, suffix);
+            // Show initial SVG
+            var parsed = self._parseLevelOrder(treeStr);
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var layout = self._computeTreeLayout(root, 460, 70, 40);
+            svgEl.innerHTML = self._makeTreeSvg(layout, {}, 460, svgH, 22);
+            infoEl.innerHTML = '<span style="color:var(--text2);">각 노드에서 왼쪽, 오른쪽 자식을 교환합니다.</span>';
+            self._initStepController(container, steps, suffix);
+        }
+
+        initSim(DEFAULT_TREE);
+
+        container.querySelector('#tree-invert-reset').addEventListener('click', function() {
+            var val = container.querySelector('#tree-invert-input').value.trim();
+            if (!val) val = DEFAULT_TREE;
+            self._clearVizState();
+            initSim(val);
+        });
     },
 
     // ====================================================================
@@ -675,38 +1101,146 @@ def lowestCommonAncestor(root, p, q):\n\
     _renderVizLevelOrder: function(container) {
         var self = this;
         var suffix = '-level';
-        // Tree: [3, 9, 20, null, null, 15, 7]
-        var nodes = {
-            3:  { x: 200, y: 40 },
-            9:  { x: 100, y: 110 },
-            20: { x: 300, y: 110 },
-            15: { x: 240, y: 180 },
-            7:  { x: 360, y: 180 }
-        };
-        var edges = [[3,9],[3,20],[20,15],[20,7]];
+        var DEFAULT_TREE = '3, 9, 20, null, null, 15, 7';
 
-        function makeSvg(highlights) {
-            var svg = '<svg viewBox="0 0 460 220" width="100%" height="220">';
-            edges.forEach(function(e) {
-                svg += '<line x1="' + nodes[e[0]].x + '" y1="' + nodes[e[0]].y + '" x2="' + nodes[e[1]].x + '" y2="' + nodes[e[1]].y + '" stroke="var(--border)" stroke-width="2"/>';
+        function buildLevelSteps(treeStr, svgEl, queueEl, resultEl, infoEl) {
+            var parsed = self._parseLevelOrder(treeStr);
+            if (!parsed.length || !parsed[0]) return [];
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var svgW = 460;
+            var layout = self._computeTreeLayout(root, svgW, 70, 40);
+
+            function renderSvg(highlights) {
+                return self._makeTreeSvg(layout, highlights, svgW, svgH, 22);
+            }
+            function showQueue(arr) { queueEl.innerHTML = '<strong>Queue:</strong> ' + (arr.length ? '[' + arr.join(', ') + ']' : '<span style="color:var(--text3);">비어있음</span>'); }
+            function showResult(arr) { resultEl.innerHTML = '<strong>Result:</strong> [' + arr.map(function(a) { return '[' + a.join(', ') + ']'; }).join(', ') + ']'; }
+
+            // BFS level-by-level to build steps
+            var steps = [];
+            var highlights = {};
+            var result = [];
+
+            // Step 0: Init — put root in queue
+            var rootKey = String(root.val) + '_' + root.idx;
+            steps.push({
+                description: '초기화: 루트(' + root.val + ')를 큐에 넣습니다.',
+                action: function() {
+                    var hl = {}; hl[rootKey] = 'current';
+                    svgEl.innerHTML = renderSvg(hl);
+                    showQueue([root.val]);
+                    showResult([]);
+                    infoEl.innerHTML = 'Queue = [' + root.val + '], 레벨 0 시작';
+                },
+                undo: function() {
+                    svgEl.innerHTML = renderSvg({});
+                    showQueue([]);
+                    resultEl.innerHTML = '<strong>Result:</strong> <span style="color:var(--text3);">[]</span>';
+                    infoEl.innerHTML = '<span style="color:var(--text2);">BFS로 레벨별 순회를 시작합니다.</span>';
+                }
             });
-            var keys = [3, 9, 20, 15, 7];
-            keys.forEach(function(k) {
-                var n = nodes[k];
-                var hl = highlights[k] || '';
-                var fill = hl === 'current' ? 'var(--accent)' : hl === 'done' ? 'var(--green)' : 'var(--bg2)';
-                var textFill = (hl === 'current' || hl === 'done') ? 'white' : 'var(--text)';
-                svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="22" fill="' + fill + '" stroke="var(--border)" stroke-width="2"/>';
-                svg += '<text x="' + n.x + '" y="' + (n.y + 5) + '" text-anchor="middle" font-size="14" font-weight="600" fill="' + textFill + '">' + k + '</text>';
+
+            // BFS level by level
+            var bfsQueue = [root];
+            var doneKeys = {};
+            var levelNum = 0;
+
+            while (bfsQueue.length > 0) {
+                var levelSize = bfsQueue.length;
+                var levelVals = [];
+                var levelCurrentHL = {};
+                var nextQueue = [];
+
+                // Process current level
+                for (var i = 0; i < levelSize; i++) {
+                    var node = bfsQueue[i];
+                    var key = String(node.val) + '_' + node.idx;
+                    levelVals.push(node.val);
+                    doneKeys[key] = true;
+                    if (node.left) nextQueue.push(node.left);
+                    if (node.right) nextQueue.push(node.right);
+                }
+
+                result.push(levelVals.slice());
+                var snapResult = result.map(function(a) { return a.slice(); });
+                var snapDone = JSON.parse(JSON.stringify(doneKeys));
+                var nextVals = nextQueue.map(function(n) { return n.val; });
+                var snapNextVals = nextVals.slice();
+
+                // Highlight: done keys as 'done', current level nodes as 'current' (during processing)
+                var stepHL = {};
+                Object.keys(snapDone).forEach(function(k) { stepHL[k] = 'done'; });
+                // Mark current level as 'current' for display during step
+                for (var i = 0; i < levelSize; i++) {
+                    var node = bfsQueue[i];
+                    var key = String(node.val) + '_' + node.idx;
+                    stepHL[key] = 'current';
+                }
+
+                var childDesc = '';
+                if (nextQueue.length > 0) {
+                    var childNames = nextQueue.map(function(n) { return n.val; });
+                    childDesc = '. 자식 ' + childNames.join(', ') + '을 큐에 추가';
+                } else {
+                    childDesc = '. 큐가 비었습니다!';
+                }
+
+                var lvlN = levelNum;
+                var lvlVals = levelVals.slice();
+
+                (function(hl, sResult, sNextVals, desc, lvlN, lvlVals) {
+                    steps.push({
+                        description: '레벨 ' + lvlN + ': 노드 ' + lvlVals.join(', ') + '을 처리합니다.',
+                        action: function() {
+                            svgEl.innerHTML = renderSvg(hl);
+                            showQueue(sNextVals);
+                            showResult(sResult);
+                            infoEl.innerHTML = '레벨 ' + lvlN + ' 완료: [' + lvlVals.join(', ') + ']' + desc;
+                        },
+                        undo: function() {} // patched below
+                    });
+                })(JSON.parse(JSON.stringify(stepHL)), snapResult, snapNextVals, childDesc, lvlN, lvlVals);
+
+                bfsQueue = nextQueue;
+                levelNum++;
+            }
+
+            // Final step
+            var allDone = {};
+            layout.nodeOrder.forEach(function(k) { allDone[k] = 'done'; });
+            var finalResult = result.map(function(a) { return a.slice(); });
+            var resultStr = '[' + finalResult.map(function(a) { return '[' + a.join(', ') + ']'; }).join(', ') + ']';
+            steps.push({
+                description: '완성! 큐가 비었으므로 BFS 종료. 결과: ' + resultStr,
+                action: function() {
+                    svgEl.innerHTML = renderSvg(allDone);
+                    showQueue([]);
+                    showResult(finalResult);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 결과: ' + resultStr + '</strong>';
+                },
+                undo: function() {}
             });
-            svg += '</svg>';
-            return svg;
+
+            // Patch undo
+            for (var i = 1; i < steps.length; i++) {
+                (function(idx) {
+                    var prevAction = steps[idx - 1].action;
+                    steps[idx].undo = function() { prevAction(); };
+                })(i);
+            }
+
+            return steps;
         }
 
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">Level Order Traversal — BFS</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">트리 [3, 9, 20, null, null, 15, 7]을 레벨별로 순회합니다.</p>' +
-            '<div id="lvl-svg' + suffix + '">' + makeSvg({}) + '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">트리 (level-order): <input type="text" id="tree-level-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+            '<button class="btn btn-primary" id="tree-level-reset">🔄</button></div>' +
+            '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">BFS 순서로 입력. null = 빈 노드. 예: 3, 9, 20, null, null, 15, 7</p>' +
+            '<div id="lvl-svg' + suffix + '"></div>' +
             '<div id="lvl-queue' + suffix + '" style="margin-bottom:8px;text-align:center;font-size:0.9rem;"><strong>Queue:</strong> <span style="color:var(--text3);">비어있음</span></div>' +
             '<div id="lvl-result' + suffix + '" style="margin-bottom:12px;text-align:center;font-size:0.9rem;"><strong>Result:</strong> <span style="color:var(--text3);">[]</span></div>' +
             '<div id="lvl-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">BFS로 레벨별 순회를 시작합니다.</span></div>' +
@@ -717,32 +1251,33 @@ def lowestCommonAncestor(root, p, q):\n\
         var resultEl = container.querySelector('#lvl-result' + suffix);
         var infoEl = container.querySelector('#lvl-info' + suffix);
 
-        function showQueue(arr) { queueEl.innerHTML = '<strong>Queue:</strong> ' + (arr.length ? '[' + arr.join(', ') + ']' : '<span style="color:var(--text3);">비어있음</span>'); }
-        function showResult(arr) { resultEl.innerHTML = '<strong>Result:</strong> [' + arr.map(function(a) { return '[' + a.join(', ') + ']'; }).join(', ') + ']'; }
-
-        var steps = [
-            { description: '초기화: 루트(3)를 큐에 넣습니다.',
-              action: function() { svgEl.innerHTML = makeSvg({3:'current'}); showQueue([3]); showResult([]); infoEl.innerHTML = 'Queue = [3], 레벨 0 시작'; },
-              undo: function() { svgEl.innerHTML = makeSvg({}); showQueue([]); resultEl.innerHTML = '<strong>Result:</strong> <span style="color:var(--text3);">[]</span>'; infoEl.innerHTML = '<span style="color:var(--text2);">BFS로 레벨별 순회를 시작합니다.</span>'; }
-            },
-            { description: '레벨 0: 노드 3을 꺼내고, 자식 9, 20을 큐에 넣습니다.',
-              action: function() { svgEl.innerHTML = makeSvg({3:'done'}); showQueue([9, 20]); showResult([[3]]); infoEl.innerHTML = '레벨 0 완료: [3]. 자식 9, 20을 큐에 추가'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'current'}); showQueue([3]); showResult([]); infoEl.innerHTML = 'Queue = [3], 레벨 0 시작'; }
-            },
-            { description: '레벨 1: 노드 9, 20을 꺼냅니다. (큐 크기=2)',
-              action: function() { svgEl.innerHTML = makeSvg({3:'done',9:'current',20:'current'}); showQueue([15, 7]); showResult([[3],[9,20]]); infoEl.innerHTML = '레벨 1 완료: [9, 20]. 20의 자식 15, 7을 추가'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'done'}); showQueue([9, 20]); showResult([[3]]); infoEl.innerHTML = '레벨 0 완료: [3]. 자식 9, 20을 큐에 추가'; }
-            },
-            { description: '레벨 2: 노드 15, 7을 꺼냅니다. (리프 노드들)',
-              action: function() { svgEl.innerHTML = makeSvg({3:'done',9:'done',20:'done',15:'current',7:'current'}); showQueue([]); showResult([[3],[9,20],[15,7]]); infoEl.innerHTML = '레벨 2 완료: [15, 7]. 큐가 비었습니다!'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'done',9:'current',20:'current'}); showQueue([15, 7]); showResult([[3],[9,20]]); infoEl.innerHTML = '레벨 1 완료: [9, 20]. 20의 자식 15, 7을 추가'; }
-            },
-            { description: '완성! 큐가 비었으므로 BFS 종료. 결과: [[3], [9, 20], [15, 7]]',
-              action: function() { svgEl.innerHTML = makeSvg({3:'done',9:'done',20:'done',15:'done',7:'done'}); showQueue([]); showResult([[3],[9,20],[15,7]]); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 결과: [[3], [9, 20], [15, 7]]</strong>'; },
-              undo: function() { svgEl.innerHTML = makeSvg({3:'done',9:'done',20:'done',15:'current',7:'current'}); showQueue([]); showResult([[3],[9,20],[15,7]]); infoEl.innerHTML = '레벨 2 완료: [15, 7]. 큐가 비었습니다!'; }
+        function initSim(treeStr) {
+            var steps = buildLevelSteps(treeStr, svgEl, queueEl, resultEl, infoEl);
+            if (steps.length === 0) {
+                svgEl.innerHTML = '<p style="color:var(--red);text-align:center;">유효한 트리를 입력하세요.</p>';
+                return;
             }
-        ];
-        self._initStepController(container, steps, suffix);
+            // Show initial SVG
+            var parsed = self._parseLevelOrder(treeStr);
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var layout = self._computeTreeLayout(root, 460, 70, 40);
+            svgEl.innerHTML = self._makeTreeSvg(layout, {}, 460, svgH, 22);
+            queueEl.innerHTML = '<strong>Queue:</strong> <span style="color:var(--text3);">비어있음</span>';
+            resultEl.innerHTML = '<strong>Result:</strong> <span style="color:var(--text3);">[]</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">BFS로 레벨별 순회를 시작합니다.</span>';
+            self._initStepController(container, steps, suffix);
+        }
+
+        initSim(DEFAULT_TREE);
+
+        container.querySelector('#tree-level-reset').addEventListener('click', function() {
+            var val = container.querySelector('#tree-level-input').value.trim();
+            if (!val) val = DEFAULT_TREE;
+            self._clearVizState();
+            initSim(val);
+        });
     },
 
     // ====================================================================
@@ -751,40 +1286,198 @@ def lowestCommonAncestor(root, p, q):\n\
     _renderVizTreeTraversal: function(container) {
         var self = this;
         var suffix = '-order';
-        // Tree from problem: A-B-C, B-D-., C-E-F, D-.., E-.., F-.-G, G-..
-        var nodes = {
-            A: {x:200,y:35}, B: {x:100,y:100}, C: {x:300,y:100},
-            D: {x:55,y:170}, E: {x:255,y:170}, F: {x:345,y:170},
-            G: {x:375,y:230}
-        };
-        var edges = [['A','B'],['A','C'],['B','D'],['C','E'],['C','F'],['F','G']];
+        // Default: A-B-C-D-E-F-G mapped to level-order for input
+        // The BOJ problem uses letters, so we keep letter support
+        var DEFAULT_TREE = 'A, B, C, D, null, E, F, null, null, null, null, null, G';
 
-        function makeSvg(highlights) {
-            var svg = '<svg viewBox="0 0 430 260" width="100%" height="260">';
-            edges.forEach(function(e) {
-                svg += '<line x1="' + nodes[e[0]].x + '" y1="' + nodes[e[0]].y + '" x2="' + nodes[e[1]].x + '" y2="' + nodes[e[1]].y + '" stroke="var(--border)" stroke-width="2"/>';
+        function buildTraversalSteps(treeStr, svgEl, preEl, inEl, postEl, infoEl) {
+            var parsed = self._parseLevelOrder(treeStr);
+            if (!parsed.length || !parsed[0]) return [];
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var svgW = 460;
+            var layout = self._computeTreeLayout(root, svgW, 70, 40);
+
+            // Compute traversal orders
+            var preOrder = [], inOrder = [], postOrder = [];
+            function preorderDFS(node) {
+                if (!node) return;
+                preOrder.push({ val: node.val, key: String(node.val) + '_' + node.idx });
+                preorderDFS(node.left);
+                preorderDFS(node.right);
+            }
+            function inorderDFS(node) {
+                if (!node) return;
+                inorderDFS(node.left);
+                inOrder.push({ val: node.val, key: String(node.val) + '_' + node.idx });
+                inorderDFS(node.right);
+            }
+            function postorderDFS(node) {
+                if (!node) return;
+                postorderDFS(node.left);
+                postorderDFS(node.right);
+                postOrder.push({ val: node.val, key: String(node.val) + '_' + node.idx });
+            }
+            preorderDFS(root);
+            inorderDFS(root);
+            postorderDFS(root);
+
+            var sep = (typeof preOrder[0].val === 'string') ? '' : ' ';
+
+            function renderSvg(highlights) {
+                return self._makeTreeSvg(layout, highlights, svgW, svgH, 20);
+            }
+
+            var steps = [];
+
+            // === Phase 1: Preorder ===
+            var preCur = [];
+            for (var pi = 0; pi < preOrder.length; pi++) {
+                var item = preOrder[pi];
+                preCur.push(item.val);
+                var snapPre = preCur.slice();
+                var hl = {};
+                for (var j = 0; j < pi; j++) hl[preOrder[j].key] = 'done';
+                hl[item.key] = 'pre';
+                var isFirst = (pi === 0);
+                var isLast = (pi === preOrder.length - 1);
+                var desc = isFirst
+                    ? '전위: 루트 ' + item.val + ' 방문 (출력 → 왼쪽 → 오른쪽)'
+                    : '전위: ' + item.val + ' 방문';
+                if (isLast) {
+                    // Mark all done
+                    for (var j = 0; j < preOrder.length; j++) hl[preOrder[j].key] = 'done';
+                    desc = '전위 순회 완료!';
+                }
+                (function(snapPre, hl, desc) {
+                    steps.push({
+                        description: desc,
+                        action: function() {
+                            svgEl.innerHTML = renderSvg(hl);
+                            preEl.textContent = snapPre.join(sep);
+                            inEl.textContent = '';
+                            postEl.textContent = '';
+                            infoEl.innerHTML = desc;
+                        },
+                        undo: function() {}
+                    });
+                })(snapPre, JSON.parse(JSON.stringify(hl)), desc);
+            }
+
+            // === Phase 2: Inorder ===
+            var fullPre = preOrder.map(function(x) { return x.val; }).join(sep);
+            var inCur = [];
+            for (var ii = 0; ii < inOrder.length; ii++) {
+                var item = inOrder[ii];
+                inCur.push(item.val);
+                var snapIn = inCur.slice();
+                var hl = {};
+                for (var j = 0; j < ii; j++) hl[inOrder[j].key] = 'done';
+                hl[item.key] = 'in';
+                var isFirst = (ii === 0);
+                var isLast = (ii === inOrder.length - 1);
+                var desc = isFirst
+                    ? '중위: 가장 왼쪽 ' + item.val + ' 먼저 방문 (왼쪽 → 출력 → 오른쪽)'
+                    : '중위: ' + item.val + ' 방문';
+                if (isLast) {
+                    for (var j = 0; j < inOrder.length; j++) hl[inOrder[j].key] = 'done';
+                    desc = '중위 순회 완료!';
+                }
+                (function(snapIn, hl, desc) {
+                    steps.push({
+                        description: desc,
+                        action: function() {
+                            svgEl.innerHTML = renderSvg(hl);
+                            preEl.textContent = fullPre;
+                            inEl.textContent = snapIn.join(sep);
+                            postEl.textContent = '';
+                            infoEl.innerHTML = desc;
+                        },
+                        undo: function() {}
+                    });
+                })(snapIn, JSON.parse(JSON.stringify(hl)), desc);
+            }
+
+            // === Phase 3: Postorder ===
+            var fullIn = inOrder.map(function(x) { return x.val; }).join(sep);
+            var postCur = [];
+            for (var pti = 0; pti < postOrder.length; pti++) {
+                var item = postOrder[pti];
+                postCur.push(item.val);
+                var snapPost = postCur.slice();
+                var hl = {};
+                for (var j = 0; j < pti; j++) hl[postOrder[j].key] = 'done';
+                hl[item.key] = 'post';
+                var isFirst = (pti === 0);
+                var isLast = (pti === postOrder.length - 1);
+                var desc = isFirst
+                    ? '후위: 가장 깊은 왼쪽 ' + item.val + ' 먼저 (왼쪽 → 오른쪽 → 출력)'
+                    : '후위: ' + item.val + ' 방문';
+                if (isLast) {
+                    for (var j = 0; j < postOrder.length; j++) hl[postOrder[j].key] = 'done';
+                    desc = '후위: 루트 ' + item.val + ' 마지막 출력 — 후위 순회 완료!';
+                }
+                (function(snapPost, hl, desc) {
+                    steps.push({
+                        description: desc,
+                        action: function() {
+                            svgEl.innerHTML = renderSvg(hl);
+                            preEl.textContent = fullPre;
+                            inEl.textContent = fullIn;
+                            postEl.textContent = snapPost.join(sep);
+                            infoEl.innerHTML = desc;
+                        },
+                        undo: function() {}
+                    });
+                })(snapPost, JSON.parse(JSON.stringify(hl)), desc);
+            }
+
+            // Final step
+            var fullPost = postOrder.map(function(x) { return x.val; }).join(sep);
+            var allDone = {};
+            layout.nodeOrder.forEach(function(k) { allDone[k] = 'done'; });
+            steps.push({
+                description: '완성! 전위: ' + fullPre + ', 중위: ' + fullIn + ', 후위: ' + fullPost,
+                action: function() {
+                    svgEl.innerHTML = renderSvg(allDone);
+                    preEl.textContent = fullPre;
+                    inEl.textContent = fullIn;
+                    postEl.textContent = fullPost;
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 세 가지 순회 완료!</strong>';
+                },
+                undo: function() {}
             });
-            var keys = ['A','B','C','D','E','F','G'];
-            keys.forEach(function(k) {
-                var n = nodes[k];
-                var hl = highlights[k] || '';
-                var fill = hl === 'pre' ? 'var(--accent)' : hl === 'in' ? 'var(--green)' : hl === 'post' ? '#e17055' : hl === 'done' ? '#6c5ce7' : 'var(--bg2)';
-                var textFill = hl ? 'white' : 'var(--text)';
-                svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="20" fill="' + fill + '" stroke="var(--border)" stroke-width="2"/>';
-                svg += '<text x="' + n.x + '" y="' + (n.y + 5) + '" text-anchor="middle" font-size="14" font-weight="600" fill="' + textFill + '">' + k + '</text>';
-            });
-            svg += '</svg>';
-            return svg;
+
+            // Patch undo
+            for (var i = 1; i < steps.length; i++) {
+                (function(idx) {
+                    var prevAction = steps[idx - 1].action;
+                    steps[idx].undo = function() { prevAction(); };
+                })(i);
+            }
+            steps[0].undo = function() {
+                svgEl.innerHTML = renderSvg({});
+                preEl.textContent = '';
+                inEl.textContent = '';
+                postEl.textContent = '';
+                infoEl.innerHTML = '<span style="color:var(--text2);">세 가지 순회를 단계별로 진행합니다.</span>';
+            };
+
+            return steps;
         }
 
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">트리 순회 — 전위/중위/후위</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">트리 A-B-C-D-E-F-G에서 세 가지 순회를 수행합니다.</p>' +
-            '<div id="trav-svg' + suffix + '">' + makeSvg({}) + '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">트리 (level-order): <input type="text" id="tree-trav-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:380px;"></label>' +
+            '<button class="btn btn-primary" id="tree-trav-reset">🔄</button></div>' +
+            '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">BFS 순서로 입력. null = 빈 노드. 예: A, B, C, D, null, E, F</p>' +
+            '<div id="trav-svg' + suffix + '"></div>' +
             '<div id="trav-pre' + suffix + '" style="margin-bottom:4px;font-size:0.9rem;"><strong style="color:var(--accent);">전위:</strong> <span id="trav-pre-val' + suffix + '"></span></div>' +
             '<div id="trav-in' + suffix + '" style="margin-bottom:4px;font-size:0.9rem;"><strong style="color:var(--green);">중위:</strong> <span id="trav-in-val' + suffix + '"></span></div>' +
             '<div id="trav-post' + suffix + '" style="margin-bottom:12px;font-size:0.9rem;"><strong style="color:#e17055;">후위:</strong> <span id="trav-post-val' + suffix + '"></span></div>' +
-            '<div id="trav-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">세 ��지 순회를 단계별로 진행합니다.</span></div>' +
+            '<div id="trav-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">세 가지 순회를 단계별로 진행합니다.</span></div>' +
             self._createStepControls(suffix);
 
         var svgEl = container.querySelector('#trav-svg' + suffix);
@@ -793,117 +1486,34 @@ def lowestCommonAncestor(root, p, q):\n\
         var postEl = container.querySelector('#trav-post-val' + suffix);
         var infoEl = container.querySelector('#trav-info' + suffix);
 
-        // Preorder:  A B D C E F G
-        // Inorder:   D B A E C F G
-        // Postorder: D B E G F C A
-        var preSeq  = ['A','B','D','C','E','F','G'];
-        var inSeq   = ['D','B','A','E','C','F','G'];
-        var postSeq = ['D','B','E','G','F','C','A'];
-
-        var steps = [];
-        var preResult = [], inResult = [], postResult = [];
-
-        // Phase 1: Preorder (4 steps)
-        var preStates = [
-            { add: 'A', hl: {A:'pre'}, desc: '전위: 루트 A 방문 (출력 → 왼쪽 → 오른쪽)' },
-            { add: 'B', hl: {A:'done',B:'pre'}, desc: '전위: A의 왼쪽 자식 B 방문' },
-            { add: 'D', hl: {A:'done',B:'done',D:'pre'}, desc: '전위: B의 왼쪽 자식 D 방문 (리프)' },
-            { add: 'C,E,F,G', hl: {A:'done',B:'done',C:'done',D:'done',E:'done',F:'done',G:'done'}, desc: '전위: 오른쪽 서브트리 C→E→F→G 방문 완료' }
-        ];
-
-        var curPre = [];
-        preStates.forEach(function(ps, idx) {
-            var prevPre = curPre.slice();
-            var additions = ps.add.split(',');
-            additions.forEach(function(a) { curPre.push(a); });
-            var snapPre = curPre.slice();
-            (function(snapPre, prevPre, hl, desc) {
-                steps.push({
-                    description: desc,
-                    action: function() { svgEl.innerHTML = makeSvg(hl); preEl.textContent = snapPre.join(''); inEl.textContent = ''; postEl.textContent = ''; infoEl.innerHTML = desc; },
-                    undo: function() {
-                        var prevHl = idx > 0 ? preStates[idx-1].hl : {};
-                        svgEl.innerHTML = makeSvg(prevHl); preEl.textContent = prevPre.join(''); inEl.textContent = ''; postEl.textContent = '';
-                        infoEl.innerHTML = idx > 0 ? preStates[idx-1].desc : '<span style="color:var(--text2);">세 가지 순회를 단계별로 진행합니다.</span>';
-                    }
-                });
-            })(snapPre, prevPre, ps.hl, ps.desc);
-        });
-
-        // Phase 2: Inorder (4 steps)
-        var inStates = [
-            { add: 'D', hl: {D:'in'}, desc: '중위: 가장 왼쪽 D 먼저 방문 (왼쪽 → 출력 → 오른쪽)' },
-            { add: 'B,A', hl: {D:'done',B:'in',A:'in'}, desc: '중위: D 완료 → B 출력 → 왼쪽 서브트리 완료 → A 출력' },
-            { add: 'E,C', hl: {D:'done',B:'done',A:'done',E:'in',C:'in'}, desc: '중위: 오른쪽 서브트리 → E → C' },
-            { add: 'F,G', hl: {D:'done',B:'done',A:'done',E:'done',C:'done',F:'done',G:'done'}, desc: '중위: F → G (F의 오른쪽 자식) — 중위 순회 완료!' }
-        ];
-
-        var curIn = [];
-        var fullPre = preSeq.join('');
-        inStates.forEach(function(is, idx) {
-            var prevIn = curIn.slice();
-            var additions = is.add.split(',');
-            additions.forEach(function(a) { curIn.push(a); });
-            var snapIn = curIn.slice();
-            (function(snapIn, prevIn, hl, desc) {
-                steps.push({
-                    description: desc,
-                    action: function() { svgEl.innerHTML = makeSvg(hl); preEl.textContent = fullPre; inEl.textContent = snapIn.join(''); postEl.textContent = ''; infoEl.innerHTML = desc; },
-                    undo: function() {
-                        var prevHl = idx > 0 ? inStates[idx-1].hl : preStates[preStates.length-1].hl;
-                        svgEl.innerHTML = makeSvg(prevHl); preEl.textContent = fullPre; inEl.textContent = prevIn.join(''); postEl.textContent = '';
-                        infoEl.innerHTML = idx > 0 ? inStates[idx-1].desc : preStates[preStates.length-1].desc;
-                    }
-                });
-            })(snapIn, prevIn, is.hl, is.desc);
-        });
-
-        // Phase 3: Postorder (4 steps)
-        var postStates = [
-            { add: 'D,B', hl: {D:'post',B:'post'}, desc: '후위: 왼쪽 서브트리 → D(리프) → B (왼쪽 → 오른쪽 → 출력)' },
-            { add: 'E', hl: {D:'done',B:'done',E:'post'}, desc: '후위: 오른쪽 서브트리의 왼쪽 → E(리프)' },
-            { add: 'G,F,C', hl: {D:'done',B:'done',E:'done',G:'post',F:'post',C:'post'}, desc: '후위: G → F → C (자식들 먼저, 부모 마지막)' },
-            { add: 'A', hl: {D:'done',B:'done',E:'done',G:'done',F:'done',C:'done',A:'done'}, desc: '후위: 루트 A 마지막 출력 — 후위 순회 완료!' }
-        ];
-
-        var curPost = [];
-        var fullIn = inSeq.join('');
-        postStates.forEach(function(ps, idx) {
-            var prevPost = curPost.slice();
-            var additions = ps.add.split(',');
-            additions.forEach(function(a) { curPost.push(a); });
-            var snapPost = curPost.slice();
-            (function(snapPost, prevPost, hl, desc) {
-                steps.push({
-                    description: desc,
-                    action: function() { svgEl.innerHTML = makeSvg(hl); preEl.textContent = fullPre; inEl.textContent = fullIn; postEl.textContent = snapPost.join(''); infoEl.innerHTML = desc; },
-                    undo: function() {
-                        var prevHl = idx > 0 ? postStates[idx-1].hl : inStates[inStates.length-1].hl;
-                        svgEl.innerHTML = makeSvg(prevHl); preEl.textContent = fullPre; inEl.textContent = fullIn; postEl.textContent = prevPost.join('');
-                        infoEl.innerHTML = idx > 0 ? postStates[idx-1].desc : inStates[inStates.length-1].desc;
-                    }
-                });
-            })(snapPost, prevPost, ps.hl, ps.desc);
-        });
-
-        // Final step
-        var fullPost = postSeq.join('');
-        steps.push({
-            description: '완성! 전위: ABDCEFG, 중위: DBAECFG, 후위: DBEGFCA',
-            action: function() {
-                svgEl.innerHTML = makeSvg({A:'done',B:'done',C:'done',D:'done',E:'done',F:'done',G:'done'});
-                preEl.textContent = fullPre; inEl.textContent = fullIn; postEl.textContent = fullPost;
-                infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 세 가지 순회 완료!</strong>';
-            },
-            undo: function() {
-                var hl = postStates[postStates.length-1].hl;
-                svgEl.innerHTML = makeSvg(hl);
-                preEl.textContent = fullPre; inEl.textContent = fullIn; postEl.textContent = fullPost;
-                infoEl.innerHTML = postStates[postStates.length-1].desc;
+        function initSim(treeStr) {
+            var steps = buildTraversalSteps(treeStr, svgEl, preEl, inEl, postEl, infoEl);
+            if (steps.length === 0) {
+                svgEl.innerHTML = '<p style="color:var(--red);text-align:center;">유효한 트리를 입력하세요.</p>';
+                return;
             }
-        });
+            // Show initial SVG
+            var parsed = self._parseLevelOrder(treeStr);
+            var root = parsed[0];
+            var h = self._getTreeHeight(root);
+            var svgH = Math.max(180, h * 70 + 40);
+            var layout = self._computeTreeLayout(root, 460, 70, 40);
+            svgEl.innerHTML = self._makeTreeSvg(layout, {}, 460, svgH, 20);
+            preEl.textContent = '';
+            inEl.textContent = '';
+            postEl.textContent = '';
+            infoEl.innerHTML = '<span style="color:var(--text2);">세 가지 순회를 단계별로 진행합니다.</span>';
+            self._initStepController(container, steps, suffix);
+        }
 
-        self._initStepController(container, steps, suffix);
+        initSim(DEFAULT_TREE);
+
+        container.querySelector('#tree-trav-reset').addEventListener('click', function() {
+            var val = container.querySelector('#tree-trav-input').value.trim();
+            if (!val) val = DEFAULT_TREE;
+            self._clearVizState();
+            initSim(val);
+        });
     },
 
     // ===== 빈 스텁 =====
@@ -925,16 +1535,31 @@ def lowestCommonAncestor(root, p, q):\n\
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/maximum-depth-of-binary-tree/',
             simIntro: 'DFS 재귀로 트리의 최대 깊이를 구하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>이진 트리의 <strong>최대 깊이</strong>를 구하세요. 최대 깊이는 루트 노드에서 가장 먼 리프 노드까지의 경로에 있는 노드의 수입니다.</p><div class="problem-io"><div><h4>입력</h4><p>이진 트리의 루트 노드</p></div><div><h4>출력</h4><p>최대 깊이 (정수)</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>[3, 9, 20, null, null, 15, 7]</pre></div><div><strong>출력</strong><pre>3</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>이진 트리의 <code>root</code>가 주어졌을 때, 최대 깊이를 반환하세요. 이진 트리의 <strong>최대 깊이</strong>는 루트 노드에서 가장 먼 리프 노드까지의 가장 긴 경로에 있는 노드의 수입니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = [3,9,20,null,null,15,7]</pre></div>
+                    <div><strong>출력</strong><pre>3</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = [1,null,2]</pre></div>
+                    <div><strong>출력</strong><pre>2</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>노드 수는 <code>[0, 10<sup>4</sup>]</code> 범위입니다.</li>
+                    <li><code>-100 ≤ Node.val ≤ 100</code></li>
+                </ul>
+            `,
             hints: [
-                { title: '재귀적 접근', content: '빈 노드(None)이면 깊이는 0입니다. 그렇지 않으면 <strong>왼쪽과 오른쪽 서브트리의 깊이 중 큰 값 + 1</strong>이 답입니다.' },
-                { title: 'BFS 접근도 가능', content: '큐를 사용하여 레벨 순회를 하면서, 레벨의 수를 세면 됩니다.' },
-                { title: '핵심 코드', content: '<code>return 1 + max(maxDepth(root.left), maxDepth(root.right))</code><br>이 한 줄이 핵심입니다! 재귀의 아름다움을 느껴보세요.' }
+                { title: '트리의 깊이를 어떻게 잴까?', content: '트리의 "최대 깊이"를 구하려면 결국 <strong>모든 노드를 방문</strong>하면서 깊이를 추적해야 합니다.<br><br>방법은 두 가지가 떠오릅니다:<br>1. <strong>BFS</strong>로 레벨별로 내려가면서 레벨 수를 세기<br>2. <strong>DFS</strong>로 깊이 내려가면서 최대 깊이를 추적하기<br><br>어느 쪽이든 "모든 노드 방문"은 피할 수 없으니, 더 간결한 방법을 찾아봅시다.' },
+                { title: '재귀적으로 생각해보자', content: '트리 문제는 재귀와 찰떡입니다. 이렇게 생각해보세요:<br><br><strong>"이 노드의 최대 깊이 = 1 + max(왼쪽 깊이, 오른쪽 깊이)"</strong><br><br>왼쪽 서브트리의 깊이와 오른쪽 서브트리의 깊이 중 큰 값에 현재 노드(+1)를 더하면 됩니다.<br><br>기저 조건: 노드가 없으면(<span class="lang-py"><code>None</code></span><span class="lang-cpp"><code>nullptr</code></span>) 깊이는 <strong>0</strong>입니다.' },
+                { title: '코드 한 줄로!', content: '재귀의 힘을 느껴보세요 — 이 한 줄이 전부입니다:<br><br><span class="lang-py"><code>return 0 if not root else 1 + max(depth(root.left), depth(root.right))</code></span><span class="lang-cpp"><code>return !root ? 0 : 1 + max(maxDepth(root->left), maxDepth(root->right));</code></span><br><br>"빈 노드면 0, 아니면 1 + 자식 중 큰 깊이" — 이게 전부입니다!' }
             ],
             templates: {
                 python: '# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def maxDepth(self, root) -> int:\n        if not root:\n            return 0\n        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))',
-                cpp: '/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n * };\n */\nclass Solution {\npublic:\n    int maxDepth(TreeNode* root) {\n        if (!root) return 0;\n        return 1 + max(maxDepth(root->left), maxDepth(root->right));\n    }\n};',
-                java: '/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n * }\n */\nclass Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}'
+                cpp: '/**\n * Definition for a binary tree node.\n * struct TreeNode {\n *     int val;\n *     TreeNode *left;\n *     TreeNode *right;\n * };\n */\nclass Solution {\npublic:\n    int maxDepth(TreeNode* root) {\n        if (!root) return 0;\n        return 1 + max(maxDepth(root->left), maxDepth(root->right));\n    }\n};'
             },
             solutions: [{
                 approach: '재귀 DFS',
@@ -943,9 +1568,14 @@ def lowestCommonAncestor(root, p, q):\n\
                 spaceComplexity: 'O(h)',
                 codeSteps: {
                     python: [
-                        { title: '기저 조건', code: 'if not root:\n    return 0' },
-                        { title: '재귀 호출', code: 'left = self.maxDepth(root.left)\nright = self.maxDepth(root.right)' },
-                        { title: '결과 반환', code: 'return 1 + max(left, right)' }
+                        { title: '기저 조건', desc: '빈 노드면 깊이 0을 반환하여 재귀를 멈춘다.', code: 'if not root:\n    return 0' },
+                        { title: '재귀 호출', desc: '왼쪽/오른쪽 서브트리의 깊이를 각각 재귀로 구한다.', code: 'left = self.maxDepth(root.left)\nright = self.maxDepth(root.right)' },
+                        { title: '결과 반환', desc: '현재 노드(+1)와 자식 중 더 깊은 쪽을 합치면 전체 깊이가 된다.', code: 'return 1 + max(left, right)' }
+                    ],
+                    cpp: [
+                        { title: '기저 조건', desc: '빈 노드(nullptr)면 깊이 0.', code: 'if (!root) return 0;' },
+                        { title: '재귀 호출', desc: '->로 포인터의 멤버 접근.', code: 'int left = maxDepth(root->left);\nint right = maxDepth(root->right);' },
+                        { title: '결과 반환', desc: '현재 노드(+1) + 자식 중 큰 깊이 = 전체 최대 깊이.', code: 'return 1 + max(left, right);' }
                     ]
                 },
                 get templates() { return treeTopic.problems[0].templates; }
@@ -957,16 +1587,35 @@ def lowestCommonAncestor(root, p, q):\n\
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/invert-binary-tree/',
             simIntro: '재귀적으로 트리의 좌우 자식을 교환하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>이진 트리가 주어졌을 때, <strong>좌우를 반전(뒤집기)</strong>시킨 트리를 반환하세요.</p><div class="problem-io"><div><h4>입력</h4><p>이진 트리의 루트 노드</p></div><div><h4>출력</h4><p>좌우 반전된 트리의 루트 노드</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>[4, 2, 7, 1, 3, 6, 9]</pre></div><div><strong>출력</strong><pre>[4, 7, 2, 9, 6, 3, 1]</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>이진 트리의 <code>root</code>가 주어졌을 때, 트리를 좌우 반전(뒤집기)하여 반환하세요. 모든 노드의 왼쪽 자식과 오른쪽 자식을 서로 바꿉니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = [4,2,7,1,3,6,9]</pre></div>
+                    <div><strong>출력</strong><pre>[4,7,2,9,6,3,1]</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = [2,1,3]</pre></div>
+                    <div><strong>출력</strong><pre>[2,3,1]</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = []</pre></div>
+                    <div><strong>출력</strong><pre>[]</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>노드 수는 <code>[0, 100]</code> 범위입니다.</li>
+                    <li><code>-100 ≤ Node.val ≤ 100</code></li>
+                </ul>
+            `,
             hints: [
-                { title: '재귀적 접근', content: '각 노드에서 <strong>왼쪽 자식과 오른쪽 자식을 교환</strong>하면 됩니다. 그런 다음 왼쪽, 오른쪽 서브트리에 대해 재귀적으로 반복합니다.' },
-                { title: '종료 조건', content: 'root가 None이면 None을 반환합니다. 이것이 재귀의 종료 조건입니다.' },
-                { title: '핵심 코드', content: '<code>root.left, root.right = root.right, root.left</code><br>이 한 줄로 좌우 교환! 그 후 양쪽에 재귀 호출합니다.' }
+                { title: '뒤집기 = 왼쪽과 오른쪽을 바꾸기', content: '"트리를 뒤집는다"는 말이 거창해 보이지만, 사실 <strong>모든 노드에서 왼쪽 자식과 오른쪽 자식을 swap</strong>하면 끝입니다.<br><br>모든 노드를 방문해야 하므로 DFS든 BFS든 어떤 순회 방법이든 OK. 핵심은 "빠짐없이 모든 노드에서 swap"입니다.' },
+                { title: '재귀로 간단하게', content: '재귀로 구현하면 아주 깔끔합니다:<br><br>1. 현재 노드의 <code>left</code>와 <code>right</code>를 <strong>swap</strong><br>2. 왼쪽 서브트리를 재귀로 뒤집기<br>3. 오른쪽 서브트리를 재귀로 뒤집기<br><br>기저 조건: 노드가 없으면(<span class="lang-py"><code>None</code></span><span class="lang-cpp"><code>nullptr</code></span>) 그냥 return.' },
+                { title: '순서가 중요할까?', content: '흥미로운 점 — swap과 재귀의 순서에 따라 전위/후위가 달라집니다:<br><br><strong>전위</strong> (swap 먼저 → 재귀): 현재 노드를 swap한 뒤 자식들을 뒤집기<br><strong>후위</strong> (재귀 먼저 → swap): 자식들을 먼저 뒤집고 나서 현재 노드를 swap<br><br>둘 다 정상 동작합니다. 하지만 <strong>중위</strong>(왼쪽 재귀 → swap → 오른쪽 재귀)는 주의! swap 후에 왼쪽/오른쪽이 바뀌어서, 같은 쪽을 두 번 뒤집게 됩니다.' }
             ],
             templates: {
                 python: 'class Solution:\n    def invertTree(self, root):\n        if not root:\n            return None\n        root.left, root.right = root.right, root.left\n        self.invertTree(root.left)\n        self.invertTree(root.right)\n        return root',
-                cpp: 'class Solution {\npublic:\n    TreeNode* invertTree(TreeNode* root) {\n        if (!root) return nullptr;\n        swap(root->left, root->right);\n        invertTree(root->left);\n        invertTree(root->right);\n        return root;\n    }\n};',
-                java: 'class Solution {\n    public TreeNode invertTree(TreeNode root) {\n        if (root == null) return null;\n        TreeNode temp = root.left;\n        root.left = root.right;\n        root.right = temp;\n        invertTree(root.left);\n        invertTree(root.right);\n        return root;\n    }\n}'
+                cpp: 'class Solution {\npublic:\n    TreeNode* invertTree(TreeNode* root) {\n        if (!root) return nullptr;\n        swap(root->left, root->right);\n        invertTree(root->left);\n        invertTree(root->right);\n        return root;\n    }\n};'
             },
             solutions: [{
                 approach: '재귀 좌우 교환',
@@ -975,9 +1624,14 @@ def lowestCommonAncestor(root, p, q):\n\
                 spaceComplexity: 'O(h)',
                 codeSteps: {
                     python: [
-                        { title: '기저 조건', code: 'if not root:\n    return None' },
-                        { title: '좌우 교환', code: 'root.left, root.right = root.right, root.left' },
-                        { title: '재귀 호출 + 반환', code: 'self.invertTree(root.left)\nself.invertTree(root.right)\nreturn root' }
+                        { title: '기저 조건', desc: '빈 노드면 교환할 게 없으므로 None 반환.', code: 'if not root:\n    return None' },
+                        { title: '좌우 교환', desc: '현재 노드의 왼쪽/오른쪽 자식을 동시에 교환한다.', code: 'root.left, root.right = root.right, root.left' },
+                        { title: '재귀 호출 + 반환', desc: '교환 후 자식 서브트리도 재귀적으로 반전시킨다.', code: 'self.invertTree(root.left)\nself.invertTree(root.right)\nreturn root' }
+                    ],
+                    cpp: [
+                        { title: '기저 조건', desc: 'nullptr이면 교환할 자식이 없으므로 바로 반환.', code: 'if (!root) return nullptr;' },
+                        { title: '좌우 교환', desc: 'swap()으로 포인터 교환. Python의 동시 대입과 동일.', code: 'swap(root->left, root->right);' },
+                        { title: '재귀 호출 + 반환', desc: '교환 후 자식 서브트리도 재귀적으로 반전 처리.', code: 'invertTree(root->left);\ninvertTree(root->right);\nreturn root;' }
                     ]
                 },
                 get templates() { return treeTopic.problems[1].templates; }
@@ -990,16 +1644,35 @@ def lowestCommonAncestor(root, p, q):\n\
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/binary-tree-level-order-traversal/',
             simIntro: 'BFS로 트리를 레벨별로 순회하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>이진 트리가 주어졌을 때, <strong>레벨별로</strong> 노드 값을 반환하세요. (왼쪽에서 오른쪽 순서)</p><div class="problem-io"><div><h4>입력</h4><p>이진 트리의 루트 노드</p></div><div><h4>출력</h4><p>레벨별 노드 값 리스트의 리스트</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>[3, 9, 20, null, null, 15, 7]</pre></div><div><strong>출력</strong><pre>[[3], [9, 20], [15, 7]]</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>이진 트리의 <code>root</code>가 주어졌을 때, 노드 값의 <strong>레벨 순서 순회(level order traversal)</strong>를 반환하세요. 즉, 왼쪽에서 오른쪽으로, 레벨별로 노드 값을 반환합니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = [3,9,20,null,null,15,7]</pre></div>
+                    <div><strong>출력</strong><pre>[[3],[9,20],[15,7]]</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = [1]</pre></div>
+                    <div><strong>출력</strong><pre>[[1]]</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>root = []</pre></div>
+                    <div><strong>출력</strong><pre>[]</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>노드 수는 <code>[0, 2000]</code> 범위입니다.</li>
+                    <li><code>-1000 ≤ Node.val ≤ 1000</code></li>
+                </ul>
+            `,
             hints: [
-                { title: 'BFS 활용!', content: '<strong>큐(Queue)</strong>를 사용한 BFS로 레벨별 순회를 합니다. 핵심은 매 레벨마다 큐의 크기를 미리 구해서, 그만큼만 꺼내는 것입니다.' },
-                { title: '레벨 구분 방법', content: '<code>for _ in range(len(queue))</code>로 현재 레벨의 노드만 처리합니다. 반복문 안에서 자식 노드를 큐에 넣으면 다음 레벨이 됩니다.' },
-                { title: '시간/공간 복잡도', content: '시간: O(N) — 모든 노드를 한 번씩 방문합니다.<br>공간: O(N) — 큐에 최대 한 레벨의 노드가 들어갑니다.' }
+                { title: '레벨별로 나누려면?', content: '트리를 위에서 아래로, <strong>같은 레벨끼리 묶어야</strong> 합니다.<br><br>DFS로도 가능합니다 — 깊이를 추적하면서 해당 레벨의 리스트에 추가하면 됩니다. 하지만 더 자연스러운 방법이 있습니다...' },
+                { title: 'BFS가 딱이다!', content: '<strong>BFS(너비 우선 탐색)</strong>는 원래 레벨별로 탐색하는 알고리즘이니, 이 문제에 딱입니다!<br><br>핵심 트릭: <strong>현재 큐의 크기(size)만큼만 pop</strong>하면 정확히 한 레벨이 끝납니다.<br><br>큐에서 노드를 꺼내면서 자식을 넣으면, 다음 레벨이 자연스럽게 큐에 쌓입니다.' },
+                { title: '<span class="lang-py">Python: collections.deque</span><span class="lang-cpp">C++: queue</span>', content: '<span class="lang-py">Python의 <code>collections.deque</code>를 사용하면 <code>popleft()</code>가 O(1)입니다. 일반 리스트의 <code>pop(0)</code>은 O(n)이라 느립니다!<br><br><code>for _ in range(len(queue)):</code>로 현재 레벨 크기만큼만 처리하고, <code>queue.append()</code>로 자식을 추가합니다.</span><span class="lang-cpp">C++의 <code>queue&lt;TreeNode*&gt;</code>를 사용합니다. <code>q.front()</code>으로 꺼내고 <code>q.pop()</code>으로 제거.<br><br>중요: <code>int sz = q.size();</code>를 <strong>반복문 전에 미리 저장</strong>해야 합니다. 반복 중에 <code>q.push()</code>로 자식을 추가하면 <code>q.size()</code>가 바뀌니까요!</span>' }
             ],
             templates: {
                 python: 'from collections import deque\n\nclass Solution:\n    def levelOrder(self, root):\n        if not root:\n            return []\n        result = []\n        queue = deque([root])\n        while queue:\n            level = []\n            for _ in range(len(queue)):\n                node = queue.popleft()\n                level.append(node.val)\n                if node.left:  queue.append(node.left)\n                if node.right: queue.append(node.right)\n            result.append(level)\n        return result',
-                cpp: 'class Solution {\npublic:\n    vector<vector<int>> levelOrder(TreeNode* root) {\n        vector<vector<int>> result;\n        if (!root) return result;\n        queue<TreeNode*> q;\n        q.push(root);\n        while (!q.empty()) {\n            int sz = q.size();\n            vector<int> level;\n            for (int i = 0; i < sz; i++) {\n                TreeNode* node = q.front(); q.pop();\n                level.push_back(node->val);\n                if (node->left)  q.push(node->left);\n                if (node->right) q.push(node->right);\n            }\n            result.push_back(level);\n        }\n        return result;\n    }\n};',
-                java: 'class Solution {\n    public List<List<Integer>> levelOrder(TreeNode root) {\n        List<List<Integer>> result = new ArrayList<>();\n        if (root == null) return result;\n        Queue<TreeNode> queue = new LinkedList<>();\n        queue.add(root);\n        while (!queue.isEmpty()) {\n            int size = queue.size();\n            List<Integer> level = new ArrayList<>();\n            for (int i = 0; i < size; i++) {\n                TreeNode node = queue.poll();\n                level.add(node.val);\n                if (node.left != null)  queue.add(node.left);\n                if (node.right != null) queue.add(node.right);\n            }\n            result.add(level);\n        }\n        return result;\n    }\n}'
+                cpp: 'class Solution {\npublic:\n    vector<vector<int>> levelOrder(TreeNode* root) {\n        vector<vector<int>> result;\n        if (!root) return result;\n        queue<TreeNode*> q;\n        q.push(root);\n        while (!q.empty()) {\n            int sz = q.size();\n            vector<int> level;\n            for (int i = 0; i < sz; i++) {\n                TreeNode* node = q.front(); q.pop();\n                level.push_back(node->val);\n                if (node->left)  q.push(node->left);\n                if (node->right) q.push(node->right);\n            }\n            result.push_back(level);\n        }\n        return result;\n    }\n};'
             },
             solutions: [{
                 approach: 'BFS (큐 사용)',
@@ -1008,9 +1681,14 @@ def lowestCommonAncestor(root, p, q):\n\
                 spaceComplexity: 'O(n)',
                 codeSteps: {
                     python: [
-                        { title: '초기화', code: 'result = []\nqueue = deque([root])' },
-                        { title: '레벨별 처리', code: 'while queue:\n    level = []\n    for _ in range(len(queue)):\n        node = queue.popleft()\n        level.append(node.val)' },
-                        { title: '자식 추가 + 결과 반환', code: '        if node.left:  queue.append(node.left)\n        if node.right: queue.append(node.right)\n    result.append(level)\nreturn result' }
+                        { title: '초기화', desc: '결과 리스트와 BFS용 큐를 준비하고, 루트를 큐에 넣는다.', code: 'result = []\nqueue = deque([root])' },
+                        { title: '레벨별 처리', desc: '큐의 현재 크기만큼만 꺼내면 같은 레벨 노드만 처리된다.', code: 'while queue:\n    level = []\n    for _ in range(len(queue)):\n        node = queue.popleft()\n        level.append(node.val)' },
+                        { title: '자식 추가 + 결과 반환', desc: '꺼낸 노드의 자식을 큐에 넣으면 다음 레벨이 자동으로 구성된다.', code: '        if node.left:  queue.append(node.left)\n        if node.right: queue.append(node.right)\n    result.append(level)\nreturn result' }
+                    ],
+                    cpp: [
+                        { title: '초기화', desc: '결과 벡터와 BFS용 큐를 준비하고, 루트를 큐에 넣는다.', code: 'vector<vector<int>> result;\nqueue<TreeNode*> q;\nq.push(root);' },
+                        { title: '레벨별 처리', desc: 'q.size()를 미리 저장 → 현재 레벨 크기만큼만 처리.', code: 'while (!q.empty()) {\n    int sz = q.size();  // 현재 레벨 크기\n    vector<int> level;\n    for (int i = 0; i < sz; i++) {\n        TreeNode* node = q.front(); q.pop();\n        level.push_back(node->val);' },
+                        { title: '자식 추가 + 결과 반환', desc: '자식 노드를 큐에 넣으면 다음 레벨이 자연스럽게 구성된다.', code: '        if (node->left)  q.push(node->left);\n        if (node->right) q.push(node->right);\n    }\n    result.push_back(level);\n}\nreturn result;' }
                     ]
                 },
                 get templates() { return treeTopic.problems[2].templates; }
@@ -1022,16 +1700,44 @@ def lowestCommonAncestor(root, p, q):\n\
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1991',
             simIntro: '전위/중위/후위 순회가 노드를 방문하는 순서를 확인하세요.',
-            descriptionHTML: '<h3>문제</h3><p>이진 트리가 주어졌을 때, <strong>전위 순회(preorder)</strong>, <strong>중위 순회(inorder)</strong>, <strong>후위 순회(postorder)</strong> 결과를 각각 출력하세요.</p><p>노드 이름은 A부터 시작하며, 항상 A가 루트입니다. 자식이 없으면 .으로 표시됩니다.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: 노드 수 N (1 ≤ N ≤ 26)<br>이후 N줄: 노드, 왼쪽 자식, 오른쪽 자식</p></div><div><h4>출력</h4><p>전위 순회 결과<br>중위 순회 결과<br>후위 순회 결과</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>7\nA B C\nB D .\nC E F\nD . .\nE . .\nF . G\nG . .</pre></div><div><strong>출력</strong><pre>ABDCEFG\nDBAECFG\nDBEGFCA</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>이진 트리를 입력받아 전위 순회(preorder), 중위 순회(inorder), 후위 순회(postorder)한 결과를 출력하는 프로그램을 작성하시오.</p>
+                <p>예를 들어 위와 같은 이진 트리가 입력되면,</p>
+                <ul>
+                    <li>전위 순회한 결과: ABDCEFG</li>
+                    <li>중위 순회한 결과: DBAECFG</li>
+                    <li>후위 순회한 결과: DBEGFCA</li>
+                </ul>
+                <p>가 된다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>7
+A B C
+B D .
+C E F
+D . .
+E . .
+F . G
+G . .</pre></div>
+                    <div><strong>출력</strong><pre>ABDCEFG
+DBAECFG
+DBEGFCA</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li><code>1 ≤ N ≤ 26</code></li>
+                    <li>노드 이름은 A부터 차례대로 대문자 알파벳으로 매겨진다.</li>
+                    <li>항상 A가 루트 노드가 된다.</li>
+                </ul>
+            `,
             hints: [
-                { title: '트리 저장 방법', content: '딕셔너리(해시맵)에 각 노드의 <strong>왼쪽/오른쪽 자식</strong>을 저장합니다. <code>tree[node] = (left, right)</code>' },
-                { title: '순회 구현', content: '전위: <strong>출력 → 왼쪽 → 오른쪽</strong><br>중위: <strong>왼쪽 → 출력 → 오른쪽</strong><br>후위: <strong>왼쪽 → 오른쪽 → 출력</strong><br>재귀로 구현하면 아주 간단합니다!' },
-                { title: '종료 조건', content: '자식이 <code>.</code>이면 재귀를 멈춥니다. <code>if node == ".": return</code>' }
+                { title: '전위·중위·후위, 순서만 다르다', content: '세 순회 모두 <strong>왼쪽 → 오른쪽</strong> 방향으로 방문하되, <strong>"현재 노드를 언제 출력하느냐"</strong>만 다릅니다:<br><br><strong>전위</strong>: 먼저 출력 → 왼 → 오 (루트가 맨 앞)<br><strong>중위</strong>: 왼 → 출력 → 오 (루트가 가운데)<br><strong>후위</strong>: 왼 → 오 → 출력 (루트가 맨 뒤)<br><br>이걸 기억하면 재귀 코드가 바로 나옵니다!' },
+                { title: '입력을 어떻게 저장할까?', content: '입력이 <code>A B C</code> 형태로 주어지니, 이걸 어딘가에 저장해야 합니다.<br><br><span class="lang-py"><code>dict</code>에 <code>tree[node] = (left, right)</code> 형태로 저장하면, 재귀 호출 시 <code>tree["A"]</code>로 바로 자식에 접근 가능!</span><span class="lang-cpp"><code>map&lt;char, pair&lt;char, char&gt;&gt;</code>에 저장하면, <code>tree[\'A\'].first</code>로 왼쪽 자식, <code>.second</code>로 오른쪽 자식에 접근 가능!</span><br><br>자식이 없으면 <code>.</code>으로 표시되니, <code>.</code>이면 재귀를 멈추면 됩니다.' },
+                { title: '재귀 함수 하나로 세 가지 순회', content: '재귀 함수의 구조는 동일하고, <strong><span class="lang-py"><code>print(node)</code></span><span class="lang-cpp"><code>cout &lt;&lt; node</code></span> 위치만 바꾸면</strong> 세 가지 순회가 완성됩니다:<br><br><span class="lang-py"><pre>def traverse(node):\n    if node == \'.\': return\n    # print(node) ← 여기면 전위\n    traverse(tree[node][0])\n    # print(node) ← 여기면 중위\n    traverse(tree[node][1])\n    # print(node) ← 여기면 후위</pre></span><span class="lang-cpp"><pre>void traverse(char node) {\n    if (node == \'.\') return;\n    // cout << node; ← 여기면 전위\n    traverse(tree[node].first);\n    // cout << node; ← 여기면 중위\n    traverse(tree[node].second);\n    // cout << node; ← 여기면 후위\n}</pre></span>' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ntree = {}\nfor _ in range(N):\n    node, left, right = input().split()\n    tree[node] = (left, right)\n\ndef preorder(node):\n    if node == \'.\':\n        return\n    print(node, end=\'\')\n    preorder(tree[node][0])\n    preorder(tree[node][1])\n\ndef inorder(node):\n    if node == \'.\':\n        return\n    inorder(tree[node][0])\n    print(node, end=\'\')\n    inorder(tree[node][1])\n\ndef postorder(node):\n    if node == \'.\':\n        return\n    postorder(tree[node][0])\n    postorder(tree[node][1])\n    print(node, end=\'\')\n\npreorder(\'A\')\nprint()\ninorder(\'A\')\nprint()\npostorder(\'A\')\nprint()',
-                cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nmap<char, pair<char, char>> tree;\n\nvoid preorder(char node) {\n    if (node == \'.\') return;\n    cout << node;\n    preorder(tree[node].first);\n    preorder(tree[node].second);\n}\n\nvoid inorder(char node) {\n    if (node == \'.\') return;\n    inorder(tree[node].first);\n    cout << node;\n    inorder(tree[node].second);\n}\n\nvoid postorder(char node) {\n    if (node == \'.\') return;\n    postorder(tree[node].first);\n    postorder(tree[node].second);\n    cout << node;\n}\n\nint main() {\n    int N;\n    scanf("%d", &N);\n    for (int i = 0; i < N; i++) {\n        char node, left, right;\n        scanf(" %c %c %c", &node, &left, &right);\n        tree[node] = {left, right};\n    }\n    preorder(\'A\'); cout << "\\n";\n    inorder(\'A\');  cout << "\\n";\n    postorder(\'A\'); cout << "\\n";\n    return 0;\n}',
-                java: 'import java.util.*;\n\npublic class Main {\n    static Map<Character, char[]> tree = new HashMap<>();\n\n    static void preorder(char node) {\n        if (node == \'.\') return;\n        System.out.print(node);\n        preorder(tree.get(node)[0]);\n        preorder(tree.get(node)[1]);\n    }\n\n    static void inorder(char node) {\n        if (node == \'.\') return;\n        inorder(tree.get(node)[0]);\n        System.out.print(node);\n        inorder(tree.get(node)[1]);\n    }\n\n    static void postorder(char node) {\n        if (node == \'.\') return;\n        postorder(tree.get(node)[0]);\n        postorder(tree.get(node)[1]);\n        System.out.print(node);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        for (int i = 0; i < N; i++) {\n            char node = sc.next().charAt(0);\n            char left = sc.next().charAt(0);\n            char right = sc.next().charAt(0);\n            tree.put(node, new char[]{left, right});\n        }\n        preorder(\'A\'); System.out.println();\n        inorder(\'A\');  System.out.println();\n        postorder(\'A\'); System.out.println();\n    }\n}'
+                cpp: '#include <iostream>\n#include <map>\nusing namespace std;\n\nmap<char, pair<char, char>> tree;\n\nvoid preorder(char node) {\n    if (node == \'.\') return;\n    cout << node;\n    preorder(tree[node].first);\n    preorder(tree[node].second);\n}\n\nvoid inorder(char node) {\n    if (node == \'.\') return;\n    inorder(tree[node].first);\n    cout << node;\n    inorder(tree[node].second);\n}\n\nvoid postorder(char node) {\n    if (node == \'.\') return;\n    postorder(tree[node].first);\n    postorder(tree[node].second);\n    cout << node;\n}\n\nint main() {\n    int N;\n    scanf("%d", &N);\n    for (int i = 0; i < N; i++) {\n        char node, left, right;\n        scanf(" %c %c %c", &node, &left, &right);\n        tree[node] = {left, right};\n    }\n    preorder(\'A\'); cout << "\\n";\n    inorder(\'A\');  cout << "\\n";\n    postorder(\'A\'); cout << "\\n";\n    return 0;\n}'
             },
             solutions: [{
                 approach: '재귀 순회',
@@ -1040,9 +1746,14 @@ def lowestCommonAncestor(root, p, q):\n\
                 spaceComplexity: 'O(n)',
                 codeSteps: {
                     python: [
-                        { title: '트리 입력 저장', code: 'tree = {}\nfor _ in range(N):\n    node, left, right = input().split()\n    tree[node] = (left, right)' },
-                        { title: '전위 순회', code: 'def preorder(node):\n    if node == \'.\':\n        return\n    print(node, end=\'\')\n    preorder(tree[node][0])\n    preorder(tree[node][1])' },
-                        { title: '중위/후위 순회', code: 'def inorder(node):\n    if node == \'.\': return\n    inorder(tree[node][0])\n    print(node, end=\'\')\n    inorder(tree[node][1])\n\ndef postorder(node):\n    if node == \'.\': return\n    postorder(tree[node][0])\n    postorder(tree[node][1])\n    print(node, end=\'\')' }
+                        { title: '트리 입력 저장', desc: '딕셔너리에 각 노드의 왼쪽/오른쪽 자식을 저장한다.', code: 'tree = {}\nfor _ in range(N):\n    node, left, right = input().split()\n    tree[node] = (left, right)' },
+                        { title: '전위 순회', desc: '출력→왼쪽→오른쪽 순서. 루트를 가장 먼저 방문한다.', code: 'def preorder(node):\n    if node == \'.\':\n        return\n    print(node, end=\'\')\n    preorder(tree[node][0])\n    preorder(tree[node][1])' },
+                        { title: '중위/후위 순회', desc: '중위: 왼→출력→오, 후위: 왼→오→출력. 출력 위치만 다르다.', code: 'def inorder(node):\n    if node == \'.\': return\n    inorder(tree[node][0])\n    print(node, end=\'\')\n    inorder(tree[node][1])\n\ndef postorder(node):\n    if node == \'.\': return\n    postorder(tree[node][0])\n    postorder(tree[node][1])\n    print(node, end=\'\')' }
+                    ],
+                    cpp: [
+                        { title: '트리 입력 저장', desc: 'map<char, pair<char,char>>로 자식 저장.\nPython의 dict와 같은 역할.', code: 'map<char, pair<char, char>> tree;\nfor (int i = 0; i < N; i++) {\n    char node, left, right;\n    scanf(" %c %c %c", &node, &left, &right);\n    tree[node] = {left, right};\n}' },
+                        { title: '전위 순회', desc: '출력 → 왼쪽 → 오른쪽 순서.\n.first = 왼쪽, .second = 오른쪽.', code: 'void preorder(char node) {\n    if (node == \'.\') return;\n    cout << node;\n    preorder(tree[node].first);\n    preorder(tree[node].second);\n}' },
+                        { title: '중위/후위 순회', desc: '중위: 왼→출력→오, 후위: 왼→오→출력. cout 위치만 다르다.', code: 'void inorder(char node) {\n    if (node == \'.\') return;\n    inorder(tree[node].first);\n    cout << node;\n    inorder(tree[node].second);\n}\n\nvoid postorder(char node) {\n    if (node == \'.\') return;\n    postorder(tree[node].first);\n    postorder(tree[node].second);\n    cout << node;\n}' }
                     ]
                 },
                 get templates() { return treeTopic.problems[3].templates; }

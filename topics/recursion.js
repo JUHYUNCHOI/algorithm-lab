@@ -121,9 +121,13 @@ const recursionTopic = {
                         </div>
                         <h3>🛑 멈추는 조건</h3>
                         <p>재귀를 <strong>멈추는 조건</strong>. 이것이 없으면 무한히 자기를 부릅니다!</p>
-                        <div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n <= 1:      # ← 여기서 멈춤!
-        return 1</code></pre></div>
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
+    if n &lt;= 1:      # ← 여기서 멈춤!
+        return 1</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
+    if (n &lt;= 1)      // ← 여기서 멈춤!
+        return 1;
+}</code></pre></div></span>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
@@ -134,10 +138,15 @@ const recursionTopic = {
                         </div>
                         <h3>🔄 자기 자신 부르기</h3>
                         <p>자기 자신을 다시 부르되, <strong>문제를 더 작게</strong> 만들어야 합니다!</p>
-                        <div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n <= 1:
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
+    if n &lt;= 1:
         return 1
-    return n * factorial(n - 1)  # ← 재귀!</code></pre></div>
+    return n * factorial(n - 1)  # ← 재귀!</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
+    if (n &lt;= 1)
+        return 1;
+    return n * factorial(n - 1);  // ← 재귀!
+}</code></pre></div></span>
                     </div>
                 </div>
 
@@ -188,7 +197,8 @@ const recursionTopic = {
                 <div class="key-difference-box">
                     <div>📥 <strong>부르기</strong>: 큰 문제 → 작은 문제로 파고듭니다 (접시가 쌓입니다)</div>
                     <div>📤 <strong>돌려주기</strong>: 멈추는 조건부터 거꾸로 답을 돌려줍니다 (접시를 꺼냅니다)</div>
-                    <div>💡 너무 많이 쌓이면? 컴퓨터가 감당을 못합니다! (파이썬은 최대 1000번까지)</div>
+                    <div>💡 너무 많이 쌓이면? 컴퓨터가 감당을 못합니다! (<span class="lang-py">파이썬은 최대 1000번까지 — <code>sys.setrecursionlimit()</code>으로 늘릴 수 있습니다</span><span class="lang-cpp">C++은 스택 크기에 따라 수만~수십만 번까지 가능하지만, 그래도 넘치면 크래시!</span>)</div>
+                    <div style="margin-top:8px;"><span class="lang-py"><a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: sys.setrecursionlimit() ↗</a></span></div>
                 </div>
             </div>
 
@@ -199,19 +209,30 @@ const recursionTopic = {
                     <div class="approach-card">
                         <h3>🔄 재귀 (Recursion)</h3>
                         <p class="approach-desc">자기 자신을 부르는 방법. 코드가 짧고 읽기 쉽습니다</p>
-                        <div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n <= 1:
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
+    if n &lt;= 1:
         return 1
-    return n * factorial(n - 1)</code></pre></div>
+    return n * factorial(n - 1)</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
+    if (n &lt;= 1)
+        return 1;
+    return n * factorial(n - 1);
+}</code></pre></div></span>
                     </div>
                     <div class="approach-card">
                         <h3>🔁 반복문 (Iteration)</h3>
                         <p class="approach-desc">for/while 반복문 사용. 빠르지만 코드가 길어질 수 있습니다</p>
-                        <div class="code-block"><pre><code class="language-python">def factorial(n):
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
     result = 1
     for i in range(2, n + 1):
         result *= i
-    return result</code></pre></div>
+    return result</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
+    int result = 1;
+    for (int i = 2; i &lt;= n; i++)
+        result *= i;
+    return result;
+}</code></pre></div></span>
                     </div>
                 </div>
 
@@ -400,18 +421,20 @@ const recursionTopic = {
             }
         };
 
+        var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
             state.currentStep++;
-            state.steps[state.currentStep].action();
             updateUI();
+            setTimeout(function() { state.steps[state.currentStep].action(); }, actionDelay);
         });
 
         prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo();
+            var stepToUndo = state.currentStep;
             state.currentStep--;
             updateUI();
+            setTimeout(function() { state.steps[stepToUndo].undo(); }, actionDelay);
         });
 
         var handleKeydown = function(e) {
@@ -947,7 +970,6 @@ const recursionTopic = {
                 '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
                     '<option value="python">Python</option>' +
                     '<option value="cpp">C++</option>' +
-                    '<option value="java">Java</option>' +
                 '</select>' +
                 '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">BOJ에서 풀기 ↗</a>' +
             '</div>' +
@@ -960,7 +982,7 @@ const recursionTopic = {
         var select = wrapper.querySelector('.str-lang-select');
         select.addEventListener('change', function() {
             var lang = select.value;
-            var langMap = { python: 'language-python', cpp: 'language-cpp', java: 'language-java' };
+            var langMap = { python: 'language-python', cpp: 'language-cpp' };
             codeEl.className = langMap[lang];
             codeEl.textContent = prob.templates[lang];
             if (window.hljs) hljs.highlightElement(codeEl);
@@ -980,473 +1002,731 @@ const recursionTopic = {
     // 1. Factorial Simulation (boj-27433)
     _renderVizFactorialSim(container) {
         var self = this;
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>factorial(5) 콜 스택</h3></div>' +
-            '<div class="viz-panel-body"><div id="sim-stack-fact" class="viz-call-stack"></div></div></div>' +
-            self._createStepControls('fact');
+        var DEFAULT_N = 5;
 
-        var stackEl = container.querySelector('#sim-stack-fact');
-        var factVals = [1, 1, 2, 6, 24, 120];
-        var frames = [];
-        var steps = [];
+        function buildAndRender(n) {
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">N: <input type="number" id="rec-fact-n" value="' + n + '" min="1" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
+                    '<button class="btn btn-primary" id="rec-fact-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>factorial(' + n + ') 콜 스택</h3></div>' +
+                '<div class="viz-panel-body"><div id="sim-stack-fact" class="viz-call-stack"></div></div></div>' +
+                self._createStepControls('fact');
 
-        // Call phase: 5,4,3,2,1
-        for (var i = 5; i >= 1; i--) {
-            (function(ci) {
-                steps.push({
-                    description: ci === 1
-                        ? 'factorial(1) 호출 → 멈추는 조건! return 1'
-                        : 'factorial(' + ci + ') 호출 → ' + ci + ' × factorial(' + (ci-1) + ') 필요',
-                    action: function() {
-                        var f = document.createElement('div');
-                        f.className = 'stack-frame' + (ci === 1 ? ' base' : '');
-                        f.textContent = ci === 1 ? 'factorial(1) = 1 ✓' : 'factorial(' + ci + ') = ' + ci + ' × ?';
-                        stackEl.prepend(f);
-                        frames.push(f);
-                    },
-                    undo: function() {
-                        var f = frames.pop();
-                        if (f) f.remove();
-                    }
-                });
-            })(i);
+            var stackEl = container.querySelector('#sim-stack-fact');
+            var factVals = [1];
+            for (var f = 1; f <= n; f++) factVals[f] = factVals[f - 1] * f;
+            var frames = [];
+            var steps = [];
+
+            // Call phase: n down to 1
+            for (var i = n; i >= 1; i--) {
+                (function(ci) {
+                    steps.push({
+                        description: ci === 1
+                            ? 'factorial(1) 호출 → 멈추는 조건! return 1'
+                            : 'factorial(' + ci + ') 호출 → ' + ci + ' × factorial(' + (ci-1) + ') 필요',
+                        action: function() {
+                            var fr = document.createElement('div');
+                            fr.className = 'stack-frame' + (ci === 1 ? ' base' : '');
+                            fr.textContent = ci === 1 ? 'factorial(1) = 1 ✓' : 'factorial(' + ci + ') = ' + ci + ' × ?';
+                            stackEl.prepend(fr);
+                            frames.push(fr);
+                        },
+                        undo: function() {
+                            var fr = frames.pop();
+                            if (fr) fr.remove();
+                        }
+                    });
+                })(i);
+            }
+
+            // Return phase: 1 up to n
+            for (var i = 1; i <= n; i++) {
+                (function(ci) {
+                    steps.push({
+                        description: ci === 1
+                            ? 'factorial(1) = 1 반환'
+                            : 'factorial(' + ci + ') = ' + ci + ' × ' + factVals[ci-1] + ' = ' + factVals[ci] + ' 반환',
+                        action: function() {
+                            var top = stackEl.firstChild;
+                            if (top) {
+                                top.textContent = 'factorial(' + ci + ') = ' + factVals[ci] + ' ✓';
+                                top.classList.add('returning');
+                            }
+                        },
+                        undo: function() {
+                            var top = stackEl.firstChild;
+                            if (top) {
+                                top.classList.remove('returning');
+                                top.textContent = ci === 1 ? 'factorial(1) = 1 ✓' : 'factorial(' + ci + ') = ' + ci + ' × ?';
+                            }
+                        }
+                    });
+                })(i);
+            }
+
+            steps.push({ description: '✅ 완료! factorial(' + n + ') = ' + factVals[n], action: function(){}, undo: function(){} });
+            self._initStepController(container, steps, 'fact');
+
+            container.querySelector('#rec-fact-reset').addEventListener('click', function() {
+                var val = parseInt(container.querySelector('#rec-fact-n').value);
+                if (isNaN(val) || val < 1) val = 1;
+                if (val > 10) val = 10;
+                self._clearVizState();
+                buildAndRender(val);
+            });
         }
 
-        // Return phase: 1,2,3,4,5
-        for (var i = 1; i <= 5; i++) {
-            (function(ci) {
-                steps.push({
-                    description: ci === 1
-                        ? 'factorial(1) = 1 반환'
-                        : 'factorial(' + ci + ') = ' + ci + ' × ' + factVals[ci-1] + ' = ' + factVals[ci] + ' 반환',
-                    action: function() {
-                        var top = stackEl.firstChild;
-                        if (top) {
-                            top.textContent = 'factorial(' + ci + ') = ' + factVals[ci] + ' ✓';
-                            top.classList.add('returning');
-                        }
-                    },
-                    undo: function() {
-                        var top = stackEl.firstChild;
-                        if (top) {
-                            top.classList.remove('returning');
-                            top.textContent = ci === 1 ? 'factorial(1) = 1 ✓' : 'factorial(' + ci + ') = ' + ci + ' × ?';
-                        }
-                    }
-                });
-            })(i);
-        }
-
-        steps.push({ description: '✅ 완료! factorial(5) = 120', action: function(){}, undo: function(){} });
-        self._initStepController(container, steps, 'fact');
+        buildAndRender(DEFAULT_N);
     },
 
     // 2. Fibonacci Simulation (boj-10870)
     _renderVizFibSim(container) {
         var self = this;
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>fib(5) 재귀 트리</h3>' +
-            '<div class="counter">호출: <span id="sim-fib-cnt">0</span>번</div></div>' +
-            '<div class="viz-panel-body"><div id="sim-log-fib" class="viz-call-log" style="max-height:300px;overflow-y:auto;"></div></div></div>' +
-            self._createStepControls('fib');
+        var DEFAULT_N = 5;
 
-        var logEl = container.querySelector('#sim-log-fib');
-        var cntEl = container.querySelector('#sim-fib-cnt');
+        function buildAndRender(n) {
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">N: <input type="number" id="rec-fib-n" value="' + n + '" min="2" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
+                    '<button class="btn btn-primary" id="rec-fib-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>fib(' + n + ') 재귀 트리</h3>' +
+                '<div class="counter">호출: <span id="sim-fib-cnt">0</span>번</div></div>' +
+                '<div class="viz-panel-body"><div id="sim-log-fib" class="viz-call-log" style="max-height:300px;overflow-y:auto;"></div></div></div>' +
+                self._createStepControls('fib');
 
-        var rawSteps = [];
-        var simulate = function(k, depth) {
-            rawSteps.push({ type: 'call', k: k, depth: depth });
-            if (k <= 1) {
-                rawSteps.push({ type: 'base', k: k, depth: depth, value: k });
-                return k;
-            }
-            var v1 = simulate(k - 1, depth + 1);
-            var v2 = simulate(k - 2, depth + 1);
-            rawSteps.push({ type: 'return', k: k, depth: depth, result: v1 + v2 });
-            return v1 + v2;
-        };
-        simulate(5, 0);
+            var logEl = container.querySelector('#sim-log-fib');
+            var cntEl = container.querySelector('#sim-fib-cnt');
 
-        var steps = [];
-        var logLines = [];
-        var callCount = 0;
+            var rawSteps = [];
+            var simulate = function(k, depth) {
+                rawSteps.push({ type: 'call', k: k, depth: depth });
+                if (k <= 1) {
+                    rawSteps.push({ type: 'base', k: k, depth: depth, value: k });
+                    return k;
+                }
+                var v1 = simulate(k - 1, depth + 1);
+                var v2 = simulate(k - 2, depth + 1);
+                rawSteps.push({ type: 'return', k: k, depth: depth, result: v1 + v2 });
+                return v1 + v2;
+            };
+            var fibResult = simulate(n, 0);
 
-        rawSteps.forEach(function(s) {
-            var indent = '';
-            for (var d = 0; d < s.depth; d++) indent += '\u00A0\u00A0';
+            var steps = [];
+            var logLines = [];
+            var callCount = 0;
+            var totalCalls = rawSteps.filter(function(s){ return s.type === 'call'; }).length;
 
-            if (s.type === 'call') {
-                (function(sk) {
-                    steps.push({
-                        description: 'fib(' + sk + ') 호출 (깊이 ' + s.depth + ')',
-                        action: function() {
-                            callCount++;
-                            cntEl.textContent = callCount;
-                            var line = document.createElement('div');
-                            line.className = 'log-line call';
-                            line.textContent = indent + '→ fib(' + sk + ')';
-                            logEl.appendChild(line);
-                            logLines.push(line);
-                            logEl.scrollTop = logEl.scrollHeight;
-                        },
-                        undo: function() {
-                            callCount--;
-                            cntEl.textContent = callCount;
-                            var line = logLines.pop();
-                            if (line) line.remove();
-                        }
-                    });
-                })(s.k);
-            } else if (s.type === 'base') {
-                (function(sk, sv) {
-                    steps.push({
-                        description: 'fib(' + sk + ') = ' + sv + ' (멈추는 조건)',
-                        action: function() {
-                            var line = document.createElement('div');
-                            line.className = 'log-line base-case';
-                            line.textContent = indent + '← fib(' + sk + ') = ' + sv + ' ✓';
-                            logEl.appendChild(line);
-                            logLines.push(line);
-                            logEl.scrollTop = logEl.scrollHeight;
-                        },
-                        undo: function() {
-                            var line = logLines.pop();
-                            if (line) line.remove();
-                        }
-                    });
-                })(s.k, s.value);
-            } else if (s.type === 'return') {
-                (function(sk, sr) {
-                    steps.push({
-                        description: 'fib(' + sk + ') = ' + sr + ' 반환',
-                        action: function() {
-                            var line = document.createElement('div');
-                            line.className = 'log-line return-val';
-                            line.textContent = indent + '← fib(' + sk + ') = ' + sr;
-                            logEl.appendChild(line);
-                            logLines.push(line);
-                            logEl.scrollTop = logEl.scrollHeight;
-                        },
-                        undo: function() {
-                            var line = logLines.pop();
-                            if (line) line.remove();
-                        }
-                    });
-                })(s.k, s.result);
-            }
-        });
+            rawSteps.forEach(function(s) {
+                var indent = '';
+                for (var d = 0; d < s.depth; d++) indent += '\u00A0\u00A0';
 
-        steps.push({ description: '✅ fib(5) = 5, 총 ' + rawSteps.filter(function(s){return s.type==='call';}).length + '번 호출!', action: function(){}, undo: function(){} });
-        self._initStepController(container, steps, 'fib');
+                if (s.type === 'call') {
+                    (function(sk, sd) {
+                        steps.push({
+                            description: 'fib(' + sk + ') 호출 (깊이 ' + sd + ')',
+                            action: function() {
+                                callCount++;
+                                cntEl.textContent = callCount;
+                                var line = document.createElement('div');
+                                line.className = 'log-line call';
+                                line.textContent = indent + '→ fib(' + sk + ')';
+                                logEl.appendChild(line);
+                                logLines.push(line);
+                                logEl.scrollTop = logEl.scrollHeight;
+                            },
+                            undo: function() {
+                                callCount--;
+                                cntEl.textContent = callCount;
+                                var line = logLines.pop();
+                                if (line) line.remove();
+                            }
+                        });
+                    })(s.k, s.depth);
+                } else if (s.type === 'base') {
+                    (function(sk, sv) {
+                        steps.push({
+                            description: 'fib(' + sk + ') = ' + sv + ' (멈추는 조건)',
+                            action: function() {
+                                var line = document.createElement('div');
+                                line.className = 'log-line base-case';
+                                line.textContent = indent + '← fib(' + sk + ') = ' + sv + ' ✓';
+                                logEl.appendChild(line);
+                                logLines.push(line);
+                                logEl.scrollTop = logEl.scrollHeight;
+                            },
+                            undo: function() {
+                                var line = logLines.pop();
+                                if (line) line.remove();
+                            }
+                        });
+                    })(s.k, s.value);
+                } else if (s.type === 'return') {
+                    (function(sk, sr) {
+                        steps.push({
+                            description: 'fib(' + sk + ') = ' + sr + ' 반환',
+                            action: function() {
+                                var line = document.createElement('div');
+                                line.className = 'log-line return-val';
+                                line.textContent = indent + '← fib(' + sk + ') = ' + sr;
+                                logEl.appendChild(line);
+                                logLines.push(line);
+                                logEl.scrollTop = logEl.scrollHeight;
+                            },
+                            undo: function() {
+                                var line = logLines.pop();
+                                if (line) line.remove();
+                            }
+                        });
+                    })(s.k, s.result);
+                }
+            });
+
+            steps.push({ description: '✅ fib(' + n + ') = ' + fibResult + ', 총 ' + totalCalls + '번 호출!', action: function(){}, undo: function(){} });
+            self._initStepController(container, steps, 'fib');
+
+            container.querySelector('#rec-fib-reset').addEventListener('click', function() {
+                var val = parseInt(container.querySelector('#rec-fib-n').value);
+                if (isNaN(val) || val < 2) val = 2;
+                if (val > 7) val = 7;
+                self._clearVizState();
+                buildAndRender(val);
+            });
+        }
+
+        buildAndRender(DEFAULT_N);
     },
 
     // 3. Palindrome Simulation (boj-25501)
     _renderVizPalindromeSim(container) {
         var self = this;
-        var str = 'ABCBA';
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>회문 검사: "' + str + '"</h3>' +
-            '<div class="counter">호출: <span id="sim-pal-cnt">0</span>번</div></div>' +
-            '<div class="viz-panel-body">' +
-            '<div id="sim-pal-chars" style="display:flex;gap:4px;justify-content:center;margin-bottom:16px;font-family:monospace;font-size:1.3rem;"></div>' +
-            '<div id="sim-pal-log" class="viz-call-log"></div>' +
-            '</div></div>' +
-            self._createStepControls('pal');
+        var DEFAULT_STR = 'ABCBA';
 
-        var charsEl = container.querySelector('#sim-pal-chars');
-        var logEl = container.querySelector('#sim-pal-log');
-        var cntEl = container.querySelector('#sim-pal-cnt');
+        function buildAndRender(str) {
+            str = str.toUpperCase();
+            if (str.length === 0) str = 'A';
 
-        var charDivs = [];
-        for (var i = 0; i < str.length; i++) {
-            var d = document.createElement('div');
-            d.style.cssText = 'width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);border-radius:6px;transition:all 0.3s;';
-            d.textContent = str[i];
-            charsEl.appendChild(d);
-            charDivs.push(d);
-        }
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">문자열: <input type="text" id="rec-pal-input" value="' + str + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;background:var(--card);color:var(--text);"></label>' +
+                    '<button class="btn btn-primary" id="rec-pal-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>회문 검사: "' + str + '"</h3>' +
+                '<div class="counter">호출: <span id="sim-pal-cnt">0</span>번</div></div>' +
+                '<div class="viz-panel-body">' +
+                '<div id="sim-pal-chars" style="display:flex;gap:4px;justify-content:center;margin-bottom:16px;font-family:monospace;font-size:1.3rem;flex-wrap:wrap;"></div>' +
+                '<div id="sim-pal-log" class="viz-call-log"></div>' +
+                '</div></div>' +
+                self._createStepControls('pal');
 
-        var pairs = [[0,4],[1,3],[2,2]];
-        var steps = [];
-        var logLines = [];
-        var callCnt = 0;
+            var charsEl = container.querySelector('#sim-pal-chars');
+            var logEl = container.querySelector('#sim-pal-log');
+            var cntEl = container.querySelector('#sim-pal-cnt');
 
-        pairs.forEach(function(pair, idx) {
-            var l = pair[0], r = pair[1];
-            steps.push({
-                description: 'recursion("' + str + '", ' + l + ', ' + r + ') → s[' + l + ']=' + str[l] + ' vs s[' + r + ']=' + str[r] + (l >= r ? ' → l>=r, 회문!' : ' → 같음! 계속'),
-                action: function() {
-                    callCnt++;
-                    cntEl.textContent = callCnt;
-                    charDivs[l].style.borderColor = 'var(--accent)';
-                    charDivs[l].style.background = 'var(--accent)15';
-                    if (r !== l) {
-                        charDivs[r].style.borderColor = 'var(--accent)';
-                        charDivs[r].style.background = 'var(--accent)15';
+            var charDivs = [];
+            for (var i = 0; i < str.length; i++) {
+                var d = document.createElement('div');
+                d.style.cssText = 'width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);border-radius:6px;transition:all 0.3s;';
+                d.textContent = str[i];
+                charsEl.appendChild(d);
+                charDivs.push(d);
+            }
+
+            // Build pairs by simulating the recursion
+            var pairs = [];
+            var isPalin = 1;
+            var l = 0, r = str.length - 1;
+            while (true) {
+                pairs.push([l, r]);
+                if (l >= r) { break; }
+                if (str[l] !== str[r]) { isPalin = 0; break; }
+                l++; r--;
+            }
+
+            var totalCalls = pairs.length;
+            var steps = [];
+            var logLines = [];
+            var callCnt = 0;
+
+            pairs.forEach(function(pair, idx) {
+                var pl = pair[0], pr = pair[1];
+                var match = str[pl] === str[pr];
+                var desc;
+                if (pl >= pr) {
+                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → l>=r, 회문!';
+                } else if (!match) {
+                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → s[' + pl + ']=' + str[pl] + ' vs s[' + pr + ']=' + str[pr] + ' → 다름! 회문 아님';
+                } else {
+                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → s[' + pl + ']=' + str[pl] + ' vs s[' + pr + ']=' + str[pr] + ' → 같음! 계속';
+                }
+                steps.push({
+                    description: desc,
+                    action: function() {
+                        callCnt++;
+                        cntEl.textContent = callCnt;
+                        var color = match ? 'var(--accent)' : 'var(--red)';
+                        charDivs[pl].style.borderColor = color;
+                        charDivs[pl].style.background = color + '15';
+                        if (pr !== pl) {
+                            charDivs[pr].style.borderColor = color;
+                            charDivs[pr].style.background = color + '15';
+                        }
+                        var line = document.createElement('div');
+                        line.className = 'log-line call';
+                        var suffix = pl >= pr ? ' ✓ 멈춤' : (match ? ' ✓' : ' ✗');
+                        line.textContent = '  '.repeat(idx) + '→ recursion(s, ' + pl + ', ' + pr + ') : ' + str[pl] + (pl === pr ? '' : '==' + str[pr]) + suffix;
+                        logEl.appendChild(line);
+                        logLines.push(line);
+                    },
+                    undo: function() {
+                        callCnt--;
+                        cntEl.textContent = callCnt;
+                        charDivs[pl].style.borderColor = 'var(--border)';
+                        charDivs[pl].style.background = '';
+                        if (pr !== pl) {
+                            charDivs[pr].style.borderColor = 'var(--border)';
+                            charDivs[pr].style.background = '';
+                        }
+                        var line = logLines.pop();
+                        if (line) line.remove();
                     }
+                });
+            });
+
+            steps.push({
+                description: '결과: isPalindrome = ' + isPalin + ', 호출 횟수 = ' + totalCalls,
+                action: function() {
                     var line = document.createElement('div');
-                    line.className = 'log-line call';
-                    line.textContent = '  '.repeat(idx) + '→ recursion(s, ' + l + ', ' + r + ') : ' + str[l] + '==' + str[r] + (l >= r ? ' ✓ 멈춤' : ' ✓');
+                    line.className = 'log-line return-val';
+                    line.textContent = '← 결과: ' + isPalin + ' ' + totalCalls;
                     logEl.appendChild(line);
                     logLines.push(line);
                 },
                 undo: function() {
-                    callCnt--;
-                    cntEl.textContent = callCnt;
-                    charDivs[l].style.borderColor = 'var(--border)';
-                    charDivs[l].style.background = '';
-                    if (r !== l) {
-                        charDivs[r].style.borderColor = 'var(--border)';
-                        charDivs[r].style.background = '';
-                    }
                     var line = logLines.pop();
                     if (line) line.remove();
                 }
             });
-        });
 
-        steps.push({
-            description: '결과: isPalindrome = 1, 호출 횟수 = 3',
-            action: function() {
-                var line = document.createElement('div');
-                line.className = 'log-line return-val';
-                line.textContent = '← 결과: 1 3';
-                logEl.appendChild(line);
-                logLines.push(line);
-            },
-            undo: function() {
-                var line = logLines.pop();
-                if (line) line.remove();
-            }
-        });
+            var finalMsg = isPalin ? '✅ "' + str + '"는 회문! recursion ' + totalCalls + '번 호출' : '✅ "' + str + '"는 회문이 아님! recursion ' + totalCalls + '번 호출';
+            steps.push({ description: finalMsg, action: function(){}, undo: function(){} });
+            self._initStepController(container, steps, 'pal');
 
-        steps.push({ description: '✅ "ABCBA"는 회문! recursion 3번 호출', action: function(){}, undo: function(){} });
-        self._initStepController(container, steps, 'pal');
+            container.querySelector('#rec-pal-reset').addEventListener('click', function() {
+                var val = container.querySelector('#rec-pal-input').value.trim();
+                if (!val) val = DEFAULT_STR;
+                self._clearVizState();
+                buildAndRender(val);
+            });
+        }
+
+        buildAndRender(DEFAULT_STR);
     },
 
     // 4. Merge Sort Simulation (boj-24060)
     _renderVizMergeSim(container) {
         var self = this;
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>병합 정렬: [5, 3, 8, 1, 2]</h3></div>' +
-            '<div class="viz-panel-body">' +
-            '<div id="sim-merge-display" style="font-family:monospace;font-size:0.95rem;line-height:2;"></div>' +
-            '</div></div>' +
-            self._createStepControls('merge');
+        var DEFAULT_ARR = [5, 3, 8, 1, 2];
+        var DEFAULT_K = 7;
 
-        var displayEl = container.querySelector('#sim-merge-display');
+        function buildAndRender(arr, k) {
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">배열: <input type="text" id="rec-merge-input" value="' + arr.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;background:var(--card);color:var(--text);"></label>' +
+                    '<label style="font-weight:600;">K: <input type="number" id="rec-merge-k" value="' + k + '" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;background:var(--card);color:var(--text);"></label>' +
+                    '<button class="btn btn-primary" id="rec-merge-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>병합 정렬: [' + arr.join(', ') + ']</h3></div>' +
+                '<div class="viz-panel-body">' +
+                '<div id="sim-merge-display" style="font-family:monospace;font-size:0.95rem;line-height:2;"></div>' +
+                '</div></div>' +
+                self._createStepControls('merge');
 
-        var steps = [
-            { description: '초기 배열: [5, 3, 8, 1, 2]', html: '<div>[5, 3, 8, 1, 2]</div>' },
-            { description: '분할: [5, 3, 8] | [1, 2]', html: '<div>[5, 3, 8] &nbsp;&nbsp; [1, 2]</div>' },
-            { description: '분할: [5, 3] [8] | [1] [2]', html: '<div>[5, 3] [8] &nbsp;&nbsp; [1] [2]</div>' },
-            { description: '병합: [5],[3] → [3, 5] (저장 1,2번째)', html: '<div><span style="color:var(--green)">[3, 5]</span> [8] &nbsp;&nbsp; [1] [2]</div>' },
-            { description: '병합: [3,5],[8] → [3, 5, 8] (저장 3,4,5번째)', html: '<div><span style="color:var(--green)">[3, 5, 8]</span> &nbsp;&nbsp; [1] [2]</div>' },
-            { description: '병합: [1],[2] → [1, 2] (저장 6,7번째)', html: '<div>[3, 5, 8] &nbsp;&nbsp; <span style="color:var(--green)">[1, 2]</span></div>' },
-            { description: '병합: [3,5,8],[1,2] → [1, 2, 3, 5, 8] (저장 8~12번째) → 7번째 저장값 = 3', html: '<div><span style="color:var(--accent);font-weight:700">[1, 2, 3, 5, 8]</span></div><div style="margin-top:8px;color:var(--accent);">K=7번째 저장값: <strong>3</strong></div>' }
-        ];
+            var displayEl = container.querySelector('#sim-merge-display');
 
-        var vizSteps = [];
-        var prevHtml = '';
+            // Run merge sort and record step snapshots
+            var snapshots = [];
+            var savedValues = [];
+            var workArr = arr.slice();
 
-        steps.forEach(function(s, i) {
-            vizSteps.push({
-                description: s.description,
-                action: function() {
-                    displayEl.innerHTML = s.html;
-                },
-                undo: function() {
-                    if (i > 0) displayEl.innerHTML = steps[i-1].html;
-                    else displayEl.innerHTML = '';
+            function recordMergeSort(a, p, r, segments) {
+                if (p >= r) return;
+                var q = Math.floor((p + r) / 2);
+                recordMergeSort(a, p, q, segments);
+                recordMergeSort(a, q + 1, r, segments);
+                // Merge
+                var tmp = [];
+                var i = p, j = q + 1;
+                while (i <= q && j <= r) {
+                    if (a[i] <= a[j]) tmp.push(a[i++]);
+                    else tmp.push(a[j++]);
                 }
-            });
-        });
+                while (i <= q) tmp.push(a[i++]);
+                while (j <= r) tmp.push(a[j++]);
+                var startSave = savedValues.length + 1;
+                for (var x = 0; x < tmp.length; x++) {
+                    a[p + x] = tmp[x];
+                    savedValues.push(tmp[x]);
+                }
+                var endSave = savedValues.length;
+                snapshots.push({
+                    desc: '병합: [' + p + '..' + q + '] + [' + (q+1) + '..' + r + '] → [' + tmp.join(', ') + '] (저장 ' + startSave + '~' + endSave + '번째)',
+                    array: a.slice(),
+                    mergedStart: p,
+                    mergedEnd: r,
+                    saveStart: startSave,
+                    saveEnd: endSave
+                });
+            }
 
-        self._initStepController(container, vizSteps, 'merge');
+            recordMergeSort(workArr, 0, arr.length - 1);
+
+            var kthValue = (k >= 1 && k <= savedValues.length) ? savedValues[k - 1] : -1;
+
+            // Build visual steps
+            var stepsData = [];
+            stepsData.push({
+                description: '초기 배열: [' + arr.join(', ') + ']',
+                html: '<div>[' + arr.join(', ') + ']</div>'
+            });
+
+            snapshots.forEach(function(snap) {
+                var arrStr = '[' + snap.array.join(', ') + ']';
+                var kInfo = '';
+                if (k >= snap.saveStart && k <= snap.saveEnd) {
+                    kInfo = '<div style="margin-top:8px;color:var(--accent);">K=' + k + '번째 저장값: <strong>' + kthValue + '</strong></div>';
+                }
+                stepsData.push({
+                    description: snap.desc,
+                    html: '<div><span style="color:var(--green)">' + arrStr + '</span></div>' + kInfo
+                });
+            });
+
+            var finalDesc = kthValue !== -1
+                ? '✅ 완료! K=' + k + '번째 저장값: ' + kthValue
+                : '✅ 완료! 저장 횟수가 K=' + k + '보다 적어서 결과는 -1';
+            stepsData.push({
+                description: finalDesc,
+                html: '<div style="color:var(--accent);font-weight:700;">' + finalDesc + '</div>'
+            });
+
+            var vizSteps = [];
+            stepsData.forEach(function(s, i) {
+                vizSteps.push({
+                    description: s.description,
+                    action: function() { displayEl.innerHTML = s.html; },
+                    undo: function() {
+                        if (i > 0) displayEl.innerHTML = stepsData[i-1].html;
+                        else displayEl.innerHTML = '';
+                    }
+                });
+            });
+
+            self._initStepController(container, vizSteps, 'merge');
+
+            container.querySelector('#rec-merge-reset').addEventListener('click', function() {
+                var arrVal = container.querySelector('#rec-merge-input').value.split(',').map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n); });
+                var kVal = parseInt(container.querySelector('#rec-merge-k').value);
+                if (arrVal.length < 2) arrVal = DEFAULT_ARR.slice();
+                if (isNaN(kVal) || kVal < 1) kVal = 1;
+                self._clearVizState();
+                buildAndRender(arrVal, kVal);
+            });
+        }
+
+        buildAndRender(DEFAULT_ARR, DEFAULT_K);
     },
 
     // 5. Cantor Set Simulation (boj-4779)
     _renderVizCantorSim(container) {
         var self = this;
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>칸토어 집합 (N=2, 길이 9)</h3></div>' +
-            '<div class="viz-panel-body">' +
-            '<div id="sim-cantor-display" style="font-family:monospace;font-size:1.1rem;line-height:2.5;letter-spacing:2px;"></div>' +
-            '</div></div>' +
-            self._createStepControls('cantor');
+        var DEFAULT_N = 2;
 
-        var displayEl = container.querySelector('#sim-cantor-display');
+        function buildAndRender(n) {
+            if (n < 0) n = 0;
+            if (n > 3) n = 3;
+            var len = Math.pow(3, n);
 
-        var states = [
-            { desc: '초기: 길이 9의 대시 문자열', text: '---------' },
-            { desc: 'cantor(0, 9): 가운데 3칸을 공백으로', text: '---   ---' },
-            { desc: 'cantor(0, 3): 왼쪽 블록의 가운데를 공백으로', text: '- -   ---' },
-            { desc: 'cantor(6, 3): 오른쪽 블록의 가운데를 공백으로', text: '- -   - -' }
-        ];
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">N: <input type="number" id="rec-cantor-n" value="' + n + '" min="0" max="3" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
+                    '<button class="btn btn-primary" id="rec-cantor-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>칸토어 집합 (N=' + n + ', 길이 ' + len + ')</h3></div>' +
+                '<div class="viz-panel-body">' +
+                '<div id="sim-cantor-display" style="font-family:monospace;font-size:1.1rem;line-height:2.5;letter-spacing:2px;"></div>' +
+                '</div></div>' +
+                self._createStepControls('cantor');
 
-        var steps = [];
-        states.forEach(function(s, i) {
-            steps.push({
-                description: s.desc,
-                action: function() {
-                    var colored = '';
-                    for (var j = 0; j < s.text.length; j++) {
-                        if (s.text[j] === '-') colored += '<span style="background:var(--accent);color:var(--accent);">-</span>';
-                        else colored += '<span style="color:var(--text-muted);">·</span>';
+            var displayEl = container.querySelector('#sim-cantor-display');
+
+            // Build cantor states step by step using BFS-like level processing
+            var states = [];
+            var arr = [];
+            for (var i = 0; i < len; i++) arr.push('-');
+            states.push({ desc: '초기: 길이 ' + len + '의 대시 문자열', text: arr.join('') });
+
+            // Recursively gather operations level by level
+            var queue = [];
+            if (len > 1) queue.push({ start: 0, size: len });
+
+            while (queue.length > 0) {
+                var nextQueue = [];
+                var arrCopy = arr.slice();
+                var descParts = [];
+                for (var qi = 0; qi < queue.length; qi++) {
+                    var item = queue[qi];
+                    var third = item.size / 3;
+                    for (var j = item.start + third; j < item.start + 2 * third; j++) {
+                        arr[j] = ' ';
                     }
-                    displayEl.innerHTML = '<div>' + colored + '</div>';
-                },
-                undo: function() {
-                    if (i > 0) {
-                        var prev = states[i-1].text;
-                        var colored = '';
-                        for (var j = 0; j < prev.length; j++) {
-                            if (prev[j] === '-') colored += '<span style="background:var(--accent);color:var(--accent);">-</span>';
-                            else colored += '<span style="color:var(--text-muted);">·</span>';
-                        }
-                        displayEl.innerHTML = '<div>' + colored + '</div>';
-                    } else {
-                        displayEl.innerHTML = '';
+                    descParts.push('cantor(' + item.start + ', ' + item.size + ')');
+                    if (third > 1) {
+                        nextQueue.push({ start: item.start, size: third });
+                        nextQueue.push({ start: item.start + 2 * third, size: third });
                     }
                 }
-            });
-        });
+                states.push({
+                    desc: descParts.join(', ') + ': 가운데 ' + (queue[0].size / 3) + '칸을 공백으로',
+                    text: arr.join('')
+                });
+                queue = nextQueue;
+            }
 
-        self._initStepController(container, steps, 'cantor');
+            function renderText(text) {
+                var colored = '';
+                for (var j = 0; j < text.length; j++) {
+                    if (text[j] === '-') colored += '<span style="background:var(--accent);color:var(--accent);">-</span>';
+                    else colored += '<span style="color:var(--text-muted);">\u00B7</span>';
+                }
+                return '<div>' + colored + '</div>';
+            }
+
+            var steps = [];
+            states.forEach(function(s, i) {
+                steps.push({
+                    description: s.desc,
+                    action: function() { displayEl.innerHTML = renderText(s.text); },
+                    undo: function() {
+                        if (i > 0) displayEl.innerHTML = renderText(states[i-1].text);
+                        else displayEl.innerHTML = '';
+                    }
+                });
+            });
+
+            if (n === 0) {
+                steps.push({ description: '✅ N=0이면 길이 1의 대시 하나!', action: function(){}, undo: function(){} });
+            } else {
+                steps.push({ description: '✅ 완료! 길이 1이면 더 이상 쪼갤 수 없으므로 멈춤', action: function(){}, undo: function(){} });
+            }
+
+            self._initStepController(container, steps, 'cantor');
+
+            container.querySelector('#rec-cantor-reset').addEventListener('click', function() {
+                var val = parseInt(container.querySelector('#rec-cantor-n').value);
+                if (isNaN(val) || val < 0) val = 0;
+                if (val > 3) val = 3;
+                self._clearVizState();
+                buildAndRender(val);
+            });
+        }
+
+        buildAndRender(DEFAULT_N);
     },
 
     // 6. Star Pattern Simulation (boj-2447)
     _renderVizStarSim(container) {
         var self = this;
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>별 찍기 - 10 (N=9)</h3></div>' +
-            '<div class="viz-panel-body">' +
-            '<pre id="sim-star-display" style="font-family:monospace;font-size:0.75rem;line-height:1.2;letter-spacing:1px;"></pre>' +
-            '</div></div>' +
-            self._createStepControls('star');
+        var DEFAULT_N = 9;
 
-        var displayEl = container.querySelector('#sim-star-display');
+        function buildAndRender(n) {
+            // Validate: must be power of 3
+            var validSizes = [3, 9, 27];
+            if (validSizes.indexOf(n) === -1) n = 9;
 
-        function makeGrid(n) {
-            var g = [];
-            for (var i = 0; i < n; i++) {
-                g[i] = [];
-                for (var j = 0; j < n; j++) g[i][j] = '*';
-            }
-            return g;
-        }
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">N (3의 거듭제곱): ' +
+                    '<select id="rec-star-n" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;background:var(--card);color:var(--text);">' +
+                        '<option value="3"' + (n===3?' selected':'') + '>3</option>' +
+                        '<option value="9"' + (n===9?' selected':'') + '>9</option>' +
+                        '<option value="27"' + (n===27?' selected':'') + '>27</option>' +
+                    '</select></label>' +
+                    '<button class="btn btn-primary" id="rec-star-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>별 찍기 - 10 (N=' + n + ')</h3></div>' +
+                '<div class="viz-panel-body">' +
+                '<pre id="sim-star-display" style="font-family:monospace;font-size:' + (n <= 9 ? '0.75rem' : '0.4rem') + ';line-height:1.2;letter-spacing:1px;"></pre>' +
+                '</div></div>' +
+                self._createStepControls('star');
 
-        function blankCenter(grid, r, c, size) {
-            var t = size / 3;
-            for (var i = r + t; i < r + 2 * t; i++)
-                for (var j = c + t; j < c + 2 * t; j++) grid[i][j] = ' ';
-        }
+            var displayEl = container.querySelector('#sim-star-display');
 
-        function gridToStr(grid) {
-            return grid.map(function(row) { return row.join(''); }).join('\n');
-        }
-
-        var g0 = makeGrid(9);
-        var str0 = gridToStr(g0);
-
-        var g1 = makeGrid(9);
-        blankCenter(g1, 0, 0, 9);
-        var str1 = gridToStr(g1);
-
-        var g2 = makeGrid(9);
-        blankCenter(g2, 0, 0, 9);
-        for (var bi = 0; bi < 3; bi++)
-            for (var bj = 0; bj < 3; bj++)
-                if (bi !== 1 || bj !== 1) blankCenter(g2, bi*3, bj*3, 3);
-        var str2 = gridToStr(g2);
-
-        var states = [
-            { desc: '초기: 9×9 전체를 *로 채움', text: str0 },
-            { desc: 'star(0,0,9): 가운데 3×3 블록을 공백으로', text: str1 },
-            { desc: '나머지 8개의 3×3 블록에 재귀: 각 가운데 1×1을 공백으로', text: str2 },
-            { desc: '✅ 완료! 크기 1이면 더 이상 쪼갤 수 없으므로 멈춤', text: str2 }
-        ];
-
-        var steps = [];
-        states.forEach(function(s, i) {
-            steps.push({
-                description: s.desc,
-                action: function() { displayEl.textContent = s.text; },
-                undo: function() {
-                    if (i > 0) displayEl.textContent = states[i-1].text;
-                    else displayEl.textContent = '';
+            function makeGrid(sz) {
+                var g = [];
+                for (var i = 0; i < sz; i++) {
+                    g[i] = [];
+                    for (var j = 0; j < sz; j++) g[i][j] = '*';
                 }
-            });
-        });
+                return g;
+            }
 
-        self._initStepController(container, steps, 'star');
+            function blankCenter(grid, r, c, size) {
+                var t = size / 3;
+                for (var i = r + t; i < r + 2 * t; i++)
+                    for (var j = c + t; j < c + 2 * t; j++) grid[i][j] = ' ';
+            }
+
+            function gridToStr(grid) {
+                return grid.map(function(row) { return row.join(''); }).join('\n');
+            }
+
+            // Build level-by-level snapshots
+            var states = [];
+            var grid = makeGrid(n);
+            states.push({ desc: '초기: ' + n + '\u00D7' + n + ' 전체를 *로 채움', text: gridToStr(grid) });
+
+            // Process level by level: first level is the whole grid, then sub-blocks
+            var queue = [{ r: 0, c: 0, size: n }];
+            while (queue.length > 0) {
+                var nextQueue = [];
+                var third = queue[0].size / 3;
+                if (third < 1) break;
+                var descParts = [];
+                for (var qi = 0; qi < queue.length; qi++) {
+                    var item = queue[qi];
+                    blankCenter(grid, item.r, item.c, item.size);
+                    if (queue.length <= 8) descParts.push('star(' + item.r + ',' + item.c + ',' + item.size + ')');
+                    if (third >= 3) {
+                        for (var bi = 0; bi < 3; bi++)
+                            for (var bj = 0; bj < 3; bj++)
+                                if (bi !== 1 || bj !== 1)
+                                    nextQueue.push({ r: item.r + bi * third, c: item.c + bj * third, size: third });
+                    }
+                }
+                var levelDesc = descParts.length <= 8
+                    ? descParts.join(', ') + ': 가운데 ' + third + '\u00D7' + third + ' 블록을 공백으로'
+                    : queue.length + '개 블록의 가운데 ' + third + '\u00D7' + third + '을 공백으로';
+                states.push({ desc: levelDesc, text: gridToStr(grid) });
+                queue = nextQueue;
+            }
+
+            states.push({ desc: '✅ 완료! 크기 1이면 더 이상 쪼갤 수 없으므로 멈춤', text: gridToStr(grid) });
+
+            var steps = [];
+            states.forEach(function(s, i) {
+                steps.push({
+                    description: s.desc,
+                    action: function() { displayEl.textContent = s.text; },
+                    undo: function() {
+                        if (i > 0) displayEl.textContent = states[i-1].text;
+                        else displayEl.textContent = '';
+                    }
+                });
+            });
+
+            self._initStepController(container, steps, 'star');
+
+            container.querySelector('#rec-star-reset').addEventListener('click', function() {
+                var val = parseInt(container.querySelector('#rec-star-n').value);
+                self._clearVizState();
+                buildAndRender(val);
+            });
+        }
+
+        buildAndRender(DEFAULT_N);
     },
 
     // 7. Hanoi Tower Simulation (boj-11729)
     _renderVizHanoiSim(container) {
         var self = this;
-        container.innerHTML =
-            '<div class="viz-panel"><div class="viz-panel-header"><h3>하노이 탑 (3개 원판)</h3>' +
-            '<div class="counter">이동: <span id="sim-hanoi-cnt">0</span> / 7</div></div>' +
-            '<div class="viz-panel-body">' +
-            '<div id="sim-hanoi-pegs" class="hanoi-pegs">' +
-                '<div class="hanoi-peg"><div class="peg-label">1</div><div class="peg-rod"></div><div class="peg-disks" id="sim-peg-1"></div></div>' +
-                '<div class="hanoi-peg"><div class="peg-label">2</div><div class="peg-rod"></div><div class="peg-disks" id="sim-peg-2"></div></div>' +
-                '<div class="hanoi-peg"><div class="peg-label">3</div><div class="peg-rod"></div><div class="peg-disks" id="sim-peg-3"></div></div>' +
-            '</div></div></div>' +
-            self._createStepControls('hanoi2');
+        var DEFAULT_N = 3;
 
-        var colors = ['var(--accent)', 'var(--green)', 'var(--red)'];
-        var peg1El = container.querySelector('#sim-peg-1');
+        function buildAndRender(n) {
+            if (n < 1) n = 1;
+            if (n > 5) n = 5;
+            var totalMoves = Math.pow(2, n) - 1;
 
-        for (var i = 3; i >= 1; i--) {
-            var disk = document.createElement('div');
-            disk.className = 'hanoi-disk';
-            disk.style.width = (30 + i * 25) + 'px';
-            disk.style.background = colors[i - 1];
-            disk.dataset.size = i;
-            disk.textContent = i;
-            peg1El.prepend(disk);
+            container.innerHTML =
+                '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                    '<label style="font-weight:600;">원판 수: <input type="number" id="rec-hanoi-n" value="' + n + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
+                    '<button class="btn btn-primary" id="rec-hanoi-reset">🔄</button>' +
+                '</div>' +
+                '<div class="viz-panel"><div class="viz-panel-header"><h3>하노이 탑 (' + n + '개 원판)</h3>' +
+                '<div class="counter">이동: <span id="sim-hanoi-cnt">0</span> / ' + totalMoves + '</div></div>' +
+                '<div class="viz-panel-body">' +
+                '<div id="sim-hanoi-pegs" class="hanoi-pegs">' +
+                    '<div class="hanoi-peg"><div class="peg-label">1</div><div class="peg-rod"></div><div class="peg-disks" id="sim-peg-1"></div></div>' +
+                    '<div class="hanoi-peg"><div class="peg-label">2</div><div class="peg-rod"></div><div class="peg-disks" id="sim-peg-2"></div></div>' +
+                    '<div class="hanoi-peg"><div class="peg-label">3</div><div class="peg-rod"></div><div class="peg-disks" id="sim-peg-3"></div></div>' +
+                '</div></div></div>' +
+                self._createStepControls('hanoi2');
+
+            var colors = ['var(--accent)', 'var(--green)', 'var(--red)', 'var(--yellow)', '#00b4d8'];
+            var peg1El = container.querySelector('#sim-peg-1');
+
+            for (var i = n; i >= 1; i--) {
+                var disk = document.createElement('div');
+                disk.className = 'hanoi-disk';
+                disk.style.width = (30 + i * 25) + 'px';
+                disk.style.background = colors[(i - 1) % colors.length];
+                disk.dataset.size = i;
+                disk.textContent = i;
+                peg1El.prepend(disk);
+            }
+
+            var cntEl = container.querySelector('#sim-hanoi-cnt');
+            var moveNum = 0;
+
+            // Generate moves via recursion
+            var moves = [];
+            var hanoiSolve = function(nd, from, to, via) {
+                if (nd === 0) return;
+                hanoiSolve(nd - 1, from, via, to);
+                moves.push({ disk: nd, from: from, to: to });
+                hanoiSolve(nd - 1, via, to, from);
+            };
+            hanoiSolve(n, 1, 3, 2);
+
+            var steps = [];
+            moves.forEach(function(m) {
+                steps.push({
+                    description: '원판 ' + m.disk + '을 ' + m.from + '번 → ' + m.to + '번 기둥으로 이동',
+                    action: function() {
+                        var fromEl = container.querySelector('#sim-peg-' + m.from);
+                        var toEl = container.querySelector('#sim-peg-' + m.to);
+                        var dsk = fromEl.firstChild;
+                        if (dsk) toEl.prepend(dsk);
+                        moveNum++;
+                        cntEl.textContent = moveNum;
+                    },
+                    undo: function() {
+                        var fromEl = container.querySelector('#sim-peg-' + m.from);
+                        var toEl = container.querySelector('#sim-peg-' + m.to);
+                        var dsk = toEl.firstChild;
+                        if (dsk) fromEl.prepend(dsk);
+                        moveNum--;
+                        cntEl.textContent = moveNum;
+                    }
+                });
+            });
+
+            steps.push({ description: '✅ 완료! ' + n + '개 원판을 ' + totalMoves + '번(= 2^' + n + '-1)에 이동', action: function(){}, undo: function(){} });
+            self._initStepController(container, steps, 'hanoi2');
+
+            container.querySelector('#rec-hanoi-reset').addEventListener('click', function() {
+                var val = parseInt(container.querySelector('#rec-hanoi-n').value);
+                if (isNaN(val) || val < 1) val = 1;
+                if (val > 5) val = 5;
+                self._clearVizState();
+                buildAndRender(val);
+            });
         }
 
-        var cntEl = container.querySelector('#sim-hanoi-cnt');
-        var moveNum = 0;
-
-        var moves = [
-            { disk: 1, from: 1, to: 3 },
-            { disk: 2, from: 1, to: 2 },
-            { disk: 1, from: 3, to: 2 },
-            { disk: 3, from: 1, to: 3 },
-            { disk: 1, from: 2, to: 1 },
-            { disk: 2, from: 2, to: 3 },
-            { disk: 1, from: 1, to: 3 }
-        ];
-
-        var steps = [];
-        moves.forEach(function(m) {
-            steps.push({
-                description: '원판 ' + m.disk + '을 ' + m.from + '번 → ' + m.to + '번 기둥으로 이동',
-                action: function() {
-                    var fromEl = container.querySelector('#sim-peg-' + m.from);
-                    var toEl = container.querySelector('#sim-peg-' + m.to);
-                    var disk = fromEl.firstChild;
-                    if (disk) toEl.prepend(disk);
-                    moveNum++;
-                    cntEl.textContent = moveNum;
-                },
-                undo: function() {
-                    var fromEl = container.querySelector('#sim-peg-' + m.from);
-                    var toEl = container.querySelector('#sim-peg-' + m.to);
-                    var disk = toEl.firstChild;
-                    if (disk) fromEl.prepend(disk);
-                    moveNum--;
-                    cntEl.textContent = moveNum;
-                }
-            });
-        });
-
-        steps.push({ description: '✅ 완료! 3개 원판을 7번(= 2³-1)에 이동', action: function(){}, undo: function(){} });
-        self._initStepController(container, steps, 'hanoi2');
+        buildAndRender(DEFAULT_N);
     },
 
     // ===== 3단계 문제 구성 =====
@@ -1468,26 +1748,22 @@ const recursionTopic = {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>0보다 크거나 같은 정수 N이 주어진다. 이때, N!을 출력하는 프로그램을 작성하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (0 ≤ N ≤ 20)이 주어진다.</p></div>
-                    <div><h4>출력</h4><p>첫째 줄에 N!을 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>10</pre></div>
-                        <div><strong>출력</strong><pre>3628800</pre></div>
-                    </div>
-                    <div class="example-grid" style="margin-top:8px;">
-                        <div><strong>입력</strong><pre>0</pre></div>
-                        <div><strong>출력</strong><pre>1</pre></div>
-                    </div>
-                </div>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>10</pre></div>
+                    <div><strong>출력</strong><pre>3628800</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>0</pre></div>
+                    <div><strong>출력</strong><pre>1</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul><li>0 ≤ N ≤ 20</li></ul>
             `,
             hints: [
-                { title: '접근법', content: '팩토리얼의 재귀적 정의를 그대로 구현하세요: <code>n! = n × (n-1)!</code>' },
-                { title: '멈추는 조건', content: '<code>0! = 1</code>이고 <code>1! = 1</code>입니다. n이 0 또는 1이면 1을 반환하세요.' },
-                { title: '주의사항', content: '20!은 매우 큰 수입니다. C++에서는 <code>long long</code>, Java에서는 <code>long</code>을 사용하세요. Python은 자동으로 큰 수를 처리합니다.' }
+                { title: '처음 떠오르는 방법', content: '<code>5! = 5 × 4 × 3 × 2 × 1</code>이니까 for문으로 곱하면 되지 않을까? 맞아, 그것도 방법이야! 근데 이 문제는 <strong>재귀</strong>를 연습하는 문제야.' },
+                { title: '근데 재귀로는 어떻게?', content: '잘 보면 <code>5! = 5 × 4!</code>이고, <code>4! = 4 × 3!</code>이야. 즉 <code>n! = n × (n-1)!</code> — 큰 문제가 작은 문제로 쪼개지는 구조! 이게 바로 재귀의 핵심이야.' },
+                { title: '멈추는 조건은?', content: '재귀는 반드시 <strong>멈추는 조건</strong>이 필요해. 안 그러면 무한히 호출돼! <code>0! = 1</code>, <code>1! = 1</code>이니까, n이 0 또는 1이면 곱하기를 멈추고 1을 반환하면 돼.' },
+                { title: '주의할 점', content: '20!은 약 2,432,902,008,176,640,000이야 — 엄청 큰 수! <span class="lang-py">Python은 큰 수를 자동으로 처리하니까 걱정 없어.</span><span class="lang-cpp">C++에서 <code>int</code>는 약 21억까지만 저장 가능해서 터져! <code>long long</code>을 써야 해 (약 9.2 × 10<sup>18</sup>까지).</span>' }
             ],
             inputLabel: '입력값 (N)',
             inputMin: 0, inputMax: 20, inputDefault: 10,
@@ -1498,8 +1774,7 @@ const recursionTopic = {
             },
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\n\ndef factorial(n):\n    # 여기에 재귀 함수를 작성하세요\n    pass\n\nprint(factorial(n))\n`,
-                cpp: `#include <iostream>\nusing namespace std;\n\nlong long factorial(int n) {\n    // 여기에 재귀 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    cout << factorial(n) << endl;\n    return 0;\n}`,
-                java: `import java.util.Scanner;\n\npublic class Main {\n    static long factorial(int n) {\n        // 여기에 재귀 함수를 작성하세요\n        return 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        System.out.println(factorial(n));\n    }\n}`
+                cpp: `#include <iostream>\nusing namespace std;\n\nlong long factorial(int n) {\n    // 여기에 재귀 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    cout << factorial(n) << endl;\n    return 0;\n}`
             },
             solutions: [{
                 approach: '재귀 풀이',
@@ -1511,6 +1786,11 @@ const recursionTopic = {
                         { title: '함수 정의 + 멈추는 조건', desc: 'n이 1 이하이면 1을 반환', code: 'def factorial(n):\n    if n <= 1:\n        return 1' },
                         { title: '재귀 호출', desc: 'n * factorial(n-1)로 재귀', code: '    return n * factorial(n - 1)' },
                         { title: '입출력', desc: '입력받고 결과 출력', code: 'n = int(input())\nprint(factorial(n))' }
+                    ],
+                    cpp: [
+                        { title: '함수 정의 + 멈추는 조건', desc: 'long long: 20! = 약 2.4×10^18이라 int 범위 초과.', code: '#include <iostream>\nusing namespace std;\n\nlong long factorial(int n) {\n    if (n <= 1) return 1;  // 멈추는 조건' },
+                        { title: '재귀 호출', desc: 'n * factorial(n-1)로 재귀', code: '    return (long long)n * factorial(n - 1);\n}' },
+                        { title: '입출력', desc: 'cin/cout으로 입출력. Python과 달리 main 함수가 필요.', code: 'int main() {\n    int n;\n    cin >> n;\n    cout << factorial(n) << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[0].templates; }
@@ -1524,26 +1804,21 @@ const recursionTopic = {
             simIntro: 'fib(5)의 재귀 호출 트리가 어떻게 펼쳐지는지 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>피보나치 수는 0과 1로 시작한다. 0번째 피보나치 수는 0이고, 1번째는 1이다.</p>
-                <p>그 다음 2번째부터는 바로 앞 두 피보나치 수의 합이 된다.</p>
-                <p>이를 식으로 쓰면 F<sub>n</sub> = F<sub>n-1</sub> + F<sub>n-2</sub> (n ≥ 2)</p>
-                <p>n이 주어졌을 때, n번째 피보나치 수를 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 n이 주어진다. (0 ≤ n ≤ 20)</p></div>
-                    <div><h4>출력</h4><p>첫째 줄에 n번째 피보나치 수를 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>10</pre></div>
-                        <div><strong>출력</strong><pre>55</pre></div>
-                    </div>
-                </div>
+                <p>피보나치 수는 0과 1로 시작한다. 0번째 피보나치 수는 0이고, 1번째 피보나치 수는 1이다. 그 다음 2번째부터는 바로 앞 두 피보나치 수의 합이 된다.</p>
+                <p>이를 식으로 써보면 Fn = Fn-1 + Fn-2 (n ≥ 2)가 된다.</p>
+                <p>n이 주어졌을 때, n번째 피보나치 수를 구하는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>10</pre></div>
+                    <div><strong>출력</strong><pre>55</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul><li>0 ≤ n ≤ 20</li></ul>
             `,
             hints: [
-                { title: '접근법', content: '피보나치의 재귀적 정의를 그대로 구현하세요: <code>fib(n) = fib(n-1) + fib(n-2)</code>' },
-                { title: '멈추는 조건', content: '<code>fib(0) = 0</code>, <code>fib(1) = 1</code>입니다. 멈추는 조건이 두 개 필요합니다!' },
-                { title: '구현 팁', content: 'n ≤ 20이므로 순수 재귀로도 충분히 빠릅니다. 나중에 n이 커지면 계산한 값을 저장하며 푸는 방법(DP)이 필요해집니다.' }
+                { title: '처음 떠오르는 방법', content: '피보나치 수열은 <code>0, 1, 1, 2, 3, 5, 8, 13, ...</code> — 앞 두 수를 더하면 다음 수가 나와! for문으로 앞에서부터 하나씩 구하면 될 것 같은데?' },
+                { title: '근데 재귀로는 어떻게?', content: '정의를 다시 보면: <code>fib(n) = fib(n-1) + fib(n-2)</code>. n번째를 구하려면 (n-1)번째와 (n-2)번째가 필요하고, 그것들도 같은 방식으로 구해! 이게 재귀적 구조야.' },
+                { title: '멈추는 조건이 두 개!', content: '팩토리얼은 멈추는 조건이 1개였지만, 피보나치는 <strong>2개</strong> 필요해: <code>fib(0) = 0</code>, <code>fib(1) = 1</code>. 두 개가 없으면 <code>fib(1) → fib(0) + fib(-1)</code>로 끝없이 내려가!' },
+                { title: '이 풀이의 한계는?', content: 'n ≤ 20이라 이 문제에선 괜찮지만, 순수 재귀는 <strong>같은 값을 여러 번 계산</strong>해. fib(5)를 구하면 fib(2)를 3번이나 계산해! n이 커지면 시간 복잡도가 O(2<sup>n</sup>)으로 폭발해. 나중에 DP(동적 프로그래밍)에서 이걸 해결하는 법을 배울 거야!' }
             ],
             inputLabel: '입력값 (n)',
             inputMin: 0, inputMax: 20, inputDefault: 10,
@@ -1553,8 +1828,7 @@ const recursionTopic = {
             },
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\n\ndef fib(n):\n    # 여기에 재귀 함수를 작성하세요\n    pass\n\nprint(fib(n))\n`,
-                cpp: `#include <iostream>\nusing namespace std;\n\nint fib(int n) {\n    // 여기에 재귀 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    cout << fib(n) << endl;\n    return 0;\n}`,
-                java: `import java.util.Scanner;\n\npublic class Main {\n    static int fib(int n) {\n        // 여기에 재귀 함수를 작성하세요\n        return 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        System.out.println(fib(n));\n    }\n}`
+                cpp: `#include <iostream>\nusing namespace std;\n\nint fib(int n) {\n    // 여기에 재귀 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    cout << fib(n) << endl;\n    return 0;\n}`
             },
             solutions: [{
                 approach: '재귀 풀이',
@@ -1566,6 +1840,11 @@ const recursionTopic = {
                         { title: '함수 정의 + 멈추는 조건', desc: 'n이 0이면 0, 1이면 1 반환', code: 'def fib(n):\n    if n == 0: return 0\n    if n == 1: return 1' },
                         { title: '재귀 호출', desc: 'fib(n-1) + fib(n-2)로 재귀', code: '    return fib(n-1) + fib(n-2)' },
                         { title: '입출력', desc: '입력받고 결과 출력', code: 'n = int(input())\nprint(fib(n))' }
+                    ],
+                    cpp: [
+                        { title: '함수 정의 + 멈추는 조건', desc: 'n ≤ 20이므로 int 범위 충분.', code: '#include <iostream>\nusing namespace std;\n\nint fib(int n) {\n    if (n == 0) return 0;\n    if (n == 1) return 1;' },
+                        { title: '재귀 호출', desc: '앞 두 피보나치 수의 합을 재귀로 구한다.', code: '    return fib(n - 1) + fib(n - 2);\n}' },
+                        { title: '입출력', desc: 'cin/cout으로 입출력. main 함수에서 fib 호출.', code: 'int main() {\n    int n;\n    cin >> n;\n    cout << fib(n) << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[1].templates; }
@@ -1580,54 +1859,35 @@ const recursionTopic = {
             simIntro: '회문 검사 재귀가 양쪽 끝에서 어떻게 좁혀가는지 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>정수와 문자열에서 회문(palindrome)인지 확인하는 재귀 함수가 주어진다.</p>
-                <div class="problem-code-block">
-                    <h4>주어진 코드</h4>
-                    <pre><code class="language-python">def recursion(s, l, r):
-    if l >= r:
-        return 1
-    elif s[l] != s[r]:
-        return 0
-    else:
-        return recursion(s, l+1, r-1)
-
-def isPalindrome(s):
-    return recursion(s, 0, len(s)-1)</code></pre>
-                </div>
-                <p>각 문자열에 대해 <strong>회문 여부</strong>와 <strong>recursion 함수 호출 횟수</strong>를 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 테스트 케이스 수 T, 이후 T개의 문자열 (대문자 영어, 길이 1~1000)</p></div>
-                    <div><h4>출력</h4><p>각 줄에 회문 여부(1 또는 0)와 recursion 호출 횟수를 공백으로 출력</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>5
+                <p>정수를 문자열로 변환한 다음, 그 문자열이 팰린드롬인지 재귀 함수를 이용해 판별하려 한다. isPalindrome 함수가 주어졌을 때, 각 문자열에 대해 팰린드롬 여부(1 또는 0)와 재귀 함수 recursion의 호출 횟수를 출력하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3
 AAA
 ABBA
-ABABA
-ABCA
-PALINDROME</pre></div>
-                        <div><strong>출력</strong><pre>1 2
-1 2
+ABCDA</pre></div>
+                    <div><strong>출력</strong><pre>1 2
 1 3
-0 2
-0 1</pre></div>
-                    </div>
-                </div>
+0 3</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ T ≤ 1,000</li>
+                    <li>1 ≤ 문자열 길이 ≤ 1,000</li>
+                    <li>문자열은 알파벳 대문자</li>
+                </ul>
             `,
             hints: [
-                { title: '접근법', content: '주어진 재귀 함수를 그대로 구현하되, <strong>호출 횟수를 세는 카운터</strong>를 추가하세요.' },
-                { title: '카운터 추가', content: '<code>recursion</code> 함수가 호출될 때마다 카운터를 1 증가시키세요. 전역 변수나 리스트를 사용할 수 있습니다.' },
-                { title: '호출 횟수 분석', content: '회문이면 <code>(길이+1)//2</code>번, 아니면 불일치가 발생하는 위치까지의 횟수입니다. 첫 글자와 마지막 글자가 다르면 1번만 호출됩니다.' }
+                { title: '처음 떠오르는 방법', content: '문제에서 재귀 함수 <code>recursion(s, l, r)</code>이 이미 주어졌어! 양쪽 끝 글자를 비교하고, 같으면 안쪽으로 좁혀가는 구조야. 일단 그대로 구현하면 회문 판별은 되는데... 호출 횟수는 어떻게 세지?' },
+                { title: '근데 호출 횟수를 어떻게 세?', content: '<code>recursion</code> 함수가 실행될 때마다 "나 한 번 호출됐어!"를 기록하면 돼. 함수 안 맨 첫 줄에 카운터를 1 증가시키면, 호출될 때마다 자동으로 세지! <span class="lang-py"><code>global cnt</code>로 전역 변수를 쓰거나</span><span class="lang-cpp">전역 변수 <code>int cnt</code>를 쓰거나</span> 하면 돼.' },
+                { title: '이렇게 하면 어떨까?', content: '매 테스트케이스마다 카운터를 0으로 <strong>초기화</strong>하는 걸 잊지 마! 안 그러면 이전 문자열의 횟수가 누적돼. <code>isPalindrome</code> 안에서 <code>cnt = 0</code>으로 리셋하고 <code>recursion</code>을 호출하면 깔끔해.' },
+                { title: '호출 횟수 패턴', content: '회문이면 양쪽 끝에서 가운데까지 가니까 <code>(길이+1)//2</code>번 호출돼. 회문이 아니면? 불일치가 발생하는 위치까지만! 예: "ABCDA"는 A=A → B≠D에서 멈추니까 3번 (첫 호출 포함 — l=0 비교, l=1 비교에서 불일치).' }
             ],
             inputLabel: '입력값 (n)',
             inputMin: 1, inputMax: 1, inputDefault: 1,
             solve(n) { return `1 2`; },
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\ndef recursion(s, l, r):\n    # 주어진 코드를 구현하되, 호출 횟수를 세세요\n    pass\n\ndef isPalindrome(s):\n    return recursion(s, 0, len(s)-1)\n\nT = int(input())\nfor _ in range(T):\n    s = input().strip()\n    # 결과와 호출 횟수를 출력하세요\n`,
-                cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint cnt;\n\nint recursion(string s, int l, int r) {\n    cnt++;\n    // 여기에 재귀 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        string s;\n        cin >> s;\n        cnt = 0;\n        int result = recursion(s, 0, s.length()-1);\n        cout << result << " " << cnt << endl;\n    }\n    return 0;\n}`,
-                java: `import java.util.Scanner;\n\npublic class Main {\n    static int cnt;\n    \n    static int recursion(String s, int l, int r) {\n        cnt++;\n        // 여기에 재귀 함수를 작성하세요\n        return 0;\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int T = sc.nextInt();\n        while (T-- > 0) {\n            String s = sc.next();\n            cnt = 0;\n            int result = recursion(s, 0, s.length()-1);\n            System.out.println(result + " " + cnt);\n        }\n    }\n}`
+                cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint cnt;\n\nint recursion(string s, int l, int r) {\n    cnt++;\n    // 여기에 재귀 함수를 작성하세요\n    return 0;\n}\n\nint main() {\n    int T;\n    cin >> T;\n    while (T--) {\n        string s;\n        cin >> s;\n        cnt = 0;\n        int result = recursion(s, 0, s.length()-1);\n        cout << result << " " << cnt << endl;\n    }\n    return 0;\n}`
             },
             solutions: [{
                 approach: '재귀 + 카운터',
@@ -1639,6 +1899,10 @@ PALINDROME</pre></div>
                         { title: 'recursion 함수', desc: '전역 카운터를 두고 재귀 호출마다 증가', code: 'cnt = 0\ndef recursion(s, l, r):\n    global cnt\n    cnt += 1\n    if l >= r: return 1\n    if s[l] != s[r]: return 0\n    return recursion(s, l+1, r-1)' },
                         { title: 'isPalindrome', desc: '카운터를 초기화하고 recursion 호출', code: 'def isPalindrome(s):\n    global cnt\n    cnt = 0\n    return recursion(s, 0, len(s)-1)' },
                         { title: '입출력', desc: 'T개의 문자열에 대해 결과 출력', code: 'T = int(input())\nfor _ in range(T):\n    s = input()\n    print(isPalindrome(s), cnt)' }
+                    ],
+                    cpp: [
+                        { title: 'recursion 함수', desc: '전역 cnt로 호출 횟수 카운팅.\nstring을 참조(&)로 전달하여 복사 비용 절감.', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint cnt;  // 전역 카운터\n\nint recursion(string& s, int l, int r) {\n    cnt++;  // 호출될 때마다 증가\n    if (l >= r) return 1;       // 회문\n    if (s[l] != s[r]) return 0; // 불일치\n    return recursion(s, l + 1, r - 1);\n}' },
+                        { title: '입출력', desc: 'while(T--)로 테스트케이스 반복. 매번 cnt를 0으로 초기화.', code: 'int main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int T;\n    cin >> T;\n    while (T--) {\n        string s;\n        cin >> s;\n        cnt = 0;  // 매 테스트케이스마다 초기화\n        int result = recursion(s, 0, s.length() - 1);\n        cout << result << " " << cnt << \'\\n\';\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[2].templates; }
@@ -1652,27 +1916,29 @@ PALINDROME</pre></div>
             simIntro: '병합 정렬의 분할과 병합 과정에서 값이 저장되는 순서를 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N개의 서로 다른 양의 정수가 저장된 배열 A를 오름차순 <strong>병합 정렬</strong>로 정렬할 때,</p>
-                <p>배열 A에 <strong>K번째로 저장되는 수</strong>를 구하시오. 저장 횟수가 K보다 작으면 -1을 출력한다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄에 N (5 ≤ N ≤ 500,000)과 K (1 ≤ K ≤ 10<sup>8</sup>)</p>
-                    <p>둘째 줄에 서로 다른 N개의 양의 정수</p></div>
-                    <div><h4>출력</h4><p>K번째 저장되는 수. 없으면 -1</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>5 7
+                <p>오늘도 서준이는 병합 정렬 수업 조교를 맡았다. 아래는 오름차순으로 정렬하는 병합 정렬 의사 코드이다. 배열 A가 주어졌을 때, 병합 정렬로 배열을 오름차순으로 정렬할 경우 배열 A에 K번째로 저장되는 수를 구하는 프로그램을 작성하시오. 저장 횟수가 K보다 작으면 -1을 출력한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5 7
 4 5 1 3 2</pre></div>
-                        <div><strong>출력</strong><pre>3</pre></div>
-                    </div>
-                </div>
+                    <div><strong>출력</strong><pre>-1</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5 6
+4 5 1 3 2</pre></div>
+                    <div><strong>출력</strong><pre>2</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 500,000</li>
+                    <li>1 ≤ K ≤ N²</li>
+                    <li>1 ≤ A[i] ≤ 10<sup>9</sup></li>
+                </ul>
             `,
             hints: [
-                { title: '접근법', content: '병합 정렬의 <strong>merge 단계</strong>에서 배열 A에 값이 저장됩니다. 이 저장 순서를 추적하세요.' },
-                { title: '병합 정렬 구조', content: '<code>merge_sort(A, p, r)</code>: p~r 구간 정렬. q = (p+r)/2로 나눠서 왼쪽/오른쪽 각각 정렬 후 merge.' },
-                { title: 'K번째 저장', content: 'merge 함수에서 A[p..r]에 값을 복사할 때마다 카운터를 증가. 카운터가 K가 되는 순간의 값이 정답입니다.' },
-                { title: '구현 팁', content: 'K번째를 찾으면 바로 출력하고 종료하세요. N이 50만이므로 총 저장 횟수는 NlogN ≈ 950만 정도입니다.' }
+                { title: '처음 떠오르는 방법', content: '병합 정렬을 그냥 구현하면 정렬은 되는데... 문제는 "K번째로 저장되는 수"를 찾는 거야. 정렬 과정에서 배열에 값이 <strong>써지는 순서</strong>를 추적해야 해. 어디서 값이 써지지?' },
+                { title: '어디서 값이 저장되는 걸까?', content: '<strong>merge 단계</strong>에서야! 병합 정렬은 "나누기(분할)"와 "합치기(병합)" 두 단계인데, 실제로 배열 A에 값이 복사되는 건 merge 할 때뿐이야. 임시 배열에서 A로 값을 옮겨 쓸 때마다 1번 저장되는 거지.' },
+                { title: '이렇게 하면 어떨까?', content: '전역 카운터 <code>cnt</code>를 만들어서, merge에서 A에 값을 쓸 때마다 <code>cnt += 1</code>. cnt가 K가 되는 순간의 값을 <code>result</code>에 저장하면 끝! merge_sort 자체의 재귀 구조(<code>q = (p+r)//2</code>로 반 나누고, 왼쪽/오른쪽 각각 정렬 후 merge)는 교과서 그대로 구현하면 돼.' },
+                { title: '주의할 점', content: '총 저장 횟수가 K보다 적으면 <code>-1</code>을 출력해야 해. result 초기값을 -1로 두면 K번째가 없을 때 자동으로 -1이 출력돼서 편해! <span class="lang-py">N이 50만이라 재귀 깊이가 깊어질 수 있어 — <code>sys.setrecursionlimit(600000)</code>을 잊지 마!</span><span class="lang-cpp">전역 배열을 사용하면 스택 오버플로 걱정 없이 깔끔해.</span>' }
             ],
             inputLabel: '입력값 (N)',
             inputMin: 5, inputMax: 20, inputDefault: 5,
@@ -1702,8 +1968,7 @@ PALINDROME</pre></div>
             },
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\nsys.setrecursionlimit(600000)\n\nN, K = map(int, input().split())\nA = list(map(int, input().split()))\n\ncnt = 0\nresult = -1\n\ndef merge_sort(A, p, r):\n    # 여기에 병합 정렬을 구현하세요\n    # merge 단계에서 A에 저장할 때마다 cnt를 증가\n    pass\n\nmerge_sort(A, 0, N-1)\nprint(result)\n`,
-                cpp: `#include <iostream>\nusing namespace std;\n\nint A[500001], tmp[500001];\nint N, K, cnt = 0, result = -1;\n\nvoid merge(int p, int q, int r) {\n    // 여기에 병합 함수를 작성하세요\n}\n\nvoid merge_sort(int p, int r) {\n    if (p >= r) return;\n    int q = (p + r) / 2;\n    merge_sort(p, q);\n    merge_sort(q + 1, r);\n    merge(p, q, r);\n}\n\nint main() {\n    cin >> N >> K;\n    for (int i = 0; i < N; i++) cin >> A[i];\n    merge_sort(0, N-1);\n    cout << result << endl;\n    return 0;\n}`,
-                java: `import java.util.Scanner;\n\npublic class Main {\n    static int[] A, tmp;\n    static int K, cnt = 0, result = -1;\n    \n    static void merge(int p, int q, int r) {\n        // 여기에 병합 함수를 작성하세요\n    }\n    \n    static void mergeSort(int p, int r) {\n        if (p >= r) return;\n        int q = (p + r) / 2;\n        mergeSort(p, q);\n        mergeSort(q + 1, r);\n        merge(p, q, r);\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt(); K = sc.nextInt();\n        A = new int[N]; tmp = new int[N];\n        for (int i = 0; i < N; i++) A[i] = sc.nextInt();\n        mergeSort(0, N-1);\n        System.out.println(result);\n    }\n}`
+                cpp: `#include <iostream>\nusing namespace std;\n\nint A[500001], tmp[500001];\nint N, K, cnt = 0, result = -1;\n\nvoid merge(int p, int q, int r) {\n    // 여기에 병합 함수를 작성하세요\n}\n\nvoid merge_sort(int p, int r) {\n    if (p >= r) return;\n    int q = (p + r) / 2;\n    merge_sort(p, q);\n    merge_sort(q + 1, r);\n    merge(p, q, r);\n}\n\nint main() {\n    cin >> N >> K;\n    for (int i = 0; i < N; i++) cin >> A[i];\n    merge_sort(0, N-1);\n    cout << result << endl;\n    return 0;\n}`
             },
             solutions: [{
                 approach: '병합 정렬 추적',
@@ -1716,6 +1981,11 @@ PALINDROME</pre></div>
                         { title: 'merge_sort 재귀', desc: '반으로 나눠서 각각 정렬 후 병합', code: 'def merge_sort(A, p, r):\n    if p >= r: return\n    q = (p + r) // 2\n    merge_sort(A, p, q)\n    merge_sort(A, q + 1, r)\n    merge(A, p, q, r)' },
                         { title: 'K번째 체크', desc: '결과가 이미 나왔으면 바로 종료할 수도 있음', code: '# K번째 저장값을 찾으면 result에 저장됨' },
                         { title: '입출력', desc: '입력 받고 merge_sort 실행 후 결과 출력', code: 'N, K = map(int, input().split())\nA = list(map(int, input().split()))\nmerge_sort(A, 0, N - 1)\nprint(result)' }
+                    ],
+                    cpp: [
+                        { title: 'merge 함수', desc: '전역 배열 A, tmp로 병합.\n저장할 때마다 cnt 증가, K번째면 result에 저장.', code: '#include <iostream>\nusing namespace std;\n\nint A[500001], tmp[500001];\nint N, K, cnt = 0, result = -1;\n\nvoid merge(int p, int q, int r) {\n    int i = p, j = q + 1, idx = p;\n    while (i <= q && j <= r) {\n        if (A[i] <= A[j]) tmp[idx++] = A[i++];\n        else tmp[idx++] = A[j++];\n    }\n    while (i <= q) tmp[idx++] = A[i++];\n    while (j <= r) tmp[idx++] = A[j++];\n    // A에 복사하면서 카운팅\n    for (int k = p; k <= r; k++) {\n        A[k] = tmp[k];\n        cnt++;\n        if (cnt == K) result = tmp[k];\n    }\n}' },
+                        { title: 'merge_sort 재귀', desc: '반으로 나눠서 각각 정렬 후 merge로 합친다.', code: 'void merge_sort(int p, int r) {\n    if (p >= r) return;\n    int q = (p + r) / 2;\n    merge_sort(p, q);\n    merge_sort(q + 1, r);\n    merge(p, q, r);\n}' },
+                        { title: '입출력', desc: '전역 배열에 입력 후 merge_sort 실행, result 출력.', code: 'int main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    cin >> N >> K;\n    for (int i = 0; i < N; i++) cin >> A[i];\n    merge_sort(0, N - 1);\n    cout << result << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[3].templates; }
@@ -1730,31 +2000,30 @@ PALINDROME</pre></div>
             simIntro: '칸토어 집합에서 가운데 1/3이 어떻게 재귀적으로 빠지는지 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>칸토어 집합은 3<sup>N</sup>개의 대시(<code>-</code>)로 시작하여, 가운데 1/3을 공백으로 바꾸는 과정을 반복합니다.</p>
-                <p>길이가 1인 구간이 될 때까지 반복하여 결과를 출력하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>여러 줄에 걸쳐 N (0 ≤ N ≤ 12)이 주어진다. 입력은 EOF로 끝난다.</p></div>
-                    <div><h4>출력</h4><p>각 N에 대해 칸토어 집합 문자열을 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>0
-1
-2
-3</pre></div>
-                        <div><strong>출력</strong><pre>-
-- -
-- -   - -
-- -   - -         - -   - -</pre></div>
-                    </div>
-                </div>
+                <p>칸토어 집합은 0과 1 사이의 실수로 이루어진 집합으로, [0, 1]에서 시작하여 각 구간을 3등분하여 가운데 구간을 제거하는 작업을 무한히 반복하여 얻어진다. 길이가 3^N인 문자열에서 시작하여, 가운데 1/3을 공백으로 바꾸는 과정을 반복한다. 입력이 없을 때까지 반복.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>0</pre></div>
+                    <div><strong>출력</strong><pre>-</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>1</pre></div>
+                    <div><strong>출력</strong><pre>- -</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3</pre></div>
+                    <div><strong>출력</strong><pre>- -   - -         - -   - -</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>0 ≤ N ≤ 12</li>
+                    <li>입력이 없을 때까지 반복 (EOF)</li>
+                </ul>
             `,
             hints: [
-                { title: '접근법', content: '3등분하여 가운데를 공백으로 바꾸는 것은 <strong>큰 문제를 작은 문제로 나누어 푸는</strong> 전형적인 패턴입니다.' },
-                { title: '재귀 구조', content: '길이 len의 구간을 3등분 → 왼쪽 1/3 재귀, 가운데 1/3 공백, 오른쪽 1/3 재귀' },
-                { title: '멈추는 조건', content: '길이가 1이면 <code>-</code> 한 개입니다. 배열에 직접 쓰거나 문자열을 조합하세요.' },
-                { title: 'EOF 처리', content: 'Python: <code>while True: try ... except: break</code><br>C++: <code>while(cin >> n)</code>' }
+                { title: '처음 떠오르는 방법', content: 'N=2면 길이 9짜리 <code>---------</code>에서 가운데 3개를 공백으로 바꾸면... <code>---   ---</code>? 근데 양쪽 <code>---</code> 안에서도 또 가운데를 빼야 해! 한 번만 하는 게 아니라 <strong>반복적으로 쪼개야</strong> 하는 구조네.' },
+                { title: '이건 재귀 구조야!', content: '길이 len인 구간을 3등분해서: ① 왼쪽 1/3에 재귀 ② 가운데 1/3을 공백으로 ③ 오른쪽 1/3에 재귀. "전체에서 가운데를 빼고, 남은 양쪽에서도 같은 걸 반복" — 전형적인 분할 정복이야!' },
+                { title: '멈추는 조건은?', content: '길이가 1이면 더 이상 3등분할 수 없어 — 그냥 <code>-</code> 하나니까 return! 구현 팁: 처음에 길이 3<sup>N</sup>짜리 배열을 전부 <code>-</code>로 채운 뒤, 재귀적으로 가운데를 공백으로 <strong>덮어쓰는</strong> 방식이 깔끔해.' },
+                { title: 'EOF 입력 처리', content: '이 문제는 입력이 여러 줄이고, 몇 줄인지 안 알려줘 (EOF까지 반복). <span class="lang-py">Python: <code>while True: try: ... except: break</code>로 입력이 없을 때까지 반복!</span><span class="lang-cpp">C++: <code>while(cin &gt;&gt; n)</code>으로 EOF까지 반복! 입력이 없으면 자동으로 루프가 끝나.</span>' }
             ],
             inputLabel: '입력값 (N)',
             inputMin: 0, inputMax: 5, inputDefault: 2,
@@ -1773,8 +2042,7 @@ PALINDROME</pre></div>
             },
             templates: {
                 python: `import sys\n\ndef cantor(arr, start, size):\n    # 여기에 재귀 함수를 작성하세요\n    # 가운데 1/3을 공백으로 바꾸고, 양쪽 1/3에 대해 재귀\n    pass\n\nwhile True:\n    try:\n        n = int(input())\n        length = 3 ** n\n        arr = list('-' * length)\n        cantor(arr, 0, length)\n        print(''.join(arr))\n    except:\n        break\n`,
-                cpp: `#include <iostream>\n#include <cstring>\n#include <cmath>\nusing namespace std;\n\nchar arr[600000];\n\nvoid cantor(int start, int size) {\n    // 여기에 재귀 함수를 작성하세요\n}\n\nint main() {\n    int n;\n    while (cin >> n) {\n        int len = pow(3, n);\n        memset(arr, '-', len);\n        arr[len] = '\\0';\n        cantor(0, len);\n        cout << arr << endl;\n    }\n    return 0;\n}`,
-                java: `import java.util.Scanner;\nimport java.util.Arrays;\n\npublic class Main {\n    static char[] arr;\n    \n    static void cantor(int start, int size) {\n        // 여기에 재귀 함수를 작성하세요\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        while (sc.hasNextInt()) {\n            int n = sc.nextInt();\n            int len = (int)Math.pow(3, n);\n            arr = new char[len];\n            Arrays.fill(arr, '-');\n            cantor(0, len);\n            System.out.println(new String(arr));\n        }\n    }\n}`
+                cpp: `#include <iostream>\n#include <cstring>\n#include <cmath>\nusing namespace std;\n\nchar arr[600000];\n\nvoid cantor(int start, int size) {\n    // 여기에 재귀 함수를 작성하세요\n}\n\nint main() {\n    int n;\n    while (cin >> n) {\n        int len = pow(3, n);\n        memset(arr, '-', len);\n        arr[len] = '\\0';\n        cantor(0, len);\n        cout << arr << endl;\n    }\n    return 0;\n}`
             },
             solutions: [{
                 approach: '배열 재귀',
@@ -1786,6 +2054,10 @@ PALINDROME</pre></div>
                         { title: 'cantor 재귀 함수', desc: '가운데 1/3을 공백으로 바꾸고 양쪽에 재귀', code: 'def cantor(arr, start, size):\n    if size <= 1:\n        return\n    third = size // 3\n    for i in range(start + third, start + 2 * third):\n        arr[i] = " "\n    cantor(arr, start, third)\n    cantor(arr, start + 2 * third, third)' },
                         { title: '문자열 초기화 + 호출', desc: '대시 배열을 만들고 cantor 호출', code: 'n = int(input())\nlength = 3 ** n\narr = list("-" * length)\ncantor(arr, 0, length)\nprint("".join(arr))' },
                         { title: 'EOF 처리', desc: 'try/except로 여러 줄 입력 처리', code: 'while True:\n    try:\n        n = int(input())\n        length = 3 ** n\n        arr = list("-" * length)\n        cantor(arr, 0, length)\n        print("".join(arr))\n    except:\n        break' }
+                    ],
+                    cpp: [
+                        { title: 'cantor 재귀 함수', desc: 'memset으로 가운데 1/3을 공백으로.\n양쪽 1/3에 대해 재귀 호출.', code: '#include <iostream>\n#include <cstring>\n#include <cmath>\nusing namespace std;\n\nchar arr[600000];\n\nvoid cantor(int start, int size) {\n    if (size <= 1) return;\n    int t = size / 3;\n    // 가운데 1/3을 공백으로\n    memset(arr + start + t, \' \', t);\n    cantor(start, t);         // 왼쪽 1/3\n    cantor(start + 2 * t, t); // 오른쪽 1/3\n}' },
+                        { title: 'EOF 처리 + 출력', desc: 'while(cin >> n)으로 EOF까지 반복.\nmemset으로 대시 초기화 후 cantor 호출.', code: 'int main() {\n    int n;\n    while (cin >> n) {\n        int len = (int)pow(3, n);\n        memset(arr, \'-\', len);  // 대시로 초기화\n        arr[len] = \'\\0\';       // 널 종료\n        cantor(0, len);\n        cout << arr << \'\\n\';\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[4].templates; }
@@ -1799,37 +2071,22 @@ PALINDROME</pre></div>
             simIntro: '9x9 별 패턴에서 가운데 블록이 재귀적으로 비워지는 과정을 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>재귀적인 패턴으로 별을 찍어 보자.</p>
-                <p>N은 3의 거듭제곱(3, 9, 27, ...)이다. 크기 3의 기본 패턴은:</p>
-                <pre>***
-* *
-***</pre>
-                <p>크기 N의 패턴은 가운데를 비우고 나머지 8칸을 N/3 크기의 패턴으로 채운다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N이 주어진다. (N = 3<sup>k</sup>, 1 ≤ k < 8)</p></div>
-                    <div><h4>출력</h4><p>N×N 크기의 별 패턴을 출력한다.</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>9</pre></div>
-                        <div><strong>출력</strong><pre>*********
-* ** ** *
-*********
-***   ***
-* *   * *
-***   ***
-*********
-* ** ** *
-*********</pre></div>
-                    </div>
-                </div>
+                <p>재귀적인 패턴으로 별을 찍어 보자. N이 3의 거듭제곱(3, 9, 27, ...)이라고 할 때, 크기 N의 패턴은 N×N 정사각형 모양이다. 크기 3의 패턴은 가운데가 비어있는 3×3 패턴이고, 크기 N의 패턴은 가운데가 비어있는 (N/3)×(N/3) 패턴을 크기 N/3의 패턴 8개로 둘러싼 형태이다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>27</pre></div>
+                    <div><strong>출력</strong><pre>(27×27 star pattern)</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>N은 3의 거듭제곱</li>
+                    <li>3 ≤ N ≤ 2,187 (3<sup>7</sup>)</li>
+                </ul>
             `,
             hints: [
-                { title: '접근법', content: 'N×N 2차원 배열을 <code>*</code>로 채운 뒤, 재귀적으로 가운데 블록을 공백으로 바꾸세요.' },
-                { title: '재귀 구조', content: '크기 size의 블록을 9등분(3×3). 가운데(1,1) 블록을 공백으로, 나머지 8개 블록에 대해 재귀.' },
-                { title: '멈추는 조건', content: 'size가 1이면 더 이상 쪼갤 수 없으므로 return.' },
-                { title: '좌표 계산', content: '(row, col) 기준으로 9개 블록은 (row + i*third, col + j*third)에서 i,j = 0,1,2. 가운데는 i=1, j=1.' }
+                { title: '처음 떠오르는 방법', content: '크기 3이면 가운데만 비운 3×3 패턴이야. 크기 9면? 9×9를 3×3 블록 9개로 나눠서 가운데 블록을 통째로 비우고, 나머지 8개 블록 안에서도 같은 패턴을 반복... 이거 칸토어 집합이랑 비슷한데, 1차원이 아니라 <strong>2차원</strong>이네!' },
+                { title: '이건 2D 재귀야!', content: '칸토어 집합은 3등분(1D)이었다면, 이건 <strong>9등분(3×3, 2D)</strong>이야! 크기 size의 블록을 <code>third = size / 3</code>으로 나눠서, 가운데(i=1, j=1) 블록을 공백으로 채우고, 나머지 8개 블록에 재귀. 전체를 <code>*</code>로 먼저 채운 뒤 공백으로 "파내는" 방식이 편해.' },
+                { title: '좌표 계산은 어떻게?', content: '(row, col)에서 시작하는 size×size 블록이면, 9개 블록은 <code>(row + i*third, col + j*third)</code>에서 i,j = 0,1,2. 가운데는 i=1, j=1일 때! 나머지 8개(<code>i != 1 || j != 1</code>)에 대해 재귀하면 돼.' },
+                { title: '멈추는 조건 + 구현 팁', content: 'size가 1이면 더 이상 쪼갤 수 없으니 return! <span class="lang-py">Python: 2D 리스트 <code>[["*"] * n for _ in range(n)]</code>으로 초기화.</span><span class="lang-cpp">C++: 전역 <code>char grid[2200][2200]</code>을 <code>memset(grid, \'*\', sizeof(grid))</code>로 초기화. 출력 시 각 행 끝에 <code>grid[i][N] = \'\\0\'</code>을 넣어줘야 깔끔하게 잘려.</span>' }
             ],
             inputLabel: '입력값 (N)',
             inputMin: 3, inputMax: 27, inputDefault: 9,
@@ -1849,8 +2106,7 @@ PALINDROME</pre></div>
             },
             templates: {
                 python: `import sys\n\nn = int(input())\ngrid = [['*'] * n for _ in range(n)]\n\ndef star(r, c, size):\n    # 여기에 재귀 함수를 작성하세요\n    # 가운데 블록을 공백으로 바꾸고, 나머지 8블록에 재귀\n    pass\n\nstar(0, 0, n)\nfor row in grid:\n    print(''.join(row))\n`,
-                cpp: `#include <iostream>\n#include <cstring>\nusing namespace std;\n\nchar grid[2200][2200];\nint N;\n\nvoid star(int r, int c, int size) {\n    // 여기에 재귀 함수를 작성하세요\n}\n\nint main() {\n    cin >> N;\n    memset(grid, '*', sizeof(grid));\n    star(0, 0, N);\n    for (int i = 0; i < N; i++) {\n        grid[i][N] = '\\0';\n        cout << grid[i] << '\\n';\n    }\n    return 0;\n}`,
-                java: `import java.util.Scanner;\nimport java.util.Arrays;\n\npublic class Main {\n    static char[][] grid;\n    \n    static void star(int r, int c, int size) {\n        // 여기에 재귀 함수를 작성하세요\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int N = sc.nextInt();\n        grid = new char[N][N];\n        for (char[] row : grid) Arrays.fill(row, '*');\n        star(0, 0, N);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < N; i++) sb.append(new String(grid[i])).append('\\n');\n        System.out.print(sb);\n    }\n}`
+                cpp: `#include <iostream>\n#include <cstring>\nusing namespace std;\n\nchar grid[2200][2200];\nint N;\n\nvoid star(int r, int c, int size) {\n    // 여기에 재귀 함수를 작성하세요\n}\n\nint main() {\n    cin >> N;\n    memset(grid, '*', sizeof(grid));\n    star(0, 0, N);\n    for (int i = 0; i < N; i++) {\n        grid[i][N] = '\\0';\n        cout << grid[i] << '\\n';\n    }\n    return 0;\n}`
             },
             solutions: [{
                 approach: '2D 배열 재귀',
@@ -1862,6 +2118,10 @@ PALINDROME</pre></div>
                         { title: 'star 재귀 함수', desc: '가운데 블록을 공백으로 바꾸고 8개 블록에 재귀', code: 'def star(r, c, size):\n    if size <= 1:\n        return\n    t = size // 3\n    for i in range(r + t, r + 2 * t):\n        for j in range(c + t, c + 2 * t):\n            grid[i][j] = " "\n    for i in range(3):\n        for j in range(3):\n            if i != 1 or j != 1:\n                star(r + i * t, c + j * t, t)' },
                         { title: '그리드 생성 + 호출', desc: 'N×N 그리드를 *로 채우고 star 호출', code: 'n = int(input())\ngrid = [["*"] * n for _ in range(n)]\nstar(0, 0, n)' },
                         { title: '출력', desc: '각 행을 문자열로 변환하여 출력', code: 'for row in grid:\n    print("".join(row))' }
+                    ],
+                    cpp: [
+                        { title: 'star 재귀 함수', desc: '2D char 배열에서 가운데 블록을 공백으로.\n9블록 중 가운데(i=1,j=1) 제외 8개에 재귀.', code: '#include <iostream>\n#include <cstring>\nusing namespace std;\n\nchar grid[2200][2200];  // 전역: 3^7 = 2187\nint N;\n\nvoid star(int r, int c, int size) {\n    if (size <= 1) return;\n    int t = size / 3;\n    // 가운데 블록을 공백으로\n    for (int i = r + t; i < r + 2 * t; i++)\n        for (int j = c + t; j < c + 2 * t; j++)\n            grid[i][j] = \' \';\n    // 나머지 8개 블록에 재귀\n    for (int i = 0; i < 3; i++)\n        for (int j = 0; j < 3; j++)\n            if (i != 1 || j != 1)\n                star(r + i * t, c + j * t, t);\n}' },
+                        { title: '그리드 생성 + 출력', desc: 'memset으로 * 초기화 후 star 호출.\n각 행 끝에 널 문자로 잘라서 출력.', code: 'int main() {\n    cin >> N;\n    memset(grid, \'*\', sizeof(grid));\n    star(0, 0, N);\n    for (int i = 0; i < N; i++) {\n        grid[i][N] = \'\\0\';  // 행 끝 표시\n        cout << grid[i] << \'\\n\';\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[5].templates; }
@@ -1875,22 +2135,10 @@ PALINDROME</pre></div>
             simIntro: '3개 원판의 하노이 탑이 7번의 이동으로 어떻게 옮겨지는지 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>세 개의 장대가 있고 첫 번째 장대에 N개의 원판이 크기순으로 쌓여 있다.</p>
-                <p>다음 규칙에 따라 모든 원판을 세 번째 장대로 옮기시오:</p>
-                <ol>
-                    <li>한 번에 한 개의 원판만 이동</li>
-                    <li>큰 원판이 작은 원판 위에 올 수 없음</li>
-                </ol>
-                <p>이동 횟수를 최소로 하는 이동 순서를 구하시오.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N (1 ≤ N ≤ 20)</p></div>
-                    <div><h4>출력</h4><p>첫째 줄에 이동 횟수 K, 다음 K줄에 이동 과정 (A B: A→B)</p></div>
-                </div>
-                <div class="problem-example">
-                    <h4>예제</h4>
-                    <div class="example-grid">
-                        <div><strong>입력</strong><pre>3</pre></div>
-                        <div><strong>출력</strong><pre>7
+                <p>세 개의 장대가 있고 첫 번째 장대에 반경이 서로 다른 n개의 원판이 쌓여 있다. 이 원판을 다음과 같은 규칙에 따라 세 번째 장대로 옮기려 한다. 한 번에 한 개의 원판만을 다른 탑으로 옮길 수 있다. 쌓아 놓은 원판은 항상 위의 것이 아래의 것보다 작아야 한다. 이 작업을 수행하는데 필요한 이동 순서를 출력하는 프로그램을 작성하라. 단, 이동 횟수는 최소가 되어야 한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3</pre></div>
+                    <div><strong>출력</strong><pre>7
 1 3
 1 2
 3 2
@@ -1898,14 +2146,15 @@ PALINDROME</pre></div>
 2 1
 2 3
 1 3</pre></div>
-                    </div>
-                </div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul><li>1 ≤ N ≤ 20</li></ul>
             `,
             hints: [
-                { title: '접근법', content: 'N개의 원판을 1→3으로 옮기려면: 위 N-1개를 2로 옮기고, 가장 큰 원판을 3으로, 다시 N-1개를 3으로.' },
-                { title: '재귀 구조', content: '<code>hanoi(n, from, to, via)</code>: n개를 from→to로 옮기기. 보조 기둥은 via.' },
-                { title: '멈추는 조건', content: 'n=1이면 바로 from→to 이동. n=0이면 아무것도 안 함.' },
-                { title: '이동 횟수', content: '최소 이동 횟수는 <code>2<sup>N</sup> - 1</code>입니다. 수학적 귀납법으로 증명 가능!' }
+                { title: '처음 떠오르는 방법', content: '원판 1개는 쉬워 — 그냥 옮기면 돼. 원판 2개도 해볼 만해: 작은 걸 보조 기둥에, 큰 걸 목표에, 작은 걸 다시 목표에. 근데 원판 3개, 4개는... 머리가 복잡해지는데, 일일이 시뮬레이션하지 않고 <strong>패턴</strong>을 찾을 수 없을까?' },
+                { title: '핵심 아이디어', content: 'N개의 원판을 1번→3번으로 옮기는 문제를 <strong>3단계</strong>로 쪼개면 돼! ① 위 N-1개를 2번 기둥으로 (가장 큰 원판이 드러나도록) ② 가장 큰 원판을 3번으로 ③ 2번에 있는 N-1개를 다시 3번으로. "위 N-1개를 옮기는 것"도 같은 문제 — 이게 재귀야!' },
+                { title: '이렇게 하면 어떨까?', content: '<code>hanoi(n, from, to, via)</code> 함수를 만들어: n개를 from→to로, 보조 기둥은 via. 멈추는 조건은 <code>n = 0</code>이면 옮길 게 없으니 return. <code>n = 1</code>이면 바로 from→to 출력해도 되지만, n=0으로 멈춰도 자연스럽게 동작해!' },
+                { title: '이동 횟수는 미리 알 수 있어!', content: '최소 이동 횟수는 <code>2<sup>N</sup> - 1</code>이야. 왜냐하면 <code>T(N) = 2 × T(N-1) + 1</code>이거든 (N-1개 옮기기 × 2 + 큰 원판 1번). 이 점화식을 풀면 <code>2<sup>N</sup> - 1</code>! 먼저 이 숫자를 출력하고, 그 다음에 이동 순서를 출력하면 돼.' }
             ],
             inputLabel: '입력값 (N)',
             inputMin: 1, inputMax: 10, inputDefault: 3,
@@ -1922,8 +2171,7 @@ PALINDROME</pre></div>
             },
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nmoves = []\n\ndef hanoi(n, fr, to, via):\n    # 여기에 재귀 함수를 작성하세요\n    pass\n\nhanoi(n, 1, 3, 2)\nprint(len(moves))\nprint('\\n'.join(moves))\n`,
-                cpp: `#include <iostream>\n#include <cmath>\nusing namespace std;\n\nvoid hanoi(int n, int from, int to, int via) {\n    // 여기에 재귀 함수를 작성하세요\n}\n\nint main() {\n    int n;\n    cin >> n;\n    cout << (int)pow(2, n) - 1 << '\\n';\n    hanoi(n, 1, 3, 2);\n    return 0;\n}`,
-                java: `import java.util.Scanner;\n\npublic class Main {\n    static StringBuilder sb = new StringBuilder();\n    \n    static void hanoi(int n, int from, int to, int via) {\n        // 여기에 재귀 함수를 작성하세요\n    }\n    \n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        sb.append((int)Math.pow(2, n) - 1).append('\\n');\n        hanoi(n, 1, 3, 2);\n        System.out.print(sb);\n    }\n}`
+                cpp: `#include <iostream>\n#include <cmath>\nusing namespace std;\n\nvoid hanoi(int n, int from, int to, int via) {\n    // 여기에 재귀 함수를 작성하세요\n}\n\nint main() {\n    int n;\n    cin >> n;\n    cout << (int)pow(2, n) - 1 << '\\n';\n    hanoi(n, 1, 3, 2);\n    return 0;\n}`
             },
             solutions: [{
                 approach: '재귀 풀이',
@@ -1935,6 +2183,10 @@ PALINDROME</pre></div>
                         { title: 'hanoi 함수', desc: 'N-1개를 via로, 가장 큰 원판을 to로, N-1개를 to로', code: 'import sys\ninput = sys.stdin.readline\n\nmoves = []\n\ndef hanoi(n, fr, to, via):\n    if n == 0:\n        return\n    hanoi(n - 1, fr, via, to)\n    moves.append(f"{fr} {to}")\n    hanoi(n - 1, via, to, fr)' },
                         { title: '이동 횟수 + 호출', desc: '2^n - 1 출력 후 hanoi 호출', code: 'n = int(input())\nprint(2 ** n - 1)\nhanoi(n, 1, 3, 2)' },
                         { title: '출력', desc: '이동 순서를 줄바꿈으로 출력', code: 'print("\\n".join(moves))' }
+                    ],
+                    cpp: [
+                        { title: 'hanoi 함수', desc: 'Python과 동일한 재귀 구조.\ncout으로 바로 출력 (배열에 저장 불필요).', code: '#include <iostream>\n#include <cmath>\nusing namespace std;\n\nvoid hanoi(int n, int from, int to, int via) {\n    if (n == 0) return;\n    hanoi(n - 1, from, via, to);     // 위 N-1개를 via로\n    cout << from << " " << to << \'\\n\'; // 가장 큰 원판 이동\n    hanoi(n - 1, via, to, from);     // N-1개를 to로\n}' },
+                        { title: '이동 횟수 + 호출', desc: 'pow(2,n)-1 = 최소 이동 횟수.\n먼저 출력하고 hanoi 재귀 시작.', code: 'int main() {\n    int n;\n    cin >> n;\n    cout << (int)pow(2, n) - 1 << \'\\n\';\n    hanoi(n, 1, 3, 2);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return recursionTopic.problems[6].templates; }

@@ -183,7 +183,41 @@ var graphTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># 인접 리스트 만들기 (무방향 그래프)\nimport sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())  # 정점 수, 간선 수\ngraph = [[] for _ in range(N + 1)]\n\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)  # 무방향이므로 양쪽 다 추가</code></pre></div>\
+                <div style="margin:1.5rem 0;overflow-x:auto;">\
+                    <p style="font-weight:600;font-size:0.95rem;margin-bottom:0.8rem;color:var(--text);">인접 리스트 vs 인접 행렬 — 언제 뭘 쓸까?</p>\
+                    <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">\
+                    <thead><tr style="background:var(--bg2);">\
+                        <th style="padding:10px;text-align:left;border:1px solid var(--bg3);"></th>\
+                        <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">인접 리스트</th>\
+                        <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">인접 행렬</th>\
+                    </tr></thead>\
+                    <tbody>\
+                        <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">메모리</td>\
+                            <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(V+E)</td>\
+                            <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(V\u00B2)</td></tr>\
+                        <tr style="background:var(--bg2);"><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">간선 존재 확인</td>\
+                            <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(차수)</td>\
+                            <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(1)</td></tr>\
+                        <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">적합한 경우</td>\
+                            <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">간선이 적은 그래프 (희소)</td>\
+                            <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">간선이 많은 그래프 (밀집)</td></tr>\
+                    </tbody>\
+                    </table>\
+                    <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--text2);">\
+                        대부분의 알고리즘 문제에서는 간선이 적은 희소 그래프이므로 <strong>인접 리스트</strong>를 주로 사용합니다.\
+                    </p>\
+                </div>\
+\
+                <p style="margin:0.5rem 0 0.8rem; font-size:0.9rem; color:var(--text2);">\
+                    <span class="lang-py">Python에서는 <code>defaultdict(list)</code>를 쓰면 키 존재 여부를 체크하지 않아도 되어 편리합니다.</span>\
+                    <span class="lang-cpp">C++에서는 <code>vector&lt;vector&lt;int&gt;&gt;</code>로 인접 리스트를 구현합니다.</span>\
+                </p>\
+                <div style="margin-bottom:0.8rem;">\
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.defaultdict" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: collections.defaultdict ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: vector ↗</a></span>\
+                </div>\
+\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 인접 리스트 만들기 (무방향 그래프)\nimport sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())  # 정점 수, 간선 수\ngraph = [[] for _ in range(N + 1)]\n\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)  # 무방향이므로 양쪽 다 추가</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 인접 리스트 만들기 (무방향 그래프)\n#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n\nint main() {\n    int N, M;  // 정점 수, 간선 수\n    cin &gt;&gt; N &gt;&gt; M;\n    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);\n\n    for (int i = 0; i &lt; M; i++) {\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);  // 무방향이므로 양쪽 다 추가\n    }\n    return 0;\n}</code></pre></div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -228,7 +262,8 @@ var graphTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># DFS \u2014 재귀 방식\ndef dfs(v):\n    visited[v] = True\n    for u in graph[v]:\n        if not visited[u]:\n            dfs(u)\n\n# DFS \u2014 스택 방식\ndef dfs_stack(start):\n    stack = [start]\n    visited[start] = True\n    while stack:\n        v = stack.pop()\n        for u in graph[v]:\n            if not visited[u]:\n                visited[u] = True\n                stack.append(u)</code></pre></div>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># DFS \u2014 재귀 방식\ndef dfs(v):\n    visited[v] = True\n    for u in graph[v]:\n        if not visited[u]:\n            dfs(u)\n\n# DFS \u2014 스택 방식\ndef dfs_stack(start):\n    stack = [start]\n    visited[start] = True\n    while stack:\n        v = stack.pop()\n        for u in graph[v]:\n            if not visited[u]:\n                visited[u] = True\n                stack.append(u)</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// DFS \u2014 재귀 방식\nvoid dfs(int v, vector&lt;vector&lt;int&gt;&gt;&amp; graph, vector&lt;bool&gt;&amp; visited) {\n    visited[v] = true;\n    for (int u : graph[v]) {\n        if (!visited[u]) {\n            dfs(u, graph, visited);\n        }\n    }\n}\n\n// DFS \u2014 스택 방식\nvoid dfs_stack(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph, vector&lt;bool&gt;&amp; visited) {\n    stack&lt;int&gt; stk;\n    stk.push(start);\n    visited[start] = true;\n    while (!stk.empty()) {\n        int v = stk.top(); stk.pop();\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                stk.push(u);\n            }\n        }\n    }\n}</code></pre></div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -272,7 +307,11 @@ var graphTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># BFS \u2014 큐 사용\nfrom collections import deque\n\ndef bfs(start):\n    queue = deque([start])\n    visited[start] = True\n    dist[start] = 0\n\n    while queue:\n        v = queue.popleft()\n        for u in graph[v]:\n            if not visited[u]:\n                visited[u] = True\n                dist[u] = dist[v] + 1\n                queue.append(u)</code></pre></div>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># BFS \u2014 큐 사용\nfrom collections import deque\n\ndef bfs(start):\n    queue = deque([start])\n    visited[start] = True\n    dist[start] = 0\n\n    while queue:\n        v = queue.popleft()\n        for u in graph[v]:\n            if not visited[u]:\n                visited[u] = True\n                dist[u] = dist[v] + 1\n                queue.append(u)</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// BFS \u2014 큐 사용\n#include &lt;queue&gt;\n\nvoid bfs(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph,\n         vector&lt;bool&gt;&amp; visited, vector&lt;int&gt;&amp; dist) {\n    queue&lt;int&gt; q;\n    q.push(start);\n    visited[start] = true;\n    dist[start] = 0;\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();  // front()로 꺼내고 pop()으로 제거\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                dist[u] = dist[v] + 1;\n                q.push(u);\n            }\n        }\n    }\n}</code></pre></div></span>\
+                <div style="margin-top:0.6rem;">\
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: collections.deque ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: queue ↗</a></span>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -284,6 +323,65 @@ var graphTopic = {
                         <strong>BFS</strong>를 써야 합니다!<br>\
                         BFS는 가까운 곳부터 탐색하므로, 출구에 처음 도달했을 때가 <strong>최단 거리</strong>입니다.<br>\
                         DFS는 한 방향으로 깊이 들어가므로, 먼 길을 돌아갈 수도 있습니다.\
+                    </div>\
+                </div>\
+\
+                <div class="analogy-box" style="margin-top:1.5rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);">\
+                    <strong>왜 BFS는 최단 거리를 보장할까?</strong><br><br>\
+                    BFS는 큐에서 꺼내는 순서가 곧 <strong>거리 순서</strong>입니다:<br>\
+                    <strong>1단계)</strong> 거리 0인 노드(시작점)를 먼저 다 처리합니다.<br>\
+                    <strong>2단계)</strong> 거리 0 노드의 이웃들 = 거리 1인 노드를 큐에 넣고, 차례로 처리합니다.<br>\
+                    <strong>3단계)</strong> 거리 1 노드의 이웃들 = 거리 2인 노드를 큐에 넣고, 차례로 처리합니다.<br>\
+                    <strong>...</strong><br><br>\
+                    이렇게 레벨 단위로 탐색하기 때문에, 어떤 노드에 <strong>처음 도달한 순간</strong>이 곧 <strong>최단 경로</strong>입니다.<br>\
+                    그보다 짧은 경로가 있었다면 이전 레벨에서 이미 방문했을 테니까요!<br><br>\
+                    <span style="font-size:0.85rem;color:var(--text2);">\u26A0\uFE0F 단, 이건 모든 간선의 가중치가 <strong>1(동일)</strong>일 때만 성립합니다. 가중치가 다르면 다익스트라 등 다른 알고리즘이 필요합니다.</span>\
+                </div>\
+            </div>\
+\
+            <!-- DFS vs BFS 비교 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num" style="background:var(--accent);">\u2194\uFE0F</span> DFS vs BFS \u2014 뭐가 다를까?</div>\
+                <p style="font-size:0.92rem;color:var(--text2);margin-bottom:1rem;">DFS와 BFS는 둘 다 그래프 전체를 탐색하는 방법이지만, 탐색 순서와 적합한 문제가 다릅니다.</p>\
+                <div style="overflow-x:auto;">\
+                <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">\
+                <thead><tr style="background:var(--bg2);">\
+                    <th style="padding:10px;text-align:left;border:1px solid var(--bg3);">비교 항목</th>\
+                    <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">DFS</th>\
+                    <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">BFS</th>\
+                </tr></thead>\
+                <tbody>\
+                    <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">자료구조</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">스택 / 재귀</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">큐</td></tr>\
+                    <tr style="background:var(--bg2);"><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">탐색 순서</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">깊이 우선</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">너비 우선 (레벨 순)</td></tr>\
+                    <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">최단 경로?</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;color:var(--text2);">보장 안 됨</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;color:var(--green);font-weight:600;">\u2705 보장 (가중치 없을 때)</td></tr>\
+                    <tr style="background:var(--bg2);"><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">메모리 사용</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(깊이)</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(너비)</td></tr>\
+                    <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">적합한 문제</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">연결 요소, 사이클 탐지, 위상 정렬</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">최단 거리, 레벨별 처리</td></tr>\
+                    <tr style="background:var(--bg2);"><td style="padding:10px;border:1px solid var(--bg3);font-weight:500;">시간 복잡도</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(V+E)</td>\
+                        <td style="padding:10px;border:1px solid var(--bg3);text-align:center;">O(V+E)</td></tr>\
+                </tbody>\
+                </table>\
+                </div>\
+                <div class="think-box" style="margin-top:1.2rem;">\
+                    <div class="think-box-question">\
+                        <span class="think-box-question-icon">Q</span>\
+                        <span class="think-box-question-text">그래프에서 사이클(순환)이 있는지 확인하려면 DFS와 BFS 중 어떤 것이 더 적합할까요?</span>\
+                    </div>\
+                    <button class="think-box-trigger">\uD83E\uDD14 생각해보고 클릭!</button>\
+                    <div class="think-box-answer">\
+                        <strong>DFS</strong>가 더 적합합니다!<br>\
+                        DFS는 한 경로를 깊이 따라가므로, 탐색 중에 <strong>이미 방문한 노드</strong>를 다시 만나면 사이클이 있다는 뜻입니다.<br>\
+                        BFS로도 가능하지만, DFS가 구현이 더 자연스럽고 직관적입니다.\
                     </div>\
                 </div>\
             </div>\
@@ -311,7 +409,8 @@ var graphTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block"><pre><code class="language-python"># 격자 탐색 패턴 (BFS)\ndx = [0, 0, 1, -1]  # 상하좌우\ndy = [1, -1, 0, 0]\n\nfor d in range(4):\n    nx, ny = x + dx[d], y + dy[d]\n    # 범위 체크: 격자 안에 있는지?\n    if 0 <= nx < N and 0 <= ny < M:\n        # 벽이 아니고, 방문하지 않았으면?\n        if grid[nx][ny] != 0 and not visited[nx][ny]:\n            visited[nx][ny] = True\n            queue.append((nx, ny))</code></pre></div>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 격자 탐색 패턴 (BFS)\ndx = [0, 0, 1, -1]  # 상하좌우\ndy = [1, -1, 0, 0]\n\nfor d in range(4):\n    nx, ny = x + dx[d], y + dy[d]\n    # 범위 체크: 격자 안에 있는지?\n    if 0 <= nx < N and 0 <= ny < M:\n        # 벽이 아니고, 방문하지 않았으면?\n        if grid[nx][ny] != 0 and not visited[nx][ny]:\n            visited[nx][ny] = True\n            queue.append((nx, ny))</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 격자 탐색 패턴 (BFS)\nint dx[] = {0, 0, 1, -1};  // 상하좌우\nint dy[] = {1, -1, 0, 0};\n\nfor (int d = 0; d &lt; 4; d++) {\n    int nx = x + dx[d], ny = y + dy[d];\n    // 범위 체크: 격자 안에 있는지?\n    if (nx &gt;= 0 &amp;&amp; nx &lt; N &amp;&amp; ny &gt;= 0 &amp;&amp; ny &lt; M) {\n        // 벽이 아니고, 방문하지 않았으면?\n        if (grid[nx][ny] != 0 &amp;&amp; !visited[nx][ny]) {\n            visited[nx][ny] = true;\n            q.push({nx, ny});\n        }\n    }\n}</code></pre></div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -416,13 +515,14 @@ var graphTopic = {
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '\u25B6 다음 버튼을 눌러 시작하세요'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
+        var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
+            state.currentStep++; updateUI(); setTimeout(function() { state.steps[state.currentStep].action(); }, actionDelay);
         });
         prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
+            var stepToUndo = state.currentStep; state.currentStep--; updateUI(); setTimeout(function() { state.steps[stepToUndo].undo(); }, actionDelay);
         });
         var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -439,43 +539,88 @@ var graphTopic = {
     // ====================================================================
     _renderVizVirus: function(container) {
         var self = this, suffix = '-virus';
+        var DEFAULT_N = 7, DEFAULT_EDGES = '1 2, 2 3, 1 5, 5 2, 5 6, 4 7';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">바이러스 전파 (BFS)</h3>' +
             '<p style="color:var(--text2);margin-bottom:12px;">1번 컴퓨터에서 시작하여 연결된 컴퓨터를 모두 감염시킵니다.</p>' +
-            '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;">그래프: 1-2, 2-3, 1-5, 5-2, 5-6, 4-7<br>감염 시작: 1번</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-virus-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-virus-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:240px;"></label>' +
+            '<button class="btn btn-primary" id="gr-virus-reset">\uD83D\uDD04</button></div>' +
+            '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var visited = {};
-        var queue = [];
-        function render(vis, current, q) {
-            var nodes = [1,2,3,4,5,6,7];
-            areaEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' + nodes.map(function(n) {
-                var bg = 'var(--bg2)';
-                if (vis[n]) bg = 'linear-gradient(135deg,var(--accent-vivid),var(--accent2))';
-                if (n === current) bg = 'var(--yellow)';
-                return '<div style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:' + bg + ';color:' + (vis[n] ? 'white' : 'var(--text)') + ';">' + n + '</div>';
-            }).join('') + '</div>' + (q.length ? '<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">큐: [' + q.join(', ') + ']</div>' : '');
+
+        function parseEdges(s) {
+            return s.split(',').map(function(e) { var p = e.trim().split(/\s+/); return [parseInt(p[0]), parseInt(p[1])]; }).filter(function(e) { return !isNaN(e[0]) && !isNaN(e[1]); });
         }
-        var steps = [
-            { description: '1번을 큐에 넣고 방문 처리합니다.',
-              action: function() { visited = {1:true}; queue = [1]; render(visited, 1, queue); infoEl.innerHTML = 'visited[1] = True, 큐 = [1]'; },
-              undo: function() { visited = {}; queue = []; render({}, null, []); infoEl.innerHTML = ''; } },
-            { description: '큐에서 1을 꺼냄 → 이웃 2, 5를 큐에 추가',
-              action: function() { visited[2] = true; visited[5] = true; queue = [2, 5]; render(visited, 1, queue); infoEl.innerHTML = '1의 이웃: 2, 5 → 감염! 큐 = [2, 5]'; },
-              undo: function() { delete visited[2]; delete visited[5]; queue = [1]; render(visited, 1, queue); infoEl.innerHTML = 'visited[1] = True, 큐 = [1]'; } },
-            { description: '큐에서 2를 꺼냄 → 이웃 3 추가 (1,5는 이미 방문)',
-              action: function() { visited[3] = true; queue = [5, 3]; render(visited, 2, queue); infoEl.innerHTML = '2의 이웃 중 미방문: 3 → 감염! 큐 = [5, 3]'; },
-              undo: function() { delete visited[3]; queue = [2, 5]; render(visited, 1, queue); infoEl.innerHTML = '1의 이웃: 2, 5 → 감염!'; } },
-            { description: '큐에서 5를 꺼냄 → 이웃 6 추가',
-              action: function() { visited[6] = true; queue = [3, 6]; render(visited, 5, queue); infoEl.innerHTML = '5의 이웃 중 미방문: 6 → 감염! 큐 = [3, 6]'; },
-              undo: function() { delete visited[6]; queue = [5, 3]; render(visited, 2, queue); infoEl.innerHTML = '2의 이웃 중 미방문: 3'; } },
-            { description: '큐에서 3, 6을 차례로 꺼냄 → 더 이상 미방문 이웃 없음. 감염 수 = 4',
-              action: function() { queue = []; render(visited, null, queue); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 감염된 컴퓨터 = 4대 (2,3,5,6)</strong>'; },
-              undo: function() { queue = [3, 6]; render(visited, 5, queue); infoEl.innerHTML = '5의 이웃 중 미방문: 6'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function buildAdj(n, edges) {
+            var adj = {}; for (var i = 1; i <= n; i++) adj[i] = [];
+            edges.forEach(function(e) { adj[e[0]].push(e[1]); adj[e[1]].push(e[0]); });
+            for (var i = 1; i <= n; i++) adj[i].sort(function(a,b){return a-b;});
+            return adj;
+        }
+        function renderNodes(n, vis, current, q) {
+            var nodes = []; for (var i = 1; i <= n; i++) nodes.push(i);
+            areaEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' + nodes.map(function(nd) {
+                var bg = 'var(--bg2)';
+                if (vis[nd]) bg = 'linear-gradient(135deg,var(--accent-vivid),var(--accent2))';
+                if (nd === current) bg = 'var(--yellow)';
+                return '<div style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:' + bg + ';color:' + (vis[nd] ? 'white' : 'var(--text)') + ';">' + nd + '</div>';
+            }).join('') + '</div>' + (q.length ? '<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">\uD050: [' + q.join(', ') + ']</div>' : '');
+        }
+        function buildSteps(n, edges) {
+            var adj = buildAdj(n, edges);
+            var steps = [], visited = {}, queue = [];
+            // BFS from node 1
+            steps.push({ description: '1번을 큐에 넣고 방문 처리합니다.',
+                action: function() { visited = {1:true}; queue = [1]; renderNodes(n, visited, 1, queue); infoEl.innerHTML = 'visited[1] = True, 큐 = [1]'; },
+                undo: function() { visited = {}; queue = []; renderNodes(n, {}, null, []); infoEl.innerHTML = ''; } });
+            // simulate BFS to generate steps
+            var simVis = {1:true}, simQ = [1];
+            while (simQ.length > 0) {
+                var v = simQ.shift();
+                var neighbors = (adj[v] || []).filter(function(u) { return !simVis[u]; });
+                if (neighbors.length > 0) {
+                    (function(cv, nb) {
+                        var addedNodes = nb.slice();
+                        steps.push({
+                            description: '큐에서 ' + cv + '를 꺼냄 → 미방문 이웃 ' + nb.join(', ') + '을 큐에 추가',
+                            action: function() { addedNodes.forEach(function(u) { visited[u] = true; }); queue = simQ.slice(); renderNodes(n, visited, cv, queue); infoEl.innerHTML = cv + '의 미방문 이웃: ' + nb.join(', ') + ' → 감염!'; },
+                            undo: function() { addedNodes.forEach(function(u) { delete visited[u]; }); renderNodes(n, visited, null, []); infoEl.innerHTML = ''; }
+                        });
+                    })(v, neighbors);
+                    neighbors.forEach(function(u) { simVis[u] = true; simQ.push(u); });
+                } else if (v !== 1) {
+                    (function(cv) {
+                        steps.push({
+                            description: '큐에서 ' + cv + '를 꺼냄 → 미방문 이웃 없음',
+                            action: function() { renderNodes(n, visited, cv, simQ.slice()); infoEl.innerHTML = cv + '의 이웃 모두 방문됨'; },
+                            undo: function() { renderNodes(n, visited, null, []); infoEl.innerHTML = ''; }
+                        });
+                    })(v);
+                }
+            }
+            // final step
+            var infectedCount = Object.keys(simVis).length - 1;
+            var infectedList = Object.keys(simVis).filter(function(k){return k!=='1';}).join(',');
+            steps.push({ description: '탐색 완료! 감염된 컴퓨터 = ' + infectedCount + '대',
+                action: function() { queue = []; renderNodes(n, visited, null, []); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 감염된 컴퓨터 = ' + infectedCount + '대 (' + infectedList + ')</strong>'; },
+                undo: function() { renderNodes(n, visited, null, []); infoEl.innerHTML = ''; } });
+            return steps;
+        }
+        function init() {
+            var n = parseInt(container.querySelector('#gr-virus-n').value) || DEFAULT_N;
+            var edges = parseEdges(container.querySelector('#gr-virus-edges').value);
+            renderNodes(n, {}, null, []);
+            infoEl.innerHTML = '';
+            var steps = buildSteps(n, edges);
+            self._initStepController(container, steps, suffix);
+        }
+        container.querySelector('#gr-virus-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -483,42 +628,72 @@ var graphTopic = {
     // ====================================================================
     _renderVizDFS1: function(container) {
         var self = this, suffix = '-dfs1';
+        var DEFAULT_N = 5, DEFAULT_START = 1, DEFAULT_EDGES = '1 4, 1 2, 2 3, 2 4, 3 4';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">DFS 오름차순 방문</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">5개 노드, 시작=1, 오름차순 방문 순서를 기록합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">오름차순 DFS 방문 순서를 기록합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-dfs1-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">시작: <input type="number" id="gr-dfs1-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-dfs1-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="gr-dfs1-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var order = {}, cnt = 0;
-        function render(ord, cur) {
-            areaEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' + [1,2,3,4,5].map(function(n) {
-                var bg = ord[n] ? 'var(--accent)' : 'var(--bg2)';
-                if (n === cur) bg = 'var(--yellow)';
-                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:' + bg + ';color:' + (ord[n] ? 'white' : 'var(--text)') + ';"><div>' + n + '</div><div style="font-size:0.7rem;">' + (ord[n] ? 'order=' + ord[n] : '') + '</div></div>';
-            }).join('') + '</div>';
+
+        function parseEdges(s) { return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);}); }
+        function buildAdj(n, edges) {
+            var adj={}; for(var i=1;i<=n;i++) adj[i]=[];
+            edges.forEach(function(e){adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);});
+            for(var i=1;i<=n;i++) adj[i].sort(function(a,b){return a-b;});
+            return adj;
         }
-        render({}, null);
-        infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 오름차순 DFS';
-        var steps = [
-            { description: 'dfs(1): order[1]=1',
-              action: function() { order = {1:1}; cnt = 1; render(order, 1); infoEl.innerHTML = 'dfs(1) 호출, order[1] = 1'; },
-              undo: function() { order = {}; cnt = 0; render({}, null); infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 오름차순 DFS'; } },
-            { description: '1의 이웃(오름차순): [2,4] → dfs(2): order[2]=2',
-              action: function() { order[2] = 2; cnt = 2; render(order, 2); infoEl.innerHTML = '1→2 이동, order[2] = 2'; },
-              undo: function() { delete order[2]; cnt = 1; render(order, 1); infoEl.innerHTML = 'dfs(1) 호출, order[1] = 1'; } },
-            { description: '2의 이웃(오름차순): [1,3,4] → 미방문 3 → dfs(3): order[3]=3',
-              action: function() { order[3] = 3; cnt = 3; render(order, 3); infoEl.innerHTML = '2→3 이동, order[3] = 3'; },
-              undo: function() { delete order[3]; cnt = 2; render(order, 2); infoEl.innerHTML = '1→2 이동, order[2] = 2'; } },
-            { description: '3의 이웃: [2,4] → 미방문 4 → dfs(4): order[4]=4',
-              action: function() { order[4] = 4; cnt = 4; render(order, 4); infoEl.innerHTML = '3→4 이동, order[4] = 4'; },
-              undo: function() { delete order[4]; cnt = 3; render(order, 3); infoEl.innerHTML = '2→3 이동, order[3] = 3'; } },
-            { description: '4의 이웃 모두 방문됨 → 백트래킹. 5번은 미연결 → order[5]=0',
-              action: function() { render(order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: 1,2,3,4,0</strong>'; },
-              undo: function() { render(order, 4); infoEl.innerHTML = '3→4 이동, order[4] = 4'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function renderNodes(n, ord, cur) {
+            var nodes=[]; for(var i=1;i<=n;i++) nodes.push(i);
+            areaEl.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">'+nodes.map(function(nd){
+                var bg=ord[nd]?'var(--accent)':'var(--bg2)'; if(nd===cur) bg='var(--yellow)';
+                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:'+bg+';color:'+(ord[nd]?'white':'var(--text)')+';">'+
+                '<div>'+nd+'</div><div style="font-size:0.7rem;">'+(ord[nd]?'order='+ord[nd]:'')+'</div></div>';
+            }).join('')+'</div>';
+        }
+        function buildSteps(n, start, edges) {
+            var adj = buildAdj(n, edges), steps = [], order = {}, cnt = 0;
+            // DFS simulation
+            var simOrder = {}, simCnt = 0, visitLog = [];
+            function dfs(v, from) {
+                simCnt++; simOrder[v] = simCnt;
+                visitLog.push({ node: v, order: simCnt, from: from, neighbors: (adj[v]||[]).slice() });
+                (adj[v]||[]).forEach(function(u) { if (!simOrder[u]) dfs(u, v); });
+            }
+            dfs(start, -1);
+            visitLog.forEach(function(entry, idx) {
+                (function(e, i) {
+                    var desc = (e.from === -1 ? 'dfs(' + e.node + ')' : e.from + '→' + e.node) + ': order[' + e.node + ']=' + e.order;
+                    steps.push({
+                        description: desc,
+                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = desc; },
+                        undo: function() { delete order[e.node]; var prev = i > 0 ? visitLog[i-1] : null; renderNodes(n, order, prev ? prev.node : null); infoEl.innerHTML = prev ? 'order[' + prev.node + '] = ' + prev.order : ''; }
+                    });
+                })(entry, idx);
+            });
+            // final
+            var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
+            steps.push({ description: '완료! 방문 순서: ' + result.join(','),
+                action: function() { renderNodes(n, order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: ' + result.join(',') + '</strong>'; },
+                undo: function() { var last = visitLog[visitLog.length-1]; renderNodes(n, order, last.node); infoEl.innerHTML = 'order[' + last.node + '] = ' + last.order; } });
+            return steps;
+        }
+        function init() {
+            var n = parseInt(container.querySelector('#gr-dfs1-n').value)||DEFAULT_N;
+            var start = parseInt(container.querySelector('#gr-dfs1-start').value)||DEFAULT_START;
+            var edges = parseEdges(container.querySelector('#gr-dfs1-edges').value);
+            renderNodes(n, {}, null); infoEl.innerHTML = '';
+            self._initStepController(container, buildSteps(n, start, edges), suffix);
+        }
+        container.querySelector('#gr-dfs1-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -526,42 +701,70 @@ var graphTopic = {
     // ====================================================================
     _renderVizDFS2: function(container) {
         var self = this, suffix = '-dfs2';
+        var DEFAULT_N = 5, DEFAULT_START = 1, DEFAULT_EDGES = '1 4, 1 2, 2 3, 2 4, 3 4';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">DFS 내림차순 방문</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">5개 노드, 시작=1, 내림차순 방문 순서를 기록합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">내림차순 DFS 방문 순서를 기록합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-dfs2-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">시작: <input type="number" id="gr-dfs2-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-dfs2-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="gr-dfs2-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var order = {};
-        function render(ord, cur) {
-            areaEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' + [1,2,3,4,5].map(function(n) {
-                var bg = ord[n] ? '#e17055' : 'var(--bg2)';
-                if (n === cur) bg = 'var(--yellow)';
-                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:' + bg + ';color:' + (ord[n] ? 'white' : 'var(--text)') + ';"><div>' + n + '</div><div style="font-size:0.7rem;">' + (ord[n] ? 'order=' + ord[n] : '') + '</div></div>';
-            }).join('') + '</div>';
+
+        function parseEdges(s) { return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);}); }
+        function buildAdj(n, edges) {
+            var adj={}; for(var i=1;i<=n;i++) adj[i]=[];
+            edges.forEach(function(e){adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);});
+            for(var i=1;i<=n;i++) adj[i].sort(function(a,b){return b-a;}); // descending
+            return adj;
         }
-        render({}, null);
-        infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 내림차순 DFS';
-        var steps = [
-            { description: 'dfs(1): order[1]=1. 이웃(내림차순): [4,2]',
-              action: function() { order = {1:1}; render(order, 1); infoEl.innerHTML = 'dfs(1) 호출, order[1] = 1'; },
-              undo: function() { order = {}; render({}, null); infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 내림차순 DFS'; } },
-            { description: '1→4(내림차순 첫 번째): order[4]=2',
-              action: function() { order[4] = 2; render(order, 4); infoEl.innerHTML = '1→4 이동, order[4] = 2'; },
-              undo: function() { delete order[4]; render(order, 1); infoEl.innerHTML = 'dfs(1) 호출, order[1] = 1'; } },
-            { description: '4의 이웃(내림차순): [3,2,1] → 미방문 3 → order[3]=3',
-              action: function() { order[3] = 3; render(order, 3); infoEl.innerHTML = '4→3 이동, order[3] = 3'; },
-              undo: function() { delete order[3]; render(order, 4); infoEl.innerHTML = '1→4 이동, order[4] = 2'; } },
-            { description: '3의 이웃: [4,2] → 미방문 2 → order[2]=4',
-              action: function() { order[2] = 4; render(order, 2); infoEl.innerHTML = '3→2 이동, order[2] = 4'; },
-              undo: function() { delete order[2]; render(order, 3); infoEl.innerHTML = '4→3 이동, order[3] = 3'; } },
-            { description: '완료! 5번은 미연결 → order[5]=0. 결과: 1,4,3,2,0',
-              action: function() { render(order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: 1,4,3,2,0</strong>'; },
-              undo: function() { render(order, 2); infoEl.innerHTML = '3→2 이동, order[2] = 4'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function renderNodes(n, ord, cur) {
+            var nodes=[]; for(var i=1;i<=n;i++) nodes.push(i);
+            areaEl.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">'+nodes.map(function(nd){
+                var bg=ord[nd]?'#e17055':'var(--bg2)'; if(nd===cur) bg='var(--yellow)';
+                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:'+bg+';color:'+(ord[nd]?'white':'var(--text)')+';">'+
+                '<div>'+nd+'</div><div style="font-size:0.7rem;">'+(ord[nd]?'order='+ord[nd]:'')+'</div></div>';
+            }).join('')+'</div>';
+        }
+        function buildSteps(n, start, edges) {
+            var adj = buildAdj(n, edges), steps = [], order = {};
+            var simOrder = {}, simCnt = 0, visitLog = [];
+            function dfs(v, from) {
+                simCnt++; simOrder[v] = simCnt;
+                visitLog.push({ node: v, order: simCnt, from: from });
+                (adj[v]||[]).forEach(function(u) { if (!simOrder[u]) dfs(u, v); });
+            }
+            dfs(start, -1);
+            visitLog.forEach(function(entry, idx) {
+                (function(e, i) {
+                    var desc = (e.from === -1 ? 'dfs(' + e.node + ')' : e.from + '\u2192' + e.node) + ': order[' + e.node + ']=' + e.order;
+                    steps.push({
+                        description: desc,
+                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = desc; },
+                        undo: function() { delete order[e.node]; var prev = i > 0 ? visitLog[i-1] : null; renderNodes(n, order, prev ? prev.node : null); infoEl.innerHTML = prev ? 'order[' + prev.node + '] = ' + prev.order : ''; }
+                    });
+                })(entry, idx);
+            });
+            var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
+            steps.push({ description: '완료! 방문 순서: ' + result.join(','),
+                action: function() { renderNodes(n, order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: ' + result.join(',') + '</strong>'; },
+                undo: function() { var last = visitLog[visitLog.length-1]; renderNodes(n, order, last.node); infoEl.innerHTML = 'order[' + last.node + '] = ' + last.order; } });
+            return steps;
+        }
+        function init() {
+            var n = parseInt(container.querySelector('#gr-dfs2-n').value)||DEFAULT_N;
+            var start = parseInt(container.querySelector('#gr-dfs2-start').value)||DEFAULT_START;
+            var edges = parseEdges(container.querySelector('#gr-dfs2-edges').value);
+            renderNodes(n, {}, null); infoEl.innerHTML = '';
+            self._initStepController(container, buildSteps(n, start, edges), suffix);
+        }
+        container.querySelector('#gr-dfs2-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -569,39 +772,79 @@ var graphTopic = {
     // ====================================================================
     _renderVizBFS1: function(container) {
         var self = this, suffix = '-bfs1';
+        var DEFAULT_N = 5, DEFAULT_START = 1, DEFAULT_EDGES = '1 4, 1 2, 2 3, 2 4, 3 4';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">BFS 오름차순 방문</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">5개 노드, 시작=1, 오름차순 BFS 순서를 기록합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">오름차순 BFS 방문 순서를 기록합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-bfs1-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">시작: <input type="number" id="gr-bfs1-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-bfs1-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="gr-bfs1-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var order = {};
-        function render(ord, cur, q) {
-            areaEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' + [1,2,3,4,5].map(function(n) {
-                var bg = ord[n] ? '#6c5ce7' : 'var(--bg2)';
-                if (n === cur) bg = 'var(--yellow)';
-                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:' + bg + ';color:' + (ord[n] ? 'white' : 'var(--text)') + ';"><div>' + n + '</div><div style="font-size:0.7rem;">' + (ord[n] ? 'order=' + ord[n] : '') + '</div></div>';
-            }).join('') + '</div>' + (q && q.length ? '<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">\uD050: [' + q.join(', ') + ']</div>' : '');
+
+        function parseEdges(s) { return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);}); }
+        function buildAdj(n, edges) {
+            var adj={}; for(var i=1;i<=n;i++) adj[i]=[];
+            edges.forEach(function(e){adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);});
+            for(var i=1;i<=n;i++) adj[i].sort(function(a,b){return a-b;});
+            return adj;
         }
-        render({}, null, []);
-        infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 오름차순 BFS';
-        var steps = [
-            { description: '시작: 1번을 큐에 넣음, order[1]=1',
-              action: function() { order = {1:1}; render(order, 1, [1]); infoEl.innerHTML = 'order[1] = 1, 큐 = [1]'; },
-              undo: function() { order = {}; render({}, null, []); infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 오름차순 BFS'; } },
-            { description: '큐에서 1 꺼냄 → 이웃(오름): 2, 4 추가. order[2]=2, order[4]=3',
-              action: function() { order[2] = 2; order[4] = 3; render(order, 1, [2, 4]); infoEl.innerHTML = '1의 이웃: 2,4 추가. 큐 = [2, 4]'; },
-              undo: function() { delete order[2]; delete order[4]; render(order, 1, [1]); infoEl.innerHTML = 'order[1] = 1, 큐 = [1]'; } },
-            { description: '큐에서 2 꺼냄 → 미방문 이웃: 3. order[3]=4',
-              action: function() { order[3] = 4; render(order, 2, [4, 3]); infoEl.innerHTML = '2의 미방문 이웃: 3. 큐 = [4, 3]'; },
-              undo: function() { delete order[3]; render(order, 1, [2, 4]); infoEl.innerHTML = '1의 이웃: 2,4 추가'; } },
-            { description: '큐에서 4, 3을 차례로 처리 → 미방문 없음. 5는 미연결 → 0',
-              action: function() { render(order, null, []); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: 1,2,4,3,0</strong>'; },
-              undo: function() { render(order, 2, [4, 3]); infoEl.innerHTML = '2의 미방문 이웃: 3'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function renderNodes(n, ord, cur, q) {
+            var nodes=[]; for(var i=1;i<=n;i++) nodes.push(i);
+            areaEl.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">'+nodes.map(function(nd){
+                var bg=ord[nd]?'#6c5ce7':'var(--bg2)'; if(nd===cur) bg='var(--yellow)';
+                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:'+bg+';color:'+(ord[nd]?'white':'var(--text)')+';">'+
+                '<div>'+nd+'</div><div style="font-size:0.7rem;">'+(ord[nd]?'order='+ord[nd]:'')+'</div></div>';
+            }).join('')+'</div>'+(q&&q.length?'<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">\uD050: ['+q.join(', ')+']</div>':'');
+        }
+        function buildSteps(n, start, edges) {
+            var adj = buildAdj(n, edges), steps = [], order = {};
+            // BFS simulation
+            var simOrder = {}, simCnt = 0, simQ = [start], simVis = {};
+            simVis[start] = true; simCnt++; simOrder[start] = simCnt;
+            var bfsLog = [{ type: 'start', node: start, order: simCnt, queue: simQ.slice() }];
+            while (simQ.length > 0) {
+                var v = simQ.shift();
+                var added = [];
+                (adj[v]||[]).forEach(function(u) {
+                    if (!simVis[u]) { simVis[u] = true; simCnt++; simOrder[u] = simCnt; simQ.push(u); added.push(u); }
+                });
+                bfsLog.push({ type: 'process', node: v, added: added, queue: simQ.slice() });
+            }
+            bfsLog.forEach(function(entry, idx) {
+                (function(e, i) {
+                    if (e.type === 'start') {
+                        steps.push({ description: '시작: ' + e.node + '번을 큐에 넣음, order[' + e.node + ']=1',
+                            action: function() { order[e.node] = 1; renderNodes(n, order, e.node, [e.node]); infoEl.innerHTML = 'order[' + e.node + '] = 1, 큐 = [' + e.node + ']'; },
+                            undo: function() { order = {}; renderNodes(n, {}, null, []); infoEl.innerHTML = ''; } });
+                    } else {
+                        var addedDesc = e.added.length > 0 ? '미방문 이웃: ' + e.added.join(',') + ' 추가' : '미방문 이웃 없음';
+                        steps.push({ description: '큐에서 ' + e.node + ' 꺼냄 \u2192 ' + addedDesc,
+                            action: function() { e.added.forEach(function(u) { order[u] = simOrder[u]; }); renderNodes(n, order, e.node, e.queue); infoEl.innerHTML = addedDesc + '. 큐 = [' + e.queue.join(', ') + ']'; },
+                            undo: function() { e.added.forEach(function(u) { delete order[u]; }); renderNodes(n, order, null, []); infoEl.innerHTML = ''; } });
+                    }
+                })(entry, idx);
+            });
+            var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
+            steps.push({ description: '완료! 방문 순서: ' + result.join(','),
+                action: function() { renderNodes(n, order, null, []); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: ' + result.join(',') + '</strong>'; },
+                undo: function() { renderNodes(n, order, null, []); infoEl.innerHTML = ''; } });
+            return steps;
+        }
+        function init() {
+            var n = parseInt(container.querySelector('#gr-bfs1-n').value)||DEFAULT_N;
+            var start = parseInt(container.querySelector('#gr-bfs1-start').value)||DEFAULT_START;
+            var edges = parseEdges(container.querySelector('#gr-bfs1-edges').value);
+            renderNodes(n, {}, null, []); infoEl.innerHTML = '';
+            self._initStepController(container, buildSteps(n, start, edges), suffix);
+        }
+        container.querySelector('#gr-bfs1-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -609,39 +852,75 @@ var graphTopic = {
     // ====================================================================
     _renderVizBFS2: function(container) {
         var self = this, suffix = '-bfs2';
+        var DEFAULT_N = 5, DEFAULT_START = 1, DEFAULT_EDGES = '1 4, 1 2, 2 3, 2 4, 3 4';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">BFS 내림차순 방문</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">5개 노드, 시작=1, 내림차순 BFS 순서를 기록합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">내림차순 BFS 방문 순서를 기록합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-bfs2-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">시작: <input type="number" id="gr-bfs2-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-bfs2-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="gr-bfs2-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var order = {};
-        function render(ord, cur) {
-            areaEl.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' + [1,2,3,4,5].map(function(n) {
-                var bg = ord[n] ? '#fdcb6e' : 'var(--bg2)';
-                if (n === cur) bg = 'var(--yellow)';
-                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:' + bg + ';color:' + (ord[n] ? '#2d3436' : 'var(--text)') + ';"><div>' + n + '</div><div style="font-size:0.7rem;">' + (ord[n] ? 'order=' + ord[n] : '') + '</div></div>';
-            }).join('') + '</div>';
+
+        function parseEdges(s) { return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);}); }
+        function buildAdj(n, edges) {
+            var adj={}; for(var i=1;i<=n;i++) adj[i]=[];
+            edges.forEach(function(e){adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);});
+            for(var i=1;i<=n;i++) adj[i].sort(function(a,b){return b-a;}); // descending
+            return adj;
         }
-        render({}, null);
-        infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 내림차순 BFS';
-        var steps = [
-            { description: '시작: order[1]=1, 큐=[1]',
-              action: function() { order = {1:1}; render(order, 1); infoEl.innerHTML = 'order[1] = 1'; },
-              undo: function() { order = {}; render({}, null); infoEl.innerHTML = '간선: 1-4, 1-2, 2-3, 2-4, 3-4 / 내림차순 BFS'; } },
-            { description: '1 꺼냄 → 이웃(내림): 4, 2 추가. order[4]=2, order[2]=3',
-              action: function() { order[4] = 2; order[2] = 3; render(order, 1); infoEl.innerHTML = '내림차순: 4 먼저, 2 다음. 큐 = [4, 2]'; },
-              undo: function() { delete order[4]; delete order[2]; render(order, 1); infoEl.innerHTML = 'order[1] = 1'; } },
-            { description: '4 꺼냄 → 미방문: 3. order[3]=4',
-              action: function() { order[3] = 4; render(order, 4); infoEl.innerHTML = '4의 미방문: 3. order[3] = 4'; },
-              undo: function() { delete order[3]; render(order, 1); infoEl.innerHTML = '내림차순: 4 먼저, 2 다음'; } },
-            { description: '2, 3 처리 → 완료. 결과: 1,3,4,2,0',
-              action: function() { render(order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: 1,3,4,2,0</strong>'; },
-              undo: function() { render(order, 4); infoEl.innerHTML = '4의 미방문: 3. order[3] = 4'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function renderNodes(n, ord, cur, q) {
+            var nodes=[]; for(var i=1;i<=n;i++) nodes.push(i);
+            areaEl.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">'+nodes.map(function(nd){
+                var bg=ord[nd]?'#fdcb6e':'var(--bg2)'; if(nd===cur) bg='var(--yellow)';
+                return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;background:'+bg+';color:'+(ord[nd]?'#2d3436':'var(--text)')+';">'+
+                '<div>'+nd+'</div><div style="font-size:0.7rem;">'+(ord[nd]?'order='+ord[nd]:'')+'</div></div>';
+            }).join('')+'</div>'+(q&&q.length?'<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">\uD050: ['+q.join(', ')+']</div>':'');
+        }
+        function buildSteps(n, start, edges) {
+            var adj = buildAdj(n, edges), steps = [], order = {};
+            var simOrder = {}, simCnt = 0, simQ = [start], simVis = {};
+            simVis[start] = true; simCnt++; simOrder[start] = simCnt;
+            var bfsLog = [{ type: 'start', node: start, order: simCnt, queue: simQ.slice() }];
+            while (simQ.length > 0) {
+                var v = simQ.shift(); var added = [];
+                (adj[v]||[]).forEach(function(u) { if (!simVis[u]) { simVis[u]=true; simCnt++; simOrder[u]=simCnt; simQ.push(u); added.push(u); } });
+                bfsLog.push({ type:'process', node:v, added:added, queue:simQ.slice() });
+            }
+            bfsLog.forEach(function(entry) {
+                (function(e) {
+                    if (e.type==='start') {
+                        steps.push({ description: '시작: order['+e.node+']=1, 큐=['+e.node+']',
+                            action: function() { order[e.node]=1; renderNodes(n,order,e.node,[e.node]); infoEl.innerHTML='order['+e.node+'] = 1'; },
+                            undo: function() { order={}; renderNodes(n,{},null,[]); infoEl.innerHTML=''; } });
+                    } else {
+                        var addedDesc = e.added.length>0 ? '미방문: '+e.added.join(',')+' 추가' : '미방문 이웃 없음';
+                        steps.push({ description: e.node+' 꺼냄 \u2192 '+addedDesc,
+                            action: function() { e.added.forEach(function(u){order[u]=simOrder[u];}); renderNodes(n,order,e.node,e.queue); infoEl.innerHTML=addedDesc; },
+                            undo: function() { e.added.forEach(function(u){delete order[u];}); renderNodes(n,order,null,[]); infoEl.innerHTML=''; } });
+                    }
+                })(entry);
+            });
+            var result=[]; for(var i=1;i<=n;i++) result.push(simOrder[i]||0);
+            steps.push({ description: '완료! 결과: '+result.join(','),
+                action: function() { renderNodes(n,order,null,[]); infoEl.innerHTML='<strong style="color:var(--green);">\u2705 방문 순서: '+result.join(',')+'</strong>'; },
+                undo: function() { renderNodes(n,order,null,[]); infoEl.innerHTML=''; } });
+            return steps;
+        }
+        function init() {
+            var n=parseInt(container.querySelector('#gr-bfs2-n').value)||DEFAULT_N;
+            var start=parseInt(container.querySelector('#gr-bfs2-start').value)||DEFAULT_START;
+            var edges=parseEdges(container.querySelector('#gr-bfs2-edges').value);
+            renderNodes(n,{},null,[]); infoEl.innerHTML='';
+            self._initStepController(container, buildSteps(n,start,edges), suffix);
+        }
+        container.querySelector('#gr-bfs2-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -649,29 +928,72 @@ var graphTopic = {
     // ====================================================================
     _renderVizDFSBFS: function(container) {
         var self = this, suffix = '-dfsbfs';
+        var DEFAULT_N = 4, DEFAULT_START = 1, DEFAULT_EDGES = '1 2, 1 3, 1 4, 2 4, 3 4';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">DFS vs BFS 비교</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">4개 노드 그래프(1-2,1-3,1-4,2-4,3-4), 시작=1</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">DFS와 BFS 방문 순서를 비교합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-dfsbfs-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">시작: <input type="number" id="gr-dfsbfs-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-dfsbfs-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="gr-dfsbfs-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var steps = [
-            { description: 'DFS 시작: 1에서 출발, 오름차순 방문',
-              action: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1'; infoEl.innerHTML = 'dfs(1) 호출'; },
-              undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; } },
-            { description: 'DFS: 1→2→4→3 (깊이 우선)',
-              action: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1 \u2192 2 \u2192 4 \u2192 3'; infoEl.innerHTML = '1→2(오름 첫 번째)→4(2의 이웃)→3(백트래킹 후)'; },
-              undo: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1'; infoEl.innerHTML = 'dfs(1) 호출'; } },
-            { description: 'BFS 시작: 1에서 출발',
-              action: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1 2 4 3<br><strong>BFS:</strong> 1'; infoEl.innerHTML = 'BFS: 큐 = [1]'; },
-              undo: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1 \u2192 2 \u2192 4 \u2192 3'; infoEl.innerHTML = '1→2→4→3'; } },
-            { description: 'BFS: 1→2,3,4 (너비 우선)',
-              action: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1 2 4 3<br><strong>BFS:</strong> 1 \u2192 2 \u2192 3 \u2192 4'; infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 DFS: 1 2 4 3 / BFS: 1 2 3 4</strong>'; },
-              undo: function() { areaEl.innerHTML = '<strong>DFS:</strong> 1 2 4 3<br><strong>BFS:</strong> 1'; infoEl.innerHTML = 'BFS: 큐 = [1]'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+
+        function parseEdges(s) { return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);}); }
+        function buildAdj(n, edges) {
+            var adj={}; for(var i=1;i<=n;i++) adj[i]=[];
+            edges.forEach(function(e){adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);});
+            for(var i=1;i<=n;i++) adj[i].sort(function(a,b){return a-b;});
+            return adj;
+        }
+        function buildSteps(n, start, edges) {
+            var adj = buildAdj(n, edges), steps = [];
+            // DFS
+            var dfsResult = [], dfsVis = {};
+            function dfs(v) { dfsVis[v]=true; dfsResult.push(v); (adj[v]||[]).forEach(function(u){if(!dfsVis[u]) dfs(u);}); }
+            dfs(start);
+            // BFS
+            var bfsResult = [], bfsVis = {}, bfsQ = [start]; bfsVis[start]=true; bfsResult.push(start);
+            while(bfsQ.length>0) { var v=bfsQ.shift(); (adj[v]||[]).forEach(function(u){if(!bfsVis[u]){bfsVis[u]=true;bfsResult.push(u);bfsQ.push(u);}}); }
+
+            var dfsShown = [];
+            dfsResult.forEach(function(node, idx) {
+                (function(nd, i) {
+                    steps.push({
+                        description: 'DFS: ' + (i===0 ? nd + '에서 출발' : '\u2192 ' + nd),
+                        action: function() { dfsShown = dfsResult.slice(0,i+1); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsShown.join(' \u2192 '); infoEl.innerHTML = 'DFS 진행 중...'; },
+                        undo: function() { dfsShown = dfsResult.slice(0,i); areaEl.innerHTML = i>0 ? '<strong>DFS:</strong> ' + dfsShown.join(' \u2192 ') : ''; infoEl.innerHTML = ''; }
+                    });
+                })(node, idx);
+            });
+            var bfsShown = [];
+            bfsResult.forEach(function(node, idx) {
+                (function(nd, i) {
+                    steps.push({
+                        description: 'BFS: ' + (i===0 ? nd + '에서 출발' : '\u2192 ' + nd),
+                        action: function() { bfsShown = bfsResult.slice(0,i+1); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsShown.join(' \u2192 '); infoEl.innerHTML = 'BFS 진행 중...'; },
+                        undo: function() { bfsShown = bfsResult.slice(0,i); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' \u2192 ') + (i>0?'<br><strong>BFS:</strong> '+bfsShown.join(' \u2192 '):''); infoEl.innerHTML = ''; }
+                    });
+                })(node, idx);
+            });
+            steps.push({ description: '완료! DFS: ' + dfsResult.join(' ') + ' / BFS: ' + bfsResult.join(' '),
+                action: function() { areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsResult.join(' '); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 DFS: ' + dfsResult.join(' ') + ' / BFS: ' + bfsResult.join(' ') + '</strong>'; },
+                undo: function() { areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsResult.join(' \u2192 '); infoEl.innerHTML = ''; } });
+            return steps;
+        }
+        function init() {
+            var n=parseInt(container.querySelector('#gr-dfsbfs-n').value)||DEFAULT_N;
+            var start=parseInt(container.querySelector('#gr-dfsbfs-start').value)||DEFAULT_START;
+            var edges=parseEdges(container.querySelector('#gr-dfsbfs-edges').value);
+            areaEl.innerHTML=''; infoEl.innerHTML='';
+            self._initStepController(container, buildSteps(n,start,edges), suffix);
+        }
+        container.querySelector('#gr-dfsbfs-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -679,41 +1001,66 @@ var graphTopic = {
     // ====================================================================
     _renderVizCabbage: function(container) {
         var self = this, suffix = '-cab';
+        var DEFAULT_GRID = '1 1 0 0; 0 1 0 1; 0 0 0 1; 1 0 0 0';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">유기농 배추 — Flood Fill</h3>' +
             '<p style="color:var(--text2);margin-bottom:12px;">배추 덩어리(연결 요소)를 세는 과정입니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-cab-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
+            '<button class="btn btn-primary" id="gr-cab-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var grid = [[1,1,0,0],[0,1,0,1],[0,0,0,1],[1,0,0,0]];
-        var colors = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
-        var palette = ['var(--bg2)', '#d63031', '#0984e3', '#00b894'];
-        function render() {
-            areaEl.innerHTML = '<div style="display:inline-grid;grid-template-columns:repeat(4,44px);gap:3px;">' + grid.map(function(row, r) {
-                return row.map(function(v, c) {
-                    var bg = colors[r][c] ? palette[colors[r][c]] : (v ? '#dfe6e9' : 'var(--bg2)');
-                    return '<div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;background:' + bg + ';color:' + (colors[r][c] ? 'white' : 'var(--text3)') + ';">' + (v ? '\uD83E\uDD66' : '') + '</div>';
+
+        function parseGrid(s) { return s.split(';').map(function(row){return row.trim().split(/\s+/).map(Number);}); }
+        var palette = ['var(--bg2)', '#d63031', '#0984e3', '#00b894', '#e17055', '#6c5ce7', '#fdcb6e', '#00cec9'];
+        function renderGrid(grid, colors) {
+            var cols = grid[0].length;
+            areaEl.innerHTML = '<div style="display:inline-grid;grid-template-columns:repeat('+cols+',44px);gap:3px;">' + grid.map(function(row,r) {
+                return row.map(function(v,c) {
+                    var bg = colors[r][c] ? palette[colors[r][c] % palette.length] : (v ? '#dfe6e9' : 'var(--bg2)');
+                    return '<div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;background:'+bg+';color:'+(colors[r][c]?'white':'var(--text3)')+';">'+(v?'\uD83E\uDD66':'')+'</div>';
                 }).join('');
             }).join('') + '</div>';
         }
-        render();
-        var steps = [
-            { description: '(0,0)에서 배추 발견 → BFS로 1번 덩어리 탐색',
-              action: function() { colors[0][0]=1; colors[0][1]=1; colors[1][1]=1; render(); infoEl.innerHTML = '1번 덩어리: (0,0),(0,1),(1,1) → 3칸'; },
-              undo: function() { colors = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]; render(); infoEl.innerHTML = ''; } },
-            { description: '(1,3)에서 배추 발견 → 2번 덩어리',
-              action: function() { colors[1][3]=2; colors[2][3]=2; render(); infoEl.innerHTML = '2번 덩어리: (1,3),(2,3) → 2칸'; },
-              undo: function() { colors[1][3]=0; colors[2][3]=0; render(); infoEl.innerHTML = '1번 덩어리: (0,0),(0,1),(1,1)'; } },
-            { description: '(3,0)에서 배추 발견 → 3번 덩어리',
-              action: function() { colors[3][0]=3; render(); infoEl.innerHTML = '3번 덩어리: (3,0) → 1칸'; },
-              undo: function() { colors[3][0]=0; render(); infoEl.innerHTML = '2번 덩어리: (1,3),(2,3)'; } },
-            { description: '완료! 총 3개 덩어리 → 지렁이 3마리 필요',
-              action: function() { render(); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 필요한 지렁이 = 3마리</strong>'; },
-              undo: function() { infoEl.innerHTML = '3번 덩어리: (3,0) → 1칸'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function buildSteps(grid) {
+            var R = grid.length, C = grid[0].length;
+            var vis = [], colors = [];
+            for (var r=0;r<R;r++) { vis.push([]); colors.push([]); for(var c=0;c<C;c++) { vis[r].push(false); colors[r].push(0); } }
+            var dx=[0,0,1,-1], dy=[1,-1,0,0], steps=[], groupId=0;
+            for (var r=0;r<R;r++) for(var c=0;c<C;c++) {
+                if (grid[r][c]===1 && !vis[r][c]) {
+                    groupId++;
+                    // BFS to find component
+                    var q=[[r,c]], comp=[];
+                    vis[r][c]=true;
+                    while(q.length>0) { var cur=q.shift(); comp.push(cur); for(var d=0;d<4;d++){var nr=cur[0]+dx[d],nc=cur[1]+dy[d]; if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===1&&!vis[nr][nc]){vis[nr][nc]=true;q.push([nr,nc]);}}}
+                    (function(gid, cells) {
+                        var cellStr = cells.map(function(p){return '('+p[0]+','+p[1]+')';}).join(',');
+                        steps.push({
+                            description: '('+cells[0][0]+','+cells[0][1]+')에서 배추 발견 → '+gid+'번 덩어리: '+cells.length+'칸',
+                            action: function() { cells.forEach(function(p){colors[p[0]][p[1]]=gid;}); renderGrid(grid,colors); infoEl.innerHTML=gid+'번 덩어리: '+cellStr+' → '+cells.length+'칸'; },
+                            undo: function() { cells.forEach(function(p){colors[p[0]][p[1]]=0;}); renderGrid(grid,colors); infoEl.innerHTML=''; }
+                        });
+                    })(groupId, comp);
+                }
+            }
+            var totalGroups = groupId;
+            steps.push({ description: '완료! 총 '+totalGroups+'개 덩어리 → 지렁이 '+totalGroups+'마리 필요',
+                action: function() { renderGrid(grid,colors); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 필요한 지렁이 = '+totalGroups+'마리</strong>'; },
+                undo: function() { renderGrid(grid,colors); infoEl.innerHTML=''; } });
+            return steps;
+        }
+        function init() {
+            var grid = parseGrid(container.querySelector('#gr-cab-grid').value);
+            var emptyColors = grid.map(function(row){return row.map(function(){return 0;});});
+            renderGrid(grid, emptyColors); infoEl.innerHTML='';
+            self._initStepController(container, buildSteps(grid), suffix);
+        }
+        container.querySelector('#gr-cab-reset').addEventListener('click', function() { self._clearVizState(); init(); });
+        init();
     },
 
     // ====================================================================
@@ -721,30 +1068,62 @@ var graphTopic = {
     // ====================================================================
     _renderVizComplex: function(container) {
         var self = this, suffix = '-cpx';
+        var DEFAULT_GRID = '0 1 1 0 1 0 0; 0 1 1 0 1 0 1';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">단지번호 붙이기</h3>' +
             '<p style="color:var(--text2);margin-bottom:12px;">연결 요소의 개수와 각 크기를 구합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-cpx-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
+            '<button class="btn btn-primary" id="gr-cpx-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        areaEl.innerHTML = '<div style="font-family:monospace;line-height:1.8;">0<span style="color:#0984e3;font-weight:700;">11</span>0<span style="color:#d63031;font-weight:700;">1</span>00<br>0<span style="color:#0984e3;font-weight:700;">11</span>0<span style="color:#d63031;font-weight:700;">1</span>0<span style="color:#00b894;font-weight:700;">1</span></div>';
-        var steps = [
-            { description: '(0,1)에서 집 발견 → BFS로 1번 단지 탐색: 4칸',
-              action: function() { infoEl.innerHTML = '1번 단지: 4칸 (파란색)'; },
-              undo: function() { infoEl.innerHTML = ''; } },
-            { description: '(0,3)에서 집 발견 → 2번 단지: 2칸',
-              action: function() { infoEl.innerHTML = '2번 단지: 2칸 (빨간색)'; },
-              undo: function() { infoEl.innerHTML = '1번 단지: 4칸 (파란색)'; } },
-            { description: '(1,5)에서 집 발견 → 3번 단지: 1칸',
-              action: function() { infoEl.innerHTML = '3번 단지: 1칸 (초록색)'; },
-              undo: function() { infoEl.innerHTML = '2번 단지: 2칸 (빨간색)'; } },
-            { description: '완료! 3개 단지, 오름차순: 1, 2, 4',
-              action: function() { infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 단지 수: 3 / 크기(오름차순): 1, 2, 4</strong>'; },
-              undo: function() { infoEl.innerHTML = '3번 단지: 1칸 (초록색)'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function parseGrid(s) { return s.split(';').map(function(row){return row.trim().split(/\s+/).map(Number);}); }
+        var palette = ['var(--bg2)', '#0984e3', '#d63031', '#00b894', '#e17055', '#6c5ce7', '#fdcb6e'];
+        function renderGrid(grid, colors) {
+            var cols=grid[0].length;
+            areaEl.innerHTML='<div style="display:inline-grid;grid-template-columns:repeat('+cols+',40px);gap:2px;">'+grid.map(function(row,r){
+                return row.map(function(v,c){
+                    var bg=colors[r][c]?palette[colors[r][c]%palette.length]:(v?'#dfe6e9':'var(--bg2)');
+                    return '<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-weight:600;font-size:0.85rem;background:'+bg+';color:'+(colors[r][c]?'white':'var(--text3)')+';">'+(v?v:'')+'</div>';
+                }).join('');
+            }).join('')+'</div>';
+        }
+        function buildSteps(grid) {
+            var R=grid.length, C=grid[0].length, vis=[], colors=[];
+            for(var r=0;r<R;r++){vis.push([]);colors.push([]);for(var c=0;c<C;c++){vis[r].push(false);colors[r].push(0);}}
+            var dx=[0,0,1,-1],dy=[1,-1,0,0],steps=[],groupId=0,sizes=[];
+            for(var r=0;r<R;r++) for(var c=0;c<C;c++){
+                if(grid[r][c]===1&&!vis[r][c]){
+                    groupId++;
+                    var q=[[r,c]],comp=[];vis[r][c]=true;
+                    while(q.length>0){var cur=q.shift();comp.push(cur);for(var d=0;d<4;d++){var nr=cur[0]+dx[d],nc=cur[1]+dy[d];if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===1&&!vis[nr][nc]){vis[nr][nc]=true;q.push([nr,nc]);}}}
+                    sizes.push(comp.length);
+                    (function(gid,cells){
+                        steps.push({
+                            description:'('+cells[0][0]+','+cells[0][1]+')에서 집 발견 → '+gid+'번 단지: '+cells.length+'칸',
+                            action:function(){cells.forEach(function(p){colors[p[0]][p[1]]=gid;});renderGrid(grid,colors);infoEl.innerHTML=gid+'번 단지: '+cells.length+'칸';},
+                            undo:function(){cells.forEach(function(p){colors[p[0]][p[1]]=0;});renderGrid(grid,colors);infoEl.innerHTML='';}
+                        });
+                    })(groupId,comp);
+                }
+            }
+            var sortedSizes=sizes.slice().sort(function(a,b){return a-b;});
+            steps.push({description:'완료! '+groupId+'개 단지, 오름차순: '+sortedSizes.join(', '),
+                action:function(){renderGrid(grid,colors);infoEl.innerHTML='<strong style="color:var(--green);">\u2705 단지 수: '+groupId+' / 크기(오름차순): '+sortedSizes.join(', ')+'</strong>';},
+                undo:function(){renderGrid(grid,colors);infoEl.innerHTML='';}});
+            return steps;
+        }
+        function init(){
+            var grid=parseGrid(container.querySelector('#gr-cpx-grid').value);
+            var emptyColors=grid.map(function(row){return row.map(function(){return 0;});});
+            renderGrid(grid,emptyColors);infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(grid),suffix);
+        }
+        container.querySelector('#gr-cpx-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -752,40 +1131,78 @@ var graphTopic = {
     // ====================================================================
     _renderVizMaze: function(container) {
         var self = this, suffix = '-maze';
+        var DEFAULT_GRID = '1 0 1 1; 1 1 1 0; 0 1 0 1; 0 1 1 1';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">미로 탐색 — BFS 최단 거리</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">4\u00D74 미로에서 (0,0)\u2192(3,3) 최단 경로를 BFS로 찾습니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">(0,0)에서 (N-1,M-1)까지 BFS 최단 경로를 구합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">격자 (1=길, 0=벽; 행은 ; 구분): <input type="text" id="gr-maze-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
+            '<button class="btn btn-primary" id="gr-maze-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var maze = [[1,0,1,1],[1,1,1,0],[0,1,0,1],[0,1,1,1]];
-        var dist = [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];
-        function render() {
-            areaEl.innerHTML = '<div style="display:inline-grid;grid-template-columns:repeat(4,48px);gap:3px;">' + maze.map(function(row, r) {
-                return row.map(function(v, c) {
-                    var bg = v === 0 ? '#2d3436' : (dist[r][c] >= 0 ? '#e84393' : '#dfe6e9');
-                    return '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;font-size:0.85rem;background:' + bg + ';color:' + (dist[r][c] >= 0 ? 'white' : (v === 0 ? '#636e72' : 'var(--text)')) + ';">' + (dist[r][c] >= 0 ? dist[r][c] : (v === 0 ? '\u2588' : '\u00B7')) + '</div>';
+        function parseGrid(s){return s.split(';').map(function(row){return row.trim().split(/\s+/).map(Number);});}
+        function renderMaze(maze, dist){
+            var C=maze[0].length;
+            areaEl.innerHTML='<div style="display:inline-grid;grid-template-columns:repeat('+C+',48px);gap:3px;">'+maze.map(function(row,r){
+                return row.map(function(v,c){
+                    var bg=v===0?'#2d3436':(dist[r][c]>=0?'#e84393':'#dfe6e9');
+                    return '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;font-size:0.85rem;background:'+bg+';color:'+(dist[r][c]>=0?'white':(v===0?'#636e72':'var(--text)'))+';">'+(dist[r][c]>=0?dist[r][c]:(v===0?'\u2588':'\u00B7'))+'</div>';
                 }).join('');
-            }).join('') + '</div>';
+            }).join('')+'</div>';
         }
-        render();
-        var steps = [
-            { description: '(0,0)에서 BFS 시작. dist[0][0] = 1',
-              action: function() { dist[0][0] = 1; render(); infoEl.innerHTML = '시작: dist[0][0] = 1'; },
-              undo: function() { dist[0][0] = -1; render(); infoEl.innerHTML = ''; } },
-            { description: '(0,0)의 이웃 중 이동 가능: (1,0). dist=2',
-              action: function() { dist[1][0] = 2; render(); infoEl.innerHTML = 'dist[1][0] = 2'; },
-              undo: function() { dist[1][0] = -1; render(); infoEl.innerHTML = 'dist[0][0] = 1'; } },
-            { description: '(1,0)→(1,1)→(1,2), (1,1)→(2,1) 으로 확장',
-              action: function() { dist[1][1] = 3; dist[1][2] = 4; dist[2][1] = 4; render(); infoEl.innerHTML = 'BFS 확장: dist[1][1]=3, dist[1][2]=4, dist[2][1]=4'; },
-              undo: function() { dist[1][1] = -1; dist[1][2] = -1; dist[2][1] = -1; render(); infoEl.innerHTML = 'dist[1][0] = 2'; } },
-            { description: '계속 확장하여 (3,3)에 도달. dist=7',
-              action: function() { dist[0][2]=5; dist[0][3]=6; dist[2][3]=5; dist[3][1]=5; dist[3][2]=6; dist[3][3]=7; render(); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최단 거리 = 7칸</strong>'; },
-              undo: function() { dist[0][2]=-1; dist[0][3]=-1; dist[2][3]=-1; dist[3][1]=-1; dist[3][2]=-1; dist[3][3]=-1; render(); infoEl.innerHTML = 'BFS 확장 중...'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function buildSteps(maze){
+            var R=maze.length, C=maze[0].length, dist=[];
+            for(var r=0;r<R;r++){dist.push([]);for(var c=0;c<C;c++) dist[r].push(-1);}
+            var dx=[0,0,1,-1],dy=[1,-1,0,0],steps=[];
+            // BFS simulation level by level
+            dist[0][0]=1;
+            var q=[[0,0]], level=1;
+            var bfsLevels=[[{r:0,c:0,d:1}]];
+            while(q.length>0){
+                var nextQ=[], nextLevel=[];
+                q.forEach(function(pos){
+                    for(var d=0;d<4;d++){
+                        var nr=pos[0]+dx[d],nc=pos[1]+dy[d];
+                        if(nr>=0&&nr<R&&nc>=0&&nc<C&&maze[nr][nc]===1&&dist[nr][nc]<0){
+                            dist[nr][nc]=dist[pos[0]][pos[1]]+1;
+                            nextQ.push([nr,nc]);
+                            nextLevel.push({r:nr,c:nc,d:dist[nr][nc]});
+                        }
+                    }
+                });
+                if(nextLevel.length>0) bfsLevels.push(nextLevel);
+                q=nextQ;
+            }
+            var finalDist=dist[R-1][C-1];
+            // reset dist for step-by-step
+            for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[r][c]=-1;
+
+            bfsLevels.forEach(function(levelCells, li){
+                (function(cells,idx){
+                    var cellsStr=cells.map(function(p){return '('+p.r+','+p.c+')='+p.d;}).join(', ');
+                    steps.push({
+                        description: idx===0?'(0,0)에서 BFS 시작. dist=1':'BFS 확장: '+cellsStr,
+                        action:function(){cells.forEach(function(p){dist[p.r][p.c]=p.d;});renderMaze(maze,dist);infoEl.innerHTML=cellsStr;},
+                        undo:function(){cells.forEach(function(p){dist[p.r][p.c]=-1;});renderMaze(maze,dist);infoEl.innerHTML='';}
+                    });
+                })(levelCells,li);
+            });
+            steps.push({description:'완료! (0,0)→('+(R-1)+','+(C-1)+') 최단 거리 = '+(finalDist>=0?finalDist:'도달 불가'),
+                action:function(){renderMaze(maze,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 최단 거리 = '+(finalDist>=0?finalDist+'칸':'도달 불가')+'</strong>';},
+                undo:function(){renderMaze(maze,dist);infoEl.innerHTML='';}});
+            return steps;
+        }
+        function init(){
+            var maze=parseGrid(container.querySelector('#gr-maze-grid').value);
+            var emptyDist=maze.map(function(row){return row.map(function(){return -1;});});
+            renderMaze(maze,emptyDist);infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(maze),suffix);
+        }
+        container.querySelector('#gr-maze-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -793,33 +1210,76 @@ var graphTopic = {
     // ====================================================================
     _renderVizHide: function(container) {
         var self = this, suffix = '-hide';
+        var DEFAULT_N = 5, DEFAULT_K = 17;
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">숨바꼭질 — 좌표 BFS</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">N=5에서 K=17까지 (X-1, X+1, 2*X) 이동합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">N에서 K까지 (X-1, X+1, 2*X) 이동합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N (시작): <input type="number" id="gr-hide-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<label style="font-weight:600;">K (목표): <input type="number" id="gr-hide-k" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<button class="btn btn-primary" id="gr-hide-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var path = [5, 10, 9, 18, 17];
-        var steps = [
-            { description: '시작: 위치 5, 거리 0',
-              action: function() { areaEl.innerHTML = '<strong>5</strong>'; infoEl.innerHTML = 'dist[5] = 0'; },
-              undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; } },
-            { description: '5*2=10으로 순간이동 (1초)',
-              action: function() { areaEl.innerHTML = '5 \u2192 <strong>10</strong>'; infoEl.innerHTML = '5\u00D72 = 10, dist[10] = 1'; },
-              undo: function() { areaEl.innerHTML = '<strong>5</strong>'; infoEl.innerHTML = 'dist[5] = 0'; } },
-            { description: '10-1=9로 이동 (2초)',
-              action: function() { areaEl.innerHTML = '5 \u2192 10 \u2192 <strong>9</strong>'; infoEl.innerHTML = '10-1 = 9, dist[9] = 2'; },
-              undo: function() { areaEl.innerHTML = '5 \u2192 <strong>10</strong>'; infoEl.innerHTML = '5\u00D72 = 10, dist[10] = 1'; } },
-            { description: '9*2=18로 순간이동 (3초)',
-              action: function() { areaEl.innerHTML = '5 \u2192 10 \u2192 9 \u2192 <strong>18</strong>'; infoEl.innerHTML = '9\u00D72 = 18, dist[18] = 3'; },
-              undo: function() { areaEl.innerHTML = '5 \u2192 10 \u2192 <strong>9</strong>'; infoEl.innerHTML = '10-1 = 9, dist[9] = 2'; } },
-            { description: '18-1=17 도착! (4초)',
-              action: function() { areaEl.innerHTML = '5 \u2192 10 \u2192 9 \u2192 18 \u2192 <strong>17</strong>'; infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 시간 = 4초</strong>'; },
-              undo: function() { areaEl.innerHTML = '5 \u2192 10 \u2192 9 \u2192 <strong>18</strong>'; infoEl.innerHTML = '9\u00D72 = 18, dist[18] = 3'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+
+        function buildSteps(startN, targetK) {
+            // BFS to find shortest path then trace back
+            var MAX = Math.max(startN, targetK) * 2 + 5;
+            if (MAX > 200001) MAX = 200001;
+            var dist = new Array(MAX); for(var i=0;i<MAX;i++) dist[i]=-1;
+            var prev = new Array(MAX); for(var i=0;i<MAX;i++) prev[i]=-1;
+            dist[startN]=0;
+            var q=[startN];
+            while(q.length>0){
+                var v=q.shift();
+                if(v===targetK) break;
+                var nexts=[v-1,v+1,v*2];
+                nexts.forEach(function(nv){
+                    if(nv>=0&&nv<MAX&&dist[nv]<0){dist[nv]=dist[v]+1;prev[nv]=v;q.push(nv);}
+                });
+            }
+            // trace path
+            var path=[];
+            if(dist[targetK]>=0){
+                var cur=targetK; while(cur!==-1){path.unshift(cur);cur=prev[cur];}
+            } else {
+                path=[startN];
+            }
+            var steps=[], shown=[];
+            path.forEach(function(node, idx){
+                (function(nd,i){
+                    var desc;
+                    if(i===0) desc='시작: 위치 '+nd+', 거리 0';
+                    else {
+                        var prevNode=path[i-1];
+                        if(nd===prevNode*2) desc=prevNode+'\u00D72='+nd+'으로 순간이동 ('+i+'초)';
+                        else if(nd===prevNode+1) desc=prevNode+'+1='+nd+'으로 이동 ('+i+'초)';
+                        else desc=prevNode+'-1='+nd+'으로 이동 ('+i+'초)';
+                    }
+                    steps.push({
+                        description:desc,
+                        action:function(){ shown=path.slice(0,i+1); areaEl.innerHTML=shown.map(function(p,j){return j===shown.length-1?'<strong>'+p+'</strong>':p;}).join(' \u2192 '); infoEl.innerHTML='dist['+nd+'] = '+i; },
+                        undo:function(){ shown=path.slice(0,i); areaEl.innerHTML=shown.length>0?shown.map(function(p,j){return j===shown.length-1?'<strong>'+p+'</strong>':p;}).join(' \u2192 '):''; infoEl.innerHTML=i>0?'dist['+path[i-1]+'] = '+(i-1):''; }
+                    });
+                })(node,idx);
+            });
+            if(dist[targetK]>=0){
+                steps.push({description:'도착! 최소 시간 = '+dist[targetK]+'초',
+                    action:function(){areaEl.innerHTML=path.join(' \u2192 ');infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 시간 = '+dist[targetK]+'초</strong>';},
+                    undo:function(){areaEl.innerHTML=path.map(function(p,j){return j===path.length-1?'<strong>'+p+'</strong>':p;}).join(' \u2192 ');infoEl.innerHTML='';}});
+            }
+            return steps;
+        }
+        function init(){
+            var n=parseInt(container.querySelector('#gr-hide-n').value); if(isNaN(n)) n=DEFAULT_N;
+            var k=parseInt(container.querySelector('#gr-hide-k').value); if(isNaN(k)) k=DEFAULT_K;
+            areaEl.innerHTML='';infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(n,k),suffix);
+        }
+        container.querySelector('#gr-hide-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -827,29 +1287,76 @@ var graphTopic = {
     // ====================================================================
     _renderVizKnight: function(container) {
         var self = this, suffix = '-knight';
+        var DEFAULT_SIZE = 8, DEFAULT_SR = 0, DEFAULT_SC = 0, DEFAULT_ER = 7, DEFAULT_EC = 0;
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">나이트의 이동 — BFS</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">8\u00D78 체스판에서 (0,0)\u2192(7,0)까지 최소 이동 횟수를 구합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">체스판에서 나이트 이동 최소 횟수를 구합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">크기: <input type="number" id="gr-knight-size" value="' + DEFAULT_SIZE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">시작(r,c): <input type="text" id="gr-knight-start" value="' + DEFAULT_SR + ',' + DEFAULT_SC + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<label style="font-weight:600;">목표(r,c): <input type="text" id="gr-knight-end" value="' + DEFAULT_ER + ',' + DEFAULT_EC + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<button class="btn btn-primary" id="gr-knight-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var steps = [
-            { description: '(0,0)에서 시작, 나이트 8방향 이동 가능',
-              action: function() { areaEl.innerHTML = '시작: (0,0), 목표: (7,0)<br>나이트 이동: (\u00B12,\u00B11), (\u00B11,\u00B12)'; infoEl.innerHTML = 'dist[0][0] = 0'; },
-              undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; } },
-            { description: '1번 이동: (1,2), (2,1) 등 도달 가능',
-              action: function() { areaEl.innerHTML = '0번: (0,0)<br>1번: (1,2), (2,1)'; infoEl.innerHTML = '나이트가 갈 수 있는 위치들에 dist=1'; },
-              undo: function() { areaEl.innerHTML = '시작: (0,0), 목표: (7,0)'; infoEl.innerHTML = 'dist[0][0] = 0'; } },
-            { description: '2~3번 이동: BFS로 점점 확장',
-              action: function() { areaEl.innerHTML = '0번: (0,0)<br>1번: (1,2), (2,1)<br>2번: (3,3), (4,0), (0,2), ...<br>3번: (5,1), (6,2), ...'; infoEl.innerHTML = 'BFS 확산 중...'; },
-              undo: function() { areaEl.innerHTML = '0번: (0,0)<br>1번: (1,2), (2,1)'; infoEl.innerHTML = '나이트가 갈 수 있는 위치들에 dist=1'; } },
-            { description: '5번 이동으로 (7,0) 도달!',
-              action: function() { areaEl.innerHTML = '경로 예시: (0,0)\u2192(2,1)\u2192(4,0)\u2192(6,1)\u2192(5,3)\u2192(7,2)... → <strong>5번</strong>'; infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 이동 = 5번</strong>'; },
-              undo: function() { areaEl.innerHTML = '2~3번 이동 확장 중'; infoEl.innerHTML = 'BFS 확산 중...'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        var kdr=[-2,-2,-1,-1,1,1,2,2],kdc=[-1,1,-2,2,-2,2,-1,1];
+
+        function buildSteps(sz, sr, sc, er, ec) {
+            var dist=[]; for(var r=0;r<sz;r++){dist.push([]);for(var c=0;c<sz;c++) dist[r].push(-1);}
+            var prev=[]; for(var r=0;r<sz;r++){prev.push([]);for(var c=0;c<sz;c++) prev[r].push(null);}
+            dist[sr][sc]=0;
+            var q=[[sr,sc]];
+            // BFS level by level
+            var levels=[[{r:sr,c:sc}]];
+            var found=false;
+            while(q.length>0&&!found){
+                var nextQ=[],nextLevel=[];
+                q.forEach(function(pos){
+                    for(var d=0;d<8;d++){
+                        var nr=pos[0]+kdr[d],nc=pos[1]+kdc[d];
+                        if(nr>=0&&nr<sz&&nc>=0&&nc<sz&&dist[nr][nc]<0){
+                            dist[nr][nc]=dist[pos[0]][pos[1]]+1;
+                            prev[nr][nc]=[pos[0],pos[1]];
+                            nextQ.push([nr,nc]);
+                            nextLevel.push({r:nr,c:nc});
+                            if(nr===er&&nc===ec) found=true;
+                        }
+                    }
+                });
+                if(nextLevel.length>0) levels.push(nextLevel);
+                q=nextQ;
+            }
+            var finalDist=dist[er][ec];
+            var steps=[];
+            // Show level by level (but max ~6 levels to keep concise)
+            var maxLevels = Math.min(levels.length, finalDist >= 0 ? finalDist + 2 : levels.length);
+            for(var li=0;li<maxLevels;li++){
+                (function(levelIdx, cells){
+                    var cellsStr = cells.length<=6 ? cells.map(function(p){return '('+p.r+','+p.c+')';}).join(', ') : cells.length+'개 위치';
+                    steps.push({
+                        description: levelIdx===0 ? '('+sr+','+sc+')에서 시작, 나이트 8방향 이동' : levelIdx+'번째 이동: '+cellsStr,
+                        action: function() { areaEl.innerHTML = levelIdx+'번 이동: '+cellsStr; infoEl.innerHTML = 'dist='+levelIdx+' 위치 '+cells.length+'개'; },
+                        undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; }
+                    });
+                })(li, levels[li]);
+            }
+            steps.push({description: finalDist>=0 ? finalDist+'번 이동으로 ('+er+','+ec+') 도달!' : '('+er+','+ec+')에 도달 불가',
+                action: function() { areaEl.innerHTML = '('+sr+','+sc+') \u2192 ('+er+','+ec+')<br><strong>'+finalDist+'번 이동</strong>'; infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 이동 = '+finalDist+'번</strong>'; },
+                undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; }});
+            return steps;
+        }
+        function init(){
+            var sz=parseInt(container.querySelector('#gr-knight-size').value)||DEFAULT_SIZE;
+            var sp=container.querySelector('#gr-knight-start').value.split(',').map(Number);
+            var ep=container.querySelector('#gr-knight-end').value.split(',').map(Number);
+            var sr=sp[0]||0,sc=sp[1]||0,er=ep[0]||0,ec=ep[1]||0;
+            areaEl.innerHTML='';infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(sz,sr,sc,er,ec),suffix);
+        }
+        container.querySelector('#gr-knight-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -857,44 +1364,73 @@ var graphTopic = {
     // ====================================================================
     _renderVizTomato: function(container) {
         var self = this, suffix = '-tom';
+        var DEFAULT_GRID = '0 0 0 1; 0 -1 0 0; 0 0 0 0; 1 0 0 0';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">토마토 — 다중 시작점 BFS</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">익은 토마토에서 동시에 BFS가 퍼져나갑니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">1=익은, 0=안익은, -1=빈칸. 익은 토마토에서 동시에 BFS.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-tom-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
+            '<button class="btn btn-primary" id="gr-tom-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var grid = [[0,0,0,1],[0,-1,0,0],[0,0,0,0],[1,0,0,0]];
-        var dist = [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]];
-        function render() {
-            areaEl.innerHTML = '<div style="display:inline-grid;grid-template-columns:repeat(4,48px);gap:3px;">' + grid.map(function(row, r) {
-                return row.map(function(v, c) {
-                    var bg = v === -1 ? '#2d3436' : (dist[r][c] >= 0 ? '#a29bfe' : '#dfe6e9');
-                    var txt = v === -1 ? 'X' : (dist[r][c] >= 0 ? dist[r][c] : '\uD83C\uDF45');
-                    return '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;font-size:0.85rem;background:' + bg + ';color:' + (dist[r][c] >= 0 ? 'white' : (v === -1 ? '#636e72' : 'var(--text)')) + ';">' + txt + '</div>';
+        function parseGrid(s){return s.split(';').map(function(row){return row.trim().split(/\s+/).map(Number);});}
+        function renderTomato(grid, dist){
+            var C=grid[0].length;
+            areaEl.innerHTML='<div style="display:inline-grid;grid-template-columns:repeat('+C+',48px);gap:3px;">'+grid.map(function(row,r){
+                return row.map(function(v,c){
+                    var bg=v===-1?'#2d3436':(dist[r][c]>=0?'#a29bfe':'#dfe6e9');
+                    var txt=v===-1?'X':(dist[r][c]>=0?dist[r][c]:'\uD83C\uDF45');
+                    return '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;font-size:0.85rem;background:'+bg+';color:'+(dist[r][c]>=0?'white':(v===-1?'#636e72':'var(--text)'))+';">'+txt+'</div>';
                 }).join('');
-            }).join('') + '</div>';
+            }).join('')+'</div>';
         }
-        render();
-        var steps = [
-            { description: '익은 토마토(1)를 모두 큐에 넣음: (0,3), (3,0)',
-              action: function() { dist[0][3] = 0; dist[3][0] = 0; render(); infoEl.innerHTML = '다중 시작점: (0,3)과 (3,0), dist=0'; },
-              undo: function() { dist = [[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]]; render(); infoEl.innerHTML = ''; } },
-            { description: '1일째: 양쪽에서 동시에 퍼짐',
-              action: function() { dist[0][2]=1; dist[1][3]=1; dist[2][0]=1; dist[3][1]=1; render(); infoEl.innerHTML = '1일째: 4칸 추가 감염'; },
-              undo: function() { dist[0][2]=-1; dist[1][3]=-1; dist[2][0]=-1; dist[3][1]=-1; render(); infoEl.innerHTML = '다중 시작점: dist=0'; } },
-            { description: '2일째: 계속 확산',
-              action: function() { dist[0][1]=2; dist[1][2]=2; dist[2][1]=2; dist[3][2]=2; render(); infoEl.innerHTML = '2일째: 4칸 추가'; },
-              undo: function() { dist[0][1]=-1; dist[1][2]=-1; dist[2][1]=-1; dist[3][2]=-1; render(); infoEl.innerHTML = '1일째: 4칸 추가 감염'; } },
-            { description: '3일째: (0,0), (1,1)제외(-1), (2,2), (3,3) 감염',
-              action: function() { dist[0][0]=3; dist[2][2]=3; dist[3][3]=3; render(); infoEl.innerHTML = '3일째: 나머지 감염'; },
-              undo: function() { dist[0][0]=-1; dist[2][2]=-1; dist[3][3]=-1; render(); infoEl.innerHTML = '2일째'; } },
-            { description: '4일째: (2,3) 감염 완료. 최대 거리 = 4',
-              action: function() { dist[2][3]=4; render(); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 모든 토마토 익는 최소 일수 = 4</strong>'; },
-              undo: function() { dist[2][3]=-1; render(); infoEl.innerHTML = '3일째'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function buildSteps(grid){
+            var R=grid.length,C=grid[0].length,dist=[],dx=[0,0,1,-1],dy=[1,-1,0,0];
+            for(var r=0;r<R;r++){dist.push([]);for(var c=0;c<C;c++) dist[r].push(-1);}
+            var q=[];
+            for(var r=0;r<R;r++) for(var c=0;c<C;c++) if(grid[r][c]===1){dist[r][c]=0;q.push([r,c]);}
+            // BFS level by level
+            var levels=[q.map(function(p){return {r:p[0],c:p[1]};})];
+            while(q.length>0){
+                var nextQ=[],nextLevel=[];
+                q.forEach(function(pos){
+                    for(var d=0;d<4;d++){var nr=pos[0]+dx[d],nc=pos[1]+dy[d];
+                        if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===0&&dist[nr][nc]<0){dist[nr][nc]=dist[pos[0]][pos[1]]+1;nextQ.push([nr,nc]);nextLevel.push({r:nr,c:nc,d:dist[nr][nc]});}}
+                });
+                if(nextLevel.length>0) levels.push(nextLevel);
+                q=nextQ;
+            }
+            var maxDist=0,impossible=false;
+            for(var r=0;r<R;r++) for(var c=0;c<C;c++){if(grid[r][c]===0&&dist[r][c]<0) impossible=true; if(dist[r][c]>maxDist) maxDist=dist[r][c];}
+            // reset dist for step-by-step
+            for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[r][c]=-1;
+            var steps=[];
+            levels.forEach(function(levelCells,li){
+                (function(cells,idx){
+                    var desc=idx===0?'익은 토마토를 모두 큐에 넣음 ('+cells.length+'개)':idx+'일째: '+cells.length+'칸 추가 감염';
+                    steps.push({
+                        description:desc,
+                        action:function(){cells.forEach(function(p){dist[p.r][p.c]=p.d!==undefined?p.d:0;});renderTomato(grid,dist);infoEl.innerHTML=desc;},
+                        undo:function(){cells.forEach(function(p){dist[p.r][p.c]=-1;});renderTomato(grid,dist);infoEl.innerHTML='';}
+                    });
+                })(levelCells,li);
+            });
+            steps.push({description:impossible?'안 익은 토마토가 남아있음 → -1':'완료! 모든 토마토 익는 최소 일수 = '+maxDist,
+                action:function(){renderTomato(grid,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(impossible?'결과 = -1 (불가능)':'최소 일수 = '+maxDist)+'</strong>';},
+                undo:function(){renderTomato(grid,dist);infoEl.innerHTML='';}});
+            return steps;
+        }
+        function init(){
+            var grid=parseGrid(container.querySelector('#gr-tom-grid').value);
+            var emptyDist=grid.map(function(row){return row.map(function(){return -1;});});
+            renderTomato(grid,emptyDist);infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(grid),suffix);
+        }
+        container.querySelector('#gr-tom-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -902,30 +1438,84 @@ var graphTopic = {
     // ====================================================================
     _renderVizTomato3: function(container) {
         var self = this, suffix = '-tom3';
+        var DEFAULT_LAYERS = '0 0 0, 0 0 0 | 0 0 1, 0 0 0';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">토마토 3D — 6방향 BFS</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">2층짜리 상자에서 6방향(상하좌우+위아래)으로 퍼집니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">층은 | 구분, 행은 , 구분. 6방향(상하좌우+위아래).</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">3D 격자: <input type="text" id="gr-tom3-layers" value="' + DEFAULT_LAYERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+            '<button class="btn btn-primary" id="gr-tom3-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        areaEl.innerHTML = '1층: 0 0 0 / 0 0 0<br>2층: 0 0 1 / 0 0 0';
-        var steps = [
-            { description: '2층의 (0,2)에 익은 토마토. 6방향으로 BFS 시작',
-              action: function() { areaEl.innerHTML = '1층: . . . / . . .<br>2층: . . <strong style="color:#55efc4;">0</strong> / . . .'; infoEl.innerHTML = '시작점: 2층(0,2), dist=0'; },
-              undo: function() { areaEl.innerHTML = '1층: 0 0 0 / 0 0 0<br>2층: 0 0 1 / 0 0 0'; infoEl.innerHTML = ''; } },
-            { description: '1일째: 위층(0,2)와 좌(0,1), 아래(1,2) 감염',
-              action: function() { infoEl.innerHTML = '1일째: 3칸 감염 (위층+좌+아래)'; },
-              undo: function() { infoEl.innerHTML = '시작점: 2층(0,2), dist=0'; } },
-            { description: '2~3일째: 계속 확산',
-              action: function() { infoEl.innerHTML = '2~3일째: 양 층 동시 확산'; },
-              undo: function() { infoEl.innerHTML = '1일째: 3칸 감염'; } },
-            { description: '4일째: 모든 토마토 익음. 답 = 4',
-              action: function() { infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 3D BFS 최소 일수 = 4</strong>'; },
-              undo: function() { infoEl.innerHTML = '2~3일째: 양 층 동시 확산'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+
+        function parseLayers(s){
+            return s.split('|').map(function(layer){
+                return layer.trim().split(',').map(function(row){return row.trim().split(/\s+/).map(Number);});
+            });
+        }
+        function render3D(layers, dist){
+            var html='';
+            layers.forEach(function(layer,h){
+                var C=layer[0].length;
+                html+='<div style="margin-bottom:8px;"><strong style="font-size:0.8rem;color:var(--text3);">'+(h+1)+'층</strong><div style="display:inline-grid;grid-template-columns:repeat('+C+',36px);gap:2px;margin-top:4px;">';
+                layer.forEach(function(row,r){
+                    row.forEach(function(v,c){
+                        var bg=v===-1?'#2d3436':(dist[h][r][c]>=0?'#55efc4':'#dfe6e9');
+                        var txt=v===-1?'X':(dist[h][r][c]>=0?dist[h][r][c]:(v===1?'1':'\u00B7'));
+                        html+='<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-weight:600;font-size:0.75rem;background:'+bg+';color:'+(dist[h][r][c]>=0?'#2d3436':(v===-1?'#636e72':'var(--text)'))+';">'+txt+'</div>';
+                    });
+                });
+                html+='</div></div>';
+            });
+            areaEl.innerHTML=html;
+        }
+        function buildSteps(layers){
+            var H=layers.length, R=layers[0].length, C=layers[0][0].length;
+            var dist=[]; for(var h=0;h<H;h++){dist.push([]);for(var r=0;r<R;r++){dist[h].push([]);for(var c=0;c<C;c++) dist[h][r].push(-1);}}
+            var dh=[0,0,0,0,1,-1],dr=[0,0,1,-1,0,0],dc=[1,-1,0,0,0,0];
+            var q=[];
+            for(var h=0;h<H;h++) for(var r=0;r<R;r++) for(var c=0;c<C;c++) if(layers[h][r][c]===1){dist[h][r][c]=0;q.push([h,r,c]);}
+            var levels=[q.map(function(p){return {h:p[0],r:p[1],c:p[2]};})];
+            while(q.length>0){
+                var nextQ=[],nextLevel=[];
+                q.forEach(function(pos){
+                    for(var d=0;d<6;d++){var nh=pos[0]+dh[d],nr=pos[1]+dr[d],nc=pos[2]+dc[d];
+                        if(nh>=0&&nh<H&&nr>=0&&nr<R&&nc>=0&&nc<C&&layers[nh][nr][nc]===0&&dist[nh][nr][nc]<0){
+                            dist[nh][nr][nc]=dist[pos[0]][pos[1]][pos[2]]+1;nextQ.push([nh,nr,nc]);nextLevel.push({h:nh,r:nr,c:nc,d:dist[nh][nr][nc]});}}
+                });
+                if(nextLevel.length>0) levels.push(nextLevel);
+                q=nextQ;
+            }
+            var maxDist=0,impossible=false;
+            for(var h=0;h<H;h++) for(var r=0;r<R;r++) for(var c=0;c<C;c++){if(layers[h][r][c]===0&&dist[h][r][c]<0) impossible=true; if(dist[h][r][c]>maxDist) maxDist=dist[h][r][c];}
+            // reset for step-by-step
+            for(var h=0;h<H;h++) for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[h][r][c]=-1;
+            var steps=[];
+            levels.forEach(function(cells,li){
+                (function(cs,idx){
+                    steps.push({
+                        description:idx===0?'익은 토마토 '+cs.length+'개를 큐에 넣음':idx+'일째: '+cs.length+'칸 감염',
+                        action:function(){cs.forEach(function(p){dist[p.h][p.r][p.c]=p.d!==undefined?p.d:0;});render3D(layers,dist);infoEl.innerHTML=(idx===0?'시작점 '+cs.length+'개':idx+'일째: '+cs.length+'칸');},
+                        undo:function(){cs.forEach(function(p){dist[p.h][p.r][p.c]=-1;});render3D(layers,dist);infoEl.innerHTML='';}
+                    });
+                })(cells,li);
+            });
+            steps.push({description:impossible?'불가능 → -1':'완료! 3D BFS 최소 일수 = '+maxDist,
+                action:function(){render3D(layers,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(impossible?'결과 = -1':'3D BFS 최소 일수 = '+maxDist)+'</strong>';},
+                undo:function(){render3D(layers,dist);infoEl.innerHTML='';}});
+            return steps;
+        }
+        function init(){
+            var layers=parseLayers(container.querySelector('#gr-tom3-layers').value);
+            var emptyDist=layers.map(function(l){return l.map(function(r){return r.map(function(){return -1;});});});
+            render3D(layers,emptyDist);infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(layers),suffix);
+        }
+        container.querySelector('#gr-tom3-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -933,30 +1523,88 @@ var graphTopic = {
     // ====================================================================
     _renderVizSnake: function(container) {
         var self = this, suffix = '-snake';
+        var DEFAULT_LADDERS = '12 98, 32 62, 42 68';
+        var DEFAULT_SNAKES = '95 13, 97 25, 93 37';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">뱀과 사다리 게임 — BFS</h3>' +
             '<p style="color:var(--text2);margin-bottom:12px;">1번→100번 칸까지 최소 주사위 횟수를 BFS로 구합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">사다리 (a b, ...): <input type="text" id="gr-snake-ladders" value="' + DEFAULT_LADDERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
+            '<label style="font-weight:600;">뱀 (a b, ...): <input type="text" id="gr-snake-snakes" value="' + DEFAULT_SNAKES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
+            '<button class="btn btn-primary" id="gr-snake-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        areaEl.innerHTML = '사다리: 12\u219298, 32\u219262, 42\u219268<br>뱀: 95\u219213, 97\u219225, 93\u219237, ...';
-        var steps = [
-            { description: '1번 칸에서 시작, 주사위 1~6',
-              action: function() { areaEl.innerHTML = '위치: <strong>1</strong><br>주사위로 2~7번 칸 이동 가능'; infoEl.innerHTML = 'dist[1] = 0'; },
-              undo: function() { areaEl.innerHTML = '사다리: 12→98, 32→62, 42→68<br>뱀: 95→13, 97→25, ...'; infoEl.innerHTML = ''; } },
-            { description: '1회째: 주사위 5 → 6번 칸 도착',
-              action: function() { areaEl.innerHTML = '1 \u2192 <strong>6</strong>'; infoEl.innerHTML = '1회 굴림: 6번 칸, dist=1'; },
-              undo: function() { areaEl.innerHTML = '위치: <strong>1</strong>'; infoEl.innerHTML = 'dist[1] = 0'; } },
-            { description: '2회째: 주사위 6 → 12번 → 사다리! → 98번!',
-              action: function() { areaEl.innerHTML = '1 \u2192 6 \u2192 12 \u2192 <strong>98</strong> (\uD83E\uDE9C사다리!)'; infoEl.innerHTML = '2회 굴림: 12→98 사다리 타기!'; },
-              undo: function() { areaEl.innerHTML = '1 \u2192 <strong>6</strong>'; infoEl.innerHTML = '1회 굴림: 6번 칸'; } },
-            { description: '3회째: 주사위 2 → 100번 도착!',
-              action: function() { areaEl.innerHTML = '1 \u2192 6 \u2192 12\u219298 \u2192 <strong>100</strong> \uD83C\uDFC1'; infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 주사위 횟수 = 3</strong>'; },
-              undo: function() { areaEl.innerHTML = '1 \u2192 6 \u2192 12 \u2192 <strong>98</strong>'; infoEl.innerHTML = '2회 굴림: 사다리 타기!'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+
+        function parsePairs(s){return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);});}
+        function buildSteps(ladders, snakes){
+            var warp={};
+            ladders.forEach(function(p){warp[p[0]]=p[1];});
+            snakes.forEach(function(p){warp[p[0]]=p[1];});
+            // BFS
+            var dist=new Array(101); for(var i=0;i<=100;i++) dist[i]=-1;
+            var prev=new Array(101); for(var i=0;i<=100;i++) prev[i]=-1;
+            var warpUsed=new Array(101); for(var i=0;i<=100;i++) warpUsed[i]=null;
+            dist[1]=0; var q=[1];
+            while(q.length>0){
+                var v=q.shift(); if(v===100) break;
+                for(var dice=1;dice<=6;dice++){
+                    var nv=v+dice; if(nv>100) continue;
+                    var actual=warp[nv]!==undefined?warp[nv]:nv;
+                    if(dist[actual]<0){dist[actual]=dist[v]+1;prev[actual]=v;if(warp[nv]!==undefined) warpUsed[actual]=nv;q.push(actual);}
+                }
+            }
+            // trace path
+            var path=[]; var cur=100;
+            while(cur!==-1){path.unshift(cur);cur=prev[cur];}
+            if(path[0]!==1) path=[1]; // no path found
+
+            var steps=[], shown=[];
+            var ladderSummary=ladders.map(function(p){return p[0]+'\u2192'+p[1];}).join(', ');
+            var snakeSummary=snakes.map(function(p){return p[0]+'\u2192'+p[1];}).join(', ');
+            areaEl.innerHTML='\uD83E\uDE9C 사다리: '+ladderSummary+'<br>\uD83D\uDC0D 뱀: '+snakeSummary;
+
+            path.forEach(function(node,idx){
+                (function(nd,i){
+                    var desc;
+                    if(i===0) desc='1번 칸에서 시작';
+                    else {
+                        var prevNode=path[i-1];
+                        if(warpUsed[nd]!==null){
+                            var wp=warpUsed[nd];
+                            var isLadder=ladders.some(function(l){return l[0]===wp;});
+                            desc=i+'회째: '+prevNode+' → '+wp+(isLadder?' → \uD83E\uDE9C사다리! → ':' → \uD83D\uDC0D뱀! → ')+nd;
+                        } else {
+                            desc=i+'회째: '+prevNode+' → '+nd;
+                        }
+                    }
+                    steps.push({
+                        description:desc,
+                        action:function(){shown=path.slice(0,i+1);areaEl.innerHTML=shown.map(function(p,j){return j===shown.length-1?'<strong>'+p+'</strong>':''+p;}).join(' \u2192 ');infoEl.innerHTML='dist['+nd+'] = '+i;},
+                        undo:function(){shown=path.slice(0,i);areaEl.innerHTML=shown.length>0?shown.join(' \u2192 '):'\uD83E\uDE9C 사다리: '+ladderSummary+'<br>\uD83D\uDC0D 뱀: '+snakeSummary;infoEl.innerHTML='';}
+                    });
+                })(node,idx);
+            });
+            if(dist[100]>=0){
+                steps.push({description:'100번 도착! 최소 주사위 = '+dist[100]+'회',
+                    action:function(){areaEl.innerHTML=path.join(' \u2192 ')+' \uD83C\uDFC1';infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 주사위 횟수 = '+dist[100]+'</strong>';},
+                    undo:function(){areaEl.innerHTML=path.join(' \u2192 ');infoEl.innerHTML='';}});
+            }
+            return steps;
+        }
+        function init(){
+            var ladders=parsePairs(container.querySelector('#gr-snake-ladders').value);
+            var snakes=parsePairs(container.querySelector('#gr-snake-snakes').value);
+            var ladderSummary=ladders.map(function(p){return p[0]+'\u2192'+p[1];}).join(', ');
+            var snakeSummary=snakes.map(function(p){return p[0]+'\u2192'+p[1];}).join(', ');
+            areaEl.innerHTML='\uD83E\uDE9C 사다리: '+ladderSummary+'<br>\uD83D\uDC0D 뱀: '+snakeSummary;
+            infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(ladders,snakes),suffix);
+        }
+        container.querySelector('#gr-snake-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -964,38 +1612,75 @@ var graphTopic = {
     // ====================================================================
     _renderVizBipartite: function(container) {
         var self = this, suffix = '-bip';
+        var DEFAULT_N = 3, DEFAULT_EDGES = '1 3, 2 3';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">이분 그래프 판별 — 2-Coloring</h3>' +
             '<p style="color:var(--text2);margin-bottom:12px;">인접 정점을 서로 다른 색으로 칠할 수 있는지 확인합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">N: <input type="number" id="gr-bip-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+            '<label style="font-weight:600;">간선: <input type="text" id="gr-bip-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="gr-bip-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        var colors = {};
-        function render(c) {
-            var nodes = [1,2,3];
-            areaEl.innerHTML = '간선: 1-3, 2-3<br><div style="display:flex;gap:12px;justify-content:center;margin-top:8px;">' + nodes.map(function(n) {
-                var bg = c[n] === 0 ? '#636e72' : (c[n] === 1 ? '#d63031' : 'var(--bg2)');
-                return '<div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:' + bg + ';color:' + (c[n] !== undefined ? 'white' : 'var(--text)') + ';">' + n + '</div>';
-            }).join('') + '</div>';
+
+        function parseEdges(s){return s.split(',').map(function(e){var p=e.trim().split(/\s+/);return [parseInt(p[0]),parseInt(p[1])];}).filter(function(e){return !isNaN(e[0])&&!isNaN(e[1]);});}
+        function buildAdj(n,edges){var adj={};for(var i=1;i<=n;i++) adj[i]=[];edges.forEach(function(e){adj[e[0]].push(e[1]);adj[e[1]].push(e[0]);});return adj;}
+        function renderBip(n, colors){
+            var nodes=[];for(var i=1;i<=n;i++) nodes.push(i);
+            areaEl.innerHTML='<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">'+nodes.map(function(nd){
+                var bg=colors[nd]===0?'#636e72':(colors[nd]===1?'#d63031':'var(--bg2)');
+                return '<div style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:'+bg+';color:'+(colors[nd]!==undefined?'white':'var(--text)')+';">'+nd+'</div>';
+            }).join('')+'</div>';
         }
-        render({});
-        var steps = [
-            { description: '1번을 색 0(회색)으로 칠합니다',
-              action: function() { colors = {1:0}; render(colors); infoEl.innerHTML = 'color[1] = 0'; },
-              undo: function() { colors = {}; render({}); infoEl.innerHTML = ''; } },
-            { description: '1의 이웃 3번을 색 1(빨강)으로 칠합니다',
-              action: function() { colors[3] = 1; render(colors); infoEl.innerHTML = 'color[3] = 1 (1과 다른 색)'; },
-              undo: function() { delete colors[3]; render(colors); infoEl.innerHTML = 'color[1] = 0'; } },
-            { description: '3의 이웃 2번을 색 0(회색)으로 칠합니다',
-              action: function() { colors[2] = 0; render(colors); infoEl.innerHTML = 'color[2] = 0 (3과 다른 색)'; },
-              undo: function() { delete colors[2]; render(colors); infoEl.innerHTML = 'color[3] = 1'; } },
-            { description: '모든 인접 쌍이 다른 색 → 이분 그래프 YES!',
-              action: function() { render(colors); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 이분 그래프입니다 (YES)</strong>'; },
-              undo: function() { infoEl.innerHTML = 'color[2] = 0'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function buildSteps(n, edges){
+            var adj=buildAdj(n,edges), steps=[], colors={};
+            // BFS 2-coloring
+            var simColors={}, colorLog=[], isBipartite=true;
+            for(var start=1;start<=n;start++){
+                if(simColors[start]!==undefined) continue;
+                simColors[start]=0;
+                colorLog.push({node:start,color:0});
+                var q=[start];
+                while(q.length>0){
+                    var v=q.shift();
+                    (adj[v]||[]).forEach(function(u){
+                        if(simColors[u]===undefined){
+                            simColors[u]=1-simColors[v];
+                            colorLog.push({node:u,color:simColors[u],from:v});
+                            q.push(u);
+                        } else if(simColors[u]===simColors[v]){
+                            isBipartite=false;
+                        }
+                    });
+                }
+            }
+            colorLog.forEach(function(entry,idx){
+                (function(e,i){
+                    var colorName=e.color===0?'0(회색)':'1(빨강)';
+                    var desc=e.from?e.from+'의 이웃 '+e.node+'번을 색 '+colorName+'으로 칠합니다':e.node+'번을 색 '+colorName+'으로 칠합니다';
+                    steps.push({
+                        description:desc,
+                        action:function(){colors[e.node]=e.color;renderBip(n,colors);infoEl.innerHTML='color['+e.node+'] = '+e.color+(e.from?' ('+e.from+'과 다른 색)':'');},
+                        undo:function(){delete colors[e.node];renderBip(n,colors);infoEl.innerHTML='';}
+                    });
+                })(entry,idx);
+            });
+            steps.push({description:isBipartite?'모든 인접 쌍이 다른 색 → 이분 그래프 YES!':'같은 색 인접 쌍 발견 → 이분 그래프 NO!',
+                action:function(){renderBip(n,colors);infoEl.innerHTML='<strong style="color:'+(isBipartite?'var(--green)':'var(--red)')+';font-size:1.1rem;">'+(isBipartite?'\u2705 이분 그래프입니다 (YES)':'\u274C 이분 그래프가 아닙니다 (NO)')+'</strong>';},
+                undo:function(){renderBip(n,colors);infoEl.innerHTML='';}});
+            return steps;
+        }
+        function init(){
+            var n=parseInt(container.querySelector('#gr-bip-n').value)||DEFAULT_N;
+            var edges=parseEdges(container.querySelector('#gr-bip-edges').value);
+            renderBip(n,{});infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(n,edges),suffix);
+        }
+        container.querySelector('#gr-bip-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ====================================================================
@@ -1003,30 +1688,100 @@ var graphTopic = {
     // ====================================================================
     _renderVizWall: function(container) {
         var self = this, suffix = '-wall';
+        var DEFAULT_GRID = '0 1 0; 0 1 0; 0 0 0';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">벽 부수고 이동하기 — 상태 BFS</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">visited[r][c][broken] 3차원 방문 배열을 사용합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">visited[r][c][broken] 3차원 방문 배열. 0=길, 1=벽.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-wall-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
+            '<button class="btn btn-primary" id="gr-wall-reset">\uD83D\uDD04</button></div>' +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var areaEl = container.querySelector('#viz-area' + suffix);
         var infoEl = container.querySelector('#viz-info' + suffix);
-        areaEl.innerHTML = '3\u00D73 맵:<br>0 <strong style="color:#e74c3c;">1</strong> 0<br>0 <strong style="color:#e74c3c;">1</strong> 0<br>0 0 0';
-        var steps = [
-            { description: '(0,0)에서 시작, broken=0 상태',
-              action: function() { infoEl.innerHTML = 'dist[0][0][0] = 1 (벽 안 부순 상태)'; },
-              undo: function() { infoEl.innerHTML = ''; } },
-            { description: '경로 1: 벽을 부수지 않고 돌아감 (0,0)→(1,0)→(2,0)→(2,1)→(2,2) = 5칸',
-              action: function() { infoEl.innerHTML = '벽 안 부숨: (0,0)→(1,0)→(2,0)→(2,1)→(2,2) = 5칸'; },
-              undo: function() { infoEl.innerHTML = 'dist[0][0][0] = 1'; } },
-            { description: '경로 2: (0,1) 벽을 부수고 직진 (0,0)→(0,1)→(0,2)→(1,2)→(2,2) = 5칸',
-              action: function() { infoEl.innerHTML = '벽 부숨: (0,0)→(0,1)\uD83D\uDCA5→(0,2)→(1,2)→(2,2) = 5칸'; },
-              undo: function() { infoEl.innerHTML = '벽 안 부숨: 돌아가는 경로 = 5칸'; } },
-            { description: '두 경로 모두 5칸. BFS가 먼저 도달하는 것이 답!',
-              action: function() { infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최단 경로 = 5칸 (상태 BFS로 해결)</strong>'; },
-              undo: function() { infoEl.innerHTML = '벽 부숨: 직진 경로 = 5칸'; } }
-        ];
-        self._initStepController(container, steps, suffix);
+        function parseGrid(s){return s.split(';').map(function(row){return row.trim().split(/\s+/).map(Number);});}
+        function renderWall(grid, dist0, dist1){
+            var C=grid[0].length;
+            var html='<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;">';
+            html+='<div><div style="font-size:0.8rem;color:var(--text3);margin-bottom:4px;font-weight:600;">벽 안 부숨</div>';
+            html+='<div style="display:inline-grid;grid-template-columns:repeat('+C+',40px);gap:2px;">';
+            grid.forEach(function(row,r){row.forEach(function(v,c){
+                var bg=v===1?'#e74c3c':(dist0[r][c]>=0?'#2d3436':'#dfe6e9');
+                html+='<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-weight:600;font-size:0.75rem;background:'+bg+';color:'+(dist0[r][c]>=0||v===1?'white':'var(--text)')+';">'+(v===1?'\u2588':(dist0[r][c]>=0?dist0[r][c]:'\u00B7'))+'</div>';
+            });});
+            html+='</div></div>';
+            html+='<div><div style="font-size:0.8rem;color:var(--text3);margin-bottom:4px;font-weight:600;">벽 부숨</div>';
+            html+='<div style="display:inline-grid;grid-template-columns:repeat('+C+',40px);gap:2px;">';
+            grid.forEach(function(row,r){row.forEach(function(v,c){
+                var bg=v===1?'#e74c3c':(dist1[r][c]>=0?'#6c5ce7':'#dfe6e9');
+                html+='<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-weight:600;font-size:0.75rem;background:'+bg+';color:'+(dist1[r][c]>=0||v===1?'white':'var(--text)')+';">'+(v===1?'\u2588':(dist1[r][c]>=0?dist1[r][c]:'\u00B7'))+'</div>';
+            });});
+            html+='</div></div></div>';
+            areaEl.innerHTML=html;
+        }
+        function buildSteps(grid){
+            var R=grid.length,C=grid[0].length,dx=[0,0,1,-1],dy=[1,-1,0,0];
+            // 3D BFS: dist[r][c][b]
+            var dist3=[];for(var r=0;r<R;r++){dist3.push([]);for(var c=0;c<C;c++){dist3[r].push([-1,-1]);}}
+            dist3[0][0][0]=1;
+            var q=[[0,0,0]]; // r,c,broken
+            var levels=[[{r:0,c:0,b:0,d:1}]];
+            while(q.length>0){
+                var nextQ=[],nextLevel=[];
+                q.forEach(function(pos){
+                    var cr=pos[0],cc=pos[1],cb=pos[2];
+                    for(var d=0;d<4;d++){
+                        var nr=cr+dx[d],nc=cc+dy[d];
+                        if(nr<0||nr>=R||nc<0||nc>=C) continue;
+                        if(grid[nr][nc]===0&&dist3[nr][nc][cb]<0){
+                            dist3[nr][nc][cb]=dist3[cr][cc][cb]+1;
+                            nextQ.push([nr,nc,cb]);
+                            nextLevel.push({r:nr,c:nc,b:cb,d:dist3[nr][nc][cb]});
+                        }
+                        if(grid[nr][nc]===1&&cb===0&&dist3[nr][nc][1]<0){
+                            dist3[nr][nc][1]=dist3[cr][cc][cb]+1;
+                            nextQ.push([nr,nc,1]);
+                            nextLevel.push({r:nr,c:nc,b:1,d:dist3[nr][nc][1]});
+                        }
+                    }
+                });
+                if(nextLevel.length>0) levels.push(nextLevel);
+                q=nextQ;
+            }
+            var ans=-1;
+            if(dist3[R-1][C-1][0]>=0) ans=dist3[R-1][C-1][0];
+            if(dist3[R-1][C-1][1]>=0&&(ans<0||dist3[R-1][C-1][1]<ans)) ans=dist3[R-1][C-1][1];
+
+            // reset for step-by-step
+            for(var r=0;r<R;r++) for(var c=0;c<C;c++){dist3[r][c][0]=-1;dist3[r][c][1]=-1;}
+            var dist0=[],dist1=[];
+            for(var r=0;r<R;r++){dist0.push([]);dist1.push([]);for(var c=0;c<C;c++){dist0[r].push(-1);dist1[r].push(-1);}}
+
+            var steps=[];
+            levels.forEach(function(cells,li){
+                (function(cs,idx){
+                    steps.push({
+                        description:idx===0?'(0,0)에서 시작, broken=0':'확장 '+(idx)+': '+cs.length+'칸',
+                        action:function(){cs.forEach(function(p){dist3[p.r][p.c][p.b]=p.d;if(p.b===0) dist0[p.r][p.c]=p.d; else dist1[p.r][p.c]=p.d;});renderWall(grid,dist0,dist1);infoEl.innerHTML=idx===0?'dist[0][0][0] = 1':''+cs.length+'칸 확장';},
+                        undo:function(){cs.forEach(function(p){dist3[p.r][p.c][p.b]=-1;if(p.b===0) dist0[p.r][p.c]=-1; else dist1[p.r][p.c]=-1;});renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
+                    });
+                })(cells,li);
+            });
+            steps.push({description:ans>=0?'최단 경로 = '+ans+'칸':'도달 불가 (-1)',
+                action:function(){renderWall(grid,dist0,dist1);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(ans>=0?'최단 경로 = '+ans+'칸':'도달 불가 (-1)')+'</strong>';},
+                undo:function(){renderWall(grid,dist0,dist1);infoEl.innerHTML='';}});
+            return steps;
+        }
+        function init(){
+            var grid=parseGrid(container.querySelector('#gr-wall-grid').value);
+            var empty0=grid.map(function(r){return r.map(function(){return -1;});});
+            var empty1=grid.map(function(r){return r.map(function(){return -1;});});
+            renderWall(grid,empty0,empty1);infoEl.innerHTML='';
+            self._initStepController(container,buildSteps(grid),suffix);
+        }
+        container.querySelector('#gr-wall-reset').addEventListener('click',function(){self._clearVizState();init();});
+        init();
     },
 
     // ===== 빈 스텁 =====
@@ -1050,13 +1805,10 @@ var graphTopic = {
             simIntro: '1번 컴퓨터에서 시작해 연결된 컴퓨터로 바이러스가 퍼지는 BFS 탐색 과정을 시뮬레이션합니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>어느 날 1번 컴퓨터가 웜 바이러스에 걸렸습니다. 1번 컴퓨터가 바이러스에 걸리면 네트워크를 통해 연결된 다른 컴퓨터도 바이러스에 감염됩니다.</p>
-                <p>컴퓨터의 수와 네트워크 연결 정보가 주어질 때, 1번 컴퓨터를 통해 바이러스에 감염되는 컴퓨터의 수를 구하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>첫째 줄: 컴퓨터 수 N (≤100)<br>둘째 줄: 연결 수<br>이후: 연결 쌍</p></div>
-                    <div><h4>출력</h4><p>1번 컴퓨터를 통해 감염되는 컴퓨터 수</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>신종 바이러스인 웜 바이러스는 네트워크를 통해 전파됩니다. 한 컴퓨터가 웜 바이러스에 걸리면 그 컴퓨터와 네트워크 상에서 연결되어 있는 모든 컴퓨터는 웜 바이러스에 걸리게 됩니다.</p>
+                <p>예를 들어 7대의 컴퓨터가 <그림 1>과 같이 네트워크 상에서 연결되어 있다고 하자. 1번 컴퓨터가 웜 바이러스에 걸리면 웜 바이러스는 2번과 5번 컴퓨터를 거쳐 3번과 6번 컴퓨터까지 전파되어 2, 3, 5, 6 네 대의 컴퓨터는 웜 바이러스에 걸리게 된다. 하지만 4번과 7번 컴퓨터는 1번 컴퓨터와 네트워크상에서 연결되어 있지 않기 때문에 영향을 받지 않는다.</p>
+                <p>어느 날 1번 컴퓨터가 웜 바이러스에 걸렸다. 컴퓨터의 수와 네트워크 상에서 서로 연결되어 있는 정보가 주어질 때, 1번 컴퓨터를 통해 웜 바이러스에 걸리게 되는 컴퓨터의 수를 출력하는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>7
 6
 1 2
@@ -1066,11 +1818,22 @@ var graphTopic = {
 5 6
 4 7</pre></div>
                     <div><strong>출력</strong><pre>4</pre></div>
-                </div></div>`,
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3
+0</pre></div>
+                    <div><strong>출력</strong><pre>0</pre></div>
+                </div><p class="example-explain">연결된 컴퓨터가 없으므로 아무 컴퓨터도 감염되지 않습니다.</p></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ 컴퓨터 수 ≤ 100</li>
+                    <li>1 ≤ 연결 수 ≤ 100 × 99 / 2</li>
+                </ul>`,
             hints: [
-                { title: '어떤 알고리즘을 쓸까?', content: '1번 컴퓨터에서 출발하여 연결된 모든 컴퓨터를 찾는 문제입니다. <strong>DFS 또는 BFS</strong>로 탐색하면 됩니다!' },
-                { title: '핵심 아이디어', content: '인접 리스트를 만들고, 1번에서 DFS/BFS를 시작합니다. 방문한 컴퓨터의 개수에서 1번 자신을 빼면 정답입니다.' },
-                { title: '정답 코드 구조', content: '<code>graph[u].append(v), graph[v].append(u)</code>로 인접 리스트를 만들고,<br>1번에서 BFS 또는 DFS를 돌려서 <code>len(visited) - 1</code>을 출력합니다.' }
+                { title: '처음 떠오르는 방법', content: '1번 컴퓨터에서 바이러스가 퍼지니까... 1번과 연결된 컴퓨터를 찾고, 그 컴퓨터와 연결된 컴퓨터도 찾고... 이걸 반복하면 되지 않을까?<br><br>맞아요! <strong>"연결된 모든 컴퓨터를 찾는 것"</strong>이 핵심입니다. 이런 문제를 <strong>그래프 탐색</strong>이라고 해요.' },
+                { title: '근데 어떻게 빠짐없이 찾지?', content: '연결된 컴퓨터를 하나씩 따라가다 보면 빠뜨리거나 같은 곳을 두 번 방문할 수 있어요.<br><br>이걸 체계적으로 하는 방법이 <strong>BFS(너비 우선 탐색)</strong>와 <strong>DFS(깊이 우선 탐색)</strong>입니다!<br>둘 다 <strong>visited 배열</strong>로 이미 방문한 곳을 체크하면 중복 방문을 막을 수 있어요.' },
+                { title: '이렇게 하면 어떨까?', content: '1번 컴퓨터를 큐에 넣고 BFS를 시작합니다:<br>1. 큐에서 컴퓨터를 꺼낸다<br>2. 그 컴퓨터와 연결된 이웃 중 방문하지 않은 것을 큐에 넣는다<br>3. 큐가 빌 때까지 반복!<br><br>방문한 컴퓨터 수에서 자기 자신(1번)을 빼면 정답이에요.' },
+                { title: '구현 팁', content: '양방향 연결이니까 인접 리스트에 양쪽 다 추가해야 해요:<br><span class="lang-py">Python: <code>graph[u].append(v)</code>와 <code>graph[v].append(u)</code> 둘 다! BFS에는 <code>deque</code>를 사용합니다.</span><span class="lang-cpp">C++: <code>graph[u].push_back(v)</code>와 <code>graph[v].push_back(u)</code> 둘 다! BFS에는 <code>queue&lt;int&gt;</code>를 사용합니다.</span>' }
             ],
             templates: {
                 python: `import sys
@@ -1099,7 +1862,10 @@ while queue:
             count += 1
 
 print(count)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -1131,37 +1897,6 @@ int main() {
     }
     printf("%d\\n", count);
     return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt(), M = sc.nextInt();
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < M; i++) {
-            int u = sc.nextInt(), v = sc.nextInt();
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-
-        boolean[] visited = new boolean[N + 1];
-        Queue<Integer> q = new LinkedList<>();
-        q.add(1); visited[1] = true;
-        int count = 0;
-        while (!q.isEmpty()) {
-            int v = q.poll();
-            for (int u : graph.get(v)) {
-                if (!visited[u]) {
-                    visited[u] = true;
-                    q.add(u);
-                    count++;
-                }
-            }
-        }
-        System.out.println(count);
-    }
 }`
             },
             solutions: [{
@@ -1171,9 +1906,14 @@ public class Main {
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구성', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN = int(input())\nM = int(input())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)' },
-                        { title: 'BFS 초기화', code: 'visited = [False] * (N + 1)\nqueue = deque([1])\nvisited[1] = True\ncount = 0' },
-                        { title: 'BFS 탐색 및 출력', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        if not visited[u]:\n            visited[u] = True\n            queue.append(u)\n            count += 1\nprint(count)' }
+                        { title: '입력 및 그래프 구성', desc: '양방향 간선이므로 양쪽 모두 인접 리스트에 추가합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN = int(input())\nM = int(input())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)' },
+                        { title: 'BFS 초기화', desc: '1번 컴퓨터에서 출발하므로 deque에 1을 넣고 시작합니다.', code: 'visited = [False] * (N + 1)\nqueue = deque([1])\nvisited[1] = True\ncount = 0' },
+                        { title: 'BFS 탐색 및 출력', desc: '연결된 모든 컴퓨터를 방문하며 감염 수를 세고 출력합니다.', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        if not visited[u]:\n            visited[u] = True\n            queue.append(u)\n            count += 1\nprint(count)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구성', desc: 'vector 인접 리스트와 scanf로 빠른 입력', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    // 인접 리스트: vector 배열로 그래프 저장\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int u, v;\n        scanf("%d %d", &u, &v);\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }' },
+                        { title: 'BFS 초기화', desc: 'deque 대신 queue<int> 사용', code: '    vector<bool> visited(N + 1, false);\n    queue<int> q;\n    q.push(1);\n    visited[1] = true;\n    int count = 0;' },
+                        { title: 'BFS 탐색 및 출력', desc: '큐가 빌 때까지 탐색하며 감염된 컴퓨터 수를 셉니다.', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                q.push(u);\n                count++;\n            }\n        }\n    }\n    printf("%d\\n", count);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[0].templates; }
@@ -1187,13 +1927,9 @@ public class Main {
             simIntro: '시작 정점에서 오름차순 DFS를 수행하며 각 정점의 방문 순서를 기록하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 DFS로 탐색할 때, 각 정점의 방문 순서를 출력하세요.</p>
-                <p>인접 정점은 <strong>오름차순</strong>으로 방문합니다. 방문하지 못하는 정점은 0을 출력합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M, R (정점 수, 간선 수, 시작 정점)</p></div>
-                    <div><h4>출력</h4><p>각 정점의 방문 순서 (N줄)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 깊이 우선 탐색(DFS)으로 노드를 방문할 때, 각 노드의 방문 순서를 출력하는 프로그램을 작성하시오.</p>
+                <p>인접 정점은 <strong>오름차순</strong>으로 방문합니다. 시작 정점의 방문 순서는 1이다. 시작 정점에서 방문할 수 없는 경우 0을 출력합니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 5 1
 1 4
 1 2
@@ -1205,10 +1941,18 @@ public class Main {
 3
 4
 0</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>1 ≤ M ≤ 200,000</li>
+                    <li>1 ≤ R ≤ N</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '인접 리스트를 <strong>오름차순 정렬</strong>한 후 재귀 DFS를 수행합니다. 방문할 때마다 순서를 기록합니다.' },
-                { title: '구현 포인트', content: '<code>order[v] = ++cnt</code>로 방문 순서를 기록합니다.<br>재귀 DFS에서 이웃을 순서대로 방문하면 됩니다.' }
+                { title: '처음 떠오르는 방법', content: '시작 정점 R에서 DFS를 돌리면서, 방문할 때마다 순서를 1, 2, 3... 이렇게 매기면 되겠다!<br><br>맞아요. <code>order[v]</code> 배열에 각 정점의 방문 순서를 기록하면 됩니다. 방문하지 못한 정점은 0을 출력하면 되고요.' },
+                { title: '근데 이러면 문제가 있어', content: '문제에서 인접 정점을 <strong>오름차순</strong>으로 방문하라고 했어요. DFS를 그냥 돌리면 인접 리스트에 들어온 순서대로 방문하게 되니까, 정렬을 안 하면 순서가 달라질 수 있어요!' },
+                { title: '이렇게 하면 어떨까?', content: 'DFS 전에 각 정점의 인접 리스트를 <strong>오름차순 정렬</strong>하면 됩니다!<br><br>그러면 DFS가 자연스럽게 작은 번호부터 방문해요:<br><span class="lang-py">Python: <code>graph[i].sort()</code>로 정렬 후, 재귀 DFS에서 <code>global cnt</code>로 순서를 매깁니다.</span><span class="lang-cpp">C++: <code>sort(graph[i].begin(), graph[i].end())</code>로 정렬 후, 전역 변수 <code>cnt</code>로 순서를 매깁니다.</span>' },
+                { title: '주의할 점', content: '정점 수가 최대 100,000이므로 <span class="lang-py">Python에서는 <code>sys.setrecursionlimit(200000)</code>으로 재귀 한도를 늘려야 합니다!</span><span class="lang-cpp">C++에서는 기본 스택 크기로 충분하지만, 전역 배열을 사용하면 더 안전합니다.</span>' }
             ],
             templates: {
                 python: `import sys
@@ -1239,7 +1983,10 @@ def dfs(v):
 dfs(R)
 for i in range(1, N + 1):
     print(order[i])`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int N, M, R, cnt = 0;
@@ -1265,45 +2012,6 @@ int main() {
     dfs(R);
     for (int i = 1; i <= N; i++) printf("%d\\n", order_arr[i]);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static List<List<Integer>> graph;
-    static int[] order;
-    static int cnt = 0;
-
-    static void dfs(int v) {
-        order[v] = ++cnt;
-        for (int u : graph.get(v)) {
-            if (order[u] == 0) dfs(u);
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int R = Integer.parseInt(st.nextToken());
-
-        graph = new ArrayList<>();
-        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-        for (int i = 1; i <= N; i++) Collections.sort(graph.get(i));
-        order = new int[N + 1];
-        dfs(R);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= N; i++) sb.append(order[i]).append("\\n");
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -1313,9 +2021,14 @@ public class Main {
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 정렬', code: 'import sys\nsys.setrecursionlimit(200000)\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort()' },
-                        { title: 'DFS 함수 정의', code: 'order = [0] * (N + 1)\ncnt = 0\n\ndef dfs(v):\n    global cnt\n    cnt += 1\n    order[v] = cnt\n    for u in graph[v]:\n        if order[u] == 0:\n            dfs(u)' },
-                        { title: 'DFS 실행 및 출력', code: 'dfs(R)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                        { title: '입력 및 그래프 정렬', desc: '오름차순 방문을 위해 인접 리스트를 sort()합니다.', code: 'import sys\nsys.setrecursionlimit(200000)\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort()' },
+                        { title: 'DFS 함수 정의', desc: 'order 배열에 방문 순서를 기록하는 재귀 DFS입니다.', code: 'order = [0] * (N + 1)\ncnt = 0\n\ndef dfs(v):\n    global cnt\n    cnt += 1\n    order[v] = cnt\n    for u in graph[v]:\n        if order[u] == 0:\n            dfs(u)' },
+                        { title: 'DFS 실행 및 출력', desc: '시작 정점 R에서 DFS를 실행하고 각 정점의 방문 순서를 출력합니다.', code: 'dfs(R)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 정렬', desc: '전역 배열 + sort()로 오름차순 정렬', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint N, M, R, cnt = 0;\nvector<int> graph[100001];\nint order_arr[100001]; // 방문 순서 기록 배열' },
+                        { title: 'DFS 함수 정의', desc: 'global 대신 전역 변수 cnt 사용', code: 'void dfs(int v) {\n    order_arr[v] = ++cnt; // 방문 순서 기록\n    for (int u : graph[v]) {\n        if (order_arr[u] == 0) dfs(u);\n    }\n}' },
+                        { title: 'DFS 실행 및 출력', desc: 'main에서 입력·정렬·DFS·출력을 순서대로 처리합니다.', code: 'int main() {\n    scanf("%d %d %d", &N, &M, &R);\n    for (int i = 0; i < M; i++) {\n        int u, v;\n        scanf("%d %d", &u, &v);\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    // 오름차순 정렬: 작은 번호부터 방문하기 위해\n    for (int i = 1; i <= N; i++)\n        sort(graph[i].begin(), graph[i].end());\n    dfs(R);\n    for (int i = 1; i <= N; i++)\n        printf("%d\\n", order_arr[i]);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[1].templates; }
@@ -1329,13 +2042,9 @@ public class Main {
             simIntro: '시작 정점에서 내림차순 DFS를 수행하며 각 정점의 방문 순서를 기록하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 DFS로 탐색할 때, 각 정점의 방문 순서를 출력하세요.</p>
-                <p>인접 정점은 <strong>내림차순</strong>으로 방문합니다. 방문하지 못하는 정점은 0을 출력합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M, R (정점 수, 간선 수, 시작 정점)</p></div>
-                    <div><h4>출력</h4><p>각 정점의 방문 순서 (N줄)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 깊이 우선 탐색(DFS)으로 노드를 방문할 때, 각 노드의 방문 순서를 출력하는 프로그램을 작성하시오.</p>
+                <p>인접 정점은 <strong>내림차순</strong>으로 방문합니다. 시작 정점의 방문 순서는 1이다. 시작 정점에서 방문할 수 없는 경우 0을 출력합니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 5 1
 1 4
 1 2
@@ -1347,10 +2056,17 @@ public class Main {
 3
 2
 0</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>1 ≤ M ≤ 200,000</li>
+                    <li>1 ≤ R ≤ N</li>
+                </ul>`,
             hints: [
-                { title: '24479와 뭐가 다를까?', content: '24479번과 거의 같지만, 인접 리스트를 <strong>내림차순</strong>으로 정렬합니다.<br><code>graph[i].sort(reverse=True)</code> 한 줄만 바꾸면 됩니다!' },
-                { title: '정답 코드 구조', content: '24479번 코드에서 정렬 방향만 바꿉니다:<br>Python: <code>sort(reverse=True)</code><br>C++: <code>sort(rbegin(), rend())</code>' }
+                { title: '처음 떠오르는 방법', content: '24479번(깊이 우선 탐색 1)을 이미 풀었다면, 같은 방식으로 DFS를 돌리면 될 것 같아요. 방문 순서를 <code>order</code> 배열에 기록하는 건 동일하고요.' },
+                { title: '근데 이러면 문제가 있어', content: '이번에는 인접 정점을 <strong>내림차순</strong>으로 방문해야 해요! 24479번처럼 오름차순으로 정렬하면 방문 순서가 달라집니다.<br><br>결국 정렬 방향 <strong>한 줄</strong>만 바꾸면 되는 문제예요.' },
+                { title: '이렇게 하면 어떨까?', content: '24479번 코드에서 정렬 부분만 내림차순으로 바꿉니다:<br><span class="lang-py">Python: <code>graph[i].sort(reverse=True)</code></span><span class="lang-cpp">C++: <code>sort(graph[i].rbegin(), graph[i].rend())</code></span><br><br>나머지 DFS 로직은 완전히 동일합니다!' }
             ],
             templates: {
                 python: `import sys
@@ -1381,7 +2097,10 @@ def dfs(v):
 dfs(R)
 for i in range(1, N + 1):
     print(order[i])`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int N, M, R, cnt = 0;
@@ -1407,45 +2126,6 @@ int main() {
     dfs(R);
     for (int i = 1; i <= N; i++) printf("%d\\n", order_arr[i]);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static List<List<Integer>> graph;
-    static int[] order;
-    static int cnt = 0;
-
-    static void dfs(int v) {
-        order[v] = ++cnt;
-        for (int u : graph.get(v)) {
-            if (order[u] == 0) dfs(u);
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int R = Integer.parseInt(st.nextToken());
-
-        graph = new ArrayList<>();
-        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-        for (int i = 1; i <= N; i++) graph.get(i).sort(Collections.reverseOrder()); // 내림차순!
-        order = new int[N + 1];
-        dfs(R);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= N; i++) sb.append(order[i]).append("\\n");
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -1455,9 +2135,14 @@ public class Main {
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 내림차순 정렬', code: 'import sys\nsys.setrecursionlimit(200000)\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort(reverse=True)' },
-                        { title: 'DFS 함수 정의', code: 'order = [0] * (N + 1)\ncnt = 0\n\ndef dfs(v):\n    global cnt\n    cnt += 1\n    order[v] = cnt\n    for u in graph[v]:\n        if order[u] == 0:\n            dfs(u)' },
-                        { title: 'DFS 실행 및 출력', code: 'dfs(R)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                        { title: '입력 및 내림차순 정렬', desc: '내림차순 방문을 위해 reverse=True로 정렬합니다.', code: 'import sys\nsys.setrecursionlimit(200000)\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort(reverse=True)' },
+                        { title: 'DFS 함수 정의', desc: '24479번과 동일한 재귀 DFS, 정렬 방향만 다릅니다.', code: 'order = [0] * (N + 1)\ncnt = 0\n\ndef dfs(v):\n    global cnt\n    cnt += 1\n    order[v] = cnt\n    for u in graph[v]:\n        if order[u] == 0:\n            dfs(u)' },
+                        { title: 'DFS 실행 및 출력', desc: '시작 정점 R에서 DFS 실행 후 각 정점의 방문 순서를 출력합니다.', code: 'dfs(R)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 내림차순 정렬', desc: 'rbegin()/rend()로 내림차순 정렬', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint N, M, R, cnt = 0;\nvector<int> graph[100001];\nint order_arr[100001];' },
+                        { title: 'DFS 함수 정의', desc: '24479번과 동일한 재귀 DFS 구조입니다.', code: 'void dfs(int v) {\n    order_arr[v] = ++cnt;\n    for (int u : graph[v]) {\n        if (order_arr[u] == 0) dfs(u);\n    }\n}' },
+                        { title: 'DFS 실행 및 출력', desc: 'rbegin/rend 역순 정렬 후 DFS 실행, 결과 출력합니다.', code: 'int main() {\n    scanf("%d %d %d", &N, &M, &R);\n    for (int i = 0; i < M; i++) {\n        int u, v;\n        scanf("%d %d", &u, &v);\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    // 내림차순: rbegin/rend로 역순 정렬\n    for (int i = 1; i <= N; i++)\n        sort(graph[i].rbegin(), graph[i].rend());\n    dfs(R);\n    for (int i = 1; i <= N; i++)\n        printf("%d\\n", order_arr[i]);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[2].templates; }
@@ -1471,13 +2156,9 @@ public class Main {
             simIntro: '시작 정점에서 오름차순 BFS를 수행하며 각 정점의 방문 순서를 기록하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 BFS로 탐색할 때, 각 정점의 방문 순서를 출력하세요.</p>
-                <p>인접 정점은 <strong>오름차순</strong>으로 방문합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M, R (정점 수, 간선 수, 시작 정점)</p></div>
-                    <div><h4>출력</h4><p>각 정점의 방문 순서 (N줄)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 너비 우선 탐색(BFS)으로 노드를 방문할 때, 각 노드의 방문 순서를 출력하는 프로그램을 작성하시오.</p>
+                <p>인접 정점은 <strong>오름차순</strong>으로 방문합니다. 시작 정점의 방문 순서는 1이다. 시작 정점에서 방문할 수 없는 경우 0을 출력합니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 5 1
 1 4
 1 2
@@ -1489,10 +2170,17 @@ public class Main {
 3
 4
 0</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>1 ≤ M ≤ 200,000</li>
+                    <li>1 ≤ R ≤ N</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: 'DFS 대신 <strong>BFS</strong>를 사용합니다. 큐(deque)에서 꺼낸 정점의 이웃을 <strong>오름차순</strong>으로 큐에 넣습니다.' },
-                { title: '구현 포인트', content: '인접 리스트를 오름차순 정렬한 후, BFS를 수행하면서 <code>order[v] = ++cnt</code>로 순서를 기록합니다.' }
+                { title: '처음 떠오르는 방법', content: '24479번처럼 DFS로... 잠깐, 이번엔 <strong>BFS(너비 우선 탐색)</strong>로 방문 순서를 구해야 해요!<br><br>BFS는 시작 정점에서 가까운 정점부터 차례로 방문하는 방식입니다. 큐(queue)를 사용해요.' },
+                { title: '근데 순서가 중요해', content: '문제에서 인접 정점을 <strong>오름차순</strong>으로 방문하라고 했으니, DFS 문제와 마찬가지로 인접 리스트를 먼저 정렬해야 합니다. 정렬 안 하면 순서가 달라져요!' },
+                { title: '이렇게 하면 어떨까?', content: '1. 인접 리스트를 오름차순 정렬<br>2. 시작 정점 R을 큐에 넣고 <code>order[R] = 1</code><br>3. 큐에서 꺼낸 정점의 이웃 중 미방문 정점을 순서대로 큐에 넣으며 방문 순서를 기록<br><br><span class="lang-py">Python: <code>deque</code>로 BFS, <code>popleft()</code>로 큐에서 꺼냅니다.</span><span class="lang-cpp">C++: <code>queue&lt;int&gt;</code>로 BFS, <code>q.front(); q.pop();</code>으로 큐에서 꺼냅니다.</span>' }
             ],
             templates: {
                 python: `import sys
@@ -1529,7 +2217,10 @@ while queue:
 
 for i in range(1, N + 1):
     print(order[i])`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -1562,49 +2253,6 @@ int main() {
     }
     for (int i = 1; i <= N; i++) printf("%d\\n", order_arr[i]);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int R = Integer.parseInt(st.nextToken());
-
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-        for (int i = 1; i <= N; i++) Collections.sort(graph.get(i));
-
-        int[] order = new int[N + 1];
-        boolean[] visited = new boolean[N + 1];
-        Queue<Integer> q = new LinkedList<>();
-        q.add(R); visited[R] = true;
-        int cnt = 0; order[R] = ++cnt;
-
-        while (!q.isEmpty()) {
-            int v = q.poll();
-            for (int u : graph.get(v)) {
-                if (!visited[u]) {
-                    visited[u] = true;
-                    order[u] = ++cnt;
-                    q.add(u);
-                }
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= N; i++) sb.append(order[i]).append("\\n");
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -1614,9 +2262,14 @@ public class Main {
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 정렬', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort()' },
-                        { title: 'BFS 초기화', code: 'order = [0] * (N + 1)\ncnt = 0\nqueue = deque([R])\ncnt += 1\norder[R] = cnt' },
-                        { title: 'BFS 탐색 및 출력', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        if order[u] == 0:\n            cnt += 1\n            order[u] = cnt\n            queue.append(u)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                        { title: '입력 및 그래프 정렬', desc: '오름차순 BFS를 위해 인접 리스트를 정렬합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort()' },
+                        { title: 'BFS 초기화', desc: '시작 정점 R을 큐에 넣고 방문 순서 1을 기록합니다.', code: 'order = [0] * (N + 1)\ncnt = 0\nqueue = deque([R])\ncnt += 1\norder[R] = cnt' },
+                        { title: 'BFS 탐색 및 출력', desc: '큐에서 꺼낸 정점의 이웃을 오름차순으로 방문합니다.', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        if order[u] == 0:\n            cnt += 1\n            order[u] = cnt\n            queue.append(u)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 정렬', desc: 'vector<vector<int>>와 sort()로 오름차순 정렬', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M, R;\n    scanf("%d %d %d", &N, &M, &R);\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int u, v;\n        scanf("%d %d", &u, &v);\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    for (int i = 1; i <= N; i++)\n        sort(graph[i].begin(), graph[i].end());' },
+                        { title: 'BFS 초기화', desc: 'deque 대신 queue 사용', code: '    vector<int> order_arr(N + 1, 0);\n    int cnt = 0;\n    queue<int> q;\n    q.push(R);\n    order_arr[R] = ++cnt;' },
+                        { title: 'BFS 탐색 및 출력', desc: '방문 순서를 기록하며 BFS 수행 후 결과를 출력합니다.', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            if (order_arr[u] == 0) {\n                order_arr[u] = ++cnt;\n                q.push(u);\n            }\n        }\n    }\n    for (int i = 1; i <= N; i++)\n        printf("%d\\n", order_arr[i]);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[3].templates; }
@@ -1630,13 +2283,9 @@ public class Main {
             simIntro: '시작 정점에서 내림차순 BFS를 수행하며 각 정점의 방문 순서를 기록하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 BFS로 탐색할 때, 각 정점의 방문 순서를 출력하세요.</p>
-                <p>인접 정점은 <strong>내림차순</strong>으로 방문합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M, R</p></div>
-                    <div><h4>출력</h4><p>각 정점의 방문 순서 (N줄)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>N개의 정점과 M개의 간선으로 구성된 무방향 그래프가 주어집니다. 정점 R에서 시작하여 너비 우선 탐색(BFS)으로 노드를 방문할 때, 각 노드의 방문 순서를 출력하는 프로그램을 작성하시오.</p>
+                <p>인접 정점은 <strong>내림차순</strong>으로 방문합니다. 시작 정점의 방문 순서는 1이다. 시작 정점에서 방문할 수 없는 경우 0을 출력합니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 5 1
 1 4
 1 2
@@ -1648,10 +2297,17 @@ public class Main {
 4
 2
 0</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 100,000</li>
+                    <li>1 ≤ M ≤ 200,000</li>
+                    <li>1 ≤ R ≤ N</li>
+                </ul>`,
             hints: [
-                { title: '24444와 뭐가 다를까?', content: '24444번과 거의 같지만, 인접 리스트를 <strong>내림차순</strong>으로 정렬합니다.' },
-                { title: '정답 코드 구조', content: '24444번 코드에서 정렬 방향만 바꿉니다:<br>Python: <code>sort(reverse=True)</code>' }
+                { title: '처음 떠오르는 방법', content: '24444번(너비 우선 탐색 1)을 풀었다면, 같은 BFS 로직을 그대로 쓰면 될 것 같아요. 큐에서 꺼내고 이웃을 넣고...' },
+                { title: '근데 이러면 문제가 있어', content: '이번에는 인접 정점을 <strong>내림차순</strong>으로 방문해야 합니다! 오름차순 정렬을 그대로 쓰면 방문 순서가 완전히 달라져요.<br><br>24444번 코드에서 딱 <strong>한 줄</strong>만 바꾸면 됩니다.' },
+                { title: '이렇게 하면 어떨까?', content: '정렬 방향만 내림차순으로 변경하면 끝!<br><span class="lang-py">Python: <code>graph[i].sort(reverse=True)</code></span><span class="lang-cpp">C++: <code>sort(graph[i].rbegin(), graph[i].rend())</code></span><br><br>BFS 로직 자체는 24444번과 완전히 동일합니다.' }
             ],
             templates: {
                 python: `import sys
@@ -1687,7 +2343,10 @@ while queue:
 
 for i in range(1, N + 1):
     print(order[i])`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -1719,49 +2378,6 @@ int main() {
     }
     for (int i = 1; i <= N; i++) printf("%d\\n", order_arr[i]);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int R = Integer.parseInt(st.nextToken());
-
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-        for (int i = 1; i <= N; i++) graph.get(i).sort(Collections.reverseOrder());
-
-        int[] order = new int[N + 1];
-        boolean[] visited = new boolean[N + 1];
-        Queue<Integer> q = new LinkedList<>();
-        q.add(R); visited[R] = true;
-        int cnt = 0; order[R] = ++cnt;
-
-        while (!q.isEmpty()) {
-            int v = q.poll();
-            for (int u : graph.get(v)) {
-                if (!visited[u]) {
-                    visited[u] = true;
-                    order[u] = ++cnt;
-                    q.add(u);
-                }
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= N; i++) sb.append(order[i]).append("\\n");
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -1771,9 +2387,14 @@ public class Main {
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 내림차순 정렬', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort(reverse=True)' },
-                        { title: 'BFS 초기화', code: 'order = [0] * (N + 1)\ncnt = 0\nqueue = deque([R])\ncnt += 1\norder[R] = cnt' },
-                        { title: 'BFS 탐색 및 출력', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        if order[u] == 0:\n            cnt += 1\n            order[u] = cnt\n            queue.append(u)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                        { title: '입력 및 내림차순 정렬', desc: '내림차순 BFS를 위해 reverse=True로 정렬합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, R = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)\nfor i in range(1, N + 1):\n    graph[i].sort(reverse=True)' },
+                        { title: 'BFS 초기화', desc: '시작 정점 R을 큐에 넣고 방문 순서 1을 기록합니다.', code: 'order = [0] * (N + 1)\ncnt = 0\nqueue = deque([R])\ncnt += 1\norder[R] = cnt' },
+                        { title: 'BFS 탐색 및 출력', desc: '큐에서 꺼낸 정점의 이웃을 내림차순으로 방문합니다.', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        if order[u] == 0:\n            cnt += 1\n            order[u] = cnt\n            queue.append(u)\nfor i in range(1, N + 1):\n    print(order[i])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 내림차순 정렬', desc: 'rbegin()/rend()로 내림차순 정렬', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M, R;\n    scanf("%d %d %d", &N, &M, &R);\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int u, v;\n        scanf("%d %d", &u, &v);\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    // 내림차순: rbegin/rend로 역순 정렬\n    for (int i = 1; i <= N; i++)\n        sort(graph[i].rbegin(), graph[i].rend());' },
+                        { title: 'BFS 초기화', desc: '시작 정점을 큐에 넣고 방문 순서를 기록합니다.', code: '    vector<int> order_arr(N + 1, 0);\n    int cnt = 0;\n    queue<int> q;\n    q.push(R);\n    order_arr[R] = ++cnt;' },
+                        { title: 'BFS 탐색 및 출력', desc: '내림차순 인접 리스트로 BFS 수행 후 결과 출력합니다.', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            if (order_arr[u] == 0) {\n                order_arr[u] = ++cnt;\n                q.push(u);\n            }\n        }\n    }\n    for (int i = 1; i <= N; i++)\n        printf("%d\\n", order_arr[i]);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[4].templates; }
@@ -1787,13 +2408,8 @@ public class Main {
             simIntro: 'DFS와 BFS를 모두 수행하여 각각의 탐색 순서를 비교하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>그래프를 DFS로 탐색한 결과와 BFS로 탐색한 결과를 출력하세요.</p>
-                <p>정점 번호가 작은 것을 먼저 방문합니다. 시작 정점은 V입니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N M V (정점 수, 간선 수, 시작 정점)<br>이후 M개의 간선</p></div>
-                    <div><h4>출력</h4><p>첫째 줄: DFS 방문 순서<br>둘째 줄: BFS 방문 순서</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>그래프를 DFS로 탐색한 결과와 BFS로 탐색한 결과를 출력하는 프로그램을 작성하시오. 방문할 수 있는 정점이 여러 개인 경우에는 정점 번호가 작은 것을 먼저 방문하고, 더 이상 방문할 수 있는 점이 없는 경우 종료한다. 정점 번호는 1번부터 N번까지이다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4 5 1
 1 2
 1 3
@@ -1802,11 +2418,33 @@ public class Main {
 3 4</pre></div>
                     <div><strong>출력</strong><pre>1 2 4 3
 1 2 3 4</pre></div>
-                </div></div>`,
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5 5 3
+5 4
+5 2
+1 2
+3 4
+3 1</pre></div>
+                    <div><strong>출력</strong><pre>3 1 2 5 4
+3 1 4 2 5</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>1000 1 1000
+999 1000</pre></div>
+                    <div><strong>출력</strong><pre>1000 999
+1000 999</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 1,000</li>
+                    <li>1 ≤ M ≤ 10,000</li>
+                    <li>1 ≤ V ≤ N</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: 'DFS와 BFS를 <strong>둘 다</strong> 구현하면 됩니다! 인접 리스트를 오름차순 정렬하고, 각각 실행합니다.' },
-                { title: '구현 포인트', content: 'DFS는 재귀로, BFS는 deque으로 구현합니다.<br>각각의 방문 순서를 리스트에 저장하고, 공백으로 구분하여 출력합니다.' },
-                { title: '주의사항', content: 'DFS와 BFS에서 각각 <strong>별도의 visited 배열</strong>을 사용해야 합니다!' }
+                { title: '처음 떠오르는 방법', content: 'DFS 결과와 BFS 결과를 각각 출력하라고 하니까, 앞에서 배운 DFS와 BFS를 둘 다 구현하면 되겠다!<br><br>인접 리스트를 만들고, 정점 번호가 작은 것부터 방문하니까 오름차순 정렬도 해야겠네요.' },
+                { title: '근데 이러면 문제가 있어', content: 'DFS를 먼저 돌리면 visited 배열이 전부 True로 채워지잖아요. 그 상태에서 BFS를 돌리면 아무 곳도 방문 못 해요!<br><br>DFS와 BFS에서 <strong>별도의 visited 배열</strong>을 사용하거나, DFS 후에 visited를 초기화해야 합니다.' },
+                { title: '이렇게 하면 어떨까?', content: '1. 인접 리스트를 오름차순 정렬<br>2. DFS(재귀)를 수행하며 방문 순서를 기록<br>3. visited를 초기화하고 BFS(큐)를 수행하며 방문 순서를 기록<br>4. 각 결과를 공백으로 구분하여 출력<br><br><span class="lang-py">Python: DFS는 재귀 함수, BFS는 <code>deque</code>로 구현합니다.</span><span class="lang-cpp">C++: DFS는 재귀 함수, BFS는 <code>queue</code>로 구현하고, <code>memset(vis, false, sizeof(vis))</code>로 초기화합니다.</span>' }
             ],
             templates: {
                 python: `import sys
@@ -1853,7 +2491,10 @@ while queue:
 
 print(*dfs_result)
 print(*bfs_result)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int N, M, V;
@@ -1897,57 +2538,6 @@ int main() {
     for (int i = 0; i < (int)dfs_result.size(); i++) printf("%d%c", dfs_result[i], i+1<(int)dfs_result.size()?' ':'\\n');
     for (int i = 0; i < (int)bfs_result.size(); i++) printf("%d%c", bfs_result[i], i+1<(int)bfs_result.size()?' ':'\\n');
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static List<List<Integer>> graph;
-    static boolean[] vis;
-    static StringBuilder dfsResult = new StringBuilder();
-
-    static void dfs(int v) {
-        vis[v] = true;
-        dfsResult.append(v).append(' ');
-        for (int u : graph.get(v))
-            if (!vis[u]) dfs(u);
-    }
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int V = Integer.parseInt(st.nextToken());
-
-        graph = new ArrayList<>();
-        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
-            graph.get(u).add(v);
-            graph.get(v).add(u);
-        }
-        for (int i = 1; i <= N; i++) Collections.sort(graph.get(i));
-
-        vis = new boolean[N + 1];
-        dfs(V);
-
-        vis = new boolean[N + 1];
-        Queue<Integer> q = new LinkedList<>();
-        q.add(V); vis[V] = true;
-        StringBuilder bfsResult = new StringBuilder();
-        while (!q.isEmpty()) {
-            int v = q.poll();
-            bfsResult.append(v).append(' ');
-            for (int u : graph.get(v)) {
-                if (!vis[u]) { vis[u] = true; q.add(u); }
-            }
-        }
-        System.out.println(dfsResult.toString().trim());
-        System.out.println(bfsResult.toString().trim());
-    }
 }`
             },
             solutions: [{
@@ -1957,9 +2547,14 @@ public class Main {
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구성', code: 'import sys\nfrom collections import deque\nsys.setrecursionlimit(10000)\ninput = sys.stdin.readline\n\nN, M, V = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\nfor i in range(1, N + 1):\n    graph[i].sort()' },
-                        { title: 'DFS 수행', code: 'dfs_result = []\nvisited = [False] * (N + 1)\ndef dfs(v):\n    visited[v] = True\n    dfs_result.append(v)\n    for u in graph[v]:\n        if not visited[u]:\n            dfs(u)\ndfs(V)' },
-                        { title: 'BFS 수행 및 출력', code: 'bfs_result = []\nvisited2 = [False] * (N + 1)\nq = deque([V])\nvisited2[V] = True\nwhile q:\n    v = q.popleft()\n    bfs_result.append(v)\n    for u in graph[v]:\n        if not visited2[u]:\n            visited2[u] = True\n            q.append(u)\nprint(*dfs_result)\nprint(*bfs_result)' }
+                        { title: '입력 및 그래프 구성', desc: '오름차순 방문을 위해 인접 리스트를 정렬합니다.', code: 'import sys\nfrom collections import deque\nsys.setrecursionlimit(10000)\ninput = sys.stdin.readline\n\nN, M, V = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    graph[b].append(a)\nfor i in range(1, N + 1):\n    graph[i].sort()' },
+                        { title: 'DFS 수행', desc: '재귀 DFS로 방문 순서를 dfs_result에 기록합니다.', code: 'dfs_result = []\nvisited = [False] * (N + 1)\ndef dfs(v):\n    visited[v] = True\n    dfs_result.append(v)\n    for u in graph[v]:\n        if not visited[u]:\n            dfs(u)\ndfs(V)' },
+                        { title: 'BFS 수행 및 출력', desc: '별도의 visited로 BFS를 수행하고 DFS/BFS 결과를 출력합니다.', code: 'bfs_result = []\nvisited2 = [False] * (N + 1)\nq = deque([V])\nvisited2[V] = True\nwhile q:\n    v = q.popleft()\n    bfs_result.append(v)\n    for u in graph[v]:\n        if not visited2[u]:\n            visited2[u] = True\n            q.append(u)\nprint(*dfs_result)\nprint(*bfs_result)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구성', desc: '전역 배열 + memset으로 visited 관리', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\n#include <cstring>\nusing namespace std;\n\nint N, M, V;\nvector<int> graph[1001];\nbool vis[1001];\nvector<int> dfs_result, bfs_result;' },
+                        { title: 'DFS 수행', desc: '재귀 DFS로 방문 순서를 vector에 기록합니다.', code: 'void dfs(int v) {\n    vis[v] = true;\n    dfs_result.push_back(v);\n    for (int u : graph[v])\n        if (!vis[u]) dfs(u);\n}' },
+                        { title: 'BFS 수행 및 출력', desc: 'memset으로 visited 초기화 후 BFS 별도 수행', code: 'int main() {\n    scanf("%d %d %d", &N, &M, &V);\n    for (int i = 0; i < M; i++) {\n        int u, v;\n        scanf("%d %d", &u, &v);\n        graph[u].push_back(v);\n        graph[v].push_back(u);\n    }\n    for (int i = 1; i <= N; i++)\n        sort(graph[i].begin(), graph[i].end());\n\n    dfs(V);\n\n    // BFS: visited\uB97C \uCD08\uAE30\uD654\uD558\uACE0 \uB2E4\uC2DC \uD0D0\uC0C9\n    memset(vis, false, sizeof(vis));\n    queue<int> q;\n    q.push(V); vis[V] = true;\n    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        bfs_result.push_back(v);\n        for (int u : graph[v]) {\n            if (!vis[u]) { vis[u] = true; q.push(u); }\n        }\n    }\n\n    for (int i = 0; i < (int)dfs_result.size(); i++)\n        printf(i ? " %d" : "%d", dfs_result[i]);\n    puts("");\n    for (int i = 0; i < (int)bfs_result.size(); i++)\n        printf(i ? " %d" : "%d", bfs_result[i]);\n    puts("");\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[5].templates; }
@@ -1973,41 +2568,31 @@ public class Main {
             simIntro: '배추밭을 탐색하며 연결된 배추 영역(연결 요소)을 카운트하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>배추밭에 배추가 심어져 있습니다. 서로 인접한(상하좌우) 배추끼리는 한 마리의 배추흰지렁이가 보호할 수 있습니다.</p>
-                <p>배추가 심어진 위치가 주어질 때, 필요한 배추흰지렁이의 최소 수를 구하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>테스트 케이스 수 T<br>각 케이스: M(가로), N(세로), K(배추 수)<br>이후 K개의 배추 위치</p></div>
-                    <div><h4>출력</h4><p>각 테스트 케이스마다 필요한 지렁이 수</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>2
-10 8 17
-0 0
-1 0
-1 1
+                <p>차세대 영농인 한나는 강원도 고랭지에서 , , , 유기농 배추를 재배하기로 하였다. 농약을 쓰지 않고 배추를 재배하려면 배추를 해충으로부터 보호하는 것이 중요하기 때문에, 한나는 해충 방지에 효과적인 배추흰지렁이를 구입하기로 결심한다. 이 지렁이는 배추근처에 서식하며 해충을 잡아 먹음으로써 배추를 보호한다.</p>
+                <p>어떤 배추에 배추흰지렁이가 한 마리라도 살고 있으면 이 지렁이는 인접한 다른 배추로 이동할 수 있어, 그 배추들 역시 해충으로부터 보호받을 수 있다. 한 배추의 상하좌우 네 방향에 다른 배추가 위치한 경우에 서로 인접해있는 것이다.</p>
+                <p>한나가 배추를 재배하는 땅은 고르지 못해서 배추를 군데군데 , 심어 놓았다. 배추들이 모여있는 곳에는 배추흰지렁이가 한 마리만 있으면 되므로 서로 인접해있는 배추들이 몇 군데에 퍼져있는지 조사하면 총 몇 마리의 지렁이가 필요한지 알 수 있다. 예를 들어 배추밭이 아래와 같이 구성되어 있으면 최소 5마리의 배추흰지렁이가 필요하다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>1
+5 3 6
+0 2
+1 2
+2 2
+3 2
 4 2
-4 3
-4 5
-2 4
-3 4
-7 4
-8 4
-9 4
-7 5
-8 5
-9 5
-7 6
-8 6
-9 6
-10 6 1
-5 3</pre></div>
-                    <div><strong>출력</strong><pre>5
-1</pre></div>
-                </div></div>`,
+4 0</pre></div>
+                    <div><strong>출력</strong><pre>2</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ T ≤ 10</li>
+                    <li>1 ≤ M, N ≤ 50</li>
+                    <li>1 ≤ K ≤ 2,500</li>
+                </ul>`,
             hints: [
-                { title: '어떤 유형의 문제일까?', content: '<strong>연결 요소 세기</strong> 문제입니다! 배추가 상하좌우로 연결된 덩어리가 몇 개인지 세면 됩니다.' },
-                { title: '풀이 방법', content: '격자를 순회하며, 방문하지 않은 배추(1)를 발견하면 DFS/BFS로 연결된 모든 배추를 방문합니다.<br>DFS/BFS를 시작한 횟수가 곧 필요한 지렁이 수입니다!' },
-                { title: '주의사항', content: '테스트 케이스가 여러 개이므로, 각 케이스마다 visited 배열을 초기화해야 합니다.<br>좌표가 (x, y) 형태로 주어지므로 grid[y][x]로 저장합니다.' }
+                { title: '처음 떠오르는 방법', content: '배추밭을 쭉 훑으면서 배추가 있는 칸(1)을 만나면, 거기서부터 상하좌우로 연결된 배추를 전부 찾아야 해요.<br><br>이건 <strong>"연결된 덩어리가 몇 개인가?"</strong>를 묻는 문제네요! 한 덩어리에 지렁이 한 마리면 되니까요.' },
+                { title: '근데 어떻게 덩어리를 세지?', content: '격자를 (0,0)부터 쭉 돌면서 배추(1)를 만날 때마다, 그 배추와 연결된 모든 배추를 BFS/DFS로 방문 처리합니다.<br><br>BFS/DFS를 <strong>새로 시작한 횟수</strong> = 덩어리(연결 요소) 수 = 필요한 지렁이 수!' },
+                { title: '이렇게 하면 어떨까?', content: '1. 격자를 순회하며 방문하지 않은 배추(1)를 발견<br>2. 그 칸에서 BFS 시작 → 연결된 배추 모두 방문 처리<br>3. count += 1<br>4. 격자 전체를 다 돌 때까지 반복<br><br>4방향 이동: <code>dx = [0, 0, 1, -1]</code>, <code>dy = [1, -1, 0, 0]</code>' },
+                { title: '주의할 점', content: '테스트 케이스가 여러 개이므로 매번 <strong>visited 배열을 초기화</strong>해야 해요!<br><br>또한 좌표가 (x, y) 형태로 주어지므로 <code>grid[y][x] = 1</code>로 저장해야 합니다. 행(row)이 y, 열(column)이 x인 거 헷갈리지 마세요!' }
             ],
             templates: {
                 python: `import sys
@@ -2045,7 +2630,10 @@ for _ in range(T):
                 count += 1
 
     print(count)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int dx[] = {0,0,1,-1};
@@ -2085,52 +2673,6 @@ int main() {
         printf("%d\\n", count);
     }
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    static int[] dx = {0,0,1,-1};
-    static int[] dy = {1,-1,0,0};
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine().trim());
-        StringBuilder sb = new StringBuilder();
-        while (T-- > 0) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int M = Integer.parseInt(st.nextToken());
-            int N = Integer.parseInt(st.nextToken());
-            int K = Integer.parseInt(st.nextToken());
-            int[][] grid = new int[N][M];
-            boolean[][] vis = new boolean[N][M];
-            for (int i = 0; i < K; i++) {
-                st = new StringTokenizer(br.readLine());
-                int x = Integer.parseInt(st.nextToken());
-                int y = Integer.parseInt(st.nextToken());
-                grid[y][x] = 1;
-            }
-            int count = 0;
-            for (int r = 0; r < N; r++) for (int c = 0; c < M; c++) {
-                if (grid[r][c] == 1 && !vis[r][c]) {
-                    Queue<int[]> q = new LinkedList<>();
-                    q.add(new int[]{r, c}); vis[r][c] = true;
-                    while (!q.isEmpty()) {
-                        int[] cur = q.poll();
-                        for (int d = 0; d < 4; d++) {
-                            int nr = cur[0]+dx[d], nc = cur[1]+dy[d];
-                            if (nr>=0&&nr<N&&nc>=0&&nc<M&&grid[nr][nc]==1&&!vis[nr][nc]) {
-                                vis[nr][nc] = true; q.add(new int[]{nr, nc});
-                            }
-                        }
-                    }
-                    count++;
-                }
-            }
-            sb.append(count).append("\\n");
-        }
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -2140,9 +2682,14 @@ public class Main {
                 spaceComplexity: 'O(N * M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 맵 구성', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    M, N, K = map(int, input().split())\n    field = [[0] * M for _ in range(N)]\n    for _ in range(K):\n        x, y = map(int, input().split())\n        field[y][x] = 1' },
-                        { title: 'BFS 함수 정의', code: '    dx = [0, 0, 1, -1]\n    dy = [1, -1, 0, 0]\n    visited = [[False]*M for _ in range(N)]\n    def bfs(sy, sx):\n        q = deque([(sy, sx)])\n        visited[sy][sx] = True\n        while q:\n            y, x = q.popleft()\n            for d in range(4):\n                ny, nx = y+dy[d], x+dx[d]\n                if 0<=ny<N and 0<=nx<M and not visited[ny][nx] and field[ny][nx]==1:\n                    visited[ny][nx] = True\n                    q.append((ny, nx))' },
-                        { title: '연결 요소 카운트', code: '    count = 0\n    for i in range(N):\n        for j in range(M):\n            if field[i][j] == 1 and not visited[i][j]:\n                bfs(i, j)\n                count += 1\n    print(count)' }
+                        { title: '입력 및 맵 구성', desc: '테스트 케이스마다 배추밭 격자를 생성합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    M, N, K = map(int, input().split())\n    field = [[0] * M for _ in range(N)]\n    for _ in range(K):\n        x, y = map(int, input().split())\n        field[y][x] = 1' },
+                        { title: 'BFS 함수 정의', desc: '배추 1을 만나면 BFS로 연결된 영역을 모두 방문합니다.', code: '    dx = [0, 0, 1, -1]\n    dy = [1, -1, 0, 0]\n    visited = [[False]*M for _ in range(N)]\n    def bfs(sy, sx):\n        q = deque([(sy, sx)])\n        visited[sy][sx] = True\n        while q:\n            y, x = q.popleft()\n            for d in range(4):\n                ny, nx = y+dy[d], x+dx[d]\n                if 0<=ny<N and 0<=nx<M and not visited[ny][nx] and field[ny][nx]==1:\n                    visited[ny][nx] = True\n                    q.append((ny, nx))' },
+                        { title: '연결 요소 카운트', desc: '미방문 배추를 발견할 때마다 BFS 시작 → 지렁이 수 증가.', code: '    count = 0\n    for i in range(N):\n        for j in range(M):\n            if field[i][j] == 1 and not visited[i][j]:\n                bfs(i, j)\n                count += 1\n    print(count)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 맵 구성', desc: 'pair<int,int>로 BFS 큐 구성', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint dx[] = {0, 0, 1, -1};\nint dy[] = {1, -1, 0, 0};\n\nint main() {\n    int T;\n    scanf("%d", &T);\n    while (T--) {\n        int M, N, K;\n        scanf("%d %d %d", &M, &N, &K);\n        vector<vector<int>> field(N, vector<int>(M, 0));\n        vector<vector<bool>> vis(N, vector<bool>(M, false));\n        for (int i = 0; i < K; i++) {\n            int x, y;\n            scanf("%d %d", &x, &y);\n            field[y][x] = 1;\n        }' },
+                        { title: 'BFS 함수 정의', desc: 'queue<pair<int,int>>와 structured binding 사용', code: '        int count = 0;\n        for (int r = 0; r < N; r++) {\n            for (int c = 0; c < M; c++) {\n                if (field[r][c] == 1 && !vis[r][c]) {\n                    // BFS\uB85C \uC5F0\uACB0\uB41C \uBC30\uCD94 \uBAA8\uB450 \uBC29\uBB38\n                    queue<pair<int,int>> q;\n                    q.push({r, c});\n                    vis[r][c] = true;\n                    while (!q.empty()) {\n                        auto [cr, cc] = q.front(); q.pop();\n                        for (int d = 0; d < 4; d++) {\n                            int nr = cr+dx[d], nc = cc+dy[d];\n                            if (nr>=0 && nr<N && nc>=0 && nc<M\n                                && field[nr][nc]==1 && !vis[nr][nc]) {\n                                vis[nr][nc] = true;\n                                q.push({nr, nc});\n                            }\n                        }\n                    }' },
+                        { title: '연결 요소 카운트', desc: 'BFS가 끝날 때마다 count를 증가시켜 영역 수를 셉니다.', code: '                    count++;\n                }\n            }\n        }\n        printf("%d\\n", count);\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[6].templates; }
@@ -2156,13 +2703,9 @@ public class Main {
             simIntro: '지도에서 연결된 집 단지를 찾고, 각 단지의 크기를 계산하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N×N 지도에서 1은 집이 있는 곳, 0은 없는 곳입니다. 상하좌우로 연결된 집의 모임을 "단지"라고 합니다.</p>
-                <p>총 단지 수와 각 단지에 속하는 집의 수를 오름차순으로 출력하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N (5≤N≤25)<br>N줄의 0/1 지도</p></div>
-                    <div><h4>출력</h4><p>총 단지 수<br>각 단지의 집 수 (오름차순)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p><그림 1>과 같이 정사각형 모양의 지도가 있다. 1은 집이 있는 곳을, 0은 집이 없는 곳을 나타낸다. 철수는 이 지도를 가지고 연결된 집의 모임인 단지를 정의하고, 단지에 번호를 붙이려 한다. 여기서 연결되었다는 것은 어떤 집이 좌우, 혹은 아래위로 다른 집이 있는 경우를 말한다. 대각선상에 집이 있는 경우는 연결된 것이 아니다.</p>
+                <p>지도를 입력하여 단지수를 출력하고, 각 단지에 속하는 집의 수를 오름차순으로 정렬하여 출력하는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>7
 0110100
 0110101
@@ -2175,10 +2718,15 @@ public class Main {
 7
 8
 9</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>5 ≤ N ≤ 25</li>
+                </ul>`,
             hints: [
-                { title: '1012번과 뭐가 다를까?', content: '연결 요소의 <strong>개수</strong>뿐만 아니라, 각 연결 요소의 <strong>크기</strong>(집 수)도 구해야 합니다!' },
-                { title: '풀이 방법', content: 'DFS/BFS로 각 연결 요소를 탐색하면서, 방문한 칸의 수를 세어 리스트에 저장합니다.<br>마지막에 리스트를 오름차순 정렬하여 출력합니다.' }
+                { title: '처음 떠오르는 방법', content: '1012번(유기농 배추)처럼 연결된 집 덩어리(단지)를 찾으면 되겠다! 격자를 훑으면서 집(1)을 만나면 BFS/DFS로 연결된 집을 전부 탐색하고...' },
+                { title: '근데 이러면 문제가 있어', content: '1012번과 달리 이번에는 단지의 <strong>개수</strong>뿐만 아니라, 각 단지에 속하는 <strong>집의 수</strong>도 구해야 해요!<br><br>그리고 결과를 <strong>오름차순 정렬</strong>해서 출력해야 합니다.' },
+                { title: '이렇게 하면 어떨까?', content: 'BFS를 돌릴 때 방문한 칸의 수를 세면 됩니다:<br>1. 격자 순회 중 방문하지 않은 집(1) 발견<br>2. BFS 시작, 방문하는 칸마다 <code>cnt += 1</code><br>3. BFS 끝나면 <code>sizes.append(cnt)</code><br>4. 모든 탐색 후 <code>sizes</code>를 오름차순 정렬하여 출력<br><br><span class="lang-py">Python: <code>sizes.sort()</code>로 정렬 후 출력</span><span class="lang-cpp">C++: <code>sort(sizes.begin(), sizes.end())</code>로 정렬 후 출력</span>' }
             ],
             templates: {
                 python: `import sys
@@ -2216,7 +2764,10 @@ sizes.sort()
 print(len(sizes))
 for s in sizes:
     print(s)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int N;
@@ -2254,47 +2805,6 @@ int main() {
     printf("%d\\n", (int)sizes.size());
     for (int s : sizes) printf("%d\\n", s);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine().trim());
-        int[][] grid = new int[N][N];
-        boolean[][] vis = new boolean[N][N];
-        int[] dx = {0,0,1,-1}, dy = {1,-1,0,0};
-
-        for (int i = 0; i < N; i++) {
-            String line = br.readLine().trim();
-            for (int j = 0; j < N; j++) grid[i][j] = line.charAt(j) - '0';
-        }
-
-        List<Integer> sizes = new ArrayList<>();
-        for (int r = 0; r < N; r++) for (int c = 0; c < N; c++) {
-            if (grid[r][c] == 1 && !vis[r][c]) {
-                Queue<int[]> q = new LinkedList<>();
-                q.add(new int[]{r, c}); vis[r][c] = true;
-                int cnt = 0;
-                while (!q.isEmpty()) {
-                    int[] cur = q.poll(); cnt++;
-                    for (int d = 0; d < 4; d++) {
-                        int nr = cur[0]+dx[d], nc = cur[1]+dy[d];
-                        if (nr>=0&&nr<N&&nc>=0&&nc<N&&grid[nr][nc]==1&&!vis[nr][nc]) {
-                            vis[nr][nc] = true; q.add(new int[]{nr, nc});
-                        }
-                    }
-                }
-                sizes.add(cnt);
-            }
-        }
-        Collections.sort(sizes);
-        StringBuilder sb = new StringBuilder();
-        sb.append(sizes.size()).append("\\n");
-        for (int s : sizes) sb.append(s).append("\\n");
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -2304,9 +2814,14 @@ public class Main {
                 spaceComplexity: 'O(N^2)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 지도 구성', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN = int(input())\nboard = []\nfor _ in range(N):\n    board.append(list(input().strip()))' },
-                        { title: 'BFS 탐색 함수', code: 'dx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\nvisited = [[False]*N for _ in range(N)]\n\ndef bfs(sy, sx):\n    q = deque([(sy, sx)])\n    visited[sy][sx] = True\n    cnt = 1\n    while q:\n        y, x = q.popleft()\n        for d in range(4):\n            ny, nx = y+dy[d], x+dx[d]\n            if 0<=ny<N and 0<=nx<N and not visited[ny][nx] and board[ny][nx]=="1":\n                visited[ny][nx] = True\n                q.append((ny, nx))\n                cnt += 1\n    return cnt' },
-                        { title: '단지 찾기 및 출력', code: 'sizes = []\nfor i in range(N):\n    for j in range(N):\n        if board[i][j] == "1" and not visited[i][j]:\n            sizes.append(bfs(i, j))\nsizes.sort()\nprint(len(sizes))\nfor s in sizes:\n    print(s)' }
+                        { title: '입력 및 지도 구성', desc: '문자열을 리스트로 변환하여 격자를 만듭니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN = int(input())\nboard = []\nfor _ in range(N):\n    board.append(list(input().strip()))' },
+                        { title: 'BFS 탐색 함수', desc: 'BFS로 연결된 집을 모두 방문하며 단지 크기를 반환합니다.', code: 'dx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\nvisited = [[False]*N for _ in range(N)]\n\ndef bfs(sy, sx):\n    q = deque([(sy, sx)])\n    visited[sy][sx] = True\n    cnt = 1\n    while q:\n        y, x = q.popleft()\n        for d in range(4):\n            ny, nx = y+dy[d], x+dx[d]\n            if 0<=ny<N and 0<=nx<N and not visited[ny][nx] and board[ny][nx]=="1":\n                visited[ny][nx] = True\n                q.append((ny, nx))\n                cnt += 1\n    return cnt' },
+                        { title: '단지 찾기 및 출력', desc: '각 단지 크기를 수집하고 오름차순 정렬하여 출력합니다.', code: 'sizes = []\nfor i in range(N):\n    for j in range(N):\n        if board[i][j] == "1" and not visited[i][j]:\n            sizes.append(bfs(i, j))\nsizes.sort()\nprint(len(sizes))\nfor s in sizes:\n    print(s)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 지도 구성', desc: 'char 배열로 문자열 입력 후 숫자 변환', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint N;\nint grid[25][25];\nbool vis[25][25];\nint dx[] = {0, 0, 1, -1};\nint dy[] = {1, -1, 0, 0};\n\nint main() {\n    scanf("%d", &N);\n    for (int i = 0; i < N; i++) {\n        char s[30];\n        scanf("%s", s);\n        for (int j = 0; j < N; j++)\n            grid[i][j] = s[j] - \'0\'; // \uBB38\uC790 -> \uC22B\uC790 \uBCC0\uD658\n    }' },
+                        { title: 'BFS 탐색 함수', desc: 'pair<int,int> \uD050\uB85C \uACA9\uC790 BFS', code: '    vector<int> sizes;\n    for (int r = 0; r < N; r++) {\n        for (int c = 0; c < N; c++) {\n            if (grid[r][c] == 1 && !vis[r][c]) {\n                queue<pair<int,int>> q;\n                q.push({r, c});\n                vis[r][c] = true;\n                int cnt = 0;\n                while (!q.empty()) {\n                    auto [cr, cc] = q.front(); q.pop();\n                    cnt++;\n                    for (int d = 0; d < 4; d++) {\n                        int nr = cr+dx[d], nc = cc+dy[d];\n                        if (nr>=0 && nr<N && nc>=0 && nc<N\n                            && grid[nr][nc]==1 && !vis[nr][nc]) {\n                            vis[nr][nc] = true;\n                            q.push({nr, nc});\n                        }\n                    }\n                }\n                sizes.push_back(cnt);\n            }\n        }\n    }' },
+                        { title: '단지 찾기 및 출력', desc: '크기 배열을 정렬하여 단지 수와 각 크기를 출력합니다.', code: '    sort(sizes.begin(), sizes.end());\n    printf("%d\\n", (int)sizes.size());\n    for (int s : sizes)\n        printf("%d\\n", s);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[7].templates; }
@@ -2320,24 +2835,33 @@ public class Main {
             simIntro: '미로에서 (1,1)부터 (N,M)까지 BFS 최단 경로를 탐색하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N×M 미로에서 (1,1)에서 (N,M)까지 이동할 때, 지나야 하는 최소 칸 수를 구하세요.</p>
-                <p>1은 이동 가능, 0은 벽입니다. 상하좌우로만 이동할 수 있습니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M (2≤N,M≤100)<br>N줄의 0/1 미로</p></div>
-                    <div><h4>출력</h4><p>최소 칸 수 (시작칸과 도착칸 포함)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>N×M크기의 배열로 표현되는 미로가 있다. 미로에서 1은 이동할 수 있는 칸을 나타내고, 0은 이동할 수 없는 칸을 나타낸다. 이러한 미로가 주어졌을 때, (1, 1)에서 출발하여 (N, M)의 위치로 이동할 때 지나야 하는 최소의 칸 수를 구하는 프로그램을 작성하시오. 한 칸에서 다른 칸으로 이동할 때, 서로 인접한 칸으로만 이동할 수 있다.</p>
+                <p>위의 예에서는 15칸을 지나야 (N, M)의 위치로 이동할 수 있다. 칸을 셀 때에는 시작 위치와 도착 위치도 포함한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4 6
 101111
 101010
 101011
 111011</pre></div>
                     <div><strong>출력</strong><pre>15</pre></div>
-                </div></div>`,
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>4 6
+110110
+110110
+111111
+111101</pre></div>
+                    <div><strong>출력</strong><pre>9</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>2 ≤ N, M ≤ 100</li>
+                </ul>`,
             hints: [
-                { title: '어떤 알고리즘?', content: '<strong>BFS 최단 거리</strong> 문제입니다! 격자에서 벽을 피해 최단 경로를 찾습니다.' },
-                { title: '풀이 방법', content: '(0,0)에서 BFS를 시작합니다. dist[r][c] = dist[이전][이전] + 1로 거리를 기록합니다.<br>dist[N-1][M-1]이 정답입니다.' },
-                { title: '주의사항', content: '시작칸과 도착칸도 포함하므로, dist[0][0] = 1로 시작합니다.' }
+                { title: '처음 떠오르는 방법', content: '미로에서 (1,1)부터 (N,M)까지 가는 <strong>최단 경로</strong>를 찾아야 해요. DFS로 모든 경로를 탐색하고 그중 가장 짧은 걸 고르면 되지 않을까?' },
+                { title: '근데 이러면 문제가 있어', content: 'DFS는 모든 가능한 경로를 탐색하니까 시간이 오래 걸려요. 미로가 100x100이면 경로 수가 엄청나게 많아질 수 있어요!<br><br>최단 거리를 구할 때는 <strong>BFS</strong>가 훨씬 효율적입니다. BFS는 가까운 곳부터 탐색하니까, 도착점에 처음 도달했을 때가 바로 최단 거리!' },
+                { title: '이렇게 하면 어떨까?', content: '(0,0)에서 BFS를 시작하고, 이동할 때마다 거리를 +1씩 기록합니다:<br><code>dist[nr][nc] = dist[r][c] + 1</code><br><br>시작칸도 포함해서 세니까 <code>dist[0][0] = 1</code>로 시작하고, <code>dist[N-1][M-1]</code>이 정답입니다.' },
+                { title: '구현 팁', content: '입력이 공백 없이 붙어 있으므로 한 줄씩 읽어서 문자 단위로 파싱해야 해요:<br><span class="lang-py">Python: <code>list(map(int, input().strip()))</code>으로 각 자릿수를 리스트로 변환</span><span class="lang-cpp">C++: <code>char s[110]; scanf("%s", s);</code>로 문자열로 읽은 뒤 <code>s[j] - \'0\'</code>으로 숫자 변환</span>' }
             ],
             templates: {
                 python: `import sys
@@ -2365,7 +2889,10 @@ while queue:
                 queue.append((nr, nc))
 
 print(dist[N-1][M-1])`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -2392,38 +2919,6 @@ int main() {
     }
     printf("%d\\n", dist[N-1][M-1]);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        char[][] grid = new char[N][];
-        for (int i = 0; i < N; i++) grid[i] = br.readLine().trim().toCharArray();
-
-        int[] dx = {0,0,1,-1}, dy = {1,-1,0,0};
-        int[][] dist = new int[N][M];
-        for (int[] row : dist) Arrays.fill(row, -1);
-        dist[0][0] = 1;
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{0, 0});
-
-        while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            for (int d = 0; d < 4; d++) {
-                int nr = cur[0]+dx[d], nc = cur[1]+dy[d];
-                if (nr>=0&&nr<N&&nc>=0&&nc<M&&grid[nr][nc]=='1'&&dist[nr][nc]==-1) {
-                    dist[nr][nc] = dist[cur[0]][cur[1]] + 1;
-                    q.add(new int[]{nr, nc});
-                }
-            }
-        }
-        System.out.println(dist[N-1][M-1]);
-    }
 }`
             },
             solutions: [{
@@ -2433,9 +2928,14 @@ public class Main {
                 spaceComplexity: 'O(N * M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 미로 구성', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\nmaze = []\nfor _ in range(N):\n    maze.append(list(input().strip()))' },
-                        { title: 'BFS 탐색', code: 'dist = [[0]*M for _ in range(N)]\ndist[0][0] = 1\nq = deque([(0, 0)])\ndx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]' },
-                        { title: 'BFS 루프 및 출력', code: 'while q:\n    y, x = q.popleft()\n    for d in range(4):\n        ny, nx = y+dy[d], x+dx[d]\n        if 0<=ny<N and 0<=nx<M and maze[ny][nx]=="1" and dist[ny][nx]==0:\n            dist[ny][nx] = dist[y][x] + 1\n            q.append((ny, nx))\nprint(dist[N-1][M-1])' }
+                        { title: '입력 및 미로 구성', desc: '공백 없이 붙어있는 입력을 리스트로 변환합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\nmaze = []\nfor _ in range(N):\n    maze.append(list(input().strip()))' },
+                        { title: 'BFS 탐색', desc: '시작칸 (0,0)을 1로 세팅하고 BFS를 준비합니다.', code: 'dist = [[0]*M for _ in range(N)]\ndist[0][0] = 1\nq = deque([(0, 0)])\ndx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]' },
+                        { title: 'BFS 루프 및 출력', desc: '인접 칸의 거리를 +1씩 기록하며 도착점 거리를 출력합니다.', code: 'while q:\n    y, x = q.popleft()\n    for d in range(4):\n        ny, nx = y+dy[d], x+dx[d]\n        if 0<=ny<N and 0<=nx<M and maze[ny][nx]=="1" and dist[ny][nx]==0:\n            dist[ny][nx] = dist[y][x] + 1\n            q.append((ny, nx))\nprint(dist[N-1][M-1])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 미로 구성', desc: 'char \uBC30\uC5F4\uB85C \uBB38\uC790\uC5F4 \uC785\uB825, string \uB300\uC2E0 scanf', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<string> maze(N);\n    for (int i = 0; i < N; i++) {\n        char s[110];\n        scanf("%s", s);\n        maze[i] = s;\n    }' },
+                        { title: 'BFS 탐색', desc: 'dist를 -1로 초기화, 시작칸은 1로 세팅합니다.', code: '    int dx[] = {0, 0, 1, -1};\n    int dy[] = {1, -1, 0, 0};\n    // dist \uBC30\uC5F4: -1\uC774\uBA74 \uBBF8\uBC29\uBB38, 1\uBD80\uD130 \uC2DC\uC791(\uC2DC\uC791\uCE78 \uD3EC\uD568)\n    vector<vector<int>> dist(N, vector<int>(M, -1));\n    dist[0][0] = 1;\n    queue<pair<int,int>> q;\n    q.push({0, 0});' },
+                        { title: 'BFS 루프 및 출력', desc: '4방향 탐색으로 최단 거리를 기록하고 도착점 값을 출력합니다.', code: '    while (!q.empty()) {\n        auto [r, c] = q.front(); q.pop();\n        for (int d = 0; d < 4; d++) {\n            int nr = r+dx[d], nc = c+dy[d];\n            if (nr>=0 && nr<N && nc>=0 && nc<M\n                && maze[nr][nc]==\'1\' && dist[nr][nc]==-1) {\n                dist[nr][nc] = dist[r][c] + 1;\n                q.push({nr, nc});\n            }\n        }\n    }\n    printf("%d\\n", dist[N-1][M-1]);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[8].templates; }
@@ -2449,21 +2949,26 @@ public class Main {
             simIntro: '수빈이가 동생을 찾기 위해 BFS로 최소 이동 횟수를 구하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>수빈이는 위치 N에, 동생은 위치 K에 있습니다. 수빈이가 할 수 있는 행동:</p>
-                <ul><li>걷기: X-1 또는 X+1로 이동 (1초)</li><li>순간이동: 2*X로 이동 (1초)</li></ul>
-                <p>수빈이가 동생을 찾는 가장 빠른 시간을 구하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N K (0 ≤ N, K ≤ 100,000)</p></div>
-                    <div><h4>출력</h4><p>가장 빠른 시간(초)</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>수빈이는 현재 점 N(0 ≤ N ≤ 100,000)에 있고, 동생은 점 K(0 ≤ K ≤ 100,000)에 있다. 수빈이는 걷거나 순간이동을 할 수 있다. 만약 수빈이의 위치가 X일 때 걷는다면 1초 후에 X-1 또는 X+1로 이동하게 된다. 순간이동을 하는 경우에는 1초 후에 2*X의 위치로 이동하게 된다.</p>
+                <p>수빈이와 동생의 위치가 주어졌을 때, 수빈이가 동생을 찾을 수 있는 가장 빠른 시간이 몇 초 후인지 구하는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 17</pre></div>
                     <div><strong>출력</strong><pre>4</pre></div>
-                </div></div>`,
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>0 0</pre></div>
+                    <div><strong>출력</strong><pre>0</pre></div>
+                </div><p class="example-explain">수빈이와 동생이 같은 위치에 있으면 이동할 필요가 없습니다.</p></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>0 ≤ N ≤ 100,000</li>
+                    <li>0 ≤ K ≤ 100,000</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '좌표를 <strong>정점</strong>, 이동을 <strong>간선</strong>으로 생각합니다!<br>각 위치 X에서 X-1, X+1, 2*X로 이동 가능 → BFS로 최단 거리를 구합니다.' },
-                { title: '구현 포인트', content: 'visited 배열 크기는 100,001 (0~100,000)<br>범위를 벗어나지 않도록 0 ≤ nx ≤ 100,000 체크!' },
-                { title: '예제 풀이', content: '5 → 10 → 9 → 18 → 17 (4초)<br>또는 5 → 4 → 8 → 16 → 17 (4초)' }
+                { title: '처음 떠오르는 방법', content: '수빈이는 현재 위치 N에서 X-1, X+1, 2*X 세 가지로 이동할 수 있어요. 모든 가능한 이동을 시도해서 동생 K에 도달하면 되지 않을까?<br><br>근데 이건 어디서 많이 본 것 같지 않아요? 🤔' },
+                { title: '근데 이러면 문제가 있어', content: '무작정 모든 이동을 시도하면 같은 위치를 계속 왔다 갔다 할 수 있어요. 그리고 <strong>가장 빠른</strong> 시간을 구해야 하니까...<br><br>잠깐, 이건 <strong>그래프 문제</strong>로 바꿀 수 있어요! 각 좌표를 <strong>정점</strong>, 이동(X-1, X+1, 2X)을 <strong>간선</strong>으로 생각하면 BFS로 최단 거리를 구할 수 있습니다!' },
+                { title: '이렇게 하면 어떨까?', content: 'N에서 BFS를 시작하고, 각 위치에서 세 방향으로 이동합니다:<br>1. X-1 (뒤로 걷기)<br>2. X+1 (앞으로 걷기)<br>3. 2*X (순간이동)<br><br>BFS이니까 K에 처음 도달했을 때가 바로 최소 시간입니다!<br>예: 5 → 10 → 9 → 18 → 17 (4초)' },
+                { title: '주의할 점', content: '위치 범위가 0~100,000이므로 <code>dist</code> 배열 크기를 100,001로 잡아야 해요.<br>이동한 위치가 0 미만이거나 100,000을 초과하면 무시해야 합니다!<br><br><span class="lang-py">Python: <code>for nx in (x-1, x+1, x*2):</code>로 세 방향 이동</span><span class="lang-cpp">C++: <code>for (int nx : {x-1, x+1, 2*x}):</code>로 세 방향 이동</span>' }
             ],
             templates: {
                 python: `from collections import deque
@@ -2484,7 +2989,10 @@ while queue:
         if 0 <= nx < MAX and dist[nx] == -1:
             dist[nx] = dist[x] + 1
             queue.append(nx)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int dist[100001];
@@ -2508,30 +3016,6 @@ int main() {
         }
     }
     return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt(), K = sc.nextInt();
-        int[] dist = new int[100001];
-        Arrays.fill(dist, -1);
-        dist[N] = 0;
-        Queue<Integer> q = new LinkedList<>();
-        q.add(N);
-
-        while (!q.isEmpty()) {
-            int x = q.poll();
-            if (x == K) { System.out.println(dist[x]); return; }
-            for (int nx : new int[]{x-1, x+1, 2*x}) {
-                if (nx >= 0 && nx <= 100000 && dist[nx] == -1) {
-                    dist[nx] = dist[x] + 1;
-                    q.add(nx);
-                }
-            }
-        }
-    }
 }`
             },
             solutions: [{
@@ -2541,9 +3025,14 @@ public class Main {
                 spaceComplexity: 'O(max_pos)',
                 codeSteps: {
                     python: [
-                        { title: '입력', code: 'from collections import deque\n\nN, K = map(int, input().split())' },
-                        { title: 'BFS 탐색', code: 'MAX = 100001\nvisited = [-1] * MAX\nvisited[N] = 0\nq = deque([N])' },
-                        { title: 'BFS 루프 및 출력', code: 'while q:\n    x = q.popleft()\n    if x == K:\n        print(visited[x])\n        break\n    for nx in (x-1, x+1, x*2):\n        if 0 <= nx < MAX and visited[nx] == -1:\n            visited[nx] = visited[x] + 1\n            q.append(nx)' }
+                        { title: '입력', desc: '수빈이 위치 N과 동생 위치 K를 입력받습니다.', code: 'from collections import deque\n\nN, K = map(int, input().split())' },
+                        { title: 'BFS 탐색', desc: 'visited를 -1로 초기화, 시작점을 0으로 설정합니다.', code: 'MAX = 100001\nvisited = [-1] * MAX\nvisited[N] = 0\nq = deque([N])' },
+                        { title: 'BFS 루프 및 출력', desc: 'X-1, X+1, 2*X 세 방향 이동을 BFS로 탐색합니다.', code: 'while q:\n    x = q.popleft()\n    if x == K:\n        print(visited[x])\n        break\n    for nx in (x-1, x+1, x*2):\n        if 0 <= nx < MAX and visited[nx] == -1:\n            visited[nx] = visited[x] + 1\n            q.append(nx)' }
+                    ],
+                    cpp: [
+                        { title: '입력', desc: '전역 dist 배열로 0~100000 범위의 거리를 관리합니다.', code: '#include <iostream>\n#include <queue>\n#include <cstring>\nusing namespace std;\n\nint dist[100001]; // \uAC01 \uC704\uCE58\uAE4C\uC9C0\uC758 \uCD5C\uC18C \uC774\uB3D9 \uD69F\uC218\n\nint main() {\n    int N, K;\n    scanf("%d %d", &N, &K);' },
+                        { title: 'BFS 탐색', desc: 'memset\uC73C\uB85C -1 \uCD08\uAE30\uD654, initializer list\uB85C 3\uBC29\uD5A5 \uC774\uB3D9', code: '    memset(dist, -1, sizeof(dist));\n    dist[N] = 0;\n    queue<int> q;\n    q.push(N);' },
+                        { title: 'BFS 루프 및 출력', desc: '목표 위치 K에 도달하면 최소 이동 횟수를 출력합니다.', code: '    while (!q.empty()) {\n        int x = q.front(); q.pop();\n        if (x == K) {\n            printf("%d\\n", dist[x]);\n            return 0;\n        }\n        // X-1, X+1, 2*X \uC138 \uBC29\uD5A5 \uC774\uB3D9\n        for (int nx : {x-1, x+1, 2*x}) {\n            if (nx >= 0 && nx <= 100000 && dist[nx] == -1) {\n                dist[nx] = dist[x] + 1;\n                q.push(nx);\n            }\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[9].templates; }
@@ -2557,12 +3046,8 @@ public class Main {
             simIntro: '체스판 위 나이트가 BFS로 목표 위치까지 최소 이동 횟수를 구하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>체스판에서 나이트가 한 번에 이동할 수 있는 칸은 8가지입니다. 나이트가 시작점에서 도착점까지 이동하는 최소 횟수를 구하세요.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>테스트 케이스 수<br>각 케이스: 체스판 크기 I, 시작 좌표, 도착 좌표</p></div>
-                    <div><h4>출력</h4><p>최소 이동 횟수</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>체스판 위에 한 나이트가 놓여져 있다. 나이트가 한 번에 이동할 수 있는 칸은 아래 그림에 나와있다. 나이트가 이동하려고 하는 칸이 주어진다. 나이트는 몇 번 움직이면 이 칸으로 이동할 수 있을까?</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3
 8
 0 0
@@ -2576,10 +3061,17 @@ public class Main {
                     <div><strong>출력</strong><pre>5
 28
 0</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>4 ≤ I ≤ 300 (체스판 한 변의 길이)</li>
+                    <li>T ≤ 100 (테스트 케이스 수)</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '나이트의 8방향 이동을 dx/dy 배열로 정의합니다:<br><code>dx = [-2,-2,-1,-1,1,1,2,2]</code><br><code>dy = [-1,1,-2,2,-2,2,-1,1]</code>' },
-                { title: '풀이 방법', content: '시작점에서 BFS를 수행합니다. 각 이동은 비용 1이므로 BFS가 최단 거리를 보장합니다.' }
+                { title: '처음 떠오르는 방법', content: '나이트가 목표 칸까지 가는 <strong>최소 이동 횟수</strong>를 구해야 해요. 나이트는 L자 모양으로 8방향 이동이 가능하죠.<br><br>이전 문제(숨바꼭질)처럼 <strong>최단 거리 = BFS</strong>를 떠올려 봅시다!' },
+                { title: '근데 이러면 문제가 있어', content: '미로 탐색은 상하좌우 4방향이었는데, 나이트는 <strong>8방향</strong>이에요. 이 8방향을 어떻게 표현하지?<br><br>나이트는 가로 2 + 세로 1, 또는 가로 1 + 세로 2로 이동하니까 dx/dy 배열로 8가지 조합을 만들면 됩니다!' },
+                { title: '이렇게 하면 어떨까?', content: '나이트의 8방향 이동:<br><code>dx = [-2, -2, -1, -1, 1, 1, 2, 2]</code><br><code>dy = [-1, 1, -2, 2, -2, 2, -1, 1]</code><br><br>시작칸에서 BFS를 돌리면, 목표칸에 처음 도달했을 때가 최소 이동 횟수입니다. 미로 탐색과 동일한 패턴이에요!' },
+                { title: '주의할 점', content: '시작 위치와 도착 위치가 같으면 0을 바로 출력해야 해요!<br><br>테스트 케이스가 여러 개이므로, 매번 <code>dist</code> 배열을 새로 초기화해야 합니다.' }
             ],
             templates: {
                 python: `import sys
@@ -2613,7 +3105,10 @@ for _ in range(T):
             if 0 <= nr < I and 0 <= nc < I and dist[nr][nc] == -1:
                 dist[nr][nc] = dist[r][c] + 1
                 queue.append((nr, nc))`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int dx[] = {-2,-2,-1,-1,1,1,2,2};
@@ -2645,47 +3140,6 @@ int main() {
         }
     }
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine().trim());
-        int[] dx = {-2,-2,-1,-1,1,1,2,2};
-        int[] dy = {-1,1,-2,2,-2,2,-1,1};
-        StringBuilder sb = new StringBuilder();
-
-        while (T-- > 0) {
-            int I = Integer.parseInt(br.readLine().trim());
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int sr = Integer.parseInt(st.nextToken()), sc = Integer.parseInt(st.nextToken());
-            st = new StringTokenizer(br.readLine());
-            int er = Integer.parseInt(st.nextToken()), ec = Integer.parseInt(st.nextToken());
-
-            if (sr==er && sc==ec) { sb.append("0\\n"); continue; }
-
-            int[][] dist = new int[I][I];
-            for (int[] row : dist) Arrays.fill(row, -1);
-            dist[sr][sc] = 0;
-            Queue<int[]> q = new LinkedList<>();
-            q.add(new int[]{sr, sc});
-
-            while (!q.isEmpty()) {
-                int[] cur = q.poll();
-                if (cur[0]==er && cur[1]==ec) { sb.append(dist[cur[0]][cur[1]]).append("\\n"); break; }
-                for (int d = 0; d < 8; d++) {
-                    int nr = cur[0]+dx[d], nc = cur[1]+dy[d];
-                    if (nr>=0&&nr<I&&nc>=0&&nc<I&&dist[nr][nc]==-1) {
-                        dist[nr][nc] = dist[cur[0]][cur[1]] + 1;
-                        q.add(new int[]{nr, nc});
-                    }
-                }
-            }
-        }
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -2695,9 +3149,14 @@ public class Main {
                 spaceComplexity: 'O(L^2)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기화', code: 'from collections import deque\nimport sys\ninput = sys.stdin.readline\n\nT = int(input())\nmoves = [(-2,-1),(-2,1),(-1,-2),(-1,2),(1,-2),(1,2),(2,-1),(2,1)]' },
-                        { title: 'BFS 탐색', code: 'for _ in range(T):\n    L = int(input())\n    sx, sy = map(int, input().split())\n    ex, ey = map(int, input().split())\n    dist = [[-1]*L for _ in range(L)]\n    dist[sx][sy] = 0\n    q = deque([(sx, sy)])' },
-                        { title: 'BFS 루프 및 출력', code: '    while q:\n        x, y = q.popleft()\n        if x == ex and y == ey:\n            print(dist[x][y])\n            break\n        for dx, dy in moves:\n            nx, ny = x+dx, y+dy\n            if 0<=nx<L and 0<=ny<L and dist[nx][ny]==-1:\n                dist[nx][ny] = dist[x][y] + 1\n                q.append((nx, ny))' }
+                        { title: '입력 및 초기화', desc: '나이트의 8방향 이동을 튜플 리스트로 정의합니다.', code: 'from collections import deque\nimport sys\ninput = sys.stdin.readline\n\nT = int(input())\nmoves = [(-2,-1),(-2,1),(-1,-2),(-1,2),(1,-2),(1,2),(2,-1),(2,1)]' },
+                        { title: 'BFS 탐색', desc: '테스트 케이스마다 dist 배열을 초기화하고 BFS를 준비합니다.', code: 'for _ in range(T):\n    L = int(input())\n    sx, sy = map(int, input().split())\n    ex, ey = map(int, input().split())\n    dist = [[-1]*L for _ in range(L)]\n    dist[sx][sy] = 0\n    q = deque([(sx, sy)])' },
+                        { title: 'BFS 루프 및 출력', desc: '8방향 이동으로 목표에 도달하면 최소 이동 수를 출력합니다.', code: '    while q:\n        x, y = q.popleft()\n        if x == ex and y == ey:\n            print(dist[x][y])\n            break\n        for dx, dy in moves:\n            nx, ny = x+dx, y+dy\n            if 0<=nx<L and 0<=ny<L and dist[nx][ny]==-1:\n                dist[nx][ny] = dist[x][y] + 1\n                q.append((nx, ny))' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 초기화', desc: '\uB098\uC774\uD2B8 8\uBC29\uD5A5 \uC774\uB3D9\uC744 dx/dy \uBC30\uC5F4\uB85C \uC815\uC758', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\n// \uB098\uC774\uD2B8\uC758 8\uBC29\uD5A5 \uC774\uB3D9\nint dx[] = {-2, -2, -1, -1, 1, 1, 2, 2};\nint dy[] = {-1, 1, -2, 2, -2, 2, -1, 1};\n\nint main() {\n    int T;\n    scanf("%d", &T);' },
+                        { title: 'BFS 탐색', desc: '시작==도착이면 바로 0 출력, 아니면 BFS 시작합니다.', code: '    while (T--) {\n        int L;\n        scanf("%d", &L);\n        int sr, sc, er, ec;\n        scanf("%d %d %d %d", &sr, &sc, &er, &ec);\n        if (sr == er && sc == ec) { puts("0"); continue; }\n\n        vector<vector<int>> dist(L, vector<int>(L, -1));\n        dist[sr][sc] = 0;\n        queue<pair<int,int>> q;\n        q.push({sr, sc});' },
+                        { title: 'BFS 루프 및 출력', desc: '8방향 BFS로 목표 도달 시 최소 이동 수를 출력합니다.', code: '        while (!q.empty()) {\n            auto [r, c] = q.front(); q.pop();\n            if (r == er && c == ec) {\n                printf("%d\\n", dist[r][c]);\n                break;\n            }\n            for (int d = 0; d < 8; d++) {\n                int nr = r+dx[d], nc = c+dy[d];\n                if (nr>=0 && nr<L && nc>=0 && nc<L && dist[nr][nc]==-1) {\n                    dist[nr][nc] = dist[r][c] + 1;\n                    q.push({nr, nc});\n                }\n            }\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[10].templates; }
@@ -2711,24 +3170,43 @@ public class Main {
             simIntro: '여러 익은 토마토에서 동시에 BFS를 시작하여 모든 토마토가 익는 최소 일수를 구합니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>M×N 상자에 토마토가 보관되어 있습니다. 익은 토마토(1)의 상하좌우에 있는 안 익은 토마토(0)는 하루가 지나면 익습니다.</p>
-                <p>모든 토마토가 익는 데 걸리는 최소 일수를 구하세요. 토마토가 모두 익지 못하면 -1을 출력합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>M, N (가로, 세로, 2≤M,N≤1000)<br>N줄의 격자 (1: 익음, 0: 안 익음, -1: 빈 칸)</p></div>
-                    <div><h4>출력</h4><p>모든 토마토가 익는 최소 일수, 또는 -1</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>철수의 토마토 농장에서는 토마토를 보관하는 큰 창고를 가지고 있다. 토마토는 아래의 그림과 같이 격자 모양 상자의 칸에 하나씩 넣어서 창고에 보관한다.</p>
+                <p>창고에 보관되는 토마토들 중에는 잘 익은 것도 있지만, 아직 익지 않은 토마토들도 있을 수 있다. 보관 후 하루가 지나면, 익은 토마토들의 인접한 곳에 있는 익지 않은 토마토들은 익은 토마토의 영향을 받아 익게 된다. 하나의 토마토의 인접한 곳은 왼쪽, 오른쪽, 앞, 뒤 네 방향에 있는 토마토를 의미한다. 대각선 방향에 있는 토마토들에게는 영향을 주지 못하며, 토마토가 혼자 저절로 익는 경우는 없다고 가정한다.</p>
+                <p>창고에 보관된 토마토들이 며칠이 지나면 다 익게 되는지, 그 최소 일수를 구하는 프로그램을 작성하라. 단, 상자의 일부 칸에는 토마토가 들어있지 않을 수도 있다. 정수 1은 익은 토마토, 정수 0은 익지 않은 토마토, 정수 -1은 토마토가 들어있지 않은 칸을 나타낸다.</p>
+                <p>토마토가 모두 익지는 못하는 상황이면 -1을 출력한다. 저장될 때부터 모든 토마토가 익어있는 상태이면 0을 출력한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>6 4
 0 0 0 0 0 0
 0 0 0 0 0 0
 0 0 0 0 0 0
 0 0 0 0 0 1</pre></div>
                     <div><strong>출력</strong><pre>8</pre></div>
-                </div></div>`,
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>6 4
+0 0 -1 0 0 0
+0 0 1 0 -1 0
+0 0 -1 0 0 0
+0 0 0 0 -1 1</pre></div>
+                    <div><strong>출력</strong><pre>6</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>6 4
+1 -1 0 0 0 0
+0 -1 0 0 0 0
+0 0 0 0 -1 0
+0 0 0 0 -1 1</pre></div>
+                    <div><strong>출력</strong><pre>-1</pre></div>
+                </div><p class="example-explain">벽(-1)으로 막혀서 일부 토마토에 도달할 수 없습니다.</p></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>2 ≤ M, N ≤ 1,000</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '<strong>다중 시작점 BFS</strong>입니다! 처음부터 익은 토마토(1)를 <strong>모두</strong> 큐에 넣고 BFS를 시작합니다.' },
-                { title: '풀이 방법', content: '1. 익은 토마토 위치를 모두 큐에 넣습니다. (dist = 0)<br>2. BFS로 안 익은 토마토를 익히면서 거리를 기록합니다.<br>3. BFS 후, 아직 0인 칸이 있으면 -1, 아니면 최대 거리를 출력합니다.' },
-                { title: '시간 복잡도', content: 'O(N×M) — BFS는 각 칸을 한 번만 방문합니다.' }
+                { title: '처음 떠오르는 방법', content: '익은 토마토 하나를 골라서 BFS를 돌리면... 잠깐, 익은 토마토가 <strong>여러 개</strong>일 수 있잖아! 각 토마토에서 하나씩 BFS를 돌려야 하나?' },
+                { title: '근데 이러면 문제가 있어', content: '익은 토마토마다 따로 BFS를 돌리면 비효율적이에요. 그리고 문제를 자세히 보면, 익은 토마토들이 <strong>동시에</strong> 주변을 익히잖아요!<br><br>즉, 하루에 모든 익은 토마토의 인접 칸이 동시에 익어야 합니다. 하나씩 순서대로 퍼뜨리면 답이 달라져요!' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>다중 시작점 BFS</strong>를 사용합니다! 처음부터 모든 익은 토마토(1)를 큐에 넣고 BFS를 한 번만 돌립니다:<br><br>1. 격자를 읽으면서 값이 1인 칸을 전부 큐에 넣기 (dist = 0)<br>2. BFS: 인접한 안 익은 토마토(0)를 익히며 거리 기록<br>3. BFS 후 아직 0인 칸이 있으면 -1, 없으면 최대 거리가 정답' },
+                { title: '왜 이게 맞을까?', content: 'BFS는 거리가 가까운 칸부터 처리하니까, 모든 시작점을 동시에 넣으면 자연스럽게 "동시에 퍼지는" 효과가 나요.<br><br>시간 복잡도는 O(N*M) — 각 칸을 딱 한 번만 방문하니까 매우 효율적입니다!' }
             ],
             templates: {
                 python: `import sys
@@ -2773,7 +3251,10 @@ for r in range(N):
         ans = max(ans, dist[r][c])
 
 print(ans)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -2810,49 +3291,6 @@ int main() {
         }
     printf("%d\\n", ans);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int M = Integer.parseInt(st.nextToken()), N = Integer.parseInt(st.nextToken());
-        int[][] grid = new int[N][M];
-        int[][] dist = new int[N][M];
-        int[] dx = {0,0,1,-1}, dy = {1,-1,0,0};
-        Queue<int[]> q = new LinkedList<>();
-
-        for (int r = 0; r < N; r++) {
-            st = new StringTokenizer(br.readLine());
-            for (int c = 0; c < M; c++) {
-                grid[r][c] = Integer.parseInt(st.nextToken());
-                dist[r][c] = -1;
-                if (grid[r][c] == 1) { q.add(new int[]{r, c}); dist[r][c] = 0; }
-            }
-        }
-
-        while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            for (int d = 0; d < 4; d++) {
-                int nr = cur[0]+dx[d], nc = cur[1]+dy[d];
-                if (nr>=0&&nr<N&&nc>=0&&nc<M&&grid[nr][nc]==0&&dist[nr][nc]==-1) {
-                    dist[nr][nc] = dist[cur[0]][cur[1]] + 1;
-                    grid[nr][nc] = 1;
-                    q.add(new int[]{nr, nc});
-                }
-            }
-        }
-
-        int ans = 0;
-        for (int r = 0; r < N; r++)
-            for (int c = 0; c < M; c++) {
-                if (grid[r][c] == 0) { System.out.println(-1); return; }
-                ans = Math.max(ans, dist[r][c]);
-            }
-        System.out.println(ans);
-    }
 }`
             },
             solutions: [{
@@ -2862,9 +3300,14 @@ public class Main {
                 spaceComplexity: 'O(N * M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기 토마토 수집', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nM, N = map(int, input().split())\nbox = []\nq = deque()\nfor i in range(N):\n    row = list(map(int, input().split()))\n    box.append(row)\n    for j in range(M):\n        if row[j] == 1:\n            q.append((i, j))' },
-                        { title: 'BFS 탐색', code: 'dx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\nwhile q:\n    y, x = q.popleft()\n    for d in range(4):\n        ny, nx = y+dy[d], x+dx[d]\n        if 0<=ny<N and 0<=nx<M and box[ny][nx]==0:\n            box[ny][nx] = box[y][x] + 1\n            q.append((ny, nx))' },
-                        { title: '결과 계산 및 출력', code: 'ans = 0\nfor i in range(N):\n    for j in range(M):\n        if box[i][j] == 0:\n            print(-1)\n            exit()\n        ans = max(ans, box[i][j])\nprint(ans - 1)' }
+                        { title: '입력 및 초기 토마토 수집', desc: '익은 토마토(1)를 모두 큐에 넣어 다중 시작점을 만듭니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nM, N = map(int, input().split())\nbox = []\nq = deque()\nfor i in range(N):\n    row = list(map(int, input().split()))\n    box.append(row)\n    for j in range(M):\n        if row[j] == 1:\n            q.append((i, j))' },
+                        { title: 'BFS 탐색', desc: '4방향으로 안 익은 토마토를 익히며 날짜를 기록합니다.', code: 'dx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\nwhile q:\n    y, x = q.popleft()\n    for d in range(4):\n        ny, nx = y+dy[d], x+dx[d]\n        if 0<=ny<N and 0<=nx<M and box[ny][nx]==0:\n            box[ny][nx] = box[y][x] + 1\n            q.append((ny, nx))' },
+                        { title: '결과 계산 및 출력', desc: '안 익은 토마토가 남으면 -1, 아니면 최대 날짜를 출력합니다.', code: 'ans = 0\nfor i in range(N):\n    for j in range(M):\n        if box[i][j] == 0:\n            print(-1)\n            exit()\n        ans = max(ans, box[i][j])\nprint(ans - 1)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 초기 토마토 수집', desc: '\uB2E4\uC911 \uC2DC\uC791\uC810 BFS: \uC775\uC740 \uD1A0\uB9C8\uD1A0\uB97C \uBAA8\uB450 \uD050\uC5D0 \uB123\uACE0 \uC2DC\uC791', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int M, N;\n    scanf("%d %d", &M, &N);\n    vector<vector<int>> box(N, vector<int>(M));\n    queue<pair<int,int>> q;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < M; j++) {\n            scanf("%d", &box[i][j]);\n            if (box[i][j] == 1)\n                q.push({i, j}); // \uC775\uC740 \uD1A0\uB9C8\uD1A0 \uBAA8\uB450 \uD050\uC5D0 \uB123\uAE30\n        }' },
+                        { title: 'BFS 탐색', desc: '4방향 BFS로 인접 토마토를 익히며 날짜를 기록합니다.', code: '    int dx[] = {0, 0, 1, -1};\n    int dy[] = {1, -1, 0, 0};\n    while (!q.empty()) {\n        auto [y, x] = q.front(); q.pop();\n        for (int d = 0; d < 4; d++) {\n            int ny = y+dx[d], nx = x+dy[d];\n            if (ny>=0 && ny<N && nx>=0 && nx<M && box[ny][nx]==0) {\n                box[ny][nx] = box[y][x] + 1;\n                q.push({ny, nx});\n            }\n        }\n    }' },
+                        { title: '결과 계산 및 출력', desc: '0이 남아있으면 -1, 아니면 최대값-1이 정답입니다.', code: '    int ans = 0;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < M; j++) {\n            if (box[i][j] == 0) { puts("-1"); return 0; }\n            ans = max(ans, box[i][j]);\n        }\n    printf("%d\\n", ans - 1);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[11].templates; }
@@ -2878,12 +3321,10 @@ public class Main {
             simIntro: '3차원 상자에서 여러 익은 토마토가 6방향으로 BFS를 수행하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>7576번의 3차원 버전입니다. M×N×H 상자에서 토마토가 위, 아래, 앞, 뒤, 왼쪽, 오른쪽 <strong>6방향</strong>으로 영향을 줍니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>M, N, H (가로, 세로, 높이)<br>H개 층의 N×M 격자</p></div>
-                    <div><h4>출력</h4><p>모든 토마토가 익는 최소 일수, 또는 -1</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>철수의 토마토 농장에서는 토마토를 보관하는 큰 창고를 가지고 있다. 토마토는 격자 모양 상자의 칸에 하나씩 넣어서 창고에 보관한다.</p>
+                <p>창고에 보관되는 토마토들 중에는 잘 익은 것도 있지만, 아직 익지 않은 토마토들도 있을 수 있다. 보관 후 하루가 지나면, 익은 토마토들의 인접한 곳에 있는 익지 않은 토마토들은 익은 토마토의 영향을 받아 익게 된다. 하나의 토마토에 인접한 곳은 위, 아래, 왼쪽, 오른쪽, 앞, 뒤 <strong>여섯 방향</strong>에 있는 토마토를 의미한다. 대각선 방향에 있는 토마토들에게는 영향을 주지 못하며, 토마토가 혼자 저절로 익는 경우는 없다고 가정한다.</p>
+                <p>창고에 보관된 토마토들이 며칠이 지나면 다 익게 되는지, 그 최소 일수를 구하는 프로그램을 작성하라. 단, 상자의 일부 칸에는 토마토가 들어있지 않을 수도 있다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 3 2
 0 0 0 0 0
 0 0 0 0 0
@@ -2892,10 +3333,16 @@ public class Main {
 0 0 1 0 0
 0 0 0 0 0</pre></div>
                     <div><strong>출력</strong><pre>4</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>2 ≤ M, N ≤ 100</li>
+                    <li>1 ≤ H ≤ 100</li>
+                </ul>`,
             hints: [
-                { title: '7576번과 뭐가 다를까?', content: '2D → 3D로 확장됩니다! 4방향 → <strong>6방향</strong> (상하좌우 + 위층/아래층)' },
-                { title: '구현 포인트', content: 'dz = [0,0,0,0,1,-1]을 추가하고, dist[z][r][c] 3차원 배열을 사용합니다.<br>나머지 로직은 7576번과 동일합니다.' }
+                { title: '처음 떠오르는 방법', content: '7576번(토마토 2D)을 풀었다면, 같은 다중 시작점 BFS를 쓰면 될 것 같아요. 익은 토마토를 전부 큐에 넣고 BFS를 돌리면...' },
+                { title: '근데 이러면 문제가 있어', content: '이번에는 상자가 <strong>여러 층</strong>으로 쌓여 있어요! 2D에서는 상하좌우 4방향이었는데, 3D에서는 <strong>위층/아래층</strong>까지 합쳐서 <strong>6방향</strong>으로 확장해야 합니다.<br><br>배열도 2차원에서 3차원으로 바뀌어요: <code>grid[h][r][c]</code>' },
+                { title: '이렇게 하면 어떨까?', content: '7576번 코드에서 두 가지만 바꿉니다:<br><br>1. 방향 배열에 위/아래 추가:<br><code>dh = [0,0,0,0,1,-1]</code> (위층 +1, 아래층 -1)<br><code>dr = [0,0,1,-1,0,0]</code><br><code>dc = [1,-1,0,0,0,0]</code><br><br>2. 큐에 <code>(h, r, c)</code> 3개 좌표를 넣기<br><br>나머지 다중 시작점 BFS 로직은 7576번과 완전히 동일합니다!' }
             ],
             templates: {
                 python: `import sys
@@ -2944,7 +3391,10 @@ for h in range(H):
                 exit()
             ans = max(ans, dist[h][r][c])
 print(ans)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int grid[100][100][100], dist_arr[100][100][100];
@@ -2984,53 +3434,6 @@ int main() {
             }
     printf("%d\\n", ans);
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int M = Integer.parseInt(st.nextToken());
-        int N = Integer.parseInt(st.nextToken());
-        int H = Integer.parseInt(st.nextToken());
-        int[][][] grid = new int[H][N][M];
-        int[][][] dist = new int[H][N][M];
-        int[] dh={0,0,0,0,1,-1}, dr={0,0,1,-1,0,0}, dc={1,-1,0,0,0,0};
-        Queue<int[]> q = new LinkedList<>();
-
-        for (int h = 0; h < H; h++)
-            for (int r = 0; r < N; r++) {
-                st = new StringTokenizer(br.readLine());
-                for (int c = 0; c < M; c++) {
-                    grid[h][r][c] = Integer.parseInt(st.nextToken());
-                    dist[h][r][c] = -1;
-                    if (grid[h][r][c] == 1) { q.add(new int[]{h,r,c}); dist[h][r][c] = 0; }
-                }
-            }
-
-        while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            for (int d = 0; d < 6; d++) {
-                int nh=cur[0]+dh[d], nr=cur[1]+dr[d], nc=cur[2]+dc[d];
-                if (nh>=0&&nh<H&&nr>=0&&nr<N&&nc>=0&&nc<M&&grid[nh][nr][nc]==0&&dist[nh][nr][nc]==-1) {
-                    dist[nh][nr][nc] = dist[cur[0]][cur[1]][cur[2]]+1;
-                    grid[nh][nr][nc] = 1;
-                    q.add(new int[]{nh,nr,nc});
-                }
-            }
-        }
-
-        int ans = 0;
-        for (int h = 0; h < H; h++)
-            for (int r = 0; r < N; r++)
-                for (int c = 0; c < M; c++) {
-                    if (grid[h][r][c] == 0) { System.out.println(-1); return; }
-                    ans = Math.max(ans, dist[h][r][c]);
-                }
-        System.out.println(ans);
-    }
 }`
             },
             solutions: [{
@@ -3040,9 +3443,14 @@ public class Main {
                 spaceComplexity: 'O(H * N * M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기 토마토 수집', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nM, N, H = map(int, input().split())\nbox = []\nq = deque()\nfor h in range(H):\n    layer = []\n    for i in range(N):\n        row = list(map(int, input().split()))\n        layer.append(row)\n        for j in range(M):\n            if row[j] == 1:\n                q.append((h, i, j))\n    box.append(layer)' },
-                        { title: '6방향 BFS 탐색', code: 'dz = [0, 0, 0, 0, 1, -1]\ndy = [1, -1, 0, 0, 0, 0]\ndx = [0, 0, 1, -1, 0, 0]\nwhile q:\n    z, y, x = q.popleft()\n    for d in range(6):\n        nz, ny, nx = z+dz[d], y+dy[d], x+dx[d]\n        if 0<=nz<H and 0<=ny<N and 0<=nx<M and box[nz][ny][nx]==0:\n            box[nz][ny][nx] = box[z][y][x] + 1\n            q.append((nz, ny, nx))' },
-                        { title: '결과 계산 및 출력', code: 'ans = 0\nfor h in range(H):\n    for i in range(N):\n        for j in range(M):\n            if box[h][i][j] == 0:\n                print(-1)\n                exit()\n            ans = max(ans, box[h][i][j])\nprint(ans - 1)' }
+                        { title: '입력 및 초기 토마토 수집', desc: '3차원 상자를 층별로 읽으며 익은 토마토를 큐에 넣습니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nM, N, H = map(int, input().split())\nbox = []\nq = deque()\nfor h in range(H):\n    layer = []\n    for i in range(N):\n        row = list(map(int, input().split()))\n        layer.append(row)\n        for j in range(M):\n            if row[j] == 1:\n                q.append((h, i, j))\n    box.append(layer)' },
+                        { title: '6방향 BFS 탐색', desc: '상하좌우 + 위층/아래층 6방향으로 토마토를 익힙니다.', code: 'dz = [0, 0, 0, 0, 1, -1]\ndy = [1, -1, 0, 0, 0, 0]\ndx = [0, 0, 1, -1, 0, 0]\nwhile q:\n    z, y, x = q.popleft()\n    for d in range(6):\n        nz, ny, nx = z+dz[d], y+dy[d], x+dx[d]\n        if 0<=nz<H and 0<=ny<N and 0<=nx<M and box[nz][ny][nx]==0:\n            box[nz][ny][nx] = box[z][y][x] + 1\n            q.append((nz, ny, nx))' },
+                        { title: '결과 계산 및 출력', desc: '3중 루프로 안 익은 토마토를 확인하고 최대 날짜를 출력합니다.', code: 'ans = 0\nfor h in range(H):\n    for i in range(N):\n        for j in range(M):\n            if box[h][i][j] == 0:\n                print(-1)\n                exit()\n            ans = max(ans, box[h][i][j])\nprint(ans - 1)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 초기 토마토 수집', desc: 'tuple<int,int,int> \uD050\uB85C 3\uCC28\uC6D0 BFS, \uC804\uC5ED \uBC30\uC5F4\uB85C \uBA54\uBAA8\uB9AC \uD655\uBCF4', code: '#include <iostream>\n#include <queue>\n#include <tuple>\n#include <algorithm>\n#include <cstring>\nusing namespace std;\n\nint grid[100][100][100];\nint dh[] = {0,0,0,0,1,-1};\nint dr[] = {0,0,1,-1,0,0};\nint dc[] = {1,-1,0,0,0,0};\n\nint main() {\n    int M, N, H;\n    scanf("%d %d %d", &M, &N, &H);\n    queue<tuple<int,int,int>> q;\n\n    for (int h = 0; h < H; h++)\n        for (int r = 0; r < N; r++)\n            for (int c = 0; c < M; c++) {\n                scanf("%d", &grid[h][r][c]);\n                if (grid[h][r][c] == 1)\n                    q.push({h, r, c});\n            }' },
+                        { title: '6방향 BFS 탐색', desc: '상하좌우 + 위아래 층 6방향으로 BFS를 수행합니다.', code: '    while (!q.empty()) {\n        auto [h, r, c] = q.front(); q.pop();\n        for (int d = 0; d < 6; d++) {\n            int nh = h+dh[d], nr = r+dr[d], nc = c+dc[d];\n            if (nh>=0 && nh<H && nr>=0 && nr<N && nc>=0 && nc<M\n                && grid[nh][nr][nc] == 0) {\n                grid[nh][nr][nc] = grid[h][r][c] + 1;\n                q.push({nh, nr, nc});\n            }\n        }\n    }' },
+                        { title: '결과 계산 및 출력', desc: '3중 루프로 0이 남아있는지 확인 후 최대값-1을 출력합니다.', code: '    int ans = 0;\n    for (int h = 0; h < H; h++)\n        for (int r = 0; r < N; r++)\n            for (int c = 0; c < M; c++) {\n                if (grid[h][r][c] == 0) {\n                    puts("-1"); return 0;\n                }\n                ans = max(ans, grid[h][r][c]);\n            }\n    printf("%d\\n", ans - 1);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[12].templates; }
@@ -3056,13 +3464,9 @@ public class Main {
             simIntro: '뱀과 사다리 게임판을 그래프로 모델링하여 BFS 최단 이동을 구하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>10×10 보드에서 1번 칸에서 100번 칸까지 가는 최소 주사위 횟수를 구하세요.</p>
-                <p>주사위를 굴려 1~6만큼 이동합니다. 사다리를 만나면 위로, 뱀을 만나면 아래로 강제 이동합니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M (사다리 수, 뱀 수)<br>이후 사다리/뱀 정보 (x → y)</p></div>
-                    <div><h4>출력</h4><p>최소 주사위 횟수</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>뱀과 사다리 게임을 즐겨 하는 큐브러버는 , 어느 게임 보드에서든 달성 가능한 게임 1번 칸에서 게임 100번 칸에 도착하기 위해 게임판에 주사위를 최소 몇 번 굴려야 하는지 궁금해졌다.</p>
+                <p>게임은 게임판 위에서 주사위를 굴려 나온 수만큼 이동시키는 것이다. 이동한 칸에 뱀이 있는 경우, 뱀을 따라서 내려가게 된다. 이동한 칸에 사다리가 있는 경우, 사다리를 따라서 올라가게 된다. 게임판 위에 게임말이 있는 상태에서 주사위를 굴려, 주사위의 값이 이동해야 하는 칸 수를 나타낸다. 게임말이 100번 칸을 넘어가는 이동은 할 수 없다. 게임말이 도착한 칸이 사다리면 반드시 올라가야 하고, 뱀이면 반드시 내려가야 한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3 7
 32 62
 42 68
@@ -3075,10 +3479,16 @@ public class Main {
 49 47
 67 17</pre></div>
                     <div><strong>출력</strong><pre>3</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N, M ≤ 15</li>
+                    <li>사다리와 뱀의 시작과 끝은 모두 다름</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '칸 번호(1~100)를 <strong>정점</strong>, 주사위 이동을 <strong>간선</strong>으로 생각합니다.<br>사다리/뱀은 해당 칸에 도착하면 <strong>강제 이동</strong>하는 것입니다.' },
-                { title: '풀이 방법', content: '1번 칸에서 BFS를 시작합니다.<br>현재 칸 + 주사위(1~6) = 다음 칸인데, 그 칸에 사다리/뱀이 있으면 목적지로 이동합니다.<br>100번 칸에 도달하면 거리를 출력합니다.' }
+                { title: '처음 떠오르는 방법', content: '1번 칸에서 주사위를 굴려서 100번 칸에 가야 해요. 주사위로 1~6칸 이동하는데, 사다리를 타면 위로 올라가고 뱀을 만나면 아래로 내려가고...<br><br>최소 주사위 굴림 횟수를 구해야 하니까 모든 경우를 다 해봐야 하나?' },
+                { title: '근데 이러면 문제가 있어', content: '무작정 모든 경우를 탐색하면 경우의 수가 너무 많아요. 잠깐, 이 문제를 <strong>그래프</strong>로 볼 수 있지 않을까?<br><br>칸 번호(1~100)를 <strong>정점</strong>, 주사위 이동(1~6)을 <strong>간선</strong>으로 생각하면, <strong>최단 거리 = BFS</strong>로 풀 수 있어요!' },
+                { title: '이렇게 하면 어떨까?', content: '1번 칸에서 BFS를 시작합니다:<br>1. 현재 칸에서 주사위 1~6으로 다음 칸 계산<br>2. 다음 칸에 사다리/뱀이 있으면 → 목적지로 <strong>강제 이동</strong><br>3. 아직 방문하지 않은 칸이면 큐에 넣기<br>4. 100번 칸에 도달하면 거리 출력!<br><br><span class="lang-py">Python: 사다리/뱀을 <code>dict</code>에 저장: <code>teleport[x] = y</code></span><span class="lang-cpp">C++: 배열에 저장: <code>teleport[x] = y</code> (0이면 사다리/뱀 없음)</span>' }
             ],
             templates: {
                 python: `from collections import deque
@@ -3108,7 +3518,10 @@ while queue:
         if dist[npos] == -1:
             dist[npos] = dist[pos] + 1
             queue.append(npos)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -3140,39 +3553,6 @@ int main() {
         }
     }
     return 0;
-}`,
-                java: `import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt(), M = sc.nextInt();
-        int[] teleport = new int[101];
-        for (int i = 0; i < N + M; i++) {
-            int x = sc.nextInt(), y = sc.nextInt();
-            teleport[x] = y;
-        }
-
-        int[] dist = new int[101];
-        Arrays.fill(dist, -1);
-        dist[1] = 0;
-        Queue<Integer> q = new LinkedList<>();
-        q.add(1);
-
-        while (!q.isEmpty()) {
-            int pos = q.poll();
-            if (pos == 100) { System.out.println(dist[pos]); return; }
-            for (int d = 1; d <= 6; d++) {
-                int npos = pos + d;
-                if (npos > 100) continue;
-                if (teleport[npos] != 0) npos = teleport[npos];
-                if (dist[npos] == -1) {
-                    dist[npos] = dist[pos] + 1;
-                    q.add(npos);
-                }
-            }
-        }
-    }
 }`
             },
             solutions: [{
@@ -3182,9 +3562,14 @@ public class Main {
                 spaceComplexity: 'O(100)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 뱀/사다리 구성', code: 'from collections import deque\n\nN, M = map(int, input().split())\nmove = [0] * 101\nfor _ in range(N + M):\n    a, b = map(int, input().split())\n    move[a] = b' },
-                        { title: 'BFS 초기화', code: 'dist = [-1] * 101\ndist[1] = 0\nq = deque([1])' },
-                        { title: 'BFS 탐색 및 출력', code: 'while q:\n    x = q.popleft()\n    for dice in range(1, 7):\n        nx = x + dice\n        if nx > 100: continue\n        if move[nx] != 0: nx = move[nx]\n        if dist[nx] == -1:\n            dist[nx] = dist[x] + 1\n            q.append(nx)\nprint(dist[100])' }
+                        { title: '입력 및 뱀/사다리 구성', desc: 'move 배열에 사다리/뱀의 이동 목적지를 저장합니다.', code: 'from collections import deque\n\nN, M = map(int, input().split())\nmove = [0] * 101\nfor _ in range(N + M):\n    a, b = map(int, input().split())\n    move[a] = b' },
+                        { title: 'BFS 초기화', desc: '1번 칸에서 시작하므로 dist[1]=0으로 설정합니다.', code: 'dist = [-1] * 101\ndist[1] = 0\nq = deque([1])' },
+                        { title: 'BFS 탐색 및 출력', desc: '주사위 1~6으로 이동하되, 사다리/뱀이면 강제 이동합니다.', code: 'while q:\n    x = q.popleft()\n    for dice in range(1, 7):\n        nx = x + dice\n        if nx > 100: continue\n        if move[nx] != 0: nx = move[nx]\n        if dist[nx] == -1:\n            dist[nx] = dist[x] + 1\n            q.append(nx)\nprint(dist[100])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 뱀/사다리 구성', desc: '\uBC30\uC5F4\uB85C \uC0AC\uB2E4\uB9AC/\uBC40 \uB9F5\uD551 \uC800\uC7A5', code: '#include <iostream>\n#include <queue>\n#include <cstring>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    int teleport[101] = {}; // \uC0AC\uB2E4\uB9AC/\uBC40 \uC774\uB3D9 \uB9F5\uD551\n    for (int i = 0; i < N + M; i++) {\n        int x, y;\n        scanf("%d %d", &x, &y);\n        teleport[x] = y;\n    }' },
+                        { title: 'BFS 초기화', desc: 'memset으로 dist를 -1로 초기화, 1번 칸부터 시작합니다.', code: '    int dist[101];\n    memset(dist, -1, sizeof(dist));\n    dist[1] = 0;\n    queue<int> q;\n    q.push(1);' },
+                        { title: 'BFS 탐색 및 출력', desc: '주사위 1~6 이동 후 teleport 배열로 강제 이동을 처리합니다.', code: '    while (!q.empty()) {\n        int pos = q.front(); q.pop();\n        if (pos == 100) {\n            printf("%d\\n", dist[pos]);\n            return 0;\n        }\n        for (int d = 1; d <= 6; d++) {\n            int npos = pos + d;\n            if (npos > 100) continue;\n            // \uC0AC\uB2E4\uB9AC/\uBC40\uC774 \uC788\uC73C\uBA74 \uAC15\uC81C \uC774\uB3D9\n            if (teleport[npos]) npos = teleport[npos];\n            if (dist[npos] == -1) {\n                dist[npos] = dist[pos] + 1;\n                q.push(npos);\n            }\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[13].templates; }
@@ -3198,12 +3583,9 @@ public class Main {
             simIntro: '그래프를 2색으로 칠하면서 이분 그래프 여부를 판별하는 BFS 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>그래프가 이분 그래프인지 판별하세요. 이분 그래프란 모든 정점을 두 그룹으로 나누어, 같은 그룹 내의 정점끼리는 간선이 없는 그래프입니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>테스트 케이스 수 K<br>각 케이스: V, E (정점, 간선 수)<br>이후 E개의 간선</p></div>
-                    <div><h4>출력</h4><p>각 케이스마다 YES 또는 NO</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>그래프의 정점의 집합을 둘로 분할하여, 각 집합에 속한 정점끼리는 서로 인접하지 않도록 분할할 수 있을 때, 그러한 그래프를 특별히 이분 그래프 (Bipartite Graph) 라 부른다.</p>
+                <p>그래프가 입력으로 주어졌을 때, 이 그래프가 이분 그래프인지 아닌지 판별하는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>2
 3 2
 1 3
@@ -3215,11 +3597,18 @@ public class Main {
 4 2</pre></div>
                     <div><strong>출력</strong><pre>YES
 NO</pre></div>
-                </div></div>`,
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ K ≤ 5</li>
+                    <li>1 ≤ V ≤ 20,000</li>
+                    <li>1 ≤ E ≤ 200,000</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '<strong>2-coloring</strong> 문제입니다! 정점을 두 가지 색으로 칠하되, 인접한 정점은 다른 색이어야 합니다.<br>색칠 도중 충돌이 생기면 이분 그래프가 아닙니다.' },
-                { title: '풀이 방법', content: 'BFS/DFS로 시작 정점을 색 0으로 칠하고, 이웃을 색 1로, 그 이웃을 색 0으로... 반복합니다.<br>이미 색칠된 이웃의 색이 현재와 같으면 NO입니다.' },
-                { title: '주의사항', content: '그래프가 <strong>연결 그래프가 아닐 수</strong> 있습니다! 모든 정점에 대해 BFS를 해야 합니다.<br>각 테스트 케이스마다 초기화를 잊지 마세요.' }
+                { title: '처음 떠오르는 방법', content: '이분 그래프란 정점을 두 그룹으로 나눌 수 있고, 같은 그룹끼리는 간선이 없는 그래프예요.<br><br>모든 가능한 2가지 분할을 시도해 보면 되지 않을까? 정점이 V개면 2^V가지 경우...' },
+                { title: '근데 이러면 문제가 있어', content: 'V가 최대 20,000이면 2^20000가지?! 이건 절대 불가능해요.<br><br>다르게 생각해 봅시다. 이분 그래프는 정점을 <strong>두 가지 색</strong>으로 칠할 수 있는 그래프예요. 인접한 정점끼리 항상 다른 색이면 이분 그래프!' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>2-coloring BFS</strong>를 사용합니다:<br>1. 시작 정점을 색 0으로 칠하기<br>2. BFS로 이웃을 색 1로, 그 이웃을 색 0으로... 번갈아 칠하기<br>3. 이미 칠해진 이웃의 색이 나와 <strong>같으면</strong> → 이분 그래프가 아님! (NO)<br>4. 충돌 없이 끝나면 → 이분 그래프 (YES)' },
+                { title: '주의할 점', content: '그래프가 <strong>연결 그래프가 아닐 수</strong> 있어요! 즉, 떨어진 컴포넌트가 여러 개일 수 있습니다.<br><br>모든 정점을 순회하면서, 아직 색칠 안 된 정점이 있으면 거기서 새로 BFS를 시작해야 해요.<br>각 테스트 케이스마다 <code>color</code> 배열을 초기화하는 것도 잊지 마세요!' }
             ],
             templates: {
                 python: `import sys
@@ -3258,7 +3647,10 @@ for _ in range(K):
             break
 
     print("YES" if is_bipartite else "NO")`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -3295,51 +3687,6 @@ int main() {
         puts(ok ? "YES" : "NO");
     }
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int K = Integer.parseInt(br.readLine().trim());
-        StringBuilder sb = new StringBuilder();
-
-        while (K-- > 0) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int V = Integer.parseInt(st.nextToken());
-            int E = Integer.parseInt(st.nextToken());
-            List<List<Integer>> graph = new ArrayList<>();
-            for (int i = 0; i <= V; i++) graph.add(new ArrayList<>());
-            for (int i = 0; i < E; i++) {
-                st = new StringTokenizer(br.readLine());
-                int u = Integer.parseInt(st.nextToken());
-                int v = Integer.parseInt(st.nextToken());
-                graph.get(u).add(v);
-                graph.get(v).add(u);
-            }
-
-            int[] color = new int[V + 1];
-            Arrays.fill(color, -1);
-            boolean ok = true;
-
-            for (int s = 1; s <= V && ok; s++) {
-                if (color[s] != -1) continue;
-                color[s] = 0;
-                Queue<Integer> q = new LinkedList<>();
-                q.add(s);
-                while (!q.isEmpty() && ok) {
-                    int v = q.poll();
-                    for (int u : graph.get(v)) {
-                        if (color[u] == -1) { color[u] = 1 - color[v]; q.add(u); }
-                        else if (color[u] == color[v]) ok = false;
-                    }
-                }
-            }
-            sb.append(ok ? "YES" : "NO").append("\\n");
-        }
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -3349,9 +3696,14 @@ public class Main {
                 spaceComplexity: 'O(V + E)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구성', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nK = int(input())\nfor _ in range(K):\n    V, E = map(int, input().split())\n    graph = [[] for _ in range(V + 1)]\n    for _ in range(E):\n        u, v = map(int, input().split())\n        graph[u].append(v)\n        graph[v].append(u)' },
-                        { title: 'BFS 2색 칠하기', code: '    color = [0] * (V + 1)\n    is_bipartite = True\n    for start in range(1, V + 1):\n        if color[start] != 0: continue\n        q = deque([start])\n        color[start] = 1\n        while q and is_bipartite:\n            v = q.popleft()\n            for u in graph[v]:\n                if color[u] == 0:\n                    color[u] = -color[v]\n                    q.append(u)\n                elif color[u] == color[v]:\n                    is_bipartite = False' },
-                        { title: '결과 출력', code: '    print("YES" if is_bipartite else "NO")' }
+                        { title: '입력 및 그래프 구성', desc: '테스트 케이스마다 그래프를 새로 생성합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nK = int(input())\nfor _ in range(K):\n    V, E = map(int, input().split())\n    graph = [[] for _ in range(V + 1)]\n    for _ in range(E):\n        u, v = map(int, input().split())\n        graph[u].append(v)\n        graph[v].append(u)' },
+                        { title: 'BFS 2색 칠하기', desc: '인접한 정점에 반대 색을 칠하고, 충돌 시 이분 그래프가 아닙니다.', code: '    color = [0] * (V + 1)\n    is_bipartite = True\n    for start in range(1, V + 1):\n        if color[start] != 0: continue\n        q = deque([start])\n        color[start] = 1\n        while q and is_bipartite:\n            v = q.popleft()\n            for u in graph[v]:\n                if color[u] == 0:\n                    color[u] = -color[v]\n                    q.append(u)\n                elif color[u] == color[v]:\n                    is_bipartite = False' },
+                        { title: '결과 출력', desc: '이분 그래프 판별 결과에 따라 YES/NO를 출력합니다.', code: '    print("YES" if is_bipartite else "NO")' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구성', desc: '테스트 케이스별로 vector 그래프를 생성합니다.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int K;\n    scanf("%d", &K);\n    while (K--) {\n        int V, E;\n        scanf("%d %d", &V, &E);\n        vector<vector<int>> graph(V + 1);\n        for (int i = 0; i < E; i++) {\n            int u, v;\n            scanf("%d %d", &u, &v);\n            graph[u].push_back(v);\n            graph[v].push_back(u);\n        }' },
+                        { title: 'BFS 2색 칠하기', desc: 'vector<int> color\uB85C 0/1/-1 \uC0C9 \uAD00\uB9AC', code: '        // 0: \uBBF8\uBC29\uBB38, 1/-1: \uB450 \uAC00\uC9C0 \uC0C9\n        vector<int> color(V + 1, 0);\n        bool ok = true;\n        for (int s = 1; s <= V && ok; s++) {\n            if (color[s] != 0) continue;\n            color[s] = 1;\n            queue<int> q;\n            q.push(s);\n            while (!q.empty() && ok) {\n                int v = q.front(); q.pop();\n                for (int u : graph[v]) {\n                    if (color[u] == 0) {\n                        color[u] = -color[v]; // \uBC18\uB300 \uC0C9 \uCE60\uD558\uAE30\n                        q.push(u);\n                    } else if (color[u] == color[v]) {\n                        ok = false; // \uAC19\uC740 \uC0C9\uC774\uBA74 \uC774\uBD84 \uADF8\uB798\uD504 X\n                    }\n                }\n            }\n        }' },
+                        { title: '결과 출력', desc: '판별 결과를 YES/NO로 출력합니다.', code: '        puts(ok ? "YES" : "NO");\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[14].templates; }
@@ -3365,12 +3717,10 @@ public class Main {
             simIntro: '벽을 부순 상태와 부수지 않은 상태를 분리하여 3차원 BFS를 수행하는 과정입니다.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>N×M 맵에서 (1,1)에서 (N,M)까지 최단 경로를 구하세요. 벽(1)은 통과할 수 없지만, <strong>딱 한 번</strong> 벽을 부수고 이동할 수 있습니다.</p>
-                <div class="problem-io">
-                    <div><h4>입력</h4><p>N, M (1≤N,M≤1000)<br>N줄의 0/1 맵</p></div>
-                    <div><h4>출력</h4><p>최단 경로 길이 (시작/도착 포함), 불가능하면 -1</p></div>
-                </div>
-                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                <p>N×M의 행렬로 표현되는 맵이 있다. 맵에서 0은 이동할 수 있는 곳을 나타내고, 1은 이동할 수 없는 벽이 있는 곳을 나타낸다. 당신은 (1, 1)에서 (N, M)의 위치까지 이동하려 하는데, 이때 최단 경로로 이동하려 한다. 최단 경로는 맵에서 가장 적은 개수의 칸을 지나는 경로를 말하는데, 이때 시작하는 칸과 끝나는 칸도 포함해서 센다.</p>
+                <p>만약 이동하는 도중에 한 개의 벽을 부수고 이동하는 것이 좀 더 경로가 짧아진다면, 벽을 한 개 까지 부수고 이동하여도 된다.</p>
+                <p>한 칸에서 이동할 수 있는 칸은 상하좌우로 인접한 칸이다. 맵이 주어졌을 때, 최단 경로를 구해 내는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>6 4
 0100
 0110
@@ -3379,11 +3729,24 @@ public class Main {
 0100
 0000</pre></div>
                     <div><strong>출력</strong><pre>15</pre></div>
-                </div></div>`,
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>4 4
+0111
+1111
+1111
+1110</pre></div>
+                    <div><strong>출력</strong><pre>-1</pre></div>
+                </div><p class="example-explain">벽을 하나만 부술 수 있으므로 (1,1)에서 (4,4)까지 도달할 수 없습니다.</p></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N, M ≤ 1,000</li>
+                </ul>`,
             hints: [
-                { title: '핵심 아이디어', content: '<strong>상태 확장 BFS</strong>입니다! 방문 배열을 3차원으로 확장합니다:<br><code>visited[r][c][벽을 부쉈는지(0 또는 1)]</code>' },
-                { title: '풀이 방법', content: 'BFS 큐에 (r, c, broken) 상태를 넣습니다.<br>벽이 있는 칸: broken=0이면 벽을 부수고(broken=1) 이동 가능<br>빈 칸: 그냥 이동' },
-                { title: '주의사항', content: '벽을 부수지 않은 상태와 부순 상태를 <strong>별도로</strong> 관리해야 합니다.<br>같은 (r,c)라도 broken 값이 다르면 다른 상태입니다!' }
+                { title: '처음 떠오르는 방법', content: '(1,1)에서 (N,M)까지 최단 경로를 구해야 해요. 벽을 하나까지 부술 수 있으니까... 일단 벽 안 부수고 BFS, 그다음 벽을 하나씩 부숴보면서 BFS를 반복하면 되지 않을까?' },
+                { title: '근데 이러면 문제가 있어', content: '벽이 엄청 많으면 각 벽을 부술 때마다 BFS를 돌려야 해요. N, M이 최대 1,000이면 격자에 벽이 수십만 개일 수 있으니까, 벽 수 * O(NM) = 시간 초과!<br><br>벽을 부수는 것을 BFS <strong>안에서</strong> 처리할 방법은 없을까?' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>상태 확장 BFS</strong>를 사용합니다! 위치 (r, c)에 "벽을 부쉈는지 여부"를 추가해서 3차원 상태로 관리해요:<br><br><code>dist[r][c][broken]</code> (broken: 0=아직 안 부숨, 1=이미 부숨)<br><br>이동 규칙:<br>- 빈 칸(0) → 그냥 이동 (broken 유지)<br>- 벽(1) + broken=0 → 벽을 부수고 이동 (broken을 1로 변경)<br>- 벽(1) + broken=1 → 이동 불가 (이미 한 번 부숨)' },
+                { title: '왜 이게 맞을까?', content: '같은 (r, c)라도 <strong>벽을 부쉈느냐 아니냐</strong>에 따라 완전히 다른 상태예요!<br><br>예를 들어, (3, 4)에 벽을 안 부수고 도착한 것과, 벽을 부수고 도착한 것은 앞으로 갈 수 있는 경로가 달라요. 그래서 별도 상태로 관리해야 합니다.<br><br>BFS 큐에 <code>(r, c, broken)</code>을 넣으면, 도착점에 처음 도달했을 때가 최단 거리입니다.' }
             ],
             templates: {
                 python: `import sys
@@ -3422,7 +3785,10 @@ while queue:
                 queue.append((nr, nc, 1))
 
 print(-1)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
 using namespace std;
 
 int N, M;
@@ -3460,48 +3826,6 @@ int main() {
     }
     puts("-1");
     return 0;
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        char[][] grid = new char[N][];
-        for (int i = 0; i < N; i++) grid[i] = br.readLine().trim().toCharArray();
-
-        int[] dx = {0,0,1,-1}, dy = {1,-1,0,0};
-        int[][][] dist = new int[N][M][2];
-        for (int[][] a : dist) for (int[] b : a) Arrays.fill(b, -1);
-        dist[0][0][0] = 1;
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{0, 0, 0});
-
-        while (!q.isEmpty()) {
-            int[] cur = q.poll();
-            int r = cur[0], c = cur[1], broken = cur[2];
-            if (r == N-1 && c == M-1) {
-                System.out.println(dist[r][c][broken]);
-                return;
-            }
-            for (int d = 0; d < 4; d++) {
-                int nr = r+dx[d], nc = c+dy[d];
-                if (nr<0||nr>=N||nc<0||nc>=M) continue;
-                if (grid[nr][nc]=='0' && dist[nr][nc][broken]==-1) {
-                    dist[nr][nc][broken] = dist[r][c][broken]+1;
-                    q.add(new int[]{nr,nc,broken});
-                }
-                if (grid[nr][nc]=='1' && broken==0 && dist[nr][nc][1]==-1) {
-                    dist[nr][nc][1] = dist[r][c][broken]+1;
-                    q.add(new int[]{nr,nc,1});
-                }
-            }
-        }
-        System.out.println(-1);
-    }
 }`
             },
             solutions: [{
@@ -3511,9 +3835,14 @@ public class Main {
                 spaceComplexity: 'O(N * M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기화', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\nboard = []\nfor _ in range(N):\n    board.append(list(input().strip()))\n\ndist = [[[0]*2 for _ in range(M)] for _ in range(N)]\ndist[0][0][0] = 1' },
-                        { title: 'BFS 탐색', code: 'q = deque([(0, 0, 0)])  # y, x, broken\ndx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\nwhile q:\n    y, x, broken = q.popleft()\n    if y == N-1 and x == M-1:\n        print(dist[y][x][broken])\n        exit()' },
-                        { title: '벽 처리 및 이동', code: '    for d in range(4):\n        ny, nx = y+dy[d], x+dx[d]\n        if 0<=ny<N and 0<=nx<M:\n            if board[ny][nx]=="0" and dist[ny][nx][broken]==0:\n                dist[ny][nx][broken] = dist[y][x][broken] + 1\n                q.append((ny, nx, broken))\n            elif board[ny][nx]=="1" and broken==0 and dist[ny][nx][1]==0:\n                dist[ny][nx][1] = dist[y][x][broken] + 1\n                q.append((ny, nx, 1))\nprint(-1)' }
+                        { title: '입력 및 초기화', desc: 'dist[y][x][벽부순여부] 3차원 배열로 상태를 관리합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\nboard = []\nfor _ in range(N):\n    board.append(list(input().strip()))\n\ndist = [[[0]*2 for _ in range(M)] for _ in range(N)]\ndist[0][0][0] = 1' },
+                        { title: 'BFS 탐색', desc: '(y, x, broken) 상태를 큐에서 꺼내며 도착 여부를 확인합니다.', code: 'q = deque([(0, 0, 0)])  # y, x, broken\ndx = [0, 0, 1, -1]\ndy = [1, -1, 0, 0]\nwhile q:\n    y, x, broken = q.popleft()\n    if y == N-1 and x == M-1:\n        print(dist[y][x][broken])\n        exit()' },
+                        { title: '벽 처리 및 이동', desc: '빈 칸이면 그대로, 벽이면 아직 안 부쉈을 때만 부수고 이동합니다.', code: '    for d in range(4):\n        ny, nx = y+dy[d], x+dx[d]\n        if 0<=ny<N and 0<=nx<M:\n            if board[ny][nx]=="0" and dist[ny][nx][broken]==0:\n                dist[ny][nx][broken] = dist[y][x][broken] + 1\n                q.append((ny, nx, broken))\n            elif board[ny][nx]=="1" and broken==0 and dist[ny][nx][1]==0:\n                dist[ny][nx][1] = dist[y][x][broken] + 1\n                q.append((ny, nx, 1))\nprint(-1)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 초기화', desc: '3\uCC28\uC6D0 \uBC30\uC5F4 dist[r][c][broken]\uC73C\uB85C \uC0C1\uD0DC \uD655\uC7A5 BFS', code: '#include <iostream>\n#include <queue>\n#include <tuple>\n#include <cstring>\nusing namespace std;\n\nint N, M;\nchar grid[1000][1001];\nint dist[1000][1000][2]; // [y][x][\uBCBD \uBD80\uC22C \uC5EC\uBD80]\nint dx[] = {0, 0, 1, -1};\nint dy[] = {1, -1, 0, 0};\n\nint main() {\n    scanf("%d %d", &N, &M);\n    for (int i = 0; i < N; i++) scanf("%s", grid[i]);\n    memset(dist, -1, sizeof(dist));\n    dist[0][0][0] = 1;' },
+                        { title: 'BFS 탐색', desc: 'tuple<int,int,int>\uC73C\uB85C (y, x, broken) \uC0C1\uD0DC \uAD00\uB9AC', code: '    queue<tuple<int,int,int>> q;\n    q.push({0, 0, 0});\n\n    while (!q.empty()) {\n        auto [r, c, b] = q.front(); q.pop();\n        if (r == N-1 && c == M-1) {\n            printf("%d\\n", dist[r][c][b]);\n            return 0;\n        }' },
+                        { title: '벽 처리 및 이동', desc: '빈 칸은 그대로, 벽은 b==0일 때만 부수고 이동합니다.', code: '        for (int d = 0; d < 4; d++) {\n            int nr = r+dx[d], nc = c+dy[d];\n            if (nr<0 || nr>=N || nc<0 || nc>=M) continue;\n            // \uBE48 \uCE78: \uADF8\uB0E5 \uC774\uB3D9\n            if (grid[nr][nc]==\'0\' && dist[nr][nc][b]==-1) {\n                dist[nr][nc][b] = dist[r][c][b] + 1;\n                q.push({nr, nc, b});\n            }\n            // \uBCBD: \uC544\uC9C1 \uC548 \uBD80\uC20C\uC744 \uB54C\uB9CC \uBD80\uC218\uACE0 \uC774\uB3D9\n            if (grid[nr][nc]==\'1\' && b==0 && dist[nr][nc][1]==-1) {\n                dist[nr][nc][1] = dist[r][c][b] + 1;\n                q.push({nr, nc, 1});\n            }\n        }\n    }\n    puts("-1");\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return graphTopic.problems[15].templates; }

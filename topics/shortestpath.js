@@ -222,7 +222,8 @@ var shortestPathTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="12" r="6" fill="none" stroke="var(--green)" stroke-width="2"/><text x="19" y="15" text-anchor="middle" font-size="8" font-weight="bold" fill="var(--green)">min</text><circle cx="10" cy="30" r="5" fill="none" stroke="var(--border)" stroke-width="2"/><circle cx="28" cy="30" r="5" fill="none" stroke="var(--border)" stroke-width="2"/><line x1="16" y1="17" x2="12" y2="25" stroke="var(--border)" stroke-width="1.5"/><line x1="22" y1="17" x2="26" y2="25" stroke="var(--border)" stroke-width="1.5"/></svg>\
                         </div>\
                         <h3>최소 힙(heapq) 사용</h3>\
-                        <p>거리가 가장 짧은 정점을 빠르게 꺼냅니다. 우선순위 큐를 사용합니다!</p>\
+                        <p>거리가 가장 짧은 정점을 빠르게 꺼냅니다. 우선순위 큐를 사용합니다!<br>\
+                        <span class="lang-py"><a href="https://docs.python.org/3/library/heapq.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: heapq ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/priority_queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: priority_queue ↗</a></span></p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -233,7 +234,7 @@ var shortestPathTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block">\
+                <span class="lang-py"><div class="code-block">\
                     <pre><code class="language-python"># 다익스트라 알고리즘 (최소 힙 사용)\
 \nimport heapq\
 \nimport sys\
@@ -255,7 +256,35 @@ var shortestPathTopic = {
 \n                dist[u] = nd\
 \n                heapq.heappush(heap, (nd, u))\
 \n    return dist</code></pre>\
-                </div>\
+                </div></span>\
+                <span class="lang-cpp"><div class="code-block">\
+                    <pre><code class="language-cpp">// 다익스트라 알고리즘 (최소 힙 사용)\
+\n#include &lt;iostream&gt;\
+\n#include &lt;vector&gt;\
+\n#include &lt;queue&gt;\
+\n#include &lt;climits&gt;\
+\nusing namespace std;\
+\n\
+\nvoid dijkstra(int start, vector&lt;vector&lt;pair&lt;int,int&gt;&gt;&gt;&amp; graph, int N) {\
+\n    vector&lt;int&gt; dist(N + 1, INT_MAX);\
+\n    // greater&lt;&gt;로 최소 힙 구현 (Python heapq와 동일)\
+\n    priority_queue&lt;pair&lt;int,int&gt;, vector&lt;pair&lt;int,int&gt;&gt;, greater&lt;pair&lt;int,int&gt;&gt;&gt; pq;\
+\n    dist[start] = 0;\
+\n    pq.push({0, start});\
+\n\
+\n    while (!pq.empty()) {\
+\n        auto [d, v] = pq.top(); pq.pop();\
+\n        if (d &gt; dist[v]) continue;\
+\n        for (auto [u, w] : graph[v]) {\
+\n            int nd = d + w;\
+\n            if (nd &lt; dist[u]) {\
+\n                dist[u] = nd;\
+\n                pq.push({nd, u});\
+\n            }\
+\n        }\
+\n    }\
+\n}</code></pre>\
+                </div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -298,7 +327,8 @@ var shortestPathTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="19" y="15" text-anchor="middle" font-size="11" font-weight="bold" fill="var(--accent)">V-1</text><text x="19" y="30" text-anchor="middle" font-size="9" fill="var(--text2)">번 반복</text></svg>\
                         </div>\
                         <h3>V-1번 완화</h3>\
-                        <p>모든 간선을 V-1번 반복하며 거리를 갱신(완화)합니다.</p>\
+                        <p>모든 간선을 V-1번 반복하며 거리를 갱신(완화)합니다.<br>\
+                        <a href="https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Bellman-Ford algorithm ↗</a></p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -309,7 +339,7 @@ var shortestPathTopic = {
                     </div>\
                 </div>\
 \
-                <div class="code-block">\
+                <span class="lang-py"><div class="code-block">\
                     <pre><code class="language-python"># 벨만-포드 알고리즘\
 \nimport sys\
 \ninput = sys.stdin.readline\
@@ -334,7 +364,42 @@ var shortestPathTopic = {
 \n    if dist[u] != INF and dist[u] + w < dist[v]:\
 \n        has_negative_cycle = True\
 \n        break</code></pre>\
-                </div>\
+                </div></span>\
+                <span class="lang-cpp"><div class="code-block">\
+                    <pre><code class="language-cpp">// 벨만-포드 알고리즘\
+\n#include &lt;iostream&gt;\
+\n#include &lt;vector&gt;\
+\n#include &lt;climits&gt;\
+\nusing namespace std;\
+\n\
+\nint main() {\
+\n    int N, M;\
+\n    cin &gt;&gt; N &gt;&gt; M;\
+\n    vector&lt;tuple&lt;int,int,int&gt;&gt; edges(M);\
+\n    for (auto&amp; [u, v, w] : edges)\
+\n        cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;\
+\n\
+\n    vector&lt;int&gt; dist(N + 1, INT_MAX);\
+\n    dist[1] = 0;\
+\n\
+\n    // V-1번 모든 간선을 완화\
+\n    for (int i = 0; i &lt; N - 1; i++) {\
+\n        for (auto [u, v, w] : edges) {\
+\n            if (dist[u] != INT_MAX &amp;&amp; dist[u] + w &lt; dist[v])\
+\n                dist[v] = dist[u] + w;\
+\n        }\
+\n    }\
+\n\
+\n    // V번째에도 갱신되면 음수 사이클 존재\
+\n    bool has_negative_cycle = false;\
+\n    for (auto [u, v, w] : edges) {\
+\n        if (dist[u] != INT_MAX &amp;&amp; dist[u] + w &lt; dist[v]) {\
+\n            has_negative_cycle = true;\
+\n            break;\
+\n        }\
+\n    }\
+\n}</code></pre>\
+                </div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -384,11 +449,12 @@ var shortestPathTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="19" y="24" text-anchor="middle" font-size="14" font-weight="bold" fill="var(--accent)">O(V³)</text></svg>\
                         </div>\
                         <h3>시간 복잡도 O(V³)</h3>\
-                        <p>정점이 많으면 느리지만, 코드가 매우 간단합니다. V ≤ 500 정도면 사용 가능합니다.</p>\
+                        <p>정점이 많으면 느리지만, 코드가 매우 간단합니다. V ≤ 500 정도면 사용 가능합니다.<br>\
+                        <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Floyd-Warshall algorithm ↗</a></p>\
                     </div>\
                 </div>\
 \
-                <div class="code-block">\
+                <span class="lang-py"><div class="code-block">\
                     <pre><code class="language-python"># 플로이드-워셜 알고리즘\
 \nINF = float(\'inf\')\
 \n\
@@ -397,7 +463,18 @@ var shortestPathTopic = {
 \n    for i in range(1, N + 1):   # 출발지\
 \n        for j in range(1, N + 1):  # 도착지\
 \n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])</code></pre>\
-                </div>\
+                </div></span>\
+                <span class="lang-cpp"><div class="code-block">\
+                    <pre><code class="language-cpp">// 플로이드-워셜 알고리즘\
+\nconst int INF = 1e9;\
+\n\
+\n// dp[i][j] = i에서 j까지의 최단 거리\
+\nfor (int k = 1; k &lt;= N; k++)        // 경유지\
+\n    for (int i = 1; i &lt;= N; i++)    // 출발지\
+\n        for (int j = 1; j &lt;= N; j++)   // 도착지\
+\n            if (dp[i][k] != INF &amp;&amp; dp[k][j] != INF)\
+\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);</code></pre>\
+                </div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -601,13 +678,14 @@ var shortestPathTopic = {
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '\u25B6 다음 버튼을 눌러 시작하세요'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
+        var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
+            state.currentStep++; updateUI(); setTimeout(function() { state.steps[state.currentStep].action(); }, actionDelay);
         });
         prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
+            var stepToUndo = state.currentStep; state.currentStep--; updateUI(); setTimeout(function() { state.steps[stepToUndo].undo(); }, actionDelay);
         });
         var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -625,19 +703,23 @@ var shortestPathTopic = {
     _renderVizDijkstra: function(container) {
         var self = this;
         var suffix = '-dijk';
-        var NODES = ['1', '2', '3', '4', '5'];
         var INF = Infinity;
-        // Graph: 1->2(2), 1->3(3), 2->3(4), 2->4(5), 3->4(6), start=1
-        var adj = [
-            [[1,2],[2,3]],
-            [[2,4],[3,5]],
-            [[3,6]],
-            [],
-            []
-        ];
+
+        var DEFAULT_N = 5;
+        var DEFAULT_EDGES = '1 2 2, 1 3 3, 2 3 4, 2 4 5, 3 4 6';
+        var DEFAULT_START = 1;
+
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">다익스트라: BOJ 1753 예제</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">정점 1에서 출발하여 모든 정점까지의 최단 거리를 구합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">정점에서 출발하여 모든 정점까지의 최단 거리를 구합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">노드 수: <input type="number" id="sp-dijk-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">시작 노드: <input type="number" id="sp-dijk-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">간선 (from to weight): <input type="text" id="sp-dijk-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+                '<button class="btn btn-primary" id="sp-dijk-reset">\uD83D\uDD04</button>' +
+            '</div>' +
             '<div id="sp-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -645,75 +727,116 @@ var shortestPathTopic = {
         var arrEl = container.querySelector('#sp-arr' + suffix);
         var infoEl = container.querySelector('#sp-info' + suffix);
 
-        function renderDist(dist, hlIdx) {
-            arrEl.innerHTML = NODES.map(function(n, i) {
-                var val = dist[i] === INF ? '\u221E' : dist[i];
-                var bg = hlIdx === i ? 'background:var(--green);color:white;' : 'background:var(--bg2);';
-                return '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + n + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
-            }).join('');
-        }
-
-        var dist = [0, INF, INF, INF, INF];
-        renderDist(dist, -1);
-        infoEl.innerHTML = '<span style="color:var(--text2);">정점 1에서 다익스트라를 시작합니다.</span>';
-
-        // Pre-simulate
-        var steps = [];
-        var simDist = [0, INF, INF, INF, INF];
-        var simVis = [false, false, false, false, false];
-        var simHeap = [[0, 0]];
-        var snapshots = [];
-
-        function snap() { return { d: simDist.slice(), info: infoEl.innerHTML, html: arrEl.innerHTML }; }
-        function restore(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; arrEl.innerHTML = s.html; }
-
-        var s0 = snap();
-        steps.push({
-            description: '초기화: dist[1]=0, 나머지=\u221E. 힙에 (0, 1)을 넣습니다.',
-            action: function() { renderDist(simDist, 0); infoEl.innerHTML = 'dist=[0, \u221E, \u221E, \u221E, \u221E], heap=[(0,1)]'; },
-            undo: function() { restore(s0); }
-        });
-
-        var processOrder = [];
-        var td = [0, INF, INF, INF, INF], tv = [false,false,false,false,false], th = [[0,0]];
-        while (th.length > 0) {
-            th.sort(function(a,b) { return a[0]-b[0]; });
-            var top = th.shift(), dd = top[0], vv = top[1];
-            if (tv[vv]) continue;
-            tv[vv] = true;
-            var upd = [];
-            for (var i = 0; i < adj[vv].length; i++) {
-                var uu = adj[vv][i][0], ww = adj[vv][i][1], nnd = dd + ww;
-                if (nnd < td[uu]) { upd.push({node:uu, old:td[uu], nw:nnd}); td[uu] = nnd; th.push([nnd,uu]); }
+        function parseEdges(edgeStr, nodeCount) {
+            var adj = [];
+            for (var i = 0; i < nodeCount; i++) adj.push([]);
+            var parts = edgeStr.split(',');
+            for (var p = 0; p < parts.length; p++) {
+                var tokens = parts[p].trim().split(/\s+/);
+                if (tokens.length >= 3) {
+                    var from = parseInt(tokens[0]) - 1;
+                    var to = parseInt(tokens[1]) - 1;
+                    var w = parseInt(tokens[2]);
+                    if (from >= 0 && from < nodeCount && to >= 0 && to < nodeCount && !isNaN(w)) {
+                        adj[from].push([to, w]);
+                    }
+                }
             }
-            processOrder.push({node:vv, dist:dd, updates:upd});
+            return adj;
         }
 
-        processOrder.forEach(function(st) {
-            (function(v, d, updates) {
-                var sb;
-                steps.push({
-                    description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
-                        (updates.length > 0 ? updates.map(function(u) { return NODES[v]+'\u2192'+NODES[u.node]+' dist='+(u.old===INF?'\u221E':u.old)+'\u2192'+u.nw; }).join(', ') : '갱신 없음'),
-                    action: function() {
-                        sb = snap();
-                        updates.forEach(function(u) { simDist[u.node] = u.nw; });
-                        renderDist(simDist, v);
-                        infoEl.innerHTML = '<strong>' + NODES[v] + ' 방문 (dist=' + d + ')</strong>';
-                    },
-                    undo: function() { restore(sb); }
-                });
-            })(st.node, st.dist, st.updates);
+        function buildAndRun(nodeCount, adj, startIdx) {
+            var NODES = [];
+            for (var ni = 0; ni < nodeCount; ni++) NODES.push(String(ni + 1));
+
+            function renderDist(dist, hlIdx) {
+                arrEl.innerHTML = NODES.map(function(n, i) {
+                    var val = dist[i] === INF ? '\u221E' : dist[i];
+                    var bg = hlIdx === i ? 'background:var(--green);color:white;' : 'background:var(--bg2);';
+                    return '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + n + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
+                }).join('');
+            }
+
+            var simDist = [];
+            for (var si = 0; si < nodeCount; si++) simDist.push(si === startIdx ? 0 : INF);
+            renderDist(simDist, -1);
+            infoEl.innerHTML = '<span style="color:var(--text2);">정점 ' + (startIdx + 1) + '에서 다익스트라를 시작합니다.</span>';
+
+            var steps = [];
+            function snap() { return { d: simDist.slice(), info: infoEl.innerHTML, html: arrEl.innerHTML }; }
+            function restore(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; arrEl.innerHTML = s.html; }
+
+            var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
+            var s0 = snap();
+            steps.push({
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E. 힙에 (0, ' + (startIdx + 1) + ')을 넣습니다.',
+                action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + '], heap=[(0,' + (startIdx + 1) + ')]'; },
+                undo: function() { restore(s0); }
+            });
+
+            var processOrder = [];
+            var td = [];
+            for (var ti = 0; ti < nodeCount; ti++) td.push(ti === startIdx ? 0 : INF);
+            var tv = [];
+            for (var tvi = 0; tvi < nodeCount; tvi++) tv.push(false);
+            var th = [[0, startIdx]];
+            while (th.length > 0) {
+                th.sort(function(a, b) { return a[0] - b[0]; });
+                var top = th.shift(), dd = top[0], vv = top[1];
+                if (tv[vv]) continue;
+                tv[vv] = true;
+                var upd = [];
+                for (var i = 0; i < adj[vv].length; i++) {
+                    var uu = adj[vv][i][0], ww = adj[vv][i][1], nnd = dd + ww;
+                    if (nnd < td[uu]) { upd.push({ node: uu, old: td[uu], nw: nnd }); td[uu] = nnd; th.push([nnd, uu]); }
+                }
+                processOrder.push({ node: vv, dist: dd, updates: upd });
+            }
+
+            processOrder.forEach(function(st) {
+                (function(v, d, updates) {
+                    var sb;
+                    steps.push({
+                        description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
+                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : '갱신 없음'),
+                        action: function() {
+                            sb = snap();
+                            updates.forEach(function(u) { simDist[u.node] = u.nw; });
+                            renderDist(simDist, v);
+                            infoEl.innerHTML = '<strong>' + NODES[v] + ' 방문 (dist=' + d + ')</strong>';
+                        },
+                        undo: function() { restore(sb); }
+                    });
+                })(st.node, st.dist, st.updates);
+            });
+
+            var finalDist = td.map(function(v) { return v === INF ? 'INF' : v; }).join(', ');
+            var sf;
+            steps.push({
+                description: '완료! dist = [' + finalDist + ']',
+                action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! dist=[' + finalDist + ']</strong>'; },
+                undo: function() { restore(sf); }
+            });
+
+            self._initStepController(container, steps, suffix);
+        }
+
+        function runFromInputs() {
+            var n = parseInt(container.querySelector('#sp-dijk-n').value) || DEFAULT_N;
+            var start = parseInt(container.querySelector('#sp-dijk-start').value) || DEFAULT_START;
+            var edgeStr = container.querySelector('#sp-dijk-edges').value || DEFAULT_EDGES;
+            if (n < 2) n = 2; if (n > 10) n = 10;
+            if (start < 1) start = 1; if (start > n) start = n;
+            var adj = parseEdges(edgeStr, n);
+            buildAndRun(n, adj, start - 1);
+        }
+
+        container.querySelector('#sp-dijk-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runFromInputs();
         });
 
-        var sf;
-        steps.push({
-            description: '완료! dist = [0, 2, 3, 7, INF]',
-            action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! dist=[0, 2, 3, 7, INF]</strong>'; },
-            undo: function() { restore(sf); }
-        });
-
-        self._initStepController(container, steps, suffix);
+        runFromInputs();
     },
 
     // ====================================================================
@@ -722,14 +845,21 @@ var shortestPathTopic = {
     _renderVizFloyd: function(container) {
         var self = this;
         var suffix = '-floyd';
-        var N = 3;
         var INF = Infinity;
-        // Small 3-node example: 1->2:4, 1->3:11, 2->1:6, 2->3:2, 3->1:3
-        var dp = [[0,4,11],[6,0,2],[3,INF,0]];
+
+        var DEFAULT_N = 3;
+        var DEFAULT_EDGES = '1 2 4, 1 3 11, 2 1 6, 2 3 2, 3 1 3';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">플로이드-워셜: 3개 노드 예제</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">경유지 k=1,2,3을 차례로 고려하며 모든 쌍의 최단 거리를 갱신합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">플로이드-워셜: 모든 쌍 최단 경로</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">경유지 k를 차례로 고려하며 모든 쌍의 최단 거리를 갱신합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">노드 수: <input type="number" id="sp-floyd-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="8"></label>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">간선 (from to weight): <input type="text" id="sp-floyd-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+                '<button class="btn btn-primary" id="sp-floyd-reset">\uD83D\uDD04</button>' +
+            '</div>' +
             '<div id="sp-grid' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -737,85 +867,121 @@ var shortestPathTopic = {
         var gridEl = container.querySelector('#sp-grid' + suffix);
         var infoEl = container.querySelector('#sp-info' + suffix);
 
-        function renderGrid(dp, hlI, hlJ) {
-            var html = '<table style="border-collapse:collapse;margin:0 auto;"><tr><th style="padding:6px 12px;"></th>';
-            for (var j = 0; j < N; j++) html += '<th style="padding:6px 12px;font-weight:600;">' + (j+1) + '</th>';
-            html += '</tr>';
+        function buildAndRun(N, edgeStr) {
+            // Build dp matrix from edges
+            var dp = [];
             for (var i = 0; i < N; i++) {
-                html += '<tr><th style="padding:6px 12px;font-weight:600;">' + (i+1) + '</th>';
-                for (var j2 = 0; j2 < N; j2++) {
-                    var bg = (i === hlI && j2 === hlJ) ? 'background:var(--green);color:white;' : '';
-                    var val = dp[i][j2] === INF ? '\u221E' : dp[i][j2];
-                    html += '<td style="padding:6px 12px;text-align:center;border:1px solid var(--border);font-weight:600;' + bg + '">' + val + '</td>';
-                }
-                html += '</tr>';
+                var row = [];
+                for (var j = 0; j < N; j++) row.push(i === j ? 0 : INF);
+                dp.push(row);
             }
-            html += '</table>';
-            gridEl.innerHTML = html;
-        }
-
-        renderGrid(dp, -1, -1);
-        infoEl.innerHTML = '<span style="color:var(--text2);">초기 거리 행렬입니다.</span>';
-
-        var steps = [];
-        var curDp = dp.map(function(r) { return r.slice(); });
-
-        function snapF() { return { dp: curDp.map(function(r) { return r.slice(); }), info: infoEl.innerHTML, grid: gridEl.innerHTML }; }
-        function restoreF(s) { curDp = s.dp.map(function(r) { return r.slice(); }); infoEl.innerHTML = s.info; gridEl.innerHTML = s.grid; }
-
-        var s0 = snapF();
-        steps.push({
-            description: '초기 상태: 직접 간선으로 구한 거리 행렬입니다.',
-            action: function() { renderGrid(curDp, -1, -1); infoEl.innerHTML = '초기 거리 행렬'; },
-            undo: function() { restoreF(s0); }
-        });
-
-        // k=0,1,2 (0-indexed)
-        for (var k = 0; k < N; k++) {
-            (function(k) {
-                var updated = [];
-                for (var i = 0; i < N; i++) {
-                    for (var j = 0; j < N; j++) {
-                        if (i === j) continue;
-                        var via = curDp[i][k] + curDp[k][j];
-                        if (via < curDp[i][j]) {
-                            updated.push({i:i, j:j, old:curDp[i][j], nw:via});
-                            curDp[i][j] = via;
-                        }
+            var parts = edgeStr.split(',');
+            for (var p = 0; p < parts.length; p++) {
+                var tokens = parts[p].trim().split(/\s+/);
+                if (tokens.length >= 3) {
+                    var from = parseInt(tokens[0]) - 1;
+                    var to = parseInt(tokens[1]) - 1;
+                    var w = parseInt(tokens[2]);
+                    if (from >= 0 && from < N && to >= 0 && to < N && !isNaN(w)) {
+                        if (w < dp[from][to]) dp[from][to] = w;
                     }
                 }
-                var sb;
-                var desc = '경유지 k=' + (k+1) + ': ';
-                if (updated.length > 0) {
-                    desc += updated.map(function(u) {
-                        return 'dp[' + (u.i+1) + '][' + (u.j+1) + '] ' + (u.old===INF?'\u221E':u.old) + '\u2192' + u.nw;
-                    }).join(', ');
-                } else {
-                    desc += '갱신 없음';
+            }
+
+            function renderGrid(dpArr, hlI, hlJ) {
+                var html = '<table style="border-collapse:collapse;margin:0 auto;"><tr><th style="padding:6px 12px;"></th>';
+                for (var j = 0; j < N; j++) html += '<th style="padding:6px 12px;font-weight:600;">' + (j + 1) + '</th>';
+                html += '</tr>';
+                for (var i = 0; i < N; i++) {
+                    html += '<tr><th style="padding:6px 12px;font-weight:600;">' + (i + 1) + '</th>';
+                    for (var j2 = 0; j2 < N; j2++) {
+                        var bg = (i === hlI && j2 === hlJ) ? 'background:var(--green);color:white;' : '';
+                        var val = dpArr[i][j2] === INF ? '\u221E' : dpArr[i][j2];
+                        html += '<td style="padding:6px 12px;text-align:center;border:1px solid var(--border);font-weight:600;' + bg + '">' + val + '</td>';
+                    }
+                    html += '</tr>';
                 }
-                var snapDp = curDp.map(function(r) { return r.slice(); });
-                var lastUpd = updated.length > 0 ? updated[updated.length - 1] : null;
-                steps.push({
-                    description: desc,
-                    action: function() {
-                        sb = snapF();
-                        curDp = snapDp.map(function(r) { return r.slice(); });
-                        renderGrid(curDp, lastUpd ? lastUpd.i : -1, lastUpd ? lastUpd.j : -1);
-                        infoEl.innerHTML = '<strong>경유지 k=' + (k+1) + ' 처리 완료</strong>';
-                    },
-                    undo: function() { restoreF(sb); }
-                });
-            })(k);
+                html += '</table>';
+                gridEl.innerHTML = html;
+            }
+
+            renderGrid(dp, -1, -1);
+            infoEl.innerHTML = '<span style="color:var(--text2);">초기 거리 행렬입니다.</span>';
+
+            var steps = [];
+            var curDp = dp.map(function(r) { return r.slice(); });
+
+            function snapF() { return { dp: curDp.map(function(r) { return r.slice(); }), info: infoEl.innerHTML, grid: gridEl.innerHTML }; }
+            function restoreF(s) { curDp = s.dp.map(function(r) { return r.slice(); }); infoEl.innerHTML = s.info; gridEl.innerHTML = s.grid; }
+
+            var s0 = snapF();
+            steps.push({
+                description: '초기 상태: 직접 간선으로 구한 거리 행렬입니다.',
+                action: function() { renderGrid(curDp, -1, -1); infoEl.innerHTML = '초기 거리 행렬'; },
+                undo: function() { restoreF(s0); }
+            });
+
+            for (var k = 0; k < N; k++) {
+                (function(k) {
+                    var updated = [];
+                    for (var i = 0; i < N; i++) {
+                        for (var j = 0; j < N; j++) {
+                            if (i === j) continue;
+                            if (curDp[i][k] === INF || curDp[k][j] === INF) continue;
+                            var via = curDp[i][k] + curDp[k][j];
+                            if (via < curDp[i][j]) {
+                                updated.push({ i: i, j: j, old: curDp[i][j], nw: via });
+                                curDp[i][j] = via;
+                            }
+                        }
+                    }
+                    var sb;
+                    var desc = '경유지 k=' + (k + 1) + ': ';
+                    if (updated.length > 0) {
+                        desc += updated.map(function(u) {
+                            return 'dp[' + (u.i + 1) + '][' + (u.j + 1) + '] ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw;
+                        }).join(', ');
+                    } else {
+                        desc += '갱신 없음';
+                    }
+                    var snapDp = curDp.map(function(r) { return r.slice(); });
+                    var lastUpd = updated.length > 0 ? updated[updated.length - 1] : null;
+                    steps.push({
+                        description: desc,
+                        action: function() {
+                            sb = snapF();
+                            curDp = snapDp.map(function(r) { return r.slice(); });
+                            renderGrid(curDp, lastUpd ? lastUpd.i : -1, lastUpd ? lastUpd.j : -1);
+                            infoEl.innerHTML = '<strong>경유지 k=' + (k + 1) + ' 처리 완료</strong>';
+                        },
+                        undo: function() { restoreF(sb); }
+                    });
+                })(k);
+            }
+
+            var sfF;
+            steps.push({
+                description: '플로이드-워셜 완료! 모든 쌍의 최단 거리가 확정되었습니다.',
+                action: function() { sfF = snapF(); infoEl.innerHTML = '<strong style="color:var(--green);">완료!</strong>'; },
+                undo: function() { restoreF(sfF); }
+            });
+
+            self._initStepController(container, steps, suffix);
         }
 
-        var sfF;
-        steps.push({
-            description: '플로이드-워셜 완료! 모든 쌍의 최단 거리가 확정되었습니다.',
-            action: function() { sfF = snapF(); infoEl.innerHTML = '<strong style="color:var(--green);">완료!</strong>'; },
-            undo: function() { restoreF(sfF); }
+        function runFromInputs() {
+            var n = parseInt(container.querySelector('#sp-floyd-n').value) || DEFAULT_N;
+            var edgeStr = container.querySelector('#sp-floyd-edges').value || DEFAULT_EDGES;
+            if (n < 2) n = 2; if (n > 8) n = 8;
+            buildAndRun(n, edgeStr);
+        }
+
+        container.querySelector('#sp-floyd-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runFromInputs();
         });
 
-        self._initStepController(container, steps, suffix);
+        runFromInputs();
     },
 
     // ====================================================================
@@ -824,19 +990,25 @@ var shortestPathTopic = {
     _renderVizMinCost: function(container) {
         var self = this;
         var suffix = '-mincost';
-        var NODES = ['1', '2', '3', '4', '5'];
         var INF = Infinity;
-        // Graph from example: 1->2:2, 1->3:3, 1->4:1, 1->5:10, 2->4:2, 3->4:1, 3->5:1, 4->5:3. Start=1, End=5
-        var adj = [
-            [[1,2],[2,3],[3,1],[4,10]],
-            [[3,2]],
-            [[3,1],[4,1]],
-            [[4,3]],
-            []
-        ];
+
+        var DEFAULT_N = 5;
+        var DEFAULT_EDGES = '1 2 2, 1 3 3, 1 4 1, 1 5 10, 2 4 2, 3 4 1, 3 5 1, 4 5 3';
+        var DEFAULT_START = 1;
+        var DEFAULT_END = 5;
+
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">최소비용 구하기: BOJ 1916 예제</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">정점 1에서 5까지의 최소 비용을 다익스트라로 구합니다.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">출발점에서 도착점까지의 최소 비용을 다익스트라로 구합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">노드 수: <input type="number" id="sp-mincost-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">출발: <input type="number" id="sp-mincost-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+                '<label style="font-weight:600;">도착: <input type="number" id="sp-mincost-end" value="' + DEFAULT_END + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">간선 (from to weight): <input type="text" id="sp-mincost-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+                '<button class="btn btn-primary" id="sp-mincost-reset">\uD83D\uDD04</button>' +
+            '</div>' +
             '<div id="sp-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -844,70 +1016,119 @@ var shortestPathTopic = {
         var arrEl = container.querySelector('#sp-arr' + suffix);
         var infoEl = container.querySelector('#sp-info' + suffix);
 
-        function renderDist(dist, hlIdx) {
-            arrEl.innerHTML = NODES.map(function(n, i) {
-                var val = dist[i] === INF ? '\u221E' : dist[i];
-                var bg = hlIdx === i ? 'background:var(--green);color:white;' : 'background:var(--bg2);';
-                return '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + n + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
-            }).join('');
-        }
-
-        var simDist = [0, INF, INF, INF, INF];
-        renderDist(simDist, -1);
-        infoEl.innerHTML = '<span style="color:var(--text2);">정점 1에서 다익스트라를 시작합니다. 목표: 정점 5</span>';
-
-        var steps = [];
-        function snap() { return { d: simDist.slice(), info: infoEl.innerHTML, html: arrEl.innerHTML }; }
-        function restore(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; arrEl.innerHTML = s.html; }
-
-        var s0 = snap();
-        steps.push({
-            description: '초기화: dist[1]=0, 나머지=\u221E.',
-            action: function() { renderDist(simDist, 0); infoEl.innerHTML = 'dist=[0, \u221E, \u221E, \u221E, \u221E]'; },
-            undo: function() { restore(s0); }
-        });
-
-        // Pre-simulate
-        var processOrder = [];
-        var td = [0, INF, INF, INF, INF], tv = [false,false,false,false,false], th = [[0,0]];
-        while (th.length > 0) {
-            th.sort(function(a,b) { return a[0]-b[0]; });
-            var top = th.shift(), dd = top[0], vv = top[1];
-            if (tv[vv]) continue;
-            tv[vv] = true;
-            var upd = [];
-            for (var i = 0; i < adj[vv].length; i++) {
-                var uu = adj[vv][i][0], ww = adj[vv][i][1], nnd = dd + ww;
-                if (nnd < td[uu]) { upd.push({node:uu, old:td[uu], nw:nnd}); td[uu] = nnd; th.push([nnd,uu]); }
+        function parseEdges(edgeStr, nodeCount) {
+            var adj = [];
+            for (var i = 0; i < nodeCount; i++) adj.push([]);
+            var parts = edgeStr.split(',');
+            for (var p = 0; p < parts.length; p++) {
+                var tokens = parts[p].trim().split(/\s+/);
+                if (tokens.length >= 3) {
+                    var from = parseInt(tokens[0]) - 1;
+                    var to = parseInt(tokens[1]) - 1;
+                    var w = parseInt(tokens[2]);
+                    if (from >= 0 && from < nodeCount && to >= 0 && to < nodeCount && !isNaN(w)) {
+                        adj[from].push([to, w]);
+                    }
+                }
             }
-            processOrder.push({node:vv, dist:dd, updates:upd});
+            return adj;
         }
 
-        processOrder.forEach(function(st) {
-            (function(v, d, updates) {
-                var sb;
-                steps.push({
-                    description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
-                        (updates.length > 0 ? updates.map(function(u) { return NODES[v]+'\u2192'+NODES[u.node]+' dist='+(u.old===INF?'\u221E':u.old)+'\u2192'+u.nw; }).join(', ') : '갱신 없음'),
-                    action: function() {
-                        sb = snap();
-                        updates.forEach(function(u) { simDist[u.node] = u.nw; });
-                        renderDist(simDist, v);
-                        infoEl.innerHTML = '<strong>' + NODES[v] + ' 방문 (dist=' + d + ')</strong>';
-                    },
-                    undo: function() { restore(sb); }
-                });
-            })(st.node, st.dist, st.updates);
+        function buildAndRun(nodeCount, adj, startIdx, endIdx) {
+            var NODES = [];
+            for (var ni = 0; ni < nodeCount; ni++) NODES.push(String(ni + 1));
+
+            function renderDist(dist, hlIdx) {
+                arrEl.innerHTML = NODES.map(function(n, i) {
+                    var val = dist[i] === INF ? '\u221E' : dist[i];
+                    var bg = hlIdx === i ? 'background:var(--green);color:white;' : 'background:var(--bg2);';
+                    return '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + n + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
+                }).join('');
+            }
+
+            var simDist = [];
+            for (var si = 0; si < nodeCount; si++) simDist.push(si === startIdx ? 0 : INF);
+            renderDist(simDist, -1);
+            infoEl.innerHTML = '<span style="color:var(--text2);">정점 ' + (startIdx + 1) + '에서 다익스트라를 시작합니다. 목표: 정점 ' + (endIdx + 1) + '</span>';
+
+            var steps = [];
+            function snap() { return { d: simDist.slice(), info: infoEl.innerHTML, html: arrEl.innerHTML }; }
+            function restore(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; arrEl.innerHTML = s.html; }
+
+            var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
+            var s0 = snap();
+            steps.push({
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E.',
+                action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + ']'; },
+                undo: function() { restore(s0); }
+            });
+
+            var processOrder = [];
+            var td = [];
+            for (var ti = 0; ti < nodeCount; ti++) td.push(ti === startIdx ? 0 : INF);
+            var tv = [];
+            for (var tvi = 0; tvi < nodeCount; tvi++) tv.push(false);
+            var th = [[0, startIdx]];
+            while (th.length > 0) {
+                th.sort(function(a, b) { return a[0] - b[0]; });
+                var top = th.shift(), dd = top[0], vv = top[1];
+                if (tv[vv]) continue;
+                tv[vv] = true;
+                var upd = [];
+                for (var i = 0; i < adj[vv].length; i++) {
+                    var uu = adj[vv][i][0], ww = adj[vv][i][1], nnd = dd + ww;
+                    if (nnd < td[uu]) { upd.push({ node: uu, old: td[uu], nw: nnd }); td[uu] = nnd; th.push([nnd, uu]); }
+                }
+                processOrder.push({ node: vv, dist: dd, updates: upd });
+            }
+
+            processOrder.forEach(function(st) {
+                (function(v, d, updates) {
+                    var sb;
+                    steps.push({
+                        description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
+                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : '갱신 없음'),
+                        action: function() {
+                            sb = snap();
+                            updates.forEach(function(u) { simDist[u.node] = u.nw; });
+                            renderDist(simDist, v);
+                            infoEl.innerHTML = '<strong>' + NODES[v] + ' 방문 (dist=' + d + ')</strong>';
+                        },
+                        undo: function() { restore(sb); }
+                    });
+                })(st.node, st.dist, st.updates);
+            });
+
+            var endDist = td[endIdx];
+            var endDistStr = endDist === INF ? 'INF' : endDist;
+            var sf;
+            steps.push({
+                description: '완료! dist[' + (endIdx + 1) + '] = ' + endDistStr + ' 가 최소 비용입니다.',
+                action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! ' + (startIdx + 1) + '\u2192' + (endIdx + 1) + ' 최소비용 = ' + endDistStr + '</strong>'; },
+                undo: function() { restore(sf); }
+            });
+
+            self._initStepController(container, steps, suffix);
+        }
+
+        function runFromInputs() {
+            var n = parseInt(container.querySelector('#sp-mincost-n').value) || DEFAULT_N;
+            var start = parseInt(container.querySelector('#sp-mincost-start').value) || DEFAULT_START;
+            var end = parseInt(container.querySelector('#sp-mincost-end').value) || DEFAULT_END;
+            var edgeStr = container.querySelector('#sp-mincost-edges').value || DEFAULT_EDGES;
+            if (n < 2) n = 2; if (n > 10) n = 10;
+            if (start < 1) start = 1; if (start > n) start = n;
+            if (end < 1) end = 1; if (end > n) end = n;
+            var adj = parseEdges(edgeStr, n);
+            buildAndRun(n, adj, start - 1, end - 1);
+        }
+
+        container.querySelector('#sp-mincost-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runFromInputs();
         });
 
-        var sf;
-        steps.push({
-            description: '완료! dist[5] = 4 가 최소 비용입니다.',
-            action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! 1\u21925 최소비용 = ' + simDist[4] + '</strong>'; },
-            undo: function() { restore(sf); }
-        });
-
-        self._initStepController(container, steps, suffix);
+        runFromInputs();
     },
 
     // ====================================================================
@@ -916,18 +1137,23 @@ var shortestPathTopic = {
     _renderVizDelay: function(container) {
         var self = this;
         var suffix = '-delay';
-        var NODES = ['1', '2', '3', '4'];
         var INF = Infinity;
-        // times=[[2,1,1],[2,3,1],[3,4,1]], n=4, k=2
-        var adj = [
-            [],
-            [[0,1],[2,1]],
-            [[3,1]],
-            []
-        ];
+
+        var DEFAULT_N = 4;
+        var DEFAULT_K = 2;
+        var DEFAULT_EDGES = '2 1 1, 2 3 1, 3 4 1';
+
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">Network Delay Time: LC 743 예제</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">노드 2에서 신호를 보냅니다. 모든 노드가 받는 최소 시간 = max(dist).</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">시작 노드에서 신호를 보냅니다. 모든 노드가 받는 최소 시간 = max(dist).</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">노드 수 N: <input type="number" id="sp-delay-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">시작 노드 K: <input type="number" id="sp-delay-k" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">간선 (from to weight): <input type="text" id="sp-delay-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+                '<button class="btn btn-primary" id="sp-delay-reset">\uD83D\uDD04</button>' +
+            '</div>' +
             '<div id="sp-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -935,70 +1161,124 @@ var shortestPathTopic = {
         var arrEl = container.querySelector('#sp-arr' + suffix);
         var infoEl = container.querySelector('#sp-info' + suffix);
 
-        function renderDist(dist, hlIdx) {
-            arrEl.innerHTML = NODES.map(function(n, i) {
-                var val = dist[i] === INF ? '\u221E' : dist[i];
-                var bg = hlIdx === i ? 'background:var(--green);color:white;' : 'background:var(--bg2);';
-                return '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + n + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
-            }).join('');
-        }
-
-        var simDist = [INF, 0, INF, INF]; // start=2 (index 1)
-        renderDist(simDist, -1);
-        infoEl.innerHTML = '<span style="color:var(--text2);">노드 2에서 다익스트라를 시작합니다.</span>';
-
-        var steps = [];
-        function snap() { return { d: simDist.slice(), info: infoEl.innerHTML, html: arrEl.innerHTML }; }
-        function restore(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; arrEl.innerHTML = s.html; }
-
-        var s0 = snap();
-        steps.push({
-            description: '초기화: dist[2]=0, 나머지=\u221E.',
-            action: function() { renderDist(simDist, 1); infoEl.innerHTML = 'dist=[\u221E, 0, \u221E, \u221E]'; },
-            undo: function() { restore(s0); }
-        });
-
-        // Pre-simulate from node 1 (index 1)
-        var processOrder = [];
-        var td = [INF, 0, INF, INF], tv = [false,false,false,false], th = [[0,1]];
-        while (th.length > 0) {
-            th.sort(function(a,b) { return a[0]-b[0]; });
-            var top = th.shift(), dd = top[0], vv = top[1];
-            if (tv[vv]) continue;
-            tv[vv] = true;
-            var upd = [];
-            for (var i = 0; i < adj[vv].length; i++) {
-                var uu = adj[vv][i][0], ww = adj[vv][i][1], nnd = dd + ww;
-                if (nnd < td[uu]) { upd.push({node:uu, old:td[uu], nw:nnd}); td[uu] = nnd; th.push([nnd,uu]); }
+        function parseEdges(edgeStr, nodeCount) {
+            var adj = [];
+            for (var i = 0; i < nodeCount; i++) adj.push([]);
+            var parts = edgeStr.split(',');
+            for (var p = 0; p < parts.length; p++) {
+                var tokens = parts[p].trim().split(/\s+/);
+                if (tokens.length >= 3) {
+                    var from = parseInt(tokens[0]) - 1;
+                    var to = parseInt(tokens[1]) - 1;
+                    var w = parseInt(tokens[2]);
+                    if (from >= 0 && from < nodeCount && to >= 0 && to < nodeCount && !isNaN(w)) {
+                        adj[from].push([to, w]);
+                    }
+                }
             }
-            processOrder.push({node:vv, dist:dd, updates:upd});
+            return adj;
         }
 
-        processOrder.forEach(function(st) {
-            (function(v, d, updates) {
-                var sb;
-                steps.push({
-                    description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
-                        (updates.length > 0 ? updates.map(function(u) { return NODES[v]+'\u2192'+NODES[u.node]+' dist='+(u.old===INF?'\u221E':u.old)+'\u2192'+u.nw; }).join(', ') : '갱신 없음'),
-                    action: function() {
-                        sb = snap();
-                        updates.forEach(function(u) { simDist[u.node] = u.nw; });
-                        renderDist(simDist, v);
-                        infoEl.innerHTML = '<strong>' + NODES[v] + ' 방문 (dist=' + d + ')</strong>';
-                    },
-                    undo: function() { restore(sb); }
-                });
-            })(st.node, st.dist, st.updates);
+        function buildAndRun(nodeCount, adj, startIdx) {
+            var NODES = [];
+            for (var ni = 0; ni < nodeCount; ni++) NODES.push(String(ni + 1));
+
+            function renderDist(dist, hlIdx) {
+                arrEl.innerHTML = NODES.map(function(n, i) {
+                    var val = dist[i] === INF ? '\u221E' : dist[i];
+                    var bg = hlIdx === i ? 'background:var(--green);color:white;' : 'background:var(--bg2);';
+                    return '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + n + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
+                }).join('');
+            }
+
+            var simDist = [];
+            for (var si = 0; si < nodeCount; si++) simDist.push(si === startIdx ? 0 : INF);
+            renderDist(simDist, -1);
+            infoEl.innerHTML = '<span style="color:var(--text2);">노드 ' + (startIdx + 1) + '에서 다익스트라를 시작합니다.</span>';
+
+            var steps = [];
+            function snap() { return { d: simDist.slice(), info: infoEl.innerHTML, html: arrEl.innerHTML }; }
+            function restore(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; arrEl.innerHTML = s.html; }
+
+            var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
+            var s0 = snap();
+            steps.push({
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E.',
+                action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + ']'; },
+                undo: function() { restore(s0); }
+            });
+
+            var processOrder = [];
+            var td = [];
+            for (var ti = 0; ti < nodeCount; ti++) td.push(ti === startIdx ? 0 : INF);
+            var tv = [];
+            for (var tvi = 0; tvi < nodeCount; tvi++) tv.push(false);
+            var th = [[0, startIdx]];
+            while (th.length > 0) {
+                th.sort(function(a, b) { return a[0] - b[0]; });
+                var top = th.shift(), dd = top[0], vv = top[1];
+                if (tv[vv]) continue;
+                tv[vv] = true;
+                var upd = [];
+                for (var i = 0; i < adj[vv].length; i++) {
+                    var uu = adj[vv][i][0], ww = adj[vv][i][1], nnd = dd + ww;
+                    if (nnd < td[uu]) { upd.push({ node: uu, old: td[uu], nw: nnd }); td[uu] = nnd; th.push([nnd, uu]); }
+                }
+                processOrder.push({ node: vv, dist: dd, updates: upd });
+            }
+
+            processOrder.forEach(function(st) {
+                (function(v, d, updates) {
+                    var sb;
+                    steps.push({
+                        description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
+                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : '갱신 없음'),
+                        action: function() {
+                            sb = snap();
+                            updates.forEach(function(u) { simDist[u.node] = u.nw; });
+                            renderDist(simDist, v);
+                            infoEl.innerHTML = '<strong>' + NODES[v] + ' 방문 (dist=' + d + ')</strong>';
+                        },
+                        undo: function() { restore(sb); }
+                    });
+                })(st.node, st.dist, st.updates);
+            });
+
+            // Compute max(dist) for all nodes
+            var maxDist = 0;
+            var hasUnreachable = false;
+            for (var mi = 0; mi < nodeCount; mi++) {
+                if (td[mi] === INF) { hasUnreachable = true; break; }
+                if (td[mi] > maxDist) maxDist = td[mi];
+            }
+            var ansStr = hasUnreachable ? '-1 (도달 불가 노드 존재)' : String(maxDist);
+
+            var sf;
+            steps.push({
+                description: '완료! ' + (hasUnreachable ? '도달 불가능한 노드가 있으므로 답: -1' : 'max(dist) = ' + maxDist + '. 모든 노드가 신호를 받는 시간 = ' + maxDist + '.'),
+                action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! ' + (hasUnreachable ? '답: -1' : 'max(dist)=' + maxDist + ' \u2192 답: ' + maxDist) + '</strong>'; },
+                undo: function() { restore(sf); }
+            });
+
+            self._initStepController(container, steps, suffix);
+        }
+
+        function runFromInputs() {
+            var n = parseInt(container.querySelector('#sp-delay-n').value) || DEFAULT_N;
+            var k = parseInt(container.querySelector('#sp-delay-k').value) || DEFAULT_K;
+            var edgeStr = container.querySelector('#sp-delay-edges').value || DEFAULT_EDGES;
+            if (n < 2) n = 2; if (n > 10) n = 10;
+            if (k < 1) k = 1; if (k > n) k = n;
+            var adj = parseEdges(edgeStr, n);
+            buildAndRun(n, adj, k - 1);
+        }
+
+        container.querySelector('#sp-delay-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runFromInputs();
         });
 
-        var sf;
-        steps.push({
-            description: '완료! max(dist) = 2. 모든 노드가 신호를 받는 시간 = 2.',
-            action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! max(dist)=2 \u2192 답: 2</strong>'; },
-            undo: function() { restore(sf); }
-        });
-
-        self._initStepController(container, steps, suffix);
+        runFromInputs();
     },
 
     // ===== 빈 스텁 =====
@@ -1019,16 +1299,30 @@ var shortestPathTopic = {
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1753',
             simIntro: '다익스트라가 정점을 하나씩 처리하며 최단 거리를 확정하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>방향 그래프가 주어지면, 주어진 시작점에서 다른 모든 정점으로의 최단 경로를 구하는 프로그램을 작성하세요.</p><p>단, 모든 간선의 가중치는 10 이하의 자연수입니다.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: V E (정점 수, 간선 수, V&le;20,000, E&le;300,000)<br>둘째 줄: 시작 정점 번호 K<br>이후 E줄: u v w (u\u2192v 가중치 w)</p></div><div><h4>출력</h4><p>i번째 줄에 시작점에서 i번 정점으로의 최단 경로값 출력 (경로 없으면 INF)</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>5 6\n1\n5 1 1\n1 2 2\n1 3 3\n2 3 4\n2 4 5\n3 4 6</pre></div><div><strong>출력</strong><pre>0\n2\n3\n7\nINF</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>방향그래프가 주어지면 주어진 시작점에서 다른 모든 정점으로의 최단 경로를 구하는 프로그램을 작성하시오. 단, 모든 간선의 가중치는 10 이하의 자연수이다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5 6\n1\n5 1 1\n1 2 2\n1 3 3\n2 3 4\n2 4 5\n3 4 6</pre></div>
+                    <div><strong>출력</strong><pre>0\n2\n3\n7\nINF</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ V ≤ 20,000</li>
+                    <li>1 ≤ E ≤ 300,000</li>
+                    <li>간선 가중치 ≤ 10</li>
+                    <li>서로 다른 두 정점 사이에 여러 간선이 존재할 수 있다</li>
+                </ul>
+            `,
             hints: [
-                { title: '어떤 알고리즘을 쓸까?', content: '한 시작점에서 다른 모든 정점까지의 최단 경로 \u2192 <strong>다익스트라 알고리즘</strong>입니다! 가중치가 모두 양수이므로 다익스트라를 사용할 수 있습니다.' },
-                { title: '핵심 아이디어', content: '인접 리스트와 <strong>최소 힙(heapq)</strong>을 사용합니다.<br>힙에서 (거리, 정점)을 꺼내고, 이미 확정된 거리보다 크면 무시합니다.<br>이웃 정점의 거리를 갱신하면 힙에 추가합니다.' },
-                { title: '정답 코드 구조', content: '<code>dist = [INF] * (V+1), dist[K] = 0</code>으로 초기화.<br><code>heapq.heappush(heap, (0, K))</code>로 시작.<br>힙에서 꺼낸 (d, v)에서 <code>d > dist[v]</code>이면 continue.<br>이웃 (u, w)에 대해 <code>d + w < dist[u]</code>이면 갱신.' }
+                { title: '처음 떠오르는 방법', content: '시작점에서 다른 모든 정점까지 최단 경로를 구해야 해요.<br>일단 떠오르는 건 <strong>BFS</strong>처럼 시작점에서 출발해서 이웃을 하나씩 방문하는 거예요.<br>근데 이 문제는 간선마다 <strong>가중치(비용)</strong>가 달라요. 가중치 없는 BFS는 "한 칸 = 1"이지만, 여기선 간선마다 비용이 다르니까 단순 BFS로는 안 돼요.' },
+                { title: '근데 이러면 문제가 있어', content: '가중치가 있는 그래프에서 그냥 BFS를 쓰면, <strong>먼저 도착한 게 최단이 아닐 수 있어요!</strong><br>예를 들어 A→B 비용 10, A→C→B 비용 2+3=5이면, B에 먼저 도착하는 건 직행(10)이지만 실제 최단은 경유(5)에요.<br>그러면 "가장 가까운 정점부터 처리"하는 방법이 필요한데... 이게 바로 <strong>다익스트라 알고리즘</strong>이에요!' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>다익스트라</strong>의 핵심: 아직 확정 안 된 정점 중 <strong>거리가 가장 짧은 것</strong>부터 꺼내서 처리해요.<br>① dist 배열을 INF로 초기화하고, 시작점만 0으로 설정<br>② <strong>최소 힙</strong>에 (0, 시작점)을 넣어요<br>③ 힙에서 꺼낸 (거리, 정점)이 이미 확정된 거리보다 크면 → 무시!<br>④ 이웃 정점의 거리를 갱신할 수 있으면 갱신하고 힙에 추가<br>이렇게 하면 O((V+E) log V)로 모든 정점까지의 최단 거리를 구할 수 있어요!' },
+                { title: 'Python/C++에선 이렇게!', content: '<span class="lang-py">Python에선 <code>heapq</code> 모듈로 최소 힙을 쓸 수 있어요.<br><code>heapq.heappush(heap, (거리, 정점))</code>으로 넣고, <code>heapq.heappop(heap)</code>으로 가장 가까운 걸 꺼내요.<br>힙이 알아서 거리순 정렬을 유지해주니까, 우리는 그냥 넣고 빼기만 하면 돼요!</span><span class="lang-cpp">C++에선 <code>priority_queue</code>에 <code>greater&lt;pair&lt;int,int&gt;&gt;</code>를 넣어 최소 힙을 만들어요.<br><code>pq.push({거리, 정점})</code>으로 넣고, <code>pq.top()</code> + <code>pq.pop()</code>으로 가장 가까운 걸 꺼내요.<br>C++ priority_queue는 기본이 최대 힙이라 <code>greater</code>를 꼭 써야 최소 힙이 돼요!</span>' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nV, E = map(int, input().split())\nK = int(input())\ngraph = [[] for _ in range(V + 1)]\nfor _ in range(E):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))\n\ndist = [INF] * (V + 1)\ndist[K] = 0\nheap = [(0, K)]\n\nwhile heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))\n\nfor i in range(1, V + 1):\n    print(dist[i] if dist[i] != INF else "INF")',
-                cpp: '#include <bits/stdc++.h>\nusing namespace std;\ntypedef pair<int,int> pii;\nconst int INF = 1e9;\n\nint main() {\n    int V, E, K;\n    scanf("%d %d %d", &V, &E, &K);\n    vector<vector<pii>> graph(V + 1);\n    for (int i = 0; i < E; i++) {\n        int u, v, w;\n        scanf("%d %d %d", &u, &v, &w);\n        graph[u].push_back({v, w});\n    }\n\n    vector<int> dist(V + 1, INF);\n    dist[K] = 0;\n    priority_queue<pii, vector<pii>, greater<pii>> pq;\n    pq.push({0, K});\n\n    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n\n    for (int i = 1; i <= V; i++) {\n        if (dist[i] == INF) puts("INF");\n        else printf("%d\\n", dist[i]);\n    }\n    return 0;\n}',
-                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int V = Integer.parseInt(st.nextToken());\n        int E = Integer.parseInt(st.nextToken());\n        int K = Integer.parseInt(br.readLine().trim());\n\n        List<List<int[]>> graph = new ArrayList<>();\n        for (int i = 0; i <= V; i++) graph.add(new ArrayList<>());\n        for (int i = 0; i < E; i++) {\n            st = new StringTokenizer(br.readLine());\n            int u = Integer.parseInt(st.nextToken());\n            int v = Integer.parseInt(st.nextToken());\n            int w = Integer.parseInt(st.nextToken());\n            graph.get(u).add(new int[]{v, w});\n        }\n\n        int[] dist = new int[V + 1];\n        int INF = (int)1e9;\n        Arrays.fill(dist, INF);\n        dist[K] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);\n        pq.offer(new int[]{0, K});\n\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            int d = cur[0], v = cur[1];\n            if (d > dist[v]) continue;\n            for (int[] edge : graph.get(v)) {\n                int u = edge[0], w = edge[1];\n                int nd = d + w;\n                if (nd < dist[u]) {\n                    dist[u] = nd;\n                    pq.offer(new int[]{nd, u});\n                }\n            }\n        }\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 1; i <= V; i++) {\n            sb.append(dist[i] == INF ? "INF" : dist[i]).append("\\n");\n        }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\ntypedef pair<int,int> pii;\nconst int INF = 1e9;\n\nint main() {\n    int V, E, K;\n    scanf("%d %d %d", &V, &E, &K);\n    vector<vector<pii>> graph(V + 1);\n    for (int i = 0; i < E; i++) {\n        int u, v, w;\n        scanf("%d %d %d", &u, &v, &w);\n        graph[u].push_back({v, w});\n    }\n\n    vector<int> dist(V + 1, INF);\n    dist[K] = 0;\n    priority_queue<pii, vector<pii>, greater<pii>> pq;\n    pq.push({0, K});\n\n    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n\n    for (int i = 1; i <= V; i++) {\n        if (dist[i] == INF) puts("INF");\n        else printf("%d\\n", dist[i]);\n    }\n    return 0;\n}'
             },
             solutions: [{
                 approach: '다익스트라 (최소 힙)',
@@ -1037,9 +1331,14 @@ var shortestPathTopic = {
                 spaceComplexity: 'O(V+E)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구성', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nV, E = map(int, input().split())\nK = int(input())\ngraph = [[] for _ in range(V + 1)]\nfor _ in range(E):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))' },
-                        { title: '다익스트라 초기화', code: 'dist = [INF] * (V + 1)\ndist[K] = 0\nheap = [(0, K)]' },
-                        { title: '다익스트라 실행', code: 'while heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))' }
+                        { title: '입력 및 그래프 구성', desc: '인접 리스트로 방향 가중 그래프를 저장합니다.\n각 간선을 (도착정점, 가중치) 튜플로 추가합니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nV, E = map(int, input().split())\nK = int(input())\ngraph = [[] for _ in range(V + 1)]\nfor _ in range(E):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))' },
+                        { title: '다익스트라 초기화', desc: '시작점 거리를 0으로 설정하고 최소 힙에 넣습니다.\n나머지는 INF로 초기화하여 "아직 모름" 상태를 표현합니다.', code: 'dist = [INF] * (V + 1)\ndist[K] = 0\nheap = [(0, K)]' },
+                        { title: '다익스트라 실행', desc: '힙에서 가장 가까운 정점을 꺼내 인접 정점을 완화합니다.\nd > dist[v]이면 이미 더 짧은 경로를 찾았으므로 스킵합니다.', code: 'while heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구성', desc: 'pair<int,int>로 (정점, 가중치) 저장.\ntypedef로 pii 축약.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\ntypedef pair<int,int> pii;\nconst int INF = 1e9;\n\nint main() {\n    int V, E, K;\n    scanf("%d %d %d", &V, &E, &K);\n    vector<vector<pii>> graph(V + 1);\n    for (int i = 0; i < E; i++) {\n        int u, v, w;\n        scanf("%d %d %d", &u, &v, &w);\n        graph[u].push_back({v, w});\n    }' },
+                        { title: '다익스트라 초기화', desc: 'greater<pii> → 최소 힙 (거리 기준).', code: '    vector<int> dist(V + 1, INF);\n    dist[K] = 0;\n    priority_queue<pii, vector<pii>, greater<pii>> pq;\n    pq.push({0, K});' },
+                        { title: '다익스트라 실행', desc: '최소 힙에서 거리가 가장 짧은 정점부터 처리합니다.\nauto [d, v]로 구조적 바인딩하여 거리와 정점을 분리합니다.', code: '    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;  // 이미 더 짧은 경로 발견됨\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }' }
                     ]
                 },
                 get templates() { return shortestPathTopic.problems[0].templates; }
@@ -1051,16 +1350,31 @@ var shortestPathTopic = {
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/11404',
             simIntro: '경유지 k를 하나씩 추가하며 거리 행렬이 갱신되는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>n개의 도시가 있습니다. 한 도시에서 출발하여 다른 도시에 도착하는 m개의 버스가 있습니다. 각 버스는 한 번 사용할 때 필요한 비용이 있습니다.</p><p>모든 도시의 쌍 (A, B)에 대해서 도시 A에서 도시 B로 가는데 필요한 비용의 최솟값을 구하세요.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: n (도시 수, n&le;100)<br>둘째 줄: m (버스 수, m&le;100,000)<br>이후 m줄: a b c (a\u2192b 비용 c)</p></div><div><h4>출력</h4><p>n줄에 걸쳐 n\u00D7n 행렬로 출력 (갈 수 없으면 0)</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>5\n14\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n3 5 10\n3 1 8\n1 4 2\n5 1 7\n3 4 2\n5 2 4</pre></div><div><strong>출력</strong><pre>0 2 3 1 4\n12 0 15 2 5\n8 5 0 1 1\n10 7 13 0 3\n7 4 10 6 0</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>n(2 ≤ n ≤ 100)개의 도시가 있다. 그리고 한 도시에서 출발하여 다른 도시에 도착하는 m(1 ≤ m ≤ 100,000)개의 버스가 있다. 각 버스는 한 번 사용할 때 필요한 비용이 있다.</p>
+                <p>모든 도시의 쌍 (A, B)에 대해서 도시 A에서 B로 가는데 필요한 비용의 최솟값을 구하는 프로그램을 작성하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5\n14\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n3 5 10\n3 1 8\n1 4 2\n5 1 7\n3 4 2\n5 2 4</pre></div>
+                    <div><strong>출력</strong><pre>0 2 3 1 4\n12 0 15 2 5\n8 5 0 1 1\n10 7 13 0 3\n7 4 10 6 0</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>2 ≤ n ≤ 100</li>
+                    <li>1 ≤ m ≤ 100,000</li>
+                    <li>비용 ≤ 100,000</li>
+                    <li>갈 수 없는 경우 0을 출력</li>
+                </ul>
+            `,
             hints: [
-                { title: '어떤 알고리즘을 쓸까?', content: '<strong>모든 쌍</strong>의 최단 경로를 구해야 합니다 \u2192 <strong>플로이드-워셜 알고리즘</strong>! n이 100 이하이므로 O(n\u00B3)으로 충분합니다.' },
-                { title: '핵심 아이디어', content: '2차원 배열 dp[i][j]를 INF로 초기화하고, 입력 간선으로 갱신합니다.<br><strong>같은 출발-도착에 여러 간선이 있으면 최솟값</strong>을 저장합니다!<br>3중 for문: k(경유지) \u2192 i(출발) \u2192 j(도착) 순서로 <code>dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])</code>' },
-                { title: '정답 코드 구조', content: '<code>dp[i][j] = min(dp[i][j], c)</code>로 초기화 (같은 간선 중 최소).<br>3중 for문 돌린 후, INF는 0으로 바꿔서 출력합니다.' }
+                { title: '처음 떠오르는 방법', content: '모든 도시 쌍 (A, B)의 최단 경로를 구해야 해요.<br>일단 떠오르는 건, 각 도시를 시작점으로 해서 <strong>다익스트라를 n번</strong> 돌리는 거예요.<br>도시 1에서 다익스트라, 도시 2에서 다익스트라, ... 도시 n에서 다익스트라. 이러면 모든 쌍의 최단 거리를 구할 수 있어요!' },
+                { title: '근데 이러면 문제가 있어', content: '다익스트라를 n번 돌리면 시간 복잡도가 O(n × (n+m) log n)이에요.<br>이 문제는 n ≤ 100으로 작으니까 사실 돌아가긴 하지만... 구현이 복잡해요.<br>n이 이렇게 작으면 <strong>더 간단한 방법</strong>이 있지 않을까?<br>O(n\u00B3) = 100\u00B3 = 1,000,000이면 충분히 빠르거든요!' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>플로이드-워셜 알고리즘</strong>은 3중 for문 하나로 모든 쌍의 최단 경로를 구해요!<br>아이디어: "i에서 j로 갈 때, <strong>k를 경유</strong>하면 더 짧아질까?"를 모든 k에 대해 확인해요.<br><code>dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])</code><br><br>⚠️ 주의할 점 두 가지:<br>① <strong>k(경유지)가 가장 바깥 루프</strong>여야 해요! k→i→j 순서가 핵심이에요.<br>② 같은 출발-도착에 <strong>여러 버스가 있으면 최솟값</strong>만 저장해야 해요!' },
+                { title: 'Python/C++에선 이렇게!', content: '<span class="lang-py">Python에선 2차원 리스트를 <code>[[INF] * (n+1) for _ in range(n+1)]</code>로 초기화해요.<br>3중 for문을 돌린 후, INF가 남아있는 칸은 갈 수 없는 경우이므로 <strong>0으로 바꿔서</strong> 출력해요.<br>입출력이 많으니 <code>sys.stdin.readline</code>을 쓰는 게 안전해요!</span><span class="lang-cpp">C++에선 <code>vector&lt;vector&lt;int&gt;&gt; dp(n+1, vector&lt;int&gt;(n+1, INF))</code>로 초기화해요.<br>3중 for문 후 INF는 0으로 바꿔서 출력하면 돼요.<br><code>scanf/printf</code>를 쓰면 입출력 속도가 빨라요!</span>' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0\n\nfor _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)\n\nfor k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])\n\nfor i in range(1, n + 1):\n    print(\' \'.join(str(x) if x != INF else \'0\' for x in dp[i][1:n+1]))',
-                cpp: '#include <bits/stdc++.h>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;\n\n    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }\n\n    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            printf("%d ", dp[i][j] == INF ? 0 : dp[i][j]);\n        }\n        printf("\\n");\n    }\n    return 0;\n}',
-                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        int m = Integer.parseInt(br.readLine().trim());\n        int INF = (int)1e9;\n        int[][] dp = new int[n + 1][n + 1];\n        for (int[] row : dp) Arrays.fill(row, INF);\n        for (int i = 1; i <= n; i++) dp[i][i] = 0;\n\n        for (int i = 0; i < m; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int a = Integer.parseInt(st.nextToken());\n            int b = Integer.parseInt(st.nextToken());\n            int c = Integer.parseInt(st.nextToken());\n            dp[a][b] = Math.min(dp[a][b], c);\n        }\n\n        for (int k = 1; k <= n; k++)\n            for (int i = 1; i <= n; i++)\n                for (int j = 1; j <= n; j++)\n                    dp[i][j] = Math.min(dp[i][j], dp[i][k] + dp[k][j]);\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j <= n; j++) {\n                sb.append(dp[i][j] == INF ? 0 : dp[i][j]);\n                if (j < n) sb.append(\' \');\n            }\n            sb.append(\'\\n\');\n        }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;\n\n    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }\n\n    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            printf("%d ", dp[i][j] == INF ? 0 : dp[i][j]);\n        }\n        printf("\\n");\n    }\n    return 0;\n}'
             },
             solutions: [{
                 approach: '플로이드-워셜',
@@ -1069,9 +1383,14 @@ var shortestPathTopic = {
                 spaceComplexity: 'O(N\u00B2)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기화', code: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0' },
-                        { title: '간선 입력', code: 'for _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)' },
-                        { title: '플로이드-워셜 실행', code: 'for k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])' }
+                        { title: '입력 및 초기화', desc: '2차원 배열을 INF로 채우고, 자기 자신(dp[i][i])은 0으로 설정합니다.\n모든 쌍의 최단 거리를 담을 거리 행렬을 준비합니다.', code: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0' },
+                        { title: '간선 입력', desc: '같은 출발-도착에 여러 간선이 있을 수 있으므로\nmin으로 최솟값만 저장합니다.', code: 'for _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)' },
+                        { title: '플로이드-워셜 실행', desc: '경유지 k를 하나씩 추가하며 모든 쌍의 거리를 갱신합니다.\nk → i → j 순서가 핵심입니다 (k가 가장 바깥 루프).', code: 'for k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 초기화', desc: 'vector<vector<int>>로 N×N 거리 행렬을 INF로 초기화합니다.\n자기 자신까지의 거리는 0입니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n+1, vector<int>(n+1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;' },
+                        { title: '간선 입력', desc: '같은 출발-도착에 여러 간선 → min으로 최솟값만 저장.', code: '    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }' },
+                        { title: '플로이드-워셜 실행', desc: 'k(경유지) → i(출발) → j(도착) 순서 필수!', code: '    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);' }
                     ]
                 },
                 get templates() { return shortestPathTopic.problems[1].templates; }
@@ -1085,16 +1404,29 @@ var shortestPathTopic = {
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1916',
             simIntro: '다익스트라로 출발점에서 도착점까지의 최소 비용을 구하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>N개의 도시가 있습니다. 한 도시에서 출발하여 다른 도시에 도착하는 M개의 버스가 있습니다. A번째 도시에서 B번째 도시까지 가는데 드는 버스 비용을 최소화하려고 합니다.</p><p>A번째 도시에서 B번째 도시까지 가는데 드는 최소비용을 출력하세요.</p><div class="problem-io"><div><h4>입력</h4><p>첫째 줄: N (도시 수, N&le;1,000)<br>둘째 줄: M (버스 수, M&le;100,000)<br>이후 M줄: 출발 도착 비용<br>마지막 줄: 출발 도시 도착 도시</p></div><div><h4>출력</h4><p>출발 도시에서 도착 도시까지의 최소 비용</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>5\n8\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n1 5</pre></div><div><strong>출력</strong><pre>4</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>N개의 도시가 있다. 그리고 한 도시에서 출발하여 다른 도시에 도착하는 M개의 버스가 있다. 우리는 A번째 도시에서 B번째 도시까지 가는데 드는 버스 비용을 최소화 시키려고 한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5\n8\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n1 5</pre></div>
+                    <div><strong>출력</strong><pre>4</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 1,000</li>
+                    <li>1 ≤ M ≤ 100,000</li>
+                    <li>0 ≤ 비용 ≤ 100,000</li>
+                </ul>
+            `,
             hints: [
-                { title: '어떤 알고리즘을 쓸까?', content: '한 도시에서 다른 한 도시까지의 최소 비용 \u2192 <strong>다익스트라 알고리즘</strong>입니다! 출발점에서 다익스트라를 돌리고 도착점의 거리를 출력하면 됩니다.' },
-                { title: '핵심 아이디어', content: 'BOJ 1753번과 거의 같은 구조입니다!<br>다만 마지막에 <strong>모든 정점의 거리</strong>가 아닌 <strong>특정 도착 도시</strong>의 거리만 출력합니다.<br>같은 출발-도착에 여러 버스가 있을 수 있으므로, 인접 리스트에 모두 추가합니다.' },
-                { title: '정답 코드 구조', content: '1753번과 동일한 다익스트라 코드를 사용합니다.<br>마지막 줄에서 출발 도시와 도착 도시를 입력받고,<br><code>print(dist[\uB3C4\uCC29\uB3C4\uC2DC])</code>로 결과를 출력합니다.' }
+                { title: '처음 떠오르는 방법', content: 'A 도시에서 B 도시까지 가는 <strong>최소 비용</strong>을 구해야 해요.<br>일단 가장 단순하게, A에서 B까지 가능한 <strong>모든 경로</strong>를 탐색해서 비용을 비교하면 어떨까요?<br>DFS로 A에서 출발해서 B에 도착하는 모든 경로의 비용을 구하고, 그 중 최솟값을 찾는 거예요.' },
+                { title: '근데 이러면 문제가 있어', content: '모든 경로를 탐색하면 경로 수가 <strong>지수적으로</strong> 늘어나요!<br>도시가 1,000개이고 버스가 100,000개면, 가능한 경로가 어마어마하게 많아서 시간 초과가 나요.<br>이전 문제(1753번)에서 배운 <strong>다익스트라</strong>를 쓰면 훨씬 빠르게 해결할 수 있어요!' },
+                { title: '이렇게 하면 어떨까?', content: '1753번과 거의 같은 구조예요! <strong>다익스트라</strong>로 출발 도시 A에서 모든 도시까지의 최단 거리를 구해요.<br>다른 점은 딱 하나: 마지막에 <strong>모든 정점의 거리</strong>를 출력하는 대신, <strong>도착 도시 B의 거리만</strong> 출력하면 끝!<br><br>⚠️ 주의: 같은 출발-도착에 <strong>여러 버스</strong>가 있을 수 있어요.<br>하지만 인접 리스트에 모두 추가하면 다익스트라가 알아서 최솟값을 찾아줘요!' },
+                { title: '1753번과 비교하면?', content: '이 문제는 1753번의 <strong>변형</strong>이에요. 핵심 차이를 정리하면:<br><br><table style="border-collapse:collapse;width:100%;font-size:0.9em;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;border:1px solid var(--bg3);">구분</th><th style="padding:6px 10px;border:1px solid var(--bg3);">1753번</th><th style="padding:6px 10px;border:1px solid var(--bg3);">1916번</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">출력</td><td style="padding:6px 10px;border:1px solid var(--bg3);">모든 정점의 dist</td><td style="padding:6px 10px;border:1px solid var(--bg3);">도착 도시 dist[E]만</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">입력 순서</td><td style="padding:6px 10px;border:1px solid var(--bg3);">V, E → 시작점</td><td style="padding:6px 10px;border:1px solid var(--bg3);">N → M → 간선들 → 출발, 도착</td></tr></table><br>다익스트라 코드 자체는 <strong>완전히 동일</strong>하고, 입출력만 다른 거예요!' }
             ],
             templates: {
                 python: 'import sys\nimport heapq\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nN = int(input())\nM = int(input())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))\n\nS, E = map(int, input().split())\n\ndist = [INF] * (N + 1)\ndist[S] = 0\nheap = [(0, S)]\n\nwhile heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))\n\nprint(dist[E])',
-                cpp: '#include <bits/stdc++.h>\nusing namespace std;\ntypedef pair<int,int> pii;\nconst int INF = 1e9;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<pii>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int u, v, w;\n        scanf("%d %d %d", &u, &v, &w);\n        graph[u].push_back({v, w});\n    }\n    int S, E;\n    scanf("%d %d", &S, &E);\n\n    vector<int> dist(N + 1, INF);\n    dist[S] = 0;\n    priority_queue<pii, vector<pii>, greater<pii>> pq;\n    pq.push({0, S});\n\n    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n\n    printf("%d\\n", dist[E]);\n    return 0;\n}',
-                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int N = Integer.parseInt(br.readLine().trim());\n        int M = Integer.parseInt(br.readLine().trim());\n\n        List<List<int[]>> graph = new ArrayList<>();\n        for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());\n        for (int i = 0; i < M; i++) {\n            StringTokenizer st = new StringTokenizer(br.readLine());\n            int u = Integer.parseInt(st.nextToken());\n            int v = Integer.parseInt(st.nextToken());\n            int w = Integer.parseInt(st.nextToken());\n            graph.get(u).add(new int[]{v, w});\n        }\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int S = Integer.parseInt(st.nextToken());\n        int E = Integer.parseInt(st.nextToken());\n\n        int INF = (int)1e9;\n        int[] dist = new int[N + 1];\n        Arrays.fill(dist, INF);\n        dist[S] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);\n        pq.offer(new int[]{0, S});\n\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            int d = cur[0], v = cur[1];\n            if (d > dist[v]) continue;\n            for (int[] edge : graph.get(v)) {\n                int u = edge[0], w = edge[1];\n                int nd = d + w;\n                if (nd < dist[u]) {\n                    dist[u] = nd;\n                    pq.offer(new int[]{nd, u});\n                }\n            }\n        }\n\n        System.out.println(dist[E]);\n    }\n}'
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\ntypedef pair<int,int> pii;\nconst int INF = 1e9;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<pii>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int u, v, w;\n        scanf("%d %d %d", &u, &v, &w);\n        graph[u].push_back({v, w});\n    }\n    int S, E;\n    scanf("%d %d", &S, &E);\n\n    vector<int> dist(N + 1, INF);\n    dist[S] = 0;\n    priority_queue<pii, vector<pii>, greater<pii>> pq;\n    pq.push({0, S});\n\n    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n\n    printf("%d\\n", dist[E]);\n    return 0;\n}'
             },
             solutions: [{
                 approach: '다익스트라 (특정 도착점)',
@@ -1103,9 +1435,14 @@ var shortestPathTopic = {
                 spaceComplexity: 'O(N+M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구성', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nN = int(input())\nM = int(input())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))' },
-                        { title: '출발/도착 입력 및 초기화', code: 'S, E = map(int, input().split())\n\ndist = [INF] * (N + 1)\ndist[S] = 0\nheap = [(0, S)]' },
-                        { title: '다익스트라 + 출력', code: 'while heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))\n\nprint(dist[E])' }
+                        { title: '입력 및 그래프 구성', desc: '도시와 버스 정보를 인접 리스트로 저장합니다.\n같은 경로에 여러 버스가 있어도 모두 추가합니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nN = int(input())\nM = int(input())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    u, v, w = map(int, input().split())\n    graph[u].append((v, w))' },
+                        { title: '출발/도착 입력 및 초기화', desc: '출발 도시 S에서 시작하여 도착 도시 E까지의 최소 비용을 구합니다.\n시작점만 0, 나머지는 INF로 초기화합니다.', code: 'S, E = map(int, input().split())\n\ndist = [INF] * (N + 1)\ndist[S] = 0\nheap = [(0, S)]' },
+                        { title: '다익스트라 + 출력', desc: '1753번과 동일한 다익스트라를 실행한 뒤,\n도착 도시의 최단 거리 dist[E]만 출력합니다.', code: 'while heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))\n\nprint(dist[E])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구성', desc: 'pair<int,int>로 (도착정점, 비용)을 저장하는 인접 리스트를 구성합니다.\ntypedef pii로 타입을 축약하여 코드를 간결하게 합니다.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\ntypedef pair<int,int> pii;\nconst int INF = 1e9;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<pii>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int u, v, w;\n        scanf("%d %d %d", &u, &v, &w);\n        graph[u].push_back({v, w});\n    }' },
+                        { title: '출발/도착 입력 및 초기화', desc: 'greater<pii>로 최소 힙을 만들어 거리가 짧은 것부터 꺼냅니다.\n출발 도시 S의 거리를 0으로 설정하고 힙에 삽입합니다.', code: '    int S, E;\n    scanf("%d %d", &S, &E);\n    vector<int> dist(N + 1, INF);\n    dist[S] = 0;\n    priority_queue<pii, vector<pii>, greater<pii>> pq;\n    pq.push({0, S});' },
+                        { title: '다익스트라 + 출력', desc: '다익스트라를 실행한 뒤 도착 도시 E의 최단 거리만 출력합니다.\n구조는 1753번과 동일하고, 출력만 다릅니다.', code: '    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n    printf("%d\\n", dist[E]);\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return shortestPathTopic.problems[2].templates; }
@@ -1117,16 +1454,41 @@ var shortestPathTopic = {
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/network-delay-time/',
             simIntro: '다익스트라 결과에서 max(dist)를 구해 답을 도출하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3><p>n개의 노드로 구성된 네트워크가 있습니다. times[i] = (u, v, w)는 노드 u에서 v로 신호를 보내는 데 w 시간이 걸린다는 뜻입니다.</p><p>노드 k에서 신호를 보냈을 때, 모든 노드가 신호를 받는 데 걸리는 최소 시간을 구하세요. 모든 노드가 신호를 받을 수 없으면 -1을 반환합니다.</p><div class="problem-io"><div><h4>입력</h4><p>times: 간선 목록 [[u,v,w], ...]<br>n: 노드 수 (1 \u2264 n \u2264 100)<br>k: 시작 노드</p></div><div><h4>출력</h4><p>모든 노드가 신호를 받는 최소 시간 (불가능하면 -1)</p></div></div><div class="problem-example"><h4>예제</h4><div class="example-grid"><div><strong>입력</strong><pre>times = [[2,1,1],[2,3,1],[3,4,1]]\nn = 4, k = 2</pre></div><div><strong>출력</strong><pre>2</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>n개의 노드로 이루어진 네트워크가 있고, 1부터 n까지 번호가 매겨져 있습니다. times[i] = (u<sub>i</sub>, v<sub>i</sub>, w<sub>i</sub>)는 소스 노드 u<sub>i</sub>에서 타겟 노드 v<sub>i</sub>로 신호가 이동하는 데 w<sub>i</sub>의 시간이 걸린다는 것을 의미합니다.</p>
+                <p>노드 k에서 신호를 보내면, 모든 n개의 노드가 신호를 받는 데 걸리는 최소 시간을 반환하세요. 모든 노드가 신호를 받을 수 없으면 -1을 반환하세요.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2</pre></div>
+                    <div><strong>출력</strong><pre>2</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>times = [[1,2,1]], n = 2, k = 1</pre></div>
+                    <div><strong>출력</strong><pre>1</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>times = [[1,2,1]], n = 2, k = 2</pre></div>
+                    <div><strong>출력</strong><pre>-1</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ k ≤ n ≤ 100</li>
+                    <li>1 ≤ times.length ≤ 6,000</li>
+                    <li>times[i].length == 3</li>
+                    <li>1 ≤ u<sub>i</sub>, v<sub>i</sub> ≤ n</li>
+                    <li>u<sub>i</sub> ≠ v<sub>i</sub></li>
+                    <li>0 ≤ w<sub>i</sub> ≤ 100</li>
+                </ul>
+            `,
             hints: [
-                { title: '어떤 알고리즘을 쓸까?', content: '한 시작점(k)에서 모든 노드까지의 최단 거리를 구하고, 그 중 <strong>최댓값</strong>이 정답입니다 \u2192 <strong>다익스트라 알고리즘</strong>!' },
-                { title: '핵심 아이디어', content: '다익스트라로 k에서 모든 노드까지의 최단 거리를 구합니다.<br>모든 거리 중 <strong>최댓값</strong>이 "모든 노드가 신호를 받는 시간"입니다.<br>도달 불가능한 노드가 있으면 -1을 반환합니다.' },
-                { title: '정답 코드 구조', content: '인접 리스트를 만들고 다익스트라를 실행합니다.<br><code>max(dist[1:n+1])</code>이 INF이면 -1, 아니면 그 값을 반환합니다.' }
+                { title: '처음 떠오르는 방법', content: '노드 k에서 신호를 보내면 <strong>모든 노드가 신호를 받는 데 걸리는 시간</strong>을 구해야 해요.<br>일단 가장 직관적인 방법: k에서 모든 노드까지 가능한 경로를 전부 탐색(DFS/BFS)해서, 각 노드에 도달하는 최소 시간을 구하는 거예요.<br>그리고 그 중 가장 큰 값이 "모든 노드가 신호를 받는 시간"이에요.' },
+                { title: '근데 이러면 문제가 있어', content: '모든 경로를 탐색하면 중복 방문이 많아져서 느려요!<br>간선이 최대 6,000개이고 가중치가 있으니까, 단순 BFS로도 최단 시간을 보장할 수 없어요.<br>가중치가 있는 그래프에서 한 점 → 모든 점 최단 경로... 이건 <strong>다익스트라</strong>가 딱이에요!' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>다익스트라</strong>로 k에서 모든 노드까지의 최단 시간을 구해요. 여기까진 1753번과 같아요!<br><br>그런데 이 문제는 한 가지가 더 있어요: <strong>"모든 노드가 신호를 받는 시간"</strong>이 정답이에요.<br>신호는 동시에 퍼져나가니까, 가장 <strong>늦게 도착하는 노드의 시간 = 전체 시간</strong>이에요.<br>→ dist 배열에서 <strong>최댓값</strong>을 구하면 끝!<br><br>⚠️ 한 가지 더: 도달 불가능한 노드가 있으면(dist가 INF) <strong>-1</strong>을 반환해야 해요.' },
+                { title: 'Python/C++에선 이렇게!', content: '<span class="lang-py">다익스트라 후 <code>max(dist[1:n+1])</code>로 최댓값을 구해요.<br>이 값이 <code>float(\'inf\')</code>이면 도달 불가능한 노드가 있다는 뜻이니까 -1을 반환해요.<br><code>return ans if ans != INF else -1</code> 한 줄로 깔끔하게 처리!</span><span class="lang-cpp">다익스트라 후 <code>*max_element(dist.begin()+1, dist.end())</code>로 최댓값을 구해요.<br>이 값이 INF(1e9)이면 도달 불가능한 노드가 있으므로 -1을 반환해요.<br><code>return ans == INF ? -1 : ans;</code> 삼항 연산자로 간결하게 처리!</span>' }
             ],
             templates: {
                 python: 'class Solution:\n    def networkDelayTime(self, times, n, k):\n        import heapq\n        INF = float(\'inf\')\n        graph = [[] for _ in range(n + 1)]\n        for u, v, w in times:\n            graph[u].append((v, w))\n\n        dist = [INF] * (n + 1)\n        dist[k] = 0\n        heap = [(0, k)]\n\n        while heap:\n            d, v = heapq.heappop(heap)\n            if d > dist[v]:\n                continue\n            for u, w in graph[v]:\n                nd = d + w\n                if nd < dist[u]:\n                    dist[u] = nd\n                    heapq.heappush(heap, (nd, u))\n\n        ans = max(dist[1:n+1])\n        return ans if ans != INF else -1',
-                cpp: 'class Solution {\npublic:\n    int networkDelayTime(vector<vector<int>>& times, int n, int k) {\n        const int INF = 1e9;\n        vector<vector<pair<int,int>>> graph(n + 1);\n        for (auto& t : times) {\n            graph[t[0]].push_back({t[1], t[2]});\n        }\n\n        vector<int> dist(n + 1, INF);\n        dist[k] = 0;\n        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;\n        pq.push({0, k});\n\n        while (!pq.empty()) {\n            auto [d, v] = pq.top(); pq.pop();\n            if (d > dist[v]) continue;\n            for (auto [u, w] : graph[v]) {\n                int nd = d + w;\n                if (nd < dist[u]) {\n                    dist[u] = nd;\n                    pq.push({nd, u});\n                }\n            }\n        }\n\n        int ans = *max_element(dist.begin() + 1, dist.end());\n        return ans == INF ? -1 : ans;\n    }\n};',
-                java: 'class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int INF = (int)1e9;\n        List<List<int[]>> graph = new ArrayList<>();\n        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());\n        for (int[] t : times) {\n            graph.get(t[0]).add(new int[]{t[1], t[2]});\n        }\n\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, INF);\n        dist[k] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);\n        pq.offer(new int[]{0, k});\n\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            int d = cur[0], v = cur[1];\n            if (d > dist[v]) continue;\n            for (int[] edge : graph.get(v)) {\n                int u = edge[0], w = edge[1];\n                int nd = d + w;\n                if (nd < dist[u]) {\n                    dist[u] = nd;\n                    pq.offer(new int[]{nd, u});\n                }\n            }\n        }\n\n        int ans = 0;\n        for (int i = 1; i <= n; i++) {\n            ans = Math.max(ans, dist[i]);\n        }\n        return ans == INF ? -1 : ans;\n    }\n}'
+                cpp: 'class Solution {\npublic:\n    int networkDelayTime(vector<vector<int>>& times, int n, int k) {\n        const int INF = 1e9;\n        vector<vector<pair<int,int>>> graph(n + 1);\n        for (auto& t : times) {\n            graph[t[0]].push_back({t[1], t[2]});\n        }\n\n        vector<int> dist(n + 1, INF);\n        dist[k] = 0;\n        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;\n        pq.push({0, k});\n\n        while (!pq.empty()) {\n            auto [d, v] = pq.top(); pq.pop();\n            if (d > dist[v]) continue;\n            for (auto [u, w] : graph[v]) {\n                int nd = d + w;\n                if (nd < dist[u]) {\n                    dist[u] = nd;\n                    pq.push({nd, u});\n                }\n            }\n        }\n\n        int ans = *max_element(dist.begin() + 1, dist.end());\n        return ans == INF ? -1 : ans;\n    }\n};'
             },
             solutions: [{
                 approach: '다익스트라 + max',
@@ -1135,9 +1497,14 @@ var shortestPathTopic = {
                 spaceComplexity: 'O(V+E)',
                 codeSteps: {
                     python: [
-                        { title: '그래프 구성', code: 'import heapq\nINF = float(\'inf\')\ngraph = [[] for _ in range(n + 1)]\nfor u, v, w in times:\n    graph[u].append((v, w))' },
-                        { title: '다익스트라 실행', code: 'dist = [INF] * (n + 1)\ndist[k] = 0\nheap = [(0, k)]\n\nwhile heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))' },
-                        { title: '결과 반환', code: 'ans = max(dist[1:n+1])\nreturn ans if ans != INF else -1' }
+                        { title: '그래프 구성', desc: 'times 배열에서 인접 리스트를 만듭니다.\n각 간선을 (도착노드, 시간) 튜플로 저장합니다.', code: 'import heapq\nINF = float(\'inf\')\ngraph = [[] for _ in range(n + 1)]\nfor u, v, w in times:\n    graph[u].append((v, w))' },
+                        { title: '다익스트라 실행', desc: '시작 노드 k에서 모든 노드까지의 최단 시간을 구합니다.\n표준 다익스트라로 각 노드에 신호가 도달하는 최소 시간을 계산합니다.', code: 'dist = [INF] * (n + 1)\ndist[k] = 0\nheap = [(0, k)]\n\nwhile heap:\n    d, v = heapq.heappop(heap)\n    if d > dist[v]:\n        continue\n    for u, w in graph[v]:\n        nd = d + w\n        if nd < dist[u]:\n            dist[u] = nd\n            heapq.heappush(heap, (nd, u))' },
+                        { title: '결과 반환', desc: '모든 노드 중 가장 늦게 도착하는 시간이 정답입니다.\nINF가 남아있으면 도달 불가능한 노드가 있으므로 -1을 반환합니다.', code: 'ans = max(dist[1:n+1])\nreturn ans if ans != INF else -1' }
+                    ],
+                    cpp: [
+                        { title: '그래프 구성', desc: 'times 벡터에서 인접 리스트를 구성합니다.\nauto&로 복사 없이 참조하여 성능을 최적화합니다.', code: 'const int INF = 1e9;\nvector<vector<pair<int,int>>> graph(n + 1);\nfor (auto& t : times)\n    graph[t[0]].push_back({t[1], t[2]});' },
+                        { title: '다익스트라 실행', desc: 'greater<>로 최소 힙을 구성하여 거리가 짧은 노드부터 처리합니다.\n모든 노드까지의 최단 신호 전달 시간을 계산합니다.', code: 'vector<int> dist(n + 1, INF);\ndist[k] = 0;\npriority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;\npq.push({0, k});\n\nwhile (!pq.empty()) {\n    auto [d, v] = pq.top(); pq.pop();\n    if (d > dist[v]) continue;\n    for (auto [u, w] : graph[v]) {\n        int nd = d + w;\n        if (nd < dist[u]) {\n            dist[u] = nd;\n            pq.push({nd, u});\n        }\n    }\n}' },
+                        { title: '결과 반환', desc: 'max_element로 dist[1]~dist[n] 중 최대값 확인.', code: 'int ans = *max_element(dist.begin()+1, dist.end());\nreturn ans == INF ? -1 : ans;' }
                     ]
                 },
                 get templates() { return shortestPathTopic.problems[3].templates; }

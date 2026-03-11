@@ -172,15 +172,24 @@ var bitManipulationTopic = {
                         <h3>2진수</h3>
                         <p>우리가 쓰는 10진수 대신, 0과 1만 사용합니다. <code>1010₂</code> = 8+0+2+0 = <strong>10</strong>입니다.</p>
                     </div>
-                    <div class="concept-card">
+                    <span class="lang-py"><div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="10" font-weight="bold" fill="var(--accent)">bin()</text></svg>
                         </div>
                         <h3>bin() 함수</h3>
-                        <p>Python에서 <code>bin(10)</code>은 <code>'0b1010'</code>을 반환합니다. 2진수를 쉽게 확인할 수 있습니다!</p>
-                    </div>
+                        <p>Python에서 <code>bin(10)</code>은 <code>'0b1010'</code>을 반환합니다. 2진수를 쉽게 확인할 수 있습니다!<br>
+                        <a href="https://docs.python.org/3/library/functions.html#bin" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: bin() ↗</a></p>
+                    </div></span>
+                    <span class="lang-cpp"><div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="10" font-weight="bold" fill="var(--accent)">bitset</text></svg>
+                        </div>
+                        <h3>bitset 클래스</h3>
+                        <p>C++에서 <code>bitset&lt;8&gt;(10)</code>은 <code>00001010</code>을 출력합니다. 2진수를 쉽게 확인할 수 있습니다!<br>
+                        <a href="https://en.cppreference.com/w/cpp/utility/bitset" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: bitset ↗</a></p>
+                    </div></span>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 2진수 표현
 print(bin(10))      # '0b1010' — 10을 2진수로
 print(bin(255))     # '0b11111111' — 8비트 최대값
@@ -189,7 +198,23 @@ print(0b1010)       # 10 — 2진수를 10진수로
 # 2진수 문자열로 변환
 print(format(10, '08b'))  # '00001010' — 8자리로 맞추기
 print(f"{10:08b}")        # '00001010' — f-string 방법</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+int main() {
+    // 2진수 표현
+    cout &lt;&lt; bitset&lt;8&gt;(10) &lt;&lt; endl;   // 00001010 — 10을 2진수로
+    cout &lt;&lt; bitset&lt;8&gt;(255) &lt;&lt; endl;  // 11111111 — 8비트 최대값
+    cout &lt;&lt; 0b1010 &lt;&lt; endl;           // 10 — 2진수를 10진수로
+
+    // 특정 자릿수로 맞추기
+    cout &lt;&lt; bitset&lt;8&gt;(10) &lt;&lt; endl;   // 00001010 — 자동 8자리
+    cout &lt;&lt; bitset&lt;4&gt;(10) &lt;&lt; endl;   // 1010 — 4자리
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -241,7 +266,8 @@ print(f"{10:08b}")        # '00001010' — f-string 방법</code></pre>
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="8" y="26" font-size="18" font-weight="bold" fill="var(--red, #e17055)">~</text></svg>
                         </div>
                         <h3>NOT (~)</h3>
-                        <p>0은 1로, 1은 0으로 뒤집습니다.<br><code>~1010 = 0101</code> (비트 반전)</p>
+                        <p>0은 1로, 1은 0으로 뒤집습니다.<br><code>~1010 = 0101</code> (비트 반전)<br>
+                        <a href="https://en.wikipedia.org/wiki/Two%27s_complement" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: 2의 보수 (Two's complement) ↗</a></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
@@ -258,7 +284,7 @@ print(f"{10:08b}")        # '00001010' — f-string 방법</code></pre>
                         <p>비트를 오른쪽으로 밀어냅니다.<br><code>8 &gt;&gt; 2 = 10₂ = 2</code> (÷2<sup>n</sup>)</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 비트 연산자 예시
 a = 0b1010  # 10
 b = 0b1100  # 12
@@ -271,7 +297,26 @@ print(bin(~a))      # '-0b1011'     (NOT, 보수)
 # 시프트 연산
 print(1 << 3)       # 8  (1을 왼쪽으로 3칸 → 2³)
 print(16 >> 2)      # 4  (16을 오른쪽으로 2칸 → 16÷4)</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+int main() {
+    int a = 0b1010;  // 10
+    int b = 0b1100;  // 12
+
+    cout &lt;&lt; bitset&lt;4&gt;(a & b) &lt;&lt; endl;  // 1000 → 8  (AND)
+    cout &lt;&lt; bitset&lt;4&gt;(a | b) &lt;&lt; endl;  // 1110 → 14 (OR)
+    cout &lt;&lt; bitset&lt;4&gt;(a ^ b) &lt;&lt; endl;  // 0110 → 6  (XOR)
+    cout &lt;&lt; bitset&lt;4&gt;(~a) &lt;&lt; endl;     // 0101     (NOT, 반전)
+
+    // 시프트 연산
+    cout &lt;&lt; (1 &lt;&lt; 3) &lt;&lt; endl;   // 8  (1을 왼쪽으로 3칸 → 2³)
+    cout &lt;&lt; (16 >> 2) &lt;&lt; endl;  // 4  (16을 오른쪽으로 2칸 → 16÷4)
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -327,7 +372,7 @@ print(16 >> 2)      # 4  (16을 오른쪽으로 2칸 → 16÷4)</code></pre>
                         <p><code>num & ~(1 &lt;&lt; i)</code>로 i번째 비트를 0으로 끕니다. 이미 0이어도 괜찮습니다.</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 비트 마스크 기본 연산
 S = 0b10110  # 집합 {1, 2, 4}
 
@@ -348,7 +393,34 @@ print(bin(S))  # '0b10001' — {0, 4}
 
 # 전체 집합 (원소 5개: {0,1,2,3,4})
 ALL = (1 << 5) - 1  # 0b11111 = 31</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+int main() {
+    int S = 0b10110;  // 집합 {1, 2, 4}
+
+    // i번째 비트 확인 (i=2 확인)
+    cout &lt;&lt; ((S & (1 &lt;&lt; 2)) != 0) &lt;&lt; endl;  // 1 — 2번 비트가 1
+
+    // i번째 비트 설정 (i=0 추가)
+    S = S | (1 &lt;&lt; 0);
+    cout &lt;&lt; bitset&lt;5&gt;(S) &lt;&lt; endl;  // 10111 — {0, 1, 2, 4}
+
+    // i번째 비트 토글 (i=1 반전)
+    S = S ^ (1 &lt;&lt; 1);
+    cout &lt;&lt; bitset&lt;5&gt;(S) &lt;&lt; endl;  // 10101 — {0, 2, 4}
+
+    // i번째 비트 제거 (i=2 제거)
+    S = S & ~(1 &lt;&lt; 2);
+    cout &lt;&lt; bitset&lt;5&gt;(S) &lt;&lt; endl;  // 10001 — {0, 4}
+
+    // 전체 집합 (원소 5개: {0,1,2,3,4})
+    int ALL = (1 &lt;&lt; 5) - 1;  // 0b11111 = 31
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -403,7 +475,7 @@ ALL = (1 << 5) - 1  # 0b11111 = 31</code></pre>
                         <p>임시 변수 없이 두 변수를 교환할 수 있습니다. <code>a^=b; b^=a; a^=b;</code></p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># XOR 성질
 print(7 ^ 7)    # 0 — 같은 수 XOR = 0
 print(7 ^ 0)    # 7 — 0과 XOR = 자기자신
@@ -425,7 +497,36 @@ print(a, b)  # 10, 5
 # n & (n-1): 가장 낮은 1 비트 제거
 n = 0b10110  # 22
 print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;bitset&gt;
+using namespace std;
+
+int main() {
+    // XOR 성질
+    cout &lt;&lt; (7 ^ 7) &lt;&lt; endl;    // 0 — 같은 수 XOR = 0
+    cout &lt;&lt; (7 ^ 0) &lt;&lt; endl;    // 7 — 0과 XOR = 자기자신
+
+    // 중복 없는 수 찾기 (Single Number)
+    int nums[] = {2, 3, 1, 3, 2};
+    int result = 0;
+    for (int n : nums)
+        result ^= n;     // 2^3^1^3^2 = (2^2)^(3^3)^1 = 0^0^1 = 1
+    cout &lt;&lt; result &lt;&lt; endl;  // 1 — 짝이 없는 수!
+
+    // XOR로 swap (임시 변수 없이!)
+    int a = 5, b = 10;
+    a ^= b;    // a = 5^10
+    b ^= a;    // b = 10^(5^10) = 5
+    a ^= b;    // a = (5^10)^5 = 10
+    cout &lt;&lt; a &lt;&lt; " " &lt;&lt; b &lt;&lt; endl;  // 10, 5
+
+    // n & (n-1): 가장 낮은 1 비트 제거
+    int n = 0b10110;  // 22
+    cout &lt;&lt; bitset&lt;5&gt;(n & (n - 1)) &lt;&lt; endl;  // 10100 → 20 (마지막 1이 사라짐!)
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -669,13 +770,14 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
+        var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
             if (state.currentStep >= state.steps.length - 1) return;
-            state.currentStep++; state.steps[state.currentStep].action(); updateUI();
+            state.currentStep++; updateUI(); setTimeout(function() { state.steps[state.currentStep].action(); }, actionDelay);
         });
         prevBtn.addEventListener('click', function() {
             if (state.currentStep < 0) return;
-            state.steps[state.currentStep].undo(); state.currentStep--; updateUI();
+            var stepToUndo = state.currentStep; state.currentStep--; updateUI(); setTimeout(function() { state.steps[stepToUndo].undo(); }, actionDelay);
         });
         var handleKey = function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -692,65 +794,96 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
     // ====================================================================
     _renderVizHammingWeight(container) {
         var self = this, suffix = '-hw1';
-        var n = 11;
+        var DEFAULT_N = 11;
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">n & (n-1) 트릭으로 1 비트 세기</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">n = <strong>' + n + '</strong> (2진수: ' + (n >>> 0).toString(2) + ')의 1 비트 개수를 셉니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">n: <input type="number" id="bit-hw-input" value="' + DEFAULT_N + '" min="0" max="1023" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;"></label>' +
+            '<button class="btn btn-primary" id="bit-hw-reset">🔄</button>' +
+            '</div>' +
+            '<p id="hw-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="hw-bits' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="hw-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
 
         var bitsEl = container.querySelector('#hw-bits' + suffix);
         var infoEl = container.querySelector('#hw-info' + suffix);
+        var descEl = container.querySelector('#hw-desc' + suffix);
+        var NUM_BITS = 8;
 
-        function renderBits(val, highlightIdx) {
+        function renderBits(val, highlightIdx, numBits) {
             var s = (val >>> 0).toString(2);
-            while (s.length < 8) s = '0' + s;
+            while (s.length < numBits) s = '0' + s;
+            s = s.slice(-numBits);
             bitsEl.innerHTML = s.split('').map(function(bit, i) {
                 var style = 'width:48px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:700;font-size:1.1rem;transition:all 0.3s;';
                 if (highlightIdx === i) style += 'background:var(--yellow);color:white;';
                 else if (bit === '1') style += 'background:var(--accent)15;border:2px solid var(--accent);color:var(--accent);';
                 else style += 'background:var(--bg2);color:var(--text3);';
-                return '<div style="' + style + '"><div>' + bit + '</div><div style="font-size:0.65rem;color:var(--text3);">2<sup>' + (7 - i) + '</sup></div></div>';
+                return '<div style="' + style + '"><div>' + bit + '</div><div style="font-size:0.65rem;color:var(--text3);">2<sup>' + (numBits - 1 - i) + '</sup></div></div>';
             }).join('');
         }
 
-        renderBits(n, -1);
-        infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — n & (n-1)을 반복합니다.</span>';
+        function buildSteps(n) {
+            var numBits = Math.max(8, (n >>> 0).toString(2).length);
+            NUM_BITS = numBits;
 
-        var steps = [];
-        var cur = n, count = 0;
-        while (cur > 0) {
-            var prev = cur;
-            var next = cur & (cur - 1);
-            count++;
-            var prevBin = (prev >>> 0).toString(2);
-            var prevMinusBin = ((prev - 1) >>> 0).toString(2);
-            while (prevBin.length < 8) prevBin = '0' + prevBin;
-            while (prevMinusBin.length < 8) prevMinusBin = '0' + prevMinusBin;
-            // Find which bit was removed
-            var removedBit = -1;
-            var nextBin = (next >>> 0).toString(2);
-            while (nextBin.length < 8) nextBin = '0' + nextBin;
-            for (var b = 7; b >= 0; b--) {
-                if (prevBin[b] === '1' && nextBin[b] === '0') { removedBit = b; break; }
+            function pad(v) {
+                var s = (v >>> 0).toString(2);
+                while (s.length < numBits) s = '0' + s;
+                return s.slice(-numBits);
             }
-            (function(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin) {
-                steps.push({
-                    description: 'count=' + count + ': n=' + prev + ' (' + prevBin + ') & (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ') = ' + next + ' (' + nextBin + ')',
-                    action: function() { renderBits(next, removedBit); infoEl.innerHTML = 'n = ' + prev + ' & ' + (prev - 1) + ' = <strong>' + next + '</strong> — count = <strong>' + count + '</strong>'; },
-                    undo: function() { renderBits(prev, -1); infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + prev + ', count = ' + (count - 1) + '</span>'; }
-                });
-            })(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin);
-            cur = next;
+
+            var steps = [];
+            var cur = n, count = 0;
+            while (cur > 0) {
+                var prev = cur;
+                var next = cur & (cur - 1);
+                count++;
+                var prevBin = pad(prev);
+                var prevMinusBin = pad(prev - 1);
+                var nextBin = pad(next);
+                var removedBit = -1;
+                for (var b = numBits - 1; b >= 0; b--) {
+                    if (prevBin[b] === '1' && nextBin[b] === '0') { removedBit = b; break; }
+                }
+                (function(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin, numBits) {
+                    steps.push({
+                        description: 'count=' + count + ': n=' + prev + ' (' + prevBin + ') & (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ') = ' + next + ' (' + nextBin + ')',
+                        action: function() { renderBits(next, removedBit, numBits); infoEl.innerHTML = 'n = ' + prev + ' & ' + (prev - 1) + ' = <strong>' + next + '</strong> — count = <strong>' + count + '</strong>'; },
+                        undo: function() { renderBits(prev, -1, numBits); infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + prev + ', count = ' + (count - 1) + '</span>'; }
+                    });
+                })(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin, numBits);
+                cur = next;
+            }
+            var finalCount = count;
+            steps.push({
+                description: '완료! n = 0이 되었으므로 종료. 1 비트 개수 = ' + finalCount,
+                action: function() { renderBits(0, -1, numBits); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 1 비트 개수 = ' + finalCount + '</strong>'; },
+                undo: function() { renderBits(0, -1, numBits); infoEl.innerHTML = 'n = 0, count = ' + finalCount; }
+            });
+            return steps;
         }
-        var finalCount = count;
-        steps.push({
-            description: '완료! n = 0이 되었으므로 종료. 1 비트 개수 = ' + finalCount,
-            action: function() { renderBits(0, -1); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 1 비트 개수 = ' + finalCount + '</strong>'; },
-            undo: function() { renderBits(0, -1); infoEl.innerHTML = 'n = 0, count = ' + finalCount; }
+
+        function initSim(n) {
+            descEl.textContent = 'n = ' + n + ' (2진수: ' + (n >>> 0).toString(2) + ')의 1 비트 개수를 셉니다.';
+            var numBits = Math.max(8, (n >>> 0).toString(2).length);
+            renderBits(n, -1, numBits);
+            infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — n & (n-1)을 반복합니다.</span>';
+            var steps = buildSteps(n);
+            self._initStepController(container, steps, suffix);
+        }
+
+        container.querySelector('#bit-hw-reset').addEventListener('click', function() {
+            self._clearVizState();
+            var val = parseInt(container.querySelector('#bit-hw-input').value, 10);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 1023) val = 1023;
+            container.querySelector('#bit-hw-input').value = val;
+            initSim(val);
         });
-        self._initStepController(container, steps, suffix);
+
+        initSim(DEFAULT_N);
     },
 
     // ====================================================================
@@ -758,7 +891,7 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
     // ====================================================================
     _renderVizSingleNumber(container) {
         var self = this, suffix = '-sn1';
-        var nums = [2, 3, 1, 3, 2];
+        var DEFAULT_NUMS = '2, 3, 1, 3, 2';
         var MAX_BITS = 8;
 
         function toBinStr(num) {
@@ -769,7 +902,11 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
 
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">XOR로 짝 없는 수 찾기</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">배열 [' + nums.join(', ') + ']의 모든 원소를 XOR합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">배열: <input type="text" id="bit-single-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<button class="btn btn-primary" id="bit-single-reset">🔄</button>' +
+            '</div>' +
+            '<p id="sn-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="sn-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sn-xor' + suffix + '" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;margin-bottom:8px;"></div>' +
             '<div id="sn-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -778,13 +915,15 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
         var arrEl = container.querySelector('#sn-arr' + suffix);
         var xorEl = container.querySelector('#sn-xor' + suffix);
         var infoEl = container.querySelector('#sn-info' + suffix);
+        var descEl = container.querySelector('#sn-desc' + suffix);
 
-        // Render array boxes
-        arrEl.innerHTML = nums.map(function(n, i) {
-            return '<div class="str-char-box" data-idx="' + i + '">' +
-                '<div class="str-char-idx">[' + i + ']</div>' +
-                '<div class="str-char-val">' + n + '</div></div>';
-        }).join('');
+        function renderArrayBoxes(nums) {
+            arrEl.innerHTML = nums.map(function(n, i) {
+                return '<div class="str-char-box" data-idx="' + i + '">' +
+                    '<div class="str-char-idx">[' + i + ']</div>' +
+                    '<div class="str-char-val">' + n + '</div></div>';
+            }).join('');
+        }
 
         function setArrState(idx, cls) {
             var box = arrEl.querySelector('[data-idx="' + idx + '"]');
@@ -820,67 +959,91 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             infoEl.innerHTML = s.info;
         }
 
-        infoEl.innerHTML = '<span style="color:var(--text2);">result = 0 부터 시작합니다.</span>';
+        function buildSteps(nums) {
+            var steps = [];
+            var runXor = 0;
 
-        var steps = [];
-        var runXor = 0;
+            steps.push({
+                description: 'result = 0 으로 시작합니다.',
+                _before: null,
+                action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'result를 0으로 초기화했습니다.'; },
+                undo: function() { restoreState(this._before); }
+            });
 
-        steps.push({
-            description: 'result = 0 으로 시작합니다.',
-            _before: null,
-            action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'result를 0으로 초기화했습니다.'; },
-            undo: function() { restoreState(this._before); }
-        });
+            for (var i = 0; i < nums.length; i++) {
+                var num = nums[i];
+                var prevXor = runXor;
+                var newXor = prevXor ^ num;
+                var prevBin = toBinStr(prevXor);
+                var newBin = toBinStr(newXor);
+                var changed = new Set();
+                for (var b = 0; b < MAX_BITS; b++) { if (prevBin[b] !== newBin[b]) changed.add(b); }
 
-        for (var i = 0; i < nums.length; i++) {
-            var num = nums[i];
-            var prevXor = runXor;
-            var newXor = prevXor ^ num;
-            var prevBin = toBinStr(prevXor);
-            var newBin = toBinStr(newXor);
-            var changed = new Set();
-            for (var b = 0; b < MAX_BITS; b++) { if (prevBin[b] !== newBin[b]) changed.add(b); }
+                (function(idx, num, prevXor, newXor, prevBin, newBin, changed, numsRef) {
+                    steps.push({
+                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor,
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (var j = 0; j < numsRef.length; j++) {
+                                if (j < idx) setArrState(j, 'matched');
+                                else if (j === idx) setArrState(j, 'comparing');
+                                else setArrState(j, '');
+                            }
+                            var html = renderBitRow('result', prevXor, null);
+                            html += '<div style="font-weight:700;color:var(--yellow);font-size:1.1rem;">XOR (^)</div>';
+                            html += renderBitRow('nums[' + idx + '] = ' + num, num, null);
+                            html += '<div style="border-top:2px solid var(--border);width:80%;margin:4px 0;"></div>';
+                            html += renderBitRow('result = ' + newXor, newXor, changed);
+                            xorEl.innerHTML = html;
+                            infoEl.innerHTML = 'result ^= ' + num + ' → <strong>' + newXor + '</strong>';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                })(i, num, prevXor, newXor, prevBin, newBin, changed, nums);
 
-            (function(idx, num, prevXor, newXor, prevBin, newBin, changed) {
-                steps.push({
-                    description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor,
-                    _before: null,
-                    action: function() {
-                        this._before = saveState();
-                        for (var j = 0; j < nums.length; j++) {
-                            if (j < idx) setArrState(j, 'matched');
-                            else if (j === idx) setArrState(j, 'comparing');
-                            else setArrState(j, '');
-                        }
-                        var html = renderBitRow('result', prevXor, null);
-                        html += '<div style="font-weight:700;color:var(--yellow);font-size:1.1rem;">XOR (^)</div>';
-                        html += renderBitRow('nums[' + idx + '] = ' + num, num, null);
-                        html += '<div style="border-top:2px solid var(--border);width:80%;margin:4px 0;"></div>';
-                        html += renderBitRow('result = ' + newXor, newXor, changed);
-                        xorEl.innerHTML = html;
-                        infoEl.innerHTML = 'result ^= ' + num + ' → <strong>' + newXor + '</strong>';
-                    },
-                    undo: function() { restoreState(this._before); }
-                });
-            })(i, num, prevXor, newXor, prevBin, newBin, changed);
+                runXor = newXor;
+            }
 
-            runXor = newXor;
+            var finalResult = runXor;
+            var numsLen = nums.length;
+            steps.push({
+                description: '완료! 짝이 없는 수는 ' + finalResult + '입니다!',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    for (var j = 0; j < numsLen; j++) setArrState(j, 'matched');
+                    xorEl.innerHTML = renderBitRow('최종 result', finalResult, null);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 짝이 없는 수 = ' + finalResult + '</strong>';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            return steps;
         }
 
-        var finalResult = runXor;
-        steps.push({
-            description: '완료! 짝이 없는 수는 ' + finalResult + '입니다!',
-            _before: null,
-            action: function() {
-                this._before = saveState();
-                for (var j = 0; j < nums.length; j++) setArrState(j, 'matched');
-                xorEl.innerHTML = renderBitRow('최종 result', finalResult, null);
-                infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 짝이 없는 수 = ' + finalResult + '</strong>';
-            },
-            undo: function() { restoreState(this._before); }
+        function initSim(nums) {
+            descEl.textContent = '배열 [' + nums.join(', ') + ']의 모든 원소를 XOR합니다.';
+            renderArrayBoxes(nums);
+            xorEl.innerHTML = '';
+            infoEl.innerHTML = '<span style="color:var(--text2);">result = 0 부터 시작합니다.</span>';
+            var steps = buildSteps(nums);
+            self._initStepController(container, steps, suffix);
+        }
+
+        container.querySelector('#bit-single-reset').addEventListener('click', function() {
+            self._clearVizState();
+            var raw = container.querySelector('#bit-single-input').value;
+            var nums = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
+            if (nums.length === 0) {
+                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">숫자를 입력해주세요! (예: 2, 3, 1, 3, 2)</span>';
+                return;
+            }
+            initSim(nums);
         });
 
-        self._initStepController(container, steps, suffix);
+        var defaultNums = DEFAULT_NUMS.split(',').map(function(s) { return parseInt(s.trim(), 10); });
+        initSim(defaultNums);
     },
 
     // ====================================================================
@@ -888,14 +1051,17 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
     // ====================================================================
     _renderVizBitmaskSet(container) {
         var self = this, suffix = '-bms';
-        var ops = [
-            { cmd: 'add', x: 1 }, { cmd: 'add', x: 2 }, { cmd: 'check', x: 1 },
-            { cmd: 'toggle', x: 3 }, { cmd: 'remove', x: 2 }, { cmd: 'all' },
-            { cmd: 'check', x: 10 }, { cmd: 'empty' }
-        ];
+        var DEFAULT_OPS = 'add 1, add 2, check 1, toggle 3, remove 2, all, check 10, empty';
+        var SHOW_BITS = 8;
+
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">비트마스크로 집합 연산</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">정수 하나로 집합을 표현하고 add/remove/toggle/check 연산을 수행합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">연산: <input type="text" id="bit-mask-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:400px;"></label>' +
+            '<button class="btn btn-primary" id="bit-mask-reset">🔄</button>' +
+            '</div>' +
+            '<p style="color:var(--text3);font-size:0.8rem;margin-top:-12px;margin-bottom:16px;">형식: add N, remove N, check N, toggle N, all, empty (쉼표로 구분)</p>' +
+            '<p id="bms-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">정수 하나로 집합을 표현하고 add/remove/toggle/check 연산을 수행합니다.</p>' +
             '<div id="bms-bits' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="bms-set' + suffix + '" style="text-align:center;margin-bottom:8px;font-weight:600;color:var(--accent);"></div>' +
             '<div id="bms-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -905,11 +1071,9 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
         var setEl = container.querySelector('#bms-set' + suffix);
         var infoEl = container.querySelector('#bms-info' + suffix);
 
-        var SHOW_BITS = 8;
-
-        function renderBits(S, hlBit) {
+        function renderBits(S, hlBit, showBits) {
             var html = '';
-            for (var i = SHOW_BITS - 1; i >= 0; i--) {
+            for (var i = showBits - 1; i >= 0; i--) {
                 var on = (S >> i) & 1;
                 var style = 'width:42px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:700;font-size:1rem;transition:all 0.3s;';
                 if (i === hlBit) style += 'background:var(--yellow);color:white;';
@@ -920,67 +1084,111 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             bitsEl.innerHTML = html;
         }
 
-        function renderSet(S) {
+        function renderSet(S, showBits) {
             var elems = [];
-            for (var i = 0; i < SHOW_BITS; i++) { if ((S >> i) & 1) elems.push(i); }
+            for (var i = 0; i < showBits; i++) { if ((S >> i) & 1) elems.push(i); }
             setEl.textContent = 'S = {' + elems.join(', ') + '} (정수: ' + S + ')';
         }
 
-        renderBits(0, -1);
-        renderSet(0);
-        infoEl.innerHTML = '<span style="color:var(--text2);">S = 0 (공집합)에서 시작합니다.</span>';
-
-        var steps = [];
-        var S = 0;
-
-        for (var i = 0; i < ops.length; i++) {
-            var op = ops[i];
-            var prevS = S;
-            var desc = '', hlBit = -1, newS = S, infoText = '';
-
-            if (op.cmd === 'add') {
-                newS = S | (1 << op.x);
-                desc = 'add ' + op.x + ': S |= (1 << ' + op.x + ') → S = ' + newS;
-                hlBit = op.x;
-                infoText = 'add ' + op.x + ': S |= (1 << ' + op.x + ') — ' + op.x + '번 비트를 1로 설정';
-            } else if (op.cmd === 'remove') {
-                newS = S & ~(1 << op.x);
-                desc = 'remove ' + op.x + ': S &= ~(1 << ' + op.x + ') → S = ' + newS;
-                hlBit = op.x;
-                infoText = 'remove ' + op.x + ': S &= ~(1 << ' + op.x + ') — ' + op.x + '번 비트를 0으로';
-            } else if (op.cmd === 'toggle') {
-                newS = S ^ (1 << op.x);
-                desc = 'toggle ' + op.x + ': S ^= (1 << ' + op.x + ') → S = ' + newS;
-                hlBit = op.x;
-                infoText = 'toggle ' + op.x + ': S ^= (1 << ' + op.x + ') — ' + op.x + '번 비트 반전';
-            } else if (op.cmd === 'check') {
-                var result = (S >> op.x) & 1;
-                newS = S;
-                desc = 'check ' + op.x + ': (S >> ' + op.x + ') & 1 = ' + result;
-                hlBit = op.x;
-                infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? '있음' : '없음') + ')';
-            } else if (op.cmd === 'all') {
-                newS = (1 << (SHOW_BITS)) - 1;
-                desc = 'all: S = (1 << ' + SHOW_BITS + ') - 1 → S = ' + newS;
-                infoText = 'all: 모든 비트를 1로 설정 → S = ' + newS;
-            } else if (op.cmd === 'empty') {
-                newS = 0;
-                desc = 'empty: S = 0';
-                infoText = 'empty: 모든 비트를 0으로 → S = 0';
+        function parseOps(str) {
+            var parts = str.split(',');
+            var ops = [];
+            for (var i = 0; i < parts.length; i++) {
+                var tokens = parts[i].trim().split(/\s+/);
+                if (tokens.length === 0 || !tokens[0]) continue;
+                var cmd = tokens[0].toLowerCase();
+                if (cmd === 'add' || cmd === 'remove' || cmd === 'check' || cmd === 'toggle') {
+                    var x = parseInt(tokens[1], 10);
+                    if (!isNaN(x) && x >= 0) ops.push({ cmd: cmd, x: x });
+                } else if (cmd === 'all' || cmd === 'empty') {
+                    ops.push({ cmd: cmd });
+                }
             }
-
-            (function(prevS, newS, desc, hlBit, infoText) {
-                steps.push({
-                    description: desc,
-                    action: function() { renderBits(newS, hlBit); renderSet(newS); infoEl.innerHTML = infoText; },
-                    undo: function() { renderBits(prevS, -1); renderSet(prevS); infoEl.innerHTML = '<span style="color:var(--text2);">S = ' + prevS + '</span>'; }
-                });
-            })(prevS, newS, desc, hlBit, infoText);
-
-            S = newS;
+            return ops;
         }
 
-        self._initStepController(container, steps, suffix);
+        function buildSteps(ops) {
+            // Determine SHOW_BITS based on max referenced bit
+            var maxBit = 7;
+            for (var i = 0; i < ops.length; i++) {
+                if (ops[i].x !== undefined && ops[i].x > maxBit) maxBit = ops[i].x;
+                if (ops[i].cmd === 'all' && maxBit < 7) maxBit = 7;
+            }
+            var showBits = Math.min(maxBit + 1, 21);
+
+            var steps = [];
+            var S = 0;
+
+            for (var i = 0; i < ops.length; i++) {
+                var op = ops[i];
+                var prevS = S;
+                var desc = '', hlBit = -1, newS = S, infoText = '';
+
+                if (op.cmd === 'add') {
+                    newS = S | (1 << op.x);
+                    desc = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    hlBit = op.x;
+                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트를 1로 설정';
+                } else if (op.cmd === 'remove') {
+                    newS = S & ~(1 << op.x);
+                    desc = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    hlBit = op.x;
+                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트를 0으로';
+                } else if (op.cmd === 'toggle') {
+                    newS = S ^ (1 << op.x);
+                    desc = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    hlBit = op.x;
+                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트 반전';
+                } else if (op.cmd === 'check') {
+                    var result = (S >> op.x) & 1;
+                    newS = S;
+                    desc = 'check ' + op.x + ': (S &gt;&gt; ' + op.x + ') & 1 = ' + result;
+                    hlBit = op.x < showBits ? op.x : -1;
+                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? '있음' : '없음') + ')';
+                } else if (op.cmd === 'all') {
+                    newS = (1 << showBits) - 1;
+                    desc = 'all: S = (1 &lt;&lt; ' + showBits + ') - 1 → S = ' + newS;
+                    infoText = 'all: 모든 비트를 1로 설정 → S = ' + newS;
+                } else if (op.cmd === 'empty') {
+                    newS = 0;
+                    desc = 'empty: S = 0';
+                    infoText = 'empty: 모든 비트를 0으로 → S = 0';
+                }
+
+                (function(prevS, newS, desc, hlBit, infoText, showBits) {
+                    steps.push({
+                        description: desc,
+                        action: function() { renderBits(newS, hlBit, showBits); renderSet(newS, showBits); infoEl.innerHTML = infoText; },
+                        undo: function() { renderBits(prevS, -1, showBits); renderSet(prevS, showBits); infoEl.innerHTML = '<span style="color:var(--text2);">S = ' + prevS + '</span>'; }
+                    });
+                })(prevS, newS, desc, hlBit, infoText, showBits);
+
+                S = newS;
+            }
+
+            return { steps: steps, showBits: showBits };
+        }
+
+        function initSim(ops) {
+            var result = buildSteps(ops);
+            renderBits(0, -1, result.showBits);
+            renderSet(0, result.showBits);
+            infoEl.innerHTML = '<span style="color:var(--text2);">S = 0 (공집합)에서 시작합니다.</span>';
+            self._initStepController(container, result.steps, suffix);
+        }
+
+        container.querySelector('#bit-mask-reset').addEventListener('click', function() {
+            self._clearVizState();
+            var raw = container.querySelector('#bit-mask-input').value;
+            var ops = parseOps(raw);
+            if (ops.length === 0) {
+                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">연산을 입력해주세요! (예: add 1, add 3, check 1)</span>';
+                return;
+            }
+            initSim(ops);
+        });
+
+        initSim(parseOps(DEFAULT_OPS));
     },
 
     // ====================================================================
@@ -988,11 +1196,17 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
     // ====================================================================
     _renderVizSubsets(container) {
         var self = this, suffix = '-sub';
-        var nums = [1, 2, 3];
-        var n = nums.length;
+        var DEFAULT_NUMS = '1, 2, 3';
+        var MAX_ELEMENTS = 6;
+
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">비트마스크로 부분집합 열거</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">nums = [' + nums.join(', ') + ']의 모든 부분집합을 비트 마스크 0~' + ((1 << n) - 1) + '로 열거합니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">배열: <input type="text" id="bit-subset-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
+            '<button class="btn btn-primary" id="bit-subset-reset">🔄</button>' +
+            '<span style="font-size:0.8rem;color:var(--text3);">최대 ' + MAX_ELEMENTS + '개 원소</span>' +
+            '</div>' +
+            '<p id="sub-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="sub-mask' + suffix + '" style="display:flex;gap:4px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sub-arr' + suffix + '" style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sub-result' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
@@ -1003,8 +1217,11 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
         var arrEl = container.querySelector('#sub-arr' + suffix);
         var resultEl = container.querySelector('#sub-result' + suffix);
         var infoEl = container.querySelector('#sub-info' + suffix);
+        var descEl = container.querySelector('#sub-desc' + suffix);
 
-        function renderMask(mask) {
+        var collectedSubsets = [];
+
+        function renderMask(mask, n) {
             var html = '';
             for (var i = n - 1; i >= 0; i--) {
                 var on = (mask >> i) & 1;
@@ -1016,7 +1233,7 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             maskEl.innerHTML = html;
         }
 
-        function renderArr(mask) {
+        function renderArr(mask, nums) {
             arrEl.innerHTML = nums.map(function(v, i) {
                 var selected = (mask >> i) & 1;
                 var style = 'width:52px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:700;font-size:1.1rem;transition:all 0.3s;';
@@ -1026,86 +1243,114 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             }).join('');
         }
 
-        var collectedSubsets = [];
         function renderCollected() {
             resultEl.innerHTML = collectedSubsets.map(function(sub) {
                 return '<span style="padding:4px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:0.85rem;">[' + sub.join(', ') + ']</span>';
             }).join('');
         }
 
-        renderMask(0);
-        renderArr(0);
-        infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회하며 부분집합을 생성합니다.</span>';
+        function buildSteps(nums) {
+            var n = nums.length;
+            var steps = [];
 
-        var steps = [];
+            for (var mask = 0; mask < (1 << n); mask++) {
+                var subset = [];
+                for (var j = 0; j < n; j++) { if (mask & (1 << j)) subset.push(nums[j]); }
+                var maskBin = '';
+                for (var b = n - 1; b >= 0; b--) maskBin += ((mask >> b) & 1);
 
-        for (var mask = 0; mask < (1 << n); mask++) {
-            var subset = [];
-            for (var j = 0; j < n; j++) { if (mask & (1 << j)) subset.push(nums[j]); }
-            var maskBin = '';
-            for (var b = n - 1; b >= 0; b--) maskBin += ((mask >> b) & 1);
-
-            (function(mask, subset, maskBin, snapSubsets) {
-                steps.push({
-                    description: 'mask = ' + mask + ' (' + maskBin + ') → 부분집합: [' + subset.join(', ') + ']',
-                    action: function() {
-                        renderMask(mask);
-                        renderArr(mask);
-                        collectedSubsets = snapSubsets.concat([subset]);
-                        renderCollected();
-                        infoEl.innerHTML = 'mask = ' + mask + ' (' + maskBin + ') → <strong>[' + subset.join(', ') + ']</strong>';
-                    },
-                    undo: function() {
-                        collectedSubsets = snapSubsets;
-                        renderCollected();
-                        if (mask > 0) {
-                            renderMask(mask - 1);
-                            renderArr(mask - 1);
-                        } else {
-                            renderMask(0);
-                            renderArr(0);
+                (function(mask, subset, maskBin, snapSubsets, nums, n) {
+                    steps.push({
+                        description: 'mask = ' + mask + ' (' + maskBin + ') → 부분집합: [' + subset.join(', ') + ']',
+                        action: function() {
+                            renderMask(mask, n);
+                            renderArr(mask, nums);
+                            collectedSubsets = snapSubsets.concat([subset]);
+                            renderCollected();
+                            infoEl.innerHTML = 'mask = ' + mask + ' (' + maskBin + ') → <strong>[' + subset.join(', ') + ']</strong>';
+                        },
+                        undo: function() {
+                            collectedSubsets = snapSubsets;
+                            renderCollected();
+                            if (mask > 0) {
+                                renderMask(mask - 1, n);
+                                renderArr(mask - 1, nums);
+                            } else {
+                                renderMask(0, n);
+                                renderArr(0, nums);
+                            }
+                            infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회합니다.</span>';
                         }
-                        infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회합니다.</span>';
+                    });
+                })(mask, subset, maskBin, collectedSubsets.slice(), nums, n);
+                collectedSubsets.push(subset);
+            }
+
+            // Reset collectedSubsets for interactivity
+            collectedSubsets = [];
+
+            var total = (1 << n);
+            steps.push({
+                description: '완료! 총 ' + total + '개의 부분집합을 모두 열거했습니다.',
+                action: function() {
+                    collectedSubsets = [];
+                    for (var m = 0; m < (1 << n); m++) {
+                        var s = [];
+                        for (var j = 0; j < n; j++) { if (m & (1 << j)) s.push(nums[j]); }
+                        collectedSubsets.push(s);
                     }
-                });
-            })(mask, subset, maskBin, collectedSubsets.slice());
-            collectedSubsets.push(subset);
+                    renderCollected();
+                    renderMask((1 << n) - 1, n);
+                    renderArr((1 << n) - 1, nums);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 총 ' + total + '개의 부분집합 열거 완료!</strong>';
+                },
+                undo: function() {
+                    collectedSubsets = [];
+                    for (var m = 0; m < (1 << n); m++) {
+                        var s = [];
+                        for (var j = 0; j < n; j++) { if (m & (1 << j)) s.push(nums[j]); }
+                        collectedSubsets.push(s);
+                    }
+                    renderCollected();
+                    renderMask((1 << n) - 1, n);
+                    renderArr((1 << n) - 1, nums);
+                    infoEl.innerHTML = 'mask = ' + ((1 << n) - 1);
+                }
+            });
+
+            return steps;
         }
 
-        // Reset collectedSubsets for interactivity
-        collectedSubsets = [];
+        function initSim(nums) {
+            var n = nums.length;
+            collectedSubsets = [];
+            descEl.textContent = 'nums = [' + nums.join(', ') + ']의 모든 부분집합을 비트 마스크 0~' + ((1 << n) - 1) + '로 열거합니다.';
+            renderMask(0, n);
+            renderArr(0, nums);
+            resultEl.innerHTML = '';
+            infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회하며 부분집합을 생성합니다.</span>';
+            var steps = buildSteps(nums);
+            self._initStepController(container, steps, suffix);
+        }
 
-        var total = (1 << n);
-        steps.push({
-            description: '완료! 총 ' + total + '개의 부분집합을 모두 열거했습니다.',
-            action: function() {
-                // rebuild all
-                collectedSubsets = [];
-                for (var m = 0; m < (1 << n); m++) {
-                    var s = [];
-                    for (var j = 0; j < n; j++) { if (m & (1 << j)) s.push(nums[j]); }
-                    collectedSubsets.push(s);
-                }
-                renderCollected();
-                renderMask((1 << n) - 1);
-                renderArr((1 << n) - 1);
-                infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 총 ' + total + '개의 부분집합 열거 완료!</strong>';
-            },
-            undo: function() {
-                collectedSubsets = [];
-                for (var m = 0; m < (1 << n); m++) {
-                    var s = [];
-                    for (var j = 0; j < n; j++) { if (m & (1 << j)) s.push(nums[j]); }
-                    collectedSubsets.push(s);
-                }
-                renderCollected();
-                renderMask((1 << n) - 1);
-                renderArr((1 << n) - 1);
-                infoEl.innerHTML = 'mask = ' + ((1 << n) - 1);
+        container.querySelector('#bit-subset-reset').addEventListener('click', function() {
+            self._clearVizState();
+            var raw = container.querySelector('#bit-subset-input').value;
+            var nums = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
+            if (nums.length === 0) {
+                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">숫자를 입력해주세요! (예: 1, 2, 3)</span>';
+                return;
             }
+            if (nums.length > MAX_ELEMENTS) {
+                nums = nums.slice(0, MAX_ELEMENTS);
+                container.querySelector('#bit-subset-input').value = nums.join(', ');
+                infoEl.innerHTML = '<span style="color:var(--yellow);">원소가 ' + MAX_ELEMENTS + '개를 초과하여 앞 ' + MAX_ELEMENTS + '개만 사용합니다.</span>';
+            }
+            initSim(nums);
         });
 
-        self._initStepController(container, steps, suffix);
+        var defaultNums = DEFAULT_NUMS.split(',').map(function(s) { return parseInt(s.trim(), 10); });
+        initSim(defaultNums);
     },
 
     // ===== 문제 목록 =====
@@ -1132,33 +1377,47 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/number-of-1-bits/',
             simIntro: 'n & (n-1) 트릭으로 1 비트를 하나씩 제거하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3>' +
-                '<p>양의 정수 <code>n</code>이 주어집니다. ' +
-                '이 수의 2진수 표현에서 <strong>1인 비트의 개수</strong>(해밍 가중치)를 반환하세요.</p>' +
-                '<div class="problem-io">' +
-                '<div><h4>입력</h4><p>양의 정수 n</p></div>' +
-                '<div><h4>출력</h4><p>2진수에서 1의 개수</p></div></div>' +
-                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
-                '<div><strong>입력</strong><pre>n = 11 (2진수: 1011)</pre></div>' +
-                '<div><strong>출력</strong><pre>3</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>양의 정수 <code>n</code>의 이진 표현에서 1인 비트의 개수(해밍 가중치)를 반환하세요.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>n = 11</pre></div>
+                    <div><strong>출력</strong><pre>3</pre></div>
+                </div><p>11의 이진 표현은 1011이므로 1비트가 3개입니다.</p></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>n = 128</pre></div>
+                    <div><strong>출력</strong><pre>1</pre></div>
+                </div><p>128의 이진 표현은 10000000이므로 1비트가 1개입니다.</p></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>n = 2147483645</pre></div>
+                    <div><strong>출력</strong><pre>30</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul><li>1 &le; n &le; 2<sup>31</sup> - 1</li></ul>
+                <h4>Follow-up</h4>
+                <p>입력이 여러 번 주어진다면, 어떻게 최적화할 수 있을까요?</p>
+            `,
             hints: [
                 {
-                    title: '가장 간단한 방법은?',
-                    content: 'Python에서는 <code>bin(n).count("1")</code>로 한 줄에 풀 수 있습니다! 하지만 비트 연산을 배우기 위해 다른 방법도 알아봅시다.'
+                    title: '처음 떠오르는 방법',
+                    content: '이진수에서 1의 개수를 세야 하니까... 일단 각 비트를 하나씩 확인하면 되지 않을까요?<br><br>맨 오른쪽 비트부터 <code>&amp; 1</code>로 1인지 확인하고, 오른쪽 시프트(<code>&gt;&gt; 1</code>)로 다음 비트를 확인하는 거예요.<br>32비트 정수라면 32번 반복하면 되겠죠!'
                 },
                 {
-                    title: 'n & (n-1) 트릭',
-                    content: '<code>n & (n-1)</code>을 하면 n의 가장 낮은 1 비트가 제거됩니다!<br>예: <code>1100 & 1011 = 1000</code>. 이것을 n이 0이 될 때까지 반복하면 1의 개수를 셀 수 있습니다.'
+                    title: '근데 이러면 아쉬운 점이 있어',
+                    content: '32번 반복이 느린 건 아니지만, 만약 1 비트가 딱 2개뿐인데도 32번 돌아야 해요.<br><br>예를 들어 <code>10000000 00000000 00000000 00000001</code>은 1이 2개뿐인데, 나머지 30개의 0도 다 확인하는 거죠. <strong>1 비트 개수만큼만 반복</strong>할 수는 없을까요?'
                 },
                 {
-                    title: '정답 코드 구조',
-                    content: '<code>count = 0</code> → <code>while n: n &= (n-1); count += 1</code> → count 반환. 매번 가장 낮은 1비트를 하나씩 제거합니다.'
+                    title: '이렇게 하면 어떨까?',
+                    content: '마법 같은 트릭이 있어요: <code>n &amp; (n-1)</code>을 하면 <strong>가장 낮은 1 비트가 딱 하나 사라져요!</strong><br><br>왜 그럴까요? <code>n-1</code>은 가장 낮은 1 비트를 0으로 바꾸고 그 아래를 전부 1로 만들거든요.<br><code>1100 → (n-1) = 1011 → 1100 &amp; 1011 = 1000</code> — 1 비트가 하나 제거됐죠!<br><br>이걸 <strong>n이 0이 될 때까지</strong> 반복하면, 반복 횟수 = 1 비트 개수! O(k)로 끝나요 (k = 1의 개수).'
+                },
+                {
+                    title: 'Python/C++에선 이렇게!',
+                    content: '원리를 이해했다면, 사실 내장 함수도 있어요:<br><br><span class="lang-py">Python: <code>bin(n).count("1")</code> — 이진 문자열로 바꿔서 "1" 개수를 세는 한 줄 풀이!</span><span class="lang-cpp">C++: <code>__builtin_popcount(n)</code> — GCC 내장 함수로 1 비트 개수를 바로 반환!</span><br><br>하지만 면접에서는 <code>n &amp; (n-1)</code> 트릭을 직접 구현하는 걸 기대하니, 둘 다 알아두세요!'
                 }
             ],
             templates: {
                 python: 'class Solution:\n    def hammingWeight(self, n: int) -> int:\n        # 방법 1: n & (n-1) 트릭\n        count = 0\n        while n:\n            n &= (n - 1)  # 가장 낮은 1 비트 제거\n            count += 1\n        return count\n\n    # 방법 2: 간단한 방법\n    # def hammingWeight(self, n: int) -> int:\n    #     return bin(n).count(\'1\')',
-                cpp: 'class Solution {\npublic:\n    int hammingWeight(int n) {\n        int count = 0;\n        while (n) {\n            n &= (n - 1);  // 가장 낮은 1 비트 제거\n            count++;\n        }\n        return count;\n    }\n};',
-                java: 'class Solution {\n    public int hammingWeight(int n) {\n        int count = 0;\n        while (n != 0) {\n            n &= (n - 1);  // 가장 낮은 1 비트 제거\n            count++;\n        }\n        return count;\n    }\n}'
+                cpp: 'class Solution {\npublic:\n    int hammingWeight(int n) {\n        int count = 0;\n        while (n) {\n            n &= (n - 1);  // 가장 낮은 1 비트 제거\n            count++;\n        }\n        return count;\n    }\n};'
             },
             solutions: [{
                 approach: 'n & (n-1) 트릭',
@@ -1167,9 +1426,14 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: '초기화', code: 'count = 0' },
-                        { title: 'n & (n-1) 반복', code: 'while n:\n    n &= (n - 1)  # 가장 낮은 1 비트 제거\n    count += 1' },
-                        { title: '결과 반환', code: 'return count' }
+                        { title: '초기화', desc: '1 비트의 개수를 셀 카운터를 준비합니다.', code: 'count = 0' },
+                        { title: 'n & (n-1) 반복', desc: 'n & (n-1)은 가장 낮은 1 비트를 하나 제거하는 트릭입니다.\n비트가 전부 0이 될 때까지 반복하면 1의 개수를 알 수 있습니다.', code: 'while n:\n    n &= (n - 1)  # 가장 낮은 1 비트 제거\n    count += 1' },
+                        { title: '결과 반환', desc: '제거 횟수 = 1 비트의 개수이므로 그대로 반환합니다.', code: 'return count' }
+                    ],
+                    cpp: [
+                        { title: '초기화', desc: 'int로 카운터 선언. unsigned int로 받으면 음수 처리 불필요.', code: 'int count = 0;' },
+                        { title: 'n & (n-1) 반복', desc: 'n &= (n-1)은 가장 낮은 1 비트를 제거.\n비트가 0이 될 때까지 반복.', code: 'while (n) {\n    n &= (n - 1);  // 가장 낮은 1 비트 제거\n    count++;\n}' },
+                        { title: '결과 반환', desc: '__builtin_popcount(n)으로 한 줄로도 가능하지만,\n트릭의 원리를 이해하는 것이 중요합니다.', code: 'return count;\n// 한 줄 풀이: return __builtin_popcount(n);' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[0].templates; }
@@ -1181,35 +1445,50 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/single-number/',
             simIntro: 'XOR로 배열의 모든 원소를 순회하며 짝 없는 수를 찾는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3>' +
-                '<p>비어 있지 않은 정수 배열 <code>nums</code>가 주어집니다. ' +
-                '모든 원소가 <strong>정확히 2번</strong> 나타나고, <strong>딱 하나만 1번</strong> 나타납니다. ' +
-                '그 하나의 원소를 찾으세요.</p>' +
-                '<p>시간 복잡도 O(n), 공간 복잡도 O(1)로 풀어야 합니다.</p>' +
-                '<div class="problem-io">' +
-                '<div><h4>입력</h4><p>정수 배열 nums (1 &le; len &le; 30,000)</p></div>' +
-                '<div><h4>출력</h4><p>1번만 나타나는 원소</p></div></div>' +
-                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
-                '<div><strong>입력</strong><pre>[2, 2, 1]</pre></div>' +
-                '<div><strong>출력</strong><pre>1</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>비어 있지 않은 정수 배열 <code>nums</code>가 주어집니다. 모든 원소는 두 번씩 나타나고, 하나의 원소만 한 번 나타납니다. 한 번만 나타나는 원소를 찾으세요.</p>
+                <p>반드시 선형 시간복잡도로 구현하고, 추가 메모리 없이 풀어야 합니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [2,2,1]</pre></div>
+                    <div><strong>출력</strong><pre>1</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [4,1,2,1,2]</pre></div>
+                    <div><strong>출력</strong><pre>4</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [1]</pre></div>
+                    <div><strong>출력</strong><pre>1</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 &le; nums.length &le; 3 &times; 10<sup>4</sup></li>
+                    <li>-3 &times; 10<sup>4</sup> &le; nums[i] &le; 3 &times; 10<sup>4</sup></li>
+                    <li>하나의 원소만 한 번 나타남</li>
+                </ul>
+            `,
             hints: [
                 {
-                    title: 'XOR의 성질을 떠올려봅시다!',
-                    content: '<code>a ^ a = 0</code> (같은 수 XOR = 0), <code>a ^ 0 = a</code> (0과 XOR = 자기자신). 이 두 가지 성질이 핵심입니다!'
+                    title: '처음 떠오르는 방법',
+                    content: '모든 원소가 2번씩 나오고 하나만 1번 나온다면... 각 숫자가 몇 번 나왔는지 세면 되지 않을까요?<br><br>딕셔너리(해시맵)로 빈도수를 세고, 1번만 나온 숫자를 찾으면 끝! O(n) 시간에 풀 수 있어요.'
                 },
                 {
-                    title: '전부 XOR하면?',
-                    content: '배열의 모든 원소를 XOR하면, 2번 나오는 수끼리는 상쇄되어 0이 되고,<br>1번만 나오는 수만 남습니다! <code>2^2^1 = 0^1 = 1</code>'
+                    title: '근데 이러면 문제가 있어',
+                    content: '딕셔너리 풀이는 잘 동작하지만, 문제 조건을 다시 보세요: <strong>"추가 메모리 없이 풀어야 합니다"</strong>.<br><br>딕셔너리는 O(n) 공간을 쓰니까 조건에 맞지 않아요. 배열을 정렬해서 인접 비교하는 방법도 O(n log n)이라 아쉽고요. <strong>O(n) 시간 + O(1) 공간</strong>으로 풀 수 있는 방법이 있을까요?'
                 },
                 {
-                    title: '정답 코드',
-                    content: '<code>result = 0; for n in nums: result ^= n; return result</code> — 단 3줄이면 됩니다! O(n) 시간, O(1) 공간.'
+                    title: '이렇게 하면 어떨까?',
+                    content: '비트 연산 XOR(^)의 두 가지 성질을 떠올려 봅시다:<br><br>1. <code>a ^ a = 0</code> — 같은 수끼리 XOR하면 0!<br>2. <code>a ^ 0 = a</code> — 0과 XOR하면 자기 자신!<br><br>그렇다면... 배열의 <strong>모든 원소를 전부 XOR</strong>하면 어떻게 될까요?<br>2번 나오는 수끼리는 상쇄되어 0이 되고, 1번만 나오는 수만 남아요!<br><code>2 ^ 2 ^ 1 = 0 ^ 1 = 1</code> — 추가 메모리 없이 답을 찾았어요!'
+                },
+                {
+                    title: 'Python/C++에선 이렇게!',
+                    content: '<span class="lang-py">Python: <code>functools.reduce(lambda a, b: a ^ b, nums)</code>로 한 줄에 전부 XOR할 수 있어요!<br><code>reduce</code>는 리스트를 하나의 값으로 축약하는 함수예요.</span><span class="lang-cpp">C++: <code>accumulate(nums.begin(), nums.end(), 0, bit_xor&lt;int&gt;())</code>로 한 줄 풀이가 가능해요!<br><code>&lt;numeric&gt;</code>과 <code>&lt;functional&gt;</code> 헤더가 필요합니다.</span>'
                 }
             ],
             templates: {
                 python: 'class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        result = 0\n        for n in nums:\n            result ^= n  # 같은 수끼리 상쇄 → 혼자인 수만 남음\n        return result\n\n    # 한 줄 풀이:\n    # from functools import reduce\n    # def singleNumber(self, nums): return reduce(lambda a,b: a^b, nums)',
-                cpp: 'class Solution {\npublic:\n    int singleNumber(vector<int>& nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // 같은 수끼리 상쇄\n        }\n        return result;\n    }\n};',
-                java: 'class Solution {\n    public int singleNumber(int[] nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // 같은 수끼리 상쇄\n        }\n        return result;\n    }\n}'
+                cpp: 'class Solution {\npublic:\n    int singleNumber(vector<int>& nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // 같은 수끼리 상쇄\n        }\n        return result;\n    }\n};'
             },
             solutions: [{
                 approach: 'XOR 전체 순회',
@@ -1218,9 +1497,14 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: '초기화', code: 'result = 0' },
-                        { title: '전체 XOR', code: 'for n in nums:\n    result ^= n  # 같은 수끼리 상쇄' },
-                        { title: '결과 반환', code: 'return result' }
+                        { title: '초기화', desc: 'result를 0으로 시작합니다.\na ^ 0 = a이므로 0은 XOR의 항등원입니다.', code: 'result = 0' },
+                        { title: '전체 XOR', desc: 'a ^ a = 0이므로 2번 나오는 수는 상쇄됩니다.\n결국 1번만 나오는 수만 남게 됩니다.', code: 'for n in nums:\n    result ^= n  # 같은 수끼리 상쇄' },
+                        { title: '결과 반환', desc: 'O(n) 시간, O(1) 공간으로 유일한 수를 찾았습니다.', code: 'return result' }
+                    ],
+                    cpp: [
+                        { title: '초기화', desc: 'XOR의 항등원 0으로 시작합니다.', code: 'int result = 0;' },
+                        { title: '전체 XOR', desc: 'range-based for로 간결하게.\na ^ a = 0이라 짝수개는 상쇄.', code: 'for (int n : nums) {\n    result ^= n;  // 같은 수끼리 상쇄\n}' },
+                        { title: '결과 반환', desc: '짝이 있는 수는 모두 0으로 상쇄되어 유일한 수만 남습니다.', code: 'return result;' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[1].templates; }
@@ -1234,39 +1518,48 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11723',
             simIntro: '비트마스크로 add, remove, toggle, check, all, empty 연산이 동작하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3>' +
-                '<p>비어있는 공집합 S가 주어졌을 때, 아래 연산을 수행하세요.</p>' +
-                '<ul style="margin:8px 0 8px 20px;">' +
-                '<li><code>add x</code>: S에 x를 추가 (1 &le; x &le; 20)</li>' +
-                '<li><code>remove x</code>: S에서 x를 제거</li>' +
-                '<li><code>check x</code>: S에 x가 있으면 1, 없으면 0 출력</li>' +
-                '<li><code>toggle x</code>: S에 x가 있으면 제거, 없으면 추가</li>' +
-                '<li><code>all</code>: S = {1, 2, ..., 20}</li>' +
-                '<li><code>empty</code>: S = 공집합</li></ul>' +
-                '<div class="problem-io">' +
-                '<div><h4>입력</h4><p>연산의 수 M (1 &le; M &le; 3,000,000)</p></div>' +
-                '<div><h4>출력</h4><p>check 연산의 결과를 한 줄에 하나씩 출력</p></div></div>' +
-                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
-                '<div><strong>입력</strong><pre>26\nadd 1\nadd 2\ncheck 1\ncheck 2\nremove 2\ncheck 1\ncheck 2\ntoggle 3\ncheck 1\ncheck 2\ncheck 3\ncheck 4\nall\ncheck 10\ncheck 20\ntoggle 10\nremove 20\ncheck 10\ncheck 20\nempty\ncheck 1\ntoggle 3\ncheck 3\ncheck 4\nall\ncheck 20</pre></div>' +
-                '<div><strong>출력</strong><pre>1\n1\n1\n0\n1\n0\n1\n0\n1\n1\n0\n0\n0\n1\n0\n1</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>비어있는 공집합 S가 주어졌을 때, 아래 연산을 수행하는 프로그램을 작성하시오.</p>
+                <ul style="margin:8px 0 8px 20px;">
+                    <li><code>add x</code>: S에 x를 추가</li>
+                    <li><code>remove x</code>: S에서 x를 제거</li>
+                    <li><code>check x</code>: S에 x가 있으면 1, 없으면 0 출력</li>
+                    <li><code>toggle x</code>: S에 x가 있으면 제거, 없으면 추가</li>
+                    <li><code>all</code>: S를 {1, 2, ..., 20}으로 변경</li>
+                    <li><code>empty</code>: S를 공집합으로 변경</li>
+                </ul>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>26\nadd 1\nadd 2\ncheck 1\ncheck 2\nremove 2\ncheck 1\ncheck 2\ntoggle 3\ncheck 1\ncheck 2\ncheck 3\ncheck 4\nall\ncheck 10\ncheck 15\nempty\ncheck 1\ntoggle 1\ncheck 1\ntoggle 1\ncheck 1\nall\ncheck 5\ntoggle 5\ncheck 5\ncheck 1</pre></div>
+                    <div><strong>출력</strong><pre>1\n1\n1\n0\n1\n0\n1\n0\n1\n1\n0\n1\n1\n0\n1\n0\n1</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 &le; M &le; 3,000,000</li>
+                    <li>1 &le; x &le; 20</li>
+                </ul>
+            `,
             hints: [
                 {
-                    title: '비트 마스크로 집합을 표현하자!',
-                    content: '정수 하나(S)로 집합을 표현합니다. x가 집합에 있으면 x번째 비트가 1입니다.<br><code>add x</code> → <code>S |= (1 &lt;&lt; x)</code>'
+                    title: '처음 떠오르는 방법',
+                    content: '집합 연산이니까... <span class="lang-py">Python의 <code>set()</code></span><span class="lang-cpp">C++의 <code>set&lt;int&gt;</code></span>을 쓰면 되지 않을까요?<br><br><code>add</code>, <code>remove</code>, <code>check</code> 다 기본 제공되니까 바로 구현할 수 있어요. 원소도 1~20뿐이라 간단해 보여요!'
                 },
                 {
-                    title: '각 연산의 비트 마스크 표현',
-                    content: '<code>add</code>: <code>S |= (1&lt;&lt;x)</code>, <code>remove</code>: <code>S &= ~(1&lt;&lt;x)</code><br><code>check</code>: <code>(S>>x)&1</code>, <code>toggle</code>: <code>S ^= (1&lt;&lt;x)</code><br><code>all</code>: <code>S = (1&lt;&lt;21)-1</code>, <code>empty</code>: <code>S = 0</code>'
+                    title: '근데 이러면 문제가 있어',
+                    content: 'M이 최대 <strong>300만</strong>이에요! set 자료구조는 각 연산이 O(log n)이라 느릴 수 있고, 메모리 오버헤드도 있어요.<br><br>그런데 원소 범위가 1~20뿐이라는 점을 주목하세요. 겨우 20개짜리 집합인데 set 같은 무거운 자료구조를 쓸 필요가 있을까요? <strong>정수 하나</strong>로 집합을 표현할 수 있다면 모든 연산이 O(1)이 될 텐데...'
                 },
                 {
-                    title: '시간 초과 주의!',
-                    content: 'M이 최대 300만이므로 <strong>sys.stdin.readline</strong>을 사용해야 합니다.<br>출력도 리스트에 모아서 한 번에 출력하면 더 빠릅니다.'
+                    title: '이렇게 하면 어떨까?',
+                    content: '정수 S의 비트로 집합을 표현해요! x번째 비트가 1이면 x가 집합에 있는 거예요.<br><br>각 연산이 비트 연산 한 줄로 바뀝니다:<br>• <code>add x</code> → <code>S |= (1 &lt;&lt; x)</code> — x번째 비트를 1로 켜기<br>• <code>remove x</code> → <code>S &amp;= ~(1 &lt;&lt; x)</code> — x번째 비트를 0으로 끄기<br>• <code>check x</code> → <code>(S &gt;&gt; x) &amp; 1</code> — x번째 비트가 1인지 확인<br>• <code>toggle x</code> → <code>S ^= (1 &lt;&lt; x)</code> — x번째 비트 반전<br>• <code>all</code> → <code>S = (1 &lt;&lt; 21) - 1</code> — 1~20번 비트 전부 1<br>• <code>empty</code> → <code>S = 0</code> — 전부 0으로 초기화'
+                },
+                {
+                    title: '시간 초과를 피하려면!',
+                    content: 'M이 300만이라 입출력 속도가 중요해요!<br><br><span class="lang-py">Python: <code>sys.stdin.readline</code>을 반드시 사용하세요. 기본 <code>input()</code>은 너무 느려요!<br>출력도 리스트에 모았다가 <code>"\\n".join(out)</code>으로 한 번에 출력하면 훨씬 빨라요.</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 입출력 속도를 높이세요!</span>'
                 }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []\n\nfor _ in range(M):\n    line = input().split()\n    cmd = line[0]\n\n    if cmd == \'add\':\n        x = int(line[1])\n        S |= (1 << x)\n    elif cmd == \'remove\':\n        x = int(line[1])\n        S &= ~(1 << x)\n    elif cmd == \'check\':\n        x = int(line[1])\n        out.append(\'1\' if (S >> x) & 1 else \'0\')\n    elif cmd == \'toggle\':\n        x = int(line[1])\n        S ^= (1 << x)\n    elif cmd == \'all\':\n        S = (1 << 21) - 1\n    elif cmd == \'empty\':\n        S = 0\n\nprint(\'\\n\'.join(out))',
-                cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int M;\n    cin >> M;\n    int S = 0;\n\n    while (M--) {\n        string cmd;\n        cin >> cmd;\n\n        if (cmd == "add") {\n            int x; cin >> x;\n            S |= (1 << x);\n        } else if (cmd == "remove") {\n            int x; cin >> x;\n            S &= ~(1 << x);\n        } else if (cmd == "check") {\n            int x; cin >> x;\n            cout << ((S >> x) & 1) << \'\\n\';\n        } else if (cmd == "toggle") {\n            int x; cin >> x;\n            S ^= (1 << x);\n        } else if (cmd == "all") {\n            S = (1 << 21) - 1;\n        } else { // empty\n            S = 0;\n        }\n    }\n}',
-                java: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder sb = new StringBuilder();\n        int M = Integer.parseInt(br.readLine().trim());\n        int S = 0;\n\n        while (M-- > 0) {\n            String[] line = br.readLine().split(" ");\n            String cmd = line[0];\n\n            if (cmd.equals("add")) {\n                int x = Integer.parseInt(line[1]);\n                S |= (1 << x);\n            } else if (cmd.equals("remove")) {\n                int x = Integer.parseInt(line[1]);\n                S &= ~(1 << x);\n            } else if (cmd.equals("check")) {\n                int x = Integer.parseInt(line[1]);\n                sb.append((S >> x) & 1).append(\'\\n\');\n            } else if (cmd.equals("toggle")) {\n                int x = Integer.parseInt(line[1]);\n                S ^= (1 << x);\n            } else if (cmd.equals("all")) {\n                S = (1 << 21) - 1;\n            } else { // empty\n                S = 0;\n            }\n        }\n        System.out.print(sb);\n    }\n}'
+                cpp: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int M;\n    cin >> M;\n    int S = 0;\n\n    while (M--) {\n        string cmd;\n        cin >> cmd;\n\n        if (cmd == "add") {\n            int x; cin >> x;\n            S |= (1 << x);\n        } else if (cmd == "remove") {\n            int x; cin >> x;\n            S &= ~(1 << x);\n        } else if (cmd == "check") {\n            int x; cin >> x;\n            cout << ((S >> x) & 1) << \'\\n\';\n        } else if (cmd == "toggle") {\n            int x; cin >> x;\n            S ^= (1 << x);\n        } else if (cmd == "all") {\n            S = (1 << 21) - 1;\n        } else { // empty\n            S = 0;\n        }\n    }\n}'
             },
             solutions: [{
                 approach: '비트마스크 집합 연산',
@@ -1275,9 +1568,14 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기화', code: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []' },
-                        { title: '연산 처리', code: 'for _ in range(M):\n    line = input().split()\n    cmd = line[0]\n    if cmd == \'add\':     S |= (1 << int(line[1]))\n    elif cmd == \'remove\': S &= ~(1 << int(line[1]))\n    elif cmd == \'check\':  out.append(str((S >> int(line[1])) & 1))\n    elif cmd == \'toggle\': S ^= (1 << int(line[1]))\n    elif cmd == \'all\':    S = (1 << 21) - 1\n    elif cmd == \'empty\':  S = 0' },
-                        { title: '출력', code: 'print(\'\\n\'.join(out))' }
+                        { title: '입력 및 초기화', desc: 'M이 최대 300만이므로 sys.stdin.readline 필수입니다.\n집합 S를 정수 0으로 시작하여 비트마스크로 관리합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []' },
+                        { title: '연산 처리', desc: '각 연산을 비트 연산 한 줄로 처리합니다.\nOR(추가), AND+NOT(제거), XOR(토글), 시프트(체크).', code: 'for _ in range(M):\n    line = input().split()\n    cmd = line[0]\n    if cmd == \'add\':     S |= (1 << int(line[1]))\n    elif cmd == \'remove\': S &= ~(1 << int(line[1]))\n    elif cmd == \'check\':  out.append(str((S >> int(line[1])) & 1))\n    elif cmd == \'toggle\': S ^= (1 << int(line[1]))\n    elif cmd == \'all\':    S = (1 << 21) - 1\n    elif cmd == \'empty\':  S = 0' },
+                        { title: '출력', desc: '리스트에 모아서 한 번에 출력하면 I/O 횟수가 줄어 빠릅니다.', code: 'print(\'\\n\'.join(out))' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 초기화', desc: 'ios::sync_with_stdio(false)로 입출력 속도 향상.\nM이 300만이라 빠른 입출력 필수!', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int M, S = 0;\n    cin >> M;' },
+                        { title: '연산 처리', desc: '비트 연산은 Python과 완전히 동일!', code: '    while (M--) {\n        string cmd; cin >> cmd;\n        if (cmd == "add")    { int x; cin >> x; S |= (1 << x); }\n        else if (cmd == "remove") { int x; cin >> x; S &= ~(1 << x); }\n        else if (cmd == "check")  { int x; cin >> x; cout << ((S >> x) & 1) << \'\\n\'; }\n        else if (cmd == "toggle") { int x; cin >> x; S ^= (1 << x); }\n        else if (cmd == "all")    S = (1 << 21) - 1;\n        else S = 0;  // empty\n    }' },
+                        { title: '출력', desc: 'C++은 check마다 바로 출력하므로 별도 출력 단계 없이 종료합니다.', code: '    return 0;\n}' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[2].templates; }
@@ -1289,34 +1587,45 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/subsets/',
             simIntro: '비트 마스크 0부터 2^n-1까지 순회하며 모든 부분집합을 열거하는 과정을 관찰하세요.',
-            descriptionHTML: '<h3>문제</h3>' +
-                '<p>중복이 없는 정수 배열 <code>nums</code>가 주어집니다. ' +
-                '모든 가능한 <strong>부분집합(power set)</strong>을 반환하세요.</p>' +
-                '<p>결과에 중복된 부분집합이 없어야 합니다.</p>' +
-                '<div class="problem-io">' +
-                '<div><h4>입력</h4><p>정수 배열 nums (1 &le; len &le; 10)</p></div>' +
-                '<div><h4>출력</h4><p>모든 부분집합의 리스트</p></div></div>' +
-                '<div class="problem-example"><h4>예제</h4><div class="example-grid">' +
-                '<div><strong>입력</strong><pre>[1, 2, 3]</pre></div>' +
-                '<div><strong>출력</strong><pre>[[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]</pre></div></div></div>',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>정수 배열 <code>nums</code>가 주어집니다. 이 배열에는 중복 원소가 없습니다. 모든 부분집합(멱집합)을 반환하세요. 결과에 중복 부분집합이 포함되면 안 됩니다. 부분집합은 어떤 순서로 반환해도 됩니다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [1,2,3]</pre></div>
+                    <div><strong>출력</strong><pre>[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [0]</pre></div>
+                    <div><strong>출력</strong><pre>[[],[0]]</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 &le; nums.length &le; 10</li>
+                    <li>-10 &le; nums[i] &le; 10</li>
+                    <li>모든 원소는 고유</li>
+                </ul>
+            `,
             hints: [
                 {
-                    title: '부분집합의 개수는?',
-                    content: '원소가 n개이면 부분집합은 <strong>2<sup>n</sup></strong>개입니다! 각 원소를 "포함(1)" 또는 "미포함(0)"으로 결정하면 됩니다. 이것은 비트 마스크와 완벽하게 대응됩니다.'
+                    title: '처음 떠오르는 방법',
+                    content: '모든 부분집합을 만들어야 하니까... 백트래킹(재귀)으로 풀 수 있지 않을까요?<br><br>각 원소를 "포함할지 / 안 할지" 결정하면서 재귀적으로 탐색하면 모든 조합을 만들 수 있어요. 실제로 이 방법은 잘 동작합니다!'
                 },
                 {
-                    title: '비트 마스크로 부분집합 생성',
-                    content: '0부터 2<sup>n</sup>-1까지의 모든 정수를 순회합니다.<br>각 정수의 j번째 비트가 1이면 nums[j]를 포함합니다.<br>예: 마스크 <code>101</code> → nums[0]과 nums[2]를 선택!'
+                    title: '근데 더 간단한 방법이 없을까?',
+                    content: '백트래킹도 좋지만, 재귀 호출 구조가 복잡해질 수 있어요.<br><br>잠깐, 각 원소는 "포함(1)" 또는 "미포함(0)" 두 가지 선택뿐이잖아요? 원소가 3개면 선택지는 <code>000, 001, 010, 011, 100, 101, 110, 111</code>... 이거 <strong>이진수 0부터 7</strong>이랑 똑같지 않나요?<br><br>원소가 n개면 부분집합은 2<sup>n</sup>개 — 이건 <strong>n비트 이진수의 모든 조합</strong>과 정확히 대응돼요!'
                 },
                 {
-                    title: '정답 코드 구조',
-                    content: '<code>for mask in range(1 &lt;&lt; n):</code> → 내부에서 <code>for j in range(n): if mask & (1 &lt;&lt; j):</code>로 선택된 원소를 모읍니다.'
+                    title: '이렇게 하면 어떨까?',
+                    content: '0부터 2<sup>n</sup>-1까지의 정수를 "비트 마스크"로 사용해요!<br><br>각 정수의 j번째 비트가 1이면 nums[j]를 포함하는 거예요.<br>예: <code>[1,2,3]</code>에서 마스크 <code>101</code>(=5) → 0번째와 2번째 비트가 1 → <code>[1, 3]</code> 선택!<br><br>이렇게 하면 재귀 없이 <strong>이중 for문</strong>만으로 모든 부분집합을 만들 수 있어요:<br>바깥 루프: mask를 0~2<sup>n</sup>-1까지 순회<br>안쪽 루프: 각 비트가 1인지 확인 → <code>mask &amp; (1 &lt;&lt; j)</code>'
+                },
+                {
+                    title: 'Python/C++에선 이렇게!',
+                    content: '<span class="lang-py">Python: <code>for mask in range(1 &lt;&lt; n)</code>으로 모든 마스크를 순회하고,<br><code>if mask &amp; (1 &lt;&lt; j)</code>로 j번째 원소 포함 여부를 확인해요.<br>리스트 컴프리헨션으로도 가능: <code>[nums[j] for j in range(n) if mask &amp; (1 &lt;&lt; j)]</code></span><span class="lang-cpp">C++: <code>for (int mask = 0; mask &lt; (1 &lt;&lt; n); mask++)</code>로 순회하고,<br><code>if (mask &amp; (1 &lt;&lt; j))</code>로 선택 여부를 판단해요.<br>결과를 <code>vector&lt;vector&lt;int&gt;&gt;</code>에 담으면 됩니다.</span>'
                 }
             ],
             templates: {
                 python: 'class Solution:\n    def subsets(self, nums: list[int]) -> list[list[int]]:\n        n = len(nums)\n        result = []\n\n        for mask in range(1 << n):  # 0 ~ 2^n - 1\n            subset = []\n            for j in range(n):\n                if mask & (1 << j):  # j번째 비트가 1이면 선택\n                    subset.append(nums[j])\n            result.append(subset)\n\n        return result\n\n    # 백트래킹 풀이 (비교용):\n    # def subsets(self, nums):\n    #     res = []\n    #     def bt(start, curr):\n    #         res.append(curr[:])\n    #         for i in range(start, len(nums)):\n    #             curr.append(nums[i])\n    #             bt(i + 1, curr)\n    #             curr.pop()\n    #     bt(0, [])\n    #     return res',
-                cpp: 'class Solution {\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        int n = nums.size();\n        vector<vector<int>> result;\n\n        for (int mask = 0; mask < (1 << n); mask++) {\n            vector<int> subset;\n            for (int j = 0; j < n; j++) {\n                if (mask & (1 << j)) {\n                    subset.push_back(nums[j]);\n                }\n            }\n            result.push_back(subset);\n        }\n\n        return result;\n    }\n};',
-                java: 'class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        int n = nums.length;\n        List<List<Integer>> result = new ArrayList<>();\n\n        for (int mask = 0; mask < (1 << n); mask++) {\n            List<Integer> subset = new ArrayList<>();\n            for (int j = 0; j < n; j++) {\n                if ((mask & (1 << j)) != 0) {\n                    subset.add(nums[j]);\n                }\n            }\n            result.add(subset);\n        }\n\n        return result;\n    }\n}'
+                cpp: 'class Solution {\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        int n = nums.size();\n        vector<vector<int>> result;\n\n        for (int mask = 0; mask < (1 << n); mask++) {\n            vector<int> subset;\n            for (int j = 0; j < n; j++) {\n                if (mask & (1 << j)) {\n                    subset.push_back(nums[j]);\n                }\n            }\n            result.push_back(subset);\n        }\n\n        return result;\n    }\n};'
             },
             solutions: [{
                 approach: '비트마스크 부분집합 열거',
@@ -1325,9 +1634,14 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
                 spaceComplexity: 'O(n * 2^n)',
                 codeSteps: {
                     python: [
-                        { title: '초기화', code: 'n = len(nums)\nresult = []' },
-                        { title: '마스크 순회', code: 'for mask in range(1 << n):  # 0 ~ 2^n - 1\n    subset = []\n    for j in range(n):\n        if mask & (1 << j):  # j번째 비트가 1이면 선택\n            subset.append(nums[j])\n    result.append(subset)' },
-                        { title: '결과 반환', code: 'return result' }
+                        { title: '초기화', desc: '원소 n개 → 부분집합 2^n개.\n0부터 2^n-1까지의 비트 마스크가 각 부분집합에 대응합니다.', code: 'n = len(nums)\nresult = []' },
+                        { title: '마스크 순회', desc: '각 마스크에서 j번째 비트가 1이면 nums[j]를 포함합니다.\n예: 마스크 101 → nums[0]과 nums[2] 선택.', code: 'for mask in range(1 << n):  # 0 ~ 2^n - 1\n    subset = []\n    for j in range(n):\n        if mask & (1 << j):  # j번째 비트가 1이면 선택\n            subset.append(nums[j])\n    result.append(subset)' },
+                        { title: '결과 반환', desc: '2^n개의 부분집합이 모두 담긴 리스트를 반환합니다.', code: 'return result' }
+                    ],
+                    cpp: [
+                        { title: '초기화', desc: 'nums.size()로 원소 수를 구하고 결과 벡터를 준비합니다.', code: 'int n = nums.size();\nvector<vector<int>> result;' },
+                        { title: '마스크 순회', desc: '0~2^n-1까지 모든 비트 조합을 순회.\nj번째 비트가 1이면 nums[j] 포함.', code: 'for (int mask = 0; mask < (1 << n); mask++) {\n    vector<int> subset;\n    for (int j = 0; j < n; j++) {\n        if (mask & (1 << j))  // j번째 비트가 1이면 선택\n            subset.push_back(nums[j]);\n    }\n    result.push_back(subset);\n}' },
+                        { title: '결과 반환', desc: '모든 비트 조합을 순회했으므로 2^n개의 부분집합이 완성됩니다.', code: 'return result;' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[3].templates; }

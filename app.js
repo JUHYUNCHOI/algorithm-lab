@@ -1,5 +1,24 @@
 // ===== Algorithm Lab - Main App Engine =====
 
+// ===== 전역 언어 설정 (Python / C++) =====
+window._algoLang = localStorage.getItem('algo-lang') || 'python';
+document.body.setAttribute('data-lang', window._algoLang);
+window._setAlgoLang = function(lang) {
+    window._algoLang = lang;
+    localStorage.setItem('algo-lang', lang);
+    document.body.setAttribute('data-lang', lang);
+    // 언어 토글 UI 동기화
+    document.querySelectorAll('.lang-toggle-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    // 코드 탭 lang-select 동기화
+    var sel = document.querySelector('.lang-select');
+    if (sel && sel.value !== lang) {
+        sel.value = lang;
+        sel.dispatchEvent(new Event('change'));
+    }
+};
+
 (function() {
     const sidebarNav = document.getElementById('sidebar-nav');
     const tabNav = document.getElementById('tab-nav');
@@ -336,6 +355,25 @@
         });
 
         bar.appendChild(navRow);
+
+        // 언어 토글 (문제 탭에서만 표시)
+        if (currentProblemId) {
+            var langToggle = document.createElement('div');
+            langToggle.className = 'lang-toggle';
+            var curLang = window._algoLang || 'python';
+            langToggle.innerHTML =
+                '<button class="lang-toggle-btn' + (curLang === 'python' ? ' active' : '') + '" data-lang="python">🐍 Python</button>' +
+                '<button class="lang-toggle-btn' + (curLang === 'cpp' ? ' active' : '') + '" data-lang="cpp">⚡ C++</button>';
+            langToggle.querySelectorAll('.lang-toggle-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    window._setAlgoLang(btn.dataset.lang);
+                    // 현재 탭 내용 재렌더링
+                    renderContent();
+                });
+            });
+            bar.appendChild(langToggle);
+        }
+
         tabBarElement = bar;
     }
 
@@ -829,7 +867,7 @@
         el.innerHTML = `
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap;">
                 <select class="lang-select" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-family:inherit;font-size:0.88rem;">
-                    ${langs.map(l => `<option value="${l}">${{python:'Python',cpp:'C++',java:'Java'}[l] || l}</option>`).join('')}
+                    ${langs.map(l => `<option value="${l}">${{python:'Python',cpp:'C++'}[l] || l}</option>`).join('')}
                 </select>
                 <a href="${prob.link}" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">
                     ${isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗'}
@@ -845,8 +883,14 @@
             codeEl.removeAttribute('data-highlighted');
             if (window.hljs) hljs.highlightElement(codeEl);
         }
-        select.addEventListener('change', () => showCode(select.value));
-        showCode(langs[0] || 'python');
+        select.addEventListener('change', () => {
+            if (window._setAlgoLang) window._setAlgoLang(select.value);
+            showCode(select.value);
+        });
+        // 전역 언어 설정 읽어서 기본값 적용
+        const initLang = (window._algoLang && langs.indexOf(window._algoLang) !== -1) ? window._algoLang : (langs[0] || 'python');
+        select.value = initLang;
+        showCode(initLang);
     }
 
     // ===== 초기화 =====
@@ -862,4 +906,82 @@
             selectTopic(firstTopicId);
         }
     }
+
+    // ===== 설명 영역 타자 효과 =====
+    // viz-step-desc / code-step-desc 텍스트가 바뀌면 타자치듯 한 글자씩 표시
+    (function initDescTypewriter() {
+        var _anims = new Map();                // element → { timer, fullText }
+
+        function stop(el) {
+            var a = _anims.get(el);
+            if (a && a.timer) clearInterval(a.timer);
+            // fullText는 유지 — observer가 "완료된 텍스트"를 외부 변경으로 오인하지 않도록
+        }
+
+        // 우리가 만든 mutation인지 판별
+        function isOurChange(el) {
+            var a = _anims.get(el);
+            if (!a) return false;
+            var cur = el.textContent;
+            // 현재 텍스트가 fullText 자체이거나 그 prefix면 → 우리 타자
+            return a.fullText.startsWith(cur) || cur === '';
+        }
+
+        function type(el, text) {
+            var a = _anims.get(el);
+            if (a && a.timer) clearInterval(a.timer);
+            if (!text || text.length < 2) return;
+
+            var chars = Array.from(text);
+            var len = chars.length;
+            var step = Math.max(1, Math.ceil(len / 35));
+            var i = 0;
+
+            el.textContent = '';
+            _anims.set(el, { timer: null, fullText: text });
+
+            var timer = setInterval(function() {
+                if (!el.isConnected) { clearInterval(timer); _anims.delete(el); return; }
+                i += step;
+                if (i >= len) {
+                    el.textContent = text;
+                    clearInterval(timer);
+                    // timer만 해제, fullText는 _anims에 유지 (재시작 방지)
+                    _anims.set(el, { timer: null, fullText: text });
+                } else {
+                    el.textContent = chars.slice(0, i).join('');
+                }
+            }, 18);
+
+            _anims.get(el).timer = timer;
+        }
+
+        new MutationObserver(function(muts) {
+            var vizEls = new Map();            // viz element → text
+            var codeEls = new Map();           // body element → text
+
+            for (var j = 0; j < muts.length; j++) {
+                var t = muts[j].target;
+                var node = t.nodeType === 3 ? t.parentElement : t;
+                if (!node || !node.closest) continue;
+
+                var viz = node.closest('.viz-step-desc');
+                if (viz && !vizEls.has(viz)) vizEls.set(viz, viz.textContent);
+
+                var code = node.closest('.code-step-desc');
+                if (code && !codeEls.has(code)) {
+                    var body = code.querySelector('.step-desc-body');
+                    if (body) codeEls.set(body, body.textContent);
+                }
+            }
+
+            vizEls.forEach(function(text, el) {
+                if (!isOurChange(el)) type(el, text);
+            });
+            codeEls.forEach(function(text, el) {
+                if (!isOurChange(el)) type(el, text);
+            });
+        }).observe(document.body, { childList: true, characterData: true, subtree: true });
+    })();
+
 })();

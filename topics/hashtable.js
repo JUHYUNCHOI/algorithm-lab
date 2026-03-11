@@ -133,7 +133,7 @@ const hashTableTopic = {
         wrapper.innerHTML =
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">' +
             '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
-            '<option value="python">Python</option><option value="cpp">C++</option><option value="java">Java</option></select>' +
+            '<option value="python">Python</option><option value="cpp">C++</option></select>' +
             '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">' +
             (isLC ? 'LeetCode에서 풀기 ↗' : 'BOJ에서 풀기 ↗') + '</a></div>' +
             '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
@@ -167,7 +167,8 @@ const hashTableTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">key→val</text></svg></div>
                         <h3>키-값 쌍</h3>
-                        <p>키(key)로 값(value)을 저장하고 즉시 꺼냅니다. Python의 <code>dict</code>, Java의 <code>HashMap</code>.</p>
+                        <p>키(key)로 값(value)을 저장하고 즉시 꺼냅니다. <span class="lang-py">Python의 <code>dict</code></span><span class="lang-cpp">C++의 <code>unordered_map</code></span>.</p>
+                        <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#dict" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: dict ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: unordered_map ↗</a></span>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--green)">O(1)</text></svg></div>
@@ -182,10 +183,10 @@ const hashTableTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">set{}</text></svg></div>
                         <h3>집합 (Set)</h3>
-                        <p>값만 저장하고 <strong>중복을 허용하지 않습니다</strong>. <code>in</code> 연산이 O(1)!</p>
+                        <p>값만 저장하고 <strong>중복을 허용하지 않습니다</strong>. <span class="lang-py"><code>in</code> 연산이 O(1)!</span><span class="lang-cpp"><code>count()</code>/<code>find()</code> 연산이 O(1)!</span></p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 해시 테이블 기본 사용
 d = {}
 d["apple"] = 3       # 삽입: O(1)
@@ -197,7 +198,28 @@ print("apple" in d)   # 존재 확인: O(1) → True
 s = set([1, 2, 2, 3, 3, 3])
 print(s)              # {1, 2, 3}
 print(2 in s)         # O(1) → True</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;unordered_map&gt;
+#include &lt;unordered_set&gt;
+using namespace std;
+
+int main() {
+    // 해시 테이블 기본 사용
+    unordered_map&lt;string, int&gt; d;
+    d["apple"] = 3;        // 삽입: O(1)
+    d["banana"] = 5;
+    cout &lt;&lt; d["apple"] &lt;&lt; endl;         // 조회: O(1) → 3
+    cout &lt;&lt; (d.count("apple") ? "true" : "false") &lt;&lt; endl;  // 존재 확인: O(1)
+
+    // 집합 (Set) — 중복 제거, 빠른 존재 확인
+    unordered_set&lt;int&gt; s = {1, 2, 2, 3, 3, 3};
+    // s에는 {1, 2, 3}만 저장됨
+    cout &lt;&lt; (s.count(2) ? "true" : "false") &lt;&lt; endl;  // O(1)
+    return 0;
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">배열에서 원소가 있는지 확인하면 O(n)인데, 집합(set)에서는 O(1)인 이유는?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
@@ -228,7 +250,7 @@ print(2 in s)         # O(1) → True</code></pre>
                         <p>테이블 크기로 나머지 연산을 합니다.<br><code>530 % 10 = 0</code> → <strong>0번 칸!</strong></p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 해시 함수의 원리 (간단 버전)
 def simple_hash(key, table_size):
     total = 0
@@ -240,7 +262,29 @@ def simple_hash(key, table_size):
 print(simple_hash("apple", 10))   # 530 % 10 = 0 → 0번 칸
 print(simple_hash("banana", 10))  # 609 % 10 = 9 → 9번 칸
 print(simple_hash("grape", 10))   # 527 % 10 = 7 → 7번 칸</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// 해시 함수의 원리 (간단 버전)
+int simple_hash(const string&amp; key, int table_size) {
+    int total = 0;
+    for (char ch : key) {
+        total += (int)ch;      // 글자 → 숫자 (쪼개기 + 섞기)
+    }
+    return total % table_size;  // 테이블 크기에 맞추기
+}
+
+int main() {
+    // 테이블 크기가 10일 때
+    cout &lt;&lt; simple_hash("apple", 10) &lt;&lt; endl;   // 530 % 10 = 0 → 0번 칸
+    cout &lt;&lt; simple_hash("banana", 10) &lt;&lt; endl;  // 609 % 10 = 9 → 9번 칸
+    cout &lt;&lt; simple_hash("grape", 10) &lt;&lt; endl;   // 527 % 10 = 7 → 7번 칸
+    return 0;
+}</code></pre>
+                </div></span>
                 <div class="analogy-box" style="border-left-color: var(--green);">
                     <strong>왜 빠를까?</strong> 배열에서 <code>"apple"</code>을 찾으려면 처음부터 하나씩 비교해야 합니다 (O(n)).
                     하지만 해시 테이블은 <code>hash("apple") = 0</code>을 계산해서 <strong>0번 칸을 바로 열어봅니다</strong> (O(1)).
@@ -249,7 +293,7 @@ print(simple_hash("grape", 10))   # 527 % 10 = 7 → 7번 칸</code></pre>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">테이블이 10칸인데 데이터가 100개면 어떻게 될까요?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
-                    <div class="think-box-answer">한 칸에 평균 10개씩 들어가서 성능이 나빠집니다! 그래서 실제로는 <strong>데이터 수보다 테이블을 충분히 크게</strong> 만들고, 데이터가 많아지면 테이블을 자동으로 늘립니다 (리사이징). Python의 dict가 자동으로 이 작업을 해줍니다.</div>
+                    <div class="think-box-answer">한 칸에 평균 10개씩 들어가서 성능이 나빠집니다! 그래서 실제로는 <strong>데이터 수보다 테이블을 충분히 크게</strong> 만들고, 데이터가 많아지면 테이블을 자동으로 늘립니다 (리사이징). <span class="lang-py">Python의 <code>dict</code>가 자동으로 이 작업을 해줍니다.</span><span class="lang-cpp">C++의 <code>unordered_map</code>이 자동으로 이 작업(rehash)을 해줍니다.</span></div>
                 </div>
             </div>
 
@@ -278,7 +322,10 @@ print(simple_hash("grape", 10))   # 527 % 10 = 7 → 7번 칸</code></pre>
                         <p>값→인덱스, 문자→빈도 등 두 정보를 연결합니다.</p>
                     </div>
                 </div>
-                <div class="code-block">
+                <div style="margin-bottom:0.5rem;">
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.Counter" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: Counter ↗</a></span>
+                </div>
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 패턴 1: 빈도수 세기
 from collections import Counter
 words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
@@ -305,7 +352,46 @@ def longest_unique(s):
         seen[c] = i
         max_len = max(max_len, i - start + 1)
     return max_len</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+// 패턴 1: 빈도수 세기 — unordered_map으로 직접 카운팅
+vector&lt;string&gt; words = {"apple", "banana", "apple", "cherry", "banana", "apple"};
+unordered_map&lt;string, int&gt; freq;
+for (auto&amp; w : words) freq[w]++;
+// freq["apple"] = 3, freq["banana"] = 2, freq["cherry"] = 1
+
+// 패턴 2: Two Sum을 해시맵으로 O(n)에 풀기
+vector&lt;int&gt; two_sum(vector&lt;int&gt;&amp; nums, int target) {
+    unordered_map&lt;int, int&gt; seen;
+    for (int i = 0; i &lt; nums.size(); i++) {
+        int comp = target - nums[i];
+        if (seen.count(comp))      // O(1) 존재 확인!
+            return {seen[comp], i};
+        seen[nums[i]] = i;         // 값 → 인덱스 매핑
+    }
+    return {};
+}
+
+// 패턴 3: 중복 없는 가장 긴 부분 문자열
+int longest_unique(const string&amp; s) {
+    unordered_map&lt;char, int&gt; seen;
+    int start = 0, max_len = 0;
+    for (int i = 0; i &lt; s.size(); i++) {
+        if (seen.count(s[i]) &amp;&amp; seen[s[i]] &gt;= start)
+            start = seen[s[i]] + 1;
+        seen[s[i]] = i;
+        max_len = max(max_len, i - start + 1);
+    }
+    return max_len;
+}</code></pre>
+                </div></span>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Two Sum을 이중 for문(O(n²))이 아닌 해시맵(O(n))으로 풀 수 있는 이유는?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
@@ -326,7 +412,7 @@ def longest_unique(s):
                         <p>같은 칸에 <strong>리스트로 연결</strong>합니다.<br>
                         <code>[0] → apple → melon</code><br>
                         <code>[7] → grape</code><br>
-                        Java의 HashMap이 이 방식입니다.</p>
+                        실제 해시테이블 구현에서 가장 많이 사용되는 방식입니다.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">↓↓</text></svg></div>
@@ -334,10 +420,10 @@ def longest_unique(s):
                         <p>칸이 차있으면 <strong>다음 빈 칸</strong>을 찾습니다.<br>
                         <code>[0] apple</code> ← 먼저 옴<br>
                         <code>[1] melon</code> ← 0번 찼으니 1번에!<br>
-                        Python의 dict가 이 방식입니다.</p>
+                        <span class="lang-py">Python의 <code>dict</code>가 이 방식입니다.</span><span class="lang-cpp">C++의 <code>unordered_map</code>도 이 방식(오픈 어드레싱 변형)을 사용합니다.</span></p>
                     </div>
                 </div>
-                <div class="code-block">
+                <span class="lang-py"><div class="code-block">
                     <pre><code class="language-python"># 체이닝 방식 — 직접 구현해보기
 class HashTable:
     def __init__(self, size=10):
@@ -361,7 +447,45 @@ class HashTable:
             if pair[0] == key:
                 return pair[1]
         return None</code></pre>
-                </div>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;list&gt;
+using namespace std;
+
+// 체이닝 방식 — 직접 구현해보기
+struct HashTable {
+    int size;
+    vector&lt;list&lt;pair&lt;string, int&gt;&gt;&gt; table;  // 각 칸이 연결 리스트
+
+    HashTable(int sz = 10) : size(sz), table(sz) {}
+
+    int _hash(const string&amp; key) {
+        int total = 0;
+        for (char c : key) total += (int)c;
+        return total % size;
+    }
+
+    void put(const string&amp; key, int value) {
+        int idx = _hash(key);
+        // 같은 칸의 리스트에서 키가 있으면 업데이트, 없으면 추가
+        for (auto&amp; p : table[idx]) {
+            if (p.first == key) { p.second = value; return; }
+        }
+        table[idx].push_back({key, value});
+    }
+
+    int get(const string&amp; key) {
+        int idx = _hash(key);
+        for (auto&amp; p : table[idx]) {
+            if (p.first == key) return p.second;
+        }
+        return -1;  // nullptr 대신 -1 반환 (찾지 못함)
+    }
+};</code></pre>
+                </div></span>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">O(n)?</text></svg></div>
@@ -371,13 +495,13 @@ class HashTable:
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">순서</text></svg></div>
                         <h3>순서 보장</h3>
-                        <p>Python 3.7+의 dict는 삽입 순서를 보장합니다! 하지만 정렬된 순서는 아닙니다. Java의 LinkedHashMap도 마찬가지입니다.</p>
+                        <p><span class="lang-py">Python 3.7+의 <code>dict</code>는 삽입 순서를 보장합니다!</span><span class="lang-cpp">C++의 <code>unordered_map</code>은 순서를 보장하지 않지만, <code>map</code>은 키 정렬 순서를 유지합니다.</span> 하지만 해시테이블 자체는 정렬된 순서가 아닙니다.</p>
                     </div>
                 </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">해시 테이블의 최악 시간 복잡도는 O(n)인데, 왜 "O(1)"이라고 할까요?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
-                    <div class="think-box-answer">O(n)은 모든 키가 같은 해시값을 가지는 극히 드문 최악의 경우입니다. <strong>평균적으로는 O(1)</strong>이고, 좋은 해시 함수를 쓰면 충돌이 거의 없습니다! 실제로 Python dict는 데이터가 2/3 이상 차면 자동으로 테이블을 2배로 늘려 충돌을 방지합니다.</div>
+                    <div class="think-box-answer">O(n)은 모든 키가 같은 해시값을 가지는 극히 드문 최악의 경우입니다. <strong>평균적으로는 O(1)</strong>이고, 좋은 해시 함수를 쓰면 충돌이 거의 없습니다! <span class="lang-py">실제로 Python <code>dict</code>는 데이터가 2/3 이상 차면 자동으로 테이블을 2배로 늘려 충돌을 방지합니다.</span><span class="lang-cpp">실제로 C++ <code>unordered_map</code>은 load factor(기본 1.0)를 초과하면 자동으로 버킷 수를 늘려(rehash) 충돌을 방지합니다.</span></div>
                 </div>
             </div>
         `;
@@ -395,10 +519,7 @@ class HashTable:
         const self = this;
         self._clearVizState();
 
-        const ITEMS = [
-            { key: 'apple', val: 3 }, { key: 'banana', val: 5 }, { key: 'cherry', val: 2 },
-            { key: 'date', val: 8 }, { key: 'elderberry', val: 1 }
-        ];
+        const DEFAULT_ITEMS = 'apple 3, banana 5, cherry 2, date 8, elderberry 1';
         const TABLE_SIZE = 7;
 
         function simpleHash(key) {
@@ -407,22 +528,33 @@ class HashTable:
             return h;
         }
 
+        function parseItems(str) {
+            return str.split(',').map(function(s) {
+                var parts = s.trim().split(/\s+/);
+                if (parts.length < 2) return null;
+                return { key: parts[0], val: parts.slice(1).join(' ') };
+            }).filter(function(x) { return x !== null && x.key; });
+        }
+
         container.innerHTML = `
             <div class="hero" style="padding-bottom:12px;">
                 <h2>해시 테이블 삽입 시각화</h2>
                 <p class="hero-sub">키를 해시 함수로 변환하여 테이블에 넣는 과정을 봅시다.</p>
             </div>
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+                <label style="font-weight:600;">키-값 쌍: <input type="text" id="ht-insert-input" value="${DEFAULT_ITEMS}" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:380px;background:var(--card);color:var(--text);"></label>
+                <button class="btn btn-primary" id="ht-insert-reset">🔄</button>
+            </div>
             ${self._createStepDesc()}
             <div class="sim-card">
-                <button class="btn btn-primary" id="ht-start">삽입 시작</button>
-                <div style="display:flex;gap:24px;margin-top:16px;flex-wrap:wrap;width:100%;">
+                <div style="display:flex;gap:24px;margin-top:0;flex-wrap:wrap;width:100%;">
                     <div style="flex:1;min-width:200px;">
                         <div style="font-weight:700;margin-bottom:8px;">해시 테이블 (크기 ${TABLE_SIZE})</div>
                         <div id="ht-table" style="display:flex;flex-direction:column;gap:4px;"></div>
                     </div>
                     <div style="flex:1;min-width:150px;">
                         <div style="font-weight:700;margin-bottom:8px;">현재 작업</div>
-                        <div id="ht-info" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">시작을 눌러주세요</div>
+                        <div id="ht-info" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">▶ 다음 버튼을 눌러 시작하세요</div>
                     </div>
                 </div>
             </div>
@@ -432,18 +564,20 @@ class HashTable:
         const tableEl = container.querySelector('#ht-table');
         const infoEl = container.querySelector('#ht-info');
 
-        // Render empty table
-        for (let i = 0; i < TABLE_SIZE; i++) {
-            const row = document.createElement('div');
-            row.className = 'str-char-box';
-            row.dataset.idx = i;
-            row.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;';
-            row.innerHTML = `<span style="font-weight:700;color:var(--text3);min-width:20px;">[${i}]</span><span class="ht-content" style="font-weight:600;">—</span>`;
-            tableEl.appendChild(row);
+        function renderEmptyTable() {
+            tableEl.innerHTML = '';
+            for (let i = 0; i < TABLE_SIZE; i++) {
+                const row = document.createElement('div');
+                row.className = 'str-char-box';
+                row.dataset.idx = i;
+                row.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;';
+                row.innerHTML = '<span style="font-weight:700;color:var(--text3);min-width:20px;">[' + i + ']</span><span class="ht-content" style="font-weight:600;">\u2014</span>';
+                tableEl.appendChild(row);
+            }
         }
 
         function setSlot(idx, text, cls) {
-            const row = tableEl.querySelector(`[data-idx="${idx}"]`);
+            const row = tableEl.querySelector('[data-idx="' + idx + '"]');
             if (row) {
                 row.querySelector('.ht-content').textContent = text;
                 row.className = 'str-char-box' + (cls ? ' ' + cls : '');
@@ -465,43 +599,45 @@ class HashTable:
             infoEl.innerHTML = s.info;
         }
 
-        container.querySelector('#ht-start').addEventListener('click', function() {
+        function buildAndRun() {
             self._clearVizState();
-            // Reset table
-            for (let i = 0; i < TABLE_SIZE; i++) setSlot(i, '—', '');
+            var items = parseItems(container.querySelector('#ht-insert-input').value);
+            if (items.length === 0) items = parseItems(DEFAULT_ITEMS);
+
+            renderEmptyTable();
+            infoEl.innerHTML = '▶ 다음 버튼을 눌러 시작하세요';
 
             const steps = [];
             const stored = {};
 
-            ITEMS.forEach(item => {
+            items.forEach(function(item) {
                 const h = simpleHash(item.key);
                 steps.push({
-                    description: `"${item.key}" → hash ${h}번 칸에!`,
+                    description: '"' + item.key + '" \u2192 hash ' + h + '번 칸에!',
                     _before: null,
                     action: function() {
                         this._before = saveState();
-                        // Reset active states
                         for (let i = 0; i < TABLE_SIZE; i++) {
-                            const row = tableEl.querySelector(`[data-idx="${i}"]`);
+                            const row = tableEl.querySelector('[data-idx="' + i + '"]');
                             if (row && row.classList.contains('comparing')) {
                                 row.className = 'str-char-box' + (stored[i] ? ' matched' : '');
                                 row.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;';
                             }
                         }
-                        stored[h] = stored[h] ? stored[h] + ', ' + `${item.key}:${item.val}` : `${item.key}:${item.val}`;
+                        stored[h] = stored[h] ? stored[h] + ', ' + item.key + ':' + item.val : item.key + ':' + item.val;
                         setSlot(h, stored[h], 'comparing');
-                        infoEl.innerHTML = `hash("${item.key}") = <strong>${h}</strong><br>→ 테이블[${h}] = ${item.key}:${item.val}`;
+                        infoEl.innerHTML = 'hash("' + item.key + '") = <strong>' + h + '</strong><br>\u2192 테이블[' + h + '] = ' + item.key + ':' + item.val;
                     },
                     undo: function() { restoreState(this._before); }
                 });
 
                 steps.push({
-                    description: `"${item.key}" 저장 ✓`,
+                    description: '"' + item.key + '" 저장 \u2713',
                     _before: null,
                     action: function() {
                         this._before = saveState();
                         setSlot(h, stored[h], 'matched');
-                        infoEl.innerHTML = `✓ "${item.key}" 저장 완료`;
+                        infoEl.innerHTML = '\u2713 "' + item.key + '" 저장 완료';
                     },
                     undo: function() { restoreState(this._before); }
                 });
@@ -512,13 +648,16 @@ class HashTable:
                 _before: null,
                 action: function() {
                     this._before = saveState();
-                    infoEl.innerHTML = '<span style="color:var(--green);font-size:1.1rem;">✓ 모든 항목 삽입 완료!</span>';
+                    infoEl.innerHTML = '<span style="color:var(--green);font-size:1.1rem;">\u2713 모든 항목 삽입 완료!</span>';
                 },
                 undo: function() { restoreState(this._before); }
             });
 
             self._initStepController(container, steps);
-        });
+        }
+
+        container.querySelector('#ht-insert-reset').addEventListener('click', buildAndRun);
+        buildAndRun();
     },
 
     _vizState: { steps: [], currentStep: -1, keydownHandler: null },
@@ -546,8 +685,9 @@ class HashTable:
             if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
             else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.textContent = state.steps[idx].description; }
         };
-        nextBtn.addEventListener('click', () => { if (state.currentStep >= state.steps.length - 1) return; state.currentStep++; state.steps[state.currentStep].action(); updateUI(); });
-        prevBtn.addEventListener('click', () => { if (state.currentStep < 0) return; state.steps[state.currentStep].undo(); state.currentStep--; updateUI(); });
+        var actionDelay = 350;
+        nextBtn.addEventListener('click', () => { if (state.currentStep >= state.steps.length - 1) return; state.currentStep++; updateUI(); setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay); });
+        prevBtn.addEventListener('click', () => { if (state.currentStep < 0) return; var stepToUndo = state.currentStep; state.currentStep--; updateUI(); setTimeout(() => { state.steps[stepToUndo].undo(); }, actionDelay); });
         const handleKeydown = (e) => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); } };
         document.addEventListener('keydown', handleKeydown); state.keydownHandler = handleKeydown; updateUI();
     },
@@ -914,11 +1054,24 @@ class HashTable:
     // ===== 문제별 시뮬레이션: 회사에 있는 사람 =====
     _renderVizCompany(container) {
         const self = this;
-        const LOGS = [
-            { name: 'Baha', action: 'enter' }, { name: 'Asber', action: 'enter' },
-            { name: 'Baha', action: 'leave' }, { name: 'Artem', action: 'enter' }
-        ];
+        const DEFAULT_LOGS = 'Baha enter, Asber enter, Baha leave, Artem enter';
+
+        function parseLogs(str) {
+            return str.split(',').map(function(s) {
+                var parts = s.trim().split(/\s+/);
+                if (parts.length < 2) return null;
+                var name = parts[0];
+                var action = parts[1].toLowerCase();
+                if (action !== 'enter' && action !== 'leave') return null;
+                return { name: name, action: action };
+            }).filter(function(x) { return x !== null; });
+        }
+
         container.innerHTML = `
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+                <label style="font-weight:600;">출입 기록: <input type="text" id="ht-company-input" value="${DEFAULT_LOGS}" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:380px;background:var(--card);color:var(--text);"></label>
+                <button class="btn btn-primary" id="ht-company-reset">🔄</button>
+            </div>
             ${self._createStepDesc('-co')}
             <div class="sim-card">
                 <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px;width:100%;">
@@ -931,7 +1084,7 @@ class HashTable:
                         <div id="ht-co-set" class="graph-queue-display" style="min-height:60px;padding:12px;font-size:0.95rem;">{ }</div>
                     </div>
                 </div>
-                <div>결과 (사전 역순): <span id="ht-co-result" style="font-weight:600;">—</span></div>
+                <div>결과 (사전 역순): <span id="ht-co-result" style="font-weight:600;">\u2014</span></div>
             </div>
             ${self._createStepControls('-co')}
         `;
@@ -939,31 +1092,40 @@ class HashTable:
         const setEl = container.querySelector('#ht-co-set');
         const resultEl = container.querySelector('#ht-co-result');
 
-        LOGS.forEach((log, i) => {
-            const row = document.createElement('div');
-            row.className = 'str-char-box';
-            row.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;';
-            row.innerHTML = `<span style="font-weight:600;">${log.name}</span> <span style="color:${log.action === 'enter' ? 'var(--green)' : 'var(--red, #e17055)'}">${log.action}</span>`;
-            row.dataset.idx = i;
-            logsEl.appendChild(row);
-        });
+        function renderLogRows(logs) {
+            logsEl.innerHTML = '';
+            logs.forEach(function(log, i) {
+                const row = document.createElement('div');
+                row.className = 'str-char-box';
+                row.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;';
+                row.innerHTML = '<span style="font-weight:600;">' + log.name + '</span> <span style="color:' + (log.action === 'enter' ? 'var(--green)' : 'var(--red, #e17055)') + '">' + log.action + '</span>';
+                row.dataset.idx = i;
+                logsEl.appendChild(row);
+            });
+        }
 
-        // 자동 초기화 (시작 버튼 불필요)
-        (function() {
+        function saveState() {
+            return { logs: Array.from(logsEl.children).map(r => r.className), set: setEl.textContent, result: resultEl.textContent };
+        }
+        function restoreState(s) {
+            Array.from(logsEl.children).forEach((r, i) => { r.className = s.logs[i]; r.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;'; });
+            setEl.textContent = s.set; resultEl.textContent = s.result;
+        }
 
-            function saveState() {
-                return { logs: Array.from(logsEl.children).map(r => r.className), set: setEl.textContent, result: resultEl.textContent };
-            }
-            function restoreState(s) {
-                Array.from(logsEl.children).forEach((r, i) => { r.className = s.logs[i]; r.style.cssText = 'flex-direction:row;gap:8px;justify-content:flex-start;padding:8px 12px;min-width:100%;'; });
-                setEl.textContent = s.set; resultEl.textContent = s.result;
-            }
+        function buildAndRun() {
+            self._clearVizState();
+            var logs = parseLogs(container.querySelector('#ht-company-input').value);
+            if (logs.length === 0) logs = parseLogs(DEFAULT_LOGS);
+
+            renderLogRows(logs);
+            setEl.textContent = '{ }';
+            resultEl.textContent = '\u2014';
 
             const steps = [];
             const company = new Set();
-            LOGS.forEach((log, i) => {
+            logs.forEach(function(log, i) {
                 const isEnter = log.action === 'enter';
-                steps.push({ description: `${log.name} ${isEnter ? '입장! 📥' : '퇴장! 📤'}`,
+                steps.push({ description: log.name + ' ' + (isEnter ? '입장! 📥' : '퇴장! 📤'),
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -985,7 +1147,10 @@ class HashTable:
                 undo: function() { restoreState(this._before); }
             });
             self._initStepController(container, steps, '-co');
-        })();
+        }
+
+        container.querySelector('#ht-company-reset').addEventListener('click', buildAndRun);
+        buildAndRun();
     },
 
     // ===== 문제풀이 탭 =====
@@ -1030,7 +1195,7 @@ class HashTable:
                 { title: '문제를 쉽게 이해해보자', content: '<code>[1, 2, 3, 1]</code>에서 <strong>1이 두 번</strong> 나오니까 중복이 있어요 → <code>true</code>.<br><code>[1, 2, 3, 4]</code>는 전부 다른 숫자 → <code>false</code>.<br>결국 <strong>"같은 숫자가 두 번 이상 나오는지"</strong>만 확인하면 됩니다!' },
                 { title: '가장 단순한 방법은?', content: '모든 숫자 쌍을 비교하는 거예요. 첫 번째 숫자를 나머지 전부와 비교, 두 번째도 전부와 비교…<br>이중 for문이면 되지만, 숫자가 <strong>10만 개</strong>면 약 <strong>50억 번</strong> 비교해야 해요! 너무 느립니다 😱' },
                 { title: '"전에 본 적 있나?" 기억하기', content: '숫자를 하나씩 보면서, <strong>"이 숫자를 전에 본 적 있나?"</strong>를 확인하면 어떨까요?<br>본 숫자들을 어딘가에 저장해두면 됩니다. 어떤 자료구조가 좋을까요?' },
-                { title: 'Set(집합)을 쓰면 O(1)!', content: 'Python의 <code>set</code>은 "이 값이 있나?"를 <strong>O(1)</strong>에 확인해줘요!<br><br>① 숫자를 하나 꺼냄<br>② set에 이미 있나? → 있으면 <code>true</code> 반환!<br>③ 없으면 set에 추가하고 다음 숫자로<br><br>배열 전체를 한 번만 보니까 <strong>O(n)</strong>이에요.' },
+                { title: 'Set(집합)을 쓰면 O(1)!', content: 'Set은 "이 값이 있나?"를 <strong>O(1)</strong>에 확인해줘요!<br><br>① 숫자를 하나 꺼냄<br>② set에 이미 있나? → 있으면 <code>true</code> 반환!<br>③ 없으면 set에 추가하고 다음 숫자로<br><br><span class="lang-py">Python: <code>set()</code> → <code>in</code>으로 확인, <code>add()</code>로 추가</span><span class="lang-cpp">C++: <code>unordered_set&lt;int&gt;</code> → <code>count()</code>로 확인, <code>insert()</code>로 추가</span><br><br>배열 전체를 한 번만 보니까 <strong>O(n)</strong>이에요.' },
                 { title: '정렬로도 풀 수 있어요', content: '배열을 정렬하면 같은 숫자가 <strong>나란히</strong> 놓입니다.<br><code>[1, 3, 1, 2]</code> → 정렬 → <code>[1, 1, 2, 3]</code><br>옆 칸이랑만 비교하면 되니까 간단해요!<br>대신 정렬에 <strong>O(n log n)</strong>이 걸리고, set 풀이의 O(n)보다는 느립니다.' }
             ],
             simIntro: '배열을 순회하면서 해시셋에 원소를 넣고, 중복을 탐지하는 과정을 확인해보세요!',
@@ -1053,16 +1218,7 @@ public:
         }
         return false;
     }
-};`,
-                java: `class Solution {
-    public boolean containsDuplicate(int[] nums) {
-        Set<Integer> seen = new HashSet<>();
-        for (int n : nums) {
-            if (!seen.add(n)) return true;
-        }
-        return false;
-    }
-}`
+};`
             },
             solutions: [{
                 approach: '브루트포스',
@@ -1085,15 +1241,7 @@ public:
                 if (nums[i] == nums[j]) return true;
         return false;
     }
-};`,
-                    java: `class Solution {
-    public boolean containsDuplicate(int[] nums) {
-        for (int i = 0; i < nums.length; i++)
-            for (int j = i + 1; j < nums.length; j++)
-                if (nums[i] == nums[j]) return true;
-        return false;
-    }
-}`
+};`
                 }
             }, {
                 approach: '해시셋',
@@ -1112,11 +1260,6 @@ public:
                         { title: '함수 정의 + 셋 초기화', desc: 'unordered_set은 O(1)로 포함 여부 확인이 가능합니다.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        // O(1) 조회 가능한 해시셋\n        unordered_set<int> seen;' },
                         { title: '순회하며 중복 체크', desc: '이미 있으면 true (중복!), 없으면 삽입하여 기록합니다.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true; // 중복!\n            seen.insert(n); // 기록\n        }' },
                         { title: '결과 반환', desc: '끝까지 중복 없으면 false입니다.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true;\n            seen.insert(n);\n        }\n        return false;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '함수 정의 + 셋 초기화', desc: 'HashSet은 O(1)로 포함 여부 확인이 가능합니다.', code: 'class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        // O(1) 조회 가능한 해시셋\n        Set<Integer> seen = new HashSet<>();' },
-                        { title: '순회하며 중복 체크', desc: 'add()가 false면 이미 존재 → 중복 발견!', code: 'class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        Set<Integer> seen = new HashSet<>();\n        for (int n : nums) {\n            // add()는 이미 있으면 false 반환\n            if (!seen.add(n)) return true;\n        }' },
-                        { title: '결과 반환', desc: '끝까지 중복 없으면 false입니다.', code: 'class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        Set<Integer> seen = new HashSet<>();\n        for (int n : nums) {\n            if (!seen.add(n)) return true;\n        }\n        return false;\n    }\n}' }
                     ]
                 }
             }]
@@ -1162,7 +1305,7 @@ public:
                 { title: '문제를 쉽게 이해해보자', content: '<code>"abcabcbb"</code>에서 중복 없는 구간을 찾아보세요.<br><code>"abc"</code> → 3글자 (중복 없음 ✓)<br><code>"abca"</code> → a가 두 번! (중복 ✗)<br>이런 식으로 <strong>중복 없이 가장 긴 구간</strong>의 길이를 구하면 돼요.' },
                 { title: '모든 구간을 다 확인하면?', content: '시작점과 끝점을 잡아서 모든 부분 문자열을 만들어볼 수 있어요.<br>근데 길이가 n이면 부분 문자열이 약 <strong>n²개</strong>… 너무 많습니다!' },
                 { title: '슬라이딩 윈도우 아이디어', content: '창문을 밀듯이 <strong>시작점(L)</strong>과 <strong>끝점(R)</strong>을 오른쪽으로 이동해요.<br><br>① 중복 없으면 → R을 오른쪽으로 (창문 넓히기)<br>② 중복 발생하면 → L을 오른쪽으로 (창문 좁히기)<br><br>이렇게 하면 모든 구간을 다 안 봐도 답을 찾을 수 있어요!' },
-                { title: '해시맵으로 중복 위치 기억하기', content: '글자가 <strong>마지막으로 나타난 위치</strong>를 해시맵에 저장해두면,<br>중복이 생겼을 때 L을 어디로 옮겨야 하는지 바로 알 수 있어요!<br><br>예: <code>seen = {"a": 0, "b": 1, "c": 2}</code><br>"a"가 또 나오면 → L을 0+1 = 1로 이동!' },
+                { title: '해시맵으로 중복 위치 기억하기', content: '글자가 <strong>마지막으로 나타난 위치</strong>를 해시맵에 저장해두면,<br>중복이 생겼을 때 L을 어디로 옮겨야 하는지 바로 알 수 있어요!<br><br><span class="lang-py">Python: <code>seen = {"a": 0, "b": 1}</code> (dict)</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, int&gt; seen;</code></span><br><br>"a"가 또 나오면 → L을 <code>seen["a"] + 1</code>로 이동!' },
                 { title: '시간 복잡도는 O(n)', content: 'R이 오른쪽으로만 이동하고, L도 오른쪽으로만 이동합니다.<br>각 글자를 딱 한 번씩만 처리하니까 <strong>O(n)</strong>이에요!' }
             ],
             simIntro: '슬라이딩 윈도우와 해시맵으로 중복 없는 가장 긴 부분 문자열을 찾는 과정을 확인해보세요!',
@@ -1191,21 +1334,7 @@ public:
         }
         return maxLen;
     }
-};`,
-                java: `class Solution {
-    public int lengthOfLongestSubstring(String s) {
-        Map<Character, Integer> seen = new HashMap<>();
-        int start = 0, maxLen = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (seen.containsKey(c) && seen.get(c) >= start)
-                start = seen.get(c) + 1;
-            seen.put(c, i);
-            maxLen = Math.max(maxLen, i - start + 1);
-        }
-        return maxLen;
-    }
-}`
+};`
             },
             solutions: [{
                 approach: '브루트포스',
@@ -1238,20 +1367,7 @@ public:
         }
         return maxLen;
     }
-};`,
-                    java: `class Solution {
-    public int lengthOfLongestSubstring(String s) {
-        int maxLen = 0;
-        for (int i = 0; i < s.length(); i++) {
-            Set<Character> seen = new HashSet<>();
-            for (int j = i; j < s.length(); j++) {
-                if (!seen.add(s.charAt(j))) break;
-            }
-            maxLen = Math.max(maxLen, seen.size());
-        }
-        return maxLen;
-    }
-}`
+};`
                 }
             }, {
                 approach: '슬라이딩 윈도우 + 해시맵',
@@ -1272,11 +1388,6 @@ public:
                         { title: '함수 정의 + 초기화', desc: 'seen: 문자의 마지막 위치 기록 (O(1) 조회)\nstart: 윈도우 시작점, maxLen: 최대 길이', code: 'class Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        unordered_map<char, int> seen; // {문자: 위치}\n        int start = 0, maxLen = 0;' },
                         { title: '순회 + 중복 처리', desc: '윈도우 안에 같은 문자가 있으면 start를 이동하여 중복 제거,\n현재 위치 기록 후 윈도우 크기를 최대값과 비교합니다.', code: 'class Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        unordered_map<char, int> seen;\n        int start = 0, maxLen = 0;\n        for (int i = 0; i < s.size(); i++) {\n            // 윈도우 안에 중복 → start 이동\n            if (seen.count(s[i]) && seen[s[i]] >= start)\n                start = seen[s[i]] + 1;\n            seen[s[i]] = i; // 위치 기록\n            maxLen = max(maxLen, i - start + 1);\n        }' },
                         { title: '결과 반환', desc: '최대 길이를 반환합니다.', code: 'class Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        unordered_map<char, int> seen;\n        int start = 0, maxLen = 0;\n        for (int i = 0; i < s.size(); i++) {\n            if (seen.count(s[i]) && seen[s[i]] >= start)\n                start = seen[s[i]] + 1;\n            seen[s[i]] = i;\n            maxLen = max(maxLen, i - start + 1);\n        }\n        return maxLen;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '함수 정의 + 초기화', desc: 'seen: 문자의 마지막 위치 기록 (O(1) 조회)\nstart: 윈도우 시작점, maxLen: 최대 길이', code: 'class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        Map<Character, Integer> seen = new HashMap<>(); // {문자: 위치}\n        int start = 0, maxLen = 0;' },
-                        { title: '순회 + 중복 처리', desc: '윈도우 안에 같은 문자가 있으면 start를 이동하여 중복 제거,\n현재 위치 기록 후 윈도우 크기를 최대값과 비교합니다.', code: 'class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        Map<Character, Integer> seen = new HashMap<>();\n        int start = 0, maxLen = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            // 윈도우 안에 중복 → start 이동\n            if (seen.containsKey(c) && seen.get(c) >= start)\n                start = seen.get(c) + 1;\n            seen.put(c, i); // 위치 기록\n            maxLen = Math.max(maxLen, i - start + 1);\n        }' },
-                        { title: '결과 반환', desc: '최대 길이를 반환합니다.', code: 'class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        Map<Character, Integer> seen = new HashMap<>();\n        int start = 0, maxLen = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (seen.containsKey(c) && seen.get(c) >= start)\n                start = seen.get(c) + 1;\n            seen.put(c, i);\n            maxLen = Math.max(maxLen, i - start + 1);\n        }\n        return maxLen;\n    }\n}' }
                     ]
                 }
             }]
@@ -1356,22 +1467,7 @@ public:
         }
         return cnt;
     }
-};`,
-                java: `class Solution {
-    public int subarraySum(int[] nums, int k) {
-        // {누적합: 등장 횟수} - 합=0인 시작점 1개
-        Map<Integer, Integer> pc = new HashMap<>();
-        pc.put(0, 1);
-        int sum = 0, cnt = 0; // 누적합, 결과 카운트
-        for (int n : nums) {
-            sum += n; // 누적합 갱신
-            // sum - k가 이전에 나왔다면 → 구간 합 = k
-            cnt += pc.getOrDefault(sum - k, 0);
-            pc.merge(sum, 1, Integer::sum); // 현재 누적합 기록
-        }
-        return cnt;
-    }
-}`
+};`
             },
             solutions: [{
                 approach: '브루트포스',
@@ -1402,20 +1498,7 @@ public:
         }
         return cnt;
     }
-};`,
-                    java: `class Solution {
-    public int subarraySum(int[] nums, int k) {
-        int cnt = 0;
-        for (int i = 0; i < nums.length; i++) {
-            int sum = 0;
-            for (int j = i; j < nums.length; j++) {
-                sum += nums[j];
-                if (sum == k) cnt++;
-            }
-        }
-        return cnt;
-    }
-}`
+};`
                 },
                 codeSteps: {
                     python: [
@@ -1428,11 +1511,6 @@ public:
                         { title: '함수 정의 + 카운트', desc: '합이 k인 부분 배열을 셀 카운트를 초기화합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        int cnt = 0; // 합이 k인 부분 배열 개수' },
                         { title: '이중 반복 + 합 비교', desc: '모든 시작점 i와 끝점 j를 시도하며 구간 합을 확인합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        int cnt = 0;\n        for (int i = 0; i < nums.size(); i++) {\n            int sum = 0; // i부터의 구간 합\n            for (int j = i; j < nums.size(); j++) {\n                sum += nums[j]; // 원소 추가\n                if (sum == k) cnt++; // 합 = k이면 카운트\n            }\n        }' },
                         { title: '결과 반환', desc: '총 개수를 반환합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        int cnt = 0;\n        for (int i = 0; i < nums.size(); i++) {\n            int sum = 0;\n            for (int j = i; j < nums.size(); j++) {\n                sum += nums[j];\n                if (sum == k) cnt++;\n            }\n        }\n        return cnt;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '함수 정의 + 카운트', desc: '합이 k인 부분 배열을 셀 카운트를 초기화합니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        int cnt = 0; // 합이 k인 부분 배열 개수' },
-                        { title: '이중 반복 + 합 비교', desc: '모든 시작점 i와 끝점 j를 시도하며 구간 합을 확인합니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        int cnt = 0;\n        for (int i = 0; i < nums.length; i++) {\n            int sum = 0; // i부터의 구간 합\n            for (int j = i; j < nums.length; j++) {\n                sum += nums[j]; // 원소 추가\n                if (sum == k) cnt++; // 합 = k이면 카운트\n            }\n        }' },
-                        { title: '결과 반환', desc: '총 개수를 반환합니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        int cnt = 0;\n        for (int i = 0; i < nums.length; i++) {\n            int sum = 0;\n            for (int j = i; j < nums.length; j++) {\n                sum += nums[j];\n                if (sum == k) cnt++;\n            }\n        }\n        return cnt;\n    }\n}' }
                     ]
                 }
             }, {
@@ -1458,14 +1536,6 @@ public:
                         { title: '반복 + 누적합 갱신', desc: '원소를 하나씩 더해 "처음~현재"까지의 합을 구합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n; // 누적합 갱신' },
                         { title: '핵심: 이전 누적합 찾기 + 기록', desc: 'sum - k가 이전에 나왔다면 그 구간 합이 k!\n현재 누적합도 기록해서 뒤의 원소가 찾을 수 있게 합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            // sum - k가 이전에 나왔다면 → 구간 합 = k\n            if (pc.count(sum - k)) cnt += pc[sum - k];\n            pc[sum]++; // 현재 누적합 기록\n        }' },
                         { title: '결과 반환', desc: '총 개수를 반환합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            if (pc.count(sum - k)) cnt += pc[sum - k];\n            pc[sum]++;\n        }\n        return cnt;\n    }\n};' }
-                    ],
-                    java: [
-                        { title: '함수 정의', desc: '정수 배열과 목표 합 k를 받습니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {' },
-                        { title: '누적합 기록 초기화', desc: '{0: 1}은 "시작 전, 합이 0인 지점이 1개".\n이 없으면 처음부터의 구간 합이 k인 경우를 놓칩니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        // {누적합: 등장 횟수} - 합=0인 시작점 1개\n        Map<Integer, Integer> pc = new HashMap<>();\n        pc.put(0, 1);' },
-                        { title: '변수 초기화', desc: 'sum은 처음~현재의 누적합, cnt는 결과 카운트입니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> pc = new HashMap<>();\n        pc.put(0, 1);\n        int sum = 0, cnt = 0; // 누적합, 결과 카운트' },
-                        { title: '반복 + 누적합 갱신', desc: '원소를 하나씩 더해 "처음~현재"까지의 합을 구합니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> pc = new HashMap<>();\n        pc.put(0, 1);\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n; // 누적합 갱신' },
-                        { title: '핵심: 이전 누적합 찾기 + 기록', desc: 'sum - k가 이전에 나왔다면 그 구간 합이 k!\n현재 누적합도 기록해서 뒤의 원소가 찾을 수 있게 합니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> pc = new HashMap<>();\n        pc.put(0, 1);\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            // sum - k가 이전에 나왔다면 → 구간 합 = k\n            cnt += pc.getOrDefault(sum - k, 0);\n            pc.merge(sum, 1, Integer::sum); // 현재 누적합 기록\n        }' },
-                        { title: '결과 반환', desc: '총 개수를 반환합니다.', code: 'class Solution {\n    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> pc = new HashMap<>();\n        pc.put(0, 1);\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            cnt += pc.getOrDefault(sum - k, 0);\n            pc.merge(sum, 1, Integer::sum);\n        }\n        return cnt;\n    }\n}' }
                     ]
                 }
             }]
@@ -1511,9 +1581,9 @@ Kim leave</pre></div>
                 <p>삽입/삭제가 O(1)인 자료구조는 무엇일까요?</p>`,
             hints: [
                 { title: '문제를 쉽게 이해해보자', content: '회사 출입문에 카드를 찍어요.<br><code>enter</code> = 출근 (회사에 들어옴)<br><code>leave</code> = 퇴근 (회사에서 나감)<br><br>모든 기록을 다 처리한 뒤, <strong>지금 회사에 남아있는 사람</strong>을 출력하면 됩니다!' },
-                { title: '어떤 자료구조가 좋을까?', content: '사람이 <strong>들어오면 추가, 나가면 제거</strong>해야 해요.<br>배열로 하면 제거할 때 이름을 찾아야 해서 O(n)…<br><br><strong>Set(집합)</strong>을 쓰면 추가도 제거도 <strong>O(1)</strong>이에요!<br><code>set.add(이름)</code> / <code>set.discard(이름)</code>' },
+                { title: '어떤 자료구조가 좋을까?', content: '사람이 <strong>들어오면 추가, 나가면 제거</strong>해야 해요.<br>배열로 하면 제거할 때 이름을 찾아야 해서 O(n)…<br><br><strong>Set(집합)</strong>을 쓰면 추가도 제거도 <strong>O(1)</strong>이에요!<br><span class="lang-py">Python: <code>set.add()</code> / <code>set.discard()</code></span><span class="lang-cpp">C++: <code>set&lt;string&gt;</code>의 <code>insert()</code> / <code>erase()</code></span>' },
                 { title: 'Set으로 풀어보자', content: '빈 set을 만들고, 기록을 하나씩 읽어요:<br><br>① <code>"Baha enter"</code> → set에 Baha 추가<br>② <code>"Asher enter"</code> → set에 Asher 추가<br>③ <code>"Baha leave"</code> → set에서 Baha 제거<br><br>끝! set에 남은 사람 = 회사에 있는 사람' },
-                { title: '사전 역순으로 출력하기', content: '남은 사람들을 <strong>사전 역순(Z→A)</strong>으로 출력해야 해요.<br><code>sorted(company, reverse=True)</code>를 쓰면 됩니다.<br><br>예: {Asher, Cam} → 역순 → Cam, Asher 순서로 출력!' },
+                { title: '사전 역순으로 출력하기', content: '남은 사람들을 <strong>사전 역순(Z→A)</strong>으로 출력해야 해요.<br><span class="lang-py">Python: <code>sorted(company, reverse=True)</code></span><span class="lang-cpp">C++: <code>set&lt;string, greater&lt;string&gt;&gt;</code>로 자동 역순, 또는 <code>rbegin()</code>~<code>rend()</code>로 역순 순회</span><br><br>예: {Asher, Cam} → 역순 → Cam, Asher 순서로 출력!' },
                 { title: '시간 복잡도', content: '기록 n개를 처리: set 추가/제거 각 O(1) → <strong>O(n)</strong><br>남은 m명 정렬: <strong>O(m log m)</strong><br><br>전체: <strong>O(n + m log m)</strong>이에요.' }
             ],
             simIntro: '출입 기록을 처리하면서 집합(set)에 사람을 추가/제거하는 과정을 확인해보세요!',
@@ -1534,7 +1604,11 @@ for _ in range(n):
 
 for name in sorted(company, reverse=True):
     print(name)`,
-                cpp: `#include <bits/stdc++.h>
+                cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <set>
 using namespace std;
 
 int main() {
@@ -1547,24 +1621,6 @@ int main() {
         else company.erase(name);
     }
     for (auto& s : company) printf("%s\\n", s.c_str());
-}`,
-                java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine().trim());
-        TreeSet<String> company = new TreeSet<>(Collections.reverseOrder());
-        for (int i = 0; i < n; i++) {
-            String[] parts = br.readLine().split(" ");
-            if (parts[1].equals("enter")) company.add(parts[0]);
-            else company.remove(parts[0]);
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String s : company) sb.append(s).append("\\n");
-        System.out.print(sb);
-    }
 }`
             },
             solutions: [{
@@ -1589,7 +1645,10 @@ for _ in range(n):
 company.sort(reverse=True)
 for name in company:
     print(name)`,
-                    cpp: `#include <bits/stdc++.h>
+                    cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
 using namespace std;
 
 int main() {
@@ -1608,25 +1667,6 @@ int main() {
     }
     sort(company.rbegin(), company.rend());
     for (auto& s : company) printf("%s\\n", s.c_str());
-}`,
-                    java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine().trim());
-        List<String> company = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            String[] parts = br.readLine().split(" ");
-            if (parts[1].equals("enter")) company.add(parts[0]);
-            else company.remove(parts[0]); // O(n) 선형 탐색
-        }
-        company.sort(Collections.reverseOrder());
-        StringBuilder sb = new StringBuilder();
-        for (String s : company) sb.append(s).append("\\n");
-        System.out.print(sb);
-    }
 }`
                 }
             }, {
@@ -1643,14 +1683,9 @@ public class Main {
                         { title: '사전 역순 출력', desc: 'sorted()로 정렬 후 reverse=True로 역순 출력.\nset은 순서가 없으므로 출력 전 반드시 정렬해야 합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) 추가\n    else:\n        company.discard(name)  # O(1) 제거 (없어도 OK)\n\n# set은 순서 없음 → sorted()로 정렬 필요\nfor name in sorted(company, reverse=True):\n    print(name)' }
                     ],
                     cpp: [
-                        { title: '헤더 + 역순 set', desc: 'C++ set은 자동 정렬됨! greater<string>을 넣으면\n삽입할 때마다 사전 역순으로 자동 정렬됩니다.\n→ 마지막에 따로 sort할 필요 없음', code: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;' },
-                        { title: '출입 기록 처리', desc: 'insert/erase 모두 O(log n) — 리스트의 O(n)보다 빠름.\naction[0] == \'e\'로 간단히 enter/leave 구분합니다.', code: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }' },
-                        { title: '결과 출력', desc: 'set<greater>는 이미 역순 정렬 상태!\n추가 정렬 없이 순서대로 출력하면 됩니다.', code: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }\n    // 이미 역순 정렬 → 그대로 출력\n    for (auto& s : company) printf("%s\\n", s.c_str());\n}' }
-                    ],
-                    java: [
-                        { title: '클래스 + TreeSet', desc: 'TreeSet은 자동 정렬되는 Set!\nCollections.reverseOrder()로 역순 정렬을 지정합니다.\n→ 삽입할 때마다 사전 역순 유지', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        // TreeSet + reverseOrder → 삽입 시 자동 역순 정렬\n        TreeSet<String> company = new TreeSet<>(Collections.reverseOrder());' },
-                        { title: '출입 기록 처리', desc: 'add/remove 모두 O(log n) — ArrayList의 O(n)보다 빠름.\nTreeSet이므로 중복 이름이 들어와도 자동 처리됩니다.', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        // TreeSet + reverseOrder → 삽입 시 자동 역순 정렬\n        TreeSet<String> company = new TreeSet<>(Collections.reverseOrder());\n        for (int i = 0; i < n; i++) {\n            String[] parts = br.readLine().split(" ");\n            if (parts[1].equals("enter")) company.add(parts[0]);    // O(log n)\n            else company.remove(parts[0]);                          // O(log n)\n        }' },
-                        { title: '결과 출력', desc: 'TreeSet은 이미 역순 정렬 상태!\nStringBuilder로 모아서 한 번에 출력하면 빠릅니다.', code: 'import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        // TreeSet + reverseOrder → 삽입 시 자동 역순 정렬\n        TreeSet<String> company = new TreeSet<>(Collections.reverseOrder());\n        for (int i = 0; i < n; i++) {\n            String[] parts = br.readLine().split(" ");\n            if (parts[1].equals("enter")) company.add(parts[0]);    // O(log n)\n            else company.remove(parts[0]);                          // O(log n)\n        }\n        // 이미 역순 정렬 → 그대로 출력\n        StringBuilder sb = new StringBuilder();\n        for (String s : company) sb.append(s).append("\\n");\n        System.out.print(sb);\n    }\n}' }
+                        { title: '헤더 + 역순 set', desc: 'C++ set은 자동 정렬됨! greater<string>을 넣으면\n삽입할 때마다 사전 역순으로 자동 정렬됩니다.\n→ 마지막에 따로 sort할 필요 없음', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;' },
+                        { title: '출입 기록 처리', desc: 'insert/erase 모두 O(log n) — 리스트의 O(n)보다 빠름.\naction[0] == \'e\'로 간단히 enter/leave 구분합니다.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }' },
+                        { title: '결과 출력', desc: 'set<greater>는 이미 역순 정렬 상태!\n추가 정렬 없이 순서대로 출력하면 됩니다.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }\n    // 이미 역순 정렬 → 그대로 출력\n    for (auto& s : company) printf("%s\\n", s.c_str());\n}' }
                     ]
                 }
             }]
@@ -1700,7 +1735,7 @@ public class Main {
         hs.appendChild(hd); container.appendChild(hs);
 
         const sa = document.createElement('div'); sa.className = 'solve-area';
-        sa.innerHTML = `<div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option><option value="java">Java</option></select></div><textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea><div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ 실행</button><button id="check-btn" class="btn btn-success">✓ 정답 확인</button></div><div id="output-area" class="output-area"><div class="output-label">실행 결과</div><pre id="output-text"></pre></div>`;
+        sa.innerHTML = `<div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option></select></div><textarea id="code-editor" spellcheck="false" placeholder="여기에 코드를 작성하세요..."></textarea><div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ 실행</button><button id="check-btn" class="btn btn-success">✓ 정답 확인</button></div><div id="output-area" class="output-area"><div class="output-label">실행 결과</div><pre id="output-text"></pre></div>`;
         container.appendChild(sa);
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
         const ed = container.querySelector('#code-editor'), ls = container.querySelector('#lang-select');
