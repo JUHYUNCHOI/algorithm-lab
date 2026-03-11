@@ -7,8 +7,12 @@ window._setAlgoLang = function(lang) {
     window._algoLang = lang;
     localStorage.setItem('algo-lang', lang);
     document.body.setAttribute('data-lang', lang);
-    // 언어 토글 UI 동기화
+    // 언어 토글 UI 동기화 (문제 탭 내 토글)
     document.querySelectorAll('.lang-toggle-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    // 사이드바 셀렉터 동기화
+    document.querySelectorAll('#lang-selector .selector-btn').forEach(function(btn) {
         btn.classList.toggle('active', btn.dataset.lang === lang);
     });
     // 코드 탭 lang-select 동기화
@@ -31,6 +35,32 @@ window._setAlgoLang = function(lang) {
     let currentTab = 'landing';
     let currentProblemId = null;
     let expandedTopicId = null;
+
+    // ===== 사이드바 글로벌 셀렉터 초기화 =====
+    // 1) 한국어/English 전환
+    document.querySelectorAll('#locale-selector .selector-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var locale = btn.dataset.locale;
+            if (locale === 'en') {
+                window.location.href = (window.location.pathname.includes('/en/') ? '' : 'en/') + 'index.html' + window.location.hash;
+            }
+            // 'ko'는 현재 페이지이므로 아무것도 안 함
+        });
+    });
+    // 2) Python/C++ 전환 (사이드바)
+    (function() {
+        var curLang = window._algoLang || 'python';
+        document.querySelectorAll('#lang-selector .selector-btn').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.lang === curLang);
+            btn.addEventListener('click', function() {
+                window._setAlgoLang(btn.dataset.lang);
+                document.querySelectorAll('#lang-selector .selector-btn').forEach(function(b) {
+                    b.classList.toggle('active', b.dataset.lang === btn.dataset.lang);
+                });
+                renderContent();
+            });
+        });
+    })();
 
     // ===== 사이드바 토글 (모바일) =====
     sidebarToggle.addEventListener('click', () => {

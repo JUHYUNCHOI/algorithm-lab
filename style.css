@@ -254,6 +254,60 @@ body {
     white-space: nowrap;
 }
 
+/* ===== 사이드바 글로벌 셀렉터 (언어 + 프로그래밍 언어) ===== */
+.sidebar-selectors {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--bg3);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.sidebar-selector-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.sidebar-selector-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: 28px;
+}
+.selector-group {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    background: var(--bg2);
+    border-radius: 8px;
+    padding: 2px;
+}
+.selector-btn {
+    flex: 1;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text2);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    white-space: nowrap;
+}
+.selector-btn.active {
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(108, 92, 231, 0.3);
+}
+.selector-btn:hover:not(.active) {
+    background: var(--bg3);
+    color: var(--text);
+}
+
 .sidebar-footer {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--bg3);

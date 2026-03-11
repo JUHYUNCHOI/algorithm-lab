@@ -241,20 +241,21 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                     </div>
                 </div>
                 <div class="concept-grid">
-                    <div class="concept-card">
+                    <span class="lang-py"><div class="concept-card">
                         <h3>Python: bisect</h3>
                         <p><code>from bisect import bisect_left, bisect_right</code><br>
                         정렬된 배열에서 O(log N) 탐색.<br>
-                        <code>bisect_left(arr, x)</code> → x 이상인 첫 위치</p>
-                        <span class="lang-py"><a href="https://docs.python.org/3/library/bisect.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: bisect ↗</a></span>
-                    </div>
-                    <div class="concept-card">
+                        <code>bisect_left(arr, x)</code> → x 이상인 첫 위치<br>
+                        <code>bisect_right(arr, x)</code> → x 초과인 첫 위치</p>
+                        <a href="https://docs.python.org/3/library/bisect.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: bisect ↗</a>
+                    </div></span>
+                    <span class="lang-cpp"><div class="concept-card">
                         <h3>C++: &lt;algorithm&gt;</h3>
                         <p><code>lower_bound(begin, end, x)</code> → x 이상인 첫 위치<br>
                         <code>upper_bound(begin, end, x)</code> → x 초과인 첫 위치<br>
                         <code>binary_search(begin, end, x)</code> → 존재 여부</p>
-                        <span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/algorithm/lower_bound" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: lower_bound / upper_bound ↗</a></span>
-                    </div>
+                        <a href="https://en.cppreference.com/w/cpp/algorithm/lower_bound" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: lower_bound / upper_bound ↗</a>
+                    </div></span>
                 </div>
             </div>
 

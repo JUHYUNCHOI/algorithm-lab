@@ -7,8 +7,12 @@ window._setAlgoLang = function(lang) {
     window._algoLang = lang;
     localStorage.setItem('algo-lang', lang);
     document.body.setAttribute('data-lang', lang);
-    // Sync language toggle UI
+    // Sync language toggle UI (in-tab toggle)
     document.querySelectorAll('.lang-toggle-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    // Sync sidebar selector
+    document.querySelectorAll('#lang-selector .selector-btn').forEach(function(btn) {
         btn.classList.toggle('active', btn.dataset.lang === lang);
     });
     // Sync code tab lang-select
@@ -31,6 +35,32 @@ window._setAlgoLang = function(lang) {
     let currentTab = 'landing';
     let currentProblemId = null;
     let expandedTopicId = null;
+
+    // ===== Sidebar global selectors =====
+    // 1) Korean/English switch
+    document.querySelectorAll('#locale-selector .selector-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var locale = btn.dataset.locale;
+            if (locale === 'ko') {
+                window.location.href = '../index.html' + window.location.hash;
+            }
+            // 'en' is current page, no action
+        });
+    });
+    // 2) Python/C++ switch (sidebar)
+    (function() {
+        var curLang = window._algoLang || 'python';
+        document.querySelectorAll('#lang-selector .selector-btn').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.lang === curLang);
+            btn.addEventListener('click', function() {
+                window._setAlgoLang(btn.dataset.lang);
+                document.querySelectorAll('#lang-selector .selector-btn').forEach(function(b) {
+                    b.classList.toggle('active', b.dataset.lang === btn.dataset.lang);
+                });
+                renderContent();
+            });
+        });
+    })();
 
     // ===== Sidebar toggle (mobile) =====
     sidebarToggle.addEventListener('click', () => {
