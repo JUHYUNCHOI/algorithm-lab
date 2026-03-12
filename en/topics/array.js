@@ -1,0 +1,2723 @@
+// =========================================================
+// Array Topic Module
+// =========================================================
+const arrayTopic = {
+    id: 'array',
+    title: 'Array',
+    icon: '📊',
+    category: 'Data Structures',
+    order: 2,
+    description: 'Key patterns for solving array problems: Two Pointers, Sliding Window, and range processing',
+    relatedNote: 'Other techniques like Kadane\'s algorithm, Monotone Stack, and Dutch National Flag are also commonly used in array problems.',
+
+    sidebarExpandable: true,
+
+    // Single unified tab (for topic overview)
+    tabs: [{ id: 'concept', label: 'Learn' }],
+
+    // Problem-type mapping
+    problemMeta: {
+        'lc-1':     { type: 'Hash Map Lookup',    color: 'var(--accent)', vizMethod: '_renderVizTwoSum' },
+        'lc-121':   { type: 'Single Pass',        color: 'var(--green)',  vizMethod: '_renderVizStock' },
+        'lc-15':    { type: 'Two Pointers',       color: '#e17055',      vizMethod: '_renderViz3Sum' },
+        'boj-2003': { type: 'Sliding Window',     color: '#6c5ce7',      vizMethod: '_renderVizSlidingWindow' }
+    },
+
+    // ===== Problem tab definitions =====
+    getProblemTabs(problemId) {
+        const prob = this.problems.find(p => p.id === problemId);
+        // New structure: approach-based tabs when solutions have hints
+        if (prob && prob.solutions && prob.solutions.length > 0 && prob.solutions[0].hints) {
+            const icons = ['🔨', '⚡', '🚀'];
+            const tabs = [{ id: 'problem', label: 'Problem', icon: '📋' }];
+            prob.solutions.forEach((sol, i) => {
+                tabs.push({ id: 'approach-' + i, label: sol.approach, icon: icons[i] || '📌' });
+            });
+            if (prob.library) {
+                tabs.push({ id: 'library', label: 'Learn More', icon: '📦' });
+            }
+            return tabs;
+        }
+        // Legacy: original 4-tab structure
+        return [
+            { id: 'problem', label: 'Problem', icon: '📋' },
+            { id: 'think', label: 'Approach', icon: '💡' },
+            { id: 'sim', label: 'Simulation', icon: '🎮' },
+            { id: 'code', label: 'Code', icon: '💻' }
+        ];
+    },
+
+    // ===== Problem content rendering (called from app.js) =====
+    renderProblemContent(container, problemId, tabId) {
+        const self = this;
+        const prob = self.problems.find(p => p.id === problemId);
+        if (!prob) { container.innerHTML = '<p>Problem not found.</p>'; return; }
+
+        const meta = self.problemMeta[problemId];
+        if (!meta) { container.innerHTML = '<p>Problem metadata not found.</p>'; return; }
+
+        self._clearVizState();
+
+        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
+        header.innerHTML =
+            '<span style="padding:4px 12px;background:' + meta.color + '15;border-radius:8px;font-size:0.85rem;color:' + meta.color + ';font-weight:600;">' + meta.type + '</span>' +
+            '<span class="problem-diff ' + prob.difficulty + '">' + (diffMap[prob.difficulty] || '') + '</span>';
+        container.appendChild(header);
+
+        const flowMap = {
+            problem: { intro: 'Start by reading the problem and understanding the I/O format.', icon: '📋' },
+            think:   { intro: 'Don\'t jump to coding — open the hints step by step to build your strategy.', icon: '💡' },
+            sim:     { intro: prob.simIntro || 'See how the concepts from the hints actually work in practice.', icon: '🎮' },
+            code:    { intro: 'Now let\'s turn the approach into code!', icon: '💻' }
+        };
+        const ft = flowMap[tabId];
+        if (ft) {
+            const introDiv = document.createElement('div');
+            introDiv.className = 'flow-intro';
+            introDiv.innerHTML = '<span class="flow-intro-icon">' + ft.icon + '</span><span>' + ft.intro + '</span>';
+            container.appendChild(introDiv);
+        }
+
+        const contentDiv = document.createElement('div');
+        container.appendChild(contentDiv);
+
+        // Approach-based tabs or legacy tabs
+        if (tabId.startsWith('approach-')) {
+            const idx = parseInt(tabId.split('-')[1]);
+            self._renderApproachContent(contentDiv, prob, idx);
+        } else if (tabId === 'library') {
+            self._renderLibraryTab(contentDiv, prob);
+        } else {
+            switch (tabId) {
+                case 'problem': self._renderProblemTab(contentDiv, prob); break;
+                case 'think':   self._renderThinkTab(contentDiv, prob); break;
+                case 'sim':     if (meta.vizMethod) self[meta.vizMethod](contentDiv); break;
+                case 'code':    self._renderCodeTab(contentDiv, prob); break;
+            }
+        }
+
+        // Next tab navigation button
+        const allTabs = self.getProblemTabs(problemId);
+        const curIdx = allTabs.findIndex(t => t.id === tabId);
+        if (curIdx >= 0 && curIdx < allTabs.length - 1) {
+            const nextTab = allTabs[curIdx + 1];
+            // CTA text
+            let ctaText = 'Continue to next step';
+            if (tabId === 'problem') ctaText = 'Understood the problem?';
+            else if (tabId.startsWith('approach-')) ctaText = 'Got this approach?';
+            else if (tabId === 'think') ctaText = 'Reviewed all hints?';
+            else if (tabId === 'sim') ctaText = 'Understand how it works?';
+            const nextDiv = document.createElement('div');
+            nextDiv.className = 'flow-next';
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaText + ' → ' + nextTab.label + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextTab.id); });
+            container.appendChild(nextDiv);
+        }
+    },
+
+    // ===== Problem sub-tab: Problem =====
+    _renderProblemTab(contentEl, prob) {
+        const isLC = prob.link.includes('leetcode');
+        contentEl.innerHTML =
+            prob.descriptionHTML +
+            '<div style="text-align:right;margin-top:1.2rem;">' +
+            '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
+            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>';
+        contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
+    },
+
+    // ===== Problem sub-tab: Approach =====
+    _renderThinkTab(contentEl, prob) {
+        const guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = 'Click each step to reveal hints';
+        contentEl.appendChild(guide);
+
+        const hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+        const openedState = {};
+
+        prob.hints.forEach(function(hint, idx) {
+            const step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML =
+                '<div class="hint-step-header">' +
+                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
+                '<span class="hint-step-title">' + hint.title + '</span>' +
+                '<span class="hint-step-toggle">▾</span></div>' +
+                '<div class="hint-step-body">' + hint.content + '</div>';
+
+            // If viz exists, add container in advance
+            if (hint.viz) {
+                var vizArea = document.createElement('div');
+                vizArea.className = 'hint-viz-area';
+                step.querySelector('.hint-step-body').appendChild(vizArea);
+            }
+
+            step.querySelector('.hint-step-header').addEventListener('click', function() {
+                if (step.classList.contains('locked')) return;
+                var wasOpened = step.classList.contains('opened');
+                step.classList.toggle('opened');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('opened') ? '▴' : '▾';
+                if (!openedState[idx]) {
+                    openedState[idx] = true;
+                    if (idx + 1 < prob.hints.length) {
+                        var nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+                // viz lifecycle management
+                if (hint.viz) {
+                    var va = step.querySelector('.hint-viz-area');
+                    if (!wasOpened) {
+                        // Opened: start viz (clean up previous one first)
+                        if (step._vizCtrl) { step._vizCtrl.destroy(); }
+                        va.innerHTML = '';
+                        step._vizCtrl = hint.viz(va);
+                    } else {
+                        // Closed: stop viz
+                        if (step._vizCtrl) { step._vizCtrl.stop(); }
+                    }
+                }
+            });
+            hintsDiv.appendChild(step);
+        });
+        contentEl.appendChild(hintsDiv);
+
+        // Apply hljs highlighting + line-by-line animation to code blocks
+        if (window.hljs) {
+            hintsDiv.querySelectorAll('pre code').forEach(function(codeEl) {
+                hljs.highlightElement(codeEl);
+                var lines = codeEl.innerHTML.split('\n');
+                codeEl.innerHTML = lines.map(function(line, i) {
+                    return '<div class="code-line" style="--i:' + i + '">' + (line || '&nbsp;') + '</div>';
+                }).join('');
+            });
+        }
+    },
+
+    // ===== Problem sub-tab: Code =====
+    _renderCodeTab(contentEl, prob) {
+        if (prob.solutions && prob.solutions.length > 0) {
+            window.renderSolutionsCodeTab(contentEl, prob);
+            return;
+        }
+        const isLC = prob.link.includes('leetcode');
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">' +
+            '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
+            '<option value="python">Python</option><option value="cpp">C++</option></select>' +
+            '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">' +
+            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>' +
+            '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
+        var codeEl = wrapper.querySelector('code');
+        codeEl.textContent = prob.templates.python;
+        if (window.hljs) hljs.highlightElement(codeEl);
+        wrapper.querySelector('.str-lang-select').addEventListener('change', function() {
+            var lang = this.value;
+            var langMap = { python: 'language-python', cpp: 'language-cpp' };
+            codeEl.className = langMap[lang];
+            codeEl.textContent = prob.templates[lang];
+            if (window.hljs) hljs.highlightElement(codeEl);
+        });
+        contentEl.appendChild(wrapper);
+    },
+
+    // ===== 접근법 통합 렌더러 (힌트 + 시뮬레이션 + 코드 + 한계/비교) =====
+    _renderApproachContent(contentEl, prob, approachIdx) {
+        const sol = prob.solutions[approachIdx];
+        const self = this;
+
+        // 접근법 설명 + 복잡도 뱃지
+        const descDiv = document.createElement('div');
+        descDiv.className = 'approach-desc-header';
+        descDiv.innerHTML =
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;flex-wrap:wrap;">' +
+            '<span class="approach-meta-badge time">⏱ ' + sol.timeComplexity + '</span>' +
+            '<span class="approach-meta-badge space">💾 ' + sol.spaceComplexity + '</span>' +
+            '</div>' +
+            '<p style="color:var(--text2);font-size:0.95rem;line-height:1.6;margin:0;">' + sol.description + '</p>';
+        contentEl.appendChild(descDiv);
+
+        // 1) 💡 생각해보기
+        if (sol.hints && sol.hints.length > 0) {
+            var section1 = document.createElement('div');
+            section1.className = 'approach-flow-section';
+            section1.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">💡</span>생각해보기</div>';
+            self._renderHints(section1, sol.hints);
+            contentEl.appendChild(section1);
+        }
+
+        // 2) 📊 시뮬레이션
+        if (sol.vizMethod) {
+            var section2 = document.createElement('div');
+            section2.className = 'approach-flow-section';
+            section2.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">📊</span>시뮬레이션</div>';
+            if (sol.simIntro) {
+                var intro = document.createElement('p');
+                intro.style.cssText = 'color:var(--text2);font-size:0.9rem;margin:0 0 1rem;';
+                intro.textContent = sol.simIntro;
+                section2.appendChild(intro);
+            }
+            var simDiv = document.createElement('div');
+            section2.appendChild(simDiv);
+            self[sol.vizMethod](simDiv);
+            contentEl.appendChild(section2);
+        }
+
+        // 3) 💻 코드
+        var section3 = document.createElement('div');
+        section3.className = 'approach-flow-section';
+        section3.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">💻</span>코드</div>';
+        self._renderSingleSolutionCode(section3, sol, prob);
+        contentEl.appendChild(section3);
+
+        // 4) ⚠️ 한계 or ✅ 비교
+        if (sol.limitation) {
+            var limitDiv = document.createElement('div');
+            limitDiv.className = 'approach-callout limitation';
+            limitDiv.innerHTML = '<div class="approach-callout-icon">⚠️</div><div class="approach-callout-body"><div class="approach-callout-title">이 방법의 한계</div>' + sol.limitation + '</div>';
+            contentEl.appendChild(limitDiv);
+        }
+        if (sol.comparison) {
+            var compDiv = document.createElement('div');
+            compDiv.className = 'approach-callout comparison';
+            compDiv.innerHTML = '<div class="approach-callout-icon">✅</div><div class="approach-callout-body"><div class="approach-callout-title">개선 결과</div>' + sol.comparison + '</div>';
+            contentEl.appendChild(compDiv);
+        }
+    },
+
+    // ===== 힌트 렌더러 (접근법별 힌트 배열 렌더링) =====
+    _renderHints(contentEl, hints) {
+        var guide = document.createElement('div');
+        guide.className = 'hint-steps-guide';
+        guide.textContent = 'Click each step to reveal hints';
+        contentEl.appendChild(guide);
+
+        var hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hint-steps';
+        var openedState = {};
+
+        hints.forEach(function(hint, idx) {
+            var step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML =
+                '<div class="hint-step-header">' +
+                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
+                '<span class="hint-step-title">' + hint.title + '</span>' +
+                '<span class="hint-step-toggle">▾</span></div>' +
+                '<div class="hint-step-body">' + hint.content + '</div>';
+            if (hint.viz) {
+                var vizArea = document.createElement('div');
+                vizArea.className = 'hint-viz-area';
+                step.querySelector('.hint-step-body').appendChild(vizArea);
+            }
+            step.querySelector('.hint-step-header').addEventListener('click', function() {
+                if (step.classList.contains('locked')) return;
+                var wasOpened = step.classList.contains('opened');
+                step.classList.toggle('opened');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('opened') ? '▴' : '▾';
+                if (!openedState[idx]) {
+                    openedState[idx] = true;
+                    if (idx + 1 < hints.length) {
+                        var nextStep = hintsDiv.children[idx + 1];
+                        if (nextStep) nextStep.classList.remove('locked');
+                    }
+                }
+                if (hint.viz) {
+                    var va = step.querySelector('.hint-viz-area');
+                    if (!wasOpened) {
+                        if (step._vizCtrl) { step._vizCtrl.destroy(); }
+                        va.innerHTML = '';
+                        step._vizCtrl = hint.viz(va);
+                    } else {
+                        if (step._vizCtrl) { step._vizCtrl.stop(); }
+                    }
+                }
+            });
+            hintsDiv.appendChild(step);
+        });
+        contentEl.appendChild(hintsDiv);
+
+        if (window.hljs) {
+            hintsDiv.querySelectorAll('pre code').forEach(function(codeEl) {
+                hljs.highlightElement(codeEl);
+                var lines = codeEl.innerHTML.split('\n');
+                codeEl.innerHTML = lines.map(function(line, i) {
+                    return '<div class="code-line" style="--i:' + i + '">' + (line || '&nbsp;') + '</div>';
+                }).join('');
+            });
+        }
+    },
+
+    // ===== 단일 접근법 코드 렌더러 =====
+    _renderSingleSolutionCode(contentEl, sol, prob) {
+        var isLC = prob.link.includes('leetcode');
+        var wrapper = document.createElement('div');
+        var langs = Object.keys(sol.templates);
+        var langNames = { python: 'Python', cpp: 'C++' };
+        var currentLang = langs[0] || 'python';
+        var currentStep = -1;
+
+        // 컨트롤 바: 언어 셀렉터 + 스텝 컨트롤 (오른쪽 상단)
+        var controls = document.createElement('div');
+        controls.style.cssText = 'display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;';
+        var stepBtnHTML = '';
+        if (sol.codeSteps) {
+            stepBtnHTML =
+                '<div style="display:flex;gap:6px;align-items:center;margin-left:auto;">' +
+                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← 이전</button>' +
+                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">Before Start</span>' +
+                '<button class="btn btn-primary code-step-btn cs-next pulse-hint" style="font-size:0.8rem;padding:4px 10px;">시작 →</button></div>';
+        }
+        controls.innerHTML =
+            '<select class="lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--bg2);color:var(--text);font-family:inherit;">' +
+            langs.map(function(l) { return '<option value="' + l + '">' + (langNames[l] || l) + '</option>'; }).join('') +
+            '</select>' + stepBtnHTML;
+        wrapper.appendChild(controls);
+        var select = controls.querySelector('.lang-select');
+
+        var stepDesc;
+        var topPrev, topNext, topCounter, botPrev, botNext, botCounter;
+        if (sol.codeSteps) {
+            topPrev = controls.querySelector('.cs-prev');
+            topNext = controls.querySelector('.cs-next');
+            topCounter = controls.querySelector('.code-step-counter');
+
+            stepDesc = document.createElement('div');
+            stepDesc.className = 'code-step-desc';
+            stepDesc.textContent = '▶ 다음 버튼을 눌러 코드를 단계별로 확인하세요';
+            wrapper.appendChild(stepDesc);
+        }
+
+        // 코드 블록 (macOS 에디터 스타일)
+        var codeBlock = document.createElement('div');
+        codeBlock.className = 'code-block';
+        codeBlock.innerHTML =
+            '<div class="code-block-header">' +
+            '<div class="code-block-dots"><span></span><span></span><span></span></div>' +
+            '<span class="code-block-title">solution.py</span>' +
+            '</div>' +
+            '<pre><code class="language-python"></code></pre>';
+        wrapper.appendChild(codeBlock);
+
+        // 스텝 컨트롤 — 오른쪽 하단 (sticky, 같은 작은 크기)
+        if (sol.codeSteps) {
+            var botCtrl = document.createElement('div');
+            botCtrl.style.cssText = 'display:flex;gap:6px;align-items:center;justify-content:flex-end;position:sticky;bottom:12px;z-index:100;margin-top:12px;padding:8px 0;';
+            botCtrl.innerHTML =
+                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← 이전</button>' +
+                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">Before Start</span>' +
+                '<button class="btn btn-primary code-step-btn cs-next" style="font-size:0.8rem;padding:4px 10px;">다음 →</button>';
+            wrapper.appendChild(botCtrl);
+
+            botPrev = botCtrl.querySelector('.cs-prev');
+            botNext = botCtrl.querySelector('.cs-next');
+            botCounter = botCtrl.querySelector('.code-step-counter');
+        }
+        var codeEl = codeBlock.querySelector('code');
+        var codeTitle = codeBlock.querySelector('.code-block-title');
+
+        function langClass(l) { return l === 'cpp' ? 'cpp' : l; }
+        function getSteps() { return sol.codeSteps ? (sol.codeSteps[currentLang] || []) : []; }
+
+        function highlightNewLines(codeElm, newLineNums) {
+            if (!newLineNums || !newLineNums.length) return;
+            var html = codeElm.innerHTML;
+            var lines = html.split('\n');
+            codeElm.innerHTML = lines.map(function(line, i) {
+                return newLineNums.indexOf(i + 1) !== -1 ? '<mark class="code-line-new">' + line + '</mark>' : line;
+            }).join('\n');
+        }
+
+        function render() {
+            var titleMap = { python: 'solution.py', cpp: 'solution.cpp' };
+            codeEl.className = 'language-' + langClass(currentLang);
+            codeTitle.textContent = titleMap[currentLang] || 'solution';
+
+            var steps = getSteps();
+
+            if (steps.length > 0 && currentStep >= 0 && currentStep < steps.length) {
+                var step = steps[currentStep];
+                // 누적 코드 빌드
+                var fragments = steps.slice(0, currentStep + 1).filter(function(s) { return s.code; }).map(function(s) { return s.code; });
+                var accumulated = fragments.join('\n\n');
+                codeEl.textContent = accumulated;
+                codeEl.removeAttribute('data-highlighted');
+                if (window.hljs) hljs.highlightElement(codeEl);
+                // 새 라인 하이라이트
+                if (step.code) {
+                    var prevFrags = steps.slice(0, currentStep).filter(function(s) { return s.code; }).map(function(s) { return s.code; });
+                    var prevAcc = prevFrags.join('\n\n');
+                    var prevCount = prevAcc ? prevAcc.split('\n').length : 0;
+                    var totalCount = accumulated.split('\n').length;
+                    var startNew = prevCount > 0 ? prevCount + 2 : 1;
+                    var newLines = [];
+                    for (var ln = startNew; ln <= totalCount; ln++) newLines.push(ln);
+                    highlightNewLines(codeEl, newLines);
+                }
+                if (stepDesc) {
+                    stepDesc.innerHTML = '<span class="step-desc-title">' + step.title + '</span><span class="step-desc-body">' + step.desc.replace(/\n/g, '<br>') + '</span>';
+                    stepDesc.style.display = 'block';
+                }
+            } else {
+                codeEl.textContent = sol.templates[currentLang] || '';
+                codeEl.removeAttribute('data-highlighted');
+                if (window.hljs) hljs.highlightElement(codeEl);
+                if (stepDesc) {
+                    if (currentStep < 0 && steps.length > 0) {
+                        stepDesc.textContent = '▶ 다음 버튼을 눌러 코드를 단계별로 확인하세요';
+                    } else if (steps.length === 0) {
+                        stepDesc.style.display = 'none';
+                    }
+                }
+            }
+
+            // 스텝 컨트롤 상태 업데이트 (위/아래 양쪽 동기화)
+            if (sol.codeSteps) {
+                [
+                    [topPrev, topNext, topCounter],
+                    [botPrev, botNext, botCounter]
+                ].forEach(function(trio) {
+                    if (!trio[0]) return;
+                    trio[0].disabled = currentStep < 0;
+                    trio[1].disabled = currentStep >= steps.length - 1;
+                    if (currentStep < 0) {
+                        trio[2].textContent = 'Before Start';
+                        trio[1].textContent = '시작 →';
+                    } else {
+                        trio[2].textContent = 'Step ' + (currentStep + 1) + '/' + steps.length;
+                        trio[1].textContent = '다음 →';
+                    }
+                });
+            }
+        }
+
+        // 이벤트
+        select.addEventListener('change', function() {
+            currentLang = this.value;
+            currentStep = -1;
+            render();
+        });
+        if (sol.codeSteps) {
+            function doPrev() { if (currentStep > -1) { currentStep--; render(); } }
+            function doNext() {
+                topNext.classList.remove('pulse-hint');
+                botNext.classList.remove('pulse-hint');
+                var steps = getSteps();
+                if (currentStep < steps.length - 1) { currentStep++; render(); }
+            }
+            topPrev.addEventListener('click', doPrev);
+            topNext.addEventListener('click', doNext);
+            botPrev.addEventListener('click', doPrev);
+            botNext.addEventListener('click', doNext);
+        }
+
+        render();
+        contentEl.appendChild(wrapper);
+    },
+
+    // ===== 라이브러리/모듈 탭 =====
+    _renderLibraryTab(contentEl, prob) {
+        if (!prob.library) {
+            contentEl.innerHTML = '<p>이 문제에 대한 라이브러리 정보가 아직 없습니다.</p>';
+            return;
+        }
+        var lib = prob.library;
+        var section = document.createElement('div');
+        section.className = 'approach-flow-section';
+        section.innerHTML =
+            '<div class="approach-flow-title"><span class="approach-flow-icon">📦</span>' + lib.title + '</div>' +
+            '<p style="color:var(--text2);line-height:1.7;margin-bottom:1rem;">' + lib.description + '</p>' +
+            '<div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span></span><span></span><span></span></div><span class="code-block-title">module.py</span></div>' +
+            '<pre><code class="language-python">' + lib.code + '</code></pre></div>' +
+            (lib.note ? '<div class="approach-callout comparison" style="margin-top:1rem;"><div class="approach-callout-icon">💡</div><div class="approach-callout-body">' + lib.note + '</div></div>' : '');
+        contentEl.appendChild(section);
+        contentEl.querySelectorAll('pre code').forEach(function(codeEl) {
+            if (window.hljs) hljs.highlightElement(codeEl);
+        });
+    },
+
+    // ===== Concept Tab =====
+    renderConcept(container) {
+        container.innerHTML = `
+            <div class="hero">
+                <h2>📊 배열 (Array)</h2>
+                <p class="hero-sub">배열 위에서 효율적으로 문제를 푸는 핵심 패턴을 배워봅시다!</p>
+            </div>
+
+            <!-- 섹션 1: 배열 기초 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">1</span> 배열 기초
+                </div>
+                <div class="analogy-box">
+                    <strong>Understanding by analogy:</strong> 배열은 <em>"번호가 적힌 사물함"</em>입니다!
+                    0번 사물함, 1번 사물함... 순서대로 나란히 있고, 번호만 알면 바로 열어볼 수 있습니다(O(1)).
+                    다만 중간에 사물함을 끼워넣으려면 뒤의 것들을 모두 밀어야 합니다(O(n)).
+                </div>
+                <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="2" y="14" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.3"/><rect x="14" y="14" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.6"/><rect x="26" y="14" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.9"/></svg>
+                        </div>
+                        <h3>인덱스 접근 O(1)</h3>
+                        <p><code>arr[i]</code>로 어떤 위치든 바로 접근할 수 있습니다. 배열의 가장 큰 장점입니다!</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--green)">O(n)</text></svg>
+                        </div>
+                        <h3>순회</h3>
+                        <p>배열의 모든 원소를 한 번씩 보면 O(n)입니다. 대부분의 배열 문제의 기본입니다.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="12" font-weight="bold" fill="var(--yellow)">insert</text></svg>
+                        </div>
+                        <h3>삽입/삭제 O(n)</h3>
+                        <p>중간에 넣거나 빼려면 뒤의 원소를 모두 밀어야 합니다. 끝에서의 작업은 O(1)!</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">sorted</text></svg>
+                        </div>
+                        <h3>정렬된 배열</h3>
+                        <p>정렬되어 있으면 이분 탐색(O(log n))이 가능합니다. 투 포인터도 정렬 후 사용합니다.</p>
+                    </div>
+                </div>
+                <span class="lang-py"><div class="code-block">
+                    <pre><code class="language-python"># 배열(리스트) 기본 조작
+arr = [3, 1, 4, 1, 5, 9, 2, 6]
+
+print(arr[0])       # 3 — 첫 원소
+print(arr[-1])      # 6 — 마지막 원소
+print(len(arr))     # 8 — 길이
+
+arr.append(7)       # 끝에 추가: O(1)
+arr.sort()          # 정렬: O(n log n)
+print(arr)          # [1, 1, 2, 3, 4, 5, 6, 7, 9]
+
+# 리스트 컴프리헨션 — 짝수만 골라내기
+evens = [x for x in arr if x % 2 == 0]
+print(evens)        # [2, 4, 6]</code></pre>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; arr = {3, 1, 4, 1, 5, 9, 2, 6};
+
+    cout &lt;&lt; arr[0] &lt;&lt; endl;       // 3 — 첫 원소
+    cout &lt;&lt; arr.back() &lt;&lt; endl;   // 6 — 마지막 원소
+    cout &lt;&lt; arr.size() &lt;&lt; endl;   // 8 — 길이
+
+    arr.push_back(7);              // 끝에 추가: O(1)
+    sort(arr.begin(), arr.end());  // Sort: O(n log n)
+
+    // 짝수만 골라내기
+    vector&lt;int&gt; evens;
+    for (int x : arr) {
+        if (x % 2 == 0) evens.push_back(x);
+    }
+    // evens = {2, 4, 6}
+}</code></pre>
+                </div></span>
+                <div style="margin-top:0.5rem;">
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#list" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: list ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: vector ↗</a></span>
+                </div>
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">배열의 중간(인덱스 3)에 원소를 삽입하면 시간 복잡도는? 왜 그럴까요?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>
+                    <div class="think-box-answer">
+                        <strong>O(n)</strong>입니다! 인덱스 3 이후의 모든 원소를 한 칸씩 뒤로 밀어야 하기 때문입니다.
+                        배열 길이가 n이면 최대 n-3개의 원소를 이동해야 합니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 섹션 2: 투 포인터 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">2</span> 투 포인터 (Two Pointers)
+                </div>
+                <div class="analogy-box">
+                    <strong>Understanding by analogy:</strong> <em>"양쪽 끝에서 동시에 걸어오는 두 사람"</em>입니다!
+                    정렬된 배열에서 두 수의 합을 찾을 때, 합이 너무 크면 오른쪽을 줄이고, 너무 작으면 왼쪽을 늘립니다.
+                    이중 for문(O(n²)) 대신 <strong>O(n)</strong>에 해결할 수 있습니다!
+                </div>
+                <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--green)">L→</text></svg>
+                        </div>
+                        <h3>왼쪽에서 시작</h3>
+                        <p><code>left = 0</code>에서 시작하여 오른쪽으로 이동합니다.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--accent)">←R</text></svg>
+                        </div>
+                        <h3>오른쪽에서 시작</h3>
+                        <p><code>right = n-1</code>에서 시작하여 왼쪽으로 이동합니다.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="22" font-size="18" font-weight="bold" fill="var(--yellow)">↔</text></svg>
+                        </div>
+                        <h3>조건에 따라 이동</h3>
+                        <p>합이 크면 right--, 작으면 left++. O(n)에 완료!</p>
+                    </div>
+                </div>
+                <span class="lang-py"><div class="code-block">
+                    <pre><code class="language-python"># 투 포인터: 정렬된 배열에서 합이 target인 두 수 찾기
+def two_sum_sorted(arr, target):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        s = arr[left] + arr[right]
+        if s == target:
+            return [left, right]
+        elif s < target:
+            left += 1      # 합이 작으니 왼쪽을 키움
+        else:
+            right -= 1     # 합이 크니 오른쪽을 줄임
+    return [-1, -1]        # 못 찾음
+
+arr = [1, 2, 4, 6, 8, 10]
+print(two_sum_sorted(arr, 10))  # [1, 4] → 2+8=10</code></pre>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 투 포인터: 정렬된 배열에서 합이 target인 두 수 찾기
+vector&lt;int&gt; two_sum_sorted(vector&lt;int&gt;&amp; arr, int target) {
+    int left = 0, right = arr.size() - 1;
+    while (left &lt; right) {
+        int s = arr[left] + arr[right];
+        if (s == target)
+            return {left, right};
+        else if (s &lt; target)
+            left++;        // 합이 작으니 왼쪽을 키움
+        else
+            right--;       // 합이 크니 오른쪽을 줄임
+    }
+    return {-1, -1};       // 못 찾음
+}
+
+int main() {
+    vector&lt;int&gt; arr = {1, 2, 4, 6, 8, 10};
+    auto res = two_sum_sorted(arr, 10);
+    cout &lt;&lt; res[0] &lt;&lt; ", " &lt;&lt; res[1] &lt;&lt; endl;  // 1, 4 → 2+8=10
+}</code></pre>
+                </div></span>
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">정렬된 [1, 3, 5, 7, 9]에서 합이 12인 두 수를 투 포인터로 찾으면 몇 번 비교할까요?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>
+                    <div class="think-box-answer">
+                        <strong>3번</strong>입니다! 1+9=10(작음→L++), 3+9=12(찾음!). 실제로는 2번만에 찾습니다.
+                        이중 for문이라면 최대 10번 비교해야 할 것을 훨씬 빠르게 해결합니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 섹션 3: 슬라이딩 윈도우 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">3</span> 슬라이딩 윈도우 (Sliding Window)
+                </div>
+                <div class="analogy-box">
+                    <strong>Understanding by analogy:</strong> <em>"창문을 옆으로 밀면서 바깥 풍경 보기"</em>입니다!
+                    크기가 고정된 창문(윈도우)을 배열 위에서 한 칸씩 밀면서,
+                    창문 안에 보이는 원소들의 합/최대/최소를 계속 추적합니다.
+                    매번 처음부터 다시 세지 않고, 빠진 것은 빼고 들어온 것은 더합니다!
+                </div>
+                <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="12" width="20" height="14" rx="3" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4,2"/><rect x="6" y="14" width="6" height="10" rx="1" fill="var(--green)" opacity="0.4"/><rect x="13" y="14" width="6" height="10" rx="1" fill="var(--green)" opacity="0.4"/></svg>
+                        </div>
+                        <h3>고정 크기 윈도우</h3>
+                        <p>크기 K인 윈도우를 한 칸씩 밀며 합을 갱신합니다. O(n)!</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="12" width="28" height="14" rx="3" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-dasharray="4,2"/><text x="10" y="22" font-size="8" fill="var(--text2)">가변</text></svg>
+                        </div>
+                        <h3>가변 크기 윈도우</h3>
+                        <p>조건을 만족하면 왼쪽을 줄이고, 아니면 오른쪽을 늘립니다.</p>
+                    </div>
+                </div>
+                <span class="lang-py"><div class="code-block">
+                    <pre><code class="language-python"># 슬라이딩 윈도우: 크기 K인 부분 배열의 최대 합
+def max_subarray_sum(arr, k):
+    # 처음 윈도우의 합
+    window_sum = sum(arr[:k])
+    max_sum = window_sum
+
+    # 한 칸씩 밀기: 새로 들어온 건 더하고, 나간 건 빼기
+    for i in range(k, len(arr)):
+        window_sum += arr[i] - arr[i - k]
+        max_sum = max(max_sum, window_sum)
+    return max_sum
+
+arr = [2, 1, 5, 1, 3, 2]
+print(max_subarray_sum(arr, 3))  # 9 (= 5+1+3)</code></pre>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 슬라이딩 윈도우: 크기 K인 부분 배열의 최대 합
+int max_subarray_sum(vector&lt;int&gt;&amp; arr, int k) {
+    // 처음 윈도우의 합
+    int window_sum = 0;
+    for (int i = 0; i &lt; k; i++)
+        window_sum += arr[i];
+    int max_sum = window_sum;
+
+    // 한 칸씩 밀기: 새로 들어온 건 더하고, 나간 건 빼기
+    for (int i = k; i &lt; (int)arr.size(); i++) {
+        window_sum += arr[i] - arr[i - k];
+        max_sum = max(max_sum, window_sum);
+    }
+    return max_sum;
+}
+
+int main() {
+    vector&lt;int&gt; arr = {2, 1, 5, 1, 3, 2};
+    cout &lt;&lt; max_subarray_sum(arr, 3) &lt;&lt; endl;  // 9 (= 5+1+3)
+}</code></pre>
+                </div></span>
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">[1, 4, 2, 10, 2, 3, 1, 0, 20]에서 크기 4인 부분 배열의 최대 합은?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>
+                    <div class="think-box-answer">
+                        <strong>24</strong>입니다! [2, 3, 1, 0, 20]에서 윈도우 [3, 1, 0, 20] = 24가 아니라,
+                        [10, 2, 3, 1] = 16, [2, 3, 1, 0] = 6, [3, 1, 0, 20] = 24. 정답은 24!
+                    </div>
+                </div>
+            </div>
+
+            <!-- 섹션 4: 배열 문제 풀이 전략 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">4</span> 배열 문제 풀이 전략
+                </div>
+                <div class="analogy-box">
+                    <strong>패턴을 알면 풀이가 보입니다!</strong> 배열 문제를 보면 먼저 이런 질문을 해보세요:
+                    정렬하면 쉬워지나? → 투 포인터. 구간을 보는 건가? → 슬라이딩 윈도우.
+                    각 원소에서 결과를 미리 계산? → 전처리(누적합/곱 배열).
+                </div>
+                <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">sort</text></svg>
+                        </div>
+                        <h3>정렬 후 탐색</h3>
+                        <p>정렬 O(n log n) 후 투 포인터 O(n) = 전체 O(n log n). 브루트 포스 O(n²)보다 빠릅니다!</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">←→</text></svg>
+                        </div>
+                        <h3>좌우 전처리</h3>
+                        <p>왼쪽→오른쪽, 오른쪽→왼쪽 두 번 훑으면 각 위치의 정보를 미리 계산할 수 있습니다.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-icon">
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">max</text></svg>
+                        </div>
+                        <h3>상태 추적</h3>
+                        <p>순회하면서 최솟값/최댓값/누적값을 변수에 추적하면 한 번에 답을 구할 수 있습니다.</p>
+                    </div>
+                </div>
+                <span class="lang-py"><div class="code-block">
+                    <pre><code class="language-python"># 예시: 주식 최대 이익 (한 번 순회, 최솟값 추적)
+def max_profit(prices):
+    min_price = float('inf')
+    max_profit = 0
+    for price in prices:
+        min_price = min(min_price, price)        # 지금까지 최저가
+        max_profit = max(max_profit, price - min_price)  # 지금 팔면?
+    return max_profit
+
+prices = [7, 1, 5, 3, 6, 4]
+print(max_profit(prices))  # 5 (1에 사서 6에 판다)</code></pre>
+                </div></span>
+                <span class="lang-cpp"><div class="code-block">
+                    <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;climits&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+// 예시: 주식 최대 이익 (한 번 순회, 최솟값 추적)
+int max_profit(vector&lt;int&gt;&amp; prices) {
+    int min_price = INT_MAX;
+    int profit = 0;
+    for (int price : prices) {
+        min_price = min(min_price, price);        // 지금까지 최저가
+        profit = max(profit, price - min_price);   // 지금 팔면?
+    }
+    return profit;
+}
+
+int main() {
+    vector&lt;int&gt; prices = {7, 1, 5, 3, 6, 4};
+    cout &lt;&lt; max_profit(prices) &lt;&lt; endl;  // 5 (1에 사서 6에 판다)
+}</code></pre>
+                </div></span>
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">주식 문제를 이중 for문으로 풀면 O(n²)인데, 위의 풀이는 O(?)입니다. 왜 그럴까요?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>
+                    <div class="think-box-answer">
+                        <strong>O(n)</strong>입니다! 배열을 딱 한 번만 순회하면서, "지금까지의 최솟값"을 변수 하나로 추적하기 때문입니다.
+                        각 위치에서 "지금 팔면 이익이 얼마?"를 바로 계산할 수 있습니다.
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.querySelectorAll('pre code').forEach(codeEl => {
+            if (window.hljs) hljs.highlightElement(codeEl);
+        });
+
+        container.querySelectorAll('.think-box-trigger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const box = btn.closest('.think-box');
+                box.classList.add('revealed');
+                btn.style.display = 'none';
+            });
+        });
+    },
+
+    // ===== Visualization Tab =====
+    renderVisualize(container) { container.innerHTML = ''; },
+
+    // ===== 시각화: Two Sum (해시맵) =====
+    _renderVizTwoSum(container) {
+        const self = this;
+        self._clearVizState();
+
+        const DEFAULT_ARR = [2, 7, 11, 4, 1, 5, 3, 8];
+
+        container.innerHTML = `
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+                <label style="font-weight:600;">목표 합:
+                    <input type="number" id="arr-target" value="9"
+                        style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;">
+                    <button class="viz-input-reset" id="arr-viz-reset" title="입력 변경 후 다시 시작">🔄</button>
+                </label>
+            </div>
+
+            ${self._createStepDesc()}
+            <div id="arr-sim-box" class="sim-card" style="overflow:hidden;padding:0;">
+                <div style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;">
+                    <div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">
+                        <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> 확인 중</span>
+                        <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--green);background:rgba(0,184,148,0.2);vertical-align:middle;"></span> 정답</span>
+                    </div>
+                    <div id="arr-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                    <div id="arr-pointer-info" style="font-size:1.1rem;font-weight:600;color:var(--text2);text-align:center;min-height:28px;"></div>
+                </div>
+
+                <div style="display:flex;gap:24px;padding:0 24px 16px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:150px;">
+                        <div style="font-weight:700;margin-bottom:6px;font-size:0.85rem;color:var(--text3);">seen (해시맵)</div>
+                        <div id="sw-seen" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:8px 12px;font-family:'SF Mono','Consolas',monospace;font-size:0.85rem;">{ }</div>
+                    </div>
+                    <div style="flex:1;min-width:150px;">
+                        <div style="font-weight:700;margin-bottom:6px;font-size:0.85rem;color:var(--text3);">상태</div>
+                        <div id="arr-status" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">—</div>
+                    </div>
+                </div>
+
+                <div id="arr-step-bar" style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:12px 24px;border-top:1px solid var(--bg3);background:var(--bg1);">
+                    <button id="arr-prev-btn" class="btn code-step-btn" disabled style="font-size:0.85rem;">← 이전</button>
+                    <span id="arr-step-counter" style="font-size:0.85rem;font-weight:600;color:var(--accent);min-width:60px;text-align:center;">Before Start</span>
+                    <button id="arr-next-btn" class="btn btn-primary code-step-btn" style="font-size:0.85rem;">다음 →</button>
+                </div>
+            </div>
+        `;
+
+        const boxes = container.querySelector('#arr-boxes');
+        const ptrEl = container.querySelector('#arr-pointer-info');
+        const seenEl = container.querySelector('#sw-seen');
+        const statusEl = container.querySelector('#arr-status');
+
+        function renderBoxes(arr) {
+            boxes.innerHTML = '';
+            arr.forEach((v, i) => {
+                const box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = `<div class="str-char-idx">${i}</div><div class="str-char-val">${v}</div>`;
+                boxes.appendChild(box);
+            });
+        }
+
+        function setBoxState(idx, cls) {
+            const box = boxes.querySelector(`[data-idx="${idx}"]`);
+            if (box) box.className = 'str-char-box' + (cls ? ' ' + cls : '');
+        }
+
+        function renderSeen(seen) {
+            if (Object.keys(seen).length === 0) { seenEl.innerHTML = '{ }'; return; }
+            seenEl.innerHTML = Object.entries(seen).map(([k, v]) =>
+                `<span id="seen-key-${k}" style="background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:5px;border:1px solid rgba(0,0,0,0.08);transition:all 0.3s;"><span style="color:#d63384;font-weight:600;">${k}</span><span style="color:#999;">:</span><span style="color:#0d6efd;">${v}</span></span>`
+            ).join(' ');
+        }
+
+        function highlightSeenKey(key, found) {
+            const el = seenEl.querySelector('#seen-key-' + key);
+            if (found && el) {
+                el.style.background = 'rgba(0,184,148,0.4)';
+                el.style.transform = 'scale(1.15)';
+                el.style.display = 'inline-block';
+            } else {
+                // not found — briefly dim all
+                seenEl.querySelectorAll('span[id^="seen-key"]').forEach(s => { s.style.opacity = '0.4'; });
+            }
+        }
+
+        function clearSeenHighlight() {
+            seenEl.querySelectorAll('span[id^="seen-key"]').forEach(s => {
+                s.style.background = 'rgba(0,0,0,0.05)'; s.style.transform = ''; s.style.opacity = '';
+            });
+        }
+
+        function saveState() {
+            return {
+                boxClasses: Array.from(boxes.querySelectorAll('.str-char-box')).map(b => b.className),
+                pointer: ptrEl.innerHTML,
+                seen: seenEl.innerHTML,
+                status: statusEl.innerHTML
+            };
+        }
+
+        function restoreState(s) {
+            boxes.querySelectorAll('.str-char-box').forEach((b, i) => { b.className = s.boxClasses[i]; });
+            ptrEl.innerHTML = s.pointer;
+            seenEl.innerHTML = s.seen;
+            statusEl.innerHTML = s.status;
+        }
+
+        renderBoxes(DEFAULT_ARR);
+
+        const prevBtn = container.querySelector('#arr-prev-btn');
+        const nextBtn = container.querySelector('#arr-next-btn');
+        const stepCounter = container.querySelector('#arr-step-counter');
+        const state = self._vizState;
+
+        function buildSteps() {
+            const target = parseInt(container.querySelector('#arr-target').value) || 9;
+            const nums = DEFAULT_ARR;
+            const steps = [];
+            const seen = {};
+
+            for (let idx = 0; idx < nums.length; idx++) {
+                const i = idx, num = nums[i], comp = target - num;
+                const found = seen.hasOwnProperty(comp);
+                const foundIdx = found ? seen[comp] : -1;
+
+                steps.push({
+                    _before: null,
+                    action: function() {
+                        this._before = saveState();
+                        for (let j = 0; j < nums.length; j++) setBoxState(j, '');
+                        setBoxState(i, 'current');
+                        ptrEl.innerHTML = `<strong>${num}</strong>의 짝꿍 <strong>${comp}</strong> 찾는 중…`;
+                        if (found) {
+                            highlightSeenKey(comp, true);
+                            statusEl.innerHTML = `<span style="color:var(--green);">${comp} 있다! 🎉</span>`;
+                        } else {
+                            highlightSeenKey(comp, false);
+                            statusEl.innerHTML = `<span style="color:var(--text3);">${comp} 없다 → 저장하고 넘어가자</span>`;
+                        }
+                    },
+                    undo: function() { restoreState(this._before); }
+                });
+
+                if (found) {
+                    steps.push({
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (let j = 0; j < nums.length; j++) setBoxState(j, '');
+                            setBoxState(foundIdx, 'matched');
+                            setBoxState(i, 'matched');
+                            clearSeenHighlight();
+                            ptrEl.innerHTML = `<span style="color:var(--green);">${nums[foundIdx]} + ${num} = ${target} ✅</span>`;
+                            statusEl.innerHTML = `<span style="color:var(--green);font-size:1.1rem;">정답! [${foundIdx}, ${i}]</span>`;
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                    break;
+                } else {
+                    const seenSnap = Object.assign({}, seen);
+                    seenSnap[num] = i;
+                    steps.push({
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            clearSeenHighlight();
+                            setBoxState(i, '');
+                            renderSeen(seenSnap);
+                            statusEl.innerHTML = `seen에 ${num} 저장 ✓`;
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                    seen[num] = i;
+                }
+            }
+            return steps;
+        }
+
+        function resetAll() {
+            state.steps = [];
+            state.currentStep = -1;
+            renderBoxes(DEFAULT_ARR);
+            ptrEl.textContent = ''; seenEl.innerHTML = '{ }'; statusEl.textContent = '—';
+            stepCounter.textContent = 'Before Start';
+            prevBtn.disabled = true;
+            nextBtn.disabled = false;
+            nextBtn.textContent = '다음 →';
+        }
+
+        function updateUI() {
+            const idx = state.currentStep;
+            const total = state.steps.length;
+            prevBtn.disabled = idx <= 0;
+            nextBtn.disabled = idx >= total - 1;
+            if (idx >= 0) {
+                stepCounter.textContent = `${idx + 1} / ${total}`;
+            }
+            if (idx >= total - 1) {
+                nextBtn.disabled = false;
+                nextBtn.textContent = '▶ 다시';
+            } else {
+                nextBtn.textContent = '다음 →';
+            }
+        }
+
+        // 다음 버튼
+        nextBtn.addEventListener('click', function() {
+            // 첫 클릭 → 스텝 빌드
+            if (state.steps.length === 0) {
+                renderBoxes(DEFAULT_ARR);
+                ptrEl.textContent = ''; seenEl.innerHTML = '{ }'; statusEl.textContent = '탐색 준비 완료';
+                state.steps = buildSteps();
+                state.currentStep = -1;
+            }
+            // 마지막이면 리셋
+            if (state.currentStep >= state.steps.length - 1) {
+                resetAll();
+                return;
+            }
+            state.currentStep++;
+            state.steps[state.currentStep].action();
+            updateUI();
+        });
+
+        // 이전 버튼
+        prevBtn.addEventListener('click', function() {
+            if (state.currentStep > 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+                updateUI();
+            }
+        });
+
+        // 리셋 버튼
+        container.querySelector('#arr-viz-reset').addEventListener('click', resetAll);
+
+        // 키보드 지원
+        state.keydownHandler = function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') { nextBtn.click(); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { prevBtn.click(); e.preventDefault(); }
+        };
+        document.addEventListener('keydown', state.keydownHandler);
+    },
+
+    // ===== Visualization State Management =====
+    _vizState: { steps: [], currentStep: -1, keydownHandler: null, buildSteps: null },
+
+    _clearVizState() {
+        const s = this._vizState;
+        if (s.keydownHandler) { document.removeEventListener('keydown', s.keydownHandler); s.keydownHandler = null; }
+        s.steps = []; s.currentStep = -1; s.buildSteps = null;
+        // 힌트 미니 시뮬레이션 정리
+        document.querySelectorAll('.hint-step').forEach(function(step) {
+            if (step._vizCtrl && step._vizCtrl.destroy) { step._vizCtrl.destroy(); step._vizCtrl = null; }
+        });
+    },
+
+    _createStepDesc(suffix) {
+        const s = suffix || '';
+        return `<div class="viz-step-desc" data-role="desc" data-step-group="${s}" style="display:none;"></div>`;
+    },
+    _createStepControls(suffix) {
+        const s = suffix || '';
+        return `
+            <div class="viz-step-controls initial-state" data-step-group="${s}">
+                <button class="btn viz-step-btn viz-step-prev" data-role="prev" disabled>&larr; 이전</button>
+                <span class="viz-step-counter" data-role="counter"></span>
+                <button class="btn btn-primary viz-step-btn" data-role="next">다음 &rarr;</button>
+            </div>
+        `;
+    },
+
+    // stepsOrFn: steps 배열 또는 buildSteps 콜백 함수
+    _initStepController(el, stepsOrFn, suffix) {
+        const state = this._vizState;
+        // 기존 키보드 핸들러 정리
+        if (state.keydownHandler) {
+            document.removeEventListener('keydown', state.keydownHandler);
+            state.keydownHandler = null;
+        }
+        const group = suffix || '';
+        const isLazy = typeof stepsOrFn === 'function';
+        state.steps = isLazy ? [] : stepsOrFn;
+        state.buildSteps = isLazy ? stepsOrFn : null;
+        state.currentStep = -1;
+
+        const controls = el.querySelector(`.viz-step-controls[data-step-group="${group}"]`);
+        const prevBtn = controls.querySelector('[data-role="prev"]');
+        const nextBtn = controls.querySelector('[data-role="next"]');
+        const counter = controls.querySelector('[data-role="counter"]');
+        const desc = el.querySelector(`.viz-step-desc[data-step-group="${group}"]`);
+
+        const updateUI = () => {
+            const idx = state.currentStep, total = state.steps.length;
+            const isInitial = idx < 0;
+            const isLast = total > 0 && idx >= total - 1;
+
+            // Initial state 토글
+            controls.classList.toggle('initial-state', isInitial);
+
+            // 이전 버튼
+            prevBtn.disabled = (idx <= 0);
+
+            // 다음/다시시작 버튼
+            if (isLast) {
+                nextBtn.innerHTML = '🔄 다시 시작';
+                nextBtn.classList.remove('btn-primary');
+                nextBtn.classList.add('restart-btn');
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.innerHTML = '다음 &rarr;';
+                nextBtn.classList.add('btn-primary');
+                nextBtn.classList.remove('restart-btn');
+                nextBtn.disabled = false;
+            }
+
+            // 카운터 + 설명
+            if (isInitial) {
+                counter.textContent = '';
+                if (desc) desc.style.display = 'none';
+            } else {
+                counter.textContent = `${idx + 1} / ${total}`;
+                if (desc) { desc.textContent = state.steps[idx].description; desc.style.display = ''; }
+            }
+        };
+
+        var actionDelay = 350;
+        nextBtn.addEventListener('click', () => {
+            // 마지막 스텝 → 다시 시작
+            if (state.steps.length > 0 && state.currentStep >= state.steps.length - 1) {
+                while (state.currentStep >= 0) {
+                    if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                    state.currentStep--;
+                }
+                if (state.buildSteps) state.steps = [];
+                updateUI();
+                return;
+            }
+            // Initial state + lazy → steps 빌드
+            if (state.currentStep === -1 && state.buildSteps && state.steps.length === 0) {
+                state.steps = state.buildSteps();
+                if (!state.steps || state.steps.length === 0) return;
+            }
+            if (state.currentStep >= state.steps.length - 1) return;
+            state.currentStep++;
+            updateUI();
+            setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay);
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (state.currentStep <= 0) {
+                // Step 0에서 이전 → 초기 상태로
+                var stepToUndo = state.currentStep;
+                state.currentStep = -1;
+                updateUI();
+                setTimeout(() => {
+                    if (stepToUndo === 0 && state.steps[0] && state.steps[0].undo) state.steps[0].undo();
+                    if (state.buildSteps) state.steps = [];
+                }, actionDelay);
+                return;
+            }
+            var stepToUndo = state.currentStep;
+            state.currentStep--;
+            updateUI();
+            setTimeout(() => { if (state.steps[stepToUndo] && state.steps[stepToUndo].undo) state.steps[stepToUndo].undo(); }, actionDelay);
+        });
+
+        const handleKeydown = (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextBtn.click(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevBtn.click(); }
+        };
+        document.addEventListener('keydown', handleKeydown);
+        state.keydownHandler = handleKeydown;
+        updateUI();
+    },
+
+    // ===== 시각화: Best Time to Buy and Sell Stock =====
+    _renderVizStock(container) {
+        const self = this;
+        self._clearVizState();
+        const PRICES = [7, 1, 5, 3, 6, 4, 2, 8, 1];
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">가격 배열: <input type="text" id="stock-input" value="7, 1, 5, 3, 6, 4, 2, 8, 1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;">' +
+            '<button class="viz-input-reset" id="stock-reset" title="입력 변경 후 다시 시작">🔄</button></label></div>' +
+
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
+
+            '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
+            '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--yellow);background:rgba(253,203,110,0.2);vertical-align:middle;"></span> 확인 중</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--green);background:rgba(0,184,148,0.2);vertical-align:middle;"></span> 최소가</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> 최적 매도</span></div>' +
+            '<div id="stock-boxes" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>' +
+            '</div>' +
+
+            '<div style="display:flex;gap:16px;padding:0 24px 24px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">최소 가격</div>' +
+            '<div id="stock-min" style="font-weight:700;font-size:1.1rem;color:var(--text);">—</div></div>' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">현재 이익</div>' +
+            '<div id="stock-profit" style="font-weight:700;font-size:1.1rem;color:var(--text);">—</div></div>' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">최대 이익</div>' +
+            '<div id="stock-maxprofit" style="font-weight:700;font-size:1.1rem;color:var(--text);">—</div></div>' +
+            '</div>' +
+
+            '</div>' +
+            self._createStepControls();
+
+        const boxes = container.querySelector('#stock-boxes');
+        const minEl = container.querySelector('#stock-min');
+        const profitEl = container.querySelector('#stock-profit');
+        const maxProfitEl = container.querySelector('#stock-maxprofit');
+
+        function renderBoxes(data) {
+            boxes.innerHTML = '';
+            data.forEach(function(v, i) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">Day ' + i + '</div><div class="str-char-val">' + v + '</div>';
+                boxes.appendChild(box);
+            });
+        }
+        function setBoxState(idx, cls) { var b = boxes.querySelector('[data-idx="' + idx + '"]'); if (b) b.className = 'str-char-box' + (cls ? ' ' + cls : ''); }
+        function saveState(data) {
+            return { boxClasses: Array.from(boxes.querySelectorAll('.str-char-box')).map(function(b){return b.className;}), min: minEl.innerHTML, profit: profitEl.innerHTML, maxP: maxProfitEl.innerHTML };
+        }
+        function restoreState(s) {
+            boxes.querySelectorAll('.str-char-box').forEach(function(b,i){ b.className = s.boxClasses[i]; });
+            minEl.innerHTML = s.min; profitEl.innerHTML = s.profit; maxProfitEl.innerHTML = s.maxP;
+        }
+
+        function buildSteps() {
+            var input = container.querySelector('#stock-input').value;
+            var data = input.split(',').map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n); });
+            if (data.length < 2) { data = PRICES; }
+            renderBoxes(data);
+            minEl.textContent = '—'; profitEl.textContent = '—'; maxProfitEl.textContent = '—';
+
+            var minPrice = Infinity, maxProfit = 0, minIdx = -1, bestBuy = -1, bestSell = -1;
+            var steps = [];
+
+            data.forEach(function(price, i) {
+                var curMin = minPrice, curMinIdx = minIdx, curMax = maxProfit, curBestBuy = bestBuy, curBestSell = bestSell;
+                var newMin = false, newProfit = false;
+                if (price < minPrice) { minPrice = price; minIdx = i; newMin = true; }
+                var profit = price - minPrice;
+                if (profit > maxProfit) { maxProfit = profit; bestBuy = minIdx; bestSell = i; newProfit = true; }
+                var _i = i, _price = price, _minPrice = minPrice, _minIdx = minIdx, _profit = profit, _maxProfit = maxProfit, _newMin = newMin, _newProfit = newProfit, _bestBuy = bestBuy, _bestSell = bestSell;
+
+                steps.push({
+                    description: _newProfit ? '이익 ' + _profit + ' → 최고 기록! 🎉' : _newMin ? '최저가 ' + _price + ' → 여기서 사자! 🏷️' : _profit > 0 ? '이익 ' + _profit + ', 아직 최고(' + _maxProfit + ') 미만' : '이익 없음, 패스',
+                    _before: null,
+                    action: function() {
+                        this._before = saveState(data);
+                        for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                        setBoxState(_minIdx, 'matched');
+                        setBoxState(_i, 'comparing');
+                        if (_bestSell >= 0 && _bestSell !== _i) setBoxState(_bestSell, 'visited');
+                        minEl.innerHTML = '<strong>' + _minPrice + '</strong> (Day ' + _minIdx + ')';
+                        profitEl.innerHTML = _price + ' - ' + _minPrice + ' = <strong>' + _profit + '</strong>';
+                        maxProfitEl.innerHTML = '<strong>' + _maxProfit + '</strong>' + (_bestBuy >= 0 ? ' (Day ' + _bestBuy + '→' + _bestSell + ')' : '');
+                    },
+                    undo: function() { restoreState(this._before); }
+                });
+            });
+
+            return steps;
+        }
+
+        // 🔄 Reset button
+        container.querySelector('#stock-reset').addEventListener('click', function() {
+            var state = self._vizState;
+            while (state.currentStep >= 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+            }
+            state.steps = [];
+            renderBoxes(PRICES);
+            minEl.textContent = '—'; profitEl.textContent = '—'; maxProfitEl.textContent = '—';
+            self._initStepController(container, buildSteps);
+        });
+
+        renderBoxes(PRICES);
+        self._initStepController(container, buildSteps);
+    },
+
+    // ===== 시각화: 3Sum =====
+    _renderViz3Sum(container) {
+        const self = this;
+        self._clearVizState();
+        const DEFAULT_DATA = [-1, 0, 1, 2, -1, -4, 3, -2];
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">배열: <input type="text" id="three-input" value="-1, 0, 1, 2, -1, -4, 3, -2" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;">' +
+            '<button class="viz-input-reset" id="three-reset" title="입력 변경 후 다시 시작">🔄</button></label></div>' +
+
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
+
+            '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
+            '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid #e17055;background:rgba(225,112,85,0.2);vertical-align:middle;"></span> i (고정)</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--yellow);background:rgba(253,203,110,0.2);vertical-align:middle;"></span> L / R</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--green);background:rgba(0,184,148,0.2);vertical-align:middle;"></span> 찾음</span></div>' +
+            '<div id="three-boxes" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>' +
+            '<div id="three-pointer" style="font-size:0.95rem;font-weight:600;color:var(--text2);text-align:center;min-height:24px;"></div>' +
+            '</div>' +
+
+            '<div style="display:flex;gap:16px;padding:0 24px 24px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">현재 합</div>' +
+            '<div id="three-sum" style="font-weight:700;font-size:1.1rem;color:var(--text);">—</div></div>' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">찾은 조합</div>' +
+            '<div id="three-results" style="font-weight:600;font-size:0.9rem;color:var(--text2);">—</div></div>' +
+            '</div>' +
+
+            '</div>' +
+            self._createStepControls();
+
+        var boxesEl = container.querySelector('#three-boxes');
+        var ptrEl = container.querySelector('#three-pointer');
+        var sumEl = container.querySelector('#three-sum');
+        var resultsEl = container.querySelector('#three-results');
+
+        function renderBoxes(data) {
+            boxesEl.innerHTML = '';
+            data.forEach(function(v, i) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + v + '</div>';
+                boxesEl.appendChild(box);
+            });
+        }
+        function setBoxState(idx, cls) { var b = boxesEl.querySelector('[data-idx="' + idx + '"]'); if (b) b.className = 'str-char-box' + (cls ? ' ' + cls : ''); }
+        function saveState() {
+            return { bc: Array.from(boxesEl.querySelectorAll('.str-char-box')).map(function(b){return b.className;}), ptr: ptrEl.innerHTML, sum: sumEl.innerHTML, res: resultsEl.innerHTML };
+        }
+        function restoreState(s) {
+            boxesEl.querySelectorAll('.str-char-box').forEach(function(b,i){b.className=s.bc[i];}); ptrEl.innerHTML=s.ptr; sumEl.innerHTML=s.sum; resultsEl.innerHTML=s.res;
+        }
+
+        function buildSteps() {
+            var input = container.querySelector('#three-input').value;
+            var data = input.split(',').map(function(s){return parseInt(s.trim());}).filter(function(n){return !isNaN(n);});
+            if (data.length < 3) data = DEFAULT_DATA.slice();
+            data.sort(function(a,b){return a-b;});
+            renderBoxes(data);
+            ptrEl.textContent = ''; sumEl.textContent = '—'; resultsEl.textContent = '—';
+
+            var steps = [];
+            var foundResults = [];
+
+            // helper: 음수 괄호 표시
+            function fv(v) { return v < 0 ? '(' + v + ')' : '' + v; }
+
+            // Step 1: 정렬
+            steps.push({
+                description: '먼저 배열을 정렬합니다',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                    ptrEl.innerHTML = '정렬 완료';
+                    sumEl.textContent = '—'; resultsEl.textContent = '—';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            for (var i = 0; i < data.length - 2; i++) {
+                // 중복 i 건너뛰기
+                if (i > 0 && data[i] === data[i-1]) {
+                    let _i = i;
+                    steps.push({
+                        description: 'i=' + _i + '은 이전 값과 같으므로 건너뜀',
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                            setBoxState(_i, 'fixed');
+                            ptrEl.innerHTML = '<span style="color:#e17055;">i=' + _i + ' (중복 건너뜀)</span>';
+                            sumEl.textContent = '—';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                    continue;
+                }
+
+                var left = i + 1, right = data.length - 1;
+
+                // i 고정 + 포인터 세팅 스텝
+                (function(_i, _l, _r) {
+                    steps.push({
+                        description: 'i=' + _i + ' (' + data[_i] + ') 고정, 양쪽에서 좁혀갑니다',
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                            setBoxState(_i, 'fixed');
+                            setBoxState(_l, 'comparing');
+                            setBoxState(_r, 'comparing');
+                            ptrEl.innerHTML = '<span style="color:#e17055;">i=' + _i + '</span> &nbsp; <span style="color:var(--yellow);">L=' + _l + '</span> &nbsp; <span style="color:var(--accent);">R=' + _r + '</span>';
+                            sumEl.textContent = '—';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                })(i, left, right);
+
+                while (left < right) {
+                    var s = data[i] + data[left] + data[right];
+                    let _i = i, _l = left, _r = right, _s = s, _match = (s === 0);
+                    let _foundBefore = foundResults.slice();
+
+                    if (_match) {
+                        let _foundAfter = _foundBefore.slice();
+                        _foundAfter.push('[' + data[_i] + ',' + data[_l] + ',' + data[_r] + ']');
+
+                        steps.push({
+                            description: '합 = 0! 조합 발견 🎉',
+                            _before: null,
+                            action: function() {
+                                this._before = saveState();
+                                for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                                setBoxState(_i, 'matched');
+                                setBoxState(_l, 'matched');
+                                setBoxState(_r, 'matched');
+                                ptrEl.innerHTML = '<span style="color:var(--green);">i=' + _i + '</span> &nbsp; <span style="color:var(--green);">L=' + _l + '</span> &nbsp; <span style="color:var(--green);">R=' + _r + '</span>';
+                                sumEl.innerHTML = data[_i] + ' + ' + fv(data[_l]) + ' + ' + fv(data[_r]) + ' = <strong style="color:var(--green);">0</strong>';
+                                resultsEl.innerHTML = _foundAfter.join(', ');
+                            },
+                            undo: function() { restoreState(this._before); }
+                        });
+
+                        foundResults.push('[' + data[i] + ',' + data[left] + ',' + data[right] + ']');
+                        while (left < right && data[left] === data[left+1]) left++;
+                        while (left < right && data[right] === data[right-1]) right--;
+                        left++; right--;
+                    } else if (s < 0) {
+                        let _foundCopy = _foundBefore.slice();
+                        steps.push({
+                            description: '합 = ' + _s + ' → 너무 작다! L 오른쪽으로',
+                            _before: null,
+                            action: function() {
+                                this._before = saveState();
+                                for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                                setBoxState(_i, 'fixed');
+                                setBoxState(_l, 'comparing');
+                                setBoxState(_r, 'comparing');
+                                ptrEl.innerHTML = '<span style="color:#e17055;">i=' + _i + '</span> &nbsp; <span style="color:var(--yellow);">L=' + _l + '</span> &nbsp; <span style="color:var(--accent);">R=' + _r + '</span>';
+                                sumEl.innerHTML = data[_i] + ' + ' + fv(data[_l]) + ' + ' + fv(data[_r]) + ' = <strong>' + _s + '</strong>';
+                                resultsEl.innerHTML = _foundCopy.length > 0 ? _foundCopy.join(', ') : '—';
+                            },
+                            undo: function() { restoreState(this._before); }
+                        });
+                        left++;
+                    } else {
+                        let _foundCopy = _foundBefore.slice();
+                        steps.push({
+                            description: '합 = ' + _s + ' → 너무 크다! R 왼쪽으로',
+                            _before: null,
+                            action: function() {
+                                this._before = saveState();
+                                for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                                setBoxState(_i, 'fixed');
+                                setBoxState(_l, 'comparing');
+                                setBoxState(_r, 'comparing');
+                                ptrEl.innerHTML = '<span style="color:#e17055;">i=' + _i + '</span> &nbsp; <span style="color:var(--yellow);">L=' + _l + '</span> &nbsp; <span style="color:var(--accent);">R=' + _r + '</span>';
+                                sumEl.innerHTML = data[_i] + ' + ' + fv(data[_l]) + ' + ' + fv(data[_r]) + ' = <strong>' + _s + '</strong>';
+                                resultsEl.innerHTML = _foundCopy.length > 0 ? _foundCopy.join(', ') : '—';
+                            },
+                            undo: function() { restoreState(this._before); }
+                        });
+                        right--;
+                    }
+                }
+            }
+
+            // 최종 완료 스텝
+            var _finalResults = foundResults.slice();
+            steps.push({
+                description: '완료! ' + (_finalResults.length > 0 ? _finalResults.length + '개 조합 발견' : '조합 없음'),
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                    ptrEl.innerHTML = '<span style="color:var(--green);">✓ 탐색 완료</span>';
+                    sumEl.textContent = '—';
+                    resultsEl.innerHTML = _finalResults.length > 0 ? _finalResults.join(', ') : '없음';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            return steps;
+        }
+
+        // 🔄 Reset button
+        container.querySelector('#three-reset').addEventListener('click', function() {
+            var state = self._vizState;
+            while (state.currentStep >= 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+            }
+            state.steps = [];
+            renderBoxes(DEFAULT_DATA);
+            ptrEl.textContent = ''; sumEl.textContent = '—'; resultsEl.textContent = '—';
+            self._initStepController(container, buildSteps);
+        });
+
+        renderBoxes(DEFAULT_DATA);
+        self._initStepController(container, buildSteps);
+    },
+
+    // ===== 시각화: 슬라이딩 윈도우 (수들의 합) =====
+    _renderVizSlidingWindow(container) {
+        const self = this;
+        self._clearVizState();
+        const DEFAULT_ARR = [1, 2, 3, 1, 1, 2, 1, 3];
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">배열: <input type="text" id="sw-arr" value="1, 2, 3, 1, 1, 2, 1, 3" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">목표 합 M: <input type="number" id="sw-target" value="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<button class="viz-input-reset" id="sw-reset" title="입력 변경 후 다시 시작">🔄</button></div>' +
+
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
+
+            '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
+            '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--yellow);background:rgba(253,203,110,0.2);vertical-align:middle;"></span> 윈도우</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--green);background:rgba(0,184,148,0.2);vertical-align:middle;"></span> 합 = M</span></div>' +
+            '<div id="sw-boxes" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>' +
+            '<div id="sw-pointer" style="font-size:0.95rem;font-weight:600;color:var(--text2);text-align:center;min-height:24px;"></div>' +
+            '</div>' +
+
+            '<div style="display:flex;gap:16px;padding:0 24px 24px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:100px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">구간 합</div>' +
+            '<div id="sw-sum" style="font-weight:700;font-size:1.1rem;color:var(--text);">—</div></div>' +
+            '<div style="flex:1;min-width:100px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">매치 횟수</div>' +
+            '<div id="sw-count" style="font-weight:700;font-size:1.1rem;color:var(--text);">0</div></div>' +
+            '<div style="flex:1;min-width:100px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">상태</div>' +
+            '<div id="sw-status" style="font-weight:600;font-size:0.9rem;color:var(--text2);">—</div></div>' +
+            '</div>' +
+
+            '</div>' +
+            self._createStepControls();
+
+        var boxesEl = container.querySelector('#sw-boxes');
+        var ptrEl = container.querySelector('#sw-pointer');
+        var sumEl = container.querySelector('#sw-sum');
+        var countEl = container.querySelector('#sw-count');
+        var statusEl = container.querySelector('#sw-status');
+
+        function renderBoxes(data) {
+            boxesEl.innerHTML = '';
+            data.forEach(function(v, i) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + v + '</div>';
+                boxesEl.appendChild(box);
+            });
+        }
+        function setBoxState(idx, cls) { var b = boxesEl.querySelector('[data-idx="' + idx + '"]'); if (b) b.className = 'str-char-box' + (cls ? ' ' + cls : ''); }
+        function saveState() {
+            return { bc: Array.from(boxesEl.querySelectorAll('.str-char-box')).map(function(b){return b.className;}), ptr: ptrEl.innerHTML, sum: sumEl.innerHTML, cnt: countEl.innerHTML, st: statusEl.innerHTML };
+        }
+        function restoreState(s) {
+            boxesEl.querySelectorAll('.str-char-box').forEach(function(b,i){b.className=s.bc[i];}); ptrEl.innerHTML=s.ptr; sumEl.innerHTML=s.sum; countEl.innerHTML=s.cnt; statusEl.innerHTML=s.st;
+        }
+
+        function buildSteps() {
+            var input = container.querySelector('#sw-arr').value;
+            var data = input.split(',').map(function(s){return parseInt(s.trim());}).filter(function(n){return !isNaN(n);});
+            if (data.length < 1) data = DEFAULT_ARR.slice();
+            var M = parseInt(container.querySelector('#sw-target').value) || 3;
+            renderBoxes(data);
+            ptrEl.textContent = ''; sumEl.textContent = '—'; countEl.textContent = '0'; statusEl.textContent = '—';
+
+            var steps = [];
+            var start = 0, end = 0, curSum = 0, count = 0;
+
+            // Step 0: 초기 상태
+            steps.push({
+                description: '배열 [' + data.join(', ') + ']에서 합이 ' + M + '인 연속 구간을 찾아봐요!',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                    ptrEl.innerHTML = '<span style="color:var(--green);">start=0</span> &nbsp; <span style="color:var(--accent);">end=0</span>';
+                    sumEl.textContent = '0'; countEl.textContent = '0'; statusEl.textContent = '두 포인터 준비!';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            while (true) {
+                if (curSum >= M) {
+                    let _s = start, _e = end, _sum = curSum, _matched = (curSum === M);
+                    if (_matched) {
+                        count++;
+                        // 매치 발견 전용 스텝 (초록)
+                        let _cnt = count;
+                        let windowStr = '[' + data.slice(_s, _e).join(', ') + ']';
+                        steps.push({
+                            description: '🎉 ' + windowStr + ' = ' + _sum + ' 찾았다! (count=' + _cnt + ')',
+                            _before: null,
+                            action: function() {
+                                this._before = saveState();
+                                for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                                for (var j = _s; j < _e; j++) setBoxState(j, 'matched');
+                                ptrEl.innerHTML = '<span style="color:var(--green);">start=' + _s + '</span> &nbsp; <span style="color:var(--accent);">end=' + _e + '</span>';
+                                sumEl.innerHTML = '<strong style="color:var(--green);">' + _sum + '</strong>';
+                                countEl.innerHTML = '<strong style="color:var(--green);">' + _cnt + '</strong>';
+                                statusEl.innerHTML = '<span style="color:var(--green);">✓ 합 = ' + M + '! count++</span>';
+                            },
+                            undo: function() { restoreState(this._before); }
+                        });
+                    }
+                    // start 이동 스텝
+                    let _cnt2 = count, _removeVal = data[start];
+                    let _sAfter = start + 1;
+                    steps.push({
+                        description: (_matched ? '다음 구간 찾기 위해' : '합(' + _sum + ') > M(' + M + ')이니까') + ' arr[' + _s + ']=' + _removeVal + ' 빼기 → start 이동',
+                        _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                            setBoxState(_s, 'removing');
+                            for (var j = _sAfter; j < _e; j++) setBoxState(j, 'comparing');
+                            ptrEl.innerHTML = '<span style="color:var(--green);">start=' + _s + ' → ' + _sAfter + '</span> &nbsp; <span style="color:var(--accent);">end=' + _e + '</span>';
+                            sumEl.innerHTML = '<strong>' + (_sum - _removeVal) + '</strong>';
+                            countEl.innerHTML = '<strong>' + _cnt2 + '</strong>';
+                            statusEl.innerHTML = _sum + ' - ' + _removeVal + ' = ' + (_sum - _removeVal);
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                    curSum -= data[start]; start++;
+                } else if (end >= data.length) {
+                    break;
+                } else {
+                    let _s = start, _e = end, _val = data[end];
+                    curSum += data[end]; end++;
+                    let _sum = curSum, _endAfter = end;
+                    let windowStr = '[' + data.slice(_s, _endAfter).join(', ') + ']';
+                    let desc = 'arr[' + _e + ']=' + _val + ' 추가 → ' + windowStr + ' 합 = ' + _sum;
+                    if (_sum < M) desc += ' (M보다 작으니 더 넣자!)';
+                    else if (_sum === M) desc += ' (딱 맞다!)';
+                    steps.push({
+                        description: desc, _before: null,
+                        action: function() {
+                            this._before = saveState();
+                            for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                            for (var j = _s; j < _endAfter; j++) setBoxState(j, 'comparing');
+                            ptrEl.innerHTML = '<span style="color:var(--green);">start=' + _s + '</span> &nbsp; <span style="color:var(--accent);">end=' + _endAfter + '</span>';
+                            sumEl.innerHTML = '<strong>' + _sum + '</strong>';
+                            statusEl.innerHTML = _sum < M ? '합 < M → 오른쪽으로 확장!' : _sum === M ? '합 = M! 다음 스텝에서 확인' : '합 ≥ M → 줄여야 해요';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+                }
+            }
+
+            // 최종 완료 스텝
+            let _finalCount = count;
+            steps.push({
+                description: '✅ 탐색 완료! 합이 ' + M + '인 연속 구간 = 총 ' + _finalCount + '개',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                    ptrEl.innerHTML = '<span style="color:var(--green);">✓ 탐색 완료</span>';
+                    sumEl.textContent = '—';
+                    countEl.innerHTML = '<strong style="color:var(--green);font-size:1.3rem;">' + _finalCount + '</strong>';
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.05rem;">✓ 총 ' + _finalCount + '개 발견!</span>';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            return steps;
+        }
+
+        // 🔄 Reset button
+        container.querySelector('#sw-reset').addEventListener('click', function() {
+            var state = self._vizState;
+            while (state.currentStep >= 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+            }
+            state.steps = [];
+            renderBoxes(DEFAULT_ARR);
+            ptrEl.textContent = ''; sumEl.textContent = '—'; countEl.textContent = '0'; statusEl.textContent = '—';
+            self._initStepController(container, buildSteps);
+        });
+
+        renderBoxes(DEFAULT_ARR);
+        self._initStepController(container, buildSteps);
+    },
+
+    // ===== 문제풀이 탭 =====
+    stages: [
+        { num: 1, title: '배열 기본', desc: '한 번 순회, 투 포인터 기본 (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
+        { num: 2, title: '배열 심화', desc: '투 포인터 심화, 전처리 (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
+    ],
+
+    problems: [
+        {
+            id: 'lc-1',
+            title: 'LeetCode 1 - Two Sum',
+            difficulty: 'easy',
+            link: 'https://leetcode.com/problems/two-sum/',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>정수 배열 <code>nums</code>와 정수 <code>target</code>이 주어집니다.
+                합이 <code>target</code>이 되는 <strong>두 수의 인덱스</strong>를 반환하세요.</p>
+                <p>같은 원소를 두 번 사용할 수 없고, 정답은 정확히 하나 존재합니다.
+                답은 어떤 순서로 반환해도 됩니다.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [2,7,11,15], target = 9</pre></div>
+                    <div><strong>Output</strong><pre>[0, 1]</pre></div>
+                </div>
+                <p class="example-explain">nums[0] + nums[1] = 2 + 7 = 9 이므로 [0, 1]을 반환합니다.</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [3,2,4], target = 6</pre></div>
+                    <div><strong>Output</strong><pre>[1, 2]</pre></div>
+                </div></div>
+
+                <div class="problem-example"><h4>Example 3</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [3,3], target = 6</pre></div>
+                    <div><strong>Output</strong><pre>[0, 1]</pre></div>
+                </div></div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>2 ≤ nums.length ≤ 10<sup>4</sup></li>
+                    <li>-10<sup>9</sup> ≤ nums[i] ≤ 10<sup>9</sup></li>
+                    <li>-10<sup>9</sup> ≤ target ≤ 10<sup>9</sup></li>
+                    <li>정답은 정확히 하나만 존재합니다.</li>
+                </ul>
+
+                <div class="hint-key">💡 Follow-up</div>
+                <p>O(n²)보다 빠른 알고리즘을 만들 수 있을까요?</p>
+            `,
+            inputDefault: 0,
+            solve() { return '[0, 1]'; },
+            templates: {
+                python: `class Solution:
+    def twoSum(self, nums, target):
+        seen = {}  # 값 → 인덱스
+        for i, num in enumerate(nums):
+            complement = target - num
+            if complement in seen:
+                return [seen[complement], i]
+            seen[num] = i`,
+                cpp: `class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> seen;
+        for (int i = 0; i < nums.size(); i++) {
+            int comp = target - nums[i];
+            if (seen.count(comp)) return {seen[comp], i};
+            seen[nums[i]] = i;
+        }
+        return {};
+    }
+};`
+            },
+            solutions: [{
+                approach: 'Brute Force',
+                description: '이중 for문으로 모든 쌍을 확인하여 합이 target인 쌍을 찾는다',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                hints: [
+                    { title: '처음 생각: 이중 for문', content: '<div class="hint-key">💡 가장 단순한 방법: 모든 쌍을 전부 확인!</div><p>배열의 모든 두 수 조합을 하나씩 비교하면 됩니다.</p><span class="lang-py"><pre><code class="language-python">for i in range(len(nums)):\n    for j in range(i+1, len(nums)):\n        if nums[i] + nums[j] == target:\n            return [i, j]</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">for (int i = 0; i < nums.size(); i++)\n    for (int j = i+1; j < nums.size(); j++)\n        if (nums[i] + nums[j] == target)\n            return {i, j};</code></pre></span>' },
+                    {
+                        title: '직접 해보기',
+                        content: '<div class="hint-key">🔍 Brute Force로 직접 찾아보자!</div><div class="hint-sub">탭하면서 한 쌍씩 비교해보세요</div>',
+                        viz: function(container) {
+                            var nums = [1, 3, 4, 9, 2, 7], target = 9;
+                            container.setAttribute('data-clickable', '');
+                            container.innerHTML =
+                                '<div class="hint-viz-label">nums = [1, 3, 4, 9, 2, 7], target = 9</div>' +
+                                '<div class="hint-viz-cells"></div>' +
+                                '<div class="hint-viz-msg"></div>' +
+                                '<div class="hint-viz-tap">👆 탭하여 다음 비교</div>' +
+                                '<div class="hint-viz-replay" style="display:none"><button>▶ 처음부터</button></div>';
+                            var cellsEl = container.querySelector('.hint-viz-cells');
+                            var msgEl = container.querySelector('.hint-viz-msg');
+                            var tapEl = container.querySelector('.hint-viz-tap');
+                            var replayEl = container.querySelector('.hint-viz-replay');
+                            nums.forEach(function(v, i) {
+                                var cell = document.createElement('div');
+                                cell.className = 'hint-viz-cell';
+                                cell.dataset.idx = i;
+                                cell.innerHTML = '<div class="viz-idx">' + i + '</div><div class="viz-val">' + v + '</div>';
+                                cellsEl.appendChild(cell);
+                            });
+                            function getCell(i) { return cellsEl.querySelector('[data-idx="' + i + '"]'); }
+                            function clearCells() {
+                                cellsEl.querySelectorAll('.hint-viz-cell').forEach(function(c) { c.className = 'hint-viz-cell'; });
+                            }
+                            // 브루트포스 전 쌍 생성
+                            var pairs = [];
+                            for (var i = 0; i < nums.length; i++) {
+                                for (var j = i + 1; j < nums.length; j++) {
+                                    pairs.push([i, j]);
+                                    if (nums[i] + nums[j] === target) { i = nums.length; break; }
+                                }
+                            }
+                            var si = 0, done = false, timer = null;
+                            function advance() {
+                                if (done) return;
+                                if (si >= pairs.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; return; }
+                                var pi = pairs[si][0], pj = pairs[si][1];
+                                var sum = nums[pi] + nums[pj];
+                                var isMatch = sum === target;
+                                var c = si + 1;
+                                // Compare: 노랑
+                                clearCells();
+                                getCell(pi).classList.add('comparing');
+                                getCell(pj).classList.add('comparing');
+                                msgEl.innerHTML = '<span style="color:var(--text3)">#' + c + '</span> i=' + pi + ', j=' + pj + ': <strong>' + nums[pi] + ' + ' + nums[pj] + ' = ' + sum + '</strong>';
+                                // 잠깐 후 결과 표시
+                                clearTimeout(timer);
+                                timer = setTimeout(function() {
+                                    if (isMatch) {
+                                        getCell(pi).classList.remove('comparing'); getCell(pj).classList.remove('comparing');
+                                        getCell(pi).classList.add('matched'); getCell(pj).classList.add('matched');
+                                        msgEl.innerHTML = '<span class="viz-result">✅ 정답! [' + pi + ', ' + pj + '] — ' + c + '번 비교</span>';
+                                        done = true; tapEl.style.display = 'none'; replayEl.style.display = '';
+                                    } else {
+                                        getCell(pi).classList.remove('comparing'); getCell(pj).classList.remove('comparing');
+                                        getCell(pi).classList.add('mismatch'); getCell(pj).classList.add('mismatch');
+                                        msgEl.innerHTML += ' ❌';
+                                    }
+                                }, 400);
+                                si++;
+                            }
+                            function reset() {
+                                clearTimeout(timer); si = 0; done = false;
+                                clearCells(); msgEl.innerHTML = '';
+                                tapEl.style.display = ''; replayEl.style.display = 'none';
+                            }
+                            container.addEventListener('click', function(e) {
+                                if (e.target.closest('.hint-viz-replay')) return;
+                                advance();
+                            });
+                            replayEl.querySelector('button').addEventListener('click', function() { reset(); });
+                            return {
+                                stop: function() { clearTimeout(timer); },
+                                reset: function() { reset(); },
+                                play: function() {},
+                                destroy: function() { clearTimeout(timer); }
+                            };
+                        }
+                    }
+                ],
+                limitation: '<p>n이 <strong>10,000</strong>이면 약 <strong>5천만 번</strong> 비교! 😱</p><p>매번 나머지 수를 전부 훑어야 하니 시간 초과가 발생합니다.</p><div class="hint-key">💡 "이미 본 수를 기억해둘 수 없을까?"</div>',
+                templates: {
+                    python: `class Solution:\n    def twoSum(self, nums, target):\n        for i in range(len(nums)):\n            for j in range(i + 1, len(nums)):\n                if nums[i] + nums[j] == target:\n                    return [i, j]`,
+                    cpp: `class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        for (int i = 0; i < nums.size(); i++) {\n            for (int j = i + 1; j < nums.size(); j++) {\n                if (nums[i] + nums[j] == target)\n                    return {i, j};\n            }\n        }\n        return {};\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '첫 번째 수 선택', desc: '가능한 모든 쌍을 확인하기 위해\n첫 번째 수를 하나씩 고정합니다.', code: 'class Solution:\n    def twoSum(self, nums, target):\n        # 모든 쌍 (i, j) 확인 → O(n²)\n        for i in range(len(nums)):' },
+                        { title: '두 번째 수 탐색', desc: 'i보다 뒤에 있는 수만 확인합니다.\nj = i+1부터 시작 → 같은 쌍을 두 번 확인하지 않음!', code: '            for j in range(i + 1, len(nums)):' },
+                        { title: '합 확인 + 반환', desc: '두 수의 합이 target이면 인덱스를 즉시 반환!\n문제에서 "정확히 하나의 답이 있다"고 보장하므로 바로 return.', code: '                if nums[i] + nums[j] == target:\n                    return [i, j]' }
+                    ],
+                    cpp: [
+                        { title: '첫 번째 수 선택', desc: '모든 쌍을 확인하기 위해 i를 고정합니다.\nO(n²)이지만 가장 직관적인 방법입니다.', code: 'class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        // 모든 쌍 (i, j) 확인 → O(n²)\n        for (int i = 0; i < nums.size(); i++) {' },
+                        { title: '두 번째 수 탐색', desc: 'j = i+1부터 → 같은 쌍을 두 번 확인하지 않음', code: '            for (int j = i + 1; j < nums.size(); j++) {' },
+                        { title: '합 확인 + 반환', desc: '합이 target이면 즉시 반환!', code: '                if (nums[i] + nums[j] == target)\n                    return {i, j};\n            }\n        }\n        return {};\n    }\n};' }
+                    ]
+                }
+            }, {
+                approach: 'HashMap',
+                description: '한 번 순회하면서 해시맵(딕셔너리)으로 complement를 확인',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(n)',
+                hints: [
+                    { title: '핵심 아이디어: "짝꿍"을 기억하자!', content: '<div class="hint-key">💡 target - num = 짝꿍</div><p>숫자 하나를 볼 때마다 <strong>target - 그 수 = 짝꿍</strong>을 계산해서,<br>이미 본 수 중에 짝꿍이 있는지 <strong>해시맵으로 O(1)에 확인</strong>하면 끝!</p>' },
+                    {
+                        title: '해시맵으로 한번에!',
+                        content: '<div class="hint-key">✨ 해시맵으로 "짝꿍" 찾기</div><div class="hint-sub">각 수마다 짝꿍이 이미 나왔는지 즉시 확인!<br>브루트포스 15번 vs 해시맵 몇 번? 탭하며 비교!</div>',
+                        viz: function(container) {
+                            var nums = [1, 3, 4, 9, 2, 7], target = 9;
+                            container.setAttribute('data-clickable', '');
+                            container.innerHTML =
+                                '<div class="hint-viz-label">nums = [1, 3, 4, 9, 2, 7], target = 9</div>' +
+                                '<div class="hint-viz-split">' +
+                                '  <div><div class="hint-viz-label" style="margin-bottom:4px">배열</div><div class="hint-viz-cells"></div></div>' +
+                                '  <div><div class="hint-viz-label" style="margin-bottom:4px">seen { }</div><div class="hint-viz-hashmap"></div></div>' +
+                                '</div>' +
+                                '<div class="hint-viz-msg"></div>' +
+                                '<div class="hint-viz-tap">👆 탭하여 다음 단계</div>' +
+                                '<div class="hint-viz-replay" style="display:none"><button>▶ 처음부터</button></div>';
+                            var cellsEl = container.querySelector('.hint-viz-cells');
+                            var hmEl = container.querySelector('.hint-viz-hashmap');
+                            var msgEl = container.querySelector('.hint-viz-msg');
+                            var tapEl = container.querySelector('.hint-viz-tap');
+                            var replayEl = container.querySelector('.hint-viz-replay');
+                            nums.forEach(function(v, i) {
+                                var cell = document.createElement('div');
+                                cell.className = 'hint-viz-cell';
+                                cell.dataset.idx = i;
+                                cell.innerHTML = '<div class="viz-idx">' + i + '</div><div class="viz-val">' + v + '</div>';
+                                cellsEl.appendChild(cell);
+                            });
+                            function getCell(i) { return cellsEl.querySelector('[data-idx="' + i + '"]'); }
+                            function clearCells() {
+                                cellsEl.querySelectorAll('.hint-viz-cell').forEach(function(c) { c.className = 'hint-viz-cell'; });
+                            }
+                            function addHmRow(key, val) {
+                                var row = document.createElement('div');
+                                row.className = 'hm-row';
+                                row.dataset.key = key;
+                                row.innerHTML = '<span class="hm-key">' + key + '</span><span class="hm-val">→ ' + val + '</span>';
+                                hmEl.appendChild(row);
+                            }
+                            function clearHmHighlight() {
+                                hmEl.querySelectorAll('.hm-row').forEach(function(r) { r.classList.remove('hm-found', 'hm-miss'); });
+                            }
+                            function highlightHmRow(key, found) {
+                                clearHmHighlight();
+                                if (found) {
+                                    var row = hmEl.querySelector('[data-key="' + key + '"]');
+                                    if (row) row.classList.add('hm-found');
+                                } else {
+                                    hmEl.querySelectorAll('.hm-row').forEach(function(r) { r.classList.add('hm-miss'); });
+                                }
+                            }
+                            // 스텝 미리 생성
+                            var steps = [], seen = {}, foundI = -1, foundJ = -1;
+                            for (var idx = 0; idx < nums.length; idx++) {
+                                (function(i) {
+                                    var num = nums[i], comp = target - num;
+                                    if (seen.hasOwnProperty(comp)) {
+                                        foundI = seen[comp]; foundJ = i;
+                                        steps.push(function() {
+                                            clearCells(); getCell(i).classList.add('current');
+                                            highlightHmRow(comp, true);
+                                            msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… ✨ <strong>있다!</strong>';
+                                        });
+                                        steps.push(function() {
+                                            clearHmHighlight();
+                                            getCell(foundI).classList.add('matched');
+                                            getCell(i).classList.remove('current'); getCell(i).classList.add('matched');
+                                            msgEl.innerHTML = '<span class="viz-result">✅ 정답! [' + foundI + ', ' + i + '] — 딱 ' + (i + 1) + '번 보고 끝! (브루트포스는 15번)</span>';
+                                        });
+                                    } else {
+                                        steps.push(function() {
+                                            clearCells(); getCell(i).classList.add('current');
+                                            highlightHmRow(comp, false);
+                                            msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… 없음';
+                                        });
+                                        steps.push(function() {
+                                            clearHmHighlight();
+                                            addHmRow(num, i);
+                                            msgEl.innerHTML = num + '을 seen에 기억해두자 → seen[' + num + '] = ' + i;
+                                        });
+                                        seen[num] = i;
+                                    }
+                                    if (foundJ >= 0) return;
+                                })(idx);
+                                if (foundJ >= 0) break;
+                            }
+                            var si = 0, done = false;
+                            function advance() {
+                                if (done) return;
+                                if (si >= steps.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; return; }
+                                steps[si]();
+                                si++;
+                                if (si >= steps.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; }
+                            }
+                            function reset() {
+                                si = 0; done = false;
+                                clearCells(); hmEl.innerHTML = ''; msgEl.innerHTML = '';
+                                tapEl.style.display = ''; replayEl.style.display = 'none';
+                                // 스텝 재생성 (seen 리셋)
+                                steps = []; seen = {}; foundI = -1; foundJ = -1;
+                                for (var idx2 = 0; idx2 < nums.length; idx2++) {
+                                    (function(i) {
+                                        var num = nums[i], comp = target - num;
+                                        if (seen.hasOwnProperty(comp)) {
+                                            foundI = seen[comp]; foundJ = i;
+                                            steps.push(function() { clearCells(); getCell(i).classList.add('current'); highlightHmRow(comp, true); msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… ✨ <strong>있다!</strong>'; });
+                                            steps.push(function() { clearHmHighlight(); getCell(foundI).classList.add('matched'); getCell(i).classList.remove('current'); getCell(i).classList.add('matched'); msgEl.innerHTML = '<span class="viz-result">✅ 정답! [' + foundI + ', ' + i + '] — 딱 ' + (i + 1) + '번 보고 끝! (브루트포스는 15번)</span>'; });
+                                        } else {
+                                            steps.push(function() { clearCells(); getCell(i).classList.add('current'); highlightHmRow(comp, false); msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… 없음'; });
+                                            steps.push(function() { clearHmHighlight(); addHmRow(num, i); msgEl.innerHTML = num + '을 seen에 기억해두자 → seen[' + num + '] = ' + i; });
+                                            seen[num] = i;
+                                        }
+                                        if (foundJ >= 0) return;
+                                    })(idx2);
+                                    if (foundJ >= 0) break;
+                                }
+                            }
+                            container.addEventListener('click', function(e) {
+                                if (e.target.closest('.hint-viz-replay')) return;
+                                advance();
+                            });
+                            replayEl.querySelector('button').addEventListener('click', function() { reset(); });
+                            return {
+                                stop: function() {},
+                                reset: function() { reset(); },
+                                play: function() {},
+                                destroy: function() {}
+                            };
+                        }
+                    }
+                ],
+                vizMethod: '_renderVizTwoSum',
+                simIntro: '해시맵으로 짝꿍(complement)을 찾아가는 과정을 단계별로 확인해보세요!',
+                comparison: '<p><strong>O(n²) → O(n)</strong> — 공간(해시맵)으로 시간을 절약!</p><p>브루트포스는 15번 비교했지만, 해시맵은 단 <strong>6번</strong>만에 답을 찾습니다.</p>',
+                templates: {
+                    python: `class Solution:\n    def twoSum(self, nums, target):\n        seen = {}  # 값 → 인덱스\n        for i, num in enumerate(nums):\n            complement = target - num\n            if complement in seen:\n                return [seen[complement], i]\n            seen[num] = i`,
+                    cpp: `class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> seen;\n        for (int i = 0; i < nums.size(); i++) {\n            int comp = target - nums[i];\n            if (seen.count(comp)) return {seen[comp], i};\n            seen[nums[i]] = i;\n        }\n        return {};\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '해시맵 초기화', desc: '핵심 아이디어: "이 숫자 본 적 있나?"를 O(1)에 확인!\n딕셔너리에 {값: 인덱스}를 저장합니다.', code: 'class Solution:\n    def twoSum(self, nums, target):\n        seen = {}  # {값: 인덱스} → O(1) 조회' },
+                        { title: '배열 순회', desc: 'enumerate로 인덱스(i)와 값(num)을 동시에 가져옵니다.', code: '        for i, num in enumerate(nums):' },
+                        { title: 'complement 계산 + 확인', desc: '핵심: target - num = "짝꿍"!\n이 짝꿍이 이미 seen에 있다면 → 정답 발견!\n해시맵 조회는 O(1)이므로 전체 O(n).', code: '            complement = target - num  # 짝꿍 계산\n            if complement in seen:      # O(1) 조회!\n                return [seen[complement], i]' },
+                        { title: '현재 값 저장', desc: '짝을 못 찾았으면 현재 값을 기록해둡니다.\n→ 뒤에 올 숫자가 이 값을 짝꿍으로 찾을 수 있음!', code: '            seen[num] = i  # 나중에 짝꿍으로 찾아질 수 있도록 저장' }
+                    ],
+                    cpp: [
+                        { title: '해시맵 초기화', desc: 'unordered_map → O(1) 조회!\n{값: 인덱스}를 저장하여 짝꿍을 빠르게 찾습니다.', code: 'class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> seen; // {값: 인덱스}' },
+                        { title: '배열 순회', desc: 'for문으로 인덱스와 값을 순회합니다.', code: '        for (int i = 0; i < nums.size(); i++) {' },
+                        { title: 'complement 계산 + 확인', desc: '핵심: target - nums[i] = 짝꿍!\nseen에 짝꿍이 있으면 정답 반환 (O(1) 조회).', code: '            int comp = target - nums[i]; // 짝꿍\n            if (seen.count(comp)) return {seen[comp], i};' },
+                        { title: '현재 값 저장 + 마무리', desc: '못 찾으면 현재 값을 기록 → 뒤의 숫자가 찾을 수 있음', code: '            seen[nums[i]] = i; // 나중에 찾아질 수 있도록 저장\n        }\n        return {};\n    }\n};' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'lc-121',
+            title: 'LeetCode 121 - Best Time to Buy and Sell Stock',
+            difficulty: 'easy',
+            link: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/',
+            simIntro: '최솟값을 추적하면서 이익을 계산하는 과정을 단계별로 확인해보세요!',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>주식 가격 배열 <code>prices</code>가 주어집니다.
+                <code>prices[i]</code>는 i번째 날의 주가입니다.</p>
+                <p>한 번 사고 한 번 팔아서 얻을 수 있는 <strong>최대 이익</strong>을 반환하세요.
+                이익을 낼 수 없으면 <code>0</code>을 반환합니다.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>prices = [7,1,5,3,6,4]</pre></div>
+                    <div><strong>Output</strong><pre>5</pre></div>
+                </div>
+                <p class="example-explain">1일에 사서(가격 1) 4일에 팔면(가격 6) 이익 = 6 - 1 = 5</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>prices = [7,6,4,3,1]</pre></div>
+                    <div><strong>Output</strong><pre>0</pre></div>
+                </div>
+                <p class="example-explain">가격이 계속 하락하므로 이익을 낼 수 없습니다.</p>
+                </div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ prices.length ≤ 10⁵</li>
+                    <li>0 ≤ prices[i] ≤ 10⁴</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>배열을 한 번만 순회하면서 풀 수 있을까요?</p>
+            `,
+            hints: [
+                { title: 'First Thought: How to Solve?', content: '어떤 날 사서 그 뒤의 어떤 날 팔아야 합니다. 가장 단순한 방법은? 모든 (매수일, 매도일) 조합을 확인하는 이중 for문입니다!<br><code>profit = prices[j] - prices[i]</code> (j &gt; i)의 최댓값을 구하면 됩니다.' },
+                { title: 'Let\'s Try It!', content: '<code>prices = [7, 1, 5, 3, 6, 4]</code>로 해볼게요:<br>• 7에 사면? → 1(-6), 5(-2), 3(-4), 6(-1), 4(-3) → 전부 손해!<br>• 1에 사면? → 5(+4), 3(+2), 6(<strong>+5</strong>), 4(+3) → 최대 +5!<br>• 나머지도 확인... 결국 1에 사서 6에 파는 게 최고입니다.' },
+                { title: 'Problem Found!', content: '이중 for문은 <strong>O(n²)</strong>입니다. n이 100,000이면 약 50억 번 연산! 😱<br><br>핵심 관찰: 어떤 날에 팔 때, 가장 이익이 큰 경우는 <strong>"그 날 이전까지의 최저값에 산 경우"</strong>입니다.<br>그러면 순회하면서 지금까지의 최저값만 기억해두면 되지 않을까?' },
+                { title: 'A Better Approach!', content: '배열을 <strong>한 번만</strong> 순회하면서:<br>• <code>min_price</code>: 순회하면서 지금까지의 최저값을 추적<br>• <code>max_profit</code>: 지금까지의 최대 이익을 추적<br><br>각 날에 <code>price - min_price</code>가 현재 최대 이익보다 크면 갱신합니다.' },
+                { title: 'Key Idea Summary', content: '변수 2개만으로 해결하는 "상태 추적" 패턴:<br>① <code>min_price = min(min_price, price)</code> — 지금까지의 최저값 갱신<br>② <code>max_profit = max(max_profit, price - min_price)</code> — 최대 이익 갱신<br><br><strong>O(n²) → O(n) 시간, O(1) 공간</strong> — 추가 자료구조 없이 변수만으로 해결!' }
+            ],
+            inputDefault: 0,
+            solve() { return '5'; },
+            templates: {
+                python: `class Solution:
+    def maxProfit(self, prices):
+        min_price = float('inf')
+        max_profit = 0
+        for price in prices:
+            min_price = min(min_price, price)
+            max_profit = max(max_profit, price - min_price)
+        return max_profit`,
+                cpp: `class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int minP = INT_MAX, maxP = 0;
+        for (int p : prices) {
+            minP = min(minP, p);
+            maxP = max(maxP, p - minP);
+        }
+        return maxP;
+    }
+};`
+            },
+            solutions: [{
+                approach: 'Brute Force',
+                description: '이중 for문으로 모든 (매수일, 매도일) 조합을 확인',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `class Solution:\n    def maxProfit(self, prices):\n        max_profit = 0\n        for i in range(len(prices)):\n            for j in range(i + 1, len(prices)):\n                profit = prices[j] - prices[i]\n                max_profit = max(max_profit, profit)\n        return max_profit`,
+                    cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int maxP = 0;\n        for (int i = 0; i < prices.size(); i++) {\n            for (int j = i + 1; j < prices.size(); j++) {\n                maxP = max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '최대 이익 초기화', desc: '이익을 낼 수 없는 경우를 대비해 0으로 시작.\n문제에서 "이익 없으면 0 반환"이라고 했으므로!', code: 'class Solution:\n    def maxProfit(self, prices):\n        max_profit = 0  # 이익 없으면 0 반환' },
+                        { title: '매수일 선택', desc: 'i번째 날에 사는 경우를 하나씩 시도합니다.\n모든 날을 매수일로 고려합니다.', code: '        for i in range(len(prices)):' },
+                        { title: '매도일 탐색', desc: '매수일 이후의 날에만 팔 수 있으므로 j = i+1부터.\n과거로 돌아가서 팔 수 없습니다!', code: '            for j in range(i + 1, len(prices)):' },
+                        { title: '이익 계산 + 최대값 갱신', desc: '(판매가 - 구매가)를 계산하고, 최대 이익을 갱신.\nO(n²) — 모든 쌍을 확인하므로 느림', code: '                profit = prices[j] - prices[i]\n                max_profit = max(max_profit, profit)\n        return max_profit' }
+                    ],
+                    cpp: [
+                        { title: 'Initialize', desc: '이익 없으면 0 반환을 위해 0으로 시작', code: 'class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int maxP = 0; // 이익 없으면 0' },
+                        { title: '이중 for문', desc: '모든 (매수일 i, 매도일 j) 조합을 확인.\nj = i+1 → 과거에 팔 수 없으므로', code: '        for (int i = 0; i < prices.size(); i++) {\n            for (int j = i + 1; j < prices.size(); j++) {' },
+                        { title: '이익 계산 + 반환', desc: '판매가 - 구매가의 최대값을 갱신하고 반환', code: '                maxP = max(maxP, prices[j] - prices[i]);\n            }\n        }\n        return maxP;\n    }\n};' }
+                    ]
+                }
+            }, {
+                approach: 'Single Pass',
+                description: '최솟값을 추적하면서 현재 가격과의 차이로 최대 이익을 계산',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `class Solution:\n    def maxProfit(self, prices):\n        min_price = float('inf')\n        max_profit = 0\n        for price in prices:\n            min_price = min(min_price, price)\n            max_profit = max(max_profit, price - min_price)\n        return max_profit`,
+                    cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int minP = INT_MAX, maxP = 0;\n        for (int p : prices) {\n            minP = min(minP, p);\n            maxP = max(maxP, p - minP);\n        }\n        return maxP;\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '변수 초기화', desc: '핵심 아이디어: "지금까지 가장 싼 날"을 기억하자!\nmin_price = ∞ → 어떤 가격이든 처음에 갱신됨.\nmax_profit = 0 → 이익 없으면 0 반환.', code: 'class Solution:\n    def maxProfit(self, prices):\n        min_price = float(\'inf\')  # 지금까지 본 최저가\n        max_profit = 0             # 최대 이익' },
+                        { title: '가격 순회', desc: '한 번의 순회로 해결! O(n)\n각 날의 가격을 "오늘 팔면 얼마 벌지?"로 판단합니다.', code: '        for price in prices:' },
+                        { title: '최솟값 갱신', desc: '오늘 가격이 지금까지 최저가보다 싸면 갱신.\n→ 이후의 날들이 이 가격에 사서 팔 수 있음!', code: '            min_price = min(min_price, price)  # 최저가 갱신' },
+                        { title: '이익 계산', desc: '핵심: "오늘 판다면?" → price - min_price\n이 값이 지금까지 최대 이익보다 크면 갱신합니다.', code: '            max_profit = max(max_profit, price - min_price)  # 오늘 팔면?' },
+                        { title: 'Return Result', desc: '한 번 순회만으로 최대 이익을 찾았습니다!\nO(n) 시간, O(1) 공간 — 최적 풀이.', code: '        return max_profit' }
+                    ],
+                    cpp: [
+                        { title: '변수 초기화', desc: '핵심: "지금까지 가장 싼 날"을 기억!\nINT_MAX → 어떤 가격이든 처음에 갱신됨.', code: 'class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int minP = INT_MAX, maxP = 0; // 최저가, 최대이익' },
+                        { title: '순회 + 최솟값 갱신', desc: '각 가격에서 최저가를 갱신.\n→ 이후의 날들이 이 가격에 사서 팔 수 있음', code: '        for (int p : prices) {\n            minP = min(minP, p); // 최저가 갱신' },
+                        { title: '이익 계산 + 결과', desc: '"오늘 판다면?" → p - minP\nO(n) 한 번 순회로 최적 해를 구합니다.', code: '            maxP = max(maxP, p - minP); // 오늘 팔면?\n        }\n        return maxP;\n    }\n};' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'lc-15',
+            title: 'LeetCode 15 - 3Sum',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/3sum/',
+            simIntro: '정렬 후 하나를 고정하고 투 포인터로 좁혀가는 과정을 확인해보세요!',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>정수 배열 <code>nums</code>에서 합이 <code>0</code>이 되는
+                <strong>세 수의 조합</strong>을 모두 찾으세요.</p>
+                <p>중복되는 조합은 제거해야 합니다.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [-1,0,1,2,-1,-4]</pre></div>
+                    <div><strong>Output</strong><pre>[[-1,-1,2],[-1,0,1]]</pre></div>
+                </div>
+                <p class="example-explain">(-1)+(-1)+2 = 0, (-1)+0+1 = 0</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [0,1,1]</pre></div>
+                    <div><strong>Output</strong><pre>[]</pre></div>
+                </div>
+                <p class="example-explain">합이 0이 되는 세 수 조합이 없습니다.</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 3</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [0,0,0]</pre></div>
+                    <div><strong>Output</strong><pre>[[0,0,0]]</pre></div>
+                </div></div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>3 ≤ nums.length ≤ 3000</li>
+                    <li>-10⁵ ≤ nums[i] ≤ 10⁵</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>O(n³)보다 빠르게 풀 수 있을까요?</p>
+            `,
+            hints: [
+                { title: 'First Thought: How to Solve?', content: '세 수의 합이 0이 되는 조합을 모두 찾아야 합니다. 가장 단순한 방법은? 삼중 for문으로 모든 세 수 조합을 확인하는 것!<br><code>if nums[i] + nums[j] + nums[k] == 0</code>이면 결과에 추가합니다.' },
+                { title: 'Let\'s Try It!', content: '<code>nums = [-1, 0, 1, 2, -1, -4]</code>로 해볼게요:<br>• (-1)+0+1=0 ✅, (-1)+2+(-1)=0 ✅, 0+1+(-1)=0 → 이건 위와 같은 조합!<br><br>중복이 생깁니다! [-1, 0, 1]이 여러 번 나올 수 있어요. Set을 써서 중복을 제거할 수 있지만... 삼중 for문 자체가 너무 느립니다.' },
+                { title: 'Problem Found!', content: '삼중 for문은 <strong>O(n³)</strong>입니다! n이 3,000이면 270억 번 연산! 😱<br><br><strong>핵심 질문:</strong> 배열을 정렬하면 뭐가 좋아질까?<br>정렬하면 ① 중복 건너뛰기가 쉬워지고 ② 두 수를 고르는 데 <strong>투 포인터</strong>를 쓸 수 있습니다!' },
+                { title: 'A Better Approach!', content: '정렬 후 <strong>하나를 고정</strong>하고, 나머지 두 수를 <strong>투 포인터</strong>로 찾습니다!<br>• i를 고정 → left=i+1, right=끝<br>• 세 수의 합이 0보다 작으면 left++, 크면 right--<br><br>이렇게 하면 O(n) × O(n) = <strong>O(n²)</strong>!' },
+                { title: 'Key Idea Summary', content: '① 배열을 정렬합니다 — O(n log n)<br>② i를 0부터 순회하며, <code>nums[i] == nums[i-1]</code>이면 건너뜁니다 (중복 제거)<br>③ left=i+1, right=끝으로 투 포인터 탐색<br>④ 합이 0이면 결과 추가 + left/right 중복도 건너뜀<br><br><strong>O(n³) → O(n²)</strong>으로 개선! 정렬이 핵심입니다.' }
+            ],
+            inputDefault: 0,
+            solve() { return '[[-1, -1, 2], [-1, 0, 1]]'; },
+            templates: {
+                python: `class Solution:
+    def threeSum(self, nums):
+        nums.sort()
+        result = []
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue  # 중복 건너뛰기
+            left, right = i + 1, len(nums) - 1
+            while left < right:
+                s = nums[i] + nums[left] + nums[right]
+                if s == 0:
+                    result.append([nums[i], nums[left], nums[right]])
+                    while left < right and nums[left] == nums[left + 1]: left += 1
+                    while left < right and nums[right] == nums[right - 1]: right -= 1
+                    left += 1; right -= 1
+                elif s < 0:
+                    left += 1
+                else:
+                    right -= 1
+        return result`,
+                cpp: `class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        for (int i = 0; i < (int)nums.size() - 2; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            int l = i + 1, r = nums.size() - 1;
+            while (l < r) {
+                int s = nums[i] + nums[l] + nums[r];
+                if (s == 0) {
+                    res.push_back({nums[i], nums[l], nums[r]});
+                    while (l < r && nums[l] == nums[l+1]) l++;
+                    while (l < r && nums[r] == nums[r-1]) r--;
+                    l++; r--;
+                } else if (s < 0) l++;
+                else r--;
+            }
+        }
+        return res;
+    }
+};`
+            },
+            solutions: [{
+                approach: 'Brute Force',
+                description: '삼중 for문으로 모든 세 수 조합을 확인하고 Set으로 중복 제거',
+                timeComplexity: 'O(n³)',
+                spaceComplexity: 'O(n)',
+                templates: {
+                    python: `class Solution:\n    def threeSum(self, nums):\n        result = set()\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):\n                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)\n        return [list(t) for t in result]`,
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '결과 Set 초기화', desc: '중복 조합 방지를 위해 set 사용.\n[-1,0,1]과 [0,-1,1]은 같은 조합 → 정렬 후 set에 넣으면 중복 제거!', code: 'class Solution:\n    def threeSum(self, nums):\n        result = set()  # 중복 조합 자동 제거\n        n = len(nums)' },
+                        { title: '삼중 for문', desc: '모든 (i, j, k) 조합을 하나씩 확인.\nO(n³) — 가장 직관적이지만 느린 방법.', code: '        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):' },
+                        { title: '합 확인 + 중복 제거', desc: '합이 0이면 정렬된 튜플로 set에 추가.\nsorted → 순서 무관하게 같은 조합이면 같은 튜플!', code: '                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)  # set이므로 중복 자동 제거' },
+                        { title: '결과 변환', desc: 'set의 튜플들을 리스트로 변환하여 반환.', code: '        return [list(t) for t in result]' }
+                    ],
+                    cpp: [
+                        { title: 'Set 초기화', desc: '중복 제거를 위해 set<vector<int>> 사용.\n정렬된 vector를 넣으면 동일 조합 자동 제거.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet; // 중복 제거\n        int n = nums.size();' },
+                        { title: '삼중 for문 + 합 확인', desc: '모든 (i,j,k) 조합을 확인 → O(n³).\n합이 0이면 정렬 후 set에 삽입.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }' },
+                        { title: 'Return Result', desc: 'set → vector로 변환하여 반환.', code: '        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};' }
+                    ]
+                }
+            }, {
+                approach: 'Sort + Two Pointers',
+                description: '정렬 후 하나를 고정하고, 나머지 두 수를 투 포인터로 탐색',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `class Solution:\n    def threeSum(self, nums):\n        nums.sort()\n        result = []\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            left, right = i + 1, len(nums) - 1\n            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:\n                    left += 1\n                else:\n                    right -= 1\n        return result`,
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: 'Sort', desc: '핵심: 정렬하면 투 포인터를 쓸 수 있다!\n정렬된 배열에서 합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution:\n    def threeSum(self, nums):\n        nums.sort()  # 정렬 → 투 포인터 사용 가능!\n        result = []' },
+                        { title: '첫 번째 수 고정 + 중복 건너뛰기', desc: 'i를 하나 고정하고 나머지 두 수를 투 포인터로 찾습니다.\n같은 값의 i를 건너뛰어야 중복 조합 방지!', code: '        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:  # 중복 건너뛰기\n                continue' },
+                        { title: '투 포인터 설정', desc: 'left = i 바로 다음, right = 배열 끝.\n이 두 포인터가 서로 만날 때까지 좁혀갑니다.', code: '            left, right = i + 1, len(nums) - 1' },
+                        { title: '합 비교 + 포인터 이동', desc: '합 == 0 → 정답! 결과에 추가 후 중복 건너뛰기.\n합 < 0 → 더 큰 값 필요 → left++\n합 > 0 → 더 작은 값 필요 → right--', code: '            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:   # 합이 작다 → left 오른쪽으로\n                    left += 1\n                else:          # 합이 크다 → right 왼쪽으로\n                    right -= 1' },
+                        { title: 'Return Result', desc: 'O(n²) — 정렬 O(n log n) + 각 i에 투 포인터 O(n)\nO(n³) 브루트포스보다 훨씬 빠릅니다!', code: '        return result' }
+                    ],
+                    cpp: [
+                        { title: '정렬 + 초기화', desc: '정렬하면 투 포인터 사용 가능!\n합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end()); // Sort → 투 포인터!\n        vector<vector<int>> res;' },
+                        { title: 'i 고정 + 중복 건너뛰기', desc: 'i를 고정 후 나머지를 투 포인터로 찾음.\n같은 값 건너뛰기 → 중복 조합 방지!', code: '        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue; // 중복 skip' },
+                        { title: '투 포인터 탐색', desc: '합 == 0 → 정답! 중복 건너뛰고 양쪽 이동.\n합 < 0 → left++, 합 > 0 → right--', code: '            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // 합 작다 → left 이동\n                else r--;               // 합 크다 → right 이동\n            }\n        }\n        return res;\n    }\n};' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'boj-2003',
+            title: 'BOJ 2003 - 수들의 합 2',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/2003',
+            simIntro: '슬라이딩 윈도우가 합을 유지하며 이동하는 과정을 확인해보세요!',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>N개의 수로 이루어진 수열에서,
+                <strong>연속된 수들의 부분합</strong> 중 합이 M이 되는 경우의 수를 구하세요.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>N = 4, M = 2
+수열 = [1, 1, 1, 1]</pre></div>
+                    <div><strong>Output</strong><pre>3</pre></div>
+                </div>
+                <p class="example-explain">[1,1](인덱스 0~1), [1,1](1~2), [1,1](2~3) → 총 3가지</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>N = 10, M = 5
+수열 = [1, 2, 3, 4, 2, 5, 3, 1, 1, 2]</pre></div>
+                    <div><strong>Output</strong><pre>3</pre></div>
+                </div>
+                <p class="example-explain">[2,3](인덱스 1~2), [3,2](3~4), [5](5) → 총 3가지</p>
+                </div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 10,000</li>
+                    <li>1 ≤ M ≤ 300,000,000</li>
+                    <li>수열의 각 원소는 자연수 (≥ 1)</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>O(n²)보다 빠르게 풀 수 있을까요? (투 포인터/슬라이딩 윈도우)</p>
+            `,
+            hints: [
+                {
+                    title: '연속된 부분합이 뭐야?',
+                    content: `<strong>"연속된 수들의 합"</strong>이 핵심이에요. 아무 수나 골라 더하는 게 아니라, <strong>붙어있는 수들</strong>만 더할 수 있어요!
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin:16px 0;">
+                        <div style="display:flex;gap:4px;">
+                            ${[1,2,3,4,2].map((v,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:${i>=1&&i<=2?'#6c5ce7':'#dfe6e9'};color:${i>=1&&i<=2?'white':'#636e72'};border-radius:8px;font-weight:700;font-size:1.1em;">${v}</span>`).join('')}
+                        </div>
+                        <div style="font-weight:600;">[2, 3] → 합 = <strong style="color:var(--green);">5</strong> ✅ 연속이니까 OK!</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin:12px 0;padding:12px;background:rgba(255,118,117,0.08);border-radius:10px;">
+                        <div style="display:flex;gap:4px;">
+                            ${[1,2,3,4,2].map((v,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:${i===0||i===3?'#e17055':'#dfe6e9'};color:${i===0||i===3?'white':'#636e72'};border-radius:8px;font-weight:700;font-size:1.1em;">${v}</span>`).join('')}
+                        </div>
+                        <div style="color:#e17055;font-weight:600;">[1, 4] → 합 = 5이지만 ❌ 떨어져 있어서 안 돼요!</div>
+                    </div>
+                    <p style="margin-top:16px;padding:10px 14px;background:rgba(253,203,110,0.15);border-radius:8px;font-size:0.92em;">이런 연속 구간을 전부 확인해서, 합이 M인 것을 세면 돼요! 🤔<br>그럼 어떻게 모든 연속 구간을 확인할까요?</p>`
+                },
+                {
+                    title: '가장 쉬운 방법: 다 해보기!',
+                    content: `모든 시작점에서 하나씩 늘려가며 합을 구하면 돼요.<br>왜? <strong>연속이니까 시작점만 정하면 끝점을 하나씩 늘리면서 합을 확인</strong>할 수 있거든요!
+                    <div style="margin:14px 0;padding:12px;background:var(--bg2);border-radius:10px;font-size:0.9em;line-height:1.8;border:1px solid var(--bg3);">
+                        <code>[1, 2, 3, 4, 2]</code>, M=5 일 때:<br>
+                        • i=0부터: [1]=1, [1,2]=3, [1,2,3]=6... 5 못 찾음<br>
+                        • i=1부터: [2]=2, [<strong>2,3</strong>]=<strong style="color:var(--green);">5 ✅</strong><br>
+                        • i=2부터: [3]=3, [3,4]=7... 못 찾음<br>
+                        • i=3부터: [4]=4, [<strong>4,2</strong>... 아 6이네] 못 찾음<br>
+                        • 아 아까 못 봤는데 [5] 혼자서도 5! → i=4에서 아 아 아닌데 위에 빠진 게 있을 수도..
+                    </div>
+                    <p style="margin-top:10px;">이렇게 <strong>이중 for문</strong>으로 가능해요. 그런데...</p>
+                    <p style="margin-top:8px;padding:10px 14px;background:rgba(255,118,117,0.1);border-radius:8px;font-size:0.92em;color:#e17055;">⏱ 시간복잡도가 <strong>O(n²)</strong>! N이 10,000이면 1억번 계산... 느릴 수 있어요!</p>`
+                },
+                {
+                    title: '핵심 관찰: 윈도우를 밀어보자!',
+                    content: `잠깐, 구간을 한 칸 오른쪽으로 밀면 어떻게 될까요?
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin:14px 0;">
+                        <div style="display:flex;gap:4px;">
+                            ${[1,2,3,4,2].map((v,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:${i>=0&&i<=2?'var(--yellow)':'#dfe6e9'};color:${i>=0&&i<=2?'var(--text)':'#636e72'};border-radius:8px;font-weight:700;">${v}</span>`).join('')}
+                        </div>
+                        <div>[1,2,3] 합 = 6</div>
+                        <div style="font-size:1.5em;">⬇️ 한 칸 밀면?</div>
+                        <div style="display:flex;gap:4px;">
+                            ${[1,2,3,4,2].map((v,i) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:${i>=1&&i<=3?'var(--yellow)':'#dfe6e9'};color:${i>=1&&i<=3?'var(--text)':'#636e72'};border-radius:8px;font-weight:700;">${v}</span>`).join('')}
+                        </div>
+                        <div>[2,3,4] 합 = 6 - <strong style="color:#e17055;">1</strong> + <strong style="color:var(--green);">4</strong> = 9</div>
+                    </div>
+                    <p style="margin-top:10px;padding:12px 14px;background:rgba(0,184,148,0.1);border-radius:8px;">💡 <strong>매번 처음부터 다시 더할 필요 없어요!</strong><br>앞에 빠지는 수는 빼고, 뒤에 들어오는 수만 더하면 돼요.<br>이게 바로 <strong>"슬라이딩 윈도우"</strong> 아이디어예요!</p>`
+                },
+                {
+                    title: '투 포인터로 똑똑하게!',
+                    content: `start와 end 두 포인터로 윈도우 크기를 조절해요!
+                    <div style="margin:14px 0;padding:14px;background:var(--bg2);border-radius:10px;font-size:0.93em;line-height:2;border:1px solid var(--bg3);">
+                        📌 <strong>합이 M보다 작으면</strong> → end를 오른쪽으로 (수를 더 넣어서 합 키우기)<br>
+                        📌 <strong>합이 M 이상이면</strong> → start를 오른쪽으로 (앞에서 빼서 합 줄이기)<br>
+                        📌 <strong>합이 딱 M이면</strong> → 찾았다! count++
+                    </div>
+                    <p style="margin-top:10px;">왜 이게 되냐면? 수가 전부 <strong>자연수(1 이상)</strong>이기 때문이에요!<br>수를 더하면 합이 커지고, 빼면 작아진다는 게 보장돼요.</p>
+                    <p style="margin-top:12px;padding:10px 14px;background:rgba(0,184,148,0.1);border-radius:8px;">⏱ start와 end 각각 최대 N번만 이동 → <strong>O(n)</strong>!<br>O(n²)에서 O(n)으로, 엄청난 개선이에요 💪</p>
+                    <p style="margin-top:8px;font-size:0.88em;color:var(--text3);">📝 시뮬레이션 탭에서 직접 윈도우가 밀리는 과정을 확인해보세요!</p>`
+                }
+            ],
+            inputDefault: 0,
+            solve() { return '3'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+N, M = map(int, input().split())
+arr = list(map(int, input().split()))
+
+start, end = 0, 0
+current_sum = 0
+count = 0
+
+while True:
+    if current_sum >= M:
+        current_sum -= arr[start]
+        start += 1
+    elif end >= N:
+        break
+    else:
+        current_sum += arr[end]
+        end += 1
+
+    if current_sum == M:
+        count += 1
+
+print(count)`,
+                cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int N, M;
+    scanf("%d %d", &N, &M);
+    vector<int> arr(N);
+    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);
+
+    int s = 0, e = 0, sum = 0, cnt = 0;
+    while (true) {
+        if (sum >= M) sum -= arr[s++];
+        else if (e >= N) break;
+        else sum += arr[e++];
+        if (sum == M) cnt++;
+    }
+    printf("%d\\n", cnt);
+}`
+            },
+            solutions: [{
+                approach: 'Brute Force',
+                description: '이중 for문으로 모든 연속 부분합을 확인',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\ncount = 0\nfor i in range(N):\n    total = 0\n    for j in range(i, N):\n        total += arr[j]\n        if total == M:\n            count += 1\n\nprint(count)`,
+                    cpp: `#include <iostream>
+#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int cnt = 0;\n    for (int i = 0; i < N; i++) {\n        int total = 0;\n        for (int j = i; j < N; j++) {\n            total += arr[j];\n            if (total == M) cnt++;\n        }\n    }\n    printf("%d\\n", cnt);\n}`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '입력 + 초기화', desc: 'N, M과 배열을 읽고 카운트를 0으로 초기화.\nsys.stdin.readline → 입력이 많을 때 빠름.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\ncount = 0' },
+                        { title: '시작점 순회', desc: 'i번째 원소부터 시작하는 연속 부분합을 확인.\n각 시작점마다 total을 0으로 리셋합니다.', code: 'for i in range(N):\n    total = 0  # 새 시작점마다 합 리셋' },
+                        { title: '끝점 확장 + 합 확인', desc: 'j를 i부터 끝까지 확장하며 누적합을 계산.\nO(n²) — 모든 연속 구간을 다 확인합니다.', code: '    for j in range(i, N):\n        total += arr[j]       # 구간 [i..j] 합\n        if total == M:\n            count += 1' },
+                        { title: 'Output Result', desc: '합이 M인 연속 부분 구간의 개수를 출력.', code: 'print(count)' }
+                    ],
+                    cpp: [
+                        { title: '입력 + 초기화', desc: 'N, M과 배열을 입력받고 카운트 초기화.', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int cnt = 0;' },
+                        { title: '이중 for문으로 부분합 확인', desc: '모든 시작점 i에서 끝점 j까지 누적합 계산.\ntotal을 계속 더해가므로 내부 루프에서 O(1)에 갱신.', code: '    for (int i = 0; i < N; i++) {\n        int total = 0; // 새 시작점마다 리셋\n        for (int j = i; j < N; j++) {\n            total += arr[j]; // 구간 [i..j] 합\n            if (total == M) cnt++;\n        }\n    }' },
+                        { title: 'Output Result', desc: '합이 M인 연속 구간의 개수를 출력.', code: '    printf("%d\\n", cnt);\n}' }
+                    ]
+                }
+            }, {
+                approach: 'Two Pointers',
+                description: '두 포인터로 구간 합을 유지하면서 M인 경우를 찾는다',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\nstart, end = 0, 0\ncurrent_sum = 0\ncount = 0\n\nwhile True:\n    if current_sum >= M:\n        current_sum -= arr[start]\n        start += 1\n    elif end >= N:\n        break\n    else:\n        current_sum += arr[end]\n        end += 1\n\n    if current_sum == M:\n        count += 1\n\nprint(count)`,
+                    cpp: `#include <iostream>
+#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0;\n    while (true) {\n        if (sum >= M) sum -= arr[s++];\n        else if (e >= N) break;\n        else sum += arr[e++];\n        if (sum == M) cnt++;\n    }\n    printf("%d\\n", cnt);\n}`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '입력 + 포인터 초기화', desc: '핵심 아이디어: start, end 두 포인터로 구간을 조절!\n구간 합이 작으면 end 확장, 크면 start 축소.\nO(n) — 각 포인터가 최대 N번만 이동하므로.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\nstart, end = 0, 0    # 구간 [start, end)\ncurrent_sum = 0       # 현재 구간 합\ncount = 0' },
+                        { title: '메인 루프: 구간 조절', desc: '합 ≥ M → 구간이 너무 크다 → start를 빼고 전진.\nend가 끝이면 종료.\n합 < M → 구간이 부족 → end를 더하고 확장.', code: 'while True:\n    if current_sum >= M:\n        current_sum -= arr[start]  # start 원소 빼기\n        start += 1                 # 구간 축소\n    elif end >= N:\n        break                      # 더 확장 불가 → 종료\n    else:\n        current_sum += arr[end]    # end 원소 추가\n        end += 1                   # 구간 확장' },
+                        { title: '합 확인', desc: '구간 조절 후 현재 합이 정확히 M이면 카운트!\nif문이 매 반복마다 실행됩니다.', code: '    if current_sum == M:\n        count += 1  # 합이 M인 구간 발견!' },
+                        { title: 'Output Result', desc: 'O(n) 한 번 순회로 모든 구간을 찾았습니다.\nstart, end 각각 최대 N번 이동 → O(2N) = O(n).', code: 'print(count)' }
+                    ],
+                    cpp: [
+                        { title: '입력 + 포인터 초기화', desc: '두 포인터 s, e로 구간 [s, e)을 관리.\n합이 작으면 e 확장, 크면 s 축소 → O(n).', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0; // 구간 [s, e)' },
+                        { title: '메인 루프 + 합 확인', desc: '합 ≥ M → s 빼고 전진 (구간 축소).\ne가 끝이면 종료.\n합 < M → e 더하고 확장.\n매 반복 합 == M 확인.', code: '    while (true) {\n        if (sum >= M) sum -= arr[s++];     // 구간 축소\n        else if (e >= N) break;            // End\n        else sum += arr[e++];              // 구간 확장\n        if (sum == M) cnt++;               // 합이 M!\n    }' },
+                        { title: 'Output Result', desc: 'O(n) — s와 e 각각 최대 N번만 이동.', code: '    printf("%d\\n", cnt);\n}' }
+                    ]
+                }
+            }]
+        }
+    ],
+
+    renderProblem(container) {
+        container.innerHTML = '';
+        const stageList = document.createElement('div');
+        stageList.className = 'problem-stages';
+
+        this.stages.forEach(stage => {
+            const stageCard = document.createElement('div');
+            stageCard.className = 'stage-card';
+            stageCard.innerHTML = `
+                <div class="stage-header">
+                    <span class="stage-num">단계 ${stage.num}</span>
+                    <h3>${stage.title}</h3>
+                    <p>${stage.desc}</p>
+                </div>
+                <div class="stage-problems"></div>
+            `;
+            const problemsDiv = stageCard.querySelector('.stage-problems');
+            stage.problemIds.forEach(pid => {
+                const prob = this.problems.find(p => p.id === pid);
+                if (!prob) return;
+                const diffMap = {gold:'Gold',silver:'Silver',platinum:'Platinum',easy:'Easy',medium:'Medium',hard:'Hard'};
+                const btn = document.createElement('button');
+                btn.className = 'problem-card ' + prob.difficulty;
+                btn.innerHTML = `<span class="problem-title">${prob.title}</span><span class="problem-diff">${diffMap[prob.difficulty] || prob.difficulty}</span>`;
+                btn.addEventListener('click', () => this._renderProblemDetail(container, prob));
+                problemsDiv.appendChild(btn);
+            });
+            stageList.appendChild(stageCard);
+        });
+        container.appendChild(stageList);
+    },
+
+    _renderProblemDetail(container, problem) {
+        container.innerHTML = '';
+        const backBtn = document.createElement('button');
+        backBtn.className = 'btn'; backBtn.textContent = '← Back to Problems';
+        backBtn.addEventListener('click', () => this.renderProblem(container));
+        container.appendChild(backBtn);
+
+        const isLC = problem.link.includes('leetcode');
+        const descDiv = document.createElement('div');
+        descDiv.className = 'problem-detail';
+        descDiv.innerHTML = `<div class="problem-meta"><a href="${problem.link}" target="_blank" class="btn btn-primary">${isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗'}</a></div>${problem.descriptionHTML}`;
+        container.appendChild(descDiv);
+
+        const hintsSection = document.createElement('div');
+        hintsSection.className = 'hints-section';
+        hintsSection.innerHTML = '<h3>단계별 힌트</h3>';
+        const hintsDiv = document.createElement('div');
+        hintsDiv.className = 'hints-steps';
+        const openedState = {};
+
+        problem.hints.forEach((hint, idx) => {
+            const step = document.createElement('div');
+            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
+            step.innerHTML = `<div class="hint-step-header"><span class="hint-step-num">${idx + 1}</span><span class="hint-step-title">${hint.title}</span><span class="hint-step-toggle">▶</span></div><div class="hint-step-content">${hint.content}</div>`;
+            step.querySelector('.hint-step-header').addEventListener('click', () => {
+                if (step.classList.contains('locked')) return;
+                step.classList.toggle('open');
+                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('open') ? '▼' : '▶';
+                if (!openedState[idx]) { openedState[idx] = true; if (idx + 1 < problem.hints.length) { const ns = hintsDiv.children[idx + 1]; if (ns) ns.classList.remove('locked'); } }
+            });
+            hintsDiv.appendChild(step);
+        });
+        hintsSection.appendChild(hintsDiv);
+        container.appendChild(hintsSection);
+
+        const solveArea = document.createElement('div');
+        solveArea.className = 'solve-area';
+        solveArea.innerHTML = `
+            <div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option></select></div>
+            <textarea id="code-editor" spellcheck="false" placeholder="Write your code here..."></textarea>
+            <div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ 실행</button><button id="check-btn" class="btn btn-success">✓ 정답 확인</button></div>
+            <div id="output-area" class="output-area"><div class="output-label">실행 결과</div><pre id="output-text"></pre></div>
+        `;
+        container.appendChild(solveArea);
+
+        container.querySelectorAll('pre code').forEach(codeEl => { if (window.hljs) hljs.highlightElement(codeEl); });
+
+        const editor = container.querySelector('#code-editor');
+        const langSelect = container.querySelector('#lang-select');
+        editor.value = problem.templates.python;
+        langSelect.addEventListener('change', () => { editor.value = problem.templates[langSelect.value]; });
+        editor.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') { e.preventDefault(); const s = editor.selectionStart; editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(editor.selectionEnd); editor.selectionStart = editor.selectionEnd = s + 4; }
+        });
+
+        const site = isLC ? 'LeetCode' : 'BOJ';
+        container.querySelector('#run-btn').addEventListener('click', () => {
+            const expected = problem.solve(problem.inputDefault);
+            this._showOutput(container, `예상 정답:\n${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`);
+        });
+        container.querySelector('#check-btn').addEventListener('click', () => {
+            const expected = problem.solve(problem.inputDefault);
+            this._showOutput(container, `예상 정답:\n${expected}\n\n💡 코드를 ${site}에 제출하여 정답을 확인하세요!`);
+        });
+    },
+
+    _showOutput(container, text, status) {
+        const area = container.querySelector('#output-area');
+        area.querySelector('#output-text').textContent = text;
+        area.className = 'output-area' + (status ? ' ' + status : '');
+    }
+};
+
+window.AlgoTopics = window.AlgoTopics || {};
+window.AlgoTopics.array = arrayTopic;
