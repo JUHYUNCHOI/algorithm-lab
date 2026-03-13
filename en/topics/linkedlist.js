@@ -1,24 +1,24 @@
 // =========================================================
-// Connect 리스트 (Linked List) 토픽 모듈
+// Linked List Topic Module
 // =========================================================
 const linkedListTopic = {
     id: 'linkedlist',
-    title: '연결 리스트',
+    title: 'Linked List',
     icon: '🔗',
     category: 'Data Structures',
     order: 5,
-    description: '노드와 포인터, 단일/이중 연결 리스트, 순환 탐지와 뒤집기',
-    relatedNote: '이 외에도 이중 연결 리스트, LRU 캐시(해시맵+리스트), 스킵 리스트 등의 확장 개념이 있습니다.',
+    description: 'Nodes and pointers, singly/doubly linked lists, cycle detection and reversal',
+    relatedNote: 'Beyond this, there are also advanced concepts such as doubly linked lists, LRU cache (hashmap + list), skip lists, and more.',
 
     sidebarExpandable: true,
 
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
-        'lc-206':   { type: '포인터 조작',  color: 'var(--accent)', vizMethod: '_renderVizReverse' },
-        'lc-21':    { type: '병합 기법',    color: 'var(--green)',  vizMethod: '_renderVizMerge' },
-        'lc-141':   { type: '사이클 탐지',  color: '#e17055',      vizMethod: '_renderVizCycle' },
-        'boj-1158': { type: '원형 시뮬레이션', color: '#6c5ce7',   vizMethod: '_renderVizJosephus' }
+        'lc-206':   { type: 'Pointer Manipulation',  color: 'var(--accent)', vizMethod: '_renderVizReverse' },
+        'lc-21':    { type: 'Merge Technique',    color: 'var(--green)',  vizMethod: '_renderVizMerge' },
+        'lc-141':   { type: 'Cycle Detection',  color: '#e17055',      vizMethod: '_renderVizCycle' },
+        'boj-1158': { type: 'Circular Simulation', color: '#6c5ce7',   vizMethod: '_renderVizJosephus' }
     },
 
     getProblemTabs(problemId) {
@@ -153,115 +153,115 @@ const linkedListTopic = {
     renderConcept(container) {
         container.innerHTML = `
             <div class="hero">
-                <h2>🔗 연결 리스트 (Linked List)</h2>
-                <p class="hero-sub">노드와 포인터로 연결된 동적 자료구조를 배워봅시다!</p>
+                <h2>🔗 Linked List</h2>
+                <p class="hero-sub">Let's learn about the dynamic data structure connected by nodes and pointers!</p>
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">1</span> 연결 리스트란?</div>
+                <div class="concept-section-title"><span class="section-num">1</span> What is a Linked List?</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 연결 리스트는 <em>"보물찾기 게임"</em>입니다!
-                    각 종이(노드)에는 보물(데이터)과 <strong>다음 종이의 위치(포인터)</strong>가 적혀 있습니다.
-                    첫 번째 종이(head)에서 시작해서 화살표를 따라가면 전체를 순회할 수 있습니다!
+                    <strong>Understanding by analogy:</strong> A linked list is like a <em>"treasure hunt game"</em>!
+                    Each piece of paper (node) has a treasure (data) and <strong>the location of the next piece of paper (pointer)</strong> written on it.
+                    Starting from the first piece of paper (head), you can traverse the entire list by following the arrows!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">node</text></svg></div>
-                        <h3>노드 (Node)</h3>
-                        <p><strong>데이터</strong>와 <strong>다음 노드를 가리키는 포인터(next)</strong>로 구성됩니다.</p>
+                        <h3>Node</h3>
+                        <p>Consists of <strong>data</strong> and a <strong>pointer (next) that points to the next node</strong>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">head</text></svg></div>
                         <h3>Head</h3>
-                        <p>연결 리스트의 시작점입니다. head만 알면 전체 리스트를 순회할 수 있습니다.</p>
+                        <p>The starting point of the linked list. Knowing just the head lets you traverse the entire list.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">O(1)</text></svg></div>
-                        <h3>삽입/삭제가 빠름</h3>
-                        <p>중간 삽입/삭제가 <strong>O(1)</strong>! (위치를 안다면) 배열은 O(n)입니다.</p>
+                        <h3>Fast Insertion/Deletion</h3>
+                        <p>Mid-list insertion/deletion is <strong>O(1)</strong>! (if you know the position) Arrays require O(n).</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">O(n)</text></svg></div>
-                        <h3>접근이 느림</h3>
-                        <p>i번째 원소를 찾으려면 head부터 i번 따라가야 → <strong>O(n)</strong>. 배열은 O(1)!</p>
+                        <h3>Slow Access</h3>
+                        <p>To find the i-th element, you must follow pointers from head i times → <strong>O(n)</strong>. Arrays are O(1)!</p>
                     </div>
                 </div>
                 <div class="comparison-table" style="margin-top:1.5rem;overflow-x:auto;">
                 <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
                 <thead><tr style="background:var(--bg2);">
-                <th style="padding:10px;text-align:left;border:1px solid var(--bg3);">연산</th>
-                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">배열 (Array)</th>
-                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">연결 리스트</th>
+                <th style="padding:10px;text-align:left;border:1px solid var(--bg3);">Operation</th>
+                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">Array</th>
+                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">Linked List</th>
                 </tr></thead>
                 <tbody>
-                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">인덱스 접근</td>
+                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">Index Access</td>
                 <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">O(1) ✅</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — head부터 순회</td></tr>
-                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">앞에 삽입</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — 전부 밀어야 함</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — must traverse from head</td></tr>
+                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">Insert at Front</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — must shift everything</td>
                 <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">O(1) ✅</td></tr>
-                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">중간 삽입 (위치 알 때)</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — 뒤를 전부 밀어야</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">O(1) — 포인터만 변경</td></tr>
-                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">삭제 (위치 알 때)</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — 뒤를 전부 당겨야</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">O(1) — 포인터만 변경</td></tr>
-                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">메모리</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);">연속된 공간 필요</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);">흩어져도 OK (포인터로 연결)</td></tr>
-                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">캐시 성능</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">좋음 — 연속 메모리</td>
-                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">나쁨 — 메모리 산재</td></tr>
+                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">Insert in Middle (position known)</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — must shift everything after</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">O(1) — just change pointers</td></tr>
+                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">Delete (position known)</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">O(n) — must shift everything after</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">O(1) — just change pointers</td></tr>
+                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">Memory</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);">Requires contiguous space</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);">Scattered is OK (connected by pointers)</td></tr>
+                <tr><td style="padding:10px;border:1px solid var(--bg3);font-weight:600;">Cache Performance</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:600;">Good — contiguous memory</td>
+                <td style="padding:10px;text-align:center;border:1px solid var(--bg3);color:var(--red);font-weight:600;">Poor — scattered memory</td></tr>
                 </tbody>
                 </table>
                 </div>
                 <div class="think-box" style="margin-top:1.2rem;">
-                    <strong>🔍 왜 삽입/삭제가 O(1)일까? — 단계적으로 이해하기</strong>
+                    <strong>🔍 Why is insertion/deletion O(1)? — Step-by-step understanding</strong>
                     <div style="margin-top:0.8rem;">
-                        <p style="margin-bottom:0.5rem;"><strong>1. 배열에서 중간에 삽입하려면?</strong></p>
-                        <p style="margin-left:1rem;color:var(--text2);">[1, 2, <span style="color:var(--yellow);font-weight:600;">★</span>, 3, 4, 5] ← 3번 위치에 넣으려면 3, 4, 5를 전부 한 칸씩 뒤로 밀어야 합니다. 요소가 n개면 최대 n번 이동 → <strong style="color:var(--red);">O(n)</strong></p>
-                        <p style="margin-top:0.8rem;margin-bottom:0.5rem;"><strong>2. 연결 리스트에서는?</strong></p>
-                        <p style="margin-left:1rem;color:var(--text2);">삽입할 위치의 노드를 이미 알고 있다면, <strong>포인터 2개만 바꾸면 끝</strong>입니다:<br>
-                        ① 새 노드의 next → 다음 노드를 가리키게<br>
-                        ② 이전 노드의 next → 새 노드를 가리키게</p>
-                        <p style="margin-top:0.8rem;margin-bottom:0.5rem;"><strong>3. 그래서 왜 빠른가?</strong></p>
-                        <p style="margin-left:1rem;color:var(--text2);">다른 노드를 <strong>전혀 건드리지 않아도</strong> 되니까! 100만 개의 노드가 있어도 포인터 2개만 바꾸면 삽입 완료 → <strong style="color:var(--green);">O(1)</strong></p>
-                        <p style="margin-top:0.8rem;font-size:0.85rem;color:var(--text3);">⚠️ 단, "위치를 알 때"라는 조건이 중요! 위치를 모르면 먼저 찾아야 하므로 O(n)이 걸립니다.</p>
+                        <p style="margin-bottom:0.5rem;"><strong>1. What if you insert in the middle of an array?</strong></p>
+                        <p style="margin-left:1rem;color:var(--text2);">[1, 2, <span style="color:var(--yellow);font-weight:600;">★</span>, 3, 4, 5] ← To insert at position 3, you must shift 3, 4, 5 one position back. With n elements, up to n shifts → <strong style="color:var(--red);">O(n)</strong></p>
+                        <p style="margin-top:0.8rem;margin-bottom:0.5rem;"><strong>2. What about in a linked list?</strong></p>
+                        <p style="margin-left:1rem;color:var(--text2);">If you already know the node at the insertion point, <strong>just change 2 pointers and you're done</strong>:<br>
+                        ① Point the new node's next → to the next node<br>
+                        ② Point the previous node's next → to the new node</p>
+                        <p style="margin-top:0.8rem;margin-bottom:0.5rem;"><strong>3. So why is it fast?</strong></p>
+                        <p style="margin-left:1rem;color:var(--text2);">Because you <strong>don't need to touch any other nodes</strong> at all! Even with 1 million nodes, just changing 2 pointers completes the insertion → <strong style="color:var(--green);">O(1)</strong></p>
+                        <p style="margin-top:0.8rem;font-size:0.85rem;color:var(--text3);">⚠️ The condition "when position is known" is key! If you don't know the position, you must search first, which takes O(n).</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 연결 리스트 노드 정의
+                    <pre><code class="language-python"># Linked list node definition
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
 
-# 리스트 만들기: 1 → 2 → 3 → None
+# Create list: 1 → 2 → 3 → None
 head = ListNode(1)
 head.next = ListNode(2)
 head.next.next = ListNode(3)
 
-# 순회
+# Traversal
 node = head
 while node:
     print(node.val, end=" → ")
     node = node.next
-# 출력: 1 → 2 → 3 →</code></pre>
+# Output: 1 → 2 → 3 →</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// Connect 리스트 노드 정의
+                    <pre><code class="language-cpp">// Linked list node definition
 struct ListNode {
     int val;
     ListNode* next;
     ListNode(int x) : val(x), next(nullptr) {}
 };
 
-// 리스트 만들기: 1 → 2 → 3 → nullptr
+// Create list: 1 → 2 → 3 → nullptr
 ListNode* head = new ListNode(1);
 head-&gt;next = new ListNode(2);
 head-&gt;next-&gt;next = new ListNode(3);
 
-// 순회
+// Traversal
 ListNode* node = head;
 while (node) {
     cout &lt;&lt; node-&gt;val &lt;&lt; " → ";
@@ -270,153 +270,153 @@ while (node) {
 // Output: 1 → 2 → 3 →</code></pre>
                 </div></span>
                 <div style="margin-top:0.5rem;">
-                    <span class="lang-py"><a href="https://docs.python.org/3/tutorial/classes.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: 클래스(class) ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/nullptr" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: nullptr ↗</a></span>
+                    <span class="lang-py"><a href="https://docs.python.org/3/tutorial/classes.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: Classes ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/nullptr" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: nullptr ↗</a></span>
                 </div>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 배열 vs 연결 리스트: 배열은 "아파트"(번호로 바로 찾기 O(1)),
-                    연결 리스트는 "기차"(한 칸씩 이동 O(n))입니다. 하지만 기차는 칸을 끼워 넣기가 쉽죠!
+                    <strong>💡 Think about it:</strong> Array vs Linked List: An array is like an "apartment building" (find by number instantly O(1)),
+                    a linked list is like a "train" (move car by car O(n)). But it's easy to insert a car into a train!
                 </div>
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">2</span> 연결 리스트 뒤집기</div>
+                <div class="concept-section-title"><span class="section-num">2</span> Reversing a Linked List</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 리스트 뒤집기는 <em>"화살표 방향 바꾸기"</em>입니다!
-                    1→2→3 을 3→2→1 로 바꾸려면, 각 노드의 next 포인터를 반대 방향으로 돌립니다.
-                    세 개의 포인터(prev, curr, next)를 쓰면 됩니다.
+                    <strong>Understanding by analogy:</strong> Reversing a list is like <em>"flipping arrow directions"</em>!
+                    To change 1→2→3 into 3→2→1, you flip each node's next pointer to point in the opposite direction.
+                    You just need three pointers (prev, curr, next).
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--accent)">prev</text></svg></div>
                         <h3>Step 1</h3>
-                        <p><code>prev = None</code>, <code>curr = head</code>로 시작합니다.</p>
+                        <p>Start with <code>prev = None</code>, <code>curr = head</code>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--yellow)">→←</text></svg></div>
                         <h3>Step 2</h3>
-                        <p><code>curr.next</code>를 <code>prev</code>로 바꿉니다 (방향 전환!).</p>
+                        <p>Change <code>curr.next</code> to <code>prev</code> (flip the direction!).</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--green)">▶▶</text></svg></div>
                         <h3>Step 3</h3>
-                        <p>prev, curr를 한 칸씩 앞으로 이동. 끝나면 prev가 새 head!</p>
+                        <p>Move prev and curr one step forward. When done, prev is the new head!</p>
                     </div>
                 </div>
                 <div class="think-box" style="margin-top:1.2rem;">
-                    <strong>🤔 왜 포인터가 3개나 필요할까?</strong>
+                    <strong>🤔 Why do we need 3 pointers?</strong>
                     <div style="margin-top:0.8rem;">
-                        <p style="margin-bottom:0.5rem;">뒤집기의 핵심은 <code>curr.next = prev</code> (화살표 방향 전환)입니다. 그런데 이 순간 문제가 생깁니다:</p>
+                        <p style="margin-bottom:0.5rem;">The key to reversal is <code>curr.next = prev</code> (flipping the arrow direction). But at this moment a problem arises:</p>
                         <p style="margin-left:1rem;margin-bottom:0.5rem;color:var(--text2);">
                             <strong>Before:</strong> <code>... ← prev &nbsp; curr → next_node → ...</code><br>
                             <strong>After <code>curr.next = prev</code>:</strong> <code>... ← prev ← curr &nbsp; <span style="color:var(--red);">next_node → ...</span></code>
                         </p>
-                        <p style="margin-bottom:0.5rem;"><code>curr.next</code>를 <code>prev</code>로 바꾸는 순간, <strong style="color:var(--red);">원래 다음 노드(next_node)에 대한 참조를 잃어버립니다!</strong></p>
-                        <p style="margin-bottom:0.5rem;">그래서 방향을 바꾸기 <strong>전에</strong> <code>next_node = curr.next</code>로 다음 노드를 미리 저장해두는 것입니다.</p>
-                        <p style="font-size:0.85rem;color:var(--text3);">💡 정리: <strong>prev</strong>(뒤집은 쪽) + <strong>curr</strong>(지금 처리 중) + <strong>next_node</strong>(아직 안 본 쪽) — 세 영역의 경계를 관리하기 위해 3개가 필요합니다.</p>
+                        <p style="margin-bottom:0.5rem;">The moment you change <code>curr.next</code> to <code>prev</code>, <strong style="color:var(--red);">you lose the reference to the original next node (next_node)!</strong></p>
+                        <p style="margin-bottom:0.5rem;">That's why <strong>before</strong> flipping the direction, we save the next node with <code>next_node = curr.next</code>.</p>
+                        <p style="font-size:0.85rem;color:var(--text3);">💡 Summary: <strong>prev</strong> (reversed side) + <strong>curr</strong> (currently processing) + <strong>next_node</strong> (not yet visited side) — we need 3 pointers to manage the boundaries of these three regions.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 연결 리스트 뒤집기 (반복)
+                    <pre><code class="language-python"># Reverse linked list (iterative)
 def reverseList(head):
     prev = None
     curr = head
 
     while curr:
-        next_node = curr.next  # 다음 노드 저장
-        curr.next = prev       # 방향 전환!
-        prev = curr            # prev 이동
-        curr = next_node       # curr 이동
+        next_node = curr.next  # Save next node
+        curr.next = prev       # Flip direction!
+        prev = curr            # Move prev
+        curr = next_node       # Move curr
 
-    return prev  # prev가 새로운 head</code></pre>
+    return prev  # prev is the new head</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// Connect 리스트 뒤집기 (반복)
+                    <pre><code class="language-cpp">// Reverse linked list (iterative)
 ListNode* reverseList(ListNode* head) {
     ListNode* prev = nullptr;
     ListNode* curr = head;
 
     while (curr) {
-        ListNode* next_node = curr-&gt;next;  // 다음 노드 저장
-        curr-&gt;next = prev;                  // 방향 전환!
-        prev = curr;                         // prev 이동
-        curr = next_node;                    // curr 이동
+        ListNode* next_node = curr-&gt;next;  // Save next node
+        curr-&gt;next = prev;                  // Flip direction!
+        prev = curr;                         // Move prev
+        curr = next_node;                    // Move curr
     }
 
-    return prev;  // prev가 새로운 head
+    return prev;  // prev is the new head
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 연결 리스트 뒤집기는 코딩 면접의 단골 문제입니다!
-                    반복 버전과 재귀 버전 모두 구현할 수 있으면 좋습니다.
+                    <strong>💡 Think about it:</strong> Reversing a linked list is a classic coding interview question!
+                    It's great if you can implement both the iterative and recursive versions.
                 </div>
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> 투 포인터: 토끼와 거북이</div>
+                <div class="concept-section-title"><span class="section-num">3</span> Two Pointers: Tortoise and Hare</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> <em>"원형 트랙에서 달리기"</em>를 생각해봅시다!
-                    빠른 선수(fast, 2칸씩)와 느린 선수(slow, 1칸씩)가 원형 트랙을 달리면
-                    반드시 만납니다. 이것으로 <strong>순환(cycle) 탐지</strong>를 할 수 있습니다!
+                    <strong>Understanding by analogy:</strong> Think about <em>"running on a circular track"</em>!
+                    If a fast runner (fast, 2 steps at a time) and a slow runner (slow, 1 step at a time) run on a circular track,
+                    they will always meet. This is how we can perform <strong>cycle detection</strong>!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--accent)">🐢🐇</text></svg></div>
-                        <h3>사이클 탐지</h3>
-                        <p>slow는 1칸, fast는 2칸씩 이동. 만나면 사이클! (Floyd's Algorithm)</p>
+                        <h3>Cycle Detection</h3>
+                        <p>slow moves 1 step, fast moves 2 steps. If they meet, there's a cycle! (Floyd's Algorithm)</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">mid</text></svg></div>
-                        <h3>중간 노드 찾기</h3>
-                        <p>fast가 끝에 도달하면 slow는 정확히 중간에! 한 번의 순회로 중간을 찾습니다.</p>
+                        <h3>Finding the Middle Node</h3>
+                        <p>When fast reaches the end, slow is exactly in the middle! Finds the middle in a single pass.</p>
                     </div>
                 </div>
                 <div class="think-box" style="margin-top:1.2rem;">
-                    <strong>🤔 왜 Floyd's Algorithm이 작동할까?</strong>
+                    <strong>🤔 Why does Floyd's Algorithm work?</strong>
                     <div style="margin-top:0.8rem;">
-                        <p style="margin-bottom:0.5rem;"><strong>1. 사이클이 없다면?</strong></p>
-                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.8rem;">fast가 먼저 <code>None(nullptr)</code>에 도달합니다. → 사이클 없음을 확인!</p>
-                        <p style="margin-bottom:0.5rem;"><strong>2. 사이클이 있다면?</strong></p>
-                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.5rem;">fast와 slow가 모두 사이클 안에 진입하게 됩니다. 이때 핵심:</p>
-                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.5rem;">• fast는 매 스텝 <strong>2칸</strong>, slow는 <strong>1칸</strong> → 매 스텝마다 fast가 slow를 <strong>1칸씩 따라잡음</strong></p>
-                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.5rem;">• 사이클 길이가 C라면, 둘 사이의 거리는 매 스텝 1씩 줄어듦</p>
-                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.8rem;">• 따라서 <strong>최대 C스텝</strong> 이내에 반드시 만남! (거리가 C, C-1, C-2, ..., 1, <span style="color:var(--green);font-weight:600;">0 = 만남!</span>)</p>
-                        <p style="font-size:0.85rem;color:var(--text3);">💡 비유: 원형 트랙에서 속도가 다른 두 주자는 결국 만납니다. 빠른 주자가 느린 주자를 한 바퀴 "랩"하면서 만나는 것과 같은 원리!</p>
+                        <p style="margin-bottom:0.5rem;"><strong>1. If there is no cycle?</strong></p>
+                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.8rem;">fast reaches <code>None(nullptr)</code> first. → Confirmed: no cycle!</p>
+                        <p style="margin-bottom:0.5rem;"><strong>2. If there is a cycle?</strong></p>
+                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.5rem;">Both fast and slow enter the cycle. Here's the key insight:</p>
+                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.5rem;">• fast moves <strong>2 steps</strong> per turn, slow moves <strong>1 step</strong> → fast <strong>catches up by 1 step</strong> each turn</p>
+                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.5rem;">• If the cycle length is C, the distance between them decreases by 1 each step</p>
+                        <p style="margin-left:1rem;color:var(--text2);margin-bottom:0.8rem;">• Therefore they <strong>must meet within C steps</strong>! (distance: C, C-1, C-2, ..., 1, <span style="color:var(--green);font-weight:600;">0 = they meet!</span>)</p>
+                        <p style="font-size:0.85rem;color:var(--text3);">💡 Analogy: Two runners at different speeds on a circular track will always meet. It's the same principle as the faster runner "lapping" the slower one!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 사이클 탐지 (Floyd's Cycle Detection)
+                    <pre><code class="language-python"># Cycle detection (Floyd's Cycle Detection)
 def hasCycle(head):
     slow = fast = head
     while fast and fast.next:
-        slow = slow.next        # 1칸 이동
-        fast = fast.next.next   # 2칸 이동
+        slow = slow.next        # Move 1 step
+        fast = fast.next.next   # Move 2 steps
         if slow == fast:
-            return True  # 사이클 발견!
-    return False  # fast가 끝에 도달 = 사이클 없음
+            return True  # Cycle found!
+    return False  # fast reached the end = no cycle
 
-# 중간 노드 찾기
+# Find the middle node
 def middleNode(head):
     slow = fast = head
     while fast and fast.next:
         slow = slow.next
         fast = fast.next.next
-    return slow  # slow가 중간!</code></pre>
+    return slow  # slow is at the middle!</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// 사이클 탐지 (Floyd's Cycle Detection)
+                    <pre><code class="language-cpp">// Cycle detection (Floyd's Cycle Detection)
 bool hasCycle(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
     while (fast &amp;&amp; fast-&gt;next) {
-        slow = slow-&gt;next;          // 1칸 이동
-        fast = fast-&gt;next-&gt;next;    // 2칸 이동
+        slow = slow-&gt;next;          // Move 1 step
+        fast = fast-&gt;next-&gt;next;    // Move 2 steps
         if (slow == fast)
-            return true;  // 사이클 발견!
+            return true;  // Cycle found!
     }
-    return false;  // fast가 끝에 도달 = 사이클 없음
+    return false;  // fast reached the end = no cycle
 }
 
-// 중간 노드 찾기
+// Find the middle node
 ListNode* middleNode(ListNode* head) {
     ListNode* slow = head;
     ListNode* fast = head;
@@ -424,12 +424,12 @@ ListNode* middleNode(ListNode* head) {
         slow = slow-&gt;next;
         fast = fast-&gt;next-&gt;next;
     }
-    return slow;  // slow가 중간!
+    return slow;  // slow is at the middle!
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 코딩 테스트에서 연결 리스트 문제가 나오면,
-                    "뒤집기", "사이클 탐지", "중간 찾기", "병합" 이 4가지 패턴을 떠올리세요!
+                    <strong>💡 Think about it:</strong> When you encounter a linked list problem in coding tests,
+                    remember these 4 patterns: "reversal", "cycle detection", "finding the middle", and "merging"!
                 </div>
             </div>
         `;
@@ -450,9 +450,9 @@ ListNode* middleNode(ListNode* head) {
     _createStepControls(suffix) {
         var s = suffix || '';
         return '<div class="str-step-controls" id="str-step-controls' + s + '" style="position:fixed;bottom:0;left:var(--sidebar-w,280px);right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:100;">' +
-            '<button class="btn" id="str-prev' + s + '">◀ 이전</button>' +
+            '<button class="btn" id="str-prev' + s + '">◀ Prev</button>' +
             '<span id="str-indicator' + s + '" style="font-size:0.9rem;color:var(--text-secondary);min-width:60px;text-align:center;">0 / 0</span>' +
-            '<button class="btn" id="str-next' + s + '">다음 ▶</button>' +
+            '<button class="btn" id="str-next' + s + '">Next ▶</button>' +
             '</div>';
     },
 
@@ -470,7 +470,7 @@ ListNode* middleNode(ListNode* head) {
         var updateUI = function() {
             if (current < 0) {
                 indicator.textContent = 'Before Start';
-                if (descEl) descEl.innerHTML = '▶ 다음 버튼을 눌러 시뮬레이션을 시작하세요.';
+                if (descEl) descEl.innerHTML = '▶ Press the Next button to start the simulation.';
                 prevBtn.disabled = true;
                 nextBtn.disabled = false;
             } else {
@@ -507,7 +507,7 @@ ListNode* middleNode(ListNode* head) {
         updateUI();
     },
 
-    // ── _renderNodeChain: 노드 체인 HTML 생성 유틸 ──
+    // ── _renderNodeChain: Node chain HTML generation utility ──
     _nodeBox(val, labels, cls) {
         var c = 'str-char-box' + (cls ? ' ' + cls : '');
         var labelHtml = labels && labels.length
@@ -523,7 +523,7 @@ ListNode* middleNode(ListNode* head) {
 
         var vizHTML = '<div class="viz-area">' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">노드 값: <input type="text" id="ll-rev-input" value="' + DEFAULT_VALUES.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
+            '<label style="font-weight:600;">Node values: <input type="text" id="ll-rev-input" value="' + DEFAULT_VALUES.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
             '<button class="btn btn-primary" id="ll-rev-reset">🔄</button>' +
             '</div>' +
             '<div id="ll-nodes-rev" style="display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;min-height:80px;padding:20px 0;"></div>' +
@@ -564,7 +564,7 @@ ListNode* middleNode(ListNode* head) {
             // Initial state
             states.push({
                 nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: -1, currIdx: 0, newHead: -1,
-                desc: '초기 상태: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + ').'
+                desc: 'Initial state: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + ').'
             });
 
             // Step through reversal
@@ -577,13 +577,13 @@ ListNode* middleNode(ListNode* head) {
                 simCurr = snext;
                 states.push({
                     nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: simCurr, newHead: -1,
-                    desc: 'curr(' + values[sc] + ').next를 prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + '로 바꿉니다. prev=' + values[sc] + ', curr=' + (snext >= 0 ? values[snext] : 'None') + '으로 이동.'
+                    desc: 'Change curr(' + values[sc] + ').next to prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + '. Move prev=' + values[sc] + ', curr=' + (snext >= 0 ? values[snext] : 'None') + '.'
                 });
             }
             var reversed = values.slice().reverse();
             states.push({
                 nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: -1, newHead: simPrev,
-                desc: 'curr = None이므로 반복 종료! prev(' + values[simPrev] + ')가 새로운 head입니다. 결과: ' + reversed.join(' &rarr; ') + ' &rarr; None &#10003;'
+                desc: 'curr = None, so the loop ends! prev(' + values[simPrev] + ') is the new head. Result: ' + reversed.join(' &rarr; ') + ' &rarr; None &#10003;'
             });
 
             return states.map(function(st) {
@@ -632,7 +632,7 @@ ListNode* middleNode(ListNode* head) {
             '<div id="ll-list2-merge" style="display:flex;gap:4px;flex-wrap:wrap;"></div>' +
             '</div>' +
             '<div style="flex:1;min-width:200px;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">병합 결과</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Merged Result</div>' +
             '<div id="ll-result-merge" style="display:flex;gap:4px;flex-wrap:wrap;min-height:40px;"></div>' +
             '</div></div>' +
             '<div id="ll-desc-merge" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
@@ -647,35 +647,35 @@ ListNode* middleNode(ListNode* head) {
         function buildSteps(list1, list2) {
             var states = [];
             var i1 = 0, i2 = 0, result = [];
-            states.push({ i1: 0, i2: 0, result: [], desc: 'dummy 노드를 만들고 두 리스트를 비교하며 병합합니다.' });
+            states.push({ i1: 0, i2: 0, result: [], desc: 'Create a dummy node and merge the two lists by comparing values.' });
 
             while (i1 < list1.length && i2 < list2.length) {
                 if (list1[i1] <= list2[i2]) {
                     result.push(list1[i1]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &le; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list1에서 ' + list1[i1] + '을 연결합니다.' });
+                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &le; list2[' + i2 + ']=' + list2[i2] + ' &rarr; Connect ' + list1[i1] + ' from list1.' });
                     i1++;
                 } else {
                     result.push(list2[i2]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &gt; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list2에서 ' + list2[i2] + '을 연결합니다.' });
+                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &gt; list2[' + i2 + ']=' + list2[i2] + ' &rarr; Connect ' + list2[i2] + ' from list2.' });
                     i2++;
                 }
             }
             while (i1 < list1.length) {
                 result.push(list1[i1]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                    desc: 'list2 소진! list1의 나머지 ' + list1[i1] + '을 연결합니다.' });
+                    desc: 'list2 exhausted! Connect remaining ' + list1[i1] + ' from list1.' });
                 i1++;
             }
             while (i2 < list2.length) {
                 result.push(list2[i2]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                    desc: 'list1 소진! list2의 나머지 ' + list2[i2] + '을 연결합니다.' });
+                    desc: 'list1 exhausted! Connect remaining ' + list2[i2] + ' from list2.' });
                 i2++;
             }
             states.push({ i1: i1, i2: i2, result: result.slice(),
-                desc: '병합 완료! 결과: [' + result.join(', ') + '] &#10003;' });
+                desc: 'Merge complete! Result: [' + result.join(', ') + '] &#10003;' });
 
             return states.map(function(st) {
                 return {
@@ -728,9 +728,9 @@ ListNode* middleNode(ListNode* head) {
 
         var vizHTML = '<div class="viz-area">' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">노드 값: <input type="text" id="ll-cycle-input" value="' + DEFAULT_VALS.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
-            '<label style="font-weight:600;">사이클 시작 인덱스: <input type="number" id="ll-cycle-pos" value="' + DEFAULT_CYCLE + '" min="-1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<span style="font-size:0.8rem;color:var(--text-secondary);">(-1 = 사이클 없음)</span>' +
+            '<label style="font-weight:600;">Node values: <input type="text" id="ll-cycle-input" value="' + DEFAULT_VALS.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
+            '<label style="font-weight:600;">Cycle start index: <input type="number" id="ll-cycle-pos" value="' + DEFAULT_CYCLE + '" min="-1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<span style="font-size:0.8rem;color:var(--text-secondary);">(-1 = no cycle)</span>' +
             '<button class="btn btn-primary" id="ll-cycle-reset">🔄</button>' +
             '</div>' +
             '<div id="ll-nodes-cycle" style="display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;min-height:80px;padding:20px 0;"></div>' +
@@ -777,17 +777,17 @@ ListNode* middleNode(ListNode* head) {
         function buildSteps(nodeVals, cycleStart) {
             var hasCycle = cycleStart >= 0 && cycleStart < nodeVals.length;
             if (hasCycle) {
-                cycleInfoEl.innerHTML = '&uarr; 노드 ' + nodeVals[nodeVals.length - 1] + '의 next가 노드 ' + nodeVals[cycleStart] + '을 가리킴 (사이클!)';
+                cycleInfoEl.innerHTML = '&uarr; Node ' + nodeVals[nodeVals.length - 1] + '\'s next points to node ' + nodeVals[cycleStart] + ' (cycle!)';
             } else {
-                cycleInfoEl.innerHTML = '사이클 없음 &mdash; 마지막 노드의 next = None';
+                cycleInfoEl.innerHTML = 'No cycle &mdash; last node\'s next = None';
             }
 
             var states = [];
             var slow = 0, fast = 0;
             if (hasCycle) {
-                states.push({ slow: 0, fast: 0, desc: '초기 상태: slow = fast = head(' + nodeVals[0] + '). 사이클: ' + nodeVals[nodeVals.length - 1] + ' &rarr; ' + nodeVals[cycleStart] + '.' });
+                states.push({ slow: 0, fast: 0, desc: 'Initial state: slow = fast = head(' + nodeVals[0] + '). Cycle: ' + nodeVals[nodeVals.length - 1] + ' &rarr; ' + nodeVals[cycleStart] + '.' });
             } else {
-                states.push({ slow: 0, fast: 0, desc: '초기 상태: slow = fast = head(' + nodeVals[0] + '). 사이클이 없는 리스트입니다.' });
+                states.push({ slow: 0, fast: 0, desc: 'Initial state: slow = fast = head(' + nodeVals[0] + '). This list has no cycle.' });
             }
 
             function nextIdx(idx) {
@@ -804,36 +804,36 @@ ListNode* middleNode(ListNode* head) {
                 slow = nextIdx(slow);
                 if (slow < 0) {
                     states.push({ slow: -1, fast: fast,
-                        desc: 'slow가 None에 도달! 사이클 없음 &rarr; return False' });
+                        desc: 'slow reached None! No cycle &rarr; return False' });
                     break;
                 }
                 // fast moves 2 steps
                 fast = nextIdx(fast);
                 if (fast < 0) {
                     states.push({ slow: slow, fast: -1,
-                        desc: 'fast가 None에 도달! 사이클 없음 &rarr; return False' });
+                        desc: 'fast reached None! No cycle &rarr; return False' });
                     break;
                 }
                 fast = nextIdx(fast);
                 if (fast < 0) {
                     states.push({ slow: slow, fast: -1,
-                        desc: 'fast.next가 None에 도달! 사이클 없음 &rarr; return False' });
+                        desc: 'fast.next reached None! No cycle &rarr; return False' });
                     break;
                 }
 
                 if (slow === fast) {
                     states.push({ slow: slow, fast: fast,
-                        desc: 'slow=' + nodeVals[slow] + ', fast=' + nodeVals[fast] + ' &rarr; &#x1F389; 만났습니다! 사이클 존재 확인!' });
+                        desc: 'slow=' + nodeVals[slow] + ', fast=' + nodeVals[fast] + ' &rarr; &#x1F389; They met! Cycle confirmed!' });
                     found = true;
                     break;
                 } else {
                     states.push({ slow: slow, fast: fast,
-                        desc: 'slow &rarr; ' + nodeVals[slow] + ' (1칸), fast &rarr; ' + nodeVals[fast] + ' (2칸). 아직 다릅니다.' });
+                        desc: 'slow &rarr; ' + nodeVals[slow] + ' (1 step), fast &rarr; ' + nodeVals[fast] + ' (2 steps). Not yet equal.' });
                 }
             }
             if (found) {
                 states.push({ slow: slow, fast: fast,
-                    desc: 'Floyd\'s Algorithm 완료! slow와 fast가 노드 ' + nodeVals[slow] + '에서 만남 &rarr; return True &#10003;' });
+                    desc: 'Floyd\'s Algorithm complete! slow and fast met at node ' + nodeVals[slow] + ' &rarr; return True &#10003;' });
             }
 
             return states.map(function(st) {
@@ -867,21 +867,21 @@ ListNode* middleNode(ListNode* head) {
         parseAndRun();
     },
 
-    // ── 요세푸스 문제 (boj-1158) ──
+    // ── Josephus Problem (boj-1158) ──
     _renderVizJosephus(container) {
         var self = this;
         var DEFAULT_N = 7, DEFAULT_K = 3;
 
         var vizHTML = '<div class="viz-area">' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N (인원): <input type="number" id="ll-joseph-n" value="' + DEFAULT_N + '" min="2" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">K (간격): <input type="number" id="ll-joseph-k" value="' + DEFAULT_K + '" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<label style="font-weight:600;">N (people): <input type="number" id="ll-joseph-n" value="' + DEFAULT_N + '" min="2" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<label style="font-weight:600;">K (interval): <input type="number" id="ll-joseph-k" value="' + DEFAULT_K + '" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="ll-joseph-reset">🔄</button>' +
             '</div>' +
             '<div id="ll-jos-title" style="font-weight:600;margin-bottom:8px;color:var(--text);"></div>' +
             '<div id="ll-circle-jos" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:50px;padding:12px 0;"></div>' +
             '<div style="display:flex;gap:20px;justify-content:center;margin-top:12px;flex-wrap:wrap;">' +
-            '<div style="font-weight:600;color:var(--text-secondary);">제거 순서: <span id="ll-removed-jos" style="color:var(--accent);">-</span></div>' +
+            '<div style="font-weight:600;color:var(--text-secondary);">Elimination order: <span id="ll-removed-jos" style="color:var(--accent);">-</span></div>' +
             '</div>' +
             '<div id="ll-desc-jos" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
@@ -893,30 +893,30 @@ ListNode* middleNode(ListNode* head) {
         var descEl = container.querySelector('#ll-desc-jos');
 
         function buildSteps(N, K) {
-            josTitleEl.textContent = '원형 큐 (N=' + N + ', K=' + K + ')';
+            josTitleEl.textContent = 'Circular Queue (N=' + N + ', K=' + K + ')';
 
             var states = [];
             var queue = [];
             for (var i = 1; i <= N; i++) queue.push(i);
             var removed = [];
 
-            states.push({ queue: queue.slice(), removed: [], pointer: -1, desc: '1부터 ' + N + '까지 원형으로 앉아 있습니다. K=' + K + '번째 사람을 제거합니다.' });
+            states.push({ queue: queue.slice(), removed: [], pointer: -1, desc: 'People 1 through ' + N + ' are seated in a circle. Every K=' + K + '-th person is eliminated.' });
 
             while (queue.length > 0) {
                 for (var j = 0; j < K - 1; j++) {
                     var moved = queue.shift();
                     queue.push(moved);
                     states.push({ queue: queue.slice(), removed: removed.slice(), pointer: queue.length - 1,
-                        desc: (j + 1) + '번째 이동: ' + moved + '을 뒤로 보냅니다. 큐: [' + queue.join(', ') + ']' });
+                        desc: 'Move #' + (j + 1) + ': Send ' + moved + ' to the back. Queue: [' + queue.join(', ') + ']' });
                 }
                 var out = queue.shift();
                 removed.push(out);
                 states.push({ queue: queue.slice(), removed: removed.slice(), pointer: -1, justRemoved: out,
-                    desc: K + '번째 사람 ' + out + '을 제거! 제거 순서: &lt;' + removed.join(', ') + '&gt;' });
+                    desc: 'Eliminate the ' + K + '-th person: ' + out + '! Elimination order: &lt;' + removed.join(', ') + '&gt;' });
             }
 
             states.push({ queue: [], removed: removed.slice(), pointer: -1,
-                desc: '완료! 요세푸스 순열: &lt;' + removed.join(', ') + '&gt; &#10003;' });
+                desc: 'Complete! Josephus permutation: &lt;' + removed.join(', ') + '&gt; &#10003;' });
 
             return states.map(function(st) {
                 return {
@@ -925,7 +925,7 @@ ListNode* middleNode(ListNode* head) {
                         circleEl.innerHTML = st.queue.map(function(v, i) {
                             var cls = i === st.pointer ? ' comparing' : '';
                             return '<div class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
-                        }).join('') || '<span style="color:var(--text-secondary);">빈 큐</span>';
+                        }).join('') || '<span style="color:var(--text-secondary);">Empty queue</span>';
                         removedEl.textContent = st.removed.length > 0 ? '<' + st.removed.join(', ') + '>' : '-';
                         descEl.innerHTML = st.desc;
                     }
@@ -953,8 +953,8 @@ ListNode* middleNode(ListNode* head) {
 
     // ===== Problem Tab =====
     stages: [
-        { num: 1, title: '기본 연결 리스트', desc: '뒤집기와 병합의 기본 (Easy)', problemIds: ['lc-206', 'lc-21'] },
-        { num: 2, title: '연결 리스트 응용', desc: '사이클 탐지와 시뮬레이션 (Easy~Silver)', problemIds: ['lc-141', 'boj-1158'] }
+        { num: 1, title: 'Basic Linked List', desc: 'Fundamentals of reversal and merging (Easy)', problemIds: ['lc-206', 'lc-21'] },
+        { num: 2, title: 'Linked List Applications', desc: 'Cycle detection and simulation (Easy~Silver)', problemIds: ['lc-141', 'boj-1158'] }
     ],
 
     problems: [
@@ -963,10 +963,10 @@ ListNode* middleNode(ListNode* head) {
             title: 'LeetCode 206 - Reverse Linked List',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/reverse-linked-list/',
-            simIntro: 'prev, curr, next 세 포인터가 한 칸씩 이동하며 방향을 뒤집는 과정을 관찰하세요.',
+            simIntro: 'Watch how the three pointers prev, curr, and next move step by step to reverse the direction.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>단일 연결 리스트의 head가 주어집니다. 리스트를 뒤집어서 반환하세요.</p>
+                <p>Given the <code>head</code> of a singly linked list, reverse the list, and return the reversed list.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>head = [1,2,3,4,5]</pre></div>
@@ -985,16 +985,16 @@ ListNode* middleNode(ListNode* head) {
 
                 <h4>Constraints</h4>
                 <ul>
-                    <li>노드 수는 [0, 5000] 범위</li>
+                    <li>The number of nodes in the list is in the range [0, 5000].</li>
                     <li>-5000 &le; Node.val &le; 5000</li>
                 </ul>
 
-                <div class="hint-key">💡 Follow-up: 연결 리스트를 반복(iterative)과 재귀(recursive) 두 가지 방법으로 뒤집을 수 있을까요?</div>
+                <div class="hint-key">💡 Follow-up: Can you reverse the linked list both iteratively and recursively?</div>
             `,
             hints: [
-                { title: '처음 생각: 배열에 넣고 뒤집기?', content: '가장 먼저 떠오르는 방법 — 리스트를 순회하면서 값을 배열에 저장한 뒤, 배열을 뒤집어서 새 연결 리스트를 만들면 되지 않을까?<br><br>이 방법은 직관적이고 쉽지만, <strong>배열에 모든 값을 복사</strong>하니까 O(n) 추가 공간이 필요합니다. 노드가 수천 개면 배열도 수천 개... 공간이 아깝지 않나요?' },
-                { title: '공간을 아끼려면?', content: '배열 없이 <strong>노드 자체의 방향을 바꿀 수</strong> 있다면? 각 노드의 <code>next</code> 포인터가 "다음 노드"를 가리키고 있는데, 이걸 "이전 노드"를 가리키도록 하나씩 바꾸면 제자리에서 뒤집을 수 있어요!<br><br>근데 문제가 하나 있습니다 — <code>curr.next</code>를 바꿔버리면 <strong>다음 노드로 이동할 수가 없어요</strong>. 다음 노드 주소를 잃어버리니까요.' },
-                { title: '포인터 3개로 제자리 뒤집기', content: '그래서 포인터가 3개 필요합니다!<br><br>① <code>prev</code> — 이전 노드 (방향 전환 대상)<br>② <code>curr</code> — 현재 노드<br>③ <code>next_node</code> — 다음 노드 (미리 저장해두기)<br><br>매 단계마다:<br>1. <code>next_node = curr.next</code> → 다음 노드 저장<br>2. <code>curr.next = prev</code> → 방향 전환!<br>3. <code>prev = curr</code>, <code>curr = next_node</code> → 한 칸 이동<br><br>이러면 <strong>O(1) 공간</strong>만으로 뒤집기 완료! Follow-up의 재귀 버전도 같은 원리인데, 스택 프레임이 O(n) 공간을 쓰니 반복(iterative)이 더 효율적이에요.' }
+                { title: 'First thought: Store in array and reverse?', content: 'The first approach that comes to mind — traverse the list, store values in an array, reverse the array, and build a new linked list. Would that work?<br><br>This approach is intuitive and easy, but since you <strong>copy all values into an array</strong>, it requires O(n) extra space. With thousands of nodes, that means an array of thousands of elements... seems wasteful, right?' },
+                { title: 'Can we save space?', content: 'What if we could <strong>change the direction of the nodes themselves</strong> without an array? Each node\'s <code>next</code> pointer points to the "next node" — if we change them one by one to point to the "previous node" instead, we can reverse in-place!<br><br>But there\'s one problem — once you change <code>curr.next</code>, <strong>you can\'t move to the next node</strong>. You\'ve lost the address of the next node.' },
+                { title: 'In-place reversal with 3 pointers', content: 'That\'s why we need 3 pointers!<br><br>① <code>prev</code> — previous node (target for direction change)<br>② <code>curr</code> — current node<br>③ <code>next_node</code> — next node (saved in advance)<br><br>At each step:<br>1. <code>next_node = curr.next</code> → save next node<br>2. <code>curr.next = prev</code> → flip direction!<br>3. <code>prev = curr</code>, <code>curr = next_node</code> → move one step forward<br><br>This completes the reversal with only <strong>O(1) space</strong>! The recursive version from the follow-up uses the same principle, but stack frames use O(n) space, so iterative is more efficient.' }
             ],
             templates: {
                 python: `class Solution:
@@ -1008,7 +1008,7 @@ ListNode* middleNode(ListNode* head) {
             curr = next_node
         return prev
 
-    # 재귀 버전
+    # Recursive version
     def reverseList_recursive(self, head):
         if not head or not head.next:
             return head
@@ -1032,23 +1032,23 @@ public:
 };`
             },
             solutions: [{
-                approach: '포인터 3개 반복',
-                description: 'prev, curr, next 포인터로 한 칸씩 이동하며 방향을 뒤집습니다.',
+                approach: 'Iterative with 3 Pointers',
+                description: 'Move step by step with prev, curr, and next pointers to reverse the direction.',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(1)',
                 get templates() { return linkedListTopic.problems[0].templates; },
                 codeSteps: {
                     python: [
-                        { title: 'Initialize', desc: 'prev=None(뒤집힌 리스트의 시작), curr=head(현재 노드).\n두 포인터로 한 칸씩 이동하며 방향을 바꿀 준비를 합니다.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head' },
-                        { title: '반복 순회', desc: 'curr이 None이 될 때까지 반복합니다.\n리스트 끝에 도달하면 모든 노드의 방향이 뒤집힌 상태입니다.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head\n    while curr:' },
-                        { title: '방향 전환 + 이동', desc: '핵심 4단계: ①next 저장 ②curr→prev로 방향 전환 ③prev 이동 ④curr 이동.\nnext를 먼저 저장하지 않으면 curr.next를 바꾼 뒤 다음 노드를 잃어버립니다.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head\n    while curr:\n        next_node = curr.next  # 다음 노드 저장\n        curr.next = prev       # 방향 전환!\n        prev = curr            # prev 이동\n        curr = next_node       # curr 이동' },
-                        { title: '새 head 반환', desc: '반복이 끝나면 curr=None, prev가 마지막 노드(=새 head)입니다.\n원래 꼬리였던 노드가 새로운 머리가 됩니다.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head\n    while curr:\n        next_node = curr.next\n        curr.next = prev\n        prev = curr\n        curr = next_node\n    return prev  # prev가 새로운 head' }
+                        { title: 'Initialize', desc: 'prev=None (start of reversed list), curr=head (current node).\nPrepare two pointers to move step by step and flip directions.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head' },
+                        { title: 'Iterative Traversal', desc: 'Repeat until curr becomes None.\nWhen we reach the end of the list, all node directions will be reversed.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head\n    while curr:' },
+                        { title: 'Flip Direction + Move', desc: 'Core 4 steps: ①save next ②flip curr→prev ③move prev ④move curr.\nIf you don\'t save next first, you lose the next node after changing curr.next.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head\n    while curr:\n        next_node = curr.next  # Save next node\n        curr.next = prev       # Flip direction!\n        prev = curr            # Move prev\n        curr = next_node       # Move curr' },
+                        { title: 'Return New Head', desc: 'When the loop ends, curr=None and prev is the last node (= new head).\nThe node that was originally the tail becomes the new head.', code: 'def reverseList(self, head):\n    prev = None\n    curr = head\n    while curr:\n        next_node = curr.next\n        curr.next = prev\n        prev = curr\n        curr = next_node\n    return prev  # prev is the new head' }
                     ],
                     cpp: [
-                        { title: 'Initialize', desc: 'prev=nullptr(뒤집힌 리스트의 시작), curr=head(현재 노드).\nC++에서는 null 대신 nullptr을 사용합니다.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;  // nullptr → C++의 null\n    ListNode* curr = head;' },
-                        { title: '반복 순회', desc: 'curr이 nullptr이 아닌 동안 반복합니다.\nC++에서 포인터는 bool처럼 쓸 수 있어 while(curr)로 유효성 검사합니다.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while (curr) {  // curr != nullptr' },
-                        { title: '방향 전환 + 이동', desc: '핵심 4단계: ①next 저장 ②curr→prev로 방향 전환 ③prev 이동 ④curr 이동.\nC++에서는 ->로 포인터가 가리키는 멤버에 접근합니다.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while (curr) {\n        ListNode* next = curr->next;  // 다음 노드 저장\n        curr->next = prev;            // 방향 전환!\n        prev = curr;                  // prev 이동\n        curr = next;                  // curr 이동' },
-                        { title: '새 head 반환', desc: '반복이 끝나면 curr=nullptr, prev가 마지막 노드(=새 head)입니다.\n반환 타입이 ListNode*이므로 포인터를 그대로 반환합니다.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while (curr) {\n        ListNode* next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;  // prev가 새로운 head\n}' }
+                        { title: 'Initialize', desc: 'prev=nullptr (start of reversed list), curr=head (current node).\nIn C++, use nullptr instead of null.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;  // nullptr → C++ null\n    ListNode* curr = head;' },
+                        { title: 'Iterative Traversal', desc: 'Repeat while curr is not nullptr.\nIn C++, pointers can be used as booleans, so while(curr) checks validity.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while (curr) {  // curr != nullptr' },
+                        { title: 'Flip Direction + Move', desc: 'Core 4 steps: ①save next ②flip curr→prev ③move prev ④move curr.\nIn C++, use -> to access members through a pointer.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while (curr) {\n        ListNode* next = curr->next;  // Save next node\n        curr->next = prev;            // Flip direction!\n        prev = curr;                  // Move prev\n        curr = next;                  // Move curr' },
+                        { title: 'Return New Head', desc: 'When the loop ends, curr=nullptr and prev is the last node (= new head).\nReturn type is ListNode*, so return the pointer directly.', code: 'ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* curr = head;\n    while (curr) {\n        ListNode* next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    return prev;  // prev is the new head\n}' }
                     ]
                 }
             }]
@@ -1058,10 +1058,10 @@ public:
             title: 'LeetCode 21 - Merge Two Sorted Lists',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/merge-two-sorted-lists/',
-            simIntro: 'list1과 list2에서 더 작은 값을 선택하여 결과 리스트에 연결하는 과정을 관찰하세요.',
+            simIntro: 'Watch how we select the smaller value from list1 and list2 to build the merged result list.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>정렬된 두 연결 리스트 <code>list1</code>과 <code>list2</code>의 head가 주어집니다. 두 리스트를 하나의 정렬된 리스트로 합쳐서 반환하세요. 새 리스트는 두 리스트의 노드를 이어 붙여서 만들어야 합니다.</p>
+                <p>You are given the heads of two sorted linked lists <code>list1</code> and <code>list2</code>. Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists. Return the head of the merged linked list.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>list1 = [1,2,4], list2 = [1,3,4]</pre></div>
@@ -1080,15 +1080,15 @@ public:
 
                 <h4>Constraints</h4>
                 <ul>
-                    <li>두 리스트의 노드 수는 각각 [0, 50] 범위</li>
+                    <li>The number of nodes in both lists is in the range [0, 50].</li>
                     <li>-100 &le; Node.val &le; 100</li>
-                    <li><code>list1</code>과 <code>list2</code>는 모두 오름차순 정렬</li>
+                    <li>Both <code>list1</code> and <code>list2</code> are sorted in non-decreasing order.</li>
                 </ul>
             `,
             hints: [
-                { title: '두 리스트를 어떻게 합칠까?', content: '정렬된 두 리스트가 있으니까, 양쪽의 맨 앞(head)을 비교해서 더 작은 쪽을 하나씩 떼어서 결과 리스트에 붙이면 되지 않을까?<br><br>정렬된 카드 더미 두 개를 합치는 것과 같아요 — 양쪽 맨 위 카드를 비교하고, 더 작은 카드를 내려놓는 거죠. 한쪽이 먼저 떨어지면 나머지를 그대로 뒤에 붙이면 끝!' },
-                { title: '더미 노드 트릭', content: '근데 한 가지 귀찮은 점이 있어요 — 결과 리스트의 <strong>첫 번째 노드</strong>를 어떻게 추적하죠?<br><br>list1.val이 더 작으면 결과의 head가 list1이고, 아니면 list2... 매번 분기 처리하기 번거롭습니다.<br><br>💡 <strong>더미 노드(dummy head)</strong>를 하나 만들어서 그 뒤에 이어붙이면? 마지막에 <code>dummy.next</code>만 반환하면 되니까 시작 노드 추적이 깔끔해집니다!' },
-                { title: '재귀로도 가능!', content: '반복문 대신 재귀로도 자연스럽게 풀 수 있어요.<br><br>🔁 <strong>Base case</strong>: 둘 중 하나가 비어있으면 나머지를 반환<br>🔁 <strong>Recursive step</strong>: 더 작은 쪽의 <code>next</code>에 나머지를 재귀적으로 병합한 결과를 연결<br><br><span class="lang-py">Python: <code>list1.next = self.mergeTwoLists(list1.next, list2)</code></span><span class="lang-cpp">C++: <code>list1->next = mergeTwoLists(list1->next, list2);</code></span><br><br>코드가 더 짧고 직관적이지만, 재귀 깊이가 O(n+m)이라 스택 오버플로 주의!' }
+                { title: 'How do we merge two lists?', content: 'Since both lists are sorted, can\'t we just compare the heads of both sides and take the smaller one to append to the result list?<br><br>It\'s just like merging two sorted piles of cards — compare the top cards of both piles, put down the smaller one. When one pile runs out, just append the rest of the other pile!' },
+                { title: 'The dummy node trick', content: 'But there\'s one annoying issue — how do we track the <strong>first node</strong> of the result list?<br><br>If list1.val is smaller, the head of the result is list1; otherwise it\'s list2... handling this branching every time is tedious.<br><br>💡 Create a <strong>dummy node (dummy head)</strong> and append nodes after it? At the end, just return <code>dummy.next</code> — clean and simple for tracking the start node!' },
+                { title: 'Recursion works too!', content: 'Instead of a loop, you can also solve this naturally with recursion.<br><br>🔁 <strong>Base case</strong>: If one list is empty, return the other<br>🔁 <strong>Recursive step</strong>: Connect the smaller side\'s <code>next</code> to the recursively merged result of the rest<br><br><span class="lang-py">Python: <code>list1.next = self.mergeTwoLists(list1.next, list2)</code></span><span class="lang-cpp">C++: <code>list1->next = mergeTwoLists(list1->next, list2);</code></span><br><br>The code is shorter and more intuitive, but the recursion depth is O(n+m), so watch out for stack overflow!' }
             ],
             templates: {
                 python: `class Solution:
@@ -1105,7 +1105,7 @@ public:
                 list2 = list2.next
             curr = curr.next
 
-        curr.next = list1 or list2  # 남은 리스트 연결
+        curr.next = list1 or list2  # Connect remaining list
         return dummy.next`,
                 cpp: `class Solution {
 public:
@@ -1123,23 +1123,23 @@ public:
 };`
             },
             solutions: [{
-                approach: '더미 노드 병합',
-                description: 'dummy 노드를 만들고 두 리스트에서 더 작은 값을 순서대로 연결합니다.',
+                approach: 'Dummy Node Merge',
+                description: 'Create a dummy node and connect smaller values from both lists in order.',
                 timeComplexity: 'O(n + m)',
                 spaceComplexity: 'O(1)',
                 get templates() { return linkedListTopic.problems[1].templates; },
                 codeSteps: {
                     python: [
-                        { title: '더미 노드 생성', desc: 'dummy 노드를 만들어 결과 리스트의 시작점으로 사용합니다.\n첫 노드를 특별 처리하지 않아도 되어 코드가 깔끔해집니다.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy' },
-                        { title: '비교 반복', desc: '두 리스트 모두 노드가 남아있을 때까지 반복합니다.\n한쪽이라도 끝나면 남은 쪽을 통째로 이어붙이면 됩니다.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy\n\n    while list1 and list2:' },
-                        { title: '작은 값 연결', desc: '두 리스트의 현재 노드 중 작은 값을 curr.next에 연결합니다.\n이미 정렬된 리스트이므로 매번 작은 쪽을 고르면 전체도 정렬됩니다.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy\n\n    while list1 and list2:\n        if list1.val <= list2.val:\n            curr.next = list1\n            list1 = list1.next\n        else:\n            curr.next = list2\n            list2 = list2.next\n        curr = curr.next' },
-                        { title: '나머지 연결 + 반환', desc: '한쪽 리스트가 끝나면 남은 리스트를 통째로 연결합니다.\nlist1 or list2는 남아있는 쪽을 반환하는 Python 트릭입니다.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy\n\n    while list1 and list2:\n        if list1.val <= list2.val:\n            curr.next = list1\n            list1 = list1.next\n        else:\n            curr.next = list2\n            list2 = list2.next\n        curr = curr.next\n\n    curr.next = list1 or list2\n    return dummy.next' }
+                        { title: 'Create Dummy Node', desc: 'Create a dummy node to use as the starting point of the result list.\nNo special handling needed for the first node, keeping the code clean.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy' },
+                        { title: 'Compare Loop', desc: 'Repeat while both lists still have nodes remaining.\nWhen one runs out, append the rest of the other list entirely.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy\n\n    while list1 and list2:' },
+                        { title: 'Connect Smaller Value', desc: 'Connect the smaller value among the current nodes to curr.next.\nSince the lists are already sorted, always picking the smaller one keeps the result sorted.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy\n\n    while list1 and list2:\n        if list1.val <= list2.val:\n            curr.next = list1\n            list1 = list1.next\n        else:\n            curr.next = list2\n            list2 = list2.next\n        curr = curr.next' },
+                        { title: 'Connect Remaining + Return', desc: 'When one list runs out, connect the remaining list in its entirety.\nlist1 or list2 is a Python trick that returns whichever is non-empty.', code: 'def mergeTwoLists(self, list1, list2):\n    dummy = ListNode(0)\n    curr = dummy\n\n    while list1 and list2:\n        if list1.val <= list2.val:\n            curr.next = list1\n            list1 = list1.next\n        else:\n            curr.next = list2\n            list2 = list2.next\n        curr = curr.next\n\n    curr.next = list1 or list2\n    return dummy.next' }
                     ],
                     cpp: [
-                        { title: '더미 노드 생성', desc: '스택에 dummy 노드를 생성하고 &로 주소를 가져옵니다.\nC++에서는 new 없이 스택 변수로 만들면 메모리 관리가 편합니다.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);       // 스택에 더미 노드 생성\n    ListNode* curr = &dummy; // 포인터로 연결' },
-                        { title: '비교 반복', desc: '두 리스트 모두 유효한 동안 반복합니다.\nC++에서 포인터가 nullptr이면 false이므로 && 조건으로 검사합니다.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);\n    ListNode* curr = &dummy;\n    while (l1 && l2) {' },
-                        { title: '작은 값 연결', desc: '두 노드 중 작은 값을 curr->next에 연결합니다.\nC++에서는 . 대신 ->로 포인터가 가리키는 멤버에 접근합니다.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);\n    ListNode* curr = &dummy;\n    while (l1 && l2) {\n        if (l1->val <= l2->val) {\n            curr->next = l1;\n            l1 = l1->next;\n        } else {\n            curr->next = l2;\n            l2 = l2->next;\n        }\n        curr = curr->next;' },
-                        { title: '나머지 연결 + 반환', desc: '삼항 연산자(? :)로 남아있는 리스트를 통째로 연결합니다.\ndummy.next가 실제 결과 리스트의 시작점입니다.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);\n    ListNode* curr = &dummy;\n    while (l1 && l2) {\n        if (l1->val <= l2->val) {\n            curr->next = l1;\n            l1 = l1->next;\n        } else {\n            curr->next = l2;\n            l2 = l2->next;\n        }\n        curr = curr->next;\n    }\n    curr->next = l1 ? l1 : l2;  // 삼항 연산자로 남은 리스트 연결\n    return dummy.next;\n}' }
+                        { title: 'Create Dummy Node', desc: 'Create a dummy node on the stack and get its address with &.\nIn C++, creating as a stack variable without new makes memory management easier.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);       // Create dummy node on stack\n    ListNode* curr = &dummy; // Connect via pointer' },
+                        { title: 'Compare Loop', desc: 'Repeat while both lists are valid.\nIn C++, a nullptr pointer is false, so use && to check both.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);\n    ListNode* curr = &dummy;\n    while (l1 && l2) {' },
+                        { title: 'Connect Smaller Value', desc: 'Connect the smaller value to curr->next.\nIn C++, use -> instead of . to access members through a pointer.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);\n    ListNode* curr = &dummy;\n    while (l1 && l2) {\n        if (l1->val <= l2->val) {\n            curr->next = l1;\n            l1 = l1->next;\n        } else {\n            curr->next = l2;\n            l2 = l2->next;\n        }\n        curr = curr->next;' },
+                        { title: 'Connect Remaining + Return', desc: 'Use the ternary operator (? :) to connect the remaining list entirely.\ndummy.next is the actual starting point of the result list.', code: 'ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {\n    ListNode dummy(0);\n    ListNode* curr = &dummy;\n    while (l1 && l2) {\n        if (l1->val <= l2->val) {\n            curr->next = l1;\n            l1 = l1->next;\n        } else {\n            curr->next = l2;\n            l2 = l2->next;\n        }\n        curr = curr->next;\n    }\n    curr->next = l1 ? l1 : l2;  // Ternary operator to connect remaining list\n    return dummy.next;\n}' }
                     ]
                 }
             }]
@@ -1149,46 +1149,46 @@ public:
             title: 'LeetCode 141 - Linked List Cycle',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/linked-list-cycle/',
-            simIntro: '🐢 거북이(slow)와 🐇 토끼(fast)가 이동하다 만나면 사이클이 존재합니다!',
+            simIntro: 'If the tortoise (slow) and hare (fast) meet while moving, a cycle exists!',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>연결 리스트의 head가 주어집니다. 리스트에 사이클(순환)이 있는지 판별하세요.</p>
-                <p>사이클이란 리스트의 어떤 노드를 따라가다 보면 다시 이전에 방문한 노드로 돌아오는 경우를 말합니다. <code>pos</code>는 tail의 next가 연결된 노드의 인덱스입니다 (0-indexed). <code>pos</code>가 -1이면 사이클이 없습니다. 참고: <code>pos</code>는 매개변수로 전달되지 않습니다.</p>
+                <p>Given <code>head</code>, the head of a linked list, determine if the linked list has a cycle in it.</p>
+                <p>There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the <code>next</code> pointer. Internally, <code>pos</code> is used to denote the index of the node that tail's <code>next</code> pointer is connected to (0-indexed). <code>pos</code> is -1 if there is no cycle. Note: <code>pos</code> is not passed as a parameter.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>head = [3,2,0,-4], pos = 1</pre></div>
                     <div><strong>Output</strong><pre>true</pre></div>
                 </div>
-                <p class="example-explain">사이클이 있습니다. tail이 인덱스 1의 노드에 연결됩니다.</p>
+                <p class="example-explain">There is a cycle. The tail connects to node at index 1.</p>
                 </div>
 
                 <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>head = [1,2], pos = 0</pre></div>
                     <div><strong>Output</strong><pre>true</pre></div>
                 </div>
-                <p class="example-explain">사이클이 있습니다. tail이 인덱스 0의 노드에 연결됩니다.</p>
+                <p class="example-explain">There is a cycle. The tail connects to node at index 0.</p>
                 </div>
 
                 <div class="problem-example"><h4>Example 3</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>head = [1], pos = -1</pre></div>
                     <div><strong>Output</strong><pre>false</pre></div>
                 </div>
-                <p class="example-explain">사이클이 없습니다.</p>
+                <p class="example-explain">There is no cycle.</p>
                 </div>
 
                 <h4>Constraints</h4>
                 <ul>
-                    <li>노드 수는 [0, 10<sup>4</sup>] 범위</li>
+                    <li>Number of nodes is in range [0, 10<sup>4</sup>]</li>
                     <li>-10<sup>5</sup> &le; Node.val &le; 10<sup>5</sup></li>
-                    <li><code>pos</code>는 -1 또는 유효한 인덱스</li>
+                    <li><code>pos</code> is -1 or a valid index</li>
                 </ul>
 
-                <div class="hint-key">💡 Follow-up: O(1) 메모리(상수 공간)를 사용하여 풀 수 있을까요?</div>
+                <div class="hint-key">💡 Follow-up: Can you solve it using O(1) memory (constant space)?</div>
             `,
             hints: [
-                { title: '처음 생각: 방문 기록 남기기', content: '노드를 하나씩 따라가면서 "이 노드를 본 적 있나?" 확인하면 되지 않을까?<br><br><span class="lang-py">Python <code>set()</code>에 방문한 노드를 저장하고, 이미 있는 노드가 나오면 사이클!</span><span class="lang-cpp">C++ <code>unordered_set&lt;ListNode*&gt;</code>에 방문한 노드 주소를 저장하고, 이미 있는 노드가 나오면 사이클!</span><br><br>이 방법은 확실하게 동작하지만... 노드가 10만 개면 Set도 10만 개 — <strong>O(n) 추가 공간</strong>이 필요합니다.' },
-                { title: '메모리 없이 할 수 있을까?', content: 'Follow-up에서 <strong>O(1) 공간</strong>으로 풀라고 합니다. 방문 기록을 저장하지 않고 사이클을 어떻게 감지할까요?<br><br>힌트: 운동장 트랙을 떠올려 보세요. 빠른 사람과 느린 사람이 같은 트랙에서 달리면... <strong>트랙이 원형이면 빠른 사람이 결국 느린 사람을 따라잡습니다!</strong> 트랙에 끝이 있으면(사이클 없음) 빠른 사람이 먼저 끝에 도달하겠죠.' },
-                { title: '토끼와 거북이 (Floyd\'s Algorithm)', content: '🐢 <code>slow</code>는 한 칸씩, 🐇 <code>fast</code>는 두 칸씩 이동!<br><br><strong>사이클이 있으면</strong>: 둘 다 사이클 안에 들어간 후, fast가 매 턴마다 slow와의 거리를 1칸씩 줄입니다. 결국 반드시 만나요!<br><strong>사이클이 없으면</strong>: fast가 먼저 <code>null</code>에 도달해서 반복 종료.<br><br>공간 O(1), 시간 O(n) — Set 방식보다 메모리를 아끼면서도 같은 시간 복잡도!' }
+                { title: 'First Thought: Keeping Track of Visited Nodes', content: 'Follow nodes one by one and "have I seen this node before?" check if we have<br><br><span class="lang-py">Python <code>set()</code> to store visited nodes, and if we see one again, cycle!</span><span class="lang-cpp">C++ <code>unordered_set&lt;ListNode*&gt;</code> stores visited node addresses, and if we encounter one already in the set, it is a cycle!</span><br><br>This method works reliably, but... if there are 100,000 nodes, the Set also holds 100,000 entries — <strong>O(n) extra space</strong> is required.' },
+                { title: 'Can We Do It Without Extra Memory?', content: 'The follow-up asks for <strong>O(1) space</strong>. How can we detect a cycle without storing visited nodes?<br><br>Hint: Think of a running track. If a fast and slow runner run on the same track... <strong>if the track is circular, the fast runner will eventually catch up to the slow runner!</strong> If the track has an end (no cycle), the fast runner reaches the end first.' },
+                { title: 'Tortoise and Hare (Floyd\'s Algorithm)', content: '🐢 <code>slow</code> moves one step, 🐇 <code>fast</code> moves two steps!<br><br><strong>If there is a cycle</strong>: After both enter the cycle, fast closes the gap with slow by 1 node each turn. They will eventually meet!<br><strong>If there is no cycle</strong>: fast reaches <code>null</code> first and the loop ends.<br><br>Space O(1), Time O(n) — saves memory compared to the Set approach while maintaining the same time complexity!' }
             ],
             templates: {
                 python: `class Solution:
@@ -1214,36 +1214,36 @@ public:
 };`
             },
             solutions: [{
-                approach: 'Floyd 순환 탐지',
-                description: 'slow(1칸)와 fast(2칸)가 사이클 안에서 만나는지 확인합니다.',
+                approach: 'Floyd Cycle Detection',
+                description: 'Checks if slow (1 step) and fast (2 steps) meet inside a cycle.',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(1)',
                 get templates() { return linkedListTopic.problems[2].templates; },
                 codeSteps: {
                     python: [
-                        { title: '두 포인터 초기화', desc: 'slow와 fast를 모두 head에서 시작합니다.\nFloyd 알고리즘: 속도가 다른 두 포인터로 사이클을 탐지합니다.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head' },
-                        { title: 'fast가 끝에 도달할 때까지 반복', desc: 'fast와 fast.next가 모두 존재해야 2칸 이동이 가능합니다.\nfast가 끝에 도달하면 사이클이 없다는 뜻입니다.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head\n    while fast and fast.next:' },
-                        { title: '이동 + 비교', desc: 'slow는 1칸, fast는 2칸 이동 후 만남 여부를 확인합니다.\n사이클 안에서 fast가 매 턴 1칸씩 거리를 줄이므로 반드시 만납니다.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next        # 1칸\n        fast = fast.next.next   # 2칸\n        if slow == fast:\n            return True  # 만남!' },
-                        { title: '사이클 없음 반환', desc: 'fast가 리스트 끝에 도달하면 사이클이 없습니다.\nHashSet O(n) 공간 대비 투 포인터는 O(1) 공간만 사용합니다.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False  # fast가 끝에 도달' }
+                        { title: 'Initialize Two Pointers', desc: 'Start both slow and fast at head.\nThe Floyd algorithm detects cycles using two pointers with different speeds.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head' },
+                        { title: 'Loop Until Fast Reaches End', desc: 'Both fast and fast.next must exist for a 2-step move.\nIf fast reaches the end, there is no cycle.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head\n    while fast and fast.next:' },
+                        { title: 'Move + Compare', desc: 'Move slow 1 step, fast 2 steps, then check if they meet.\nIn a cycle, fast closes the gap by 1 each turn, so they must meet.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next        # 1 step\n        fast = fast.next.next   # 2 steps\n        if slow == fast:\n            return True  # They met!' },
+                        { title: 'Return No Cycle', desc: 'If fast reaches the end of the list, there is no cycle.\nTwo pointers use O(1) space vs HashSet O(n) space.', code: 'def hasCycle(self, head) -> bool:\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False  # fast reached the end' }
                     ],
                     cpp: [
-                        { title: '두 포인터 초기화', desc: 'slow와 fast를 각각 ListNode* 타입으로 선언합니다.\nPython과 달리 C++에서는 포인터 타입을 명시해야 합니다.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;' },
-                        { title: 'fast가 끝에 도달할 때까지 반복', desc: 'fast와 fast->next 두 조건을 모두 검사합니다.\nnullptr 접근 시 Segmentation Fault가 발생하므로 반드시 유효성 검사가 필요합니다.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {  // 포인터 유효성 검사' },
-                        { title: '이동 + 비교', desc: 'slow는 1칸(->next), fast는 2칸(->next->next) 이동합니다.\n사이클이 있으면 fast가 slow를 따라잡아 같은 주소를 가리키게 됩니다.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;        // 1칸\n        fast = fast->next->next;  // 2칸\n        if (slow == fast)\n            return true;  // 만남!' },
-                        { title: '사이클 없음 반환', desc: 'fast가 nullptr에 도달하면 리스트에 끝이 있으므로 사이클이 없습니다.\nbool 반환 타입이므로 true/false(소문자)를 사용합니다.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n        if (slow == fast)\n            return true;\n    }\n    return false;  // fast가 끝에 도달\n}' }
+                        { title: 'Initialize Two Pointers', desc: 'Declare slow and fast as ListNode* pointers.\nUnlike Python, C++ requires explicit pointer types.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;' },
+                        { title: 'Loop Until Fast Reaches End', desc: 'Check both fast and fast->next conditions.\nAccessing nullptr causes Segmentation Fault, so validation is required.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {  // pointer validity check' },
+                        { title: 'Move + Compare', desc: 'Move slow 1 step (->next), fast 2 steps (->next->next).\nIf there is a cycle, fast catches up and both point to the same address.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;        // 1 step\n        fast = fast->next->next;  // 2 steps\n        if (slow == fast)\n            return true;  // They met!' },
+                        { title: 'Return No Cycle', desc: 'If fast reaches nullptr, the list has an end, so there is no cycle.\nReturn type is bool, so use lowercase true/false.', code: 'bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n        if (slow == fast)\n            return true;\n    }\n    return false;  // fast reached the end\n}' }
                     ]
                 }
             }]
         },
         {
             id: 'boj-1158',
-            title: 'BOJ 1158 - 요세푸스 문제',
+            title: 'BOJ 1158 - Josephus Problem',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1158',
-            simIntro: 'N=7, K=3인 요세푸스 문제를 큐로 시뮬레이션하는 과정을 관찰하세요.',
+            simIntro: 'Watch the queue simulation of the Josephus problem with N=7, K=3.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>1번부터 N번까지 N명의 사람이 원을 이루면서 앉아있고, 양의 정수 K(&le; N)가 주어진다. 이제 순서대로 K번째 사람을 제거한다. 한 사람이 제거되면 남은 사람들로 이루어진 원을 따라 이 과정을 계속해 나간다. 이 과정은 N명의 사람이 모두 제거될 때까지 계속된다. 원에서 사람들이 제거되는 순서를 (N, K)-요세푸스 순열이라고 한다. (7, 3)-요세푸스 순열은 &lt;3, 6, 2, 7, 5, 1, 4&gt;이다.</p>
+                <p>N people sit in a circle numbered from 1 to N, and a positive integer K (&le; N) is given. Starting from the first person, every K-th person is eliminated. Once a person is removed, the process continues around the remaining circle. This process repeats until all N people have been eliminated. The order in which people are removed is called the (N, K)-Josephus permutation. The (7, 3)-Josephus permutation is &lt;3, 6, 2, 7, 5, 1, 4&gt;.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>7 3</pre></div>
@@ -1256,9 +1256,9 @@ public:
                 </ul>
             `,
             hints: [
-                { title: '처음 생각: 배열에서 K번째 제거 반복', content: '1부터 N까지 배열에 넣고, 현재 위치에서 K번째를 찾아 제거하는 걸 반복하면 되지 않을까?<br><br>직관적이지만 문제가 있어요 — 배열 중간에서 원소를 제거하면 뒤의 원소들이 전부 한 칸씩 앞으로 밀려야 합니다. <strong>제거 한 번에 O(n)</strong>이고, N번 반복하니까 총 <strong>O(n&sup2;)</strong>. N이 5,000이면 2,500만 번... 느리진 않지만 깔끔하지도 않죠.' },
-                { title: '큐로 효율적으로 시뮬레이션', content: '원형 구조를 큐로 표현하면 훨씬 깔끔합니다!<br><br>💡 핵심 아이디어: K-1명을 앞에서 빼서 뒤로 보내고, K번째 사람을 앞에서 빼서 제거!<br><br>예: [1,2,3,4,5,6,7], K=3<br>① 1→뒤, 2→뒤 → [3,4,5,6,7,1,2]<br>② 3 제거! → [4,5,6,7,1,2]<br>③ 4→뒤, 5→뒤 → [6,7,1,2,4,5]<br>④ 6 제거! → ...<br><br>앞에서 빼고 뒤에 넣는 연산이 O(1)이면 전체가 <strong>O(nK)</strong>로 깔끔해집니다.' },
-                { title: '<span class="lang-py">Python deque로 구현</span><span class="lang-cpp">C++ queue로 구현</span>', content: '<span class="lang-py">Python의 <code>collections.deque</code>는 양쪽 O(1) 삽입/삭제를 지원합니다!<br><br><code>deque.popleft()</code>로 앞에서 빼고, <code>deque.append()</code>로 뒤에 넣기.<br>결과를 리스트에 모아서 <code>&lt;a, b, c, ...&gt;</code> 형태로 출력하면 완성!</span><span class="lang-cpp">C++의 <code>queue</code>는 <code>front()</code>+<code>pop()</code>으로 앞에서 빼고, <code>push()</code>로 뒤에 넣습니다.<br><br>결과를 <code>vector</code>에 모아서 <code>&lt;a, b, c, ...&gt;</code> 형태로 출력하면 완성!</span>' }
+                { title: 'First Thought: Repeatedly Remove K-th from Array', content: 'Put 1 to N in an array and repeatedly find and remove the K-th from the current position?<br><br>Intuitive but there is a problem — removing from the middle requires shifting all elements after it. <strong>Each removal costs O(n)</strong>, and repeating N times gives a total of <strong>O(n&sup2;)</strong>. If N is 5,000, that is 25 million operations... not terribly slow, but not clean either.' },
+                { title: 'Efficient Simulation with Queue', content: 'Representing the circular structure with a queue is much cleaner!<br><br>💡 Key idea: Move K-1 people from front to back, then remove the K-th person from front!<br><br>Example: [1,2,3,4,5,6,7], K=3<br>① 1→back, 2→back → [3,4,5,6,7,1,2]<br>② Remove 3! → [4,5,6,7,1,2]<br>③ 4→back, 5→back → [6,7,1,2,4,5]<br>④ Remove 6! → ...<br><br>If dequeue-from-front and enqueue-to-back are both O(1), the entire process becomes a clean <strong>O(nK)</strong>.' },
+                { title: '<span class="lang-py">Python deque implementation</span><span class="lang-cpp">C++ queue implementation</span>', content: '<span class="lang-py">Python\'s <code>collections.deque</code> provides O(1) insertion and deletion on both ends!<br><br><code>deque.popleft()</code> removes from front, <code>deque.append()</code> adds to back.<br>Collect results in a list and output in <code>&lt;a, b, c, ...&gt;</code> format to finish!</span><span class="lang-cpp">C++ <code>queue</code> uses <code>front()</code>+<code>pop()</code> to remove from front, and <code>push()</code> to add to back.<br><br>Collect results in a <code>vector</code> and output in <code>&lt;a, b, c, ...&gt;</code> format to finish!</span>' }
             ],
             templates: {
                 python: `from collections import deque
@@ -1271,8 +1271,8 @@ result = []
 
 while q:
     for _ in range(K - 1):
-        q.append(q.popleft())  # K-1명을 뒤로 보내기
-    result.append(q.popleft())  # K번째 사람 제거
+        q.append(q.popleft())  # Send K-1 people to back
+    result.append(q.popleft())  # Remove K-th Person
 
 print('<' + ', '.join(map(str, result)) + '>')`,
                 cpp: `#include <iostream>
@@ -1298,23 +1298,23 @@ int main() {
 }`
             },
             solutions: [{
-                approach: '큐 시뮬레이션',
-                description: 'deque로 원형 구조를 시뮬레이션하여 K번째 사람을 순서대로 제거합니다.',
+                approach: 'Queue Simulation',
+                description: 'Simulate circular structure with deque, removing every K-th person.',
                 timeComplexity: 'O(NK)',
                 spaceComplexity: 'O(N)',
                 get templates() { return linkedListTopic.problems[3].templates; },
                 codeSteps: {
                     python: [
-                        { title: '큐 초기화', desc: 'deque에 1~N을 넣어 원형 구조를 시뮬레이션합니다.\ndeque는 양쪽 삽입/삭제가 O(1)이라 원형 큐 구현에 최적입니다.', code: 'from collections import deque\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []' },
-                        { title: 'K-1명 뒤로 보내기', desc: 'K-1번 앞에서 빼서 뒤로 보내면 K번째 사람이 맨 앞에 옵니다.\npopleft()→append()로 원형 회전을 구현하는 핵심 트릭입니다.', code: 'from collections import deque\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []\n\nwhile q:\n    for _ in range(K - 1):\n        q.append(q.popleft())  # 뒤로 보내기' },
-                        { title: 'K번째 사람 제거', desc: '회전 후 맨 앞에 있는 사람이 K번째이므로 popleft()로 제거합니다.\n제거된 순서를 result에 기록합니다.', code: 'from collections import deque\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []\n\nwhile q:\n    for _ in range(K - 1):\n        q.append(q.popleft())\n    result.append(q.popleft())  # K번째 제거!' },
-                        { title: 'Output Result', desc: 'BOJ 출력 형식에 맞게 <a, b, c, ...> 형태로 출력합니다.\nsys.stdin.readline으로 입력 속도를 높여 시간 초과를 방지합니다.', code: 'from collections import deque\nimport sys\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []\n\nwhile q:\n    for _ in range(K - 1):\n        q.append(q.popleft())\n    result.append(q.popleft())\n\nprint(\'<\' + \', \'.join(map(str, result)) + \'>\')' }
+                        { title: 'Initialize Queue', desc: 'Put 1~N in deque to simulate circular structure.\ndeque has O(1) insertion/deletion on both ends, optimal for circular queue.', code: 'from collections import deque\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []' },
+                        { title: 'Move K-1 People to Back', desc: 'Moving K-1 from front to back puts the K-th person at front.\npopleft()->append() implements circular rotation.', code: 'from collections import deque\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []\n\nwhile q:\n    for _ in range(K - 1):\n        q.append(q.popleft())  # send to back' },
+                        { title: 'Remove K-th Person', desc: 'After rotation, the front person is K-th, so remove with popleft().\nRecord the removal order in result.', code: 'from collections import deque\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []\n\nwhile q:\n    for _ in range(K - 1):\n        q.append(q.popleft())\n    result.append(q.popleft())  # Remove K-th!' },
+                        { title: 'Output Result', desc: 'Output in BOJ format <a, b, c, ...> .\nUse sys.stdin.readline for faster input.', code: 'from collections import deque\nimport sys\ninput = sys.stdin.readline\n\nN, K = map(int, input().split())\nq = deque(range(1, N + 1))\nresult = []\n\nwhile q:\n    for _ in range(K - 1):\n        q.append(q.popleft())\n    result.append(q.popleft())\n\nprint(\'<\' + \', \'.join(map(str, result)) + \'>\')' }
                     ],
                     cpp: [
-                        { title: '큐 초기화', desc: 'queue에 1~N을 넣어 원형 구조를 준비합니다.\nC++ queue는 front()/push()/pop()으로 FIFO 연산을 지원합니다.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);' },
-                        { title: 'K-1명 뒤로 보내기', desc: 'front()로 값을 읽고 push()로 뒤에 넣은 뒤 pop()으로 앞에서 제거합니다.\nC++ queue는 pop()이 값을 반환하지 않으므로 front()를 먼저 호출해야 합니다.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);\n\n    cout << "<";\n    while (!q.empty()) {\n        for (int i = 0; i < K - 1; i++) {\n            q.push(q.front());  // 뒤로 보내기\n            q.pop();' },
-                        { title: 'K번째 사람 제거', desc: '회전 후 맨 앞(front())이 K번째 사람이므로 출력하고 pop()합니다.\n마지막 원소가 아니면 쉼표를 추가하여 출력 형식을 맞춥니다.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);\n\n    cout << "<";\n    while (!q.empty()) {\n        for (int i = 0; i < K - 1; i++) {\n            q.push(q.front());\n            q.pop();\n        }\n        cout << q.front();  // K번째 제거!\n        q.pop();\n        if (!q.empty()) cout << ", ";' },
-                        { title: 'Output Result', desc: '꺾쇠(<>)로 감싸서 BOJ 출력 형식을 완성합니다.\ncout으로 바로 출력하므로 별도 결과 배열 없이 메모리를 절약합니다.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);\n\n    cout << "<";\n    while (!q.empty()) {\n        for (int i = 0; i < K - 1; i++) {\n            q.push(q.front());\n            q.pop();\n        }\n        cout << q.front();\n        q.pop();\n        if (!q.empty()) cout << ", ";\n    }\n    cout << ">" << endl;\n}' }
+                        { title: 'Initialize Queue', desc: 'Put 1~N in queue for circular structure.\nC++ queue supports FIFO with front()/push()/pop().', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);' },
+                        { title: 'Move K-1 People to Back', desc: 'Read with front(), push() to back, then pop() from front.\nC++ pop() does not return value, so call front() first.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);\n\n    cout << "<";\n    while (!q.empty()) {\n        for (int i = 0; i < K - 1; i++) {\n            q.push(q.front());  // send to back\n            q.pop();' },
+                        { title: 'Remove K-th Person', desc: 'After rotation, front() is K-th person, print and pop().\nAdd comma if not last element.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);\n\n    cout << "<";\n    while (!q.empty()) {\n        for (int i = 0; i < K - 1; i++) {\n            q.push(q.front());\n            q.pop();\n        }\n        cout << q.front();  // Remove K-th!\n        q.pop();\n        if (!q.empty()) cout << ", ";' },
+                        { title: 'Output Result', desc: 'Wrap with angle brackets (<>) to match the BOJ output format.\nDirect cout output saves memory.', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, K;\n    cin >> N >> K;\n    queue<int> q;\n    for (int i = 1; i <= N; i++) q.push(i);\n\n    cout << "<";\n    while (!q.empty()) {\n        for (int i = 0; i < K - 1; i++) {\n            q.push(q.front());\n            q.pop();\n        }\n        cout << q.front();\n        q.pop();\n        if (!q.empty()) cout << ", ";\n    }\n    cout << ">" << endl;\n}' }
                     ]
                 }
             }]

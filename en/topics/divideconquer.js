@@ -1,27 +1,27 @@
-// ===== 분할정복 알고리즘 토픽 모듈 =====
+// ===== Divide & Conquer Algorithm Topic Module =====
 var divideConquerTopic = {
     id: 'divideconquer',
-    title: '분할정복',
+    title: 'Divide & Conquer',
     icon: '🔪',
     category: 'Algorithm Techniques',
     order: 11,
-    description: '큰 문제를 작게 나눠서 풀고 합치는 기법',
-    relatedNote: '분할정복은 병합 정렬, 퀵 정렬의 기반이며, FFT, 카라츠바 곱셈 등 고급 알고리즘에도 쓰입니다.',
+    description: 'Break a big problem into smaller pieces, solve each, and combine the results',
+    relatedNote: 'Divide & Conquer is the foundation of merge sort, quick sort, and is also used in advanced algorithms such as FFT and Karatsuba multiplication.',
 
     sidebarExpandable: true,
 
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
-        'boj-2630':  { type: '영역 분할',     color: 'var(--accent)', vizMethod: '_renderVizPaper',  suffix: '-paper' },
-        'boj-1992':  { type: '쿼드트리',       color: 'var(--green)',  vizMethod: '_renderVizQuad',   suffix: '-quad' },
-        'boj-1780':  { type: '9등분',          color: '#e17055',       vizMethod: '_renderVizNine',   suffix: '-nine' },
-        'boj-1629':  { type: '거듭제곱',       color: '#6c5ce7',       vizMethod: '_renderVizPow',    suffix: '-pow' },
-        'boj-11401': { type: '페르마 소정리',   color: '#fdcb6e',       vizMethod: '_renderVizBinom',  suffix: '-binom' },
-        'boj-2740':  { type: '행렬 곱셈',      color: '#00b894',       vizMethod: '_renderVizMatMul', suffix: '-matmul' },
-        'boj-10830': { type: '행렬 거듭제곱',   color: '#d63031',       vizMethod: '_renderVizMatPow', suffix: '-matpow' },
-        'boj-11444': { type: '피보나치 행렬',   color: '#0984e3',       vizMethod: '_renderVizFibMat', suffix: '-fibmat' },
-        'boj-6549':  { type: '구간 분할',       color: '#e84393',       vizMethod: '_renderVizHisto',  suffix: '-histo' }
+        'boj-2630':  { type: 'Area Division',       color: 'var(--accent)', vizMethod: '_renderVizPaper',  suffix: '-paper' },
+        'boj-1992':  { type: 'Quadtree',            color: 'var(--green)',  vizMethod: '_renderVizQuad',   suffix: '-quad' },
+        'boj-1780':  { type: '9-Partition',          color: '#e17055',       vizMethod: '_renderVizNine',   suffix: '-nine' },
+        'boj-1629':  { type: 'Exponentiation',      color: '#6c5ce7',       vizMethod: '_renderVizPow',    suffix: '-pow' },
+        'boj-11401': { type: "Fermat's Little Thm",  color: '#fdcb6e',       vizMethod: '_renderVizBinom',  suffix: '-binom' },
+        'boj-2740':  { type: 'Matrix Multiply',     color: '#00b894',       vizMethod: '_renderVizMatMul', suffix: '-matmul' },
+        'boj-10830': { type: 'Matrix Exponent',      color: '#d63031',       vizMethod: '_renderVizMatPow', suffix: '-matpow' },
+        'boj-11444': { type: 'Fibonacci Matrix',    color: '#0984e3',       vizMethod: '_renderVizFibMat', suffix: '-fibmat' },
+        'boj-6549':  { type: 'Range Division',       color: '#e84393',       vizMethod: '_renderVizHisto',  suffix: '-histo' }
     },
 
     getProblemTabs(problemId) {
@@ -50,7 +50,7 @@ var divideConquerTopic = {
         var flowMap = {
             problem: { intro: 'Start by reading the problem and understanding the I/O format.', icon: '📋' },
             think:   { intro: 'Don\'t jump to coding — open the hints step by step to build your strategy.', icon: '💡' },
-            sim:     { intro: prob.simIntro || '분할정복이 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            sim:     { intro: prob.simIntro || 'See how divide & conquer actually works in action.', icon: '🎮' },
             code:    { intro: 'Now let\'s turn the approach into code!', icon: '💻' }
         };
         var ft = flowMap[tabId];
@@ -138,43 +138,43 @@ var divideConquerTopic = {
     renderConcept(container) {
         container.innerHTML = '\
             <div class="hero">\
-                <h2>🔪 분할정복 (Divide and Conquer)</h2>\
-                <p class="hero-sub">큰 문제를 작게 나누고, 각각 풀어서, 합치면 전체 답이 됩니다</p>\
+                <h2>🔪 Divide and Conquer</h2>\
+                <p class="hero-sub">Break a big problem into smaller pieces, solve each, then combine for the full answer</p>\
             </div>\
 \
-            <!-- ① 분할정복이란? -->\
+            <!-- 1. What is Divide and Conquer? -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">1</span> 분할정복이란?</div>\
+                <div class="concept-section-title"><span class="section-num">1</span> What is Divide and Conquer?</div>\
                 <div class="analogy-box">\
-                    <strong>Understanding by analogy:</strong> 피자를 8명이 나눠 먹어야 합니다.<br><br>\
-                    1. <strong>나누기(Divide)</strong>: 피자를 반으로 자릅니다 → 또 반으로 → 또 반으로 → 8조각!<br>\
-                    2. <strong>풀기(Conquer)</strong>: 각 조각을 한 명씩 먹습니다.<br>\
-                    3. <strong>합치기(Combine)</strong>: 모두가 배부르게 됩니다!<br><br>\
-                    이렇게 <strong>큰 문제를 작은 문제로 나누고, 작은 문제를 풀고, 결과를 합치는 것</strong>이 분할정복입니다.<br>\
+                    <strong>Understanding by analogy:</strong> You need to share a pizza among 8 people.<br><br>\
+                    1. <strong>Divide</strong>: Cut the pizza in half, then in half again, then in half once more — 8 slices!<br>\
+                    2. <strong>Conquer</strong>: Each person eats their own slice.<br>\
+                    3. <strong>Combine</strong>: Everyone is now full!<br><br>\
+                    This is divide and conquer: <strong>break a big problem into smaller problems, solve each, and combine the results</strong>.<br>\
                     <a href="https://en.wikipedia.org/wiki/Divide-and-conquer_algorithm" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Divide and Conquer ↗</a>\
                 </div>\
 \
-                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 이진 탐색 (분할정복의 가장 간단한 예)\ndef binary_search(arr, target, lo, hi):\n    if lo > hi:\n        return -1                    # 기저 조건: 찾을 범위 없음\n    mid = (lo + hi) // 2\n    if arr[mid] == target:\n        return mid                   # 찾았다!\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, hi)  # 오른쪽 절반\n    else:\n        return binary_search(arr, target, lo, mid - 1)  # 왼쪽 절반</code></pre></div></span>\
-                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 이진 탐색 (분할정복의 가장 간단한 예)\nint binary_search(vector&lt;int&gt;&amp; arr, int target, int lo, int hi) {\n    if (lo &gt; hi)\n        return -1;                   // Base case: 찾을 범위 없음\n    int mid = (lo + hi) / 2;\n    if (arr[mid] == target)\n        return mid;                  // 찾았다!\n    else if (arr[mid] &lt; target)\n        return binary_search(arr, target, mid + 1, hi);  // 오른쪽 절반\n    else\n        return binary_search(arr, target, lo, mid - 1);  // 왼쪽 절반\n}</code></pre></div></span>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Binary search (simplest example of divide and conquer)\ndef binary_search(arr, target, lo, hi):\n    if lo > hi:\n        return -1                    # Base case: no range to search\n    mid = (lo + hi) // 2\n    if arr[mid] == target:\n        return mid                   # Found it!\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, hi)  # Right half\n    else:\n        return binary_search(arr, target, lo, mid - 1)  # Left half</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Binary search (simplest example of divide and conquer)\nint binary_search(vector&lt;int&gt;&amp; arr, int target, int lo, int hi) {\n    if (lo &gt; hi)\n        return -1;                   // Base case: no range to search\n    int mid = (lo + hi) / 2;\n    if (arr[mid] == target)\n        return mid;                  // Found it!\n    else if (arr[mid] &lt; target)\n        return binary_search(arr, target, mid + 1, hi);  // Right half\n    else\n        return binary_search(arr, target, lo, mid - 1);  // Left half\n}</code></pre></div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">1024개의 정렬된 숫자에서 이진 탐색으로 원하는 숫자를 찾으려면 최대 몇 번 비교해야 할까요?</span>\
+                        <span class="think-box-question-text">When searching for a number in 1024 sorted numbers using binary search, how many comparisons are needed at most?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        <strong>최대 10번</strong>입니다!<br>\
+                        <strong>At most 10 times</strong>!<br>\
                         1024 → 512 → 256 → 128 → 64 → 32 → 16 → 8 → 4 → 2 → 1<br>\
-                        매번 반으로 나누므로 <strong>log₂(1024) = 10</strong>번이면 충분합니다.<br>\
-                        하나씩 찾으면 최대 1024번인데, 분할정복으로 <strong>10번</strong>이면 됩니다!\
+                        Since we halve each time, <strong>log₂(1024) = 10</strong> comparisons are enough.<br>\
+                        A linear search would need up to 1024 comparisons, but divide and conquer does it in just <strong>10</strong>!\
                     </div>\
                 </div>\
             </div>\
 \
-            <!-- ② 분할정복의 3단계 -->\
+            <!-- 2. The 3 Steps of Divide and Conquer -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">2</span> 분할정복의 3단계</div>\
+                <div class="concept-section-title"><span class="section-num">2</span> The 3 Steps of Divide and Conquer</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -183,8 +183,8 @@ var divideConquerTopic = {
                                 <line x1="40" y1="25" x2="40" y2="55" stroke="var(--red)" stroke-width="2" stroke-dasharray="4,3"/>\
                             </svg>\
                         </div>\
-                        <h3>1. 나누기 (Divide)</h3>\
-                        <p>큰 문제를 <strong>같은 형태의 작은 문제</strong>로 나눕니다. 보통 절반으로 나누거나, 4등분 합니다.</p>\
+                        <h3>1. Divide</h3>\
+                        <p>Split the big problem into <strong>smaller subproblems of the same form</strong>. Usually split in half, or into 4 parts.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -194,8 +194,8 @@ var divideConquerTopic = {
                                 <path d="M28 55 L40 68 L52 55" fill="none" stroke="var(--green)" stroke-width="2"/>\
                             </svg>\
                         </div>\
-                        <h3>2. 풀기 (Conquer)</h3>\
-                        <p>작은 문제들을 <strong>재귀적으로</strong> 풀어나갑니다. 더 이상 나눌 수 없으면 바로 답을 구합니다.</p>\
+                        <h3>2. Conquer</h3>\
+                        <p>Solve the smaller subproblems <strong>recursively</strong>. When they can no longer be divided, solve them directly.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -205,33 +205,33 @@ var divideConquerTopic = {
                                 <path d="M33 40 L47 40" stroke="var(--yellow)" stroke-width="3" marker-end="url(#arrowhead)"/>\
                             </svg>\
                         </div>\
-                        <h3>3. 합치기 (Combine)</h3>\
-                        <p>작은 문제의 답들을 <strong>합쳐서</strong> 원래 큰 문제의 답을 만듭니다.<br>\
+                        <h3>3. Combine</h3>\
+                        <p><strong>Merge</strong> the answers from the smaller subproblems to form the answer to the original big problem.<br>\
                         <a href="https://en.wikipedia.org/wiki/Merge_sort" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Merge Sort ↗</a></p>\
                     </div>\
                 </div>\
 \
-                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 합병 정렬 (Merge Sort) — 분할정복의 대표 예시\ndef merge_sort(arr):\n    if len(arr) <= 1:       # 기저 조건\n        return arr\n\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])    # 1. 왼쪽 절반 정렬\n    right = merge_sort(arr[mid:])   # 1. 오른쪽 절반 정렬\n    return merge(left, right)       # 3. 합치기\n\ndef merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result</code></pre></div></span>\
-                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 합병 정렬 (Merge Sort) — 분할정복의 대표 예시\n#include &lt;vector&gt;\nusing namespace std;\n\nvector&lt;int&gt; merge(vector&lt;int&gt;&amp; left, vector&lt;int&gt;&amp; right) {\n    vector&lt;int&gt; result;\n    int i = 0, j = 0;\n    while (i &lt; left.size() &amp;&amp; j &lt; right.size()) {\n        if (left[i] &lt;= right[j])\n            result.push_back(left[i++]);\n        else\n            result.push_back(right[j++]);\n    }\n    while (i &lt; left.size()) result.push_back(left[i++]);   // 왼쪽 나머지\n    while (j &lt; right.size()) result.push_back(right[j++]); // 오른쪽 나머지\n    return result;\n}\n\nvector&lt;int&gt; merge_sort(vector&lt;int&gt; arr) {\n    if (arr.size() &lt;= 1) return arr;  // Base case\n\n    int mid = arr.size() / 2;\n    // vector 슬라이싱 (Python arr[:mid], arr[mid:]에 대응)\n    vector&lt;int&gt; left(arr.begin(), arr.begin() + mid);   // 1. 왼쪽 절반\n    vector&lt;int&gt; right(arr.begin() + mid, arr.end());     // 1. 오른쪽 절반\n    left = merge_sort(left);    // 2. 왼쪽 정렬\n    right = merge_sort(right);  // 2. 오른쪽 정렬\n    return merge(left, right);  // 3. 합치기\n}</code></pre></div></span>\
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Merge Sort — the classic divide and conquer example\ndef merge_sort(arr):\n    if len(arr) <= 1:       # Base case\n        return arr\n\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])    # 1. Sort left half\n    right = merge_sort(arr[mid:])   # 1. Sort right half\n    return merge(left, right)       # 3. Combine\n\ndef merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result</code></pre></div></span>\
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Merge Sort — the classic divide and conquer example\n#include &lt;vector&gt;\nusing namespace std;\n\nvector&lt;int&gt; merge(vector&lt;int&gt;&amp; left, vector&lt;int&gt;&amp; right) {\n    vector&lt;int&gt; result;\n    int i = 0, j = 0;\n    while (i &lt; left.size() &amp;&amp; j &lt; right.size()) {\n        if (left[i] &lt;= right[j])\n            result.push_back(left[i++]);\n        else\n            result.push_back(right[j++]);\n    }\n    while (i &lt; left.size()) result.push_back(left[i++]);   // Remaining left\n    while (j &lt; right.size()) result.push_back(right[j++]); // Remaining right\n    return result;\n}\n\nvector&lt;int&gt; merge_sort(vector&lt;int&gt; arr) {\n    if (arr.size() &lt;= 1) return arr;  // Base case\n\n    int mid = arr.size() / 2;\n    // Vector slicing (corresponds to Python arr[:mid], arr[mid:])\n    vector&lt;int&gt; left(arr.begin(), arr.begin() + mid);   // 1. Left half\n    vector&lt;int&gt; right(arr.begin() + mid, arr.end());     // 1. Right half\n    left = merge_sort(left);    // 2. Sort left\n    right = merge_sort(right);  // 2. Sort right\n    return merge(left, right);  // 3. Combine\n}</code></pre></div></span>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">[5, 3, 1, 4, 2]를 합병 정렬하면, 나누기 단계에서 어떻게 쪼개질까요?</span>\
+                        <span class="think-box-question-text">If you merge sort [5, 3, 1, 4, 2], how does it split in the divide step?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
                         [5, 3, 1, 4, 2] → [5, 3] + [1, 4, 2]<br>\
                         [5, 3] → [5] + [3]<br>\
                         [1, 4, 2] → [1] + [4, 2] → [1] + [4] + [2]<br><br>\
-                        합치기: [3,5] + [1,2,4] → <strong>[1, 2, 3, 4, 5]</strong>\
+                        Combine: [3,5] + [1,2,4] → <strong>[1, 2, 3, 4, 5]</strong>\
                     </div>\
                 </div>\
             </div>\
 \
-            <!-- ③ 분할정복 vs 재귀 vs DP -->\
+            <!-- 3. Divide & Conquer vs Recursion vs DP -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">3</span> 분할정복 vs 재귀 vs DP</div>\
+                <div class="concept-section-title"><span class="section-num">3</span> Divide & Conquer vs Recursion vs DP</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -241,8 +241,8 @@ var divideConquerTopic = {
                                 <line x1="40" y1="42" x2="40" y2="52" stroke="var(--blue)" stroke-width="2"/>\
                             </svg>\
                         </div>\
-                        <h3>재귀</h3>\
-                        <p><strong>자기 자신을 호출</strong>하는 기법.<br>함수가 자기 자신을 부르는 것이 재귀입니다. 분할정복과 DP 모두 재귀를 사용합니다.</p>\
+                        <h3>Recursion</h3>\
+                        <p>A technique where a function <strong>calls itself</strong>.<br>Both divide and conquer and DP use recursion.</p>\
                     </div>\
                     <div class="concept-card" style="border-color: var(--accent);">\
                         <div class="card-icon">\
@@ -251,8 +251,8 @@ var divideConquerTopic = {
                                 <line x1="40" y1="25" x2="40" y2="55" stroke="var(--red)" stroke-width="2" stroke-dasharray="4,3"/>\
                             </svg>\
                         </div>\
-                        <h3>분할정복</h3>\
-                        <p><strong>나누고 + 합치기</strong>.<br>문제를 독립적인 조각으로 나누고, 각각 풀고, 결과를 합칩니다. 부분 문제가 <strong>겹치지 않습니다</strong>.</p>\
+                        <h3>Divide & Conquer</h3>\
+                        <p><strong>Divide + Combine</strong>.<br>Split the problem into independent pieces, solve each, and combine. Subproblems <strong>do not overlap</strong>.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -263,38 +263,38 @@ var divideConquerTopic = {
                                 <line x1="10" y1="40" x2="70" y2="40" stroke="var(--green)" stroke-width="1" stroke-dasharray="3,3"/>\
                             </svg>\
                         </div>\
-                        <h3>DP (동적 프로그래밍)</h3>\
-                        <p><strong>저장하며 풀기</strong>.<br>부분 문제가 <strong>겹쳐서</strong> 같은 계산을 여러 번 하게 될 때, 결과를 저장해서 재사용합니다.</p>\
+                        <h3>DP (Dynamic Programming)</h3>\
+                        <p><strong>Store and reuse</strong>.<br>When subproblems <strong>overlap</strong> and the same computation is repeated, store results and reuse them.</p>\
                     </div>\
                 </div>\
 \
                 <div class="key-difference-box" style="margin-top:16px;padding:16px;background:var(--bg);border-radius:var(--radius);border-left:4px solid var(--accent);">\
-                    <strong>핵심 차이!</strong><br>\
-                    • <strong>분할정복</strong>: 부분 문제가 서로 <span style="color:var(--accent)">겹치지 않음</span> → 그냥 각각 풀면 됨<br>\
-                    • <strong>DP</strong>: 부분 문제가 서로 <span style="color:var(--green)">겹침</span> → 저장해서 재사용해야 빠름<br>\
-                    예) 합병 정렬: 왼쪽/오른쪽 독립 → <strong>분할정복</strong> | 피보나치: F(3)을 여러 번 계산 → <strong>DP</strong><br>\
-                    <a href="https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: 마스터 정리 (Master Theorem) ↗</a> — 분할정복의 시간 복잡도를 쉽게 구하는 공식\
+                    <strong>Key Difference!</strong><br>\
+                    • <strong>Divide & Conquer</strong>: Subproblems <span style="color:var(--accent)">do not overlap</span> — just solve each independently<br>\
+                    • <strong>DP</strong>: Subproblems <span style="color:var(--green)">overlap</span> — store and reuse for speed<br>\
+                    Example: Merge sort: left/right are independent → <strong>Divide & Conquer</strong> | Fibonacci: F(3) computed multiple times → <strong>DP</strong><br>\
+                    <a href="https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Master Theorem ↗</a> — A formula to easily compute the time complexity of divide and conquer\
                 </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">"1부터 N까지의 합을 구하는 문제"는 분할정복으로 풀 수 있을까요?</span>\
+                        <span class="think-box-question-text">Can "finding the sum from 1 to N" be solved with divide and conquer?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        네! 가능합니다.<br>\
-                        sum(1, N) = sum(1, N/2) + sum(N/2+1, N) 으로 나눌 수 있습니다.<br>\
-                        기저 조건: sum(a, a) = a (하나만 남으면 그 자체가 답)<br><br>\
-                        하지만 이 문제는 <strong>N×(N+1)/2</strong> 공식이 더 빠릅니다.<br>\
-                        분할정복은 단순한 문제보다 <strong>복잡한 문제에서 빛을 발합니다!</strong>\
+                        Yes! It is possible.<br>\
+                        sum(1, N) = sum(1, N/2) + sum(N/2+1, N).<br>\
+                        Base case: sum(a, a) = a (when only one element remains, it is the answer itself)<br><br>\
+                        However, for this problem the formula <strong>N×(N+1)/2</strong> is faster.<br>\
+                        Divide and conquer shines on <strong>more complex problems</strong>!\
                     </div>\
                 </div>\
             </div>\
 \
-            <!-- ④ 자주 쓰이는 분할정복 패턴 -->\
+            <!-- 4. Common Divide & Conquer Patterns -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">4</span> 자주 쓰이는 분할정복 패턴</div>\
+                <div class="concept-section-title"><span class="section-num">4</span> Common Divide & Conquer Patterns</div>\
                 <div class="concept-grid">\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -304,8 +304,8 @@ var divideConquerTopic = {
                                 <line x1="10" y1="40" x2="70" y2="40" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,3"/>\
                             </svg>\
                         </div>\
-                        <h3>영역 나누기</h3>\
-                        <p>2D 영역을 <strong>4등분(쿼드트리)</strong> 또는 <strong>9등분</strong>으로 나눠서 처리합니다. 색종이, 쿼드트리 문제가 대표적입니다.</p>\
+                        <h3>Area Division</h3>\
+                        <p>Divide a 2D area into <strong>4 parts (quadtree)</strong> or <strong>9 parts</strong> and process each. Paper cutting and quadtree problems are classic examples.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -314,8 +314,8 @@ var divideConquerTopic = {
                                 <text x="40" y="32" font-size="16" fill="var(--green)">n</text>\
                             </svg>\
                         </div>\
-                        <h3>빠른 거듭제곱</h3>\
-                        <p>a^n을 구할 때, <strong>지수를 반으로 나누면</strong> O(log n)에 계산할 수 있습니다. 매우 큰 수의 거듭제곱에 사용합니다.</p>\
+                        <h3>Fast Exponentiation</h3>\
+                        <p>When computing a^n, <strong>halving the exponent</strong> allows O(log n) computation. Used for exponentiation of very large numbers.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -325,8 +325,8 @@ var divideConquerTopic = {
                                 <text x="30" y="58" font-size="14" fill="var(--yellow)">×</text>\
                             </svg>\
                         </div>\
-                        <h3>행렬 거듭제곱</h3>\
-                        <p>행렬의 거듭제곱도 같은 원리입니다. <strong>피보나치 수</strong>를 O(log n)에 구하는 데 사용합니다.</p>\
+                        <h3>Matrix Exponentiation</h3>\
+                        <p>Matrix exponentiation works on the same principle. Used to compute <strong>Fibonacci numbers</strong> in O(log n).</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -337,29 +337,29 @@ var divideConquerTopic = {
                                 <rect x="52" y="20" width="12" height="50" fill="none" stroke="var(--blue)" stroke-width="2"/>\
                             </svg>\
                         </div>\
-                        <h3>구간 분할</h3>\
-                        <p>배열을 <strong>왼쪽/오른쪽으로 나눠서</strong> 각각의 답을 구하고, 걸치는 경우를 처리합니다. 히스토그램 문제가 대표적입니다.</p>\
+                        <h3>Range Division</h3>\
+                        <p>Split an array into <strong>left and right halves</strong>, find the answer for each, and handle the crossing case. The histogram problem is a classic example.</p>\
                     </div>\
                 </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">2^100을 직접 곱하면 몇 번 곱해야 할까요? 분할정복으로는 몇 번이면 될까요?</span>\
+                        <span class="think-box-question-text">How many multiplications does it take to compute 2^100 directly? How many with divide and conquer?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        직접 곱하기: 2를 <strong>99번</strong> 곱해야 합니다.<br><br>\
-                        분할정복: 2^100 = (2^50)² → 2^50 = (2^25)² → 2^25 = (2^12)² × 2 → ...<br>\
-                        총 <strong>약 7번</strong>의 곱셈이면 됩니다! (log₂(100) ≈ 7)<br><br>\
-                        99번 → 7번, 거의 <strong>14배나 빠릅니다!</strong>\
+                        Direct multiplication: You need to multiply 2 a total of <strong>99 times</strong>.<br><br>\
+                        Divide and conquer: 2^100 = (2^50)² → 2^50 = (2^25)² → 2^25 = (2^12)² × 2 → ...<br>\
+                        Only about <strong>7 multiplications</strong> needed! (log₂(100) ≈ 7)<br><br>\
+                        99 times → 7 times, nearly <strong>14x faster!</strong>\
                     </div>\
                 </div>\
             </div>\
 \
-            <!-- ⑤ 분할정복 문제 푸는 3단계 -->\
+            <!-- 5. 3 Steps to Solve Divide & Conquer Problems -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">5</span> 분할정복 문제 푸는 3단계</div>\
+                <div class="concept-section-title"><span class="section-num">5</span> 3 Steps to Solve Divide & Conquer Problems</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -368,8 +368,8 @@ var divideConquerTopic = {
                                 <text x="34" y="42" font-size="18" fill="var(--red)">!</text>\
                             </svg>\
                         </div>\
-                        <h3>① 기저 조건 정하기</h3>\
-                        <p><strong>더 이상 나눌 수 없는 가장 작은 크기</strong>를 정합니다. 예) 배열 크기 1, 지수가 0 또는 1 등</p>\
+                        <h3>Step 1: Define the Base Case</h3>\
+                        <p>Determine <strong>the smallest size that cannot be divided further</strong>. e.g., array size 1, exponent 0 or 1, etc.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -378,8 +378,8 @@ var divideConquerTopic = {
                                 <line x1="40" y1="20" x2="40" y2="60" stroke="var(--red)" stroke-width="2.5" stroke-dasharray="4,3"/>\
                             </svg>\
                         </div>\
-                        <h3>② 나누는 기준 정하기</h3>\
-                        <p>문제를 어떻게 나눌지 결정합니다. <strong>절반? 4등분? 9등분?</strong> 문제 유형에 따라 달라집니다.</p>\
+                        <h3>Step 2: Define the Division Rule</h3>\
+                        <p>Decide how to divide the problem. <strong>In half? Into 4 parts? Into 9 parts?</strong> It depends on the problem type.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -390,22 +390,22 @@ var divideConquerTopic = {
                                 <text x="36" y="62" font-size="16" fill="var(--green)">+</text>\
                             </svg>\
                         </div>\
-                        <h3>③ 합치는 방법 정하기</h3>\
-                        <p>작은 문제의 결과를 어떻게 합칠지 정합니다. <strong>더하기? 곱하기? 최댓값?</strong> 문제마다 다릅니다.</p>\
+                        <h3>Step 3: Define the Combine Method</h3>\
+                        <p>Decide how to combine the results of subproblems. <strong>Addition? Multiplication? Maximum?</strong> It varies by problem.</p>\
                     </div>\
                 </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">"N×N 색종이가 전부 같은 색인지 확인하는 문제"에서 3단계를 적용하면?</span>\
+                        <span class="think-box-question-text">How do you apply the 3 steps to "check if an N×N paper is entirely one color"?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        ① <strong>기저 조건</strong>: 1×1 크기면 그 색이 곧 답<br>\
-                        ② <strong>나누기</strong>: 4등분 (왼쪽 위, 오른쪽 위, 왼쪽 아래, 오른쪽 아래)<br>\
-                        ③ <strong>합치기</strong>: 4조각이 모두 같은 색이면 합치고, 아니면 각각 유지<br><br>\
-                        이것이 바로 <strong>색종이 만들기 / 쿼드트리</strong> 문제의 핵심입니다!\
+                        Step 1: <strong>Base case</strong>: If size is 1×1, the color itself is the answer<br>\
+                        Step 2: <strong>Divide</strong>: Split into 4 parts (top-left, top-right, bottom-left, bottom-right)<br>\
+                        Step 3: <strong>Combine</strong>: If all 4 parts are the same color, merge them; otherwise keep each separate<br><br>\
+                        This is exactly the core of the <strong>Paper Cutting / Quadtree</strong> problem!\
                     </div>\
                 </div>\
             </div>\
@@ -425,10 +425,10 @@ var divideConquerTopic = {
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
     },
 
-    // ===== 시각화 (개념 탭에서는 빈 스텁) =====
+    // ===== Visualization (empty stubs for concept tab) =====
     renderVisualize(container) {},
 
-    // ===== 문제 탭 빈 스텁 =====
+    // ===== Problem tab empty stubs =====
     renderProblem(container) {},
 
     // ===== Visualization State =====
@@ -442,9 +442,9 @@ var divideConquerTopic = {
 
     _createStepControls(suffix) {
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
             '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
             '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
     },
 
@@ -484,16 +484,16 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 1: 색종이 만들기 (boj-2630)
+    // Simulation 1: Paper Cutting (boj-2630)
     // ====================================================================
     _renderVizPaper(container) {
         var self = this, suffix = '-paper';
         var DEFAULT_GRID = '0011/0011/1011/0111';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">색종이 만들기</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">4×4 색종이를 재귀적으로 4등분하며 같은 색인지 확인합니다. (흰=0, 파랑=1)</p>' +
+            '<h3 style="margin-bottom:8px;">Paper Cutting</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Recursively split a 4×4 paper into 4 parts and check if each is a single color. (white=0, blue=1)</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">격자 (행을 /로 구분): <input type="text" id="dc-paper-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Grid (rows separated by /): <input type="text" id="dc-paper-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-paper-reset">🔄</button>' +
             '</div>' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:12px;"></div>' +
@@ -536,14 +536,14 @@ var divideConquerTopic = {
                 gridEl.innerHTML = html;
             }
             renderGrid(null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">' + SIZE + '×' + SIZE + ' 색종이를 검사합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Inspecting the ' + SIZE + '×' + SIZE + ' paper.</span>';
 
-            // 재귀적으로 스텝을 생성
+            // Recursively generate steps
             var steps = [];
             var whiteCnt = 0, blueCnt = 0;
 
             function buildSteps(r, c, size, grid) {
-                // 영역 내 모두 같은지 확인
+                // Check if all cells in the region are the same
                 var first = grid[r][c];
                 var allSame = true;
                 for (var i = r; i < r + size && allSame; i++)
@@ -551,11 +551,11 @@ var divideConquerTopic = {
                         if (grid[i][j] !== first) allSame = false;
 
                 if (allSame) {
-                    var color = first === 1 ? '파랑' : '흰색';
+                    var color = first === 1 ? 'blue' : 'white';
                     var borderColor = first === 1 ? 'var(--accent)' : 'var(--green)';
                     (function(r2,c2,sz,col,bc,f) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': 전부 ' + col + '! ' + col + '+1',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': all ' + col + '! ' + col + '+1',
                             action: function() {
                                 var h = {};
                                 for (var i = r2; i < r2 + sz; i++)
@@ -563,7 +563,7 @@ var divideConquerTopic = {
                                         h[i + ',' + j] = 'border:3px solid ' + bc + ';box-shadow:0 0 8px ' + bc + '40;';
                                 renderGrid(h);
                                 if (f === 0) whiteCnt++; else blueCnt++;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': 전부 ' + col + ' → <strong>' + col + ' +1</strong> (흰:' + whiteCnt + ', 파:' + blueCnt + ')';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': all ' + col + ' → <strong>' + col + ' +1</strong> (W:' + whiteCnt + ', B:' + blueCnt + ')';
                             },
                             undo: function() {
                                 if (f === 0) whiteCnt--; else blueCnt--;
@@ -575,14 +575,14 @@ var divideConquerTopic = {
                 } else {
                     (function(r2,c2,sz) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ' 검사: 색이 섞여 있음 → 4등분!',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': mixed colors → split into 4!',
                             action: function() {
                                 var h = {};
                                 for (var i = r2; i < r2 + sz; i++)
                                     for (var j = c2; j < c2 + sz; j++)
                                         h[i + ',' + j] = 'border:3px solid var(--red);';
                                 renderGrid(h);
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': 색이 다름 → <strong>4등분!</strong>';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': different colors → <strong>split into 4!</strong>';
                             },
                             undo: function() {
                                 renderGrid(null);
@@ -607,8 +607,8 @@ var divideConquerTopic = {
                 else { var h2=sz/2; countAll(r,c,h2); countAll(r,c+h2,h2); countAll(r+h2,c,h2); countAll(r+h2,c+h2,h2); }
             })(0,0,SIZE);
             steps.push({
-                description: '완성! 흰색 ' + finalW + '개, 파란색 ' + finalB + '개',
-                action: function() { renderGrid(null); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! 흰색: ' + finalW + '개, 파란색: ' + finalB + '개</strong>'; },
+                description: 'Done! White: ' + finalW + ', Blue: ' + finalB,
+                action: function() { renderGrid(null); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Done! White: ' + finalW + ', Blue: ' + finalB + '</strong>'; },
                 undo: function() { renderGrid(null); infoEl.innerHTML = '(undo)'; }
             });
             whiteCnt = 0; blueCnt = 0;
@@ -623,16 +623,16 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 2: 쿼드트리 (boj-1992)
+    // Simulation 2: Quadtree (boj-1992)
     // ====================================================================
     _renderVizQuad(container) {
         var self = this, suffix = '-quad';
         var DEFAULT_GRID = '1100/1100/0010/0001';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">쿼드트리 압축</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">4×4 영상을 쿼드트리 문자열로 압축합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Quadtree Compression</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Compresses a 4x4 image into a quadtree string.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">격자 (행을 /로 구분): <input type="text" id="dc-quad-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Grid (rows separated by /): <input type="text" id="dc-quad-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-quad-reset">🔄</button>' +
             '</div>' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:8px;"></div>' +
@@ -672,12 +672,12 @@ var divideConquerTopic = {
             }
             renderGrid(null);
             resultEl.textContent = '';
-            infoEl.innerHTML = '<span style="color:var(--text2);">쿼드트리 압축을 시작합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting Quadtree Compression.</span>';
 
             var steps = [];
             var resultStr = '';
 
-            // 쿼드트리 결과 먼저 계산
+            // Compute Quadtree result first
             function quadResult(r, c, sz) {
                 var f = grid[r][c], ok = true;
                 for (var i=r;i<r+sz&&ok;i++) for(var j=c;j<c+sz&&ok;j++) if(grid[i][j]!==f) ok=false;
@@ -693,14 +693,14 @@ var divideConquerTopic = {
                 if (ok) {
                     (function(r2,c2,sz2,val) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 전부 ' + val + ' → "' + val + '"',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': all' + val + ' → "' + val + '"',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--green);';
                                 renderGrid(h);
                                 resultStr += '' + val;
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']: 전부 ' + val + ' → <strong>"' + val + '"</strong>';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']: all' + val + ' → <strong>"' + val + '"</strong>';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
@@ -713,14 +713,14 @@ var divideConquerTopic = {
                 } else {
                     (function(r2,c2,sz2) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 색이 섞임 → "(" 시작, 4등분!',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': mixed colors → "(" start, divide into 4!',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--red);';
                                 renderGrid(h);
                                 resultStr += '(';
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 섞임 → <strong>"(" 열기</strong>';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': mixed → <strong>open "("</strong>';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
@@ -735,15 +735,15 @@ var divideConquerTopic = {
                     buildSteps(r, c+h, h);
                     buildSteps(r+h, c, h);
                     buildSteps(r+h, c+h, h);
-                    // 닫는 괄호
+                    // Closing parenthesis
                     (function(r2,c2,sz2) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' 완료 → ")" 닫기',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' done → close ")"',
                             action: function() {
                                 renderGrid(null);
                                 resultStr += ')';
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] 영역 완료 → <strong>")" 닫기</strong>';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] region done → <strong>close ")"</strong>';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
@@ -757,8 +757,8 @@ var divideConquerTopic = {
             }
             buildSteps(0, 0, SIZE);
             steps.push({
-                description: '완성! 결과: ' + finalResult,
-                action: function() { renderGrid(null); resultEl.textContent = finalResult; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! ' + finalResult + '</strong>'; },
+                description: 'Done! Result: ' + finalResult,
+                action: function() { renderGrid(null); resultEl.textContent = finalResult; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Done! ' + finalResult + '</strong>'; },
                 undo: function() { renderGrid(null); infoEl.innerHTML = '(undo)'; }
             });
             resultStr = '';
@@ -773,16 +773,16 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 3: 종이의 개수 (boj-1780)
+    // Simulation 3: Paper Count (boj-1780)
     // ====================================================================
     _renderVizNine(container) {
         var self = this, suffix = '-nine';
         var DEFAULT_GRID = '00-1/001/-110';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">종이의 개수 (9등분)</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">3×3 종이를 검사합니다. 모두 같지 않으면 9등분(1×1)으로 분할합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Paper Count (9-Partition)</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Inspects a 3×3 paper. If not all the same, divides into 9 parts (1×1).</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">격자 (-1,0,1 / 행구분 /): <input type="text" id="dc-nine-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Grid (-1,0,1 / row sep /): <input type="text" id="dc-nine-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-nine-reset">🔄</button>' +
             '</div>' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:12px;"></div>' +
@@ -823,7 +823,7 @@ var divideConquerTopic = {
                 gridEl.innerHTML = html;
             }
             renderGrid(null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">' + SIZE + '×' + SIZE + ' 종이를 검사합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Inspecting the ' + SIZE + '×' + SIZE + ' paper.</span>';
 
             var steps = [];
             var cnt = {'-1': 0, '0': 0, '1': 0};
@@ -835,13 +835,13 @@ var divideConquerTopic = {
                     (function(r2,c2,sz2,val) {
                         var borderColor = val === -1 ? '#e17055' : val === 0 ? 'var(--green)' : 'var(--accent)';
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 전부 ' + val + ' → ' + val + ' +1',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': all' + val + ' → ' + val + ' +1',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid ' + borderColor + ';box-shadow:0 0 6px ' + borderColor + '40;';
                                 renderGrid(h);
                                 cnt['' + val]++;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 전부 ' + val + ' → <strong>' + val + ' +1</strong> (-1:' + cnt['-1'] + ', 0:' + cnt['0'] + ', 1:' + cnt['1'] + ')';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': all' + val + ' → <strong>' + val + ' +1</strong> (-1:' + cnt['-1'] + ', 0:' + cnt['0'] + ', 1:' + cnt['1'] + ')';
                             },
                             undo: function() {
                                 cnt['' + val]--;
@@ -853,12 +853,12 @@ var divideConquerTopic = {
                 } else {
                     (function(r2,c2,sz2) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 값이 섞여 있음 → 9등분!',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': values are mixed → 9-partition!',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--red);';
                                 renderGrid(h);
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 값이 다름 → <strong>9등분!</strong>';
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': values differ → <strong>9-partition!</strong>';
                             },
                             undo: function() {
                                 renderGrid(null);
@@ -873,7 +873,7 @@ var divideConquerTopic = {
                 }
             }
             buildSteps(0, 0, SIZE);
-            // 최종 카운트 미리 계산
+            // Pre-compute final counts
             var fCnt = {'-1': 0, '0': 0, '1': 0};
             (function countAll(r,c,sz) {
                 var f = grid[r][c], ok = true;
@@ -882,8 +882,8 @@ var divideConquerTopic = {
                 else { var t=sz/3; for(var dr=0;dr<3;dr++) for(var dc=0;dc<3;dc++) countAll(r+dr*t,c+dc*t,t); }
             })(0,0,SIZE);
             steps.push({
-                description: '완성! -1: ' + fCnt['-1'] + '개, 0: ' + fCnt['0'] + '개, 1: ' + fCnt['1'] + '개',
-                action: function() { renderGrid(null); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! -1: ' + fCnt['-1'] + '개, 0: ' + fCnt['0'] + '개, 1: ' + fCnt['1'] + '개</strong>'; },
+                description: 'Done! -1: ' + fCnt['-1'] + ', 0: ' + fCnt['0'] + ', 1: ' + fCnt['1'] + '',
+                action: function() { renderGrid(null); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Done! -1: ' + fCnt['-1'] + ', 0: ' + fCnt['0'] + ', 1: ' + fCnt['1'] + '</strong>'; },
                 undo: function() { renderGrid(null); infoEl.innerHTML = '(undo)'; }
             });
             cnt = {'-1': 0, '0': 0, '1': 0};
@@ -898,14 +898,14 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 4: 곱셈 - 빠른 거듭제곱 (boj-1629)
+    // Simulation 4: Fast Exponentiation (boj-1629)
     // ====================================================================
     _renderVizPow(container) {
         var self = this, suffix = '-pow';
         var DEF_A = 10, DEF_B = 11, DEF_C = 12;
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">빠른 거듭제곱</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">A<sup>B</sup> mod C 를 분할정복으로 계산합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Fast Exponentiation</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Computes A<sup>B</sup> mod C using divide and conquer.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">A: <input type="number" id="dc-pow-a" value="' + DEF_A + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<label style="font-weight:600;">B: <input type="number" id="dc-pow-b" value="' + DEF_B + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
@@ -926,9 +926,9 @@ var divideConquerTopic = {
             if (C < 1) C = 1;
             if (B < 1) B = 1;
             treeEl.innerHTML = '';
-            infoEl.innerHTML = '<span style="color:var(--text2);">지수를 반으로 나누며 계산합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Halving the exponent to compute.</span>';
 
-            // Divide 트리를 만들기 위해 지수를 따라감
+            // Follow the exponent to build a divide tree
             var nodes = [];
             function buildTree(exp, depth) {
                 var idx = nodes.length;
@@ -947,16 +947,16 @@ var divideConquerTopic = {
             renderTree();
 
             var steps = [];
-            // 나누기 스텝: 각 노드에 대해 분할 설명
+            // Divide steps: explain the split for each node
             for (var i = 0; i < nodes.length - 1; i++) {
                 (function(idx) {
                     var exp = nodes[idx].exp;
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: A + '^' + exp + ': ' + (odd ? '홀수' : '짝수') + ' → ' + A + '^' + half + ' × ' + A + '^' + half + (odd ? ' × ' + A : ''),
+                        description: A + '^' + exp + ': ' + (odd ? 'odd' : 'even') + ' → ' + A + '^' + half + ' × ' + A + '^' + half + (odd ? ' × ' + A : ''),
                         action: function() {
-                            infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + A + '<sup>' + half + '</sup> × ' + A + '<sup>' + half + '</sup>' + (odd ? ' × ' + A : '') + ' (' + (odd ? '홀수: 반×반×밑' : '짝수: 반×반') + ')';
+                            infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + A + '<sup>' + half + '</sup> × ' + A + '<sup>' + half + '</sup>' + (odd ? ' × ' + A : '') + ' (' + (odd ? 'odd: half×half×base' : 'even: half×half') + ')';
                         },
                         undo: function() {
                             infoEl.innerHTML = '(undo)';
@@ -969,13 +969,13 @@ var divideConquerTopic = {
             var baseVal = A % C;
             (function(be, bv, lastIdx) {
                 steps.push({
-                    description: '기저 조건: ' + A + '^' + be + ' = ' + bv + ' (mod ' + C + ')',
-                    action: function() { nodes[lastIdx].value = bv; renderTree(); infoEl.innerHTML = '기저: ' + A + '<sup>' + be + '</sup> mod ' + C + ' = <strong>' + bv + '</strong>'; },
+                    description: 'Base case: ' + A + '^' + be + ' = ' + bv + ' (mod ' + C + ')',
+                    action: function() { nodes[lastIdx].value = bv; renderTree(); infoEl.innerHTML = 'base case: ' + A + '<sup>' + be + '</sup> mod ' + C + ' = <strong>' + bv + '</strong>'; },
                     undo: function() { nodes[lastIdx].value = null; renderTree(); infoEl.innerHTML = '(undo)'; }
                 });
             })(baseExp, baseVal, nodes.length - 1);
 
-            // Union 스텝: 아래에서 위로
+            // Combine steps: bottom to top
             function pw(a, b, m) { var r = 1; a = a % m; if (a === 0) return 0; while (b > 0) { if (b % 2 === 1) r = r * a % m; b = Math.floor(b / 2); a = a * a % m; } return r; }
             for (var i = nodes.length - 2; i >= 0; i--) {
                 (function(idx) {
@@ -985,7 +985,7 @@ var divideConquerTopic = {
                     var result = halfVal * halfVal % C;
                     if (exp % 2 === 1) result = result * (A % C) % C;
                     steps.push({
-                        description: '합치기: ' + A + '^' + exp + ' = ' + halfVal + '×' + halfVal + (exp % 2 === 1 ? '×' + (A%C) : '') + ' mod ' + C + ' = ' + result,
+                        description: 'Combine: ' + A + '^' + exp + ' = ' + halfVal + '×' + halfVal + (exp % 2 === 1 ? '×' + (A%C) : '') + ' mod ' + C + ' = ' + result,
                         action: function() { nodes[idx].value = result; renderTree(); infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + halfVal + ' × ' + halfVal + (exp % 2 === 1 ? ' × ' + (A%C) : '') + ' mod ' + C + ' = <strong>' + result + '</strong>'; },
                         undo: function() { nodes[idx].value = null; renderTree(); infoEl.innerHTML = '(undo)'; }
                     });
@@ -994,7 +994,7 @@ var divideConquerTopic = {
             // Final result
             var finalVal = pw(A, B, C);
             steps.push({
-                description: '완성! ' + A + '^' + B + ' mod ' + C + ' = ' + finalVal,
+                description: 'Done! ' + A + '^' + B + ' mod ' + C + ' = ' + finalVal,
                 action: function() { nodes[0].value = finalVal; renderTree(); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ ' + A + '<sup>' + B + '</sup> mod ' + C + ' = ' + finalVal + '</strong>'; },
                 undo: function() { nodes[0].value = null; renderTree(); infoEl.innerHTML = '(undo)'; }
             });
@@ -1009,18 +1009,18 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 5: 이항 계수 3 (boj-11401)
+    // Simulation 5: Binomial Coefficient 3 (boj-11401)
     // ====================================================================
     _renderVizBinom(container) {
         var self = this, suffix = '-binom';
         var DEF_N = 5, DEF_K = 2, DEF_MOD = 7;
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">이항 계수 (페르마 소정리)</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">C(N,K) mod P 를 팩토리얼 + 역원으로 계산합니다. (P는 소수)</p>' +
+            '<h3 style="margin-bottom:8px;">Binomial Coefficient (Fermat\'s Little Theorem)</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Computes C(N,K) mod P via factorial + modular inverse. (P must be prime)</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">N: <input type="number" id="dc-binom-n" value="' + DEF_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<label style="font-weight:600;">K: <input type="number" id="dc-binom-k" value="' + DEF_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
-            '<label style="font-weight:600;">P(소수): <input type="number" id="dc-binom-mod" value="' + DEF_MOD + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<label style="font-weight:600;">P(prime): <input type="number" id="dc-binom-mod" value="' + DEF_MOD + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="dc-binom-reset">🔄</button>' +
             '</div>' +
             '<div id="dc-calc' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;margin-bottom:12px;"></div>' +
@@ -1045,27 +1045,27 @@ var divideConquerTopic = {
             var invNK = pw(fac[N - K], MOD - 2, MOD);
             var ans = fac[N] * invK % MOD * invNK % MOD;
             calcEl.textContent = 'C(' + N + ',' + K + ') = ' + N + '! / (' + K + '! × ' + (N-K) + '!)';
-            infoEl.innerHTML = '<span style="color:var(--text2);">페르마 소정리로 모듈러 역원을 구합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Computing modular inverse via Fermat\'s Little Theorem.</span>';
 
             var facStr = fac.map(function(v,i){return i+'!='+v;}).join(', ');
             var steps = [
-                { description: '팩토리얼 계산: ' + facStr + ' (mod ' + MOD + ')',
-                  action: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = '팩토리얼 계산 완료 (mod ' + MOD + ')'; },
-                  undo: function() { calcEl.textContent = 'C(' + N + ',' + K + ') = ' + N + '! / (' + K + '! × ' + (N-K) + '!)'; infoEl.innerHTML = '<span style="color:var(--text2);">페르마 소정리로 모듈러 역원을 구합니다.</span>'; }
+                { description: 'Compute factorials: ' + facStr + ' (mod ' + MOD + ')',
+                  action: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = 'Factorial computation complete (mod ' + MOD + ')'; },
+                  undo: function() { calcEl.textContent = 'C(' + N + ',' + K + ') = ' + N + '! / (' + K + '! × ' + (N-K) + '!)'; infoEl.innerHTML = '<span style="color:var(--text2);">Computing modular inverse via Fermat\'s Little Theorem.</span>'; }
                 },
-                { description: '페르마 소정리: ' + K + '!의 역원 = ' + fac[K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invK,
-                  action: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → 역원 = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!의 모듈러 역원: <strong>' + invK + '</strong>'; },
-                  undo: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = '팩토리얼 계산 완료 (mod ' + MOD + ')'; }
+                { description: 'Fermat\'s Little Theorem: ' + K + '!inverse = ' + fac[K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invK,
+                  action: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → inverse = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!modular inverse: <strong>' + invK + '</strong>'; },
+                  undo: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = 'Factorial computation complete (mod ' + MOD + ')'; }
                 },
-                { description: (N-K) + '!의 역원 = ' + fac[N-K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invNK,
-                  action: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → 역원 = ' + fac[N-K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!의 모듈러 역원: <strong>' + invNK + '</strong>'; },
-                  undo: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → 역원 = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!의 모듈러 역원: <strong>' + invK + '</strong>'; }
+                { description: (N-K) + '!inverse = ' + fac[N-K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invNK,
+                  action: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → inverse = ' + fac[N-K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!modular inverse: <strong>' + invNK + '</strong>'; },
+                  undo: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → inverse = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!modular inverse: <strong>' + invK + '</strong>'; }
                 },
-                { description: '결합: ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = ' + ans,
+                { description: 'Combine: ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = ' + ans,
                   action: function() { calcEl.innerHTML = N + '! × (' + K + '!)⁻¹ × (' + (N-K) + '!)⁻¹ = ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = <strong>' + ans + '</strong>'; infoEl.innerHTML = 'C(' + N + ',' + K + ') mod ' + MOD + ' = <strong>' + ans + '</strong>'; },
-                  undo: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → 역원 = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!의 모듈러 역원: <strong>' + invNK + '</strong>'; }
+                  undo: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → inverse = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!modular inverse: <strong>' + invNK + '</strong>'; }
                 },
-                { description: '완성! C(' + N + ',' + K + ') mod ' + MOD + ' = ' + ans,
+                { description: 'Done! C(' + N + ',' + K + ') mod ' + MOD + ' = ' + ans,
                   action: function() { calcEl.innerHTML = 'C(' + N + ',' + K + ') mod ' + MOD + ' = <strong style="font-size:1.2rem;color:var(--green);">' + ans + '</strong>'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ C(' + N + ',' + K + ') mod ' + MOD + ' = ' + ans + '</strong>'; },
                   undo: function() { calcEl.innerHTML = N + '! × (' + K + '!)⁻¹ × (' + (N-K) + '!)⁻¹ = ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = <strong>' + ans + '</strong>'; infoEl.innerHTML = 'C(' + N + ',' + K + ') mod ' + MOD + ' = <strong>' + ans + '</strong>'; }
                 }
@@ -1081,14 +1081,14 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 6: 행렬 곱셈 (boj-2740)
+    // Simulation 6: Matrix Multiplication (boj-2740)
     // ====================================================================
     _renderVizMatMul(container) {
         var self = this, suffix = '-matmul';
         var DEF_A = '1,2;3,4', DEF_B = '-1,0;0,3';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">행렬 곱셈</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">2×2 행렬 A × B를 단계별로 계산합니다. (행을 ;로 구분)</p>' +
+            '<h3 style="margin-bottom:8px;">Matrix Multiplication</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Computes 2x2 Matrix A x B step by step. (rows separated by ;)</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">A: <input type="text" id="dc-matmul-a" value="' + DEF_A + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:140px;"></label>' +
             '<label style="font-weight:600;">B: <input type="text" id="dc-matmul-b" value="' + DEF_B + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:140px;"></label>' +
@@ -1127,12 +1127,12 @@ var divideConquerTopic = {
                         for (var k = 0; k < M; k++) { val += A[ii][k] * B[k][jj]; parts.push(A[ii][k] + '×' + B[k][jj]); }
                         var isLast = (ii === N - 1 && jj === K - 1);
                         steps.push({
-                            description: 'C[' + ii + '][' + jj + '] = ' + parts.join(' + ') + ' = ' + val + (isLast ? '. 완성!' : ''),
+                            description: 'C[' + ii + '][' + jj + '] = ' + parts.join(' + ') + ' = ' + val + (isLast ? '. Done!' : ''),
                             action: function() {
                                 C[ii][jj] = val;
                                 matEl.innerHTML = showMat(A,'A') + ' × ' + showMat(B,'B') + ' = ' + showMat(C,'C');
                                 if (isLast) {
-                                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! C = [' + C.map(function(r){return '['+r.join(',')+']';}).join(',') + ']</strong>';
+                                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Done! C = [' + C.map(function(r){return '['+r.join(',')+']';}).join(',') + ']</strong>';
                                 } else {
                                     infoEl.innerHTML = 'C[' + ii + '][' + jj + '] = ' + parts.join(' + ') + ' = <strong>' + val + '</strong>';
                                 }
@@ -1157,17 +1157,17 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 7: 행렬 제곱 (boj-10830)
+    // Simulation 7: Matrix Exponentiation (boj-10830)
     // ====================================================================
     _renderVizMatPow(container) {
         var self = this, suffix = '-matpow';
         var DEF_MAT = '1,2;3,4', DEF_B = 5, DEF_MOD = 1000;
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">행렬 거듭제곱</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">2×2 행렬의 거듭제곱을 분할정복으로 계산합니다. (행을 ;로 구분)</p>' +
+            '<h3 style="margin-bottom:8px;">Matrix Exponentiation</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Computes 2x2 matrix exponentiation via divide and conquer. (rows separated by ;)</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">행렬: <input type="text" id="dc-matpow-mat" value="' + DEF_MAT + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:140px;"></label>' +
-            '<label style="font-weight:600;">지수: <input type="number" id="dc-matpow-b" value="' + DEF_B + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<label style="font-weight:600;">Matrix: <input type="text" id="dc-matpow-mat" value="' + DEF_MAT + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:140px;"></label>' +
+            '<label style="font-weight:600;">exponent: <input type="number" id="dc-matpow-b" value="' + DEF_B + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<label style="font-weight:600;">mod: <input type="number" id="dc-matpow-mod" value="' + DEF_MOD + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;"></label>' +
             '<button class="btn btn-primary" id="dc-matpow-reset">🔄</button>' +
             '</div>' +
@@ -1195,36 +1195,36 @@ var divideConquerTopic = {
             function mm(X,Y) { var r=[[0,0],[0,0]]; for(var i=0;i<2;i++) for(var j=0;j<2;j++) for(var k=0;k<2;k++) r[i][j]=(r[i][j]+X[i][k]*Y[k][j])%MOD; return r; }
             function matPow(base, exp) { if (exp === 1) return [[base[0][0]%MOD,base[0][1]%MOD],[base[1][0]%MOD,base[1][1]%MOD]]; var half = matPow(base, Math.floor(exp/2)); var result = mm(half,half); if (exp%2===1) result = mm(result,base); return result; }
 
-            // Divide 과정에서의 지수 리스트 생성
+            // Build list of exponents during the divide phase
             var exps = [];
             var e = B;
             while (e > 1) { exps.push(e); e = Math.floor(e / 2); }
-            exps.push(e); // 기저 (1)
+            exps.push(e); // base case (1)
 
-            matEl.innerHTML = 'M<sup>' + B + '</sup> mod ' + MOD + ' 을 분할정복으로 계산합니다.';
-            infoEl.innerHTML = '<span style="color:var(--text2);">지수를 반으로 나누며 행렬을 거듭제곱합니다.</span>';
+            matEl.innerHTML = 'M<sup>' + B + '</sup> mod ' + MOD + ' computed via divide and conquer.';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Halving the exponent to perform matrix exponentiation.</span>';
 
             var steps = [];
-            // 나누기 과정: 위에서 아래로 (기저 제외)
+            // Divide phase: top-down (excluding base case)
             for (var i = 0; i < exps.length - 1; i++) {
                 (function(exp) {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: 'M^' + exp + ' = M^' + half + ' × M^' + half + (odd ? ' × M' : '') + ' (' + (odd ? '홀수' : '짝수') + ')',
-                        action: function() { matEl.innerHTML = 'M<sup>' + exp + '</sup> → M<sup>' + half + '</sup> 먼저 계산!'; infoEl.innerHTML = (odd ? '홀수' : '짝수') + ' 지수: M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> × M<sup>' + half + '</sup>' + (odd ? ' × M' : ''); },
+                        description: 'M^' + exp + ' = M^' + half + ' × M^' + half + (odd ? ' × M' : '') + ' (' + (odd ? 'odd' : 'even') + ')',
+                        action: function() { matEl.innerHTML = 'M<sup>' + exp + '</sup> → compute M<sup>' + half + '</sup> first!'; infoEl.innerHTML = (odd ? 'odd' : 'even') + ' exponent: M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> × M<sup>' + half + '</sup>' + (odd ? ' × M' : ''); },
                         undo: function() { matEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
                     });
                 })(exps[i]);
             }
-            // 기저: M^1 = M mod MOD
+            // base case: M^1 = M mod MOD
             var M1 = [[M[0][0]%MOD,M[0][1]%MOD],[M[1][0]%MOD,M[1][1]%MOD]];
             steps.push({
                 description: 'M^1 = ' + matStr(M1) + ' (mod ' + MOD + ')',
-                action: function() { matEl.innerHTML = showM(M1, 'M¹'); infoEl.innerHTML = '기저: M<sup>1</sup> = ' + matStr(M1); },
+                action: function() { matEl.innerHTML = showM(M1, 'M¹'); infoEl.innerHTML = 'base case: M<sup>1</sup> = ' + matStr(M1); },
                 undo: function() { matEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
             });
-            // Union 과정: 아래에서 위로
+            // Combine phase: bottom-up
             for (var i = exps.length - 2; i >= 0; i--) {
                 (function(exp) {
                     var result = matPow(M, exp);
@@ -1237,11 +1237,11 @@ var divideConquerTopic = {
                     });
                 })(exps[i]);
             }
-            // 최종
+            // Final result
             var finalM = matPow(M, B);
             steps.push({
-                description: '완성! M^' + B + ' mod ' + MOD + ' = ' + matStr(finalM),
-                action: function() { matEl.innerHTML = showM(finalM, 'M^' + B + ' mod ' + MOD); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! ' + matStr(finalM) + '</strong>'; },
+                description: 'Done! M^' + B + ' mod ' + MOD + ' = ' + matStr(finalM),
+                action: function() { matEl.innerHTML = showM(finalM, 'M^' + B + ' mod ' + MOD); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Done! ' + matStr(finalM) + '</strong>'; },
                 undo: function() { matEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
             });
             self._initStepController(container, steps, suffix);
@@ -1255,18 +1255,18 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 8: 피보나치 수 6 (boj-11444)
+    // Simulation 8: Fibonacci Number 6 (boj-11444)
     // ====================================================================
     _renderVizFibMat(container) {
         var self = this, suffix = '-fibmat';
         var DEF_N = 10;
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">피보나치 수 (행렬 거듭제곱)</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">[[1,1],[1,0]]<sup>N</sup> 의 [0][1]이 F(N)입니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Fibonacci Number (Matrix Exponentiation)</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">[[1,1],[1,0]]<sup>N</sup>[0][1] gives F(N).</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">N: <input type="number" id="dc-fibmat-n" value="' + DEF_N + '" min="1" max="50" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="dc-fibmat-reset">🔄</button>' +
-            '<span style="font-size:0.8rem;color:var(--text3);">(시각화를 위해 1~50)</span>' +
+            '<span style="font-size:0.8rem;color:var(--text3);">(range 1~50 for visualization)</span>' +
             '</div>' +
             '<div id="dc-fib' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;margin-bottom:12px;text-align:center;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -1283,10 +1283,10 @@ var divideConquerTopic = {
             function matPow(base, exp) { if (exp === 1) return [[base[0][0],base[0][1]],[base[1][0],base[1][1]]]; var half = matPow(base, Math.floor(exp/2)); var result = mm(half,half); if (exp%2===1) result = mm(result,base); return result; }
             function matStr(m) { return '[[' + m[0].join(',') + '],[' + m[1].join(',') + ']]'; }
 
-            fibEl.textContent = '[[1,1],[1,0]]^' + n + ' 을 분할정복으로 구합니다.';
-            infoEl.innerHTML = '<span style="color:var(--text2);">F(' + n + ') = [[1,1],[1,0]]^' + n + ' 의 [0][1] 원소</span>';
+            fibEl.textContent = '[[1,1],[1,0]]^' + n + ' computed via divide and conquer.';
+            infoEl.innerHTML = '<span style="color:var(--text2);">F(' + n + ') = [[1,1],[1,0]]^' + n + ' [0][1] element</span>';
 
-            // 지수 분할 리스트
+            // Exponent splitting list
             var exps = [];
             var e = n;
             while (e > 1) { exps.push(e); e = Math.floor(e / 2); }
@@ -1295,28 +1295,28 @@ var divideConquerTopic = {
             var base = [[1,1],[1,0]];
             var steps = [];
 
-            // 나누기 과정
+            // Divide phase
             for (var i = 0; i < exps.length - 1; i++) {
                 (function(exp) {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: 'M^' + exp + ' = M^' + half + ' × M^' + half + (odd ? ' × M' : '') + '. ' + (odd ? '홀수' : '짝수') + '이므로 ' + (odd ? '반×반×M' : '반×반') + '!',
-                        action: function() { fibEl.innerHTML = 'M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> × M<sup>' + half + '</sup>' + (odd ? ' × M' : '') + ' (' + (odd ? '홀수' : '짝수') + ')'; infoEl.innerHTML = exp + '은 ' + (odd ? '홀수' : '짝수') + ' → <strong>M^' + half + '를 먼저 구합니다</strong>'; },
+                        description: 'M^' + exp + ' = M^' + half + ' x M^' + half + (odd ? ' x M' : '') + '. ' + (odd ? 'odd' : 'even') + ', so ' + (odd ? 'half x half x M' : 'half x half') + '!',
+                        action: function() { fibEl.innerHTML = 'M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> x M<sup>' + half + '</sup>' + (odd ? ' x M' : '') + ' (' + (odd ? 'odd' : 'even') + ')'; infoEl.innerHTML = exp + ' is ' + (odd ? 'odd' : 'even') + ' → <strong>compute M^' + half + ' first</strong>'; },
                         undo: function() { fibEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
                     });
                 })(exps[i]);
             }
 
-            // 기저: M^1
+            // base case: M^1
             var M1 = [[1,1],[1,0]];
             steps.push({
-                description: 'M^1 = [[1,1],[1,0]] (기저)',
-                action: function() { fibEl.innerHTML = 'M<sup>1</sup> = ' + matStr(M1); infoEl.innerHTML = '기저: M<sup>1</sup> = ' + matStr(M1); },
+                description: 'M^1 = [[1,1],[1,0]] (base case)',
+                action: function() { fibEl.innerHTML = 'M<sup>1</sup> = ' + matStr(M1); infoEl.innerHTML = 'base case: M<sup>1</sup> = ' + matStr(M1); },
                 undo: function() { fibEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
             });
 
-            // Union 과정
+            // Combine phase
             for (var i = exps.length - 2; i >= 0; i--) {
                 (function(exp) {
                     var result = matPow(base, exp);
@@ -1332,8 +1332,8 @@ var divideConquerTopic = {
             var finalM = matPow(base, n);
             var fibN = finalM[0][1];
             steps.push({
-                description: '완성! F(' + n + ') = ' + fibN,
-                action: function() { fibEl.innerHTML = 'F(' + n + ') = M<sup>' + n + '</sup>[0][1] = <strong style="font-size:1.2rem;color:var(--green);">' + fibN + '</strong>'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ F(' + n + ') = ' + fibN + ' (O(log n)에 계산!)</strong>'; },
+                description: 'Done! F(' + n + ') = ' + fibN,
+                action: function() { fibEl.innerHTML = 'F(' + n + ') = M<sup>' + n + '</sup>[0][1] = <strong style="font-size:1.2rem;color:var(--green);">' + fibN + '</strong>'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ F(' + n + ') = ' + fibN + ' (computed in O(log n)!)</strong>'; },
                 undo: function() { fibEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
             });
             self._initStepController(container, steps, suffix);
@@ -1347,16 +1347,16 @@ var divideConquerTopic = {
     },
 
     // ====================================================================
-    // Simulation 9: 히스토그램 (boj-6549)
+    // Simulation 9: Histogram (boj-6549)
     // ====================================================================
     _renderVizHisto(container) {
         var self = this, suffix = '-histo';
         var DEF_BARS = '2,1,4,5,1,3,3';
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">히스토그램에서 가장 큰 직사각형</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">분할정복으로 최대 직사각형을 찾습니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Largest Rectangle in Histogram</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Finds the largest rectangle via divide and conquer.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">높이 (쉼표 구분): <input type="text" id="dc-histo-input" value="' + DEF_BARS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<label style="font-weight:600;">Heights (comma-separated): <input type="text" id="dc-histo-input" value="' + DEF_BARS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="dc-histo-reset">🔄</button>' +
             '</div>' +
             '<div id="dc-bars' + suffix + '" style="display:flex;gap:2px;align-items:flex-end;height:160px;margin-bottom:12px;"></div>' +
@@ -1384,15 +1384,15 @@ var divideConquerTopic = {
                 }).join('');
             }
             renderBars(null, null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">배열을 반으로 나누고, 왼/오/가운데 걸침 중 최대를 구합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Split array in half and find max among left, right, and crossing cases.</span>';
 
-            // Divide정복으로 최대 직사각형 (+ 어디서 나왔는지 추적)
+            // Find largest rectangle via divide and conquer (+ track where it came from)
             function solve(lo, hi) {
                 if (lo === hi) return { area: bars[lo], l: lo, r: lo };
                 var mid = Math.floor((lo + hi) / 2);
                 var leftRes = solve(lo, mid);
                 var rightRes = solve(mid + 1, hi);
-                // 가운데 걸치는 경우
+                // Crossing case
                 var l = mid, r = mid + 1;
                 var h = Math.min(bars[l], bars[r]);
                 var crossMax = h * 2, cl = l, cr = r;
@@ -1411,7 +1411,7 @@ var divideConquerTopic = {
             var mid = Math.floor((n - 1) / 2);
             var leftRes = n > 1 ? solve(0, mid) : { area: bars[0], l: 0, r: 0 };
             var rightRes = n > 1 ? solve(mid + 1, n - 1) : { area: 0, l: 0, r: 0 };
-            // 가운데 걸침
+            // Crossing case
             var cl = mid, cr = mid + 1;
             if (cr >= n) cr = mid;
             var ch = n > 1 ? Math.min(bars[cl], bars[cr]) : bars[0];
@@ -1431,51 +1431,51 @@ var divideConquerTopic = {
             if (crossRes.area > best.area) best = crossRes;
 
             var steps = [];
-            // 스텝 1: 반으로 나누기
+            // Step 1: Split in half
             steps.push({
-                description: '전체 [0..' + (n-1) + ']을 반으로 나눕니다: 왼쪽 [0..' + mid + '], 오른쪽 [' + (mid+1) + '..' + (n-1) + ']',
+                description: 'Split [0..' + (n-1) + '] in half: left [0..' + mid + '], right [' + (mid+1) + '..' + (n-1) + ']',
                 action: function() {
                     var h = {};
                     for (var i = 0; i <= mid; i++) h[i] = 'var(--accent)';
                     for (var i = mid+1; i < n; i++) h[i] = '#6c5ce7';
                     renderBars(h, null);
-                    infoEl.innerHTML = '왼쪽 [0..' + mid + '] (파랑), 오른쪽 [' + (mid+1) + '..' + (n-1) + '] (보라)';
+                    infoEl.innerHTML = 'Left [0..' + mid + '] (blue), right [' + (mid+1) + '..' + (n-1) + '] (purple)';
                 },
-                undo: function() { renderBars(null, null); infoEl.innerHTML = '<span style="color:var(--text2);">배열을 반으로 나누고, 왼/오/가운데 걸침 중 최대를 구합니다.</span>'; }
+                undo: function() { renderBars(null, null); infoEl.innerHTML = '<span style="color:var(--text2);">Split array in half and find max among left, right, and crossing cases.</span>'; }
             });
-            // 스텝 2: 왼쪽 최대
+            // Step 2: Left max
             steps.push({
-                description: '왼쪽 [0..' + mid + '] 최대: bars[' + leftRes.l + '..' + leftRes.r + '], 넓이=' + leftRes.area,
-                action: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = '왼쪽 최대: bars[' + leftRes.l + '..' + leftRes.r + '], 넓이 = <strong>' + leftRes.area + '</strong>'; },
-                undo: function() { var h = {}; for (var i=0;i<=mid;i++) h[i]='var(--accent)'; for(var i=mid+1;i<n;i++) h[i]='#6c5ce7'; renderBars(h, null); infoEl.innerHTML = '왼쪽/오른쪽 분할'; }
+                description: 'Left [0..' + mid + '] max: bars[' + leftRes.l + '..' + leftRes.r + '], area=' + leftRes.area,
+                action: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = 'Left max: bars[' + leftRes.l + '..' + leftRes.r + '], area = <strong>' + leftRes.area + '</strong>'; },
+                undo: function() { var h = {}; for (var i=0;i<=mid;i++) h[i]='var(--accent)'; for(var i=mid+1;i<n;i++) h[i]='#6c5ce7'; renderBars(h, null); infoEl.innerHTML = 'Left/right split'; }
             });
-            // 스텝 3: 오른쪽 최대
+            // Step 3: Right max
             if (n > 1) {
                 steps.push({
-                    description: '오른쪽 [' + (mid+1) + '..' + (n-1) + '] 최대: bars[' + rightRes.l + '..' + rightRes.r + '], 넓이=' + rightRes.area,
-                    action: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = '오른쪽 최대: bars[' + rightRes.l + '..' + rightRes.r + '], 넓이 = <strong>' + rightRes.area + '</strong>'; },
-                    undo: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = '왼쪽 최대: <strong>' + leftRes.area + '</strong>'; }
+                    description: 'Right [' + (mid+1) + '..' + (n-1) + '] max: bars[' + rightRes.l + '..' + rightRes.r + '], area=' + rightRes.area,
+                    action: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = 'Right max: bars[' + rightRes.l + '..' + rightRes.r + '], area = <strong>' + rightRes.area + '</strong>'; },
+                    undo: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = 'Left max: <strong>' + leftRes.area + '</strong>'; }
                 });
             }
-            // 스텝 4: 가운데 걸침
+            // Step 4: Crossing case
             if (n > 1) {
                 steps.push({
-                    description: '가운데 걸치는 경우: mid=' + mid + '에서 양쪽 확장 → bars[' + bestCl + '..' + bestCr + '], 넓이=' + crossMax,
+                    description: 'Crossing case: expand from mid=' + mid + ' both ways -> bars[' + bestCl + '..' + bestCr + '], area=' + crossMax,
                     action: function() {
                         var h = {};
                         for (var i = bestCl; i <= bestCr; i++) h[i] = 'var(--red)';
                         renderBars(h, null);
-                        infoEl.innerHTML = '가운데 걸침: bars[' + bestCl + '..' + bestCr + '], 넓이 = <strong>' + crossMax + '</strong>';
+                        infoEl.innerHTML = 'Crossing: bars[' + bestCl + '..' + bestCr + '], area = <strong>' + crossMax + '</strong>';
                     },
-                    undo: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = '오른쪽 최대: <strong>' + rightRes.area + '</strong>'; }
+                    undo: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = 'Right max: <strong>' + rightRes.area + '</strong>'; }
                 });
             }
-            // 스텝 5: 완성
+            // Step 5: Final result
             steps.push({
-                description: '완성! max(왼쪽 ' + leftRes.area + ', 오른쪽 ' + rightRes.area + ', 가운데 ' + crossMax + ') = ' + best.area,
-                action: function() { renderBars(null, {l: best.l, r: best.r}); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 직사각형 넓이 = ' + best.area + ' (bars[' + best.l + '..' + best.r + '])</strong>'; },
+                description: 'Done! max(left ' + leftRes.area + ', right ' + rightRes.area + ', crossing ' + crossMax + ') = ' + best.area,
+                action: function() { renderBars(null, {l: best.l, r: best.r}); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Largest rectangle area = ' + best.area + ' (bars[' + best.l + '..' + best.r + '])</strong>'; },
                 undo: function() {
-                    if (n > 1) { var h = {}; for (var i=bestCl;i<=bestCr;i++) h[i]='var(--red)'; renderBars(h, null); infoEl.innerHTML = '가운데 걸침: <strong>' + crossMax + '</strong>'; }
+                    if (n > 1) { var h = {}; for (var i=bestCl;i<=bestCr;i++) h[i]='var(--red)'; renderBars(h, null); infoEl.innerHTML = 'Crossing: <strong>' + crossMax + '</strong>'; }
                     else { renderBars(null, null); infoEl.innerHTML = '(undo)'; }
                 }
             });
@@ -1491,196 +1491,196 @@ var divideConquerTopic = {
 
     // ===== Problem Stages =====
     stages: [
-        { num: 1, title: '영역 나누기', desc: '2D 영역을 재귀로 분할 (Silver)', problemIds: ['boj-2630', 'boj-1992', 'boj-1780'] },
-        { num: 2, title: '거듭제곱', desc: '분할정복 거듭제곱 (Silver~Gold)', problemIds: ['boj-1629', 'boj-11401'] },
-        { num: 3, title: '행렬', desc: '행렬 곱셈 + 거듭제곱 (Silver~Gold)', problemIds: ['boj-2740', 'boj-10830', 'boj-11444'] },
-        { num: 4, title: '심화', desc: '구간 분할정복 (Platinum)', problemIds: ['boj-6549'] }
+        { num: 1, title: 'Area Division', desc: 'Recursive 2D area partitioning (Silver)', problemIds: ['boj-2630', 'boj-1992', 'boj-1780'] },
+        { num: 2, title: 'Exponentiation', desc: 'Divide and conquer exponentiation (Silver~Gold)', problemIds: ['boj-1629', 'boj-11401'] },
+        { num: 3, title: 'Matrix', desc: 'Matrix multiplication + exponentiation (Silver~Gold)', problemIds: ['boj-2740', 'boj-10830', 'boj-11444'] },
+        { num: 4, title: 'Advanced', desc: 'Range divide and conquer (Platinum)', problemIds: ['boj-6549'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ========== 1단계: 영역 나누기 ==========
+        // ========== Stage 1: Area Division ==========
         {
-            id: 'boj-2630', title: 'BOJ 2630 - 색종이 만들기', difficulty: 'silver',
+            id: 'boj-2630', title: 'BOJ 2630 - Making Colored Paper', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2630',
-            simIntro: '4×4 색종이를 재귀적으로 4등분하며 같은 색인지 확인하는 과정을 관찰하세요.',
+            simIntro: 'Watch a 4x4 paper being recursively split into 4 parts, checking if each is a single color.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>여러개의 정사각형칸들로 이루어진 정사각형 모양의 종이가 주어져 있고, 각 정사각형칸은 하얀색 또는 파란색으로 칠해져 있다. 주어진 종이를 일정한 규칙에 따라 잘라서 다양한 크기의 하얀색 또는 파란색 색종이를 만들려고 한다. 전체 종이가 모두 같은 색이면 그대로 사용하고, 아니면 4등분하여 재귀적으로 반복한다.</p>
+    <p>A square-shaped piece of paper made up of multiple square cells is given, where each cell is colored either white or blue. We want to cut this paper according to a specific rule to create colored papers of various sizes that are entirely white or entirely blue. If the entire paper is a single color, use it as is; otherwise, split it into 4 equal parts and repeat recursively.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>8\n1 1 0 0 0 0 1 1\n1 1 0 0 0 0 1 1\n0 0 0 0 1 1 0 0\n0 0 0 0 1 1 0 0\n1 0 0 0 1 1 1 1\n0 1 0 0 1 1 1 1\n0 0 1 1 1 1 1 1\n0 0 1 1 1 1 1 1</pre></div>
         <div><strong>Output</strong><pre>9\n7</pre></div>
     </div></div>
     <h4>Constraints</h4>
-    <ul><li>N은 2, 4, 8, 16, 32, 64, 128 중 하나</li></ul>
+    <ul><li>N is one of 2, 4, 8, 16, 32, 64, 128</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '종이를 보고 "흰색 몇 개, 파란색 몇 개"를 세야 하니까, 일단 <strong>모든 칸을 하나하나 확인</strong>하면 되지 않을까?<br><br>근데 잠깐 — 문제를 다시 읽어보면, 단순히 칸 수를 세는 게 아니라 <strong>"같은 색으로 이루어진 색종이 조각의 수"</strong>를 세는 거야. 즉, 영역 전체가 같은 색이어야 하나의 색종이로 인정된다는 뜻이야.' },
-                { title: 'But there\'s a problem with this', content: '그럼 "이 영역이 전부 같은 색인지" 어떻게 판단할까?<br><br>전체 종이가 같은 색이면 끝이지만, 아니면? 문제 규칙을 보면 <strong>4등분</strong>해서 각 부분을 다시 확인하라고 해. 이게 바로 <strong>분할정복</strong>이야!<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;margin-top:8px;font-size:0.9rem;">전체 확인 → 안 되면 4등분 → 각 부분 확인 → 안 되면 또 4등분 → ... → 1×1이면 무조건 카운트</div>' },
-                { title: 'What if we try this?', content: '<code>solve(r, c, size)</code> 함수를 만들자:<br><br>① (r,c)부터 size×size 영역의 모든 칸이 같은 색인지 확인<br>② 같으면 → 해당 색 카운트 +1, 끝!<br>③ 다르면 → <code>half = size / 2</code>로 4등분해서 각각 재귀 호출<br><br><strong>기저 조건</strong>: 영역이 1×1이면 무조건 그 칸의 색을 카운트해. 더 나눌 수 없으니까!<br><br>시간복잡도는 매 단계마다 모든 칸을 확인하고, 깊이가 log₂N이니까 <strong>O(N² log N)</strong>이야.' }
+                { title: 'First intuition', content: 'We need to count "how many white, how many blue" papers, so why not just <strong>check every single cell</strong>?<br><br>But wait — if you re-read the problem, we are not simply counting cells. We are counting <strong>"the number of paper pieces made entirely of one color"</strong>. In other words, an entire region must be the same color to count as one piece.' },
+                { title: 'But there\'s a problem with this', content: 'So how do we determine whether a region is entirely one color?<br><br>If the whole paper is one color, we are done. But if not? The problem says to <strong>split into 4 equal parts</strong> and check each part again. This is exactly <strong>divide and conquer</strong>!<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;margin-top:8px;font-size:0.9rem;">Check entire region -> if not uniform, split into 4 -> check each part -> if not uniform, split again -> ... -> 1x1 is always counted</div>' },
+                { title: 'What if we try this?', content: 'Let us create a <code>solve(r, c, size)</code> function:<br><br>1. Check if the size x size region starting at (r,c) is all the same color<br>2. If yes -> count that color +1, done!<br>3. If no -> <code>half = size / 2</code>, split into 4 and recursively call each<br><br><strong>Base case</strong>: if the region is 1x1, always count that cell. It cannot be split further!<br><br>Time complexity: at each level we check all cells, depth is log2(N), so <strong>O(N^2 log N)</strong>.' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\npaper = [list(map(int, input().split())) for _ in range(N)]\n\nwhite = blue = 0\n\ndef solve(r, c, size):\n    global white, blue\n    first = paper[r][c]\n    all_same = True\n    for i in range(r, r + size):\n        for j in range(c, c + size):\n            if paper[i][j] != first:\n                all_same = False\n                break\n        if not all_same:\n            break\n\n    if all_same:\n        if first == 0:\n            white += 1\n        else:\n            blue += 1\n    else:\n        half = size // 2\n        solve(r, c, half)\n        solve(r, c + half, half)\n        solve(r + half, c, half)\n        solve(r + half, c + half, half)\n\nsolve(0, 0, N)\nprint(white)\nprint(blue)',
                 cpp: '#include <iostream>\nusing namespace std;\n\nint paper[128][128];\nint N, white_cnt = 0, blue_cnt = 0;\n\nvoid solve(int r, int c, int size) {\n    int first = paper[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (paper[i][j] != first) allSame = false;\n\n    if (allSame) {\n        if (first == 0) white_cnt++;\n        else blue_cnt++;\n    } else {\n        int half = size / 2;\n        solve(r, c, half);\n        solve(r, c + half, half);\n        solve(r + half, c, half);\n        solve(r + half, c + half, half);\n    }\n}\n\nint main() {\n    cin >> N;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> paper[i][j];\n    solve(0, 0, N);\n    cout << white_cnt << "\\n" << blue_cnt << endl;\n    return 0;\n}'
             },
             solutions: [{
-                approach: '재귀 4등분',
-                description: '영역이 같은 색이면 카운트, 아니면 4등분하여 재귀 호출합니다.',
+                approach: 'Recursive 4-partition',
+                description: 'If the region is one color, count it; otherwise split into 4 and recurse.',
                 timeComplexity: 'O(N² log N)',
                 spaceComplexity: 'O(N²)',
                 codeSteps: {
                     python: [
-                        { title: '입력', desc: 'sys.stdin.readline으로 빠른 입력.\n2D 리스트와 흰/파 카운터를 준비합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\npaper = [list(map(int, input().split())) for _ in range(N)]\nwhite = blue = 0' },
-                        { title: '재귀 함수', desc: '영역이 모두 같은 색이면 카운트하고 끝.\n다르면 4등분해서 각각 재귀 호출합니다.', code: 'def solve(r, c, size):\n    global white, blue\n    first = paper[r][c]\n    all_same = all(paper[i][j] == first\n        for i in range(r, r+size)\n        for j in range(c, c+size))\n    if all_same:\n        if first == 0: white += 1\n        else: blue += 1\n    else:\n        half = size // 2\n        for dr in (0, half):\n            for dc in (0, half):\n                solve(r+dr, c+dc, half)' },
-                        { title: '실행 및 출력', desc: '전체 종이(0,0,N)부터 시작하여 재귀적으로 분할합니다.', code: 'solve(0, 0, N)\nprint(white)\nprint(blue)' }
+                        { title: 'Input', desc: 'Fast input via sys.stdin.readline.\nPrepare a 2D list and white/blue counters.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\npaper = [list(map(int, input().split())) for _ in range(N)]\nwhite = blue = 0' },
+                        { title: 'Recursive function', desc: 'If all cells are the same color, count and return.\nOtherwise, split into 4 and recurse on each.', code: 'def solve(r, c, size):\n    global white, blue\n    first = paper[r][c]\n    all_same = all(paper[i][j] == first\n        for i in range(r, r+size)\n        for j in range(c, c+size))\n    if all_same:\n        if first == 0: white += 1\n        else: blue += 1\n    else:\n        half = size // 2\n        for dr in (0, half):\n            for dc in (0, half):\n                solve(r+dr, c+dc, half)' },
+                        { title: 'Run and output', desc: 'Start from the full paper (0,0,N) and recursively partition.', code: 'solve(0, 0, N)\nprint(white)\nprint(blue)' }
                     ],
                     cpp: [
-                        { title: '입력', desc: '2D 배열을 전역으로 선언하고 cin으로 입력받습니다.', code: '#include <iostream>\nusing namespace std;\n\nint paper[128][128];\nint N, white_cnt = 0, blue_cnt = 0;  // 전역 카운터' },
-                        { title: '재귀 함수', desc: 'allSame을 일찍 끊는 최적화: && allSame 조건으로 다른 색 발견 즉시 중단.', code: 'void solve(int r, int c, int size) {\n    int first = paper[r][c];\n    bool allSame = true;\n    // 영역 전체가 같은 색인지 확인\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (paper[i][j] != first) allSame = false;\n\n    if (allSame) {\n        if (first == 0) white_cnt++;\n        else blue_cnt++;\n    } else {\n        int half = size / 2;  // 4등분\n        solve(r, c, half);\n        solve(r, c + half, half);\n        solve(r + half, c, half);\n        solve(r + half, c + half, half);\n    }\n}' },
-                        { title: '실행 및 출력', desc: '(0,0,N)부터 시작해 재귀적으로 4등분 탐색합니다.', code: 'int main() {\n    cin >> N;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> paper[i][j];\n    solve(0, 0, N);\n    cout << white_cnt << "\\n" << blue_cnt << endl;\n    return 0;\n}' }
+                        { title: 'Input', desc: 'Declare 2D array globally and read via cin.', code: '#include <iostream>\nusing namespace std;\n\nint paper[128][128];\nint N, white_cnt = 0, blue_cnt = 0;  // global counters' },
+                        { title: 'Recursive function', desc: 'Early exit optimization: && allSame condition stops as soon as a different color is found.', code: 'void solve(int r, int c, int size) {\n    int first = paper[r][c];\n    bool allSame = true;\n    // Check if entire region is the same color\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (paper[i][j] != first) allSame = false;\n\n    if (allSame) {\n        if (first == 0) white_cnt++;\n        else blue_cnt++;\n    } else {\n        int half = size / 2;  // split into 4\n        solve(r, c, half);\n        solve(r, c + half, half);\n        solve(r + half, c, half);\n        solve(r + half, c + half, half);\n    }\n}' },
+                        { title: 'Run and output', desc: 'Start from (0,0,N) and recursively partition into 4.', code: 'int main() {\n    cin >> N;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> paper[i][j];\n    solve(0, 0, N);\n    cout << white_cnt << "\\n" << blue_cnt << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[0].templates; }
             }]
         },
         {
-            id: 'boj-1992', title: 'BOJ 1992 - 쿼드트리', difficulty: 'silver',
+            id: 'boj-1992', title: 'BOJ 1992 - Quadtree', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1992',
-            simIntro: '4×4 영상을 쿼드트리 문자열로 압축하는 과정을 관찰하세요.',
+            simIntro: 'Watch a 4x4 image being compressed into a quadtree string.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>흑백 영상을 압축하여 표현하는 데이터 구조로 쿼드 트리라는 방법이 있다. 주어진 N×N 크기의 영상이 모두 0으로만 되어 있으면 0, 모두 1로만 되어 있으면 1. 아니면 4등분하여 재귀적으로 압축하고 결과를 괄호로 묶는다. 왼쪽 위, 오른쪽 위, 왼쪽 아래, 오른쪽 아래 순서.</p>
+    <p>A quadtree is a data structure that compresses a black-and-white image. If the given N x N image is entirely 0, represent it as 0; if entirely 1, represent it as 1. Otherwise, split into 4 equal parts, recursively compress each, and wrap the result in parentheses. Order: top-left, top-right, bottom-left, bottom-right.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>8\n11110000\n11110000\n00011100\n00011100\n11110000\n11110000\n11110011\n11110011</pre></div>
         <div><strong>Output</strong><pre>((110(0101))(0010)(1(0010)0)100)</pre></div>
     </div></div>
     <h4>Constraints</h4>
-    <ul><li>N은 2의 거듭제곱</li><li>1 ≤ N ≤ 64</li></ul>
+    <ul><li>N is a power of 2</li><li>1 ≤ N ≤ 64</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '앞에서 풀었던 색종이 만들기(2630)랑 비슷하지 않아? 영역이 전부 같은 값이면 그 값을 쓰고, 아니면 4등분하는 구조!<br><br>근데 이번에는 카운트가 아니라 <strong>문자열로 표현</strong>해야 해. "압축 결과"를 문자열로 만들어서 반환하는 거지.' },
-                { title: 'But there\'s a problem with this', content: '카운트는 전역 변수 하나로 됐는데, 문자열은 어떻게 합칠까?<br><br>핵심은 <strong>재귀 함수가 문자열을 반환</strong>하게 만드는 거야:<br>• 모두 같으면 → 그 값("0" 또는 "1") 반환<br>• 다르면 → 4등분한 결과를 <strong>괄호로 감싸서</strong> 반환<br><br>순서는 <strong>좌상 → 우상 → 좌하 → 우하</strong>야. 이걸 잘못하면 틀리니까 주의!' },
-                { title: 'What if we try this?', content: '함수 구조는 이렇게:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;"><code>solve(r, c, size)</code>:<br>① 영역 전체 같은 값? → 그 값 반환<br>② 아니면 → <code>"(" + solve(좌상) + solve(우상) + solve(좌하) + solve(우하) + ")"</code></div><br>색종이 문제에서 "카운트 +1"이 "문자열 반환"으로 바뀌고, "재귀 호출"이 "문자열 이어붙이기"로 바뀐 것뿐이야. 구조는 완전히 동일해!' }
+                { title: 'First intuition', content: 'Doesn\'t this look similar to Making Colored Paper (2630)? If the region is all the same value, write that value; otherwise split into 4 parts!<br><br>But this time we need to produce a <strong>string representation</strong> instead of a count. We build a "compressed result" as a string and return it.' },
+                { title: 'But there\'s a problem with this', content: 'Counting used a single global variable, but how do we combine strings?<br><br>The key is to make the <strong>recursive function return a string</strong>:<br>- All same -> return that value ("0" or "1")<br>- Different -> <strong>wrap the 4 results in parentheses</strong> and return<br><br>The order is <strong>top-left -> top-right -> bottom-left -> bottom-right</strong>. Getting this wrong means a wrong answer!' },
+                { title: 'What if we try this?', content: 'The function structure looks like this:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;"><code>solve(r, c, size)</code>:<br>1. Entire region same value? -> return that value<br>2. Otherwise -> <code>"(" + solve(TL) + solve(TR) + solve(BL) + solve(BR) + ")"</code></div><br>Compared to the colored paper problem, "count +1" becomes "return string", and "recursive call" becomes "string concatenation". The structure is exactly the same!' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nimg = [input().strip() for _ in range(N)]\n\ndef solve(r, c, size):\n    first = img[r][c]\n    all_same = True\n    for i in range(r, r + size):\n        for j in range(c, c + size):\n            if img[i][j] != first:\n                all_same = False\n                break\n        if not all_same:\n            break\n    if all_same:\n        return first\n    half = size // 2\n    return \"(\" + solve(r, c, half) + solve(r, c + half, half) + solve(r + half, c, half) + solve(r + half, c + half, half) + \")\"\n\nprint(solve(0, 0, N))',
                 cpp: '#include <iostream>\n#include <string>\nusing namespace std;\nint N;\nstring img[64];\nstring solve(int r, int c, int size) {\n    char first = img[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (img[i][j] != first) allSame = false;\n    if (allSame) return string(1, first);\n    int half = size / 2;\n    return \"(\" + solve(r, c, half) + solve(r, c + half, half)\n         + solve(r + half, c, half) + solve(r + half, c + half, half) + \")\";\n}\nint main() {\n    cin >> N;\n    for (int i = 0; i < N; i++) cin >> img[i];\n    cout << solve(0, 0, N) << endl;\n    return 0;\n}'
             },
             solutions: [{
-                approach: '재귀 문자열 합치기',
-                description: '모두 같으면 그 값, 아니면 4등분 결과를 괄호로 감쌉니다.',
+                approach: 'Recursive string combine',
+                description: 'If all same, return that value; otherwise wrap 4 sub-results in parentheses.',
                 timeComplexity: 'O(N² log N)',
                 spaceComplexity: 'O(N²)',
                 codeSteps: {
                     python: [
-                        { title: '입력', desc: '각 줄을 문자열로 저장 — img[r][c]로 바로 접근 가능.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nimg = [input().strip() for _ in range(N)]' },
-                        { title: '재귀 함수', desc: '카운트 대신 문자열을 반환하는 것이 색종이와의 차이.\n다르면 괄호로 감싸서 4개 결과를 합칩니다.', code: 'def solve(r, c, size):\n    first = img[r][c]\n    all_same = all(img[i][j] == first\n        for i in range(r, r+size)\n        for j in range(c, c+size))\n    if all_same:\n        return first\n    half = size // 2\n    return \"(\" + solve(r,c,half) + solve(r,c+half,half) + solve(r+half,c,half) + solve(r+half,c+half,half) + \")\"' },
-                        { title: '출력', desc: '최종 반환 문자열이 곧 쿼드트리 압축 결과입니다.', code: 'print(solve(0, 0, N))' }
+                        { title: 'Input', desc: 'Store each row as a string — img[r][c] gives direct access.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nimg = [input().strip() for _ in range(N)]' },
+                        { title: 'Recursive function', desc: 'Unlike colored paper, returns a string instead of counting.\nIf mixed, wraps the 4 sub-results in parentheses.', code: 'def solve(r, c, size):\n    first = img[r][c]\n    all_same = all(img[i][j] == first\n        for i in range(r, r+size)\n        for j in range(c, c+size))\n    if all_same:\n        return first\n    half = size // 2\n    return \"(\" + solve(r,c,half) + solve(r,c+half,half) + solve(r+half,c,half) + solve(r+half,c+half,half) + \")\"' },
+                        { title: 'Output', desc: 'The final returned string is the quadtree compression result.', code: 'print(solve(0, 0, N))' }
                     ],
                     cpp: [
-                        { title: '입력', desc: 'string 배열로 각 줄을 저장합니다.', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint N;\nstring img[64];' },
-                        { title: '재귀 함수', desc: 'string 반환 — string(1, first)로 char를 문자열로 변환합니다.', code: 'string solve(int r, int c, int size) {\n    char first = img[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (img[i][j] != first) allSame = false;\n    if (allSame) return string(1, first);  // char → string 변환\n    int half = size / 2;\n    return \"(\" + solve(r, c, half) + solve(r, c + half, half)\n         + solve(r + half, c, half) + solve(r + half, c + half, half) + \")\";\n}' },
-                        { title: '출력', desc: 'solve가 반환하는 문자열 전체를 한 줄로 출력합니다.', code: 'int main() {\n    cin >> N;\n    for (int i = 0; i < N; i++) cin >> img[i];\n    cout << solve(0, 0, N) << endl;\n    return 0;\n}' }
+                        { title: 'Input', desc: 'Store each row in a string array.', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint N;\nstring img[64];' },
+                        { title: 'Recursive function', desc: 'Returns string — string(1, first) converts char to string.', code: 'string solve(int r, int c, int size) {\n    char first = img[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (img[i][j] != first) allSame = false;\n    if (allSame) return string(1, first);  // char -> string conversion\n    int half = size / 2;\n    return \"(\" + solve(r, c, half) + solve(r, c + half, half)\n         + solve(r + half, c, half) + solve(r + half, c + half, half) + \")\";\n}' },
+                        { title: 'Output', desc: 'Print the entire string returned by solve on one line.', code: 'int main() {\n    cin >> N;\n    for (int i = 0; i < N; i++) cin >> img[i];\n    cout << solve(0, 0, N) << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[1].templates; }
             }]
         },
         {
-            id: 'boj-1780', title: 'BOJ 1780 - 종이의 개수', difficulty: 'silver',
+            id: 'boj-1780', title: 'BOJ 1780 - Paper Count', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1780',
-            simIntro: '3×3 종이를 9등분하며 같은 값인지 확인하는 과정을 관찰하세요.',
+            simIntro: 'Watch a 3x3 paper being split into 9 parts, checking if each has a uniform value.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>N×N크기의 행렬로 표현되는 종이가 있다. 종이의 각 칸에는 -1, 0, 1 중 하나가 저장되어 있다. 종이가 모두 같은 수로 되어 있으면 해당 종이를 사용하고, 아니면 9등분하여 재귀적으로 반복한다. -1로만 채워진 종이 수, 0으로만 채워진 종이 수, 1로만 채워진 종이 수를 출력.</p>
+    <p>There is a paper represented as an N x N matrix. Each cell contains -1, 0, or 1. If the entire paper is filled with the same number, use it as is; otherwise, split into 9 equal parts and repeat recursively. Output the count of papers filled with only -1, only 0, and only 1.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>9\n0 0 0 1 1 1 -1 -1 -1\n0 0 0 1 1 1 -1 -1 -1\n0 0 0 1 1 1 -1 -1 -1\n1 1 1 0 0 0 0 0 0\n1 1 1 0 0 0 0 0 0\n1 1 1 0 0 0 0 0 0\n0 1 -1 0 1 -1 0 1 -1\n0 -1 1 0 -1 1 0 -1 1\n0 1 -1 1 0 -1 0 1 -1</pre></div>
         <div><strong>Output</strong><pre>10\n12\n11</pre></div>
     </div></div>
     <h4>Constraints</h4>
-    <ul><li>N은 3<sup>k</sup> 형태 (1 ≤ k ≤ 7, 즉 N ≤ 2,187)</li><li>각 칸은 -1, 0, 1만 포함</li></ul>
+    <ul><li>N is of the form 3<sup>k</sup> (1 ≤ k ≤ 7, i.e., N ≤ 2,187)</li><li>Each cell contains only -1, 0, or 1</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '색종이 만들기(2630)랑 구조가 거의 같아 보여! 영역이 전부 같은 값이면 카운트하고, 아니면 나눠서 재귀 호출하면 되겠지?<br><br>근데 한 가지 다른 점이 있어 — 이번에는 값이 2가지(흰/파)가 아니라 <strong>3가지(-1, 0, 1)</strong>야. 카운터도 3개 필요해.' },
-                { title: 'But there\'s a problem with this', content: '색종이는 4등분(2×2)이었는데, 이 문제는 N이 3의 거듭제곱이야. 4등분하면 안 맞아!<br><br>N = 3<sup>k</sup> 형태이니까 <strong>9등분(3×3)</strong>으로 나눠야 해. <code>third = size / 3</code>으로 나누고, 3×3 = <strong>9번</strong> 재귀 호출하는 거야.<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">4등분(2×2) → <code>half = size/2</code>, 4번 호출<br>9등분(3×3) → <code>third = size/3</code>, 9번 호출</div>' },
-                { title: 'What if we try this?', content: '색종이 코드에서 바꿀 부분만 정리하면:<br><br>① <code>half = size // 2</code> → <code>third = size // 3</code><br>② 2중 반복 (0, half) → 2중 반복 <code>range(3)</code><br>③ 카운터: 흰/파 2개 → -1, 0, 1 3개<br><br>N이 최대 2187(= 3<sup>7</sup>)이라 재귀 깊이는 최대 7 — 스택 오버플로우 걱정은 없어!<br><br><span class="lang-py">Python에서는 <code>cnt = {-1: 0, 0: 0, 1: 0}</code> 딕셔너리로 세면 깔끔해.</span><span class="lang-cpp">C++에서는 <code>cnt[first + 1]++</code>로 인덱스 매핑하면 돼 (-1→0, 0→1, 1→2).</span>' }
+                { title: 'First intuition', content: 'This looks almost the same as Making Colored Paper (2630)! If the region is all the same value, count it; otherwise split and recurse, right?<br><br>But there is one difference — this time there are not 2 values (white/blue) but <strong>3 values (-1, 0, 1)</strong>. We need 3 counters.' },
+                { title: 'But there\'s a problem with this', content: 'Colored paper used 4-partition (2x2), but in this problem N is a power of 3. A 4-partition would not work!<br><br>Since N = 3<sup>k</sup>, we need to <strong>9-partition (3x3)</strong>. Divide with <code>third = size / 3</code> and make 3x3 = <strong>9 recursive calls</strong>.<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">4-partition (2x2) -> <code>half = size/2</code>, 4 calls<br>9-partition (3x3) -> <code>third = size/3</code>, 9 calls</div>' },
+                { title: 'What if we try this?', content: 'Changes from the colored paper code:<br><br>1. <code>half = size // 2</code> -> <code>third = size // 3</code><br>2. Double loop over (0, half) -> double loop over <code>range(3)</code><br>3. Counters: 2 (white/blue) -> 3 (-1, 0, 1)<br><br>N is at most 2187 (= 3<sup>7</sup>), so recursion depth is at most 7 — no stack overflow worry!<br><br><span class="lang-py">In Python, counting with <code>cnt = {-1: 0, 0: 0, 1: 0}</code> dictionary is clean.</span><span class="lang-cpp">In C++, use <code>cnt[first + 1]++</code> for index mapping (-1->0, 0->1, 1->2).</span>' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\npaper = [list(map(int, input().split())) for _ in range(N)]\ncnt = {-1: 0, 0: 0, 1: 0}\n\ndef solve(r, c, size):\n    first = paper[r][c]\n    all_same = True\n    for i in range(r, r + size):\n        for j in range(c, c + size):\n            if paper[i][j] != first:\n                all_same = False\n                break\n        if not all_same:\n            break\n    if all_same:\n        cnt[first] += 1\n    else:\n        third = size // 3\n        for dr in range(3):\n            for dc in range(3):\n                solve(r + dr * third, c + dc * third, third)\n\nsolve(0, 0, N)\nprint(cnt[-1])\nprint(cnt[0])\nprint(cnt[1])',
                 cpp: '#include <iostream>\nusing namespace std;\nint paper[2187][2187];\nint N, cnt[3];\nvoid solve(int r, int c, int size) {\n    int first = paper[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (paper[i][j] != first) allSame = false;\n    if (allSame) { cnt[first + 1]++; }\n    else {\n        int t = size / 3;\n        for (int dr = 0; dr < 3; dr++)\n            for (int dc = 0; dc < 3; dc++)\n                solve(r + dr * t, c + dc * t, t);\n    }\n}\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    cin >> N;\n    for (int i = 0; i < N; i++) for (int j = 0; j < N; j++) cin >> paper[i][j];\n    solve(0, 0, N);\n    cout << cnt[0] << "\\n" << cnt[1] << "\\n" << cnt[2] << endl;\n    return 0;\n}'
             },
             solutions: [{
-                approach: '재귀 9등분',
-                description: '모두 같으면 카운트, 아니면 size/3으로 9등분 재귀합니다.',
+                approach: 'Recursive 9-partition',
+                description: 'If all same, count it; otherwise split into 9 (size/3) and recurse.',
                 timeComplexity: 'O(N² log₃N)',
                 spaceComplexity: 'O(N²)',
                 codeSteps: {
                     python: [
-                        { title: '입력', desc: '딕셔너리로 -1, 0, 1 세 종류의 카운터를 관리합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\npaper = [list(map(int, input().split())) for _ in range(N)]\ncnt = {-1: 0, 0: 0, 1: 0}' },
-                        { title: '재귀 함수', desc: '4등분이 아닌 9등분(3x3)이 핵심 차이.\nthird = size // 3으로 나누어 3x3 = 9번 재귀 호출합니다.', code: 'def solve(r, c, size):\n    first = paper[r][c]\n    all_same = all(paper[i][j] == first\n        for i in range(r, r+size)\n        for j in range(c, c+size))\n    if all_same:\n        cnt[first] += 1\n    else:\n        third = size // 3\n        for dr in range(3):\n            for dc in range(3):\n                solve(r + dr*third, c + dc*third, third)' },
-                        { title: '실행 및 출력', desc: '-1, 0, 1 순서대로 출력합니다.', code: 'solve(0, 0, N)\nprint(cnt[-1])\nprint(cnt[0])\nprint(cnt[1])' }
+                        { title: 'Input', desc: 'Use a dictionary to manage counters for the 3 types: -1, 0, 1.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\npaper = [list(map(int, input().split())) for _ in range(N)]\ncnt = {-1: 0, 0: 0, 1: 0}' },
+                        { title: 'Recursive function', desc: 'The key difference is 9-partition (3x3) instead of 4.\nDivide by third = size // 3 and make 3x3 = 9 recursive calls.', code: 'def solve(r, c, size):\n    first = paper[r][c]\n    all_same = all(paper[i][j] == first\n        for i in range(r, r+size)\n        for j in range(c, c+size))\n    if all_same:\n        cnt[first] += 1\n    else:\n        third = size // 3\n        for dr in range(3):\n            for dc in range(3):\n                solve(r + dr*third, c + dc*third, third)' },
+                        { title: 'Run and output', desc: 'Output in order: -1, 0, 1.', code: 'solve(0, 0, N)\nprint(cnt[-1])\nprint(cnt[0])\nprint(cnt[1])' }
                     ],
                     cpp: [
-                        { title: '입력', desc: 'cnt[3] 배열: 인덱스 0→-1, 1→0, 2→1 (first+1로 매핑).', code: '#include <iostream>\nusing namespace std;\n\nint paper[2187][2187];\nint N, cnt[3];  // cnt[0]=-1, cnt[1]=0, cnt[2]=1' },
-                        { title: '재귀 함수', desc: 'cnt[first+1]로 -1,0,1을 인덱스 0,1,2에 매핑합니다.', code: 'void solve(int r, int c, int size) {\n    int first = paper[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (paper[i][j] != first) allSame = false;\n    if (allSame) {\n        cnt[first + 1]++;  // -1→0, 0→1, 1→2\n    } else {\n        int t = size / 3;  // 9등분\n        for (int dr = 0; dr < 3; dr++)\n            for (int dc = 0; dc < 3; dc++)\n                solve(r + dr * t, c + dc * t, t);\n    }\n}' },
-                        { title: '실행 및 출력', desc: 'ios::sync_with_stdio(false)로 입력 속도 최적화 — N이 최대 2187이라 필요.', code: 'int main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    cin >> N;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> paper[i][j];\n    solve(0, 0, N);\n    cout << cnt[0] << "\\n" << cnt[1] << "\\n" << cnt[2] << endl;\n    return 0;\n}' }
+                        { title: 'Input', desc: 'cnt[3] array: index 0->-1, 1->0, 2->1 (mapped via first+1).', code: '#include <iostream>\nusing namespace std;\n\nint paper[2187][2187];\nint N, cnt[3];  // cnt[0]=-1, cnt[1]=0, cnt[2]=1' },
+                        { title: 'Recursive function', desc: 'Maps -1,0,1 to indices 0,1,2 via cnt[first+1].', code: 'void solve(int r, int c, int size) {\n    int first = paper[r][c];\n    bool allSame = true;\n    for (int i = r; i < r + size && allSame; i++)\n        for (int j = c; j < c + size && allSame; j++)\n            if (paper[i][j] != first) allSame = false;\n    if (allSame) {\n        cnt[first + 1]++;  // -1->0, 0->1, 1->2\n    } else {\n        int t = size / 3;  // 9-partition\n        for (int dr = 0; dr < 3; dr++)\n            for (int dc = 0; dc < 3; dc++)\n                solve(r + dr * t, c + dc * t, t);\n    }\n}' },
+                        { title: 'Run and output', desc: 'ios::sync_with_stdio(false) for faster I/O — needed since N can be up to 2187.', code: 'int main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    cin >> N;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> paper[i][j];\n    solve(0, 0, N);\n    cout << cnt[0] << "\\n" << cnt[1] << "\\n" << cnt[2] << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[2].templates; }
             }]
         },
 
-        // ========== 2단계: 거듭제곱 ==========
+        // ========== Stage 2: Exponentiation ==========
         {
-            id: 'boj-1629', title: 'BOJ 1629 - 곱셈', difficulty: 'silver',
+            id: 'boj-1629', title: 'BOJ 1629 - Multiplication', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1629',
-            simIntro: 'A^B mod C를 지수를 반으로 나누며 계산하는 과정을 관찰하세요.',
+            simIntro: 'Watch A^B mod C being computed by halving the exponent at each step.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>자연수 A를 B번 곱한 수를 알고 싶다. 단 구하려는 수가 매우 커질 수 있으므로 C로 나눈 나머지를 구하는 프로그램을 작성하시오.</p>
+    <p>We want to find the natural number A multiplied by itself B times. Since the result can be very large, write a program that computes the remainder when divided by C.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>10 11 12</pre></div>
         <div><strong>Output</strong><pre>4</pre></div>
     </div></div>
     <h4>Constraints</h4>
-    <ul><li>A, B, C는 모두 2,147,483,647 이하의 자연수</li></ul>
+    <ul><li>A, B, C are all natural numbers at most 2,147,483,647</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: 'A를 B번 곱하면 되니까, 반복문으로 A를 B번 곱하면 되지 않을까?<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;"><code>result = 1</code><br><code>for i in range(B): result = result * A % C</code></div><br>간단해 보이지?' },
-                { title: 'But there\'s a problem with this', content: 'B가 최대 <strong>2,147,483,647</strong>(약 21억)이야! 반복문 21억 번이면 시간 초과 확정이야.<br><br>그런데 한 가지 수학적 성질을 떠올려봐:<br>• A<sup>8</sup> = A × A × A × A × A × A × A × A (8번 곱셈)<br>• A<sup>8</sup> = (A<sup>4</sup>)<sup>2</sup> = ((A<sup>2</sup>)<sup>2</sup>)<sup>2</sup> (<strong>3번</strong> 곱셈!)<br><br>지수를 <strong>반으로 나누면</strong> 곱셈 횟수가 확 줄어들어!' },
-                { title: 'What if we try this?', content: '<strong>분할정복 거듭제곱</strong>: 지수를 반씩 나누면 O(log B)에 끝나!<br><br>• B가 짝수: A<sup>B</sup> = (A<sup>B/2</sup>)² mod C<br>• B가 홀수: A<sup>B</sup> = (A<sup>B/2</sup>)² × A mod C<br><br>21억이어도 log₂(21억) ≈ <strong>31번</strong>이면 끝이야!<br><br><span class="lang-cpp">C++에서는 중간 곱셈에서 오버플로우가 날 수 있어 — <code>long long</code> 필수!</span><span class="lang-py">Python은 큰 수를 자동 처리하니까 오버플로우 걱정 없어. 내장 <code>pow(A, B, C)</code>도 같은 원리야!</span>' }
+                { title: 'First intuition', content: 'Since we just multiply A by itself B times, why not loop B times?<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;"><code>result = 1</code><br><code>for i in range(B): result = result * A % C</code></div><br>Looks simple, right?' },
+                { title: 'But there\'s a problem with this', content: 'B can be up to <strong>2,147,483,647</strong> (about 2.1 billion)! Looping 2.1 billion times will definitely time out.<br><br>But recall a mathematical property:<br>- A<sup>8</sup> = A x A x A x A x A x A x A x A (8 multiplications)<br>- A<sup>8</sup> = (A<sup>4</sup>)<sup>2</sup> = ((A<sup>2</sup>)<sup>2</sup>)<sup>2</sup> (only <strong>3</strong> multiplications!)<br><br>By <strong>halving the exponent</strong>, the number of multiplications drops dramatically!' },
+                { title: 'What if we try this?', content: '<strong>Divide and conquer exponentiation</strong>: halving the exponent each time gives O(log B)!<br><br>- B is even: A<sup>B</sup> = (A<sup>B/2</sup>)^2 mod C<br>- B is odd: A<sup>B</sup> = (A<sup>B/2</sup>)^2 x A mod C<br><br>Even for 2.1 billion, log2(2.1 billion) is about <strong>31 steps</strong>!<br><br><span class="lang-cpp">In C++, intermediate multiplications can overflow — <code>long long</code> is required!</span><span class="lang-py">Python handles big numbers automatically, so no overflow worries. The built-in <code>pow(A, B, C)</code> works on the same principle!</span>' }
             ],
             templates: {
                 python: 'A, B, C = map(int, input().split())\n\ndef power(a, b, c):\n    if b == 1:\n        return a % c\n    half = power(a, b // 2, c)\n    result = half * half % c\n    if b % 2 == 1:\n        result = result * a % c\n    return result\n\nprint(power(A, B, C))',
                 cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nll power(ll a, ll b, ll c) {\n    if (b == 1) return a % c;\n    ll half = power(a, b / 2, c);\n    ll result = half * half % c;\n    if (b % 2 == 1) result = result * a % c;\n    return result;\n}\nint main() {\n    ll A, B, C;\n    cin >> A >> B >> C;\n    cout << power(A, B, C) << endl;\n    return 0;\n}'
             },
             solutions: [{
-                approach: '분할정복 거듭제곱',
-                description: '지수를 반으로 나누며 O(log B)에 계산합니다.',
+                approach: 'divide and conquer Exponentiation',
+                description: 'Halve the exponent each step to compute in O(log B).',
                 timeComplexity: 'O(log B)',
                 spaceComplexity: 'O(log B)',
                 codeSteps: {
                     python: [
-                        { title: '입력', desc: 'A, B, C 세 수를 한 줄에서 입력받습니다.', code: 'A, B, C = map(int, input().split())' },
-                        { title: '거듭제곱 함수', desc: '지수를 반으로 나누어 O(log B)에 계산하는 핵심 함수.\n짝수면 제곱, 홀수면 한 번 더 곱합니다.', code: 'def power(a, b, c):\n    if b == 1:\n        return a % c\n    half = power(a, b // 2, c)\n    result = half * half % c\n    if b % 2 == 1:\n        result = result * a % c\n    return result' },
-                        { title: '출력', desc: 'Python은 큰 수를 자동 처리하므로 오버플로우 걱정 없음.', code: 'print(power(A, B, C))' }
+                        { title: 'Input', desc: 'Read three numbers A, B, C from one line.', code: 'A, B, C = map(int, input().split())' },
+                        { title: 'Exponentiation function', desc: 'Core function that halves the exponent for O(log B).\nIf even, square; if odd, multiply once more.', code: 'def power(a, b, c):\n    if b == 1:\n        return a % c\n    half = power(a, b // 2, c)\n    result = half * half % c\n    if b % 2 == 1:\n        result = result * a % c\n    return result' },
+                        { title: 'Output', desc: 'Python handles big numbers automatically, no overflow concern.', code: 'print(power(A, B, C))' }
                     ],
                     cpp: [
-                        { title: '입력', desc: 'A,B,C가 최대 21억 → long long 필수.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;  // 최대 2^31-1이라 long long 필요\n\nll A, B, C;' },
-                        { title: '거듭제곱 함수', desc: 'half*half 중간 곱이 오버플로우하지 않도록 매번 mod.', code: 'll power(ll a, ll b, ll c) {\n    if (b == 1) return a % c;\n    ll half = power(a, b / 2, c);\n    ll result = half * half % c;  // 짝수: (a^(b/2))^2\n    if (b % 2 == 1)\n        result = result * a % c;  // 홀수: 한 번 더 곱하기\n    return result;\n}' },
-                        { title: '출력', desc: 'main에서 입력 후 power 호출 — 간단한 구조입니다.', code: 'int main() {\n    cin >> A >> B >> C;\n    cout << power(A, B, C) << endl;\n    return 0;\n}' }
+                        { title: 'Input', desc: 'A,B,C up to 2.1 billion -> long long required.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;  // max 2^31-1, so long long needed\n\nll A, B, C;' },
+                        { title: 'Exponentiation function', desc: 'Apply mod after every half*half to prevent overflow.', code: 'll power(ll a, ll b, ll c) {\n    if (b == 1) return a % c;\n    ll half = power(a, b / 2, c);\n    ll result = half * half % c;  // even: (a^(b/2))^2\n    if (b % 2 == 1)\n        result = result * a % c;  // odd: multiply once more\n    return result;\n}' },
+                        { title: 'Output', desc: 'Read input then call power in main — simple structure.', code: 'int main() {\n    cin >> A >> B >> C;\n    cout << power(A, B, C) << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[3].templates; }
             }]
         },
         {
-            id: 'boj-11401', title: 'BOJ 11401 - 이항 계수 3', difficulty: 'gold',
+            id: 'boj-11401', title: 'BOJ 11401 - Binomial Coefficient 3', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/11401',
-            simIntro: '페르마 소정리를 이용해 이항 계수를 모듈러 역원으로 계산하는 과정을 관찰하세요.',
+            simIntro: 'Watch binomial coefficients computed via modular inverse using Fermat\'s Little Theorem.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>자연수 N과 정수 K가 주어졌을 때, 이항 계수 C(N, K)를 1,000,000,007로 나눈 나머지를 구하는 프로그램을 작성하시오. 페르마의 소정리를 이용하여 모듈러 역원을 구한다.</p>
+    <p>Given a natural number N and integer K, write a program to compute the binomial coefficient C(N, K) modulo 1,000,000,007. Use Fermat\'s Little Theorem to compute the modular inverse.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>5 2</pre></div>
         <div><strong>Output</strong><pre>10</pre></div>
@@ -1689,86 +1689,86 @@ var divideConquerTopic = {
     <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '이항 계수 C(N, K) = N! / (K! × (N-K)!) 이니까, 팩토리얼을 구해서 나누면 되지 않을까?<br><br>N!까지 미리 계산해두면 분자(N!)와 분모(K! × (N-K)!)를 바로 구할 수 있어.' },
-                { title: 'But there\'s a problem with this', content: 'N이 최대 <strong>400만</strong>이야. 400만 팩토리얼은 천문학적인 숫자라 직접 나눌 수 없어.<br><br>그래서 1,000,000,007로 나눈 나머지를 구하라는 건데... <strong>모듈러 연산에서는 나눗셈을 직접 할 수 없어!</strong><br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">(a / b) % p ≠ (a % p) / (b % p) ← 이게 안 돼!</div><br>나눗셈을 어떻게 처리하지?' },
-                { title: 'What if we try this?', content: '<strong>페르마 소정리</strong>가 여기서 등장해!<br><br>p가 소수일 때: <strong>a<sup>-1</sup> ≡ a<sup>(p-2)</sup> mod p</strong><br><br>즉, 나눗셈을 <strong>거듭제곱(곱셈)</strong>으로 바꿀 수 있어!<br><br>C(N,K) mod p = N! × (K!)<sup>(p-2)</sup> × ((N-K)!)<sup>(p-2)</sup> mod p<br><br>구현 3단계:<br>① 팩토리얼 배열 미리 계산 (0! ~ N!)<br>② 앞에서 배운 <strong>분할정복 거듭제곱</strong>으로 역원 계산<br>③ 세 값을 곱하면 끝!<br><br>1629번(곱셈)의 거듭제곱 코드를 여기서 그대로 재사용할 수 있어.' }
+                { title: 'First intuition', content: 'Since C(N, K) = N! / (K! x (N-K)!), why not compute the factorials and divide?<br><br>If we precompute up to N!, we can directly get the numerator (N!) and denominator (K! x (N-K)!).' },
+                { title: 'But there\'s a problem with this', content: 'N can be up to <strong>4 million</strong>. The factorial of 4 million is astronomically large and cannot be directly divided.<br><br>That is why we compute the remainder modulo 1,000,000,007... but <strong>division does not work directly in modular arithmetic!</strong><br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">(a / b) % p != (a % p) / (b % p) -- this does not work!</div><br>How do we handle division?' },
+                { title: 'What if we try this?', content: 'This is where <strong>Fermat\'s Little Theorem</strong> comes in!<br><br>When p is prime: <strong>a<sup>-1</sup> = a<sup>(p-2)</sup> mod p</strong><br><br>In other words, we can replace division with <strong>exponentiation (multiplication)</strong>!<br><br>C(N,K) mod p = N! x (K!)<sup>(p-2)</sup> x ((N-K)!)<sup>(p-2)</sup> mod p<br><br>Implementation in 3 steps:<br>1. Precompute factorial array (0! through N!)<br>2. Use <strong>divide and conquer exponentiation</strong> to compute the inverse<br>3. Multiply the three values and we are done!<br><br>The exponentiation code from problem 1629 can be reused directly here.' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nMOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD\n\ndef power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1: result = result * a % mod\n    return result\n\nans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)',
                 cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];\nll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1) result = result * a % mod;\n    return result;\n}\nint main() {\n    int N, K; cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++) fac[i] = fac[i-1] * i % MOD;\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}'
             },
             solutions: [{
-                approach: '팩토리얼 + 페르마 소정리',
-                description: '팩토리얼을 미리 계산하고, 분할정복 거듭제곱으로 역원을 구합니다.',
+                approach: 'Factorial + Fermat\'s Little Theorem',
+                description: 'Precompute factorials, then compute inverse via divide and conquer exponentiation.',
                 timeComplexity: 'O(N + log p)',
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 팩토리얼', desc: '팩토리얼을 0!부터 N!까지 미리 계산해둡니다.\n나중에 C(N,K) = N! / (K! * (N-K)!)에서 사용합니다.', code: 'MOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD' },
-                        { title: '거듭제곱 (역원용)', desc: '모듈러 나눗셈은 직접 불가 → 페르마 소정리로 역원을 구합니다.\na^(p-2) mod p가 a의 모듈러 역원입니다.', code: 'def power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1:\n        result = result * a % mod\n    return result' },
-                        { title: '결과 계산', desc: 'N! × (K!)^(p-2) × ((N-K)!)^(p-2) mod p로\n나눗셈을 곱셈으로 바꿔 계산합니다.', code: 'ans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)' }
+                        { title: 'Input and factorials', desc: 'Precompute factorials from 0! to N!.\nUsed later in C(N,K) = N! / (K! * (N-K)!).', code: 'MOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD' },
+                        { title: 'Exponentiation (for inverse)', desc: 'Direct modular division is not possible. Use Fermat\'s Little Theorem.\na^(p-2) mod p is the modular inverse of a.', code: 'def power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1:\n        result = result * a % mod\n    return result' },
+                        { title: 'Compute result', desc: 'N! x (K!)^(p-2) x ((N-K)!)^(p-2) mod p\nreplaces division with multiplication.', code: 'ans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)' }
                     ],
                     cpp: [
-                        { title: '입력 및 팩토리얼', desc: '전역 배열로 팩토리얼을 미리 계산합니다.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];  // N 최대 400만' },
-                        { title: '거듭제곱 (역원용)', desc: '페르마 소정리: a^(-1) ≡ a^(p-2) mod p.', code: 'll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1)\n        result = result * a % mod;\n    return result;\n}' },
-                        { title: '결과 계산', desc: 'main에서 팩토리얼 전처리 후, 역원 2번으로 C(N,K) 계산.', code: 'int main() {\n    int N, K;\n    cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++)\n        fac[i] = fac[i - 1] * i % MOD;\n    // C(N,K) = N! * (K!)^(p-2) * ((N-K)!)^(p-2)\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}' }
+                        { title: 'Input and factorials', desc: 'Precompute factorials in a global array.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];  // N up to 4 million' },
+                        { title: 'Exponentiation (for inverse)', desc: 'Fermat\'s Little Theorem: a^(-1) ≡ a^(p-2) mod p.', code: 'll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1)\n        result = result * a % mod;\n    return result;\n}' },
+                        { title: 'Compute result', desc: 'Precompute factorials in main, then compute C(N,K) via two inverse calls.', code: 'int main() {\n    int N, K;\n    cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++)\n        fac[i] = fac[i - 1] * i % MOD;\n    // C(N,K) = N! * (K!)^(p-2) * ((N-K)!)^(p-2)\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[4].templates; }
             }]
         },
 
-        // ========== 3단계: 행렬 ==========
+        // ========== Stage 3: Matrix ==========
         {
-            id: 'boj-2740', title: 'BOJ 2740 - 행렬 곱셈', difficulty: 'silver',
+            id: 'boj-2740', title: 'BOJ 2740 - Matrix Multiplication', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2740',
-            simIntro: '2×2 행렬 곱셈을 단계별로 확인하세요.',
+            simIntro: 'Watch 2x2 matrix multiplication step by step.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>N×M 행렬 A와 M×K 행렬 B가 주어졌을 때, 두 행렬을 곱한 결과를 출력하는 프로그램을 작성하시오.</p>
+    <p>Given an N x M matrix A and an M x K matrix B, write a program that outputs the product of the two matrices.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>3 2\n1 2\n3 4\n5 6\n2 3\n-1 -2 0\n0 0 3</pre></div>
         <div><strong>Output</strong><pre>-1 -2 6\n-3 -6 12\n-5 -10 18</pre></div>
     </div></div>
     <h4>Constraints</h4>
-    <ul><li>1 ≤ N, M, K ≤ 100</li><li>행렬 원소의 절댓값 ≤ 100</li><li>결과 행렬 원소의 절댓값 ≤ 2<sup>31</sup></li></ul>
+    <ul><li>1 ≤ N, M, K ≤ 100</li><li>Absolute value of matrix elements ≤ 100</li><li>Absolute value of result matrix elements ≤ 2<sup>31</sup></li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '행렬 곱셈의 규칙을 떠올려보자. C[i][j]를 구하려면 <strong>A의 i행</strong>과 <strong>B의 j열</strong>을 쭉 곱해서 더하면 돼.<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">C[i][j] = A[i][0]×B[0][j] + A[i][1]×B[1][j] + ... + A[i][M-1]×B[M-1][j]</div><br>이건 <strong>내적(dot product)</strong>이야!' },
-                { title: 'But there\'s a problem with this', content: '결과 행렬 C의 크기가 N×K이고, 각 원소를 구하려면 M번 곱해야 하니까 <strong>3중 반복문</strong>이 필요해:<br><br>• 바깥: i = 0~N-1 (C의 행)<br>• 중간: j = 0~K-1 (C의 열)<br>• 안쪽: k = 0~M-1 (내적 합산)<br><br>N, M, K ≤ 100이니까 최대 100만 번 — 이 문제에서는 충분해!<br><br>⚠️ 주의: A가 N×<strong>M</strong>이고 B가 <strong>M</strong>×K여야 곱셈이 가능해. A의 열 수 = B의 행 수!' },
-                { title: 'What if we try this?', content: '이 문제 자체는 분할정복이 아니라 기본 행렬 곱셈이야. 하지만 이게 <strong>행렬 거듭제곱의 기초</strong>가 돼!<br><br>숫자 곱셈을 함수로 만들 듯이, 행렬 곱셈도 <code>mat_mul(A, B)</code> 함수로 만들어두면 나중에 행렬 거듭제곱(10830번)에서 그대로 재사용할 수 있어.<br><br><span class="lang-py">Python에서는 리스트 컴프리헨션으로 깔끔하게 초기화: <code>C = [[0]*K for _ in range(N)]</code></span><span class="lang-cpp">C++에서는 <code>int C[100][100] = {};</code>로 0 초기화하면 돼.</span>' }
+                { title: 'First intuition', content: 'Let us recall the matrix multiplication rule. To get C[i][j], multiply <strong>row i of A</strong> with <strong>column j of B</strong> element-wise and sum.<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">C[i][j] = A[i][0] x B[0][j] + A[i][1] x B[1][j] + ... + A[i][M-1] x B[M-1][j]</div><br>This is the <strong>dot product</strong>!' },
+                { title: 'But there\'s a problem with this', content: 'The result matrix C has size N x K, and computing each element requires M multiplications, so we need a <strong>triple nested loop</strong>:<br><br>- Outer: i = 0 to N-1 (row of C)<br>- Middle: j = 0 to K-1 (column of C)<br>- Inner: k = 0 to M-1 (dot product sum)<br><br>N, M, K <= 100, so at most 1 million operations — that is plenty for this problem!<br><br>Note: A must be N x <strong>M</strong> and B must be <strong>M</strong> x K for multiplication to work. Column count of A must equal row count of B!' },
+                { title: 'What if we try this?', content: 'This problem itself is not divide and conquer — it is basic matrix multiplication. But it lays the <strong>foundation for matrix exponentiation</strong>!<br><br>Just like creating a function for number multiplication, if we make a <code>mat_mul(A, B)</code> function, we can reuse it directly in matrix exponentiation (problem 10830).<br><br><span class="lang-py">In Python, initialize cleanly with list comprehension: <code>C = [[0]*K for _ in range(N)]</code></span><span class="lang-cpp">In C++, use <code>int C[100][100] = {};</code> for zero initialization.</span>' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(N)]\nM2, K = map(int, input().split())\nB = [list(map(int, input().split())) for _ in range(M)]\n\nC = [[0] * K for _ in range(N)]\nfor i in range(N):\n    for j in range(K):\n        for k in range(M):\n            C[i][j] += A[i][k] * B[k][j]\n\nfor row in C:\n    print(\' \'.join(map(str, row)))',
                 cpp: '#include <iostream>\nusing namespace std;\nint main() {\n    int N, M, M2, K;\n    cin >> N >> M;\n    int A[100][100], B[100][100], C[100][100] = {};\n    for (int i = 0; i < N; i++) for (int j = 0; j < M; j++) cin >> A[i][j];\n    cin >> M2 >> K;\n    for (int i = 0; i < M; i++) for (int j = 0; j < K; j++) cin >> B[i][j];\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < K; j++)\n            for (int k = 0; k < M; k++)\n                C[i][j] += A[i][k] * B[k][j];\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < K; j++) cout << C[i][j] << (j < K-1 ? " " : "");\n        cout << "\\n";\n    }\n    return 0;\n}'
             },
             solutions: [{
-                approach: '3중 반복문',
-                description: 'C[i][j] = sum(A[i][k] * B[k][j])로 직접 계산합니다.',
+                approach: 'Triple nested loop',
+                description: 'Directly compute C[i][j] = sum(A[i][k] * B[k][j]).',
                 timeComplexity: 'O(N × M × K)',
                 spaceComplexity: 'O(N × K)',
                 codeSteps: {
                     python: [
-                        { title: '입력', desc: 'A는 N×M, B는 M×K 행렬.\nA의 열 수 = B의 행 수(M)가 같아야 곱셈 가능.', code: 'N, M = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(N)]\nM2, K = map(int, input().split())\nB = [list(map(int, input().split())) for _ in range(M)]' },
-                        { title: '행렬 곱셈', desc: 'C[i][j] = A의 i행과 B의 j열의 내적.\n3중 반복문이 행렬 곱셈의 기본 패턴입니다.', code: 'C = [[0] * K for _ in range(N)]\nfor i in range(N):\n    for j in range(K):\n        for k in range(M):\n            C[i][j] += A[i][k] * B[k][j]' },
-                        { title: '출력', desc: '각 행을 공백으로 구분하여 출력합니다.', code: 'for row in C:\n    print(\' \'.join(map(str, row)))' }
+                        { title: 'Input', desc: 'A is N x M, B is M x K.\nColumn count of A = row count of B (M) must match for multiplication.', code: 'N, M = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(N)]\nM2, K = map(int, input().split())\nB = [list(map(int, input().split())) for _ in range(M)]' },
+                        { title: 'Matrix multiplication', desc: 'C[i][j] = dot product of row i of A and column j of B.\nTriple nested loop is the basic pattern for matrix multiplication.', code: 'C = [[0] * K for _ in range(N)]\nfor i in range(N):\n    for j in range(K):\n        for k in range(M):\n            C[i][j] += A[i][k] * B[k][j]' },
+                        { title: 'Output', desc: 'Print each row with spaces separating elements.', code: 'for row in C:\n    print(\' \'.join(map(str, row)))' }
                     ],
                     cpp: [
-                        { title: '입력', desc: '정적 2D 배열로 행렬을 선언합니다.', code: '#include <iostream>\nusing namespace std;\n\nint N, M, M2, K;\nint A[100][100], B[100][100], C[100][100];' },
-                        { title: '행렬 곱셈', desc: 'i행 j열 k합산 — 행렬 거듭제곱의 기초가 되는 패턴입니다.', code: 'int main() {\n    cin >> N >> M;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < M; j++)\n            cin >> A[i][j];\n    cin >> M2 >> K;\n    for (int i = 0; i < M; i++)\n        for (int j = 0; j < K; j++)\n            cin >> B[i][j];\n    // C[i][j] = sum(A[i][k] * B[k][j]) — 3중 반복\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < K; j++)\n            for (int k = 0; k < M; k++)\n                C[i][j] += A[i][k] * B[k][j];' },
-                        { title: '출력', desc: '마지막 열 뒤에는 공백 없이 줄바꿈만 출력합니다.', code: '    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < K; j++)\n            cout << C[i][j] << (j < K - 1 ? " " : "");\n        cout << "\\n";\n    }\n    return 0;\n}' }
+                        { title: 'Input', desc: 'Declare matrices as static 2D arrays.', code: '#include <iostream>\nusing namespace std;\n\nint N, M, M2, K;\nint A[100][100], B[100][100], C[100][100];' },
+                        { title: 'Matrix multiplication', desc: 'Row i, column j, sum over k — the foundational pattern for matrix exponentiation.', code: 'int main() {\n    cin >> N >> M;\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < M; j++)\n            cin >> A[i][j];\n    cin >> M2 >> K;\n    for (int i = 0; i < M; i++)\n        for (int j = 0; j < K; j++)\n            cin >> B[i][j];\n    // C[i][j] = sum(A[i][k] * B[k][j]) — triple loop\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < K; j++)\n            for (int k = 0; k < M; k++)\n                C[i][j] += A[i][k] * B[k][j];' },
+                        { title: 'Output', desc: 'Print with no trailing space after the last column, just a newline.', code: '    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < K; j++)\n            cout << C[i][j] << (j < K - 1 ? " " : "");\n        cout << "\\n";\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[5].templates; }
             }]
         },
         {
-            id: 'boj-10830', title: 'BOJ 10830 - 행렬 제곱', difficulty: 'gold',
+            id: 'boj-10830', title: 'BOJ 10830 - Matrix Exponentiation', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/10830',
-            simIntro: '행렬 거듭제곱을 분할정복으로 수행하는 과정을 관찰하세요.',
+            simIntro: 'Watch matrix exponentiation performed via divide and conquer.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>크기가 N×N인 행렬 A가 주어진다. 이때, A의 B제곱을 구하는 프로그램을 작성하시오. 수가 매우 커질 수 있으니, A^B의 각 원소를 1,000으로 나눈 나머지를 출력한다.</p>
+    <p>Given an N x N matrix A, write a program to compute A raised to the B-th power. Since the numbers can be very large, output each element of A^B modulo 1,000.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>2 5\n1 2\n3 4</pre></div>
         <div><strong>Output</strong><pre>69 558\n337 406</pre></div>
@@ -1781,41 +1781,41 @@ var divideConquerTopic = {
     <ul><li>2 ≤ N ≤ 5</li><li>1 ≤ B ≤ 100,000,000,000</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: 'A를 B번 곱하면 되니까, 반복문으로 행렬을 B번 곱하면?<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">result = 단위행렬<br>for i in range(B): result = mat_mul(result, A)</div><br>2740번에서 만든 행렬 곱셈 함수를 재사용하면 될 것 같아!' },
-                { title: 'But there\'s a problem with this', content: 'B가 최대 <strong>1000억</strong>(10<sup>11</sup>)이야! 행렬 곱셈을 1000억 번 반복하면 당연히 시간 초과야.<br><br>그런데... 이거 어디서 본 패턴 아니야?<br><br>1629번(곱셈)에서 <strong>숫자</strong>를 B번 곱하는 걸 분할정복으로 O(log B)에 풀었잖아! <strong>숫자 대신 행렬을 곱하면</strong> 똑같은 원리로 풀 수 있어!' },
-                { title: 'What if we try this?', content: '1629번 코드에서 바꿀 부분:<br><br>• <code>half * half</code> → <code>mat_mul(half, half)</code><br>• <code>result * a</code> → <code>mat_mul(result, A)</code><br>• 기저: B=1이면 A 자체를 반환 (각 원소 mod 처리!)<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">숫자 거듭제곱: 곱하기 연산자 *<br>행렬 거듭제곱: 행렬 곱셈 함수 mat_mul<br>구조는 <strong>완전히 동일</strong>!</div><br>행렬 곱셈할 때 매번 <strong>mod 1000</strong>을 해줘야 오버플로우를 방지할 수 있어.' }
+                { title: 'First intuition', content: 'Since we multiply A by itself B times, why not loop and multiply the matrix B times?<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">result = identity matrix<br>for i in range(B): result = mat_mul(result, A)</div><br>We can reuse the matrix multiplication function from problem 2740!' },
+                { title: 'But there\'s a problem with this', content: 'B can be up to <strong>100 billion</strong> (10<sup>11</sup>)! Repeating matrix multiplication 100 billion times will obviously time out.<br><br>But wait... does this pattern look familiar?<br><br>In problem 1629, we solved <strong>multiplying a number</strong> B times using divide and conquer in O(log B)! If we <strong>replace numbers with matrices</strong>, the same principle applies!' },
+                { title: 'What if we try this?', content: 'Changes from problem 1629 code:<br><br>- <code>half * half</code> -> <code>mat_mul(half, half)</code><br>- <code>result * a</code> -> <code>mat_mul(result, A)</code><br>- Base case: when B=1, return A itself (with mod applied to each element!)<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">Number exponentiation: uses * operator<br>Matrix exponentiation: uses mat_mul function<br>The structure is <strong>exactly the same</strong>!</div><br>Apply <strong>mod 1000</strong> during each matrix multiplication to prevent overflow.' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nN, B = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(N)]\nMOD = 1000\n\ndef mat_mul(X, Y):\n    n = len(X)\n    C = [[0]*n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            for k in range(n):\n                C[i][j] = (C[i][j] + X[i][k]*Y[k][j]) % MOD\n    return C\n\ndef mat_pow(M, b):\n    if b == 1:\n        return [[M[i][j] % MOD for j in range(N)] for i in range(N)]\n    half = mat_pow(M, b // 2)\n    result = mat_mul(half, half)\n    if b % 2 == 1:\n        result = mat_mul(result, M)\n    return result\n\nresult = mat_pow(A, B)\nfor row in result:\n    print(\' \'.join(map(str, row)))',
                 cpp: '#include <iostream>\n#include <vector>\nusing namespace std;\ntypedef long long ll;\ntypedef vector<vector<ll>> Matrix;\nint N; ll B;\nconst int MOD = 1000;\nMatrix mat_mul(const Matrix& X, const Matrix& Y) {\n    Matrix C(N, vector<ll>(N, 0));\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            for (int k = 0; k < N; k++)\n                C[i][j] = (C[i][j] + X[i][k]*Y[k][j]) % MOD;\n    return C;\n}\nMatrix mat_pow(Matrix M, ll b) {\n    if (b == 1) { for (int i=0;i<N;i++) for (int j=0;j<N;j++) M[i][j]%=MOD; return M; }\n    Matrix half = mat_pow(M, b/2);\n    Matrix result = mat_mul(half, half);\n    if (b%2==1) result = mat_mul(result, M);\n    return result;\n}\nint main() {\n    cin >> N >> B;\n    Matrix A(N, vector<ll>(N));\n    for (int i=0;i<N;i++) for (int j=0;j<N;j++) cin >> A[i][j];\n    Matrix result = mat_pow(A, B);\n    for (int i=0;i<N;i++) { for (int j=0;j<N;j++) cout << result[i][j] << (j<N-1?" ":""); cout << "\\n"; }\n    return 0;\n}'
             },
             solutions: [{
-                approach: '행렬 분할정복 거듭제곱',
-                description: '숫자 거듭제곱과 동일한 원리를 행렬에 적용합니다.',
+                approach: 'Matrix divide and conquer Exponentiation',
+                description: 'Apply the same principle as number exponentiation to matrices.',
                 timeComplexity: 'O(N³ log B)',
                 spaceComplexity: 'O(N² log B)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 행렬 곱셈', desc: 'mat_mul: 행렬 곱셈 함수. 매 원소 계산 시 mod 처리하여\n중간 값이 커지는 것을 방지합니다.', code: 'N, B = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(N)]\nMOD = 1000\n\ndef mat_mul(X, Y):\n    n = len(X)\n    C = [[0]*n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            for k in range(n):\n                C[i][j] = (C[i][j] + X[i][k]*Y[k][j]) % MOD\n    return C' },
-                        { title: '행렬 거듭제곱', desc: '숫자 거듭제곱과 동일한 분할정복 구조.\n숫자 대신 행렬을 곱하고 반환합니다.', code: 'def mat_pow(M, b):\n    if b == 1:\n        return [[M[i][j] % MOD for j in range(N)] for i in range(N)]\n    half = mat_pow(M, b // 2)\n    result = mat_mul(half, half)\n    if b % 2 == 1:\n        result = mat_mul(result, M)\n    return result' },
-                        { title: '출력', desc: '결과 행렬의 각 행을 공백 구분으로 출력합니다.', code: 'result = mat_pow(A, B)\nfor row in result:\n    print(\' \'.join(map(str, row)))' }
+                        { title: 'Input and matrix multiplication', desc: 'mat_mul: matrix multiplication function. Apply mod at each\nelement computation to prevent intermediate values from growing.', code: 'N, B = map(int, input().split())\nA = [list(map(int, input().split())) for _ in range(N)]\nMOD = 1000\n\ndef mat_mul(X, Y):\n    n = len(X)\n    C = [[0]*n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            for k in range(n):\n                C[i][j] = (C[i][j] + X[i][k]*Y[k][j]) % MOD\n    return C' },
+                        { title: 'Matrix exponentiation', desc: 'Same divide and conquer structure as number exponentiation.\nMultiplies and returns matrices instead of numbers.', code: 'def mat_pow(M, b):\n    if b == 1:\n        return [[M[i][j] % MOD for j in range(N)] for i in range(N)]\n    half = mat_pow(M, b // 2)\n    result = mat_mul(half, half)\n    if b % 2 == 1:\n        result = mat_mul(result, M)\n    return result' },
+                        { title: 'Output', desc: 'Print each row of the result matrix separated by spaces.', code: 'result = mat_pow(A, B)\nfor row in result:\n    print(\' \'.join(map(str, row)))' }
                     ],
                     cpp: [
-                        { title: '입력 및 행렬 곱셈', desc: 'vector<vector<ll>>을 Matrix 타입으로 정의합니다.', code: '#include <iostream>\n#include <vector>\nusing namespace std;\ntypedef long long ll;\ntypedef vector<vector<ll>> Matrix;\n\nint N; ll B;\nconst int MOD = 1000;\n\nMatrix mat_mul(const Matrix& X, const Matrix& Y) {\n    Matrix C(N, vector<ll>(N, 0));\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            for (int k = 0; k < N; k++)\n                C[i][j] = (C[i][j] + X[i][k] * Y[k][j]) % MOD;\n    return C;\n}' },
-                        { title: '행렬 거듭제곱', desc: '숫자 거듭제곱과 동일한 분할정복을 행렬에 적용합니다.', code: 'Matrix mat_pow(Matrix M, ll b) {\n    if (b == 1) {\n        // 기저: 각 원소 mod 처리\n        for (int i = 0; i < N; i++)\n            for (int j = 0; j < N; j++)\n                M[i][j] %= MOD;\n        return M;\n    }\n    Matrix half = mat_pow(M, b / 2);\n    Matrix result = mat_mul(half, half);\n    if (b % 2 == 1)\n        result = mat_mul(result, M);\n    return result;\n}' },
-                        { title: '출력', desc: 'B가 최대 1000억 → ll 타입으로 받아야 합니다.', code: 'int main() {\n    cin >> N >> B;\n    Matrix A(N, vector<ll>(N));\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> A[i][j];\n    Matrix result = mat_pow(A, B);\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++)\n            cout << result[i][j] << (j < N - 1 ? " " : "");\n        cout << "\\n";\n    }\n    return 0;\n}' }
+                        { title: 'Input and matrix multiplication', desc: 'Define matrix type as vector<vector<ll>>.', code: '#include <iostream>\n#include <vector>\nusing namespace std;\ntypedef long long ll;\ntypedef vector<vector<ll>> Matrix;\n\nint N; ll B;\nconst int MOD = 1000;\n\nMatrix mat_mul(const Matrix& X, const Matrix& Y) {\n    Matrix C(N, vector<ll>(N, 0));\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            for (int k = 0; k < N; k++)\n                C[i][j] = (C[i][j] + X[i][k] * Y[k][j]) % MOD;\n    return C;\n}' },
+                        { title: 'Matrix exponentiation', desc: 'Same divide and conquer as number exponentiation, applied to matrices.', code: 'Matrix mat_pow(Matrix M, ll b) {\n    if (b == 1) {\n        // base case: apply mod to each element\n        for (int i = 0; i < N; i++)\n            for (int j = 0; j < N; j++)\n                M[i][j] %= MOD;\n        return M;\n    }\n    Matrix half = mat_pow(M, b / 2);\n    Matrix result = mat_mul(half, half);\n    if (b % 2 == 1)\n        result = mat_mul(result, M);\n    return result;\n}' },
+                        { title: 'Output', desc: 'B can be up to 100 billion -> must use ll type.', code: 'int main() {\n    cin >> N >> B;\n    Matrix A(N, vector<ll>(N));\n    for (int i = 0; i < N; i++)\n        for (int j = 0; j < N; j++)\n            cin >> A[i][j];\n    Matrix result = mat_pow(A, B);\n    for (int i = 0; i < N; i++) {\n        for (int j = 0; j < N; j++)\n            cout << result[i][j] << (j < N - 1 ? " " : "");\n        cout << "\\n";\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[6].templates; }
             }]
         },
         {
-            id: 'boj-11444', title: 'BOJ 11444 - 피보나치 수 6', difficulty: 'gold',
+            id: 'boj-11444', title: 'BOJ 11444 - Fibonacci Number 6', difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/11444',
-            simIntro: '[[1,1],[1,0]]^n 행렬 거듭제곱으로 피보나치 수를 구하는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of computing Fibonacci numbers via [[1,1],[1,0]]^n matrix exponentiation.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>피보나치 수는 0과 1로 시작한다. 0번째 피보나치 수는 0이고 1번째는 1이다. n번째 피보나치 수를 구하는 프로그램을 작성하시오. 행렬 거듭제곱을 이용. 1,000,000,007로 나눈 나머지를 출력.</p>
+    <p>The Fibonacci sequence starts with 0 and 1. The 0th Fibonacci number is 0 and the 1st is 1. Write a program to find the nth Fibonacci number using matrix exponentiation. Output the result modulo 1,000,000,007.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>1000</pre></div>
         <div><strong>Output</strong><pre>517691607</pre></div>
@@ -1824,74 +1824,74 @@ var divideConquerTopic = {
     <ul><li>0 ≤ n ≤ 10<sup>18</sup></li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '피보나치 수를 구하는 건 간단하지! 반복문으로 F(0), F(1), F(2), ... 순서대로 구하면 돼:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">a, b = 0, 1<br>for i in range(n): a, b = b, a + b</div><br>O(n)이면 충분하지 않을까?' },
-                { title: 'But there\'s a problem with this', content: 'n이 최대 <strong>10<sup>18</sup></strong>(100경)이야! 반복문 10<sup>18</sup>번은 절대 불가능해.<br><br>O(log n)으로 풀어야 하는데, 피보나치에 분할정복을 어떻게 적용하지?<br><br>여기서 핵심 아이디어가 등장해 — <strong>피보나치 점화식을 행렬로 표현</strong>할 수 있어:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">[[F(n+1), F(n)], [F(n), F(n-1)]] = [[1,1],[1,0]]<sup>n</sup></div><br>행렬 거듭제곱은 O(log n)에 할 수 있으니까!' },
-                { title: 'What if we try this?', content: '10830번(행렬 제곱) 코드를 <strong>2×2 행렬</strong>에 맞게 재사용하면 끝!<br><br>① 기본 행렬: <code>base = [[1,1],[1,0]]</code><br>② <code>mat_pow(base, n)</code>으로 O(log n)에 거듭제곱<br>③ 결과 행렬의 <strong>[0][1]</strong>이 F(n)!<br><br>2×2 고정 크기라 행렬 곱셈을 직접 전개하면 반복문보다 빨라.<br><br>⚠️ 예외 처리: n=0이면 0, n=1이면 1을 바로 출력해야 해. 행렬 거듭제곱은 n &gt; 1일 때만 사용!' }
+                { title: 'First intuition', content: 'Computing Fibonacci numbers is simple! We can use a loop to compute F(0), F(1), F(2), ... in order:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">a, b = 0, 1<br>for i in range(n): a, b = b, a + b</div><br>Would O(n) be enough?' },
+                { title: 'But there\'s a problem with this', content: 'n can be up to <strong>10<sup>18</sup></strong> (a quintillion)! Looping 10<sup>18</sup> times is absolutely impossible.<br><br>We need to solve it in O(log n), but how do we apply divide and conquer to Fibonacci?<br><br>Here is the key idea -- <strong>the Fibonacci recurrence can be expressed as a matrix</strong>:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">[[F(n+1), F(n)], [F(n), F(n-1)]] = [[1,1],[1,0]]<sup>n</sup></div><br>And matrix exponentiation can be done in O(log n)!' },
+                { title: 'What if we try this?', content: 'Just reuse the code from problem 10830 (Matrix Exponentiation) adapted for a <strong>2x2 matrix</strong>!<br><br>1. Base matrix: <code>base = [[1,1],[1,0]]</code><br>2. <code>mat_pow(base, n)</code> for O(log n) exponentiation<br>3. The result matrix <strong>[0][1]</strong> is F(n)!<br><br>Since the size is fixed at 2x2, implementing matrix multiplication directly is faster than using loops for a general NxN matrix.<br><br>Warning: edge cases -- if n=0 output 0, if n=1 output 1 directly. Matrix exponentiation should only be used when n &gt; 1!' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nMOD = 1_000_000_007\nn = int(input())\n\ndef mat_mul(X, Y):\n    return [\n        [(X[0][0]*Y[0][0] + X[0][1]*Y[1][0]) % MOD,\n         (X[0][0]*Y[0][1] + X[0][1]*Y[1][1]) % MOD],\n        [(X[1][0]*Y[0][0] + X[1][1]*Y[1][0]) % MOD,\n         (X[1][0]*Y[0][1] + X[1][1]*Y[1][1]) % MOD]\n    ]\n\ndef mat_pow(M, b):\n    if b == 1:\n        return [[M[i][j] % MOD for j in range(2)] for i in range(2)]\n    half = mat_pow(M, b // 2)\n    result = mat_mul(half, half)\n    if b % 2 == 1:\n        result = mat_mul(result, M)\n    return result\n\nif n <= 1:\n    print(n)\nelse:\n    base = [[1, 1], [1, 0]]\n    result = mat_pow(base, n)\n    print(result[0][1])',
                 cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\ntypedef ll Matrix[2][2];\nvoid mat_mul(Matrix A, Matrix B, Matrix C) {\n    ll temp[2][2] = {};\n    for (int i=0;i<2;i++) for (int j=0;j<2;j++) for (int k=0;k<2;k++)\n        temp[i][j] = (temp[i][j] + A[i][k]*B[k][j]) % MOD;\n    for (int i=0;i<2;i++) for (int j=0;j<2;j++) C[i][j]=temp[i][j];\n}\nvoid mat_pow(Matrix M, ll b, Matrix result) {\n    if (b==1) { for(int i=0;i<2;i++) for(int j=0;j<2;j++) result[i][j]=M[i][j]%MOD; return; }\n    Matrix half; mat_pow(M,b/2,half);\n    mat_mul(half,half,result);\n    if (b%2==1) { Matrix tmp; for(int i=0;i<2;i++) for(int j=0;j<2;j++) tmp[i][j]=result[i][j]; mat_mul(tmp,M,result); }\n}\nint main() {\n    ll n; cin >> n;\n    if (n<=1) { cout << n; return 0; }\n    Matrix base = {{1,1},{1,0}}, result;\n    mat_pow(base,n,result);\n    cout << result[0][1] << endl;\n    return 0;\n}'
             },
             solutions: [{
-                approach: '행렬 거듭제곱',
-                description: '[[1,1],[1,0]]^n으로 F(n)을 O(log n)에 계산합니다.',
+                approach: 'Matrix Exponentiation',
+                description: 'Computes F(n) in O(log n) via [[1,1],[1,0]]^n.',
                 timeComplexity: 'O(log n)',
                 spaceComplexity: 'O(log n)',
                 codeSteps: {
                     python: [
-                        { title: '행렬 곱셈', desc: '2x2 고정 크기라 직접 전개하면 반복문보다 빠릅니다.\n매 곱셈마다 mod 처리로 오버플로우 방지.', code: 'MOD = 1_000_000_007\n\ndef mat_mul(X, Y):\n    return [\n        [(X[0][0]*Y[0][0]+X[0][1]*Y[1][0])%MOD,\n         (X[0][0]*Y[0][1]+X[0][1]*Y[1][1])%MOD],\n        [(X[1][0]*Y[0][0]+X[1][1]*Y[1][0])%MOD,\n         (X[1][0]*Y[0][1]+X[1][1]*Y[1][1])%MOD]\n    ]' },
-                        { title: '행렬 거듭제곱', desc: '[[1,1],[1,0]]^n을 분할정복으로 O(log n)에 계산.\n10830번과 동일한 구조입니다.', code: 'def mat_pow(M, b):\n    if b == 1:\n        return [[M[i][j]%MOD for j in range(2)] for i in range(2)]\n    half = mat_pow(M, b // 2)\n    result = mat_mul(half, half)\n    if b % 2 == 1:\n        result = mat_mul(result, M)\n    return result' },
-                        { title: '실행', desc: 'n=0,1은 예외 처리. 결과 행렬의 [0][1]이 F(n)입니다.', code: 'n = int(input())\nif n <= 1:\n    print(n)\nelse:\n    base = [[1,1],[1,0]]\n    result = mat_pow(base, n)\n    print(result[0][1])  # F(n)' }
+                        { title: 'Matrix multiplication', desc: 'Fixed 2x2 size, so direct implementation is faster than general NxN loops.\nApply mod at every multiplication to prevent overflow.', code: 'MOD = 1_000_000_007\n\ndef mat_mul(X, Y):\n    return [\n        [(X[0][0]*Y[0][0]+X[0][1]*Y[1][0])%MOD,\n         (X[0][0]*Y[0][1]+X[0][1]*Y[1][1])%MOD],\n        [(X[1][0]*Y[0][0]+X[1][1]*Y[1][0])%MOD,\n         (X[1][0]*Y[0][1]+X[1][1]*Y[1][1])%MOD]\n    ]' },
+                        { title: 'Matrix exponentiation', desc: 'Computes [[1,1],[1,0]]^n in O(log n) via divide and conquer.\nSame structure as problem 10830.', code: 'def mat_pow(M, b):\n    if b == 1:\n        return [[M[i][j]%MOD for j in range(2)] for i in range(2)]\n    half = mat_pow(M, b // 2)\n    result = mat_mul(half, half)\n    if b % 2 == 1:\n        result = mat_mul(result, M)\n    return result' },
+                        { title: 'Execution', desc: 'Handle n=0,1 as edge cases. Result matrix [0][1] is F(n).', code: 'n = int(input())\nif n <= 1:\n    print(n)\nelse:\n    base = [[1,1],[1,0]]\n    result = mat_pow(base, n)\n    print(result[0][1])  # F(n)' }
                     ],
                     cpp: [
-                        { title: '행렬 곱셈', desc: 'typedef ll Matrix[2][2]로 2x2 고정 배열 사용. temp로 자기 자신 덮어쓰기 방지.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\ntypedef ll Matrix[2][2];\n\n// temp를 써서 결과를 C에 안전하게 복사\nvoid mat_mul(Matrix A, Matrix B, Matrix C) {\n    ll temp[2][2] = {};\n    for (int i = 0; i < 2; i++)\n        for (int j = 0; j < 2; j++)\n            for (int k = 0; k < 2; k++)\n                temp[i][j] = (temp[i][j] + A[i][k] * B[k][j]) % MOD;\n    for (int i = 0; i < 2; i++)\n        for (int j = 0; j < 2; j++)\n            C[i][j] = temp[i][j];\n}' },
-                        { title: '행렬 거듭제곱', desc: 'C 스타일 배열이라 포인터로 전달합니다.', code: 'void mat_pow(Matrix M, ll b, Matrix result) {\n    if (b == 1) {\n        for (int i = 0; i < 2; i++)\n            for (int j = 0; j < 2; j++)\n                result[i][j] = M[i][j] % MOD;\n        return;\n    }\n    Matrix half;\n    mat_pow(M, b / 2, half);\n    mat_mul(half, half, result);  // result = half^2\n    if (b % 2 == 1) {\n        Matrix tmp;\n        for (int i = 0; i < 2; i++)\n            for (int j = 0; j < 2; j++)\n                tmp[i][j] = result[i][j];\n        mat_mul(tmp, M, result);  // result = half^2 * M\n    }\n}' },
-                        { title: '실행', desc: 'n이 최대 10^18 → ll 필수. n≤1은 별도 처리합니다.', code: 'int main() {\n    ll n; cin >> n;\n    if (n <= 1) { cout << n; return 0; }\n    // [[1,1],[1,0]]^n 의 [0][1]이 F(n)\n    Matrix base = {{1, 1}, {1, 0}}, result;\n    mat_pow(base, n, result);\n    cout << result[0][1] << endl;\n    return 0;\n}' }
+                        { title: 'Matrix multiplication', desc: 'Uses typedef ll Matrix[2][2] for fixed 2x2 arrays. Uses temp to prevent overwriting the result during computation.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\ntypedef ll Matrix[2][2];\n\n// Use temp to safely copy into result C\nvoid mat_mul(Matrix A, Matrix B, Matrix C) {\n    ll temp[2][2] = {};\n    for (int i = 0; i < 2; i++)\n        for (int j = 0; j < 2; j++)\n            for (int k = 0; k < 2; k++)\n                temp[i][j] = (temp[i][j] + A[i][k] * B[k][j]) % MOD;\n    for (int i = 0; i < 2; i++)\n        for (int j = 0; j < 2; j++)\n            C[i][j] = temp[i][j];\n}' },
+                        { title: 'Matrix exponentiation', desc: 'C-style arrays are passed by pointer.', code: 'void mat_pow(Matrix M, ll b, Matrix result) {\n    if (b == 1) {\n        for (int i = 0; i < 2; i++)\n            for (int j = 0; j < 2; j++)\n                result[i][j] = M[i][j] % MOD;\n        return;\n    }\n    Matrix half;\n    mat_pow(M, b / 2, half);\n    mat_mul(half, half, result);  // result = half^2\n    if (b % 2 == 1) {\n        Matrix tmp;\n        for (int i = 0; i < 2; i++)\n            for (int j = 0; j < 2; j++)\n                tmp[i][j] = result[i][j];\n        mat_mul(tmp, M, result);  // result = half^2 * M\n    }\n}' },
+                        { title: 'Execution', desc: 'n can be up to 10^18, so ll is required. Handle n<=1 separately.', code: 'int main() {\n    ll n; cin >> n;\n    if (n <= 1) { cout << n; return 0; }\n    // [[1,1],[1,0]]^n [0][1] is F(n)\n    Matrix base = {{1, 1}, {1, 0}}, result;\n    mat_pow(base, n, result);\n    cout << result[0][1] << endl;\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[7].templates; }
             }]
         },
 
-        // ========== 4단계: 심화 ==========
+        // ========== Stage 4: Advanced ==========
         {
-            id: 'boj-6549', title: 'BOJ 6549 - 히스토그램에서 가장 큰 직사각형', difficulty: 'platinum',
+            id: 'boj-6549', title: 'BOJ 6549 - Largest Rectangle in a Histogram', difficulty: 'platinum',
             link: 'https://www.acmicpc.net/problem/6549',
-            simIntro: '히스토그램을 분할정복으로 나누어 최대 직사각형을 찾는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of dividing the histogram via divide and conquer to find the largest rectangle.',
             descriptionHTML: `
     <h3>Problem</h3>
-    <p>히스토그램은 직사각형 여러 개가 아래쪽으로 정렬되어 있는 도형이다. 각 직사각형은 같은 너비를 가지고 있지만, 높이는 모두 다를 수 있다. 히스토그램에서 가장 넓이가 큰 직사각형을 구하는 프로그램을 작성하시오. 입력은 여러 테스트 케이스로 이루어져 있다. 각 테스트 케이스의 첫 번째 수는 n(1 ≤ n ≤ 100,000)이고, 그 뒤에 n개의 높이가 주어진다. 0이 입력되면 종료.</p>
+    <p>A histogram is a shape where several rectangles are aligned along the bottom. Each rectangle has the same width, but their heights can all be different. Write a program to find the rectangle with the largest area in the histogram. The input consists of multiple test cases. The first number of each test case is n (1 ≤ n ≤ 100,000), followed by n heights. The program terminates when 0 is given as input.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>7 2 1 4 5 1 3 3\n4 1000 1000 1000 1000\n0</pre></div>
         <div><strong>Output</strong><pre>8\n4000</pre></div>
     </div></div>
     <h4>Constraints</h4>
-    <ul><li>1 ≤ n ≤ 100,000</li><li>0 ≤ 높이 ≤ 1,000,000,000</li><li>0이 입력되면 종료</li></ul>
+    <ul><li>1 ≤ n ≤ 100,000</li><li>0 ≤ height ≤ 1,000,000,000</li><li>Program terminates when 0 is given as input</li></ul>
 `,
             hints: [
-                { title: 'First intuition', content: '모든 막대를 시작점으로 해서, 양쪽으로 확장하며 최대 넓이를 구하면 되지 않을까?<br><br>각 막대 i에 대해 높이가 h[i] 이상인 연속 구간을 찾으면 넓이 = h[i] × 구간 길이.<br><br>모든 막대에 대해 해보면 최대값을 찾을 수 있어!' },
-                { title: 'But there\'s a problem with this', content: '각 막대마다 양쪽을 탐색하면 최악의 경우 O(n²)이야. n이 최대 <strong>100,000</strong>이니까 시간 초과!<br><br>여기서 분할정복 아이디어를 떠올려보자. 배열을 반으로 나누면 최대 직사각형은 <strong>세 가지 경우</strong> 중 하나야:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">① 왼쪽 절반에만 있다<br>② 오른쪽 절반에만 있다<br>③ 가운데를 걸쳐 있다</div><br>①②는 재귀로 풀 수 있는데, ③은 어떻게 구하지?' },
-                { title: 'What if we try this?', content: '③ 가운데 걸치는 경우: 중앙 두 막대에서 시작해서 <strong>높이가 더 높은 쪽으로 한 칸씩 확장</strong>해!<br><br>확장할 때마다 최소 높이를 갱신하고, 넓이 = 최소 높이 × 너비를 계산해서 최대값을 추적해.<br><br>왜 높은 쪽으로? 넓이를 최대화하려면 높이를 최대한 유지하면서 넓혀야 하니까!<br><br>시간복잡도: T(n) = 2T(n/2) + O(n) → <strong>O(n log n)</strong><br><br><span class="lang-cpp">⚠️ C++에서는 높이 × 너비가 int 범위를 넘을 수 있어 — <code>long long</code> 필수!</span><span class="lang-py">Python은 큰 수를 자동 처리하니까 따로 신경 쓸 필요 없어.</span>' }
+                { title: 'First intuition', content: 'What if we use each bar as a starting point, expanding both left and right to find the maximum area?<br><br>For each bar i, find the contiguous range where heights are at least h[i], then area = h[i] x range length.<br><br>If we try this for every bar, we can find the maximum!' },
+                { title: 'But there\'s a problem with this', content: 'If we search both directions for every bar, the worst case is O(n^2). With n up to <strong>100,000</strong>, that will time out!<br><br>Let us think of a divide and conquer approach. If we split the array in half, the largest rectangle must be one of <strong>three cases</strong>:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">1. Entirely in the left half<br>2. Entirely in the right half<br>3. Spanning across the middle</div><br>Cases 1 and 2 can be solved recursively, but how do we handle case 3?' },
+                { title: 'What if we try this?', content: 'Case 3, spanning the middle: start from the two center bars and <strong>expand one step at a time toward the taller side</strong>!<br><br>At each expansion, update the minimum height, compute area = min height x width, and track the maximum.<br><br>Why expand toward the taller side? To maximize area, we need to keep the height as high as possible while widening!<br><br>Time complexity: T(n) = 2T(n/2) + O(n) -> <strong>O(n log n)</strong><br><br><span class="lang-cpp">Warning: in C++, height x width can overflow int range -- <code>long long</code> is required!</span><span class="lang-py">Python handles large numbers automatically, so no extra handling needed.</span>' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\nsys.setrecursionlimit(200000)\n\ndef solve(heights, lo, hi):\n    if lo == hi:\n        return heights[lo]\n    mid = (lo + hi) // 2\n    left_max = solve(heights, lo, mid)\n    right_max = solve(heights, mid + 1, hi)\n    l, r = mid, mid + 1\n    h = min(heights[l], heights[r])\n    cross_max = h * 2\n    while l > lo or r < hi:\n        if l > lo and (r >= hi or heights[l-1] >= heights[r+1]):\n            l -= 1\n            h = min(h, heights[l])\n        else:\n            r += 1\n            h = min(h, heights[r])\n        cross_max = max(cross_max, h * (r - l + 1))\n    return max(left_max, right_max, cross_max)\n\nwhile True:\n    line = list(map(int, input().split()))\n    if line[0] == 0: break\n    n = line[0]\n    heights = line[1:]\n    print(solve(heights, 0, n - 1))',
                 cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\ntypedef long long ll;\nint n; ll h[100001];\nll solve(int lo, int hi) {\n    if (lo == hi) return h[lo];\n    int mid = (lo + hi) / 2;\n    ll leftMax = solve(lo, mid), rightMax = solve(mid+1, hi);\n    int l = mid, r = mid + 1;\n    ll minH = min(h[l], h[r]), crossMax = minH * 2;\n    while (l > lo || r < hi) {\n        if (l > lo && (r >= hi || h[l-1] >= h[r+1])) { l--; minH = min(minH, h[l]); }\n        else { r++; minH = min(minH, h[r]); }\n        crossMax = max(crossMax, minH * (r - l + 1));\n    }\n    return max({leftMax, rightMax, crossMax});\n}\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    while (cin >> n && n) {\n        for (int i = 0; i < n; i++) cin >> h[i];\n        cout << solve(0, n-1) << "\\n";\n    }\n    return 0;\n}'
             },
             solutions: [{
-                approach: '분할정복',
-                description: '왼쪽/오른쪽/걸치는 경우로 나누어 최대 직사각형을 구합니다.',
+                approach: 'divide and conquer',
+                description: 'Divides into left/right/spanning cases to find the largest rectangle.',
                 timeComplexity: 'O(n log n)',
                 spaceComplexity: 'O(n)',
                 codeSteps: {
                     python: [
-                        { title: '분할정복 함수', desc: '왼쪽 절반, 오른쪽 절반에서 각각 최대값을 재귀로 구합니다.\n기저 조건: 막대 1개면 그 높이가 곧 최대.', code: 'def solve(heights, lo, hi):\n    if lo == hi:\n        return heights[lo]\n    mid = (lo + hi) // 2\n    left_max = solve(heights, lo, mid)\n    right_max = solve(heights, mid + 1, hi)' },
-                        { title: '가운데 걸치는 경우', desc: '중앙에서 시작해 높이가 높은 쪽으로 확장합니다.\n확장할 때마다 최소 높이를 갱신하고 넓이를 계산합니다.', code: '    l, r = mid, mid + 1\n    h = min(heights[l], heights[r])\n    cross_max = h * 2\n    while l > lo or r < hi:\n        if l > lo and (r >= hi or heights[l-1] >= heights[r+1]):\n            l -= 1\n            h = min(h, heights[l])\n        else:\n            r += 1\n            h = min(h, heights[r])\n        cross_max = max(cross_max, h * (r - l + 1))' },
-                        { title: '최대값 반환', desc: '왼쪽/오른쪽/걸치는 세 경우 중 최대를 반환합니다.', code: '    return max(left_max, right_max, cross_max)' }
+                        { title: 'Divide and conquer function', desc: 'Recursively find the maximum in the left half and right half.\nBase case: if there is only one bar, its height is the maximum.', code: 'def solve(heights, lo, hi):\n    if lo == hi:\n        return heights[lo]\n    mid = (lo + hi) // 2\n    left_max = solve(heights, lo, mid)\n    right_max = solve(heights, mid + 1, hi)' },
+                        { title: 'Spanning the middle case', desc: 'Start from the center and expand toward the taller side.\nAt each expansion, update the minimum height and compute the area.', code: '    l, r = mid, mid + 1\n    h = min(heights[l], heights[r])\n    cross_max = h * 2\n    while l > lo or r < hi:\n        if l > lo and (r >= hi or heights[l-1] >= heights[r+1]):\n            l -= 1\n            h = min(h, heights[l])\n        else:\n            r += 1\n            h = min(h, heights[r])\n        cross_max = max(cross_max, h * (r - l + 1))' },
+                        { title: 'Return maximum', desc: 'Returns the maximum among the three cases: left, right, and spanning.', code: '    return max(left_max, right_max, cross_max)' }
                     ],
                     cpp: [
-                        { title: '분할정복 함수', desc: 'long long 사용 — 높이 * 너비가 int 범위를 넘을 수 있습니다.', code: '#include <iostream>\n#include <algorithm>\nusing namespace std;\ntypedef long long ll;\n\nint n;\nll h[100001];\n\nll solve(int lo, int hi) {\n    if (lo == hi) return h[lo];\n    int mid = (lo + hi) / 2;\n    ll leftMax = solve(lo, mid);\n    ll rightMax = solve(mid + 1, hi);' },
-                        { title: '가운데 걸치는 경우', desc: '높이가 높은 쪽으로 확장하여 최대 넓이를 갱신합니다.', code: '    int l = mid, r = mid + 1;\n    ll minH = min(h[l], h[r]);\n    ll crossMax = minH * 2;\n    // 양쪽으로 확장: 높이가 높은 쪽 우선\n    while (l > lo || r < hi) {\n        if (l > lo && (r >= hi || h[l-1] >= h[r+1])) {\n            l--;\n            minH = min(minH, h[l]);\n        } else {\n            r++;\n            minH = min(minH, h[r]);\n        }\n        crossMax = max(crossMax, minH * (r - l + 1));\n    }' },
-                        { title: '최대값 반환', desc: 'max({a,b,c}) initializer_list로 세 값 중 최대 반환.\n0이 입력될 때까지 테스트 케이스를 반복합니다.', code: '    return max({leftMax, rightMax, crossMax});\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    while (cin >> n && n) {\n        for (int i = 0; i < n; i++) cin >> h[i];\n        cout << solve(0, n - 1) << "\\n";\n    }\n    return 0;\n}' }
+                        { title: 'Divide and conquer function', desc: 'Uses long long because height * width can overflow int range.', code: '#include <iostream>\n#include <algorithm>\nusing namespace std;\ntypedef long long ll;\n\nint n;\nll h[100001];\n\nll solve(int lo, int hi) {\n    if (lo == hi) return h[lo];\n    int mid = (lo + hi) / 2;\n    ll leftMax = solve(lo, mid);\n    ll rightMax = solve(mid + 1, hi);' },
+                        { title: 'Spanning the middle case', desc: 'Expands toward the taller side and updates the maximum area.', code: '    int l = mid, r = mid + 1;\n    ll minH = min(h[l], h[r]);\n    ll crossMax = minH * 2;\n    // Expand both sides: prioritize the taller side\n    while (l > lo || r < hi) {\n        if (l > lo && (r >= hi || h[l-1] >= h[r+1])) {\n            l--;\n            minH = min(minH, h[l]);\n        } else {\n            r++;\n            minH = min(minH, h[r]);\n        }\n        crossMax = max(crossMax, minH * (r - l + 1));\n    }' },
+                        { title: 'Return maximum', desc: 'max({a,b,c}) uses initializer_list to return the maximum of three values.\nRepeats test cases until 0 is given as input.', code: '    return max({leftMax, rightMax, crossMax});\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    while (cin >> n && n) {\n        for (int i = 0; i < n; i++) cin >> h[i];\n        cout << solve(0, n - 1) << "\\n";\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return divideConquerTopic.problems[8].templates; }

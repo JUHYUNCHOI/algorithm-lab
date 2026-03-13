@@ -1,24 +1,24 @@
 // =========================================================
-// 비트 조작 (Bit Manipulation) 토픽 모듈
+// Bit Manipulation Topic Module
 // =========================================================
 var bitManipulationTopic = {
     id: 'bitmanipulation',
-    title: '비트 조작',
+    title: 'Bit Manipulation',
     icon: '💻',
     category: 'Advanced Topics',
     order: 19,
-    description: '비트 연산과 비트 마스크를 활용한 효율적인 문제 해결 기법',
-    relatedNote: '비트 연산은 비트마스크 DP, 부분집합 열거, XOR 트릭 등 다양한 최적화 기법의 기반이 됩니다.',
+    description: 'Efficient problem-solving techniques using bitwise operations and bitmasks',
+    relatedNote: 'Bitwise operations form the foundation for various optimization techniques such as bitmask DP, subset enumeration, and XOR tricks.',
 
     sidebarExpandable: true,
 
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
-        'lc-191':    { type: '비트 세기',     color: 'var(--accent)', vizMethod: '_renderVizHammingWeight' },
-        'lc-136':    { type: 'XOR 트릭',      color: 'var(--green)',  vizMethod: '_renderVizSingleNumber' },
-        'boj-11723': { type: '비트 마스크',    color: '#e17055',       vizMethod: '_renderVizBitmaskSet' },
-        'lc-78':     { type: '부분집합 열거',  color: '#6c5ce7',       vizMethod: '_renderVizSubsets' }
+        'lc-191':    { type: 'Bit Counting',        color: 'var(--accent)', vizMethod: '_renderVizHammingWeight' },
+        'lc-136':    { type: 'XOR Trick',           color: 'var(--green)',  vizMethod: '_renderVizSingleNumber' },
+        'boj-11723': { type: 'Bitmask',             color: '#e17055',       vizMethod: '_renderVizBitmaskSet' },
+        'lc-78':     { type: 'Subset Enumeration',  color: '#6c5ce7',       vizMethod: '_renderVizSubsets' }
     },
 
     getProblemTabs(problemId) {
@@ -47,7 +47,7 @@ var bitManipulationTopic = {
         var flowMap = {
             problem: { intro: 'Start by reading the problem and understanding the I/O format.', icon: '📋' },
             think:   { intro: 'Don\'t jump to coding — open the hints step by step to build your strategy.', icon: '💡' },
-            sim:     { intro: prob.simIntro || '비트 연산이 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            sim:     { intro: prob.simIntro || 'See how bitwise operations actually work in practice.', icon: '🎮' },
             code:    { intro: 'Now let\'s turn the approach into code!', icon: '💻' }
         };
         var ft = flowMap[tabId];
@@ -135,69 +135,69 @@ var bitManipulationTopic = {
     renderConcept(container) {
         container.innerHTML = `
             <div class="hero">
-                <h2>💻 비트 조작 (Bit Manipulation)</h2>
-                <p class="hero-sub">컴퓨터의 언어인 0과 1을 직접 다뤄봅시다!</p>
+                <h2>💻 Bit Manipulation</h2>
+                <p class="hero-sub">Let's work directly with the language of computers: 0s and 1s!</p>
             </div>
 
-            <!-- 섹션 1: 비트란? -->
+            <!-- Section 1: What is a Bit? -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">1</span> 비트란?
+                    <span class="section-num">1</span> What is a Bit?
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 비트는 <em>"전등 스위치"</em>와 같습니다!
-                    스위치는 <strong>켜짐(1)</strong>과 <strong>꺼짐(0)</strong>, 두 가지 상태만 있습니다.
-                    전등 스위치 8개를 나란히 놓으면 0부터 255까지의 숫자를 표현할 수 있습니다.
-                    예를 들어 <code>00001010</code>은 스위치 2번과 4번이 켜져 있는 것으로, 숫자 10을 의미합니다!
+                    <strong>Understanding by analogy:</strong> A bit is like a <em>"light switch"</em>!
+                    A switch has only two states: <strong>ON (1)</strong> and <strong>OFF (0)</strong>.
+                    If you line up 8 light switches, you can represent numbers from 0 to 255.
+                    For example, <code>00001010</code> means switches 2 and 4 are ON, representing the number 10!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--accent)">0 1</text></svg>
                         </div>
-                        <h3>비트(Bit)</h3>
-                        <p>컴퓨터가 다루는 가장 작은 단위입니다. 0 또는 1, 딱 두 가지 값만 가집니다.</p>
+                        <h3>Bit</h3>
+                        <p>The smallest unit a computer handles. It can only have two values: 0 or 1.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--green)">8 bit</text></svg>
                         </div>
-                        <h3>바이트(Byte)</h3>
-                        <p>8개의 비트를 묶으면 1바이트입니다. 8비트로 0부터 255(2<sup>8</sup>-1)까지 표현할 수 있습니다.</p>
+                        <h3>Byte</h3>
+                        <p>8 bits grouped together make 1 byte. With 8 bits, you can represent values from 0 to 255 (2<sup>8</sup>-1).</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">1010₂</text></svg>
                         </div>
-                        <h3>2진수</h3>
-                        <p>우리가 쓰는 10진수 대신, 0과 1만 사용합니다. <code>1010₂</code> = 8+0+2+0 = <strong>10</strong>입니다.</p>
+                        <h3>Binary</h3>
+                        <p>Instead of decimal (base 10), binary uses only 0 and 1. <code>1010₂</code> = 8+0+2+0 = <strong>10</strong>.</p>
                     </div>
                     <span class="lang-py"><div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="10" font-weight="bold" fill="var(--accent)">bin()</text></svg>
                         </div>
-                        <h3>bin() 함수</h3>
-                        <p>Python에서 <code>bin(10)</code>은 <code>'0b1010'</code>을 반환합니다. 2진수를 쉽게 확인할 수 있습니다!<br>
+                        <h3>bin() Function</h3>
+                        <p>In Python, <code>bin(10)</code> returns <code>'0b1010'</code>. An easy way to see the binary representation!<br>
                         <a href="https://docs.python.org/3/library/functions.html#bin" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: bin() ↗</a></p>
                     </div></span>
                     <span class="lang-cpp"><div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="10" font-weight="bold" fill="var(--accent)">bitset</text></svg>
                         </div>
-                        <h3>bitset 클래스</h3>
-                        <p>C++에서 <code>bitset&lt;8&gt;(10)</code>은 <code>00001010</code>을 출력합니다. 2진수를 쉽게 확인할 수 있습니다!<br>
+                        <h3>bitset Class</h3>
+                        <p>In C++, <code>bitset&lt;8&gt;(10)</code> outputs <code>00001010</code>. An easy way to see the binary representation!<br>
                         <a href="https://en.cppreference.com/w/cpp/utility/bitset" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: bitset ↗</a></p>
                     </div></span>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 2진수 표현
-print(bin(10))      # '0b1010' — 10을 2진수로
-print(bin(255))     # '0b11111111' — 8비트 최대값
-print(0b1010)       # 10 — 2진수를 10진수로
+                    <pre><code class="language-python"># Binary representation
+print(bin(10))      # '0b1010' — 10 in binary
+print(bin(255))     # '0b11111111' — max value for 8 bits
+print(0b1010)       # 10 — binary to decimal
 
-# 2진수 문자열로 변환
-print(format(10, '08b'))  # '00001010' — 8자리로 맞추기
-print(f"{10:08b}")        # '00001010' — f-string 방법</code></pre>
+# Convert to binary string
+print(format(10, '08b'))  # '00001010' — pad to 8 digits
+print(f"{10:08b}")        # '00001010' — f-string method</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
                     <pre><code class="language-cpp">#include &lt;iostream&gt;
@@ -205,39 +205,39 @@ print(f"{10:08b}")        # '00001010' — f-string 방법</code></pre>
 using namespace std;
 
 int main() {
-    // 2진수 표현
-    cout &lt;&lt; bitset&lt;8&gt;(10) &lt;&lt; endl;   // 00001010 — 10을 2진수로
-    cout &lt;&lt; bitset&lt;8&gt;(255) &lt;&lt; endl;  // 11111111 — 8비트 최대값
-    cout &lt;&lt; 0b1010 &lt;&lt; endl;           // 10 — 2진수를 10진수로
+    // Binary representation
+    cout &lt;&lt; bitset&lt;8&gt;(10) &lt;&lt; endl;   // 00001010 — 10 in binary
+    cout &lt;&lt; bitset&lt;8&gt;(255) &lt;&lt; endl;  // 11111111 — max value for 8 bits
+    cout &lt;&lt; 0b1010 &lt;&lt; endl;           // 10 — binary to decimal
 
-    // 특정 자릿수로 맞추기
-    cout &lt;&lt; bitset&lt;8&gt;(10) &lt;&lt; endl;   // 00001010 — 자동 8자리
-    cout &lt;&lt; bitset&lt;4&gt;(10) &lt;&lt; endl;   // 1010 — 4자리
+    // Pad to specific number of digits
+    cout &lt;&lt; bitset&lt;8&gt;(10) &lt;&lt; endl;   // 00001010 — auto 8 digits
+    cout &lt;&lt; bitset&lt;4&gt;(10) &lt;&lt; endl;   // 1010 — 4 digits
 }</code></pre>
                 </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text"><code>0b11001</code>은 10진수로 얼마일까요?</span>
+                        <span class="think-box-question-text">What is <code>0b11001</code> in decimal?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        정답은 <strong>25</strong>입니다!
-                        <code>1×16 + 1×8 + 0×4 + 0×2 + 1×1 = 25</code>입니다.
-                        오른쪽부터 1, 2, 4, 8, 16… 자릿값을 곱해서 더하면 됩니다.
+                        The answer is <strong>25</strong>!
+                        <code>1×16 + 1×8 + 0×4 + 0×2 + 1×1 = 25</code>.
+                        Multiply each bit by its place value (1, 2, 4, 8, 16...) from right to left, then add them up.
                     </div>
                 </div>
             </div>
 
-            <!-- 섹션 2: 비트 연산자 -->
+            <!-- Section 2: Bitwise Operators -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">2</span> 비트 연산자
+                    <span class="section-num">2</span> Bitwise Operators
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 비트 연산은 <em>"전등 스위치를 규칙에 따라 조작하는 것"</em>입니다!
-                    AND는 "둘 다 켜져야 켜짐", OR는 "하나라도 켜지면 켜짐",
-                    XOR는 "서로 다를 때만 켜짐"이라고 생각하면 됩니다.
+                    <strong>Understanding by analogy:</strong> Bitwise operations are like <em>"flipping light switches according to rules"</em>!
+                    AND means "both must be ON to stay ON", OR means "ON if at least one is ON",
+                    and XOR means "ON only when they differ".
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
@@ -245,58 +245,58 @@ int main() {
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="26" font-size="18" font-weight="bold" fill="var(--accent)">&amp;</text></svg>
                         </div>
                         <h3>AND (&)</h3>
-                        <p>둘 다 1이면 1, 아니면 0입니다.<br><code>1010 & 1100 = 1000</code></p>
+                        <p>1 only if both are 1, else 0.<br><code>1010 & 1100 = 1000</code></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="10" y="26" font-size="18" font-weight="bold" fill="var(--green)">|</text></svg>
                         </div>
                         <h3>OR (|)</h3>
-                        <p>하나라도 1이면 1입니다.<br><code>1010 | 1100 = 1110</code></p>
+                        <p>1 if at least one is 1.<br><code>1010 | 1100 = 1110</code></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="8" y="26" font-size="18" font-weight="bold" fill="var(--yellow)">^</text></svg>
                         </div>
                         <h3>XOR (^)</h3>
-                        <p>서로 다르면 1, 같으면 0입니다.<br><code>1010 ^ 1100 = 0110</code></p>
+                        <p>1 if they differ, 0 if they match.<br><code>1010 ^ 1100 = 0110</code></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="8" y="26" font-size="18" font-weight="bold" fill="var(--red, #e17055)">~</text></svg>
                         </div>
                         <h3>NOT (~)</h3>
-                        <p>0은 1로, 1은 0으로 뒤집습니다.<br><code>~1010 = 0101</code> (비트 반전)<br>
-                        <a href="https://en.wikipedia.org/wiki/Two%27s_complement" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: 2의 보수 (Two's complement) ↗</a></p>
+                        <p>Flips 0 to 1 and 1 to 0.<br><code>~1010 = 0101</code> (bit inversion)<br>
+                        <a href="https://en.wikipedia.org/wiki/Two%27s_complement" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Two's complement ↗</a></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="26" font-size="14" font-weight="bold" fill="var(--accent)">&lt;&lt;</text></svg>
                         </div>
-                        <h3>왼쪽 시프트 (&lt;&lt;)</h3>
-                        <p>비트를 왼쪽으로 밀고 0을 채웁니다.<br><code>1 &lt;&lt; 3 = 1000₂ = 8</code> (×2<sup>n</sup>)</p>
+                        <h3>Left Shift (&lt;&lt;)</h3>
+                        <p>Shifts bits left and fills with 0s.<br><code>1 &lt;&lt; 3 = 1000₂ = 8</code> (×2<sup>n</sup>)</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="26" font-size="14" font-weight="bold" fill="var(--green)">&gt;&gt;</text></svg>
                         </div>
-                        <h3>오른쪽 시프트 (&gt;&gt;)</h3>
-                        <p>비트를 오른쪽으로 밀어냅니다.<br><code>8 &gt;&gt; 2 = 10₂ = 2</code> (÷2<sup>n</sup>)</p>
+                        <h3>Right Shift (&gt;&gt;)</h3>
+                        <p>Shifts bits to the right.<br><code>8 &gt;&gt; 2 = 10₂ = 2</code> (÷2<sup>n</sup>)</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 비트 연산자 예시
+                    <pre><code class="language-python"># Bitwise operator examples
 a = 0b1010  # 10
 b = 0b1100  # 12
 
 print(bin(a & b))   # '0b1000' → 8  (AND)
 print(bin(a | b))   # '0b1110' → 14 (OR)
 print(bin(a ^ b))   # '0b0110' → 6  (XOR)
-print(bin(~a))      # '-0b1011'     (NOT, 보수)
+print(bin(~a))      # '-0b1011'     (NOT, complement)
 
-# 시프트 연산
-print(1 << 3)       # 8  (1을 왼쪽으로 3칸 → 2³)
-print(16 >> 2)      # 4  (16을 오른쪽으로 2칸 → 16÷4)</code></pre>
+# Shift operations
+print(1 << 3)       # 8  (shift 1 left by 3 → 2³)
+print(16 >> 2)      # 4  (shift 16 right by 2 → 16÷4)</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
                     <pre><code class="language-cpp">#include &lt;iostream&gt;
@@ -310,88 +310,88 @@ int main() {
     cout &lt;&lt; bitset&lt;4&gt;(a & b) &lt;&lt; endl;  // 1000 → 8  (AND)
     cout &lt;&lt; bitset&lt;4&gt;(a | b) &lt;&lt; endl;  // 1110 → 14 (OR)
     cout &lt;&lt; bitset&lt;4&gt;(a ^ b) &lt;&lt; endl;  // 0110 → 6  (XOR)
-    cout &lt;&lt; bitset&lt;4&gt;(~a) &lt;&lt; endl;     // 0101     (NOT, 반전)
+    cout &lt;&lt; bitset&lt;4&gt;(~a) &lt;&lt; endl;     // 0101     (NOT, inversion)
 
-    // 시프트 연산
-    cout &lt;&lt; (1 &lt;&lt; 3) &lt;&lt; endl;   // 8  (1을 왼쪽으로 3칸 → 2³)
-    cout &lt;&lt; (16 >> 2) &lt;&lt; endl;  // 4  (16을 오른쪽으로 2칸 → 16÷4)
+    // Shift operations
+    cout &lt;&lt; (1 &lt;&lt; 3) &lt;&lt; endl;   // 8  (shift 1 left by 3 → 2³)
+    cout &lt;&lt; (16 >> 2) &lt;&lt; endl;  // 4  (shift 16 right by 2 → 16÷4)
 }</code></pre>
                 </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text"><code>5 & 3</code>의 결과는 무엇일까요? 2진수로 풀어보세요!</span>
+                        <span class="think-box-question-text">What is the result of <code>5 & 3</code>? Try solving it in binary!</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        정답은 <strong>1</strong>입니다!
-                        5 = <code>101</code>, 3 = <code>011</code>이므로
-                        <code>101 & 011 = 001</code> = 1입니다. 둘 다 1인 자리만 1이 됩니다.
+                        The answer is <strong>1</strong>!
+                        5 = <code>101</code>, 3 = <code>011</code>, so
+                        <code>101 & 011 = 001</code> = 1. Only positions where both are 1 result in 1.
                     </div>
                 </div>
             </div>
 
-            <!-- 섹션 3: 비트 마스크 -->
+            <!-- Section 3: Bitmask -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">3</span> 비트 마스크
+                    <span class="section-num">3</span> Bitmask
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 비트 마스크는 <em>"체크리스트"</em>와 같습니다!
-                    체크리스트에 할 일 5개가 있다면, 각 칸에 체크(1) 또는 미체크(0)를 표시합니다.
-                    예를 들어 <code>10110</code>이면 1번, 2번, 4번 항목이 완료된 것입니다.
-                    이렇게 <strong>집합을 하나의 정수</strong>로 표현할 수 있습니다!
+                    <strong>Understanding by analogy:</strong> A bitmask is like a <em>"checklist"</em>!
+                    If you have 5 items on a checklist, each slot is either checked (1) or unchecked (0).
+                    For example, <code>10110</code> means items 1, 2, and 4 are completed.
+                    This way, you can represent a <strong>set as a single integer</strong>!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">확인</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">Check</text></svg>
                         </div>
-                        <h3>i번째 비트 확인</h3>
-                        <p><code>num & (1 &lt;&lt; i)</code>로 i번째 비트가 1인지 확인합니다. 0이 아니면 설정된 것입니다!</p>
+                        <h3>Check i-th Bit</h3>
+                        <p><code>num & (1 &lt;&lt; i)</code> checks if the i-th bit is 1. Non-zero means it's set!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--green)">설정</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--green)">Set</text></svg>
                         </div>
-                        <h3>i번째 비트 설정</h3>
-                        <p><code>num | (1 &lt;&lt; i)</code>로 i번째 비트를 1로 켭니다. 이미 1이어도 괜찮습니다.</p>
+                        <h3>Set i-th Bit</h3>
+                        <p><code>num | (1 &lt;&lt; i)</code> turns the i-th bit ON (to 1). Safe even if already 1.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">토글</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">Toggle</text></svg>
                         </div>
-                        <h3>i번째 비트 토글</h3>
-                        <p><code>num ^ (1 &lt;&lt; i)</code>로 i번째 비트를 반전합니다. 0→1, 1→0이 됩니다.</p>
+                        <h3>Toggle i-th Bit</h3>
+                        <p><code>num ^ (1 &lt;&lt; i)</code> flips the i-th bit. 0 becomes 1, 1 becomes 0.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--red, #e17055)">제거</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--red, #e17055)">Clear</text></svg>
                         </div>
-                        <h3>i번째 비트 제거</h3>
-                        <p><code>num & ~(1 &lt;&lt; i)</code>로 i번째 비트를 0으로 끕니다. 이미 0이어도 괜찮습니다.</p>
+                        <h3>Clear i-th Bit</h3>
+                        <p><code>num & ~(1 &lt;&lt; i)</code> turns the i-th bit OFF (to 0). Safe even if already 0.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 비트 마스크 기본 연산
-S = 0b10110  # 집합 {1, 2, 4}
+                    <pre><code class="language-python"># Bitmask basic operations
+S = 0b10110  # Set {1, 2, 4}
 
-# i번째 비트 확인 (i=2 확인)
-print(bool(S & (1 << 2)))  # True — 2번 비트가 1
+# Check i-th bit (check i=2)
+print(bool(S & (1 << 2)))  # True — bit 2 is 1
 
-# i번째 비트 설정 (i=0 추가)
+# Set i-th bit (add i=0)
 S = S | (1 << 0)
 print(bin(S))  # '0b10111' — {0, 1, 2, 4}
 
-# i번째 비트 토글 (i=1 반전)
+# Toggle i-th bit (flip i=1)
 S = S ^ (1 << 1)
 print(bin(S))  # '0b10101' — {0, 2, 4}
 
-# i번째 비트 제거 (i=2 제거)
+# Clear i-th bit (remove i=2)
 S = S & ~(1 << 2)
 print(bin(S))  # '0b10001' — {0, 4}
 
-# 전체 집합 (원소 5개: {0,1,2,3,4})
+# Full set (5 elements: {0,1,2,3,4})
 ALL = (1 << 5) - 1  # 0b11111 = 31</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
@@ -400,103 +400,103 @@ ALL = (1 << 5) - 1  # 0b11111 = 31</code></pre>
 using namespace std;
 
 int main() {
-    int S = 0b10110;  // 집합 {1, 2, 4}
+    int S = 0b10110;  // Set {1, 2, 4}
 
-    // i번째 비트 확인 (i=2 확인)
-    cout &lt;&lt; ((S & (1 &lt;&lt; 2)) != 0) &lt;&lt; endl;  // 1 — 2번 비트가 1
+    // Check i-th bit (check i=2)
+    cout &lt;&lt; ((S & (1 &lt;&lt; 2)) != 0) &lt;&lt; endl;  // 1 — bit 2 is 1
 
-    // i번째 비트 설정 (i=0 추가)
+    // Set i-th bit (add i=0)
     S = S | (1 &lt;&lt; 0);
     cout &lt;&lt; bitset&lt;5&gt;(S) &lt;&lt; endl;  // 10111 — {0, 1, 2, 4}
 
-    // i번째 비트 토글 (i=1 반전)
+    // Toggle i-th bit (flip i=1)
     S = S ^ (1 &lt;&lt; 1);
     cout &lt;&lt; bitset&lt;5&gt;(S) &lt;&lt; endl;  // 10101 — {0, 2, 4}
 
-    // i번째 비트 제거 (i=2 제거)
+    // Clear i-th bit (remove i=2)
     S = S & ~(1 &lt;&lt; 2);
     cout &lt;&lt; bitset&lt;5&gt;(S) &lt;&lt; endl;  // 10001 — {0, 4}
 
-    // 전체 집합 (원소 5개: {0,1,2,3,4})
+    // Full set (5 elements: {0,1,2,3,4})
     int ALL = (1 &lt;&lt; 5) - 1;  // 0b11111 = 31
 }</code></pre>
                 </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">집합 {0, 3, 4}를 비트 마스크로 표현하면 2진수와 10진수로 각각 얼마일까요?</span>
+                        <span class="think-box-question-text">How do you represent the set {0, 3, 4} as a bitmask? What is it in binary and decimal?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        2진수: <strong>11001</strong>, 10진수: <strong>25</strong>입니다!
-                        0번 비트(1) + 3번 비트(8) + 4번 비트(16) = 25입니다.
-                        <code>1 | (1 &lt;&lt; 3) | (1 &lt;&lt; 4) = 25</code>로 만들 수 있습니다.
+                        Binary: <strong>11001</strong>, Decimal: <strong>25</strong>!
+                        Bit 0 (1) + Bit 3 (8) + Bit 4 (16) = 25.
+                        You can create it with <code>1 | (1 &lt;&lt; 3) | (1 &lt;&lt; 4) = 25</code>.
                     </div>
                 </div>
             </div>
 
-            <!-- 섹션 4: XOR의 마법 -->
+            <!-- Section 4: XOR Magic -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">4</span> XOR의 마법
+                    <span class="section-num">4</span> XOR Magic
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> XOR은 <em>"짝꿍 찾기 게임"</em>과 같습니다!
-                    같은 숫자끼리 XOR하면 사라지고(0이 되고), 짝이 없는 숫자만 남습니다.
-                    마치 짝꿍끼리 손을 잡고 나가면 혼자 남은 아이를 찾을 수 있는 것과 같습니다!
+                    <strong>Understanding by analogy:</strong> XOR is like a <em>"pair matching game"</em>!
+                    When you XOR the same number with itself, it cancels out (becomes 0), and only the unpaired number remains.
+                    It's like pairing up students: the one left alone is the answer!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">a^a=0</text></svg>
                         </div>
-                        <h3>자기 자신과 XOR</h3>
-                        <p>같은 수끼리 XOR하면 0이 됩니다. 모든 비트가 같으므로 결과가 모두 0입니다.</p>
+                        <h3>XOR with Itself</h3>
+                        <p>XOR of a number with itself is 0. All bits are the same, so the result is all zeros.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--green)">a^0=a</text></svg>
                         </div>
-                        <h3>0과 XOR</h3>
-                        <p>어떤 수와 0을 XOR하면 원래 수가 그대로 나옵니다. 0은 아무 영향을 주지 않습니다.</p>
+                        <h3>XOR with 0</h3>
+                        <p>XOR of any number with 0 gives the number itself. 0 has no effect.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">유일!</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">Unique!</text></svg>
                         </div>
-                        <h3>중복 없는 수 찾기</h3>
-                        <p>모든 수가 2번씩 나오고 1개만 1번 나올 때, 전부 XOR하면 그 수만 남습니다!</p>
+                        <h3>Find the Unique Number</h3>
+                        <p>If every number appears twice except one, XOR them all and only the unique number remains!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--red, #e17055)">swap</text></svg>
                         </div>
-                        <h3>XOR로 swap</h3>
-                        <p>임시 변수 없이 두 변수를 교환할 수 있습니다. <code>a^=b; b^=a; a^=b;</code></p>
+                        <h3>XOR Swap</h3>
+                        <p>Swap two variables without a temp variable: <code>a^=b; b^=a; a^=b;</code></p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># XOR 성질
-print(7 ^ 7)    # 0 — 같은 수 XOR = 0
-print(7 ^ 0)    # 7 — 0과 XOR = 자기자신
+                    <pre><code class="language-python"># XOR properties
+print(7 ^ 7)    # 0 — XOR with itself = 0
+print(7 ^ 0)    # 7 — XOR with 0 = itself
 
-# 중복 없는 수 찾기 (Single Number)
+# Find the unique number (Single Number)
 nums = [2, 3, 1, 3, 2]
 result = 0
 for n in nums:
     result ^= n     # 2^3^1^3^2 = (2^2)^(3^3)^1 = 0^0^1 = 1
-print(result)       # 1 — 짝이 없는 수!
+print(result)       # 1 — the unpaired number!
 
-# XOR로 swap (임시 변수 없이!)
+# XOR swap (no temp variable!)
 a, b = 5, 10
 a ^= b    # a = 5^10
 b ^= a    # b = 10^(5^10) = 5
 a ^= b    # a = (5^10)^5 = 10
 print(a, b)  # 10, 5
 
-# n & (n-1): 가장 낮은 1 비트 제거
+# n & (n-1): remove the lowest set bit
 n = 0b10110  # 22
-print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></pre>
+print(bin(n & (n - 1)))  # '0b10100' → 20 (lowest 1 bit removed!)</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
                     <pre><code class="language-cpp">#include &lt;iostream&gt;
@@ -504,39 +504,39 @@ print(bin(n & (n - 1)))  # '0b10100' → 20 (마지막 1이 사라짐!)</code></
 using namespace std;
 
 int main() {
-    // XOR 성질
-    cout &lt;&lt; (7 ^ 7) &lt;&lt; endl;    // 0 — 같은 수 XOR = 0
-    cout &lt;&lt; (7 ^ 0) &lt;&lt; endl;    // 7 — 0과 XOR = 자기자신
+    // XOR properties
+    cout &lt;&lt; (7 ^ 7) &lt;&lt; endl;    // 0 — XOR with itself = 0
+    cout &lt;&lt; (7 ^ 0) &lt;&lt; endl;    // 7 — XOR with 0 = itself
 
-    // 중복 없는 수 찾기 (Single Number)
+    // Find the unique number (Single Number)
     int nums[] = {2, 3, 1, 3, 2};
     int result = 0;
     for (int n : nums)
         result ^= n;     // 2^3^1^3^2 = (2^2)^(3^3)^1 = 0^0^1 = 1
-    cout &lt;&lt; result &lt;&lt; endl;  // 1 — 짝이 없는 수!
+    cout &lt;&lt; result &lt;&lt; endl;  // 1 — the unpaired number!
 
-    // XOR로 swap (임시 변수 없이!)
+    // XOR swap (no temp variable!)
     int a = 5, b = 10;
     a ^= b;    // a = 5^10
     b ^= a;    // b = 10^(5^10) = 5
     a ^= b;    // a = (5^10)^5 = 10
     cout &lt;&lt; a &lt;&lt; " " &lt;&lt; b &lt;&lt; endl;  // 10, 5
 
-    // n & (n-1): 가장 낮은 1 비트 제거
+    // n & (n-1): remove the lowest set bit
     int n = 0b10110;  // 22
-    cout &lt;&lt; bitset&lt;5&gt;(n & (n - 1)) &lt;&lt; endl;  // 10100 → 20 (마지막 1이 사라짐!)
+    cout &lt;&lt; bitset&lt;5&gt;(n & (n - 1)) &lt;&lt; endl;  // 10100 → 20 (lowest 1 bit removed!)
 }</code></pre>
                 </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">배열 [4, 1, 2, 1, 2]를 모두 XOR하면 결과는 무엇일까요?</span>
+                        <span class="think-box-question-text">What is the result of XORing all elements in [4, 1, 2, 1, 2]?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        정답은 <strong>4</strong>입니다!
-                        <code>4^1^2^1^2 = 4^(1^1)^(2^2) = 4^0^0 = 4</code>입니다.
-                        짝이 있는 1과 2는 사라지고, 혼자인 4만 남습니다.
+                        The answer is <strong>4</strong>!
+                        <code>4^1^2^1^2 = 4^(1^1)^(2^2) = 4^0^0 = 4</code>.
+                        The paired numbers 1 and 2 cancel out, leaving only the unpaired number 4.
                     </div>
                 </div>
             </div>
@@ -563,15 +563,15 @@ int main() {
 
         container.innerHTML =
             '<div class="hero" style="padding-bottom:12px;">' +
-            '<h2>XOR로 중복 없는 수 찾기 시각화</h2>' +
-            '<p class="hero-sub">배열의 모든 원소를 XOR하면 짝이 없는 수만 남는 과정을 단계별로 봅시다.</p>' +
+            '<h2>Visualizing XOR to Find the Unique Number</h2>' +
+            '<p class="hero-sub">Let\'s see step by step how XORing all elements leaves only the unpaired number.</p>' +
             '</div>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">배열: ' +
+            '<label style="font-weight:600;">Array: ' +
             '<input type="text" id="bit-viz-input-' + suffix + '" value="4, 1, 2, 1, 2, 3, 4" ' +
             'style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;">' +
             '</label>' +
-            '<button class="btn btn-primary" id="bit-viz-start-' + suffix + '">시작</button>' +
+            '<button class="btn btn-primary" id="bit-viz-start-' + suffix + '">Start</button>' +
             '</div>' +
             '<div class="graph-svg-container" style="min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">' +
             '<div id="bit-array-display-' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
@@ -579,15 +579,15 @@ int main() {
             '</div>' +
             '<div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">' +
             '<div style="flex:1;min-width:150px;">' +
-            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">상태</div>' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Status</div>' +
             '<div id="bit-status-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">Press Start</div>' +
             '</div></div>' +
             self._createStepControls(suffix) +
             '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
-            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>' +
-            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 XOR 중</span>' +
-            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>' +
-            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(108,92,231,0.3);border:2px solid var(--accent);vertical-align:middle;"></span> 변경된 비트</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> Waiting</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> Currently XORing</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> Processed</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(108,92,231,0.3);border:2px solid var(--accent);vertical-align:middle;"></span> Changed bits</span>' +
             '</div>';
 
         var arrayDisplay = container.querySelector('#bit-array-display-' + suffix);
@@ -657,24 +657,24 @@ int main() {
             var raw = container.querySelector('#bit-viz-input-' + suffix).value;
             var nums = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
             if (nums.length === 0) {
-                statusEl.innerHTML = '<span style="color:var(--red,#e17055);">숫자를 입력해주세요!</span>';
+                statusEl.innerHTML = '<span style="color:var(--red,#e17055);">Please enter numbers!</span>';
                 return;
             }
 
             renderArrayBoxes(nums);
             xorDisplay.innerHTML = '';
-            statusEl.innerHTML = '준비 완료';
+            statusEl.innerHTML = 'Ready';
 
             var steps = [];
             var runningXor = 0;
 
             steps.push({
-                description: 'result = 0 으로 시작합니다.',
+                description: 'Start with result = 0.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
                     xorDisplay.innerHTML = renderBitRow('result = 0', 0, null);
-                    statusEl.innerHTML = 'result를 0으로 초기화했습니다.';
+                    statusEl.innerHTML = 'Initialized result to 0.';
                 },
                 undo: function() { restoreState(this._before); }
             });
@@ -694,7 +694,7 @@ int main() {
 
                 (function(idx, num, prevXor, newXor, prevBin, numBin, newBin, changedBits) {
                     steps.push({
-                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor + ' (2진수: ' + prevBin + ' ^ ' + numBin + ' = ' + newBin + ')',
+                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor + ' (binary: ' + prevBin + ' ^ ' + numBin + ' = ' + newBin + ')',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -710,7 +710,7 @@ int main() {
                             html += '<div style="border-top:2px solid var(--border);width:80%;margin:4px 0;"></div>';
                             html += renderBitRow('result = ' + newXor, newXor, changedBits);
                             xorDisplay.innerHTML = html;
-                            statusEl.innerHTML = 'result ^= ' + num + ' → <strong>' + newXor + '</strong> (2진수: ' + newBin + ')';
+                            statusEl.innerHTML = 'result ^= ' + num + ' → <strong>' + newXor + '</strong> (binary: ' + newBin + ')';
                         },
                         undo: function() { restoreState(this._before); }
                     });
@@ -721,14 +721,14 @@ int main() {
 
             var finalResult = runningXor;
             steps.push({
-                description: '완료! 모든 원소를 XOR한 결과: ' + finalResult + ' — 이것이 짝이 없는 수입니다!',
+                description: 'Done! XOR of all elements: ' + finalResult + ' — this is the unpaired number!',
                 _before: null,
                 action: function() {
                     this._before = saveState();
                     for (var j = 0; j < nums.length; j++) setArrayBoxState(j, 'matched');
-                    var html = renderBitRow('최종 result', finalResult, null);
+                    var html = renderBitRow('Final result', finalResult, null);
                     xorDisplay.innerHTML = html;
-                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.2rem;">✓ 짝이 없는 수는 <strong>' + finalResult + '</strong>입니다!</span>';
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.2rem;">✓ The unpaired number is <strong>' + finalResult + '</strong>!</span>';
                 },
                 undo: function() { restoreState(this._before); }
             });
@@ -748,9 +748,9 @@ int main() {
 
     _createStepControls(suffix) {
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
             '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
             '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
     },
 
@@ -796,7 +796,7 @@ int main() {
         var self = this, suffix = '-hw1';
         var DEFAULT_N = 11;
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">n & (n-1) 트릭으로 1 비트 세기</h3>' +
+            '<h3 style="margin-bottom:8px;">Counting 1-bits with the n & (n-1) trick</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">n: <input type="number" id="bit-hw-input" value="' + DEFAULT_N + '" min="0" max="1023" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;"></label>' +
             '<button class="btn btn-primary" id="bit-hw-reset">🔄</button>' +
@@ -858,18 +858,18 @@ int main() {
             }
             var finalCount = count;
             steps.push({
-                description: '완료! n = 0이 되었으므로 종료. 1 비트 개수 = ' + finalCount,
-                action: function() { renderBits(0, -1, numBits); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 1 비트 개수 = ' + finalCount + '</strong>'; },
+                description: 'Done! n = 0, so we stop. Number of 1-bits = ' + finalCount,
+                action: function() { renderBits(0, -1, numBits); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Number of 1-bits = ' + finalCount + '</strong>'; },
                 undo: function() { renderBits(0, -1, numBits); infoEl.innerHTML = 'n = 0, count = ' + finalCount; }
             });
             return steps;
         }
 
         function initSim(n) {
-            descEl.textContent = 'n = ' + n + ' (2진수: ' + (n >>> 0).toString(2) + ')의 1 비트 개수를 셉니다.';
+            descEl.textContent = 'Counting the number of 1-bits in n = ' + n + ' (binary: ' + (n >>> 0).toString(2) + ').';
             var numBits = Math.max(8, (n >>> 0).toString(2).length);
             renderBits(n, -1, numBits);
-            infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — n & (n-1)을 반복합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — repeatedly applying n & (n-1).</span>';
             var steps = buildSteps(n);
             self._initStepController(container, steps, suffix);
         }
@@ -901,9 +901,9 @@ int main() {
         }
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">XOR로 짝 없는 수 찾기</h3>' +
+            '<h3 style="margin-bottom:8px;">Finding the unpaired number with XOR</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">배열: <input type="text" id="bit-single-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<label style="font-weight:600;">Array: <input type="text" id="bit-single-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="bit-single-reset">🔄</button>' +
             '</div>' +
             '<p id="sn-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
@@ -964,9 +964,9 @@ int main() {
             var runXor = 0;
 
             steps.push({
-                description: 'result = 0 으로 시작합니다.',
+                description: 'Start with result = 0.',
                 _before: null,
-                action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'result를 0으로 초기화했습니다.'; },
+                action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'Initialized result to 0.'; },
                 undo: function() { restoreState(this._before); }
             });
 
@@ -1008,13 +1008,13 @@ int main() {
             var finalResult = runXor;
             var numsLen = nums.length;
             steps.push({
-                description: '완료! 짝이 없는 수는 ' + finalResult + '입니다!',
+                description: 'Done! The unpaired number is ' + finalResult + '!',
                 _before: null,
                 action: function() {
                     this._before = saveState();
                     for (var j = 0; j < numsLen; j++) setArrState(j, 'matched');
-                    xorEl.innerHTML = renderBitRow('최종 result', finalResult, null);
-                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 짝이 없는 수 = ' + finalResult + '</strong>';
+                    xorEl.innerHTML = renderBitRow('Final result', finalResult, null);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Unpaired number = ' + finalResult + '</strong>';
                 },
                 undo: function() { restoreState(this._before); }
             });
@@ -1023,10 +1023,10 @@ int main() {
         }
 
         function initSim(nums) {
-            descEl.textContent = '배열 [' + nums.join(', ') + ']의 모든 원소를 XOR합니다.';
+            descEl.textContent = 'XOR all elements of array [' + nums.join(', ') + '].';
             renderArrayBoxes(nums);
             xorEl.innerHTML = '';
-            infoEl.innerHTML = '<span style="color:var(--text2);">result = 0 부터 시작합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting with result = 0.</span>';
             var steps = buildSteps(nums);
             self._initStepController(container, steps, suffix);
         }
@@ -1036,7 +1036,7 @@ int main() {
             var raw = container.querySelector('#bit-single-input').value;
             var nums = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
             if (nums.length === 0) {
-                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">숫자를 입력해주세요! (예: 2, 3, 1, 3, 2)</span>';
+                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">Please enter numbers! (e.g., 2, 3, 1, 3, 2)</span>';
                 return;
             }
             initSim(nums);
@@ -1047,7 +1047,7 @@ int main() {
     },
 
     // ====================================================================
-    // Simulation 3: 비트마스크 집합 (boj-11723)
+    // Simulation 3: Bitmask Set (boj-11723)
     // ====================================================================
     _renderVizBitmaskSet(container) {
         var self = this, suffix = '-bms';
@@ -1055,13 +1055,13 @@ int main() {
         var SHOW_BITS = 8;
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">비트마스크로 집합 연산</h3>' +
+            '<h3 style="margin-bottom:8px;">Set operations with bitmasks</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">연산: <input type="text" id="bit-mask-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:400px;"></label>' +
+            '<label style="font-weight:600;">Operations: <input type="text" id="bit-mask-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:400px;"></label>' +
             '<button class="btn btn-primary" id="bit-mask-reset">🔄</button>' +
             '</div>' +
-            '<p style="color:var(--text3);font-size:0.8rem;margin-top:-12px;margin-bottom:16px;">형식: add N, remove N, check N, toggle N, all, empty (쉼표로 구분)</p>' +
-            '<p id="bms-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">정수 하나로 집합을 표현하고 add/remove/toggle/check 연산을 수행합니다.</p>' +
+            '<p style="color:var(--text3);font-size:0.8rem;margin-top:-12px;margin-bottom:16px;">Format: add N, remove N, check N, toggle N, all, empty (comma-separated)</p>' +
+            '<p id="bms-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">Represent a set with a single integer and perform add/remove/toggle/check operations.</p>' +
             '<div id="bms-bits' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="bms-set' + suffix + '" style="text-align:center;margin-bottom:8px;font-weight:600;color:var(--accent);"></div>' +
             '<div id="bms-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -1087,7 +1087,7 @@ int main() {
         function renderSet(S, showBits) {
             var elems = [];
             for (var i = 0; i < showBits; i++) { if ((S >> i) & 1) elems.push(i); }
-            setEl.textContent = 'S = {' + elems.join(', ') + '} (정수: ' + S + ')';
+            setEl.textContent = 'S = {' + elems.join(', ') + '} (integer: ' + S + ')';
         }
 
         function parseOps(str) {
@@ -1128,31 +1128,31 @@ int main() {
                     newS = S | (1 << op.x);
                     desc = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트를 1로 설정';
+                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — set bit ' + op.x + ' to 1';
                 } else if (op.cmd === 'remove') {
                     newS = S & ~(1 << op.x);
                     desc = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트를 0으로';
+                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — clear bit ' + op.x + ' to 0';
                 } else if (op.cmd === 'toggle') {
                     newS = S ^ (1 << op.x);
                     desc = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트 반전';
+                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — flip bit ' + op.x + '';
                 } else if (op.cmd === 'check') {
                     var result = (S >> op.x) & 1;
                     newS = S;
                     desc = 'check ' + op.x + ': (S &gt;&gt; ' + op.x + ') & 1 = ' + result;
                     hlBit = op.x < showBits ? op.x : -1;
-                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? '있음' : '없음') + ')';
+                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? 'present' : 'absent') + ')';
                 } else if (op.cmd === 'all') {
                     newS = (1 << showBits) - 1;
                     desc = 'all: S = (1 &lt;&lt; ' + showBits + ') - 1 → S = ' + newS;
-                    infoText = 'all: 모든 비트를 1로 설정 → S = ' + newS;
+                    infoText = 'all: set all bits to 1 → S = ' + newS;
                 } else if (op.cmd === 'empty') {
                     newS = 0;
                     desc = 'empty: S = 0';
-                    infoText = 'empty: 모든 비트를 0으로 → S = 0';
+                    infoText = 'empty: clear all bits to 0 → S = 0';
                 }
 
                 (function(prevS, newS, desc, hlBit, infoText, showBits) {
@@ -1173,7 +1173,7 @@ int main() {
             var result = buildSteps(ops);
             renderBits(0, -1, result.showBits);
             renderSet(0, result.showBits);
-            infoEl.innerHTML = '<span style="color:var(--text2);">S = 0 (공집합)에서 시작합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting with S = 0 (empty set).</span>';
             self._initStepController(container, result.steps, suffix);
         }
 
@@ -1182,7 +1182,7 @@ int main() {
             var raw = container.querySelector('#bit-mask-input').value;
             var ops = parseOps(raw);
             if (ops.length === 0) {
-                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">연산을 입력해주세요! (예: add 1, add 3, check 1)</span>';
+                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">Please enter operations! (e.g., add 1, add 3, check 1)</span>';
                 return;
             }
             initSim(ops);
@@ -1192,7 +1192,7 @@ int main() {
     },
 
     // ====================================================================
-    // Simulation 4: 부분집합 열거 (lc-78)
+    // Simulation 4: Subset Enumeration (lc-78)
     // ====================================================================
     _renderVizSubsets(container) {
         var self = this, suffix = '-sub';
@@ -1200,11 +1200,11 @@ int main() {
         var MAX_ELEMENTS = 6;
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">비트마스크로 부분집합 열거</h3>' +
+            '<h3 style="margin-bottom:8px;">Enumerating subsets with bitmasks</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">배열: <input type="text" id="bit-subset-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
+            '<label style="font-weight:600;">Array: <input type="text" id="bit-subset-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
             '<button class="btn btn-primary" id="bit-subset-reset">🔄</button>' +
-            '<span style="font-size:0.8rem;color:var(--text3);">최대 ' + MAX_ELEMENTS + '개 원소</span>' +
+            '<span style="font-size:0.8rem;color:var(--text3);">Max ' + MAX_ELEMENTS + ' elements</span>' +
             '</div>' +
             '<p id="sub-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="sub-mask' + suffix + '" style="display:flex;gap:4px;justify-content:center;margin-bottom:8px;"></div>' +
@@ -1261,7 +1261,7 @@ int main() {
 
                 (function(mask, subset, maskBin, snapSubsets, nums, n) {
                     steps.push({
-                        description: 'mask = ' + mask + ' (' + maskBin + ') → 부분집합: [' + subset.join(', ') + ']',
+                        description: 'mask = ' + mask + ' (' + maskBin + ') → Subset: [' + subset.join(', ') + ']',
                         action: function() {
                             renderMask(mask, n);
                             renderArr(mask, nums);
@@ -1279,7 +1279,7 @@ int main() {
                                 renderMask(0, n);
                                 renderArr(0, nums);
                             }
-                            infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회합니다.</span>';
+                            infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + ' iterating through masks.</span>';
                         }
                     });
                 })(mask, subset, maskBin, collectedSubsets.slice(), nums, n);
@@ -1291,7 +1291,7 @@ int main() {
 
             var total = (1 << n);
             steps.push({
-                description: '완료! 총 ' + total + '개의 부분집합을 모두 열거했습니다.',
+                description: 'Done! Enumerated all ' + total + ' subsets.',
                 action: function() {
                     collectedSubsets = [];
                     for (var m = 0; m < (1 << n); m++) {
@@ -1302,7 +1302,7 @@ int main() {
                     renderCollected();
                     renderMask((1 << n) - 1, n);
                     renderArr((1 << n) - 1, nums);
-                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 총 ' + total + '개의 부분집합 열거 완료!</strong>';
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ All ' + total + ' subsets enumerated!</strong>';
                 },
                 undo: function() {
                     collectedSubsets = [];
@@ -1324,11 +1324,11 @@ int main() {
         function initSim(nums) {
             var n = nums.length;
             collectedSubsets = [];
-            descEl.textContent = 'nums = [' + nums.join(', ') + ']의 모든 부분집합을 비트 마스크 0~' + ((1 << n) - 1) + '로 열거합니다.';
+            descEl.textContent = 'Enumerate all subsets of nums = [' + nums.join(', ') + '] using bitmasks 0 to ' + ((1 << n) - 1) + '.';
             renderMask(0, n);
             renderArr(0, nums);
             resultEl.innerHTML = '';
-            infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + '을 순회하며 부분집합을 생성합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">mask = 0 ~ ' + ((1 << n) - 1) + ' generating subsets.</span>';
             var steps = buildSteps(nums);
             self._initStepController(container, steps, suffix);
         }
@@ -1338,13 +1338,13 @@ int main() {
             var raw = container.querySelector('#bit-subset-input').value;
             var nums = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
             if (nums.length === 0) {
-                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">숫자를 입력해주세요! (예: 1, 2, 3)</span>';
+                infoEl.innerHTML = '<span style="color:var(--red,#e17055);">Please enter numbers! (e.g., 1, 2, 3)</span>';
                 return;
             }
             if (nums.length > MAX_ELEMENTS) {
                 nums = nums.slice(0, MAX_ELEMENTS);
                 container.querySelector('#bit-subset-input').value = nums.join(', ');
-                infoEl.innerHTML = '<span style="color:var(--yellow);">원소가 ' + MAX_ELEMENTS + '개를 초과하여 앞 ' + MAX_ELEMENTS + '개만 사용합니다.</span>';
+                infoEl.innerHTML = '<span style="color:var(--yellow);">Exceeded ' + MAX_ELEMENTS + ' elements. Only the first ' + MAX_ELEMENTS + ' will be used.</span>';
             }
             initSim(nums);
         });
@@ -1357,37 +1357,37 @@ int main() {
     stages: [
         {
             num: 1,
-            title: '기본 비트 연산',
-            desc: '비트 연산의 기초와 XOR 활용 (Easy)',
+            title: 'Basic Bit Operations',
+            desc: 'Fundamentals of bit operations and XOR usage (Easy)',
             problemIds: ['lc-191', 'lc-136']
         },
         {
             num: 2,
-            title: '비트 마스크 응용',
-            desc: '비트 마스크로 집합과 부분집합 다루기 (Silver~Medium)',
+            title: 'Bitmask Applications',
+            desc: 'Using bitmasks to handle sets and subsets (Silver~Medium)',
             problemIds: ['boj-11723', 'lc-78']
         }
     ],
 
     problems: [
-        // ===== 1단계: 기본 비트 연산 =====
+        // ===== Stage 1: Basic Bit Operations =====
         {
             id: 'lc-191',
             title: 'LeetCode 191 - Number of 1 Bits',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/number-of-1-bits/',
-            simIntro: 'n & (n-1) 트릭으로 1 비트를 하나씩 제거하는 과정을 관찰하세요.',
+            simIntro: 'Observe how the n & (n-1) trick removes one set bit at a time.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>양의 정수 <code>n</code>의 이진 표현에서 1인 비트의 개수(해밍 가중치)를 반환하세요.</p>
+                <p>Given a positive integer <code>n</code>, return the number of set bits (1-bits) in its binary representation (also known as the Hamming weight).</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>n = 11</pre></div>
                     <div><strong>Output</strong><pre>3</pre></div>
-                </div><p>11의 이진 표현은 1011이므로 1비트가 3개입니다.</p></div>
+                </div><p>The binary representation of 11 is 1011, which has 3 set bits.</p></div>
                 <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>n = 128</pre></div>
                     <div><strong>Output</strong><pre>1</pre></div>
-                </div><p>128의 이진 표현은 10000000이므로 1비트가 1개입니다.</p></div>
+                </div><p>The binary representation of 128 is 10000000, which has 1 set bit.</p></div>
                 <div class="problem-example"><h4>Example 3</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>n = 2147483645</pre></div>
                     <div><strong>Output</strong><pre>30</pre></div>
@@ -1395,45 +1395,45 @@ int main() {
                 <h4>Constraints</h4>
                 <ul><li>1 &le; n &le; 2<sup>31</sup> - 1</li></ul>
                 <h4>Follow-up</h4>
-                <p>입력이 여러 번 주어진다면, 어떻게 최적화할 수 있을까요?</p>
+                <p>If this function is called many times, how would you optimize it?</p>
             `,
             hints: [
                 {
                     title: 'First intuition',
-                    content: '이진수에서 1의 개수를 세야 하니까... 일단 각 비트를 하나씩 확인하면 되지 않을까요?<br><br>맨 오른쪽 비트부터 <code>&amp; 1</code>로 1인지 확인하고, 오른쪽 시프트(<code>&gt;&gt; 1</code>)로 다음 비트를 확인하는 거예요.<br>32비트 정수라면 32번 반복하면 되겠죠!'
+                    content: 'We need to count the number of 1s in binary... how about checking each bit one by one?<br><br>Starting from the rightmost bit, use <code>&amp; 1</code> to check if it is 1, then right-shift (<code>&gt;&gt; 1</code>) to move to the next bit.<br>For a 32-bit integer, just repeat 32 times!'
                 },
                 {
-                    title: '근데 이러면 아쉬운 점이 있어',
-                    content: '32번 반복이 느린 건 아니지만, 만약 1 비트가 딱 2개뿐인데도 32번 돌아야 해요.<br><br>예를 들어 <code>10000000 00000000 00000000 00000001</code>은 1이 2개뿐인데, 나머지 30개의 0도 다 확인하는 거죠. <strong>1 비트 개수만큼만 반복</strong>할 수는 없을까요?'
+                    title: 'But there is a downside',
+                    content: 'Looping 32 times is not exactly slow, but what if there are only 2 set bits and we still loop 32 times?<br><br>For example, <code>10000000 00000000 00000000 00000001</code> has only 2 ones, yet we check all 30 zeros too. Is there a way to <strong>loop only as many times as there are set bits</strong>?'
                 },
                 {
                     title: 'What if we try this?',
-                    content: '마법 같은 트릭이 있어요: <code>n &amp; (n-1)</code>을 하면 <strong>가장 낮은 1 비트가 딱 하나 사라져요!</strong><br><br>왜 그럴까요? <code>n-1</code>은 가장 낮은 1 비트를 0으로 바꾸고 그 아래를 전부 1로 만들거든요.<br><code>1100 → (n-1) = 1011 → 1100 &amp; 1011 = 1000</code> — 1 비트가 하나 제거됐죠!<br><br>이걸 <strong>n이 0이 될 때까지</strong> 반복하면, 반복 횟수 = 1 비트 개수! O(k)로 끝나요 (k = 1의 개수).'
+                    content: 'There is a magical trick: <code>n &amp; (n-1)</code> removes exactly <strong>the lowest set bit</strong>!<br><br>Why does this work? <code>n-1</code> flips the lowest set bit to 0 and turns all bits below it to 1.<br><code>1100 → (n-1) = 1011 → 1100 &amp; 1011 = 1000</code> — one set bit is removed!<br><br>Repeat this <strong>until n becomes 0</strong>, and the number of iterations = the number of set bits! This runs in O(k) where k = number of 1s.'
                 },
                 {
                     title: 'In Python/C++!',
-                    content: '원리를 이해했다면, 사실 내장 함수도 있어요:<br><br><span class="lang-py">Python: <code>bin(n).count("1")</code> — 이진 문자열로 바꿔서 "1" 개수를 세는 한 줄 풀이!</span><span class="lang-cpp">C++: <code>__builtin_popcount(n)</code> — GCC 내장 함수로 1 비트 개수를 바로 반환!</span><br><br>하지만 면접에서는 <code>n &amp; (n-1)</code> 트릭을 직접 구현하는 걸 기대하니, 둘 다 알아두세요!'
+                    content: 'Now that you understand the principle, there are also built-in functions:<br><br><span class="lang-py">Python: <code>bin(n).count("1")</code> — convert to binary string and count the "1"s in one line!</span><span class="lang-cpp">C++: <code>__builtin_popcount(n)</code> — a GCC built-in that directly returns the number of set bits!</span><br><br>However, in interviews you are expected to implement the <code>n &amp; (n-1)</code> trick yourself, so know both approaches!'
                 }
             ],
             templates: {
-                python: 'class Solution:\n    def hammingWeight(self, n: int) -> int:\n        # 방법 1: n & (n-1) 트릭\n        count = 0\n        while n:\n            n &= (n - 1)  # 가장 낮은 1 비트 제거\n            count += 1\n        return count\n\n    # 방법 2: 간단한 방법\n    # def hammingWeight(self, n: int) -> int:\n    #     return bin(n).count(\'1\')',
-                cpp: 'class Solution {\npublic:\n    int hammingWeight(int n) {\n        int count = 0;\n        while (n) {\n            n &= (n - 1);  // 가장 낮은 1 비트 제거\n            count++;\n        }\n        return count;\n    }\n};'
+                python: 'class Solution:\n    def hammingWeight(self, n: int) -> int:\n        # Approach 1: n & (n-1) trick\n        count = 0\n        while n:\n            n &= (n - 1)  # Remove the lowest set bit\n            count += 1\n        return count\n\n    # Approach 2: Simple method\n    # def hammingWeight(self, n: int) -> int:\n    #     return bin(n).count(\'1\')',
+                cpp: 'class Solution {\npublic:\n    int hammingWeight(int n) {\n        int count = 0;\n        while (n) {\n            n &= (n - 1);  // Remove the lowest set bit\n            count++;\n        }\n        return count;\n    }\n};'
             },
             solutions: [{
-                approach: 'n & (n-1) 트릭',
-                description: 'n & (n-1)로 가장 낮은 1 비트를 하나씩 제거하며 카운트합니다.',
-                timeComplexity: 'O(k) (k = 1 비트 개수)',
+                approach: 'n & (n-1) Trick',
+                description: 'Use n & (n-1) to remove the lowest set bit one at a time and count.',
+                timeComplexity: 'O(k) (k = number of set bits)',
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: 'Initialize', desc: '1 비트의 개수를 셀 카운터를 준비합니다.', code: 'count = 0' },
-                        { title: 'n & (n-1) 반복', desc: 'n & (n-1)은 가장 낮은 1 비트를 하나 제거하는 트릭입니다.\n비트가 전부 0이 될 때까지 반복하면 1의 개수를 알 수 있습니다.', code: 'while n:\n    n &= (n - 1)  # 가장 낮은 1 비트 제거\n    count += 1' },
-                        { title: 'Return Result', desc: '제거 횟수 = 1 비트의 개수이므로 그대로 반환합니다.', code: 'return count' }
+                        { title: 'Initialize', desc: 'Prepare a counter to count the number of set bits.', code: 'count = 0' },
+                        { title: 'n & (n-1) Loop', desc: 'n & (n-1) is a trick that removes the lowest set bit.\nRepeat until all bits become 0 to find the count of 1s.', code: 'while n:\n    n &= (n - 1)  # Remove the lowest set bit\n    count += 1' },
+                        { title: 'Return Result', desc: 'The number of removals equals the number of set bits, so return it directly.', code: 'return count' }
                     ],
                     cpp: [
-                        { title: 'Initialize', desc: 'int로 카운터 선언. unsigned int로 받으면 음수 처리 불필요.', code: 'int count = 0;' },
-                        { title: 'n & (n-1) 반복', desc: 'n &= (n-1)은 가장 낮은 1 비트를 제거.\n비트가 0이 될 때까지 반복.', code: 'while (n) {\n    n &= (n - 1);  // 가장 낮은 1 비트 제거\n    count++;\n}' },
-                        { title: 'Return Result', desc: '__builtin_popcount(n)으로 한 줄로도 가능하지만,\n트릭의 원리를 이해하는 것이 중요합니다.', code: 'return count;\n// 한 줄 풀이: return __builtin_popcount(n);' }
+                        { title: 'Initialize', desc: 'Declare counter as int. Using unsigned int avoids negative number handling.', code: 'int count = 0;' },
+                        { title: 'n & (n-1) Loop', desc: 'n &= (n-1) removes the lowest set bit.\nRepeat until n becomes 0.', code: 'while (n) {\n    n &= (n - 1);  // Remove the lowest set bit\n    count++;\n}' },
+                        { title: 'Return Result', desc: 'You could also use __builtin_popcount(n) as a one-liner,\nbut understanding the trick itself is what matters.', code: 'return count;\n// One-liner: return __builtin_popcount(n);' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[0].templates; }
@@ -1444,11 +1444,11 @@ int main() {
             title: 'LeetCode 136 - Single Number',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/single-number/',
-            simIntro: 'XOR로 배열의 모든 원소를 순회하며 짝 없는 수를 찾는 과정을 관찰하세요.',
+            simIntro: 'Observe how XOR traverses all elements to find the unpaired number.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>비어 있지 않은 정수 배열 <code>nums</code>가 주어집니다. 모든 원소는 두 번씩 나타나고, 하나의 원소만 한 번 나타납니다. 한 번만 나타나는 원소를 찾으세요.</p>
-                <p>반드시 선형 시간복잡도로 구현하고, 추가 메모리 없이 풀어야 합니다.</p>
+                <p>Given a non-empty array of integers <code>nums</code>, every element appears twice except for one. Find that single one.</p>
+                <p>You must implement a solution with a linear runtime complexity and use only constant extra space.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>nums = [2,2,1]</pre></div>
                     <div><strong>Output</strong><pre>1</pre></div>
@@ -1465,69 +1465,69 @@ int main() {
                 <ul>
                     <li>1 &le; nums.length &le; 3 &times; 10<sup>4</sup></li>
                     <li>-3 &times; 10<sup>4</sup> &le; nums[i] &le; 3 &times; 10<sup>4</sup></li>
-                    <li>하나의 원소만 한 번 나타남</li>
+                    <li>Each element appears exactly twice, except for one element which appears once</li>
                 </ul>
             `,
             hints: [
                 {
                     title: 'First intuition',
-                    content: '모든 원소가 2번씩 나오고 하나만 1번 나온다면... 각 숫자가 몇 번 나왔는지 세면 되지 않을까요?<br><br>딕셔너리(해시맵)로 빈도수를 세고, 1번만 나온 숫자를 찾으면 끝! O(n) 시간에 풀 수 있어요.'
+                    content: 'If every element appears twice and only one appears once... how about counting how many times each number appears?<br><br>Use a dictionary (hash map) to count frequencies, then find the number that appears only once. Solved in O(n) time!'
                 },
                 {
                     title: 'But there\'s a problem with this',
-                    content: '딕셔너리 풀이는 잘 동작하지만, 문제 조건을 다시 보세요: <strong>"추가 메모리 없이 풀어야 합니다"</strong>.<br><br>딕셔너리는 O(n) 공간을 쓰니까 조건에 맞지 않아요. 배열을 정렬해서 인접 비교하는 방법도 O(n log n)이라 아쉽고요. <strong>O(n) 시간 + O(1) 공간</strong>으로 풀 수 있는 방법이 있을까요?'
+                    content: 'The dictionary approach works well, but look at the constraints again: <strong>"use only constant extra space"</strong>.<br><br>A dictionary uses O(n) space, so it does not meet the requirement. Sorting and comparing adjacent elements is O(n log n), which is also not ideal. Is there a way to solve it in <strong>O(n) time + O(1) space</strong>?'
                 },
                 {
                     title: 'What if we try this?',
-                    content: '비트 연산 XOR(^)의 두 가지 성질을 떠올려 봅시다:<br><br>1. <code>a ^ a = 0</code> — 같은 수끼리 XOR하면 0!<br>2. <code>a ^ 0 = a</code> — 0과 XOR하면 자기 자신!<br><br>그렇다면... 배열의 <strong>모든 원소를 전부 XOR</strong>하면 어떻게 될까요?<br>2번 나오는 수끼리는 상쇄되어 0이 되고, 1번만 나오는 수만 남아요!<br><code>2 ^ 2 ^ 1 = 0 ^ 1 = 1</code> — 추가 메모리 없이 답을 찾았어요!'
+                    content: 'Recall two key properties of XOR (^):<br><br>1. <code>a ^ a = 0</code> — XOR of the same number is 0!<br>2. <code>a ^ 0 = a</code> — XOR with 0 gives the number itself!<br><br>So what if we <strong>XOR all elements</strong> in the array?<br>Numbers appearing twice cancel out to 0, and only the single number remains!<br><code>2 ^ 2 ^ 1 = 0 ^ 1 = 1</code> — found the answer with no extra memory!'
                 },
                 {
                     title: 'In Python/C++!',
-                    content: '<span class="lang-py">Python: <code>functools.reduce(lambda a, b: a ^ b, nums)</code>로 한 줄에 전부 XOR할 수 있어요!<br><code>reduce</code>는 리스트를 하나의 값으로 축약하는 함수예요.</span><span class="lang-cpp">C++: <code>accumulate(nums.begin(), nums.end(), 0, bit_xor&lt;int&gt;())</code>로 한 줄 풀이가 가능해요!<br><code>&lt;numeric&gt;</code>과 <code>&lt;functional&gt;</code> 헤더가 필요합니다.</span>'
+                    content: '<span class="lang-py">Python: <code>functools.reduce(lambda a, b: a ^ b, nums)</code> lets you XOR everything in one line!<br><code>reduce</code> is a function that collapses a list into a single value.</span><span class="lang-cpp">C++: <code>accumulate(nums.begin(), nums.end(), 0, bit_xor&lt;int&gt;())</code> gives you a one-liner solution!<br>Requires the <code>&lt;numeric&gt;</code> and <code>&lt;functional&gt;</code> headers.</span>'
                 }
             ],
             templates: {
-                python: 'class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        result = 0\n        for n in nums:\n            result ^= n  # 같은 수끼리 상쇄 → 혼자인 수만 남음\n        return result\n\n    # 한 줄 풀이:\n    # from functools import reduce\n    # def singleNumber(self, nums): return reduce(lambda a,b: a^b, nums)',
-                cpp: 'class Solution {\npublic:\n    int singleNumber(vector<int>& nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // 같은 수끼리 상쇄\n        }\n        return result;\n    }\n};'
+                python: 'class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        result = 0\n        for n in nums:\n            result ^= n  # Pairs cancel out, only the single one remains\n        return result\n\n    # One-liner:\n    # from functools import reduce\n    # def singleNumber(self, nums): return reduce(lambda a,b: a^b, nums)',
+                cpp: 'class Solution {\npublic:\n    int singleNumber(vector<int>& nums) {\n        int result = 0;\n        for (int n : nums) {\n            result ^= n;  // Pairs cancel out\n        }\n        return result;\n    }\n};'
             },
             solutions: [{
-                approach: 'XOR 전체 순회',
-                description: '모든 원소를 XOR하면 짝이 있는 수는 상쇄되고 유일한 수만 남습니다.',
+                approach: 'XOR Full Traversal',
+                description: 'XOR all elements together — paired numbers cancel out, leaving only the unique one.',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: 'Initialize', desc: 'result를 0으로 시작합니다.\na ^ 0 = a이므로 0은 XOR의 항등원입니다.', code: 'result = 0' },
-                        { title: '전체 XOR', desc: 'a ^ a = 0이므로 2번 나오는 수는 상쇄됩니다.\n결국 1번만 나오는 수만 남게 됩니다.', code: 'for n in nums:\n    result ^= n  # 같은 수끼리 상쇄' },
-                        { title: 'Return Result', desc: 'O(n) 시간, O(1) 공간으로 유일한 수를 찾았습니다.', code: 'return result' }
+                        { title: 'Initialize', desc: 'Start result at 0.\nSince a ^ 0 = a, 0 is the identity element for XOR.', code: 'result = 0' },
+                        { title: 'XOR All', desc: 'Since a ^ a = 0, numbers appearing twice cancel out.\nOnly the number appearing once remains.', code: 'for n in nums:\n    result ^= n  # Pairs cancel out' },
+                        { title: 'Return Result', desc: 'Found the unique number in O(n) time and O(1) space.', code: 'return result' }
                     ],
                     cpp: [
-                        { title: 'Initialize', desc: 'XOR의 항등원 0으로 시작합니다.', code: 'int result = 0;' },
-                        { title: '전체 XOR', desc: 'range-based for로 간결하게.\na ^ a = 0이라 짝수개는 상쇄.', code: 'for (int n : nums) {\n    result ^= n;  // 같은 수끼리 상쇄\n}' },
-                        { title: 'Return Result', desc: '짝이 있는 수는 모두 0으로 상쇄되어 유일한 수만 남습니다.', code: 'return result;' }
+                        { title: 'Initialize', desc: 'Start with 0, the identity element for XOR.', code: 'int result = 0;' },
+                        { title: 'XOR All', desc: 'Use range-based for loop for conciseness.\na ^ a = 0, so paired numbers cancel out.', code: 'for (int n : nums) {\n    result ^= n;  // Pairs cancel out\n}' },
+                        { title: 'Return Result', desc: 'All paired numbers cancel to 0, leaving only the unique number.', code: 'return result;' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[1].templates; }
             }]
         },
 
-        // ===== 2단계: 비트 마스크 응용 =====
+        // ===== Stage 2: Bitmask Applications =====
         {
             id: 'boj-11723',
-            title: 'BOJ 11723 - 집합',
+            title: 'BOJ 11723 - Set',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11723',
-            simIntro: '비트마스크로 add, remove, toggle, check, all, empty 연산이 동작하는 과정을 관찰하세요.',
+            simIntro: 'Observe how bitmask operations handle add, remove, toggle, check, all, and empty.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>비어있는 공집합 S가 주어졌을 때, 아래 연산을 수행하는 프로그램을 작성하시오.</p>
+                <p>Given an initially empty set S, write a program that performs the following operations.</p>
                 <ul style="margin:8px 0 8px 20px;">
-                    <li><code>add x</code>: S에 x를 추가</li>
-                    <li><code>remove x</code>: S에서 x를 제거</li>
-                    <li><code>check x</code>: S에 x가 있으면 1, 없으면 0 출력</li>
-                    <li><code>toggle x</code>: S에 x가 있으면 제거, 없으면 추가</li>
-                    <li><code>all</code>: S를 {1, 2, ..., 20}으로 변경</li>
-                    <li><code>empty</code>: S를 공집합으로 변경</li>
+                    <li><code>add x</code>: Add x to S</li>
+                    <li><code>remove x</code>: Remove x from S</li>
+                    <li><code>check x</code>: Print 1 if x is in S, 0 otherwise</li>
+                    <li><code>toggle x</code>: Remove x if it is in S, add it otherwise</li>
+                    <li><code>all</code>: Change S to {1, 2, ..., 20}</li>
+                    <li><code>empty</code>: Change S to the empty set</li>
                 </ul>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>26\nadd 1\nadd 2\ncheck 1\ncheck 2\nremove 2\ncheck 1\ncheck 2\ntoggle 3\ncheck 1\ncheck 2\ncheck 3\ncheck 4\nall\ncheck 10\ncheck 15\nempty\ncheck 1\ntoggle 1\ncheck 1\ntoggle 1\ncheck 1\nall\ncheck 5\ntoggle 5\ncheck 5\ncheck 1</pre></div>
@@ -1542,19 +1542,19 @@ int main() {
             hints: [
                 {
                     title: 'First intuition',
-                    content: '집합 연산이니까... <span class="lang-py">Python의 <code>set()</code></span><span class="lang-cpp">C++의 <code>set&lt;int&gt;</code></span>을 쓰면 되지 않을까요?<br><br><code>add</code>, <code>remove</code>, <code>check</code> 다 기본 제공되니까 바로 구현할 수 있어요. 원소도 1~20뿐이라 간단해 보여요!'
+                    content: 'Since these are set operations... why not just use <span class="lang-py">Python\'s <code>set()</code></span><span class="lang-cpp">C++\'s <code>set&lt;int&gt;</code></span>?<br><br><code>add</code>, <code>remove</code>, <code>check</code> are all built-in, so we can implement it right away. With elements only from 1 to 20, it seems simple!'
                 },
                 {
                     title: 'But there\'s a problem with this',
-                    content: 'M이 최대 <strong>300만</strong>이에요! set 자료구조는 각 연산이 O(log n)이라 느릴 수 있고, 메모리 오버헤드도 있어요.<br><br>그런데 원소 범위가 1~20뿐이라는 점을 주목하세요. 겨우 20개짜리 집합인데 set 같은 무거운 자료구조를 쓸 필요가 있을까요? <strong>정수 하나</strong>로 집합을 표현할 수 있다면 모든 연산이 O(1)이 될 텐데...'
+                    content: 'M can be up to <strong>3 million</strong>! A set data structure has O(log n) per operation, which can be slow, and has memory overhead too.<br><br>But notice that the element range is only 1 to 20. For a set of just 20 elements, do we really need a heavy data structure like set? If we could represent the set with <strong>a single integer</strong>, every operation would be O(1)...'
                 },
                 {
                     title: 'What if we try this?',
-                    content: '정수 S의 비트로 집합을 표현해요! x번째 비트가 1이면 x가 집합에 있는 거예요.<br><br>각 연산이 비트 연산 한 줄로 바뀝니다:<br>• <code>add x</code> → <code>S |= (1 &lt;&lt; x)</code> — x번째 비트를 1로 켜기<br>• <code>remove x</code> → <code>S &amp;= ~(1 &lt;&lt; x)</code> — x번째 비트를 0으로 끄기<br>• <code>check x</code> → <code>(S &gt;&gt; x) &amp; 1</code> — x번째 비트가 1인지 확인<br>• <code>toggle x</code> → <code>S ^= (1 &lt;&lt; x)</code> — x번째 비트 반전<br>• <code>all</code> → <code>S = (1 &lt;&lt; 21) - 1</code> — 1~20번 비트 전부 1<br>• <code>empty</code> → <code>S = 0</code> — 전부 0으로 초기화'
+                    content: 'Represent the set using the bits of an integer S! If the x-th bit is 1, then x is in the set.<br><br>Each operation becomes a single bit operation:<br>• <code>add x</code> → <code>S |= (1 &lt;&lt; x)</code> — turn the x-th bit ON<br>• <code>remove x</code> → <code>S &amp;= ~(1 &lt;&lt; x)</code> — turn the x-th bit OFF<br>• <code>check x</code> → <code>(S &gt;&gt; x) &amp; 1</code> — check if the x-th bit is 1<br>• <code>toggle x</code> → <code>S ^= (1 &lt;&lt; x)</code> — flip the x-th bit<br>• <code>all</code> → <code>S = (1 &lt;&lt; 21) - 1</code> — set bits 1 through 20 all to 1<br>• <code>empty</code> → <code>S = 0</code> — reset all bits to 0'
                 },
                 {
-                    title: '시간 초과를 피하려면!',
-                    content: 'M이 300만이라 입출력 속도가 중요해요!<br><br><span class="lang-py">Python: <code>sys.stdin.readline</code>을 반드시 사용하세요. 기본 <code>input()</code>은 너무 느려요!<br>출력도 리스트에 모았다가 <code>"\\n".join(out)</code>으로 한 번에 출력하면 훨씬 빨라요.</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 입출력 속도를 높이세요!</span>'
+                    title: 'Avoiding TLE!',
+                    content: 'With M up to 3 million, I/O speed matters a lot!<br><br><span class="lang-py">Python: You must use <code>sys.stdin.readline</code>. The default <code>input()</code> is too slow!<br>Also, collect outputs in a list and print with <code>"\\n".join(out)</code> at the end for much faster I/O.</span><span class="lang-cpp">C++: Use <code>ios::sync_with_stdio(false)</code> and <code>cin.tie(nullptr)</code> to speed up I/O!</span>'
                 }
             ],
             templates: {
@@ -1562,20 +1562,20 @@ int main() {
                 cpp: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int M;\n    cin >> M;\n    int S = 0;\n\n    while (M--) {\n        string cmd;\n        cin >> cmd;\n\n        if (cmd == "add") {\n            int x; cin >> x;\n            S |= (1 << x);\n        } else if (cmd == "remove") {\n            int x; cin >> x;\n            S &= ~(1 << x);\n        } else if (cmd == "check") {\n            int x; cin >> x;\n            cout << ((S >> x) & 1) << \'\\n\';\n        } else if (cmd == "toggle") {\n            int x; cin >> x;\n            S ^= (1 << x);\n        } else if (cmd == "all") {\n            S = (1 << 21) - 1;\n        } else { // empty\n            S = 0;\n        }\n    }\n}'
             },
             solutions: [{
-                approach: '비트마스크 집합 연산',
-                description: '정수 하나의 비트로 집합을 표현하여 각 연산을 O(1)로 처리합니다.',
+                approach: 'Bitmask Set Operations',
+                description: 'Represent the set using bits of a single integer, making each operation O(1).',
                 timeComplexity: 'O(M)',
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 초기화', desc: 'M이 최대 300만이므로 sys.stdin.readline 필수입니다.\n집합 S를 정수 0으로 시작하여 비트마스크로 관리합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []' },
-                        { title: '연산 처리', desc: '각 연산을 비트 연산 한 줄로 처리합니다.\nOR(추가), AND+NOT(제거), XOR(토글), 시프트(체크).', code: 'for _ in range(M):\n    line = input().split()\n    cmd = line[0]\n    if cmd == \'add\':     S |= (1 << int(line[1]))\n    elif cmd == \'remove\': S &= ~(1 << int(line[1]))\n    elif cmd == \'check\':  out.append(str((S >> int(line[1])) & 1))\n    elif cmd == \'toggle\': S ^= (1 << int(line[1]))\n    elif cmd == \'all\':    S = (1 << 21) - 1\n    elif cmd == \'empty\':  S = 0' },
-                        { title: '출력', desc: '리스트에 모아서 한 번에 출력하면 I/O 횟수가 줄어 빠릅니다.', code: 'print(\'\\n\'.join(out))' }
+                        { title: 'Input & Init', desc: 'M can be up to 3 million, so sys.stdin.readline is required.\nManage set S as a bitmask integer starting at 0.', code: 'import sys\ninput = sys.stdin.readline\n\nM = int(input())\nS = 0\nout = []' },
+                        { title: 'Process Operations', desc: 'Each operation is handled with a single bit operation.\nOR(add), AND+NOT(remove), XOR(toggle), shift(check).', code: 'for _ in range(M):\n    line = input().split()\n    cmd = line[0]\n    if cmd == \'add\':     S |= (1 << int(line[1]))\n    elif cmd == \'remove\': S &= ~(1 << int(line[1]))\n    elif cmd == \'check\':  out.append(str((S >> int(line[1])) & 1))\n    elif cmd == \'toggle\': S ^= (1 << int(line[1]))\n    elif cmd == \'all\':    S = (1 << 21) - 1\n    elif cmd == \'empty\':  S = 0' },
+                        { title: 'Output', desc: 'Collecting results in a list and printing at once reduces I/O calls for speed.', code: 'print(\'\\n\'.join(out))' }
                     ],
                     cpp: [
-                        { title: '입력 및 초기화', desc: 'ios::sync_with_stdio(false)로 입출력 속도 향상.\nM이 300만이라 빠른 입출력 필수!', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int M, S = 0;\n    cin >> M;' },
-                        { title: '연산 처리', desc: '비트 연산은 Python과 완전히 동일!', code: '    while (M--) {\n        string cmd; cin >> cmd;\n        if (cmd == "add")    { int x; cin >> x; S |= (1 << x); }\n        else if (cmd == "remove") { int x; cin >> x; S &= ~(1 << x); }\n        else if (cmd == "check")  { int x; cin >> x; cout << ((S >> x) & 1) << \'\\n\'; }\n        else if (cmd == "toggle") { int x; cin >> x; S ^= (1 << x); }\n        else if (cmd == "all")    S = (1 << 21) - 1;\n        else S = 0;  // empty\n    }' },
-                        { title: '출력', desc: 'C++은 check마다 바로 출력하므로 별도 출력 단계 없이 종료합니다.', code: '    return 0;\n}' }
+                        { title: 'Input & Init', desc: 'ios::sync_with_stdio(false) speeds up I/O.\nWith M up to 3 million, fast I/O is essential!', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int M, S = 0;\n    cin >> M;' },
+                        { title: 'Process Operations', desc: 'Bit operations are exactly the same as in Python!', code: '    while (M--) {\n        string cmd; cin >> cmd;\n        if (cmd == "add")    { int x; cin >> x; S |= (1 << x); }\n        else if (cmd == "remove") { int x; cin >> x; S &= ~(1 << x); }\n        else if (cmd == "check")  { int x; cin >> x; cout << ((S >> x) & 1) << \'\\n\'; }\n        else if (cmd == "toggle") { int x; cin >> x; S ^= (1 << x); }\n        else if (cmd == "all")    S = (1 << 21) - 1;\n        else S = 0;  // empty\n    }' },
+                        { title: 'Output', desc: 'In C++, we print immediately on each check, so no separate output step is needed.', code: '    return 0;\n}' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[2].templates; }
@@ -1586,10 +1586,10 @@ int main() {
             title: 'LeetCode 78 - Subsets',
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/subsets/',
-            simIntro: '비트 마스크 0부터 2^n-1까지 순회하며 모든 부분집합을 열거하는 과정을 관찰하세요.',
+            simIntro: 'Observe how bitmasks from 0 to 2^n-1 enumerate all subsets.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>정수 배열 <code>nums</code>가 주어집니다. 이 배열에는 중복 원소가 없습니다. 모든 부분집합(멱집합)을 반환하세요. 결과에 중복 부분집합이 포함되면 안 됩니다. 부분집합은 어떤 순서로 반환해도 됩니다.</p>
+                <p>Given an integer array <code>nums</code> of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets. Return the subsets in any order.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>nums = [1,2,3]</pre></div>
                     <div><strong>Output</strong><pre>[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]</pre></div>
@@ -1602,46 +1602,46 @@ int main() {
                 <ul>
                     <li>1 &le; nums.length &le; 10</li>
                     <li>-10 &le; nums[i] &le; 10</li>
-                    <li>모든 원소는 고유</li>
+                    <li>All the numbers of nums are unique</li>
                 </ul>
             `,
             hints: [
                 {
                     title: 'First intuition',
-                    content: '모든 부분집합을 만들어야 하니까... 백트래킹(재귀)으로 풀 수 있지 않을까요?<br><br>각 원소를 "포함할지 / 안 할지" 결정하면서 재귀적으로 탐색하면 모든 조합을 만들 수 있어요. 실제로 이 방법은 잘 동작합니다!'
+                    content: 'We need to generate all subsets... how about using backtracking (recursion)?<br><br>For each element, decide "include or not include" and recursively explore to generate all combinations. This approach actually works well!'
                 },
                 {
-                    title: '근데 더 간단한 방법이 없을까?',
-                    content: '백트래킹도 좋지만, 재귀 호출 구조가 복잡해질 수 있어요.<br><br>잠깐, 각 원소는 "포함(1)" 또는 "미포함(0)" 두 가지 선택뿐이잖아요? 원소가 3개면 선택지는 <code>000, 001, 010, 011, 100, 101, 110, 111</code>... 이거 <strong>이진수 0부터 7</strong>이랑 똑같지 않나요?<br><br>원소가 n개면 부분집합은 2<sup>n</sup>개 — 이건 <strong>n비트 이진수의 모든 조합</strong>과 정확히 대응돼요!'
+                    title: 'Is there a simpler way?',
+                    content: 'Backtracking works, but the recursive call structure can get complex.<br><br>Wait — each element has only two choices: "include (1)" or "exclude (0)". With 3 elements, the choices are <code>000, 001, 010, 011, 100, 101, 110, 111</code>... is this not the same as <strong>binary numbers 0 through 7</strong>?<br><br>With n elements, there are 2<sup>n</sup> subsets — this maps exactly to <strong>all combinations of n-bit binary numbers</strong>!'
                 },
                 {
                     title: 'What if we try this?',
-                    content: '0부터 2<sup>n</sup>-1까지의 정수를 "비트 마스크"로 사용해요!<br><br>각 정수의 j번째 비트가 1이면 nums[j]를 포함하는 거예요.<br>예: <code>[1,2,3]</code>에서 마스크 <code>101</code>(=5) → 0번째와 2번째 비트가 1 → <code>[1, 3]</code> 선택!<br><br>이렇게 하면 재귀 없이 <strong>이중 for문</strong>만으로 모든 부분집합을 만들 수 있어요:<br>바깥 루프: mask를 0~2<sup>n</sup>-1까지 순회<br>안쪽 루프: 각 비트가 1인지 확인 → <code>mask &amp; (1 &lt;&lt; j)</code>'
+                    content: 'Use integers from 0 to 2<sup>n</sup>-1 as "bitmasks"!<br><br>If the j-th bit of an integer is 1, include nums[j].<br>Example: in <code>[1,2,3]</code>, mask <code>101</code>(=5) → bits 0 and 2 are 1 → select <code>[1, 3]</code>!<br><br>This way, we can generate all subsets with just a <strong>nested for loop</strong> and no recursion:<br>Outer loop: iterate mask from 0 to 2<sup>n</sup>-1<br>Inner loop: check if each bit is 1 → <code>mask &amp; (1 &lt;&lt; j)</code>'
                 },
                 {
                     title: 'In Python/C++!',
-                    content: '<span class="lang-py">Python: <code>for mask in range(1 &lt;&lt; n)</code>으로 모든 마스크를 순회하고,<br><code>if mask &amp; (1 &lt;&lt; j)</code>로 j번째 원소 포함 여부를 확인해요.<br>리스트 컴프리헨션으로도 가능: <code>[nums[j] for j in range(n) if mask &amp; (1 &lt;&lt; j)]</code></span><span class="lang-cpp">C++: <code>for (int mask = 0; mask &lt; (1 &lt;&lt; n); mask++)</code>로 순회하고,<br><code>if (mask &amp; (1 &lt;&lt; j))</code>로 선택 여부를 판단해요.<br>결과를 <code>vector&lt;vector&lt;int&gt;&gt;</code>에 담으면 됩니다.</span>'
+                    content: '<span class="lang-py">Python: <code>for mask in range(1 &lt;&lt; n)</code> iterates over all masks,<br>and <code>if mask &amp; (1 &lt;&lt; j)</code> checks whether the j-th element is included.<br>Also possible with list comprehension: <code>[nums[j] for j in range(n) if mask &amp; (1 &lt;&lt; j)]</code></span><span class="lang-cpp">C++: <code>for (int mask = 0; mask &lt; (1 &lt;&lt; n); mask++)</code> iterates over all masks,<br>and <code>if (mask &amp; (1 &lt;&lt; j))</code> determines inclusion.<br>Store results in a <code>vector&lt;vector&lt;int&gt;&gt;</code>.</span>'
                 }
             ],
             templates: {
-                python: 'class Solution:\n    def subsets(self, nums: list[int]) -> list[list[int]]:\n        n = len(nums)\n        result = []\n\n        for mask in range(1 << n):  # 0 ~ 2^n - 1\n            subset = []\n            for j in range(n):\n                if mask & (1 << j):  # j번째 비트가 1이면 선택\n                    subset.append(nums[j])\n            result.append(subset)\n\n        return result\n\n    # 백트래킹 풀이 (비교용):\n    # def subsets(self, nums):\n    #     res = []\n    #     def bt(start, curr):\n    #         res.append(curr[:])\n    #         for i in range(start, len(nums)):\n    #             curr.append(nums[i])\n    #             bt(i + 1, curr)\n    #             curr.pop()\n    #     bt(0, [])\n    #     return res',
+                python: 'class Solution:\n    def subsets(self, nums: list[int]) -> list[list[int]]:\n        n = len(nums)\n        result = []\n\n        for mask in range(1 << n):  # 0 ~ 2^n - 1\n            subset = []\n            for j in range(n):\n                if mask & (1 << j):  # Select if j-th bit is 1\n                    subset.append(nums[j])\n            result.append(subset)\n\n        return result\n\n    # Backtracking solution (for comparison):\n    # def subsets(self, nums):\n    #     res = []\n    #     def bt(start, curr):\n    #         res.append(curr[:])\n    #         for i in range(start, len(nums)):\n    #             curr.append(nums[i])\n    #             bt(i + 1, curr)\n    #             curr.pop()\n    #     bt(0, [])\n    #     return res',
                 cpp: 'class Solution {\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        int n = nums.size();\n        vector<vector<int>> result;\n\n        for (int mask = 0; mask < (1 << n); mask++) {\n            vector<int> subset;\n            for (int j = 0; j < n; j++) {\n                if (mask & (1 << j)) {\n                    subset.push_back(nums[j]);\n                }\n            }\n            result.push_back(subset);\n        }\n\n        return result;\n    }\n};'
             },
             solutions: [{
-                approach: '비트마스크 부분집합 열거',
-                description: '0 ~ 2^n-1까지 순회하며 각 비트에 대응하는 원소를 선택합니다.',
+                approach: 'Bitmask Subset Enumeration',
+                description: 'Iterate from 0 to 2^n-1, selecting elements corresponding to each set bit.',
                 timeComplexity: 'O(n * 2^n)',
                 spaceComplexity: 'O(n * 2^n)',
                 codeSteps: {
                     python: [
-                        { title: 'Initialize', desc: '원소 n개 → 부분집합 2^n개.\n0부터 2^n-1까지의 비트 마스크가 각 부분집합에 대응합니다.', code: 'n = len(nums)\nresult = []' },
-                        { title: '마스크 순회', desc: '각 마스크에서 j번째 비트가 1이면 nums[j]를 포함합니다.\n예: 마스크 101 → nums[0]과 nums[2] 선택.', code: 'for mask in range(1 << n):  # 0 ~ 2^n - 1\n    subset = []\n    for j in range(n):\n        if mask & (1 << j):  # j번째 비트가 1이면 선택\n            subset.append(nums[j])\n    result.append(subset)' },
-                        { title: 'Return Result', desc: '2^n개의 부분집합이 모두 담긴 리스트를 반환합니다.', code: 'return result' }
+                        { title: 'Initialize', desc: 'n elements → 2^n subsets.\nBitmasks from 0 to 2^n-1 correspond to each subset.', code: 'n = len(nums)\nresult = []' },
+                        { title: 'Mask Iteration', desc: 'For each mask, if the j-th bit is 1, include nums[j].\nExample: mask 101 → select nums[0] and nums[2].', code: 'for mask in range(1 << n):  # 0 ~ 2^n - 1\n    subset = []\n    for j in range(n):\n        if mask & (1 << j):  # Select if j-th bit is 1\n            subset.append(nums[j])\n    result.append(subset)' },
+                        { title: 'Return Result', desc: 'Return the list containing all 2^n subsets.', code: 'return result' }
                     ],
                     cpp: [
-                        { title: 'Initialize', desc: 'nums.size()로 원소 수를 구하고 결과 벡터를 준비합니다.', code: 'int n = nums.size();\nvector<vector<int>> result;' },
-                        { title: '마스크 순회', desc: '0~2^n-1까지 모든 비트 조합을 순회.\nj번째 비트가 1이면 nums[j] 포함.', code: 'for (int mask = 0; mask < (1 << n); mask++) {\n    vector<int> subset;\n    for (int j = 0; j < n; j++) {\n        if (mask & (1 << j))  // j번째 비트가 1이면 선택\n            subset.push_back(nums[j]);\n    }\n    result.push_back(subset);\n}' },
-                        { title: 'Return Result', desc: '모든 비트 조합을 순회했으므로 2^n개의 부분집합이 완성됩니다.', code: 'return result;' }
+                        { title: 'Initialize', desc: 'Get the element count with nums.size() and prepare the result vector.', code: 'int n = nums.size();\nvector<vector<int>> result;' },
+                        { title: 'Mask Iteration', desc: 'Iterate through all bit combinations from 0 to 2^n-1.\nIf the j-th bit is 1, include nums[j].', code: 'for (int mask = 0; mask < (1 << n); mask++) {\n    vector<int> subset;\n    for (int j = 0; j < n; j++) {\n        if (mask & (1 << j))  // Select if j-th bit is 1\n            subset.push_back(nums[j]);\n    }\n    result.push_back(subset);\n}' },
+                        { title: 'Return Result', desc: 'After iterating all bit combinations, all 2^n subsets are complete.', code: 'return result;' }
                     ]
                 },
                 get templates() { return bitManipulationTopic.problems[3].templates; }

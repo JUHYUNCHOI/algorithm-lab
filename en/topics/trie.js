@@ -1,24 +1,24 @@
 // =========================================================
-// 트라이 (Trie) 토픽 모듈
+// Trie Topic Module
 // =========================================================
 var trieTopic = {
     id: 'trie',
-    title: '트라이',
+    title: 'Trie',
     icon: '🔠',
     category: 'Advanced Topics',
     order: 20,
-    description: '문자열을 효율적으로 저장하고 검색하는 트리 자료구조',
-    relatedNote: '트라이는 자동완성, 맞춤법 검사, IP 라우팅 등에 활용되며, 압축 트라이(Radix Tree)로 메모리를 절약할 수 있습니다.',
+    description: 'A tree data structure for efficiently storing and searching strings',
+    relatedNote: 'Tries are used in autocomplete, spell-checking, IP routing, and more. A compressed trie (Radix Tree) can save memory.',
 
     sidebarExpandable: true,
 
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
-        'lc-208':    { type: '트라이 구현',     color: 'var(--accent)', vizMethod: '_renderVizImplement' },
-        'boj-14425': { type: '문자열 집합',     color: 'var(--green)',  vizMethod: '_renderVizStringSet' },
-        'boj-5052':  { type: '접두사 판별',     color: '#e17055',       vizMethod: '_renderVizPhoneBook' },
-        'lc-14':     { type: '공통 접두사',     color: '#6c5ce7',       vizMethod: '_renderVizLCP' }
+        'lc-208':    { type: 'Trie Implementation', color: 'var(--accent)', vizMethod: '_renderVizImplement' },
+        'boj-14425': { type: 'String Set',           color: 'var(--green)',  vizMethod: '_renderVizStringSet' },
+        'boj-5052':  { type: 'Prefix Detection',     color: '#e17055',       vizMethod: '_renderVizPhoneBook' },
+        'lc-14':     { type: 'Common Prefix',         color: '#6c5ce7',       vizMethod: '_renderVizLCP' }
     },
 
     getProblemTabs: function(problemId) {
@@ -47,7 +47,7 @@ var trieTopic = {
         var flowMap = {
             problem: { intro: 'Start by reading the problem and understanding the I/O format.', icon: '📋' },
             think:   { intro: 'Don\'t jump to coding — open the hints step by step to build your strategy.', icon: '💡' },
-            sim:     { intro: prob.simIntro || '트라이가 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            sim:     { intro: prob.simIntro || 'See how the trie actually works in action.', icon: '🎮' },
             code:    { intro: 'Now let\'s turn the approach into code!', icon: '💻' }
         };
         var ft = flowMap[tabId];
@@ -135,23 +135,23 @@ var trieTopic = {
     renderConcept: function(container) {
         container.innerHTML = '\
             <div class="hero">\
-                <h2>🔠 트라이 (Trie)</h2>\
-                <p class="hero-sub">문자열을 빠르게 저장하고 검색하는 특별한 트리를 배워봅시다!</p>\
+                <h2>🔠 Trie</h2>\
+                <p class="hero-sub">Let us learn about a special tree that stores and searches strings quickly!</p>\
             </div>\
 \
-            <!-- 섹션 1: 트라이란? -->\
+            <!-- Section 1: What Is a Trie? -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">1</span> 트라이란?\
+                    <span class="section-num">1</span> What Is a Trie?\
                 </div>\
                 <div class="analogy-box">\
-                    <strong>Understanding by analogy:</strong> <em>"전화번호부의 색인(인덱스)"</em>을 떠올려 보세요!<br><br>\
-                    전화번호부에서 "김"씨를 찾으려면 ㄱ → ㅣ → ㅁ 순서로 따라가면 됩니다.<br>\
-                    마찬가지로 트라이는 문자열을 <strong>한 글자씩 트리에 저장</strong>합니다.<br>\
-                    "cat"을 찾으려면 루트에서 c → a → t 순서로 내려가면 됩니다!<br><br>\
-                    같은 접두사를 가진 단어들은 <strong>같은 경로를 공유</strong>합니다.\
-                    "cat"과 "car"는 "ca"까지 같은 길을 걷다가 갈라집니다.\
-                    덕분에 <strong>접두사 검색이 매우 빠릅니다!</strong>\
+                    <strong>Understanding by analogy:</strong> <em>"the index of a phone book"</em>!<br><br>\
+                    To find "cat" in a dictionary, you follow c → a → t in order.<br>\
+                    Similarly, a trie <strong>stores strings one character at a time in a tree</strong>.<br>\
+                    To find "cat", just go down from the root: c → a → t!<br><br>\
+                    Words with the same prefix <strong>share the same path</strong>.\
+                    "cat" and "car" walk the same path up to "ca" before branching off.\
+                    This makes <strong>prefix search extremely fast!</strong>\
                 </div>\
                 <div style="margin:0.5rem 0 0.8rem;">\
                     <a href="https://en.wikipedia.org/wiki/Trie" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Trie (Prefix Tree) ↗</a>\
@@ -161,61 +161,61 @@ var trieTopic = {
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="8" r="5" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="10" cy="28" r="5" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="28" cy="28" r="5" fill="none" stroke="var(--accent)" stroke-width="2"/><line x1="17" y1="12" x2="12" y2="24" stroke="var(--accent)" stroke-width="2"/><line x1="21" y1="12" x2="26" y2="24" stroke="var(--accent)" stroke-width="2"/></svg>\
                         </div>\
-                        <h3>트리 구조</h3>\
-                        <p>트라이는 <strong>트리(Tree)</strong> 자료구조입니다. 루트에서 시작하여 한 글자씩 자식 노드로 내려갑니다.</p>\
+                        <h3>Tree Structure</h3>\
+                        <p>A trie is a <strong>tree</strong> data structure. Starting from the root, it descends one character at a time to child nodes.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--green)">O(L)</text></svg>\
                         </div>\
-                        <h3>O(L) 검색</h3>\
-                        <p>문자열 길이가 L이면 <strong>딱 L번</strong>만에 검색이 끝납니다! 해시 충돌 걱정 없이 정확합니다.</p>\
+                        <h3>O(L) Search</h3>\
+                        <p>If the string length is L, the search finishes in <strong>exactly L steps</strong>! Accurate without worrying about hash collisions.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="16" font-size="10" fill="var(--text2)">cat</text><text x="2" y="30" font-size="10" fill="var(--text2)">car</text><text x="22" y="23" font-size="12" fill="var(--yellow)">ca...</text></svg>\
                         </div>\
-                        <h3>접두사 공유</h3>\
-                        <p>같은 접두사를 가진 단어들은 <strong>같은 경로를 공유</strong>합니다. 메모리를 절약할 수 있습니다!</p>\
+                        <h3>Prefix Sharing</h3>\
+                        <p>Words with the same prefix <strong>share the same path</strong>. This saves memory!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--accent)">Pre*</text></svg>\
                         </div>\
-                        <h3>접두사 검색 최적</h3>\
-                        <p>"app"으로 시작하는 단어 찾기! 트라이는 접두사(prefix) 검색에 <strong>최적의 자료구조</strong>입니다.</p>\
+                        <h3>Best for Prefix Search</h3>\
+                        <p>Finding words that start with "app"! A trie is the <strong>optimal data structure</strong> for prefix search.</p>\
                     </div>\
                 </div>\
                 <span class="lang-py"><div class="code-block">\
-                    <pre><code class="language-python"># 트라이 vs 다른 방법 비교\n# N개의 문자열, 평균 길이 L\n\n# 1) 리스트에서 검색: O(N × L) — 하나씩 비교\n# 2) 집합(set)에서 검색: O(L) 평균 — 해시 사용\n# 3) 트라이에서 검색: O(L) 최악 — 항상 빠름!\n\n# 트라이의 진짜 강점: 접두사 검색!\n# "app"으로 시작하는 단어 모두 찾기\n# → 리스트/집합: O(N × L) 전부 확인해야 함\n# → 트라이: O(접두사 길이) + O(결과 수) 매우 빠름!</code></pre>\
+                    <pre><code class="language-python"># Trie vs other methods\n# N strings, average length L\n\n# 1) Search in list: O(N * L) -- compare one by one\n# 2) Search in set: O(L) average -- uses hashing\n# 3) Search in trie: O(L) worst case -- always fast!\n\n# The real strength of a trie: prefix search!\n# Find all words starting with "app"\n# -> list/set: O(N * L) must check all\n# -> trie: O(prefix length) + O(result count) very fast!</code></pre>\
                 </div></span>\
                 <span class="lang-cpp"><div class="code-block">\
-                    <pre><code class="language-cpp">// 트라이 vs 다른 방법 비교\n// N개의 문자열, 평균 길이 L\n\n// 1) vector에서 검색: O(N × L) — 하나씩 비교\n// 2) unordered_set에서 검색: O(L) 평균 — 해시 사용\n// 3) 트라이에서 검색: O(L) 최악 — 항상 빠름!\n\n// 트라이의 진짜 강점: 접두사 검색!\n// "app"으로 시작하는 단어 모두 찾기\n// → vector/set: O(N × L) 전부 확인해야 함\n// → 트라이: O(접두사 길이) + O(결과 수) 매우 빠름!</code></pre>\
+                    <pre><code class="language-cpp">// Trie vs other methods\n// N strings, average length L\n\n// 1) Search in vector: O(N * L) -- compare one by one\n// 2) Search in unordered_set: O(L) average -- uses hashing\n// 3) Search in trie: O(L) worst case -- always fast!\n\n// The real strength of a trie: prefix search!\n// Find all words starting with "app"\n// -> vector/set: O(N * L) must check all\n// -> trie: O(prefix length) + O(result count) very fast!</code></pre>\
                 </div></span>\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">"apple", "app", "apt", "bat"을 트라이에 넣으면, 루트의 자식 노드는 몇 개일까요?</span>\
+                        <span class="think-box-question-text">If we insert "apple", "app", "apt", "bat" into a trie, how many children does the root have?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        정답은 <strong>2개</strong>입니다! 첫 글자가 \'a\'와 \'b\' 두 종류이므로,\
-                        루트에서 \'a\' 자식과 \'b\' 자식, 2개의 자식 노드가 생깁니다.\
-                        "apple", "app", "apt"는 모두 \'a\'로 시작하므로 같은 자식을 공유합니다.\
+                        The answer is <strong>2</strong>! Since the first letters are only \'a\' and \'b\',\
+                        the root gets 2 child nodes: \'a\' and \'b\' .\
+                        "apple", "app", and "apt" all start with \'a\', so they share the same child.\
                     </div>\
                 </div>\
             </div>\
 \
-            <!-- 섹션 2: 트라이 구현 -->\
+            <!-- Section 2: Implementing a Trie -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">2</span> 트라이 구현\
+                    <span class="section-num">2</span> Implementing a Trie\
                 </div>\
                 <div class="analogy-box">\
-                    <strong>Understanding by analogy:</strong> 각 노드는 <em>"갈림길에 있는 이정표"</em>입니다!<br>\
-                    이정표에는 다음 글자로 갈 수 있는 화살표(children)가 있고,\
-                    "여기서 단어가 끝납니다"라는 깃발(is_end)이 있습니다.\
-                    "cat"을 넣으면 c → a → t 이정표를 만들고, t에 깃발을 꽂습니다!\
+                    <strong>Understanding by analogy:</strong> each node is like <em>"a signpost at a crossroads"</em>!<br>\
+                    Each signpost has arrows (children) pointing to the next characters,\
+                    and a flag (is_end) that says "a word ends here".\
+                    Inserting "cat" creates signposts c → a → t, and plants a flag at t!\
                 </div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <div class="concept-card">\
@@ -223,104 +223,104 @@ var trieTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="12" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="19" y="23" text-anchor="middle" font-size="12" fill="var(--accent)">{ }</text></svg>\
                         </div>\
                         <h3>TrieNode</h3>\
-                        <p><code>children</code>: 자식 노드 딕셔너리<br><code>is_end</code>: 단어 끝 표시(깃발)</p>\
+                        <p><code>children</code>: dictionary of child nodes<br><code>is_end</code>: end-of-word flag</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">insert</text></svg>\
                         </div>\
-                        <h3>삽입 (insert)</h3>\
-                        <p>글자를 하나씩 따라가며, 없는 노드는 새로 만듭니다. 마지막에 <code>is_end = True</code>!</p>\
+                        <h3>Insert</h3>\
+                        <p>Follow each character, creating new nodes as needed. Mark <code>is_end = True</code> at the end!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">search</text></svg>\
                         </div>\
-                        <h3>검색 (search)</h3>\
-                        <p>글자를 따라가다가 없는 글자가 나오면 False. 끝까지 가서 <code>is_end</code>가 True면 존재!</p>\
+                        <h3>Search</h3>\
+                        <p>Follow each character; if a character is missing, return False. If you reach the end and <code>is_end</code> is True, the word exists!</p>\
                     </div>\
                 </div>\
                 <div style="margin:0.8rem 0 0.5rem;">\
                     <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#dict" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: dict ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: unordered_map ↗</a></span>\
                 </div>\
                 <span class="lang-py"><div class="code-block">\
-                    <pre><code class="language-python">class TrieNode:\n    def __init__(self):\n        self.children = {}   # {\'a\': TrieNode, \'b\': TrieNode, ...}\n        self.is_end = False  # 이 노드에서 단어가 끝나는가?\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        """단어를 트라이에 삽입합니다."""\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()  # 없으면 새로 만들기\n            node = node.children[ch]\n        node.is_end = True  # 단어의 끝 표시!\n\n    def search(self, word):\n        """단어가 트라이에 존재하는지 확인합니다."""\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False  # 경로가 없으면 단어도 없다!\n            node = node.children[ch]\n        return node.is_end  # 끝 표시가 있어야 진짜 단어!\n\n    def startsWith(self, prefix):\n        """접두사로 시작하는 단어가 있는지 확인합니다."""\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True  # 경로만 있으면 OK! (is_end 불필요)\n\n# 사용 예시\ntrie = Trie()\ntrie.insert("apple")\ntrie.insert("app")\nprint(trie.search("apple"))      # True\nprint(trie.search("app"))        # True\nprint(trie.search("ap"))         # False (is_end가 False!)\nprint(trie.startsWith("app"))    # True\nprint(trie.startsWith("b"))      # False</code></pre>\
+                    <pre><code class="language-python">class TrieNode:\n    def __init__(self):\n        self.children = {}   # {\'a\': TrieNode, \'b\': TrieNode, ...}\n        self.is_end = False  # Does a word end at this node?\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        """Insert a word into the trie."""\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()  # Create if missing\n            node = node.children[ch]\n        node.is_end = True  # Mark end of word!\n\n    def search(self, word):\n        """Check if a word exists in the trie."""\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False  # No path means no word!\n            node = node.children[ch]\n        return node.is_end  # Must have end flag to be a real word!\n\n    def startsWith(self, prefix):\n        """Check if any word starts with this prefix."""\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True  # Path exists is enough! (is_end not needed)\n\n# Usage example\ntrie = Trie()\ntrie.insert("apple")\ntrie.insert("app")\nprint(trie.search("apple"))      # True\nprint(trie.search("app"))        # True\nprint(trie.search("ap"))         # False (is_end is False!)\nprint(trie.startsWith("app"))    # True\nprint(trie.startsWith("b"))      # False</code></pre>\
                 </div></span>\
                 <span class="lang-cpp"><div class="code-block">\
-                    <pre><code class="language-cpp">// C++ 트라이 구현\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;unordered_map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map&lt;char, TrieNode*&gt; children;\n    bool is_end = false;\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new TrieNode();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};\n\n// 사용 예시\nint main() {\n    Trie trie;\n    trie.insert("apple");\n    trie.insert("app");\n    cout &lt;&lt; trie.search("apple") &lt;&lt; endl;      // 1 (true)\n    cout &lt;&lt; trie.search("app") &lt;&lt; endl;        // 1 (true)\n    cout &lt;&lt; trie.search("ap") &lt;&lt; endl;         // 0 (false, is_end가 false!)\n    cout &lt;&lt; trie.startsWith("app") &lt;&lt; endl;    // 1 (true)\n    cout &lt;&lt; trie.startsWith("b") &lt;&lt; endl;      // 0 (false)\n}</code></pre>\
+                    <pre><code class="language-cpp">// C++ Trie Implementation\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;unordered_map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map&lt;char, TrieNode*&gt; children;\n    bool is_end = false;\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new TrieNode();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};\n\n// Usage example\nint main() {\n    Trie trie;\n    trie.insert("apple");\n    trie.insert("app");\n    cout &lt;&lt; trie.search("apple") &lt;&lt; endl;      // 1 (true)\n    cout &lt;&lt; trie.search("app") &lt;&lt; endl;        // 1 (true)\n    cout &lt;&lt; trie.search("ap") &lt;&lt; endl;         // 0 (false, is_end is false!)\n    cout &lt;&lt; trie.startsWith("app") &lt;&lt; endl;    // 1 (true)\n    cout &lt;&lt; trie.startsWith("b") &lt;&lt; endl;      // 0 (false)\n}</code></pre>\
                 </div></span>\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">트라이에 "app"과 "apple"을 넣은 뒤, search("app")과 startsWith("app")의 결과 차이는?</span>\
+                        <span class="think-box-question-text">After inserting "app" and "apple" into a trie, what is the difference between search("app") and startsWith("app")?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        둘 다 <strong>True</strong>입니다! "app"을 넣었기 때문에 \'p\' 노드에 <code>is_end = True</code>가 표시됩니다.\
-                        만약 "app"을 넣지 않고 "apple"만 넣었다면, <code>search("app")</code>은 <strong>False</strong>이고\
-                        <code>startsWith("app")</code>은 <strong>True</strong>입니다. search는 is_end를 확인하고, startsWith는 경로만 확인하기 때문입니다!\
+                        Both return <strong>True</strong>! Since "app" was inserted, the \'p\' node has <code>is_end = True</code>.\
+                        If only "apple" was inserted (not "app"), then <code>search("app")</code> would be <strong>False</strong> while\
+                        <code>startsWith("app")</code> would still be <strong>True</strong>. Because search checks is_end, but startsWith only checks if the path exists!\
                     </div>\
                 </div>\
             </div>\
 \
-            <!-- 섹션 3: 트라이 활용 -->\
+            <!-- Section 3: Trie Applications -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">3</span> 트라이 활용\
+                    <span class="section-num">3</span> Trie Applications\
                 </div>\
                 <div class="analogy-box">\
-                    <strong>Understanding by analogy:</strong> 여러분이 스마트폰에서 글자를 입력할 때\
-                    <em>"자동완성 추천"</em>이 뜨는 것을 본 적이 있을 것입니다!\
-                    "app"을 입력하면 "apple", "application", "appetite" 등을 추천해 줍니다.\
-                    이런 자동완성 기능이 바로 트라이를 활용한 대표적인 예입니다!\
+                    <strong>Understanding by analogy:</strong> When you type on your smartphone,\
+                    <em>"autocomplete suggestions"</em> pop up!\
+                    When you type "app", it suggests "apple", "application", "appetite", and more.\
+                    This autocomplete feature is a classic example of a trie in action!\
                 </div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="24" font-size="18" fill="var(--accent)">🔍</text></svg>\
                         </div>\
-                        <h3>자동완성</h3>\
-                        <p>입력한 접두사로 시작하는 단어를 빠르게 찾아 추천합니다. 검색 엔진, 입력기에서 널리 사용됩니다.</p>\
+                        <h3>Autocomplete</h3>\
+                        <p>Quickly finds and suggests words starting with the entered prefix. Widely used in search engines and input methods.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="24" font-size="18" fill="var(--green)">📖</text></svg>\
                         </div>\
-                        <h3>사전 검색</h3>\
-                        <p>대량의 단어를 저장하고 빠르게 존재 여부를 확인합니다. 맞춤법 검사기에서도 활용됩니다.</p>\
+                        <h3>Dictionary Lookup</h3>\
+                        <p>Stores a large number of words and quickly checks if a word exists. Also used in spell checkers.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="24" font-size="18" fill="var(--yellow)">📞</text></svg>\
                         </div>\
-                        <h3>접두사 매칭</h3>\
-                        <p>전화번호 목록에서 어떤 번호가 다른 번호의 접두사인지 빠르게 확인할 수 있습니다.</p>\
+                        <h3>Prefix Matching</h3>\
+                        <p>Quickly checks whether a phone number is a prefix of another in a phone book.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="24" font-size="18" fill="var(--accent)">🗂️</text></svg>\
                         </div>\
-                        <h3>문자열 집합 관리</h3>\
-                        <p>많은 문자열의 삽입/삭제/검색을 효율적으로 처리합니다. IP 라우팅 테이블에서도 사용됩니다.</p>\
+                        <h3>String Set Management</h3>\
+                        <p>Efficiently handles insertion, deletion, and lookup of many strings. Also used in IP routing tables.</p>\
                     </div>\
                 </div>\
                 <span class="lang-py"><div class="code-block">\
-                    <pre><code class="language-python"># 트라이 활용 예: 자동완성 구현\nclass AutocompleteTrie(Trie):\n    def _collect(self, node, prefix, results):\n        """현재 노드부터 모든 단어를 수집합니다."""\n        if node.is_end:\n            results.append(prefix)\n        for ch, child in sorted(node.children.items()):\n            self._collect(child, prefix + ch, results)\n\n    def autocomplete(self, prefix):\n        """접두사로 시작하는 모든 단어를 반환합니다."""\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return []  # 접두사 자체가 없으면 빈 리스트\n            node = node.children[ch]\n        results = []\n        self._collect(node, prefix, results)\n        return results\n\n# 사용 예시\ntrie = AutocompleteTrie()\nfor word in ["apple", "app", "application", "apt", "bat"]:\n    trie.insert(word)\n\nprint(trie.autocomplete("app"))\n# [\'app\', \'apple\', \'application\']\nprint(trie.autocomplete("b"))\n# [\'bat\']</code></pre>\
+                    <pre><code class="language-python"># Trie application: autocomplete\nclass AutocompleteTrie(Trie):\n    def _collect(self, node, prefix, results):\n        """Collect all words starting from the current node."""\n        if node.is_end:\n            results.append(prefix)\n        for ch, child in sorted(node.children.items()):\n            self._collect(child, prefix + ch, results)\n\n    def autocomplete(self, prefix):\n        """Return all words that start with the given prefix."""\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return []  # Empty list if the prefix does not exist\n            node = node.children[ch]\n        results = []\n        self._collect(node, prefix, results)\n        return results\n\n# Usage example\ntrie = AutocompleteTrie()\nfor word in ["apple", "app", "application", "apt", "bat"]:\n    trie.insert(word)\n\nprint(trie.autocomplete("app"))\n# [\'app\', \'apple\', \'application\']\nprint(trie.autocomplete("b"))\n# [\'bat\']</code></pre>\
                 </div></span>\
                 <span class="lang-cpp"><div class="code-block">\
-                    <pre><code class="language-cpp">// 트라이 활용 예: 자동완성 구현\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;vector&gt;\n#include &lt;map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    map&lt;char, TrieNode*&gt; children;  // Sort된 순서 유지\n    bool is_end = false;\n};\n\nclass AutocompleteTrie {\n    TrieNode* root;\n\n    // 현재 노드부터 모든 단어를 수집\n    void collect(TrieNode* node, string& prefix, vector&lt;string&gt;& results) {\n        if (node-&gt;is_end)\n            results.push_back(prefix);\n        for (auto& [ch, child] : node-&gt;children) {\n            prefix.push_back(ch);\n            collect(child, prefix, results);\n            prefix.pop_back();\n        }\n    }\n\npublic:\n    AutocompleteTrie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node-&gt;children.count(ch))\n                node-&gt;children[ch] = new TrieNode();\n            node = node-&gt;children[ch];\n        }\n        node-&gt;is_end = true;\n    }\n\n    vector&lt;string&gt; autocomplete(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node-&gt;children.count(ch))\n                return {};  // 접두사 자체가 없으면 빈 벡터\n            node = node-&gt;children[ch];\n        }\n        vector&lt;string&gt; results;\n        string p = prefix;\n        collect(node, p, results);\n        return results;\n    }\n};\n\n// 사용 예시\nint main() {\n    AutocompleteTrie trie;\n    for (auto& w : {"apple", "app", "application", "apt", "bat"})\n        trie.insert(w);\n\n    for (auto& s : trie.autocomplete("app"))\n        cout &lt;&lt; s &lt;&lt; " ";  // app apple application\n    cout &lt;&lt; endl;\n    for (auto& s : trie.autocomplete("b"))\n        cout &lt;&lt; s &lt;&lt; " ";  // bat\n}</code></pre>\
+                    <pre><code class="language-cpp">// Trie application: autocomplete\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;vector&gt;\n#include &lt;map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    map&lt;char, TrieNode*&gt; children;  // Maintain sorted order\n    bool is_end = false;\n};\n\nclass AutocompleteTrie {\n    TrieNode* root;\n\n    // Collect all words from the current node\n    void collect(TrieNode* node, string& prefix, vector&lt;string&gt;& results) {\n        if (node-&gt;is_end)\n            results.push_back(prefix);\n        for (auto& [ch, child] : node-&gt;children) {\n            prefix.push_back(ch);\n            collect(child, prefix, results);\n            prefix.pop_back();\n        }\n    }\n\npublic:\n    AutocompleteTrie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node-&gt;children.count(ch))\n                node-&gt;children[ch] = new TrieNode();\n            node = node-&gt;children[ch];\n        }\n        node-&gt;is_end = true;\n    }\n\n    vector&lt;string&gt; autocomplete(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node-&gt;children.count(ch))\n                return {};  // Empty vector if the prefix does not exist\n            node = node-&gt;children[ch];\n        }\n        vector&lt;string&gt; results;\n        string p = prefix;\n        collect(node, p, results);\n        return results;\n    }\n};\n\n// Usage example\nint main() {\n    AutocompleteTrie trie;\n    for (auto& w : {"apple", "app", "application", "apt", "bat"})\n        trie.insert(w);\n\n    for (auto& s : trie.autocomplete("app"))\n        cout &lt;&lt; s &lt;&lt; " ";  // app apple application\n    cout &lt;&lt; endl;\n    for (auto& s : trie.autocomplete("b"))\n        cout &lt;&lt; s &lt;&lt; " ";  // bat\n}</code></pre>\
                 </div></span>\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
-                        <span class="think-box-question-text">전화번호 목록 ["119", "1195", "112"]가 있을 때, "119"는 "1195"의 접두사입니다. 이를 트라이로 어떻게 판별할까요?</span>\
+                        <span class="think-box-question-text">Given a phone book ["119", "1195", "112"], "119" is a prefix of "1195". How can we detect this with a trie?</span>\
                     </div>\
                     <button class="think-box-trigger">🤔 Think first, then click!</button>\
                     <div class="think-box-answer">\
-                        모든 번호를 트라이에 넣으면서, 삽입 도중 이미 <code>is_end = True</code>인 노드를 지나가면\
-                        <strong>기존 번호가 현재 번호의 접두사</strong>라는 뜻입니다!\
-                        반대로, 삽입이 끝난 노드에 이미 자식이 있으면 <strong>현재 번호가 다른 번호의 접두사</strong>입니다.\
-                        이 방법으로 BOJ 5052 전화번호 목록 문제를 풀 수 있습니다.\
+                        While inserting all numbers into the trie, if you pass through a node with <code>is_end = True</code>,\
+                        it means <strong>an existing number is a prefix of the current number</strong>!\
+                        Conversely, if the final node already has children, <strong>the current number is a prefix of another number</strong>.\
+                        This approach can be used to solve BOJ 5052 (Phone List).\
                     </div>\
                 </div>\
             </div>\
@@ -351,9 +351,9 @@ var trieTopic = {
 
     _createStepControls: function(suffix) {
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
             '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
             '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
     },
 
@@ -392,7 +392,7 @@ var trieTopic = {
         updateUI();
     },
 
-    // ===== 개념 시각화 탭 =====
+    // ===== Concept Visualization Tab =====
     renderVisualize: function(container) {
         var self = this;
         self._clearVizState();
@@ -400,28 +400,28 @@ var trieTopic = {
 
         container.innerHTML =
             '<div class="hero" style="padding-bottom:12px;">' +
-            '<h2>트라이 삽입 시각화</h2>' +
-            '<p class="hero-sub">"cat", "car", "card"를 트라이에 하나씩 넣는 과정을 단계별로 봅시다.</p>' +
+            '<h2>Trie Insertion Visualization</h2>' +
+            '<p class="hero-sub">Let us watch the step-by-step process of inserting "cat", "car", "card" into a trie.</p>' +
             '</div>' +
             '<div class="graph-svg-container" style="min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;position:relative;">' +
             '<div id="str-tree-' + suffix + '" style="display:flex;flex-direction:column;align-items:center;gap:0;"></div>' +
             '</div>' +
             '<div style="display:flex;gap:24px;margin-bottom:16px;flex-wrap:wrap;">' +
             '<div style="flex:1;min-width:200px;">' +
-            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>' +
-            '<div id="str-status-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">다음 버튼을 눌러 시작하세요</div>' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Current Status</div>' +
+            '<div id="str-status-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">Click Next to begin</div>' +
             '</div>' +
             '<div style="flex:1;min-width:200px;">' +
-            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">삽입된 단어</div>' +
-            '<div id="str-words-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">없음</div>' +
+            '<div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Inserted Words</div>' +
+            '<div id="str-words-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">None</div>' +
             '</div>' +
             '</div>' +
             self._createStepControls(suffix) +
             '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
-            '<span><span class="str-char-box" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">R</span> 기존 노드</span>' +
-            '<span><span class="str-char-box comparing" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">A</span> 현재 방문 중</span>' +
-            '<span><span class="str-char-box matched" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">N</span> 새로 생성</span>' +
-            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--green);vertical-align:middle;"></span> 단어 끝 (is_end)</span>' +
+            '<span><span class="str-char-box" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">R</span> Existing Node</span>' +
+            '<span><span class="str-char-box comparing" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">A</span> Currently Visiting</span>' +
+            '<span><span class="str-char-box matched" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">N</span> Newly Created</span>' +
+            '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--green);vertical-align:middle;"></span> End of Word (is_end)</span>' +
             '</div>';
 
         var treeEl = container.querySelector('#str-tree-' + suffix);
@@ -449,7 +449,7 @@ var trieTopic = {
                 else if (isHighlight) cls += ' comparing';
 
                 var label = node.ch === '' ? 'root' : node.ch;
-                var endMarker = isEnd ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-left:4px;vertical-align:middle;" title="단어 끝"></span>' : '';
+                var endMarker = isEnd ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-left:4px;vertical-align:middle;" title="End of Word"></span>' : '';
 
                 var html = '<div style="display:flex;flex-direction:column;align-items:center;">';
                 html += '<div class="' + cls + '" style="min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:0.95rem;position:relative;" data-node-id="' + node.id + '">' + label + endMarker + '</div>';
@@ -482,12 +482,12 @@ var trieTopic = {
             var beforeHTML = renderTrie(rootBuild, {}, {}, {});
             var beforeWordsHTML = doneWords.length > 0
                 ? doneWords.map(function(w) { return '<span style="background:var(--bg);padding:2px 8px;border-radius:6px;margin:2px;">' + w + '</span>'; }).join(' ')
-                : '없음';
+                : 'None';
 
             allSteps.push({
-                description: '"' + wordCopy + '"를 삽입합니다.',
+                description: '"' + wordCopy + '" will be inserted.',
                 treeHTML: beforeHTML,
-                statusHTML: '<strong>"' + wordCopy + '"</strong> 삽입을 시작합니다.',
+                statusHTML: '<strong>"' + wordCopy + '"</strong> Starting insertion.',
                 wordsHTML: beforeWordsHTML
             });
 
@@ -509,11 +509,11 @@ var trieTopic = {
 
                 var snapHTML = renderTrie(rootBuild, hl, isNew ? nw : {}, {});
                 var descText = isNew
-                    ? '"' + wordCopy + '": \'' + ch + '\' 노드를 새로 생성합니다. (경로: ' + lettersSoFar + ')'
-                    : '"' + wordCopy + '": \'' + ch + '\' 노드가 이미 있습니다. 재사용합니다. (경로: ' + lettersSoFar + ')';
+                    ? '"' + wordCopy + '": \'' + ch + '\' creating a new node. (path: ' + lettersSoFar + ')'
+                    : '"' + wordCopy + '": \'' + ch + '\' node already exists. Reusing. (path: ' + lettersSoFar + ')';
                 var statHTML = isNew
-                    ? '<span style="color:var(--green);">\'' + ch + '\' 노드 생성!</span> (' + lettersSoFar + ')'
-                    : '<span style="color:var(--yellow);">\'' + ch + '\' 재사용</span> (' + lettersSoFar + ')';
+                    ? '<span style="color:var(--green);">\'' + ch + '\' node created!</span> (' + lettersSoFar + ')'
+                    : '<span style="color:var(--yellow);">\'' + ch + '\' reused</span> (' + lettersSoFar + ')';
 
                 allSteps.push({
                     description: descText,
@@ -532,9 +532,9 @@ var trieTopic = {
             var doneWordsHTML = doneWords.map(function(w) { return '<span style="background:var(--bg);padding:2px 8px;border-radius:6px;margin:2px;">' + w + '</span>'; }).join(' ');
 
             allSteps.push({
-                description: '"' + wordCopy + '" 삽입 완료! \'' + word[word.length - 1] + '\' 노드에 is_end 표시를 합니다.',
+                description: '"' + wordCopy + '" Insertion complete! \'' + word[word.length - 1] + '\' node is marked with is_end.',
                 treeHTML: doneHTML,
-                statusHTML: '<strong style="color:var(--green);">"' + wordCopy + '" 삽입 완료!</strong>',
+                statusHTML: '<strong style="color:var(--green);">"' + wordCopy + '" Insertion complete!</strong>',
                 wordsHTML: doneWordsHTML
             });
         });
@@ -542,9 +542,9 @@ var trieTopic = {
         var finalHTML = renderTrie(rootBuild, {}, {}, {});
         var finalWordsHTML = doneWords.map(function(w) { return '<span style="background:var(--bg);padding:2px 8px;border-radius:6px;margin:2px;">' + w + '</span>'; }).join(' ');
         allSteps.push({
-            description: '모든 단어 삽입 완료! "cat", "car", "card"가 "ca" 접두사를 공유합니다.',
+            description: 'All words inserted! "cat", "car", "card" share the "ca" prefix.',
             treeHTML: finalHTML,
-            statusHTML: '<strong style="color:var(--green);">완료!</strong> "cat", "car", "card" 모두 "ca" 경로를 공유합니다.',
+            statusHTML: '<strong style="color:var(--green);">Done!</strong> "cat", "car", "card" all share the "ca" path.',
             wordsHTML: finalWordsHTML
         });
 
@@ -577,7 +577,7 @@ var trieTopic = {
     },
 
     // ====================================================================
-    // Simulation 1: 트라이 구현 (lc-208)
+    // Simulation 1: Trie Implementation (lc-208)
     // ====================================================================
     _renderVizImplement: function(container) {
         var self = this;
@@ -585,10 +585,10 @@ var trieTopic = {
         var DEFAULT_WORDS = 'apple, app';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">트라이 구현 시뮬레이션</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">단어를 삽입한 뒤 search/startsWith를 테스트합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Trie Implementation Simulation</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Insert words, then test search/startsWith.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">삽입할 단어: <input type="text" id="trie-impl-input" value="' + DEFAULT_WORDS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+            '<label style="font-weight:600;">Words to insert: <input type="text" id="trie-impl-input" value="' + DEFAULT_WORDS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="trie-impl-reset">🔄</button>' +
             '</div>' +
             '<div id="str-tree' + suffix + '" style="display:flex;flex-direction:column;align-items:center;min-height:180px;margin-bottom:12px;"></div>' +
@@ -630,7 +630,7 @@ var trieTopic = {
             var steps = [];
             var builtHTML = renderTrie(root, {}, {});
             treeEl.innerHTML = builtHTML;
-            infoEl.innerHTML = '<span style="color:var(--text2);">단어를 삽입하고 검색합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Inserting and searching words.</span>';
 
             // Insert words step by step
             words.forEach(function(word) {
@@ -647,9 +647,9 @@ var trieTopic = {
 
                 (function(word, prevHTML, afterHTML) {
                     steps.push({
-                        description: 'insert("' + word + '") — 트라이에 삽입합니다.',
-                        action: function() { treeEl.innerHTML = afterHTML; infoEl.innerHTML = '<strong style="color:var(--green);">"' + word + '" 삽입 완료!</strong>'; },
-                        undo: function() { treeEl.innerHTML = prevHTML; infoEl.innerHTML = '<span style="color:var(--text2);">단어를 삽입하고 검색합니다.</span>'; }
+                        description: 'insert("' + word + '") — Inserting into the trie.',
+                        action: function() { treeEl.innerHTML = afterHTML; infoEl.innerHTML = '<strong style="color:var(--green);">"' + word + '" Inserted!</strong>'; },
+                        undo: function() { treeEl.innerHTML = prevHTML; infoEl.innerHTML = '<span style="color:var(--text2);">Inserting and searching words.</span>'; }
                     });
                 })(word, prevHTML, afterHTML);
             });
@@ -691,16 +691,16 @@ var trieTopic = {
                 var typeLabel = s.type === 'search' ? 'search' : 'startsWith';
                 var resultStr = result ? '<span style="color:var(--green);font-weight:700;">True</span>' : '<span style="color:var(--red);font-weight:700;">False</span>';
                 var reason = '';
-                if (s.type === 'search' && found && !node.is_end) reason = ' (is_end가 False이므로)';
-                else if (s.type === 'search' && !found) reason = ' (경로가 없음)';
-                else if (s.type === 'startsWith' && result) reason = ' (경로만 있으면 OK)';
+                if (s.type === 'search' && found && !node.is_end) reason = ' (is_end is False)';
+                else if (s.type === 'search' && !found) reason = ' (path does not exist)';
+                else if (s.type === 'startsWith' && result) reason = ' (path exists, that is enough)';
                 var hlHTML = renderTrie(root, hlIds, {});
 
                 (function(typeLabel, word, result, resultStr, reason, hlHTML, stableHTML) {
                     steps.push({
                         description: typeLabel + '("' + word + '") → ' + (result ? 'True' : 'False') + reason,
                         action: function() { treeEl.innerHTML = hlHTML; infoEl.innerHTML = '<code>' + typeLabel + '("' + word + '")</code> → ' + resultStr + reason; },
-                        undo: function() { treeEl.innerHTML = stableHTML; infoEl.innerHTML = '<span style="color:var(--text2);">검색을 시작합니다.</span>'; }
+                        undo: function() { treeEl.innerHTML = stableHTML; infoEl.innerHTML = '<span style="color:var(--text2);">Starting search.</span>'; }
                     });
                 })(typeLabel, s.word, result, resultStr, reason, hlHTML, stableHTML);
             });
@@ -725,7 +725,7 @@ var trieTopic = {
     },
 
     // ====================================================================
-    // Simulation 2: 문자열 집합 (boj-14425)
+    // Simulation 2: String Set (boj-14425)
     // ====================================================================
     _renderVizStringSet: function(container) {
         var self = this, suffix = '-strset';
@@ -733,17 +733,17 @@ var trieTopic = {
         var DEFAULT_QUERIES = 'baekjoon, codeminus, startlink, lucky';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">문자열 집합 시뮬레이션</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">집합 S에 단어를 넣고, 문자열이 집합에 있는지 확인합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">String Set Simulation</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Insert words into set S, then check if query strings are in the set.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">집합 S: <input type="text" id="trie-set-input" value="' + DEFAULT_SET + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
-            '<label style="font-weight:600;">검색어: <input type="text" id="trie-set-query" value="' + DEFAULT_QUERIES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+            '<label style="font-weight:600;">Set S: <input type="text" id="trie-set-input" value="' + DEFAULT_SET + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Queries: <input type="text" id="trie-set-query" value="' + DEFAULT_QUERIES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="btn btn-primary" id="trie-set-reset">🔄</button>' +
             '</div>' +
             '<div style="display:flex;gap:24px;margin-bottom:12px;flex-wrap:wrap;">' +
-            '<div style="flex:1;min-width:180px;"><div style="font-weight:700;margin-bottom:6px;color:var(--text2);">집합 S</div>' +
+            '<div style="flex:1;min-width:180px;"><div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Set S</div>' +
             '<div id="str-set' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;font-weight:600;"></div></div>' +
-            '<div style="flex:1;min-width:180px;"><div style="font-weight:700;margin-bottom:6px;color:var(--text2);">검색 결과</div>' +
+            '<div style="flex:1;min-width:180px;"><div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Search Results</div>' +
             '<div id="str-result' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;font-weight:600;"></div></div>' +
             '</div>' +
             '<div id="str-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -756,7 +756,7 @@ var trieTopic = {
         function buildSteps(setWords, queries) {
             setEl.innerHTML = 'Empty';
             resultEl.innerHTML = '—';
-            infoEl.innerHTML = '<span style="color:var(--text2);">트라이에 단어를 넣고 검색합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Inserting words into the trie and searching.</span>';
 
             var setLookup = {};
             setWords.forEach(function(w) { setLookup[w] = true; });
@@ -774,14 +774,14 @@ var trieTopic = {
 
                 (function(w, prevInserted, afterInserted) {
                     steps.push({
-                        description: '집합 S에 "' + w + '"를 삽입합니다.',
+                        description: 'Inserting "' + w + '" into set S.',
                         action: function() {
                             setEl.innerHTML = afterInserted.map(function(x) { return '<span style="background:var(--accent)15;padding:2px 8px;border-radius:6px;color:var(--accent);">' + x + '</span>'; }).join(' ');
-                            infoEl.innerHTML = '<strong>"' + w + '"</strong> 삽입 완료. 집합 크기: ' + afterInserted.length;
+                            infoEl.innerHTML = '<strong>"' + w + '"</strong> Inserted. Set size: ' + afterInserted.length;
                         },
                         undo: function() {
                             setEl.innerHTML = prevInserted.length > 0 ? prevInserted.map(function(x) { return '<span style="background:var(--accent)15;padding:2px 8px;border-radius:6px;color:var(--accent);">' + x + '</span>'; }).join(' ') : 'Empty';
-                            infoEl.innerHTML = '<span style="color:var(--text2);">트라이에 단어를 넣고 검색합니다.</span>';
+                            infoEl.innerHTML = '<span style="color:var(--text2);">Inserting words into the trie and searching.</span>';
                         }
                     });
                 })(w, prevInserted, afterInserted);
@@ -799,20 +799,20 @@ var trieTopic = {
 
                 (function(q, found, prevResults, prevCount, afterResults, afterCount) {
                     steps.push({
-                        description: 'search("' + q + '") → ' + (found ? 'YES (집합에 있음)' : 'NO (집합에 없음)'),
+                        description: 'search("' + q + '") → ' + (found ? 'YES (found in set)' : 'NO (not in set)'),
                         action: function() {
                             resultEl.innerHTML = afterResults.map(function(r) {
                                 var bg = r.found ? 'background:var(--green)20;color:var(--green);' : 'background:var(--red)15;color:var(--red);';
                                 return '<span style="padding:2px 8px;border-radius:6px;' + bg + '">' + r.word + (r.found ? ' ✓' : ' ✗') + '</span>';
                             }).join(' ');
-                            infoEl.innerHTML = '"' + q + '" → ' + (found ? '<span style="color:var(--green);font-weight:700;">있음!</span>' : '<span style="color:var(--red);font-weight:700;">없음</span>') + ' (포함된 수: ' + afterCount + ')';
+                            infoEl.innerHTML = '"' + q + '" → ' + (found ? '<span style="color:var(--green);font-weight:700;">Found!</span>' : '<span style="color:var(--red);font-weight:700;">Not found</span>') + ' (found count: ' + afterCount + ')';
                         },
                         undo: function() {
                             resultEl.innerHTML = prevResults.length > 0 ? prevResults.map(function(r) {
                                 var bg = r.found ? 'background:var(--green)20;color:var(--green);' : 'background:var(--red)15;color:var(--red);';
                                 return '<span style="padding:2px 8px;border-radius:6px;' + bg + '">' + r.word + (r.found ? ' ✓' : ' ✗') + '</span>';
                             }).join(' ') : '—';
-                            infoEl.innerHTML = '검색 중...';
+                            infoEl.innerHTML = 'Searching...';
                         }
                     });
                 })(q, found, prevResults, prevCount, afterResults, afterCount);
@@ -821,9 +821,9 @@ var trieTopic = {
             // Final step
             var totalFound = foundCount;
             steps.push({
-                description: '완료! 집합 S에 포함된 문자열: ' + totalFound + '개',
-                action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 정답: ' + totalFound + '개</strong>'; },
-                undo: function() { infoEl.innerHTML = '검색 중...'; }
+                description: 'Done! Strings found in set S: ' + totalFound + ' total',
+                action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Answer: ' + totalFound + ' total</strong>'; },
+                undo: function() { infoEl.innerHTML = 'Searching...'; }
             });
 
             return steps;
@@ -849,17 +849,17 @@ var trieTopic = {
     },
 
     // ====================================================================
-    // Simulation 3: 전화번호 목록 (boj-5052)
+    // Simulation 3: Phone List (boj-5052)
     // ====================================================================
     _renderVizPhoneBook: function(container) {
         var self = this, suffix = '-phone';
         var DEFAULT_NUMBERS = '911, 97625999, 91125426';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">전화번호 목록 — 접두사 판별</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">전화번호를 트라이에 넣으며 접두사 관계를 확인합니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Phone List — Prefix Detection</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Insert phone numbers into a trie and check for prefix relationships.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">전화번호: <input type="text" id="trie-phone-input" value="' + DEFAULT_NUMBERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Phone numbers: <input type="text" id="trie-phone-input" value="' + DEFAULT_NUMBERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="trie-phone-reset">🔄</button>' +
             '</div>' +
             '<div id="str-tree' + suffix + '" style="display:flex;flex-direction:column;align-items:center;min-height:160px;margin-bottom:12px;overflow-x:auto;"></div>' +
@@ -902,7 +902,7 @@ var trieTopic = {
             var consistent = true;
 
             treeEl.innerHTML = renderTrie(root, {}, {});
-            infoEl.innerHTML = '<span style="color:var(--text2);">전화번호를 트라이에 넣으며 접두사 관계를 확인합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Insert phone numbers into a trie and check for prefix relationships.</span>';
 
             numbers.forEach(function(num) {
                 var prevHTML = renderTrie(root, {}, {});
@@ -923,16 +923,16 @@ var trieTopic = {
 
                 (function(num, prevHTML, afterHTML, isOk) {
                     steps.push({
-                        description: '"' + num + '" 삽입 → ' + (isOk ? '접두사 문제 없음' : '접두사 관계 발견!'),
+                        description: '"' + num + '" insert -> ' + (isOk ? 'No prefix issue' : 'Prefix relationship found!'),
                         action: function() {
                             treeEl.innerHTML = afterHTML;
-                            infoEl.innerHTML = '"' + num + '" 삽입 → ' + (isOk
+                            infoEl.innerHTML = '"' + num + '" insert -> ' + (isOk
                                 ? '<span style="color:var(--green);">OK</span>'
-                                : '<span style="color:var(--red);font-weight:700;">접두사 관계 발견!</span>');
+                                : '<span style="color:var(--red);font-weight:700;">Prefix relationship found!</span>');
                         },
                         undo: function() {
                             treeEl.innerHTML = prevHTML;
-                            infoEl.innerHTML = '<span style="color:var(--text2);">전화번호를 트라이에 넣으며 접두사 관계를 확인합니다.</span>';
+                            infoEl.innerHTML = '<span style="color:var(--text2);">Insert phone numbers into a trie and check for prefix relationships.</span>';
                         }
                     });
                 })(num, prevHTML, afterHTML, isOk);
@@ -940,11 +940,11 @@ var trieTopic = {
 
             var finalConsistent = consistent;
             steps.push({
-                description: '완료! 일관성: ' + (finalConsistent ? 'YES' : 'NO'),
+                description: 'Done! Consistency: ' + (finalConsistent ? 'YES' : 'NO'),
                 action: function() {
-                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:' + (finalConsistent ? 'var(--green)' : 'var(--red)') + ';">✅ 결과: ' + (finalConsistent ? 'YES (일관성 있음)' : 'NO (일관성 없음)') + '</strong>';
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:' + (finalConsistent ? 'var(--green)' : 'var(--red)') + ';">✅ Result: ' + (finalConsistent ? 'YES (consistent)' : 'NO (inconsistent)') + '</strong>';
                 },
-                undo: function() { infoEl.innerHTML = '확인 중...'; }
+                undo: function() { infoEl.innerHTML = 'Checking...'; }
             });
 
             return steps;
@@ -967,17 +967,17 @@ var trieTopic = {
     },
 
     // ====================================================================
-    // Simulation 4: 최장 공통 접두사 (lc-14)
+    // Simulation 4: Longest Common Prefix (lc-14)
     // ====================================================================
     _renderVizLCP: function(container) {
         var self = this, suffix = '-lcp';
         var DEFAULT_STRS = 'flower, flow, flight';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">최장 공통 접두사 (LCP)</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">문자열의 공통 접두사를 찾습니다.</p>' +
+            '<h3 style="margin-bottom:8px;">Longest Common Prefix (LCP)</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Find the common prefix of strings.</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">문자열: <input type="text" id="trie-lcp-input" value="' + DEFAULT_STRS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Strings: <input type="text" id="trie-lcp-input" value="' + DEFAULT_STRS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="trie-lcp-reset">🔄</button>' +
             '</div>' +
             '<div id="str-chars' + suffix + '" style="margin-bottom:12px;"></div>' +
@@ -1007,14 +1007,14 @@ var trieTopic = {
             }
 
             renderChars(-1, -1);
-            infoEl.innerHTML = '<span style="color:var(--text2);">각 위치의 문자를 비교하여 공통 접두사를 찾습니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Comparing characters at each position to find the common prefix.</span>';
 
             var steps = [];
             if (strs.length === 0) {
                 steps.push({
-                    description: '빈 배열 — 공통 접두사 없음.',
-                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">빈 배열입니다.</strong>'; },
-                    undo: function() { infoEl.innerHTML = '<span style="color:var(--text2);">비교 Before Start</span>'; }
+                    description: 'Empty array -- no common prefix.',
+                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">The array is empty.</strong>'; },
+                    undo: function() { infoEl.innerHTML = '<span style="color:var(--text2);">Comparison not started</span>'; }
                 });
                 return steps;
             }
@@ -1032,17 +1032,17 @@ var trieTopic = {
                     lcpLen = col + 1;
                     (function(capturedCol, capturedCh, renderChars) {
                         steps.push({
-                            description: '위치 ' + capturedCol + ': 모두 \'' + capturedCh + '\' → 일치!',
-                            action: function() { renderChars(capturedCol, 1); infoEl.innerHTML = '위치 ' + capturedCol + ': 모두 <strong>\'' + capturedCh + '\'</strong> → <span style="color:var(--green);">일치!</span>'; },
-                            undo: function() { renderChars(capturedCol - 1, capturedCol > 0 ? 1 : -1); infoEl.innerHTML = '<span style="color:var(--text2);">비교 중...</span>'; }
+                            description: 'Position ' + capturedCol + ': all \'' + capturedCh + '\' match!',
+                            action: function() { renderChars(capturedCol, 1); infoEl.innerHTML = 'Position ' + capturedCol + ': all <strong>\'' + capturedCh + '\'</strong> <span style="color:var(--green);">Match!</span>'; },
+                            undo: function() { renderChars(capturedCol - 1, capturedCol > 0 ? 1 : -1); infoEl.innerHTML = '<span style="color:var(--text2);">Comparing...</span>'; }
                         });
                     })(capturedCol, capturedCh, renderChars);
                 } else {
                     (function(capturedCol, renderChars) {
                         steps.push({
-                            description: '위치 ' + capturedCol + ': 불일치 발견! 여기서 멈춤.',
-                            action: function() { renderChars(capturedCol, 2); infoEl.innerHTML = '위치 ' + capturedCol + ': <span style="color:var(--red);font-weight:700;">불일치!</span> 공통 접두사가 여기서 끝납니다.'; },
-                            undo: function() { renderChars(capturedCol - 1, capturedCol > 0 ? 1 : -1); infoEl.innerHTML = '<span style="color:var(--text2);">비교 중...</span>'; }
+                            description: 'Position ' + capturedCol + ': Mismatch found! Stopping here.',
+                            action: function() { renderChars(capturedCol, 2); infoEl.innerHTML = 'Position ' + capturedCol + ': <span style="color:var(--red);font-weight:700;">Mismatch!</span> The common prefix ends here.'; },
+                            undo: function() { renderChars(capturedCol - 1, capturedCol > 0 ? 1 : -1); infoEl.innerHTML = '<span style="color:var(--text2);">Comparing...</span>'; }
                         });
                     })(capturedCol, renderChars);
                     break;
@@ -1051,9 +1051,9 @@ var trieTopic = {
 
             var result = strs[0].substring(0, lcpLen);
             steps.push({
-                description: '완료! 최장 공통 접두사: "' + result + '" (길이 ' + lcpLen + ')',
-                action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ LCP = "' + result + '" (길이 ' + lcpLen + ')</strong>'; },
-                undo: function() { infoEl.innerHTML = '비교 중...'; }
+                description: 'Done! Longest Common Prefix: "' + result + '" (length ' + lcpLen + ')',
+                action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ LCP = "' + result + '" (length ' + lcpLen + ')</strong>'; },
+                undo: function() { infoEl.innerHTML = 'Comparing...'; }
             });
 
             return steps;
@@ -1080,66 +1080,66 @@ var trieTopic = {
 
     // ===== Problem Stages =====
     stages: [
-        { num: 1, title: '기본 트라이', desc: '트라이 구현과 문자열 집합 확인 (Medium~Silver)', problemIds: ['lc-208', 'boj-14425'] },
-        { num: 2, title: '트라이 응용', desc: '접두사 관계와 공통 접두사 (Gold~Easy)', problemIds: ['boj-5052', 'lc-14'] }
+        { num: 1, title: 'Basic Trie', desc: 'Trie implementation and string set lookup (Medium~Silver)', problemIds: ['lc-208', 'boj-14425'] },
+        { num: 2, title: 'Applied Trie', desc: 'Prefix relationships and common prefixes (Gold~Easy)', problemIds: ['boj-5052', 'lc-14'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ===== 1단계: 기본 트라이 =====
+        // ===== Stage 1: Basic Trie =====
         {
             id: 'lc-208',
             title: 'LeetCode 208 - Implement Trie',
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/implement-trie-prefix-tree/',
-            simIntro: '트라이에 단어를 삽입하고 search/startsWith가 어떻게 동작하는지 확인하세요.',
+            simIntro: 'Insert words into a trie and see how search/startsWith work.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>트라이(접두사 트리)를 구현하세요. Trie 클래스에는 다음 메서드가 있습니다:</p>
+                <p>Implement a trie (prefix tree). The Trie class has the following methods:</p>
                 <ul>
-                    <li><code>Trie()</code> - 트라이 객체를 초기화합니다.</li>
-                    <li><code>void insert(String word)</code> - 문자열 word를 트라이에 삽입합니다.</li>
-                    <li><code>boolean search(String word)</code> - 문자열 word가 트라이에 있으면 true, 없으면 false를 반환합니다.</li>
-                    <li><code>boolean startsWith(String prefix)</code> - 이전에 삽입된 문자열 중 접두사 prefix를 가진 것이 있으면 true를 반환합니다.</li>
+                    <li><code>Trie()</code> - Initializes the trie object.</li>
+                    <li><code>void insert(String word)</code> - Inserts the string word into the trie.</li>
+                    <li><code>boolean search(String word)</code> - Returns true if the string word is in the trie, false otherwise.</li>
+                    <li><code>boolean startsWith(String prefix)</code> - Returns true if any previously inserted string has the prefix.</li>
                 </ul>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
 [[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]</pre></div>
                     <div><strong>Output</strong><pre>[null, null, true, false, true, null, true]</pre></div>
-                </div><p class="example-explain">insert("apple") → search("apple") = true, search("app") = false (app은 삽입된 적 없음), startsWith("app") = true (apple이 app으로 시작), insert("app") → search("app") = true</p></div>
+                </div><p class="example-explain">insert("apple") → search("apple") = true, search("app") = false ("app" was never inserted), startsWith("app") = true ("apple" starts with "app"), insert("app") → search("app") = true</p></div>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ word.length, prefix.length ≤ 2,000</li>
-                    <li>word와 prefix는 영어 소문자로만 구성</li>
-                    <li>insert, search, startsWith 호출은 합쳐서 최대 3 × 10<sup>4</sup>번</li>
+                    <li>word and prefix consist only of lowercase English letters</li>
+                    <li>The total number of insert, search, and startsWith calls is at most 3 × 10<sup>4</sup> times</li>
                 </ul>
             `,
             hints: [
-                { title: '가장 단순한 방법: 리스트에 저장', content: '일단 모든 단어를 <strong>리스트</strong>에 저장하면 어떨까요?<br><code>search</code>는 리스트에서 <code>in</code> 연산으로 찾고, <code>startsWith</code>는 for문으로 하나씩 접두사를 비교하면 되겠죠.<br>근데... 단어가 수만 개 쌓이면? search는 O(N), startsWith는 매번 모든 단어를 순회하니까 점점 느려져요!' },
-                { title: '접두사를 빠르게 찾으려면?', content: '트라이는 <strong>글자 하나씩 노드로 내려가는 트리 구조</strong>입니다.<br>"apple"과 "app"을 넣으면 "a→p→p" 경로를 <strong>공유</strong>해요. 공통 접두사를 공유하니까 메모리도 절약되고, 탐색도 <strong>O(L)</strong> (L = 단어 길이)로 끝나요!<br>리스트의 O(N)과 비교하면 단어 수가 아무리 많아도 탐색 시간이 일정합니다.' },
-                { title: '노드 구조 설계', content: '각 노드에는 두 가지가 필요합니다:<br>① <strong>children</strong> — 자식 노드를 저장하는 공간 (다음 글자로 가는 길)<br>② <strong>isEnd</strong> — 이 노드에서 단어가 끝나는지 표시하는 플래그<br><span class="lang-py">Python: <code>children = {}</code> 딕셔너리로 자식 관리. 글자를 키로 사용하면 유연해요.</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, Node*&gt;</code> 또는 <code>Node* children[26]</code> 배열로 자식 관리. 배열이 더 빠르지만, map이 더 유연합니다.</span>' }
+                { title: 'Simplest approach: store in a list', content: 'What if we just store all words in a <strong>list</strong>?<br><code>search</code> uses the <code>in</code> operator on the list, and <code>startsWith</code> loops through each word to compare prefixes.<br>But... what if tens of thousands of words pile up? search is O(N), and startsWith loops through every word each time, getting slower and slower!' },
+                { title: 'How to search prefixes quickly?', content: 'A trie is a <strong>tree structure where you descend one character per node</strong>.<br>If you insert "apple" and "app", they <strong>share</strong> the path "a->p->p". Sharing common prefixes saves memory, and searching finishes in <strong>O(L)</strong> (L = word length)!<br>Compared to O(N) with a list, the search time stays constant no matter how many words there are.' },
+                { title: 'Designing the node structure', content: 'Each node needs two things:<br>1. <strong>children</strong> -- space to store child nodes (paths to the next character)<br>2. <strong>isEnd</strong> -- a flag indicating whether a word ends at this node<br><span class="lang-py">Python: <code>children = {}</code> manages children with a dictionary. Using characters as keys makes it flexible.</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, Node*&gt;</code> or <code>Node* children[26]</code> array for child management. Arrays are faster, but maps are more flexible.</span>' }
             ],
             templates: {
                 python: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True',
                 cpp: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;\npublic:\n    Trie() { root = new Node(); }\n\n    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};'
             },
             solutions: [{
-                approach: '트라이 직접 구현',
-                description: 'TrieNode에 children 맵과 is_end 플래그를 두고 insert/search/startsWith를 구현합니다.',
+                approach: 'Direct Trie Implementation',
+                description: 'Implement insert/search/startsWith using a TrieNode with a children map and is_end flag.',
                 timeComplexity: 'O(L) per operation',
-                spaceComplexity: 'O(총 문자 수)',
+                spaceComplexity: 'O(total characters)',
                 codeSteps: {
                     python: [
-                        { title: 'TrieNode 정의', desc: 'children 딕셔너리로 자식 노드를 저장합니다.\nis_end 플래그로 단어의 끝을 표시합니다.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False' },
-                        { title: 'Trie 초기화', desc: '빈 루트 노드를 생성합니다.\n모든 삽입/검색은 루트에서 시작합니다.', code: 'class Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
-                        { title: 'insert 구현', desc: '한 글자씩 따라가며 없는 노드는 새로 생성합니다.\n마지막 노드에 is_end = True로 단어 끝을 표시합니다.', code: '    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True' },
-                        { title: 'search / startsWith', desc: 'search는 경로 끝에서 is_end를 확인합니다.\nstartsWith는 경로 존재만 확인하므로 is_end 무관합니다.', code: '    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True' }
+                        { title: 'Define TrieNode', desc: 'Store child nodes using a children dictionary.\nMark end of word with the is_end flag.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False' },
+                        { title: 'Initialize Trie', desc: 'Create an empty root node.\nAll insertions and searches start from the root.', code: 'class Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
+                        { title: 'Implement insert', desc: 'Follow each character, creating new nodes when missing.\nMark the last node with is_end = True to indicate end of word.', code: '    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True' },
+                        { title: 'search / startsWith', desc: 'search checks is_end at the end of the path.\nstartsWith only checks if the path exists, so is_end does not matter.', code: '    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True' }
                     ],
                     cpp: [
-                        { title: 'Node 구조체 정의', desc: 'unordered_map으로 자식 관리.\nPython dict와 동일한 역할.', code: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;' },
-                        { title: 'Trie 초기화', desc: 'new Node()로 빈 루트 생성.\nPython의 self.root = TrieNode()과 동일합니다.', code: 'public:\n    Trie() { root = new Node(); }' },
-                        { title: 'insert 구현', desc: 'count()로 키 존재 확인 → 없으면 new Node().\n->로 포인터 멤버 접근.', code: '    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }' },
-                        { title: 'search / startsWith', desc: 'search는 is_end 확인, startsWith는 경로만 확인.', code: '    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};' }
+                        { title: 'Define Node struct', desc: 'Manage children with unordered_map.\nSame role as Python dict.', code: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;' },
+                        { title: 'Initialize Trie', desc: 'Create an empty root with new Node().\nEquivalent to Python self.root = TrieNode().', code: 'public:\n    Trie() { root = new Node(); }' },
+                        { title: 'Implement insert', desc: 'Check key existence with count(), create new Node() if missing.\nAccess pointer members with ->.', code: '    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }' },
+                        { title: 'search / startsWith', desc: 'search checks is_end, startsWith only checks the path.', code: '    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};' }
                     ]
                 },
                 get templates() { return trieTopic.problems[0].templates; }
@@ -1147,13 +1147,13 @@ var trieTopic = {
         },
         {
             id: 'boj-14425',
-            title: 'BOJ 14425 - 문자열 집합',
+            title: 'BOJ 14425 - String Set',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/14425',
-            simIntro: '트라이에 문자열을 넣고 검색하여 집합 포함 여부를 확인하는 과정을 관찰하세요.',
+            simIntro: 'Watch the process of inserting strings into a trie and searching to check set membership.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>총 N개의 문자열로 이루어진 집합 S가 주어진다. 입력으로 주어지는 M개의 문자열 중에서 집합 S에 포함되어 있는 것이 총 몇 개인지 구하는 프로그램을 작성하시오.</p>
+                <p>Given a set S consisting of N strings, write a program to count how many of the M input strings are contained in set S.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 11
 baekjoononlinejudge
@@ -1172,55 +1172,55 @@ codingho
 lucky
 judge</pre></div>
                     <div><strong>Output</strong><pre>4</pre></div>
-                </div><p class="example-explain">집합 S = {baekjoononlinejudge, startlink, codeplus, sundaycoding, codingsh}이고, 검사할 11개 문자열 중 baekjoononlinejudge, codeplus, startlink, sundaycoding의 4개가 S에 포함됩니다.</p></div>
+                </div><p class="example-explain">Set S = {baekjoononlinejudge, startlink, codeplus, sundaycoding, codingsh}. Of the 11 query strings, 4 are found in S: baekjoononlinejudge, codeplus, startlink, sundaycoding.</p></div>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N, M ≤ 10,000</li>
-                    <li>문자열 길이 ≤ 500</li>
-                    <li>문자열은 소문자로만 구성</li>
+                    <li>String length ≤ 500</li>
+                    <li>Strings consist only of lowercase letters</li>
                 </ul>
             `,
             hints: [
-                { title: '처음 생각: 하나씩 비교', content: 'M개 문자열마다 N개 문자열과 하나씩 비교하면 되겠죠?<br>근데 이러면 <strong>O(N × M × L)</strong>이에요. N, M이 각각 10,000이고 문자열이 길면... 꽤 느릴 수 있어요!' },
-                { title: '집합(set)으로 O(1) 검색', content: '<span class="lang-py">Python: <code>set()</code>에 N개 문자열을 넣으면 <code>in</code> 연산이 평균 O(L)!</span><span class="lang-cpp">C++: <code>unordered_set</code>에 넣으면 <code>find</code>가 평균 O(L)!</span><br>M개를 검사해도 <strong>O((N+M) × L)</strong>로 충분히 빠릅니다. 간단하고 효율적!' },
-                { title: '트라이로도 가능', content: '이 문제는 set으로 간단히 풀 수 있지만, <strong>트라이 구현 연습</strong>에 아주 좋은 문제입니다!<br>N개 문자열을 트라이에 <code>insert</code>한 뒤, M개를 <code>search</code>하여 True인 개수를 세면 됩니다.<br>접두사 활용은 없지만, 기본 insert/search 구현을 확실히 익힐 수 있어요.' }
+                { title: 'First thought: compare one by one', content: 'We could compare each of the M strings against all N strings one by one, right?<br>But that gives us <strong>O(N * M * L)</strong>. If N and M are each 10,000 and the strings are long... it could be quite slow!' },
+                { title: 'O(1) lookup with a set', content: '<span class="lang-py">Python: Put N strings in a <code>set()</code> and the <code>in</code> operation is O(L) on average!</span><span class="lang-cpp">C++: Put them in an <code>unordered_set</code> and <code>find</code> is O(L) on average!</span><br>Even checking M queries is fast enough at <strong>O((N+M) * L)</strong>. Simple and efficient!' },
+                { title: 'Also solvable with a trie', content: 'This problem can easily be solved with a set, but it is a great problem for <strong>practicing trie implementation</strong>!<br>Insert N strings into the trie with <code>insert</code>, then <code>search</code> for each of the M strings and count how many return True.<br>No prefix features are needed, but you can solidly practice basic insert/search implementation.' }
             ],
             templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\n# 방법 1: set 사용 (간단)\nN, M = map(int, input().split())\nS = set(input().strip() for _ in range(N))\ncount = sum(1 for _ in range(M) if input().strip() in S)\nprint(count)',
+                python: 'import sys\ninput = sys.stdin.readline\n\n# Method 1: using set (simple)\nN, M = map(int, input().split())\nS = set(input().strip() for _ in range(N))\ncount = sum(1 for _ in range(M) if input().strip() in S)\nprint(count)',
                 cpp: '#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    bool is_end = false;\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new TrieNode();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n};\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;\n\n    Trie trie;\n    string s;\n    for (int i = 0; i < N; i++) {\n        cin >> s;\n        trie.insert(s);\n    }\n\n    int count = 0;\n    for (int i = 0; i < M; i++) {\n        cin >> s;\n        if (trie.search(s)) count++;\n    }\n    cout << count << endl;\n}'
             },
             solutions: [{
-                approach: 'set 또는 트라이',
-                description: 'set에 집합 S를 넣고 M개를 검사하거나, 트라이로 insert/search합니다.',
+                approach: 'Set or Trie',
+                description: 'Insert set S into a set and check M queries, or use trie insert/search.',
                 timeComplexity: 'O((N+M) × L)',
                 spaceComplexity: 'O(N × L)',
                 codeSteps: {
                     python: [
-                        { title: '입력', desc: 'sys.stdin.readline으로 빠른 입력을 받습니다.\nN개는 집합, M개는 검사할 문자열입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())' },
-                        { title: '집합 생성', desc: 'set에 N개를 넣으면 in 연산이 평균 O(1)입니다.\n트라이보다 간결하지만 원리 학습에는 트라이가 유용합니다.', code: 'S = set(input().strip() for _ in range(N))' },
-                        { title: '검사 및 출력', desc: 'M개를 하나씩 집합에 있는지 확인하여 카운트합니다.\nsum + 제너레이터로 간결하게 처리합니다.', code: 'count = sum(1 for _ in range(M) if input().strip() in S)\nprint(count)' }
+                        { title: 'Input', desc: 'Use sys.stdin.readline for fast input.\nN strings form the set, M strings are queries to check.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())' },
+                        { title: 'Create set', desc: 'Putting N items in a set makes the in operator O(1) on average.\nMore concise than a trie, but a trie is useful for learning the concept.', code: 'S = set(input().strip() for _ in range(N))' },
+                        { title: 'Check and output', desc: 'Check each of M strings against the set and count matches.\nHandle concisely with sum + generator.', code: 'count = sum(1 for _ in range(M) if input().strip() in S)\nprint(count)' }
                     ],
                     cpp: [
-                        { title: '입력 + 트라이 준비', desc: 'C++에서는 트라이로 직접 구현하는 연습!', code: '#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    bool is_end = false;\n};\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);' },
-                        { title: '트라이 삽입', desc: 'N개의 문자열을 트라이에 insert합니다.\nchar 배열 + buf[j]로 한 글자씩 순회합니다.', code: '    TrieNode* root = new TrieNode();\n    char buf[501];\n    for (int i = 0; i < N; i++) {\n        scanf("%s", buf);\n        TrieNode* node = root;\n        for (int j = 0; buf[j]; j++) {\n            if (!node->children.count(buf[j]))\n                node->children[buf[j]] = new TrieNode();\n            node = node->children[buf[j]];\n        }\n        node->is_end = true;\n    }' },
-                        { title: '검색 및 출력', desc: 'M개를 트라이에서 search하여 is_end인 것만 카운트합니다.\n경로가 끊기면 바로 break하여 불필요한 탐색을 줄입니다.', code: '    int count = 0;\n    for (int i = 0; i < M; i++) {\n        scanf("%s", buf);\n        TrieNode* node = root;\n        bool found = true;\n        for (int j = 0; buf[j]; j++) {\n            if (!node->children.count(buf[j])) { found = false; break; }\n            node = node->children[buf[j]];\n        }\n        if (found && node->is_end) count++;\n    }\n    printf("%d\\n", count);\n}' }
+                        { title: 'Input + Trie setup', desc: 'Practice implementing a trie directly in C++!', code: '#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map<char, TrieNode*> children;\n    bool is_end = false;\n};\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);' },
+                        { title: 'Trie insertion', desc: 'Insert N strings into the trie.\nIterate character by character using a char array + buf[j].', code: '    TrieNode* root = new TrieNode();\n    char buf[501];\n    for (int i = 0; i < N; i++) {\n        scanf("%s", buf);\n        TrieNode* node = root;\n        for (int j = 0; buf[j]; j++) {\n            if (!node->children.count(buf[j]))\n                node->children[buf[j]] = new TrieNode();\n            node = node->children[buf[j]];\n        }\n        node->is_end = true;\n    }' },
+                        { title: 'Search and output', desc: 'Search M strings in the trie and count those with is_end.\nBreak immediately when the path ends to skip unnecessary traversal.', code: '    int count = 0;\n    for (int i = 0; i < M; i++) {\n        scanf("%s", buf);\n        TrieNode* node = root;\n        bool found = true;\n        for (int j = 0; buf[j]; j++) {\n            if (!node->children.count(buf[j])) { found = false; break; }\n            node = node->children[buf[j]];\n        }\n        if (found && node->is_end) count++;\n    }\n    printf("%d\\n", count);\n}' }
                     ]
                 },
                 get templates() { return trieTopic.problems[1].templates; }
             }]
         },
 
-        // ===== 2단계: 트라이 응용 =====
+        // ===== Stage 2: Applied Trie =====
         {
             id: 'boj-5052',
-            title: 'BOJ 5052 - 전화번호 목록',
+            title: 'BOJ 5052 - Phone List',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/5052',
-            simIntro: '트라이에 전화번호를 넣으며 접두사 관계를 탐지하는 과정을 관찰하세요.',
+            simIntro: 'Watch how prefix relationships are detected as phone numbers are inserted into a trie.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>전화번호 목록이 주어진다. 이때, 이 목록이 일관성이 있는지 없는지를 구해야 한다.</p>
-                <p>전화번호 목록이 일관성을 유지하려면, 한 번호가 다른 번호의 접두어인 경우가 없어야 한다. 예를 들어, 긴급전화가 911이고, 선영이의 집 전화번호가 91125426이면 선영이에게 전화를 걸 수 없다. 911을 누르는 순간 긴급전화가 걸리기 때문이다.</p>
+                <p>Given a list of phone numbers, determine whether the list is consistent or not.</p>
+                <p>For the phone list to be consistent, no number should be a prefix of another. For example, if the emergency number is 911 and a home phone number is 91125426, you cannot call that home number because dialing 911 immediately connects to emergency services.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2
 3
@@ -1235,39 +1235,39 @@ judge</pre></div>
 98346</pre></div>
                     <div><strong>Output</strong><pre>NO
 YES</pre></div>
-                </div><p class="example-explain">첫 번째 케이스: 911이 91125426의 접두어이므로 일관성 없음(NO). 두 번째 케이스: 어떤 번호도 다른 번호의 접두어가 아니므로 일관성 있음(YES).</p></div>
+                </div><p class="example-explain">First case: 911 is a prefix of 91125426, so the list is inconsistent (NO). Second case: no number is a prefix of another, so the list is consistent (YES).</p></div>
                 <h4>Constraints</h4>
                 <ul>
-                    <li>1 ≤ t ≤ 50 (테스트 케이스 수)</li>
-                    <li>1 ≤ n ≤ 10,000 (전화번호 수)</li>
-                    <li>전화번호 길이 ≤ 10</li>
-                    <li>전화번호는 숫자로만 구성</li>
+                    <li>1 ≤ t ≤ 50 (number of test cases)</li>
+                    <li>1 ≤ n ≤ 10,000 (number of phone numbers)</li>
+                    <li>Phone number length ≤ 10</li>
+                    <li>Phone numbers consist only of digits</li>
                 </ul>
             `,
             hints: [
-                { title: '처음 생각: 모든 쌍 비교', content: 'N개 번호 중 하나가 다른 것의 접두어인지 확인하려면... 모든 쌍을 비교하면 되겠죠?<br>근데 이러면 <strong>O(N<sup>2</sup> × L)</strong>이에요. N이 10,000이면 1억 번 비교... 느려요!' },
-                { title: '정렬하면 인접한 것만 비교!', content: '<strong>사전순 정렬</strong>하면 접두어 관계는 반드시 <strong>인접한 번호 사이</strong>에만 존재합니다!<br>예: ["911", "91125426", "97625999"] → 911과 91125426이 나란히 오죠.<br>정렬 후 이웃한 쌍만 비교하면 <strong>O(N log N × L)</strong>로 해결!' },
-                { title: '트라이로 접두어 판별', content: '번호를 하나씩 트라이에 삽입하면서 접두어 관계를 바로 탐지할 수 있어요!<br>① 삽입 중 경로에 <strong>is_end = True</strong>인 노드를 지나가면 → 기존 번호가 현재 번호의 접두어!<br>② 삽입 완료 후 끝 노드에 <strong>자식이 있으면</strong> → 현재 번호가 다른 번호의 접두어!<br>두 방향 모두 체크하는 게 핵심입니다.' }
+                { title: 'First thought: compare all pairs', content: 'To check if any number is a prefix of another among N numbers... we could compare all pairs, right?<br>But that gives <strong>O(N<sup>2</sup> * L)</strong>. If N is 10,000 that means 100 million comparisons... slow!' },
+                { title: 'Sort, then compare only adjacent pairs!', content: 'If you <strong>sort lexicographically</strong>, prefix relationships only exist between <strong>adjacent numbers</strong>!<br>Example: ["911", "91125426", "97625999"] -> 911 and 91125426 end up next to each other.<br>Comparing only neighboring pairs after sorting solves it in <strong>O(N log N * L)</strong>!' },
+                { title: 'Detect prefixes with a trie', content: 'You can detect prefix relationships on the fly while inserting numbers into a trie!<br>1. During insertion, if the path passes through a node with <strong>is_end = True</strong> -> an existing number is a prefix of the current one!<br>2. After insertion, if the end node <strong>has children</strong> -> the current number is a prefix of another!<br>Checking both directions is the key.' }
             ],
             templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        """삽입하면서 접두사 관계 확인. 문제 있으면 False 반환"""\n        node = self.root\n        prefix_found = False\n        for ch in word:\n            if node.is_end:\n                prefix_found = True\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n        if len(node.children) > 0:\n            prefix_found = True\n        return not prefix_found\n\nt = int(input())\nfor _ in range(t):\n    n = int(input())\n    trie = Trie()\n    numbers = [input().strip() for _ in range(n)]\n    consistent = True\n    for num in numbers:\n        if not trie.insert(num):\n            consistent = False\n    print("YES" if consistent else "NO")',
+                python: 'import sys\ninput = sys.stdin.readline\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        """Insert while checking prefix relationships. Return False if found."""\n        node = self.root\n        prefix_found = False\n        for ch in word:\n            if node.is_end:\n                prefix_found = True\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n        if len(node.children) > 0:\n            prefix_found = True\n        return not prefix_found\n\nt = int(input())\nfor _ in range(t):\n    n = int(input())\n    trie = Trie()\n    numbers = [input().strip() for _ in range(n)]\n    consistent = True\n    for num in numbers:\n        if not trie.insert(num):\n            consistent = False\n    print("YES" if consistent else "NO")',
                 cpp: '#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\nusing namespace std;\n\nstruct TrieNode {\n    TrieNode* children[10] = {};\n    bool is_end = false;\n};\n\nbool insert(TrieNode* root, const string& s) {\n    TrieNode* node = root;\n    bool ok = true;\n    for (char ch : s) {\n        int idx = ch - \'0\';\n        if (node->is_end) ok = false;\n        if (!node->children[idx])\n            node->children[idx] = new TrieNode();\n        node = node->children[idx];\n    }\n    node->is_end = true;\n    for (int i = 0; i < 10; i++)\n        if (node->children[i]) ok = false;\n    return ok;\n}\n\nvoid deleteTrie(TrieNode* node) {\n    for (int i = 0; i < 10; i++)\n        if (node->children[i]) deleteTrie(node->children[i]);\n    delete node;\n}\n\nint main() {\n    int t;\n    scanf("%d", &t);\n    while (t--) {\n        int n;\n        scanf("%d", &n);\n        TrieNode* root = new TrieNode();\n        vector<string> nums(n);\n        bool ok = true;\n        for (int i = 0; i < n; i++) {\n            char buf[11];\n            scanf("%s", buf);\n            nums[i] = buf;\n        }\n        for (auto& s : nums) {\n            if (!insert(root, s)) ok = false;\n        }\n        puts(ok ? "YES" : "NO");\n        deleteTrie(root);\n    }\n}'
             },
             solutions: [{
-                approach: '트라이 삽입 + 접두사 체크',
-                description: '삽입 중 is_end 노드를 만나거나 삽입 후 자식이 있으면 접두사 관계입니다.',
+                approach: 'Trie insertion + prefix check',
+                description: 'If you encounter an is_end node during insertion, or the end node has children, a prefix relationship exists.',
                 timeComplexity: 'O(N × L)',
                 spaceComplexity: 'O(N × L)',
                 codeSteps: {
                     python: [
-                        { title: 'TrieNode + Trie 정의', desc: '기본 트라이 구조를 정의합니다.\ninsert 시 접두사 관계를 동시에 탐지하는 것이 핵심입니다.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
-                        { title: 'insert + 접두사 판별', desc: '경로 중간에 is_end를 만나면 기존 번호가 접두사입니다.\n삽입 후 자식이 있으면 현재 번호가 다른 번호의 접두사입니다.', code: '    def insert(self, word):\n        node = self.root\n        prefix_found = False\n        for ch in word:\n            if node.is_end:\n                prefix_found = True\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n        if len(node.children) > 0:\n            prefix_found = True\n        return not prefix_found' },
-                        { title: '테스트 케이스 처리', desc: '각 테스트 케이스마다 새 트라이를 만들어 번호를 삽입합니다.\n하나라도 접두사 관계가 발견되면 NO를 출력합니다.', code: 't = int(input())\nfor _ in range(t):\n    n = int(input())\n    trie = Trie()\n    numbers = [input().strip() for _ in range(n)]\n    consistent = True\n    for num in numbers:\n        if not trie.insert(num):\n            consistent = False\n    print("YES" if consistent else "NO")' }
+                        { title: 'Define TrieNode + Trie', desc: 'Define the basic trie structure.\nThe key is detecting prefix relationships during insert.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
+                        { title: 'insert + prefix detection', desc: 'If is_end is encountered mid-path, an existing number is a prefix.\nIf children exist after insertion, the current number is a prefix of another.', code: '    def insert(self, word):\n        node = self.root\n        prefix_found = False\n        for ch in word:\n            if node.is_end:\n                prefix_found = True\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n        if len(node.children) > 0:\n            prefix_found = True\n        return not prefix_found' },
+                        { title: 'Process test cases', desc: 'Create a new trie for each test case and insert numbers.\nIf any prefix relationship is found, output NO.', code: 't = int(input())\nfor _ in range(t):\n    n = int(input())\n    trie = Trie()\n    numbers = [input().strip() for _ in range(n)]\n    consistent = True\n    for num in numbers:\n        if not trie.insert(num):\n            consistent = False\n    print("YES" if consistent else "NO")' }
                     ],
                     cpp: [
-                        { title: 'TrieNode 정의', desc: '숫자 0~9만 → children[10] 배열로 충분.\nmap 대신 배열이라 더 빠름!', code: 'struct TrieNode {\n    TrieNode* children[10] = {};\n    bool is_end = false;\n};' },
-                        { title: 'insert + 접두사 판별', desc: '경로 중 is_end 발견 → 접두사 관계.\n삽입 후 자식 존재 → 현재가 접두사.', code: 'bool insert(TrieNode* root, const string& s) {\n    TrieNode* node = root;\n    bool ok = true;\n    for (char ch : s) {\n        int idx = ch - \'0\';\n        if (node->is_end) ok = false;  // Path 중간에 끝 표시!\n        if (!node->children[idx])\n            node->children[idx] = new TrieNode();\n        node = node->children[idx];\n    }\n    node->is_end = true;\n    for (int i = 0; i < 10; i++)\n        if (node->children[i]) ok = false;  // 자식 있으면 내가 접두사!\n    return ok;\n}' },
-                        { title: '테스트 케이스 처리', desc: '테스트 케이스마다 새 루트를 생성하여 독립적으로 처리합니다.\ninsert가 false를 반환하면 접두사 관계가 존재합니다.', code: 'int main() {\n    int t; scanf("%d", &t);\n    while (t--) {\n        int n; scanf("%d", &n);\n        TrieNode* root = new TrieNode();\n        bool ok = true;\n        for (int i = 0; i < n; i++) {\n            char buf[11]; scanf("%s", buf);\n            if (!insert(root, string(buf))) ok = false;\n        }\n        puts(ok ? "YES" : "NO");\n    }\n}' }
+                        { title: 'Define TrieNode', desc: 'Only digits 0-9, so a children[10] array is sufficient.\nFaster than a map!', code: 'struct TrieNode {\n    TrieNode* children[10] = {};\n    bool is_end = false;\n};' },
+                        { title: 'insert + prefix detection', desc: 'Found is_end mid-path -> prefix relationship.\nChildren exist after insertion -> current is a prefix.', code: 'bool insert(TrieNode* root, const string& s) {\n    TrieNode* node = root;\n    bool ok = true;\n    for (char ch : s) {\n        int idx = ch - \'0\';\n        if (node->is_end) ok = false;  // End flag found mid-path!\n        if (!node->children[idx])\n            node->children[idx] = new TrieNode();\n        node = node->children[idx];\n    }\n    node->is_end = true;\n    for (int i = 0; i < 10; i++)\n        if (node->children[i]) ok = false;  // If children exist, I am a prefix!\n    return ok;\n}' },
+                        { title: 'Process test cases', desc: 'Create a new root for each test case to handle independently.\nIf insert returns false, a prefix relationship exists.', code: 'int main() {\n    int t; scanf("%d", &t);\n    while (t--) {\n        int n; scanf("%d", &n);\n        TrieNode* root = new TrieNode();\n        bool ok = true;\n        for (int i = 0; i < n; i++) {\n            char buf[11]; scanf("%s", buf);\n            if (!insert(root, string(buf))) ok = false;\n        }\n        puts(ok ? "YES" : "NO");\n    }\n}' }
                     ]
                 },
                 get templates() { return trieTopic.problems[2].templates; }
@@ -1278,10 +1278,10 @@ YES</pre></div>
             title: 'LeetCode 14 - Longest Common Prefix',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/longest-common-prefix/',
-            simIntro: '문자열을 세로로 비교하여 공통 접두사를 찾는 과정을 관찰하세요.',
+            simIntro: 'Watch the process of comparing strings vertically to find the common prefix.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>문자열 배열에서 가장 긴 공통 접두사(prefix)를 찾으세요. 공통 접두사가 없으면 빈 문자열 ""을 반환합니다.</p>
+                <p>Find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string "".</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>strs = ["flower","flow","flight"]</pre></div>
                     <div><strong>Output</strong><pre>"fl"</pre></div>
@@ -1289,38 +1289,38 @@ YES</pre></div>
                 <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>strs = ["dog","racecar","car"]</pre></div>
                     <div><strong>Output</strong><pre>""</pre></div>
-                </div><p class="example-explain">공통 접두사가 없습니다.</p></div>
+                </div><p class="example-explain">There is no common prefix.</p></div>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ strs.length ≤ 200</li>
                     <li>0 ≤ strs[i].length ≤ 200</li>
-                    <li>strs[i]는 영어 소문자로만 구성</li>
+                    <li>strs[i] consists only of lowercase English letters</li>
                 </ul>
             `,
             hints: [
-                { title: '처음 생각: 첫 문자열과 하나씩 비교', content: '첫 번째 문자열을 기준으로 나머지와 <strong>한 글자씩</strong> 비교하면 어떨까요?<br>i번째 글자를 모든 문자열에서 확인하고, 다른 글자가 나오면 거기까지가 공통 접두사!<br>이 방법은 O(S) (S = 전체 문자 수)로 충분히 빠릅니다.' },
-                { title: '더 효율적인 방법은?', content: '문자열 배열을 <strong>사전순 정렬</strong>하면, <strong>첫 번째</strong>와 <strong>마지막</strong> 문자열만 비교하면 돼요!<br>사전순으로 가장 다른 두 문자열의 공통 접두사 = 전체 공통 접두사이기 때문이죠.<br><span class="lang-py">Python: <code>min(strs)</code>와 <code>max(strs)</code>가 사전순 양 끝을 바로 줍니다!</span><span class="lang-cpp">C++: <code>*min_element(strs.begin(), strs.end())</code>와 <code>*max_element(...)</code>로 사전순 양 끝을 구합니다!</span>' },
-                { title: '트라이 활용', content: '모든 문자열을 트라이에 넣고, 루트에서 출발합니다.<br><strong>자식이 1개뿐이고 is_end가 아닌</strong> 노드를 따라 쭉 내려가면 — 분기점(자식 2개 이상)이나 is_end를 만나는 지점까지가 공통 접두사!<br>트라이가 공통 접두사를 "구조적으로" 보여주는 좋은 예시입니다.' }
+                { title: 'First thought: compare character by character with the first string', content: 'What if we take the first string and compare it with the rest <strong>character by character</strong>?<br>Check the i-th character across all strings; when a different character appears, the common prefix ends there!<br>This approach runs in O(S) (S = total characters) and is fast enough.' },
+                { title: 'A more efficient approach?', content: 'If you <strong>sort the array lexicographically</strong>, you only need to compare the <strong>first</strong> and <strong>last</strong> strings!<br>The common prefix of the two most different strings (lexicographically) equals the overall common prefix.<br><span class="lang-py">Python: <code>min(strs)</code> and <code>max(strs)</code> directly give you the lexicographic extremes!</span><span class="lang-cpp">C++: <code>*min_element(strs.begin(), strs.end())</code> and <code>*max_element(...)</code> give the lexicographic extremes!</span>' },
+                { title: 'Using a trie', content: 'Insert all strings into a trie, then start from the root.<br>Keep following nodes that have <strong>exactly one child and are not is_end</strong> -- the common prefix ends at a branching point (2+ children) or an is_end node!<br>This is a great example of how a trie "structurally" reveals common prefixes.' }
             ],
             templates: {
                 python: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""\n        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]\n        return strs[0]',
                 cpp: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";\n        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }\n        return prefix;\n    }\n};'
             },
             solutions: [{
-                approach: '세로 스캔',
-                description: '첫 번째 문자열의 각 위치를 기준으로 모든 문자열과 비교합니다.',
-                timeComplexity: 'O(S) (S = 전체 문자 수)',
+                approach: 'Vertical Scanning',
+                description: 'Compare all strings at each position based on the first string.',
+                timeComplexity: 'O(S) (S = total characters)',
                 spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: '예외 처리', desc: '빈 배열이면 공통 접두사가 없으므로 빈 문자열을 반환합니다.', code: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""' },
-                        { title: '세로 스캔', desc: '첫 문자열의 i번째 글자를 기준으로 나머지와 비교합니다.\n글자가 다르거나 문자열이 짧으면 그 지점까지가 공통 접두사입니다.', code: '        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]' },
-                        { title: '전체 일치 시', desc: '루프를 끝까지 돌았다면 첫 문자열 전체가 공통 접두사입니다.', code: '        return strs[0]' }
+                        { title: 'Edge case handling', desc: 'If the array is empty, there is no common prefix, so return an empty string.', code: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""' },
+                        { title: 'Vertical scanning', desc: 'Compare the i-th character of the first string with all others.\nIf characters differ or a string is too short, the common prefix ends there.', code: '        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]' },
+                        { title: 'Full match case', desc: 'If the loop completes without breaking, the entire first string is the common prefix.', code: '        return strs[0]' }
                     ],
                     cpp: [
-                        { title: '예외 처리', desc: '빈 벡터면 빈 문자열을 즉시 반환합니다.', code: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";' },
-                        { title: '접두사 축소법', desc: '첫 문자열을 prefix로 시작.\n각 문자열과 비교하며 안 맞으면 prefix를 줄임.', code: '        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }' },
-                        { title: 'Return Result', desc: '모든 문자열과 매칭된 최종 prefix를 반환합니다.', code: '        return prefix;\n    }\n};' }
+                        { title: 'Edge case handling', desc: 'If the vector is empty, immediately return an empty string.', code: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";' },
+                        { title: 'Prefix shrinking method', desc: 'Start with the first string as prefix.\nCompare with each string and shrink prefix when it does not match.', code: '        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }' },
+                        { title: 'Return Result', desc: 'Return the final prefix that matched all strings.', code: '        return prefix;\n    }\n};' }
                     ]
                 },
                 get templates() { return trieTopic.problems[3].templates; }

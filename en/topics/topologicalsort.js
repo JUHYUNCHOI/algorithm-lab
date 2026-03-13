@@ -1,23 +1,23 @@
 // =========================================================
-// 위상 정렬 (Topological Sort) 토픽 모듈
+// Topological Sort Topic Module
 // =========================================================
 var topologicalSortTopic = {
     id: 'topologicalsort',
-    title: '위상 정렬',
+    title: 'Topological Sort',
     icon: '📋',
     category: 'Advanced DS & Graphs',
     order: 17,
-    description: 'DAG에서 선후관계를 지키며 모든 노드를 일렬로 나열하는 기법',
-    relatedNote: '위상 정렬은 빌드 시스템, 수강 순서, 작업 스케줄링 등 선행 조건이 있는 문제에 활용됩니다.',
+    description: 'A technique for linearly ordering all nodes in a DAG while respecting precedence constraints',
+    relatedNote: 'Topological sort is used in build systems, course scheduling, task scheduling, and other problems with prerequisite constraints.',
 
     sidebarExpandable: true,
 
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
-        'boj-2252': { type: '기본 위상 정렬',   color: 'var(--accent)', vizMethod: '_renderVizLineup' },
-        'boj-1766': { type: '우선순위 큐 응용',  color: 'var(--green)',  vizMethod: '_renderVizWorkbook' },
-        'boj-3665': { type: '간선 반전 응용',    color: '#e17055',      vizMethod: '_renderVizRanking' }
+        'boj-2252': { type: 'Basic Topological Sort',   color: 'var(--accent)', vizMethod: '_renderVizLineup' },
+        'boj-1766': { type: 'Priority Queue Application',  color: 'var(--green)',  vizMethod: '_renderVizWorkbook' },
+        'boj-3665': { type: 'Edge Reversal Application',    color: '#e17055',      vizMethod: '_renderVizRanking' }
     },
 
     getProblemTabs(problemId) {
@@ -46,7 +46,7 @@ var topologicalSortTopic = {
         var flowMap = {
             problem: { intro: 'Start by reading the problem and understanding the I/O format.', icon: '📋' },
             think:   { intro: 'Don\'t jump to coding — open the hints step by step to build your strategy.', icon: '💡' },
-            sim:     { intro: prob.simIntro || '위상 정렬이 실제로 어떻게 동작하는지 확인해보세요.', icon: '🎮' },
+            sim:     { intro: prob.simIntro || 'See how topological sort actually works in action.', icon: '🎮' },
             code:    { intro: 'Now let\'s turn the approach into code!', icon: '💻' }
         };
         var ft = flowMap[tabId];
@@ -134,54 +134,54 @@ var topologicalSortTopic = {
     renderConcept(container) {
         container.innerHTML = `
             <div class="hero">
-                <h2>📋 위상 정렬 (Topological Sort)</h2>
-                <p class="hero-sub">방향 그래프에서 순서를 정하는 알고리즘을 배워봅시다!</p>
+                <h2>📋 Topological Sort</h2>
+                <p class="hero-sub">Learn the algorithm for ordering nodes in a directed graph!</p>
             </div>
 
-            <!-- 섹션 1: DAG란? -->
+            <!-- Section 1: What is a DAG? -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">1</span> DAG란?
+                    <span class="section-num">1</span> What is a DAG?
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> "옷 입는 순서"를 생각해 보세요!
-                    양말을 신기 전에 먼저 바지를 입어야 하고, 바지를 입기 전에 속옷을 입어야 합니다.
-                    이렇게 <em>"A를 먼저 해야 B를 할 수 있다"</em>는 관계가 있을 때,
-                    이를 <strong>방향 비순환 그래프(DAG)</strong>라 합니다.
+                    <strong>Understanding by analogy:</strong> Think about "the order you get dressed"!
+                    You must put on pants before socks, and underwear before pants.
+                    When there is a relationship like <em>"you must do A before you can do B"</em>,
+                    we call this a <strong>Directed Acyclic Graph (DAG)</strong>.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="10" cy="19" r="6" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="28" cy="19" r="6" fill="none" stroke="var(--accent)" stroke-width="2"/><line x1="16" y1="19" x2="22" y2="19" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/><defs><marker id="arrow" viewBox="0 0 6 6" refX="6" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs></svg>
                         </div>
-                        <h3>방향 그래프</h3>
-                        <p>간선에 방향이 있습니다. A→B는 "A 다음에 B"라는 뜻입니다.</p>
+                        <h3>Directed Graph</h3>
+                        <p>Edges have direction. A→B means "A comes before B".</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="8" r="5" fill="none" stroke="var(--green)" stroke-width="2"/><circle cx="8" cy="30" r="5" fill="none" stroke="var(--green)" stroke-width="2"/><circle cx="30" cy="30" r="5" fill="none" stroke="var(--green)" stroke-width="2"/><line x1="17" y1="12" x2="10" y2="26" stroke="var(--green)" stroke-width="2"/><line x1="21" y1="12" x2="28" y2="26" stroke="var(--green)" stroke-width="2"/></svg>
                         </div>
-                        <h3>비순환 (Acyclic)</h3>
-                        <p>사이클(순환)이 없어야 합니다. 돌고 도는 경로가 있으면 순서를 정할 수 없습니다!</p>
+                        <h3>Acyclic</h3>
+                        <p>There must be no cycles. If there is a circular path, we cannot determine an ordering!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="10" fill="none" stroke="var(--yellow)" stroke-width="2"/><text x="19" y="23" text-anchor="middle" font-size="14" font-weight="bold" fill="var(--yellow)">0</text><line x1="5" y1="10" x2="12" y2="15" stroke="var(--yellow)" stroke-width="2" marker-end="url(#arrow)"/><line x1="5" y1="28" x2="12" y2="23" stroke="var(--yellow)" stroke-width="2" marker-end="url(#arrow)"/></svg>
                         </div>
                         <h3>in-degree (In-degree)</h3>
-                        <p>한 노드로 들어오는 화살표의 수입니다. in-degree가 0이면 "바로 시작할 수 있는 일"입니다.<br>
+                        <p>The number of arrows pointing into a node. If in-degree is 0, it means "a task that can be started right away".<br>
                         <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: deque ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: queue ↗</a></span></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><rect x="2" y="12" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.3"/><rect x="14" y="12" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.5"/><rect x="26" y="12" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.8"/><line x1="12" y1="17" x2="14" y2="17" stroke="var(--accent)" stroke-width="2"/><line x1="24" y1="17" x2="26" y2="17" stroke="var(--accent)" stroke-width="2"/></svg>
                         </div>
-                        <h3>위상 순서</h3>
-                        <p>DAG의 모든 간선 u→v에서 u가 v보다 앞에 오도록 일렬로 나열한 것입니다.</p>
+                        <h3>Topological Order</h3>
+                        <p>A linear ordering of all nodes in a DAG such that for every edge u→v, u appears before v.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 방향 그래프 (인접 리스트) + in-degree 만들기
+                    <pre><code class="language-python"># Build a directed graph (adjacency list) + in-degree array
 import sys
 from collections import deque
 input = sys.stdin.readline
@@ -192,11 +192,11 @@ in_degree = [0] * (N + 1)
 
 for _ in range(M):
     a, b = map(int, input().split())
-    graph[a].append(b)  # a → b (a를 먼저!)
-    in_degree[b] += 1   # b의 in-degree +1</code></pre>
+    graph[a].append(b)  # a → b (a comes first!)
+    in_degree[b] += 1   # increment in-degree of b</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// 방향 그래프 (인접 리스트) + in-degree 만들기
+                    <pre><code class="language-cpp">// Build a directed graph (adjacency list) + in-degree array
 #include &lt;iostream&gt;
 #include &lt;vector&gt;
 #include &lt;queue&gt;
@@ -206,113 +206,113 @@ int main() {
     int N, M;
     cin &gt;&gt; N &gt;&gt; M;
 
-    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);  // 인접 리스트
+    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);  // adjacency list
     vector&lt;int&gt; in_degree(N + 1, 0);   // in-degree
 
     for (int i = 0; i &lt; M; i++) {
         int a, b;
         cin &gt;&gt; a &gt;&gt; b;
-        graph[a].push_back(b);  // a → b (a를 먼저!)
-        in_degree[b]++;         // b의 in-degree +1
+        graph[a].push_back(b);  // a → b (a comes first!)
+        in_degree[b]++;         // increment in-degree of b
     }
 }</code></pre>
                 </div></span>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">과목 이수 순서에서 미적분학→확률통계, 선형대수→확률통계일 때, 확률통계의 in-degree는?</span>
+                        <span class="think-box-question-text">In a course prerequisite chain where Calculus→Probability and Linear Algebra→Probability, what is the in-degree of Probability?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        정답은 <strong>2</strong>입니다! 미적분학과 선형대수, 2개의 화살표가 확률통계로 들어오기 때문입니다.
+                        The answer is <strong>2</strong>! Because two arrows (from Calculus and Linear Algebra) point into Probability.
                     </div>
                 </div>
             </div>
 
-            <!-- 섹션 2: 위상 정렬이란? -->
+            <!-- Section 2: What is Topological Sort? -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">2</span> 위상 정렬이란?
+                    <span class="section-num">2</span> What is Topological Sort?
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> "학교 시간표 짜기"를 생각해 보세요!
-                    수학 기초를 듣지 않고 고급 수학을 들을 수는 없습니다.
-                    선수 과목 관계를 모두 지키면서 과목을 일렬로 나열하는 것이 <strong>위상 정렬</strong>입니다.
-                    결과가 여러 개일 수 있습니다!
+                    <strong>Understanding by analogy:</strong> Think about "making a school schedule"!
+                    You cannot take advanced math without first completing basic math.
+                    Arranging all courses in a line while respecting all prerequisite relationships is <strong>topological sorting</strong>.
+                    There can be multiple valid results!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="14" fill="none" stroke="var(--red, #e17055)" stroke-width="2"/><line x1="12" y1="12" x2="26" y2="26" stroke="var(--red, #e17055)" stroke-width="2"/><line x1="26" y1="12" x2="12" y2="26" stroke="var(--red, #e17055)" stroke-width="2"/></svg>
                         </div>
-                        <h3>DAG에서만 가능</h3>
-                        <p>사이클이 있으면 위상 정렬은 불가능합니다! 순서를 정할 수 없기 때문입니다.</p>
+                        <h3>Only Works on DAGs</h3>
+                        <p>If there is a cycle, topological sort is impossible! Because we cannot determine an ordering.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><path d="M8,19 L14,10 L20,19 L26,10 L32,19" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="19" y="32" text-anchor="middle" font-size="10" fill="var(--text2)">여러 답</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><path d="M8,19 L14,10 L20,19 L26,10 L32,19" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="19" y="32" text-anchor="middle" font-size="10" fill="var(--text2)">Multiple</text></svg>
                         </div>
-                        <h3>여러 정답 가능</h3>
-                        <p>선후 관계가 없는 노드끼리는 순서가 자유롭습니다. 정답이 여러 개일 수 있습니다.</p>
+                        <h3>Multiple Valid Answers</h3>
+                        <p>Nodes without precedence constraints can appear in any order. There can be multiple correct answers.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="8" width="30" height="22" rx="3" fill="none" stroke="var(--green)" stroke-width="2"/><line x1="10" y1="15" x2="28" y2="15" stroke="var(--green)" stroke-width="1.5"/><line x1="10" y1="21" x2="24" y2="21" stroke="var(--green)" stroke-width="1.5"/><line x1="10" y1="27" x2="20" y2="27" stroke="var(--green)" stroke-width="1.5"/></svg>
                         </div>
                         <h3>Usage Examples</h3>
-                        <p>빌드 시스템, 작업 스케줄링, 과목 이수 순서 등에 사용됩니다.</p>
+                        <p>Used in build systems, task scheduling, course prerequisite ordering, and more.</p>
                     </div>
                 </div>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">4명이 줄 서는데, 1→3, 2→3 관계만 있다면 [2,1,3,4]는 올바른 위상 정렬일까요?</span>
+                        <span class="think-box-question-text">If 4 people line up and the only constraints are 1→3 and 2→3, is [2,1,3,4] a valid topological sort?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        <strong>네, 올바릅니다!</strong> 1과 2가 모두 3보다 앞에 있고, 4는 어디에 있든 상관없습니다.
-                        [1,2,3,4], [2,1,3,4], [1,2,4,3] 등 여러 답이 가능합니다.
+                        <strong>Yes, it is valid!</strong> Both 1 and 2 appear before 3, and 4 can be placed anywhere.
+                        [1,2,3,4], [2,1,3,4], [1,2,4,3] and more are all valid answers.
                     </div>
                 </div>
             </div>
 
-            <!-- 섹션 3: Kahn's Algorithm -->
+            <!-- Section 3: Kahn's Algorithm -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">3</span> BFS 방식 (Kahn's Algorithm)
+                    <span class="section-num">3</span> BFS Approach (Kahn's Algorithm)
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> "할 일 목록(To-Do List)"을 생각해 보세요!
-                    먼저 <em>선행 조건이 하나도 없는 일</em>을 골라서 합니다.
-                    그 일을 끝내면 다른 일의 선행 조건이 하나씩 줄어듭니다.
-                    선행 조건이 모두 해결된 일을 다시 골라서 합니다. 이것을 반복합니다!
+                    <strong>Understanding by analogy:</strong> Think about a "To-Do List"!
+                    First, pick a task that has <em>no prerequisites at all</em> and complete it.
+                    Once that task is done, other tasks lose one prerequisite each.
+                    Pick the next task whose prerequisites are all resolved. Repeat this process!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="19" y="26" text-anchor="middle" font-size="22" font-weight="bold" fill="var(--accent)">1</text></svg>
                         </div>
-                        <h3>Step 1: 초기화</h3>
-                        <p>in-degree가 0인 모든 노드를 큐에 넣습니다.</p>
+                        <h3>Step 1: Initialize</h3>
+                        <p>Add all nodes with in-degree 0 to the queue.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="19" y="26" text-anchor="middle" font-size="22" font-weight="bold" fill="var(--accent)">2</text></svg>
                         </div>
-                        <h3>Step 2: 처리</h3>
-                        <p>큐에서 꺼낸 노드를 결과에 추가하고, 이웃의 in-degree를 1씩 줄입니다.</p>
+                        <h3>Step 2: Process</h3>
+                        <p>Dequeue a node, add it to the result, and decrease the in-degree of its neighbors by 1.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="19" y="26" text-anchor="middle" font-size="22" font-weight="bold" fill="var(--accent)">3</text></svg>
                         </div>
-                        <h3>Step 3: 반복</h3>
-                        <p>in-degree가 0이 된 노드를 큐에 추가합니다. 큐가 빌 때까지 반복합니다.<br>
+                        <h3>Step 3: Repeat</h3>
+                        <p>Add nodes whose in-degree becomes 0 to the queue. Repeat until the queue is empty.<br>
                         <a href="https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Kahn's Algorithm ↗</a></p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># Kahn's Algorithm (BFS 위상 정렬)
+                    <pre><code class="language-python"># Kahn's Algorithm (BFS Topological Sort)
 from collections import deque
 
 queue = deque()
@@ -329,14 +329,14 @@ while queue:
         if in_degree[u] == 0:
             queue.append(u)
 
-# result의 길이가 N이 아니면 사이클 존재!
+# If result length is not N, a cycle exists!
 if len(result) != N:
-    print("사이클이 있어 위상 정렬 불가!")
+    print("Cycle detected — topological sort impossible!")
 else:
     print(*result)</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// Kahn's Algorithm (BFS 위상 정렬)
+                    <pre><code class="language-cpp">// Kahn's Algorithm (BFS Topological Sort)
 queue&lt;int&gt; q;
 for (int i = 1; i &lt;= N; i++) {
     if (in_degree[i] == 0)
@@ -355,9 +355,9 @@ while (!q.empty()) {
     }
 }
 
-// result의 크기가 N이 아니면 사이클 존재!
+// If result size is not N, a cycle exists!
 if (result.size() != N)
-    cout &lt;&lt; "사이클이 있어 위상 정렬 불가!" &lt;&lt; endl;
+    cout &lt;&lt; "Cycle detected - topological sort impossible!" &lt;&lt; endl;
 else {
     for (int i = 0; i &lt; result.size(); i++)
         cout &lt;&lt; result[i] &lt;&lt; (i + 1 &lt; result.size() ? " " : "\n");
@@ -366,47 +366,47 @@ else {
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">그래프가 1→3, 1→4, 2→3, 3→4이고 N=4일 때, Kahn's Algorithm의 결과는?</span>
+                        <span class="think-box-question-text">Given edges 1→3, 1→4, 2→3, 3→4 with N=4, what is the result of Kahn's Algorithm?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        초기 진입차수: [1:0, 2:0, 3:2, 4:2]. 큐에 {1,2}.<br>
-                        1 처리 → 3,4 차수 감소 → [3:1, 4:1].<br>
-                        2 처리 → 3 차수 감소 → [3:0, 4:1]. 3을 큐에 추가.<br>
-                        3 처리 → 4 차수 감소 → [4:0]. 4를 큐에 추가.<br>
-                        4 처리. 결과: <strong>1 2 3 4</strong>
+                        Initial in-degrees: [1:0, 2:0, 3:2, 4:2]. Queue: {1,2}.<br>
+                        Process 1 → decrease in-degree of 3,4 → [3:1, 4:1].<br>
+                        Process 2 → decrease in-degree of 3 → [3:0, 4:1]. Add 3 to queue.<br>
+                        Process 3 → decrease in-degree of 4 → [4:0]. Add 4 to queue.<br>
+                        Process 4. Result: <strong>1 2 3 4</strong>
                     </div>
                 </div>
             </div>
 
-            <!-- 섹션 4: 우선순위 큐 + 위상 정렬 -->
+            <!-- Section 4: Priority Queue + Topological Sort -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">4</span> 응용: 우선순위 큐 + 위상 정렬
+                    <span class="section-num">4</span> Application: Priority Queue + Topological Sort
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> "가능한 일이 여러 개일 때, 번호가 작은(쉬운) 것부터 하고 싶다면?"
-                    일반 큐 대신 <strong>최소 힙(min-heap)</strong>을 사용합니다!
-                    나머지 로직은 Kahn's Algorithm과 완전히 동일합니다.
+                    <strong>Understanding by analogy:</strong> "When multiple tasks are available, what if you want to do the smallest-numbered (easiest) one first?"
+                    Use a <strong>min-heap</strong> instead of a regular queue!
+                    The rest of the logic is exactly the same as Kahn's Algorithm.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="10" width="30" height="18" rx="3" fill="none" stroke="var(--border)" stroke-width="2"/><text x="19" y="23" text-anchor="middle" font-size="11" fill="var(--text2)">아무거나</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="10" width="30" height="18" rx="3" fill="none" stroke="var(--border)" stroke-width="2"/><text x="19" y="23" text-anchor="middle" font-size="11" fill="var(--text2)">Any</text></svg>
                         </div>
-                        <h3>일반 큐</h3>
-                        <p>선행 조건이 해결된 것 중 아무거나 먼저 처리합니다. 여러 정답이 가능합니다.</p>
+                        <h3>Regular Queue</h3>
+                        <p>Processes any available node whose prerequisites are resolved. Multiple valid answers are possible.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
-                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="10" width="30" height="18" rx="3" fill="none" stroke="var(--green)" stroke-width="2"/><text x="19" y="23" text-anchor="middle" font-size="11" font-weight="bold" fill="var(--green)">최솟값</text></svg>
+                            <svg width="38" height="38" viewBox="0 0 38 38"><rect x="4" y="10" width="30" height="18" rx="3" fill="none" stroke="var(--green)" stroke-width="2"/><text x="19" y="23" text-anchor="middle" font-size="11" font-weight="bold" fill="var(--green)">Min</text></svg>
                         </div>
-                        <h3>최소 힙</h3>
-                        <p>선행 조건이 해결된 것 중 <strong>번호가 가장 작은 것</strong> 먼저 처리합니다. 유일한 정답입니다.</p>
+                        <h3>Min-Heap</h3>
+                        <p>Always processes the <strong>smallest-numbered node</strong> among those with resolved prerequisites. This produces a unique answer.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 우선순위 큐를 사용한 위상 정렬
+                    <pre><code class="language-python"># Topological sort using a priority queue
 import heapq
 
 heap = []
@@ -416,7 +416,7 @@ for i in range(1, N + 1):
 
 result = []
 while heap:
-    v = heapq.heappop(heap)  # 가장 작은 번호 먼저!
+    v = heapq.heappop(heap)  # smallest number first!
     result.append(v)
     for u in graph[v]:
         in_degree[u] -= 1
@@ -426,8 +426,8 @@ while heap:
 print(*result)</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// 우선순위 큐를 사용한 위상 정렬
-// greater&lt;int&gt;로 최소 힙 구성 (작은 번호 먼저!)
+                    <pre><code class="language-cpp">// Topological sort using a priority queue
+// greater&lt;int&gt; creates a min-heap (smallest number first!)
 priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; pq;
 for (int i = 1; i &lt;= N; i++) {
     if (in_degree[i] == 0)
@@ -436,7 +436,7 @@ for (int i = 1; i &lt;= N; i++) {
 
 vector&lt;int&gt; result;
 while (!pq.empty()) {
-    int v = pq.top();  // 가장 작은 번호 먼저!
+    int v = pq.top();  // smallest number first!
     pq.pop();
     result.push_back(v);
     for (int u : graph[v]) {
@@ -452,12 +452,12 @@ for (int i = 0; i &lt; result.size(); i++)
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">1→4, 2→4, 3→4일 때, 일반 큐를 쓰면? 최소 힙을 쓰면?</span>
+                        <span class="think-box-question-text">With edges 1→4, 2→4, 3→4, what happens with a regular queue? What about a min-heap?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        일반 큐: [1,2,3,4] 또는 [3,2,1,4] 등 여러 가지 가능합니다.<br>
-                        최소 힙: 반드시 <strong>[1,2,3,4]</strong>입니다. 항상 가장 작은 번호를 먼저 꺼내기 때문입니다.
+                        Regular queue: [1,2,3,4] or [3,2,1,4] etc. — multiple orderings are possible.<br>
+                        Min-heap: Always <strong>[1,2,3,4]</strong>. Because it always dequeues the smallest number first.
                     </div>
                 </div>
             </div>
@@ -488,9 +488,9 @@ for (int i = 0; i &lt; result.size(); i++)
 
     _createStepControls(suffix) {
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
             '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
             '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
     },
 
@@ -585,8 +585,8 @@ for (int i = 0; i &lt; result.size(); i++)
 
         container.innerHTML =
             '<div class="viz-card">' +
-                '<h3>Kahn\'s Algorithm 시각화</h3>' +
-                '<p>7개 노드의 DAG에서 위상 정렬 과정을 단계별로 확인합니다.</p>' +
+                '<h3>Kahn\'s Algorithm Visualization</h3>' +
+                '<p>Watch the topological sort process step by step on a 7-node DAG.</p>' +
                 '<div class="graph-svg-container">' +
                     '<svg viewBox="0 0 500 340" width="100%" style="max-height:340px;">' +
                         '<defs>' +
@@ -610,21 +610,21 @@ for (int i = 0; i &lt; result.size(); i++)
                         '<div class="ts-indegree-display" id="ts-indegree-display-' + suffix + '">' + indegCells + '</div>' +
                     '</div>' +
                     '<div style="flex:1;min-width:140px;">' +
-                        '<div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">큐 (Queue)</div>' +
+                        '<div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Queue</div>' +
                         '<div class="graph-queue-display" id="ts-queue-display-' + suffix + '"></div>' +
                     '</div>' +
                     '<div style="flex:1;min-width:140px;">' +
-                        '<div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">결과 (Result)</div>' +
+                        '<div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Result</div>' +
                         '<div class="graph-queue-display" id="ts-result-display-' + suffix + '"></div>' +
                     '</div>' +
                 '</div>' +
                 self._createStepControls(suffix) +
             '</div>' +
             '<div class="graph-legend" style="margin-top:12px;">' +
-                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 미방문</span>' +
-                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--yellow-vivid, #f9a825);vertical-align:middle;"></span> 현재 처리 중</span>' +
-                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:rgba(0,184,148,0.15);border:2px dashed var(--green, #00b894);vertical-align:middle;"></span> 큐 대기</span>' +
-                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--accent-vivid, #6c5ce7);border:2px solid var(--accent2, #a29bfe);vertical-align:middle;"></span> 처리 완료</span>' +
+                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> Unvisited</span>' +
+                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--yellow-vivid, #f9a825);vertical-align:middle;"></span> Currently Processing</span>' +
+                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:rgba(0,184,148,0.15);border:2px dashed var(--green, #00b894);vertical-align:middle;"></span> In Queue</span>' +
+                '<span><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--accent-vivid, #6c5ce7);border:2px solid var(--accent2, #a29bfe);vertical-align:middle;"></span> Processed</span>' +
             '</div>';
 
         var svg = container.querySelector('svg');
@@ -708,7 +708,7 @@ for (int i = 0; i &lt; result.size(); i++)
         // Step 0: init
         var s0 = saveState();
         steps.push({
-            description: '초기화: in-degree가 0인 노드 1, 2, 3을 큐에 넣습니다.',
+            description: 'Initialize: Add nodes 1, 2, 3 (in-degree 0) to the queue.',
             action: function() {
                 setNode(1, 'queued'); setNode(2, 'queued'); setNode(3, 'queued');
                 setQueue([1, 2, 3]);
@@ -725,7 +725,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var curResult = simResult.slice();
 
             steps.push({
-                description: '큐에서 ' + v + '을(를) 꺼내 결과에 추가합니다.',
+                description: 'Dequeue ' + v + ' and add it to the result.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -750,9 +750,9 @@ for (int i = 0; i &lt; result.size(); i++)
                 var neighborIndeg = {};
                 neighbors.forEach(function(u) { neighborIndeg[u] = simIndeg[u]; });
 
-                var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 in-degree를 줄입니다.';
+                var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '.';
                 if (newQueued.length > 0) {
-                    desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 큐에 추가합니다.';
+                    desc2 += ' → ' + newQueued.join(', ') + ' reached in-degree 0, added to queue.';
                 }
 
                 (function(v2, neighbors2, neighborIndeg2, newQueued2, afterQueue2, desc3) {
@@ -776,7 +776,7 @@ for (int i = 0; i &lt; result.size(); i++)
             } else {
                 (function(v2) {
                     steps.push({
-                        description: v2 + '에는 이웃이 없습니다. 처리 완료!',
+                        description: v2 + ' has no neighbors. Processing complete!',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -790,7 +790,7 @@ for (int i = 0; i &lt; result.size(); i++)
         });
 
         steps.push({
-            description: '위상 정렬 완료! 결과: 1 → 2 → 3 → 4 → 5 → 6 → 7',
+            description: 'Topological sort complete! Result: 1 → 2 → 3 → 4 → 5 → 6 → 7',
             _before: null,
             action: function() { this._before = saveState(); },
             undo: function() { restoreState(this._before); }
@@ -800,7 +800,7 @@ for (int i = 0; i &lt; result.size(); i++)
     },
 
     // ====================================================================
-    // Simulation 1: 줄 세우기 (boj-2252) — 기본 Kahn's Algorithm
+    // Simulation 1: Lineup (boj-2252) — Basic Kahn's Algorithm
     // ====================================================================
     _renderVizLineup(container) {
         var self = this, suffix = '-lineup';
@@ -808,18 +808,18 @@ for (int i = 0; i &lt; result.size(); i++)
         var DEFAULT_EDGES_STR = '1 3, 2 3, 3 4';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">줄 세우기 — 기본 위상 정렬</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">Kahn\'s Algorithm으로 학생들을 줄 세웁니다. 값을 바꿔보세요!</p>' +
+            '<h3 style="margin-bottom:8px;">Lineup — Basic Topological Sort</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Line up students using Kahn\'s Algorithm. Try changing the values!</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">N (학생 수): <input type="number" id="ts-lineup-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
-                '<label style="font-weight:600;">간선 (A B 형태): <input type="text" id="ts-lineup-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+                '<label style="font-weight:600;">N (students): <input type="number" id="ts-lineup-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">Edges (A B format): <input type="text" id="ts-lineup-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="ts-lineup-reset">🔄</button>' +
             '</div>' +
             '<div id="lu-nodes' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="lu-indeg' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
-                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">큐</div><div id="lu-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
-                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">결과</div><div id="lu-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Queue</div><div id="lu-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Result</div><div id="lu-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
             '</div>' +
             '<div id="lu-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -901,8 +901,8 @@ for (int i = 0; i &lt; result.size(); i++)
             if (zeroNodes.length === 0) {
                 steps.push({
                     description: 'No node with in-degree 0! There may be a cycle.',
-                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">in-degree가 0인 노드가 없습니다!</strong>'; },
-                    undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Kahn\'s Algorithm으로 위상 정렬을 시작합니다.</span>'; }
+                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">No node with in-degree 0!</strong>'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with Kahn\'s Algorithm.</span>'; }
                 });
                 return steps;
             }
@@ -913,9 +913,9 @@ for (int i = 0; i &lt; result.size(); i++)
                 for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 steps.push({
-                    description: '초기화: in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 큐에 넣습니다.',
-                    action: function() { renderNodes(queuedNodes, n); renderQueue(zn.slice()); renderResult([]); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → 큐에 추가'; },
-                    undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Kahn\'s Algorithm으로 위상 정렬을 시작합니다.</span>'; }
+                    description: 'Initialize: Add nodes ' + zn.join(', ') + ' (in-degree 0) to the queue.',
+                    action: function() { renderNodes(queuedNodes, n); renderQueue(zn.slice()); renderResult([]); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → added to queue'; },
+                    undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with Kahn\'s Algorithm.</span>'; }
                 });
             })(zeroNodes.slice(), JSON.parse(JSON.stringify(initNodes)), JSON.parse(JSON.stringify(initIndeg)));
 
@@ -939,8 +939,8 @@ for (int i = 0; i &lt; result.size(); i++)
                 // Dequeue step
                 (function(vv, pns, cq, cr) {
                     steps.push({
-                        description: vv + '을(를) 큐에서 꺼내 결과에 추가합니다.',
-                        action: function() { renderNodes(pns, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> 처리 중...'; },
+                        description: 'Dequeue ' + vv + ' and add it to the result.',
+                        action: function() { renderNodes(pns, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> processing...'; },
                         undo: function() {
                             var prev = steps[steps.length - 1];
                             if (prev && prev._undoState) {
@@ -973,16 +973,16 @@ for (int i = 0; i &lt; result.size(); i++)
                     for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
                     var afterQueue = simQueue.slice();
 
-                    var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 in-degree를 줄입니다.';
+                    var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '.';
                     if (newQueued.length > 0) {
-                        desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 큐에 추가!';
+                        desc2 += ' → ' + newQueued.join(', ') + ' reached in-degree 0, added to queue!';
                     }
 
                     (function(vv2, ans, aind, aq, desc3, pns2, pind, pcq, pcr) {
                         steps.push({
                             description: desc3,
-                            action: function() { renderNodes(ans, n); renderIndeg(aind, n); renderQueue(aq); infoEl.innerHTML = vv2 + ' 처리 완료'; },
-                            undo: function() { renderNodes(pns2, n); renderIndeg(pind, n); renderQueue(pcq); renderResult(pcr); infoEl.innerHTML = '<strong>' + vv2 + '</strong> 처리 중...'; }
+                            action: function() { renderNodes(ans, n); renderIndeg(aind, n); renderQueue(aq); infoEl.innerHTML = vv2 + ' processing complete'; },
+                            undo: function() { renderNodes(pns2, n); renderIndeg(pind, n); renderQueue(pcq); renderResult(pcr); infoEl.innerHTML = '<strong>' + vv2 + '</strong> processing...'; }
                         });
                         // Store undo state for the dequeue step
                         var deqStep = steps[steps.length - 2];
@@ -1003,9 +1003,9 @@ for (int i = 0; i &lt; result.size(); i++)
                     }
                     (function(vv3, dns, pns3, pind2, pcq2, pcr2) {
                         steps.push({
-                            description: vv3 + '에는 이웃이 없습니다. 처리 완료!',
-                            action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' 처리 완료 (이웃 없음)'; },
-                            undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderQueue(pcq2); renderResult(pcr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> 처리 중...'; }
+                            description: vv3 + ' has no neighbors. Processing complete!',
+                            action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' processing complete (no neighbors)'; },
+                            undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderQueue(pcq2); renderResult(pcr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> processing...'; }
                         });
                     })(v, JSON.parse(JSON.stringify(doneNodeStates)), JSON.parse(JSON.stringify(prevNodeStates)), JSON.parse(JSON.stringify(prevIndeg)), curQueue.slice(), curResult.slice());
                 }
@@ -1014,15 +1014,15 @@ for (int i = 0; i &lt; result.size(); i++)
             // Final step
             var finalResult = simResult.slice();
             steps.push({
-                description: '위상 정렬 완료! 결과: ' + finalResult.join(' → '),
+                description: 'Topological sort complete! Result: ' + finalResult.join(' → '),
                 action: function() {
                     var fs = {};
                     for (var f = 1; f <= n; f++) fs[f] = 'done';
                     renderNodes(fs, n); renderQueue([]); renderResult(finalResult);
                     if (finalResult.length < n) {
-                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--red);">사이클 존재! ' + finalResult.length + '/' + n + '개만 정렬됨</strong>';
+                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--red);">Cycle detected! Only ' + finalResult.length + '/' + n + ' sorted</strong>';
                     } else {
-                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">위상 정렬 완료! 결과: ' + finalResult.join(' ') + '</strong>';
+                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Topological sort complete! Result: ' + finalResult.join(' ') + '</strong>';
                     }
                 },
                 undo: function() {}
@@ -1041,7 +1041,7 @@ for (int i = 0; i &lt; result.size(); i++)
             renderIndeg(g.indeg, n);
             renderQueue([]);
             renderResult([]);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Kahn\'s Algorithm으로 위상 정렬을 시작합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with Kahn\'s Algorithm.</span>';
             var steps = buildSteps(n, edges);
             self._initStepController(container, steps, suffix);
         }
@@ -1060,7 +1060,7 @@ for (int i = 0; i &lt; result.size(); i++)
     },
 
     // ====================================================================
-    // Simulation 2: 문제집 (boj-1766) — 최소 힙 + 위상 정렬
+    // Simulation 2: Workbook (boj-1766) — Min-Heap + Topological Sort
     // ====================================================================
     _renderVizWorkbook(container) {
         var self = this, suffix = '-workbook';
@@ -1068,18 +1068,18 @@ for (int i = 0; i &lt; result.size(); i++)
         var DEFAULT_EDGES_STR = '4 2, 3 1';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">문제집 — 최소 힙 + 위상 정렬</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">번호가 작은 것부터 풀기 위해 <strong>최소 힙</strong> 사용! 값을 바꿔보세요!</p>' +
+            '<h3 style="margin-bottom:8px;">Workbook — Min-Heap + Topological Sort</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Using a <strong>min-heap</strong> to solve easier problems first! Try changing the values!</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">N (문제 수): <input type="number" id="ts-work-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
-                '<label style="font-weight:600;">선행조건 (A B 형태): <input type="text" id="ts-work-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
+                '<label style="font-weight:600;">N (problems): <input type="number" id="ts-work-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">Prerequisites (A B format): <input type="text" id="ts-work-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="ts-work-reset">🔄</button>' +
             '</div>' +
             '<div id="wb-nodes' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="wb-indeg' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
-                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">힙 (min-heap)</div><div id="wb-heap' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
-                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">결과</div><div id="wb-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Heap (min-heap)</div><div id="wb-heap' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Result</div><div id="wb-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
             '</div>' +
             '<div id="wb-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1190,8 +1190,8 @@ for (int i = 0; i &lt; result.size(); i++)
             if (zeroNodes.length === 0) {
                 steps.push({
                     description: 'No node with in-degree 0! There may be a cycle.',
-                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">in-degree가 0인 노드가 없습니다!</strong>'; },
-                    undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">최소 힙을 사용한 위상 정렬을 시작합니다.</span>'; }
+                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">No node with in-degree 0!</strong>'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with min-heap.</span>'; }
                 });
                 return steps;
             }
@@ -1203,9 +1203,9 @@ for (int i = 0; i &lt; result.size(); i++)
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 var heapDisplay = simHeap.slice();
                 steps.push({
-                    description: '초기화: in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 힙에 넣습니다. 최소 힙이므로 ' + zn[0] + '이(가) 먼저!',
-                    action: function() { renderNodes(queuedNodes, n); renderHeap(heapDisplay); renderResult([]); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → 최소 힙에 추가. 최솟값: ' + zn[0]; },
-                    undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">최소 힙을 사용한 위상 정렬을 시작합니다.</span>'; }
+                    description: 'Initialize: Add nodes ' + zn.join(', ') + ' (in-degree 0) to the heap. Since it is a min-heap, ' + zn[0] + ' comes first!',
+                    action: function() { renderNodes(queuedNodes, n); renderHeap(heapDisplay); renderResult([]); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → added to min-heap. Min value: ' + zn[0]; },
+                    undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with min-heap.</span>'; }
                 });
             })(zeroNodes.slice(), JSON.parse(JSON.stringify(initNodes)), JSON.parse(JSON.stringify(initIndeg)));
 
@@ -1229,8 +1229,8 @@ for (int i = 0; i &lt; result.size(); i++)
                 // Pop step
                 (function(vv, pns, chd, cr) {
                     steps.push({
-                        description: '힙에서 최솟값 ' + vv + '을(를) 꺼내 결과에 추가합니다.',
-                        action: function() { renderNodes(pns, n); renderHeap(chd); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> 처리 중... (힙에서 최솟값)'; },
+                        description: 'Pop minimum value ' + vv + ' from the heap and add to result.',
+                        action: function() { renderNodes(pns, n); renderHeap(chd); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> processing... (min from heap)'; },
                         undo: function() {}
                     });
                 })(v, JSON.parse(JSON.stringify(prevNodeStates)), curHeapDisplay.slice(), curResult.slice());
@@ -1257,16 +1257,16 @@ for (int i = 0; i &lt; result.size(); i++)
                     for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
                     var afterHeap = simHeap.slice();
 
-                    var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 in-degree를 줄입니다.';
+                    var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '.';
                     if (newQueued.length > 0) {
-                        desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 힙에 추가!';
+                        desc2 += ' → ' + newQueued.join(', ') + ' reached in-degree 0, added to heap!';
                     }
 
                     (function(vv2, ans, aind, ah, desc3, pns2, pind, phd, pr) {
                         steps.push({
                             description: desc3,
-                            action: function() { renderNodes(ans, n); renderIndeg(aind, n); renderHeap(ah); infoEl.innerHTML = vv2 + ' 처리 완료. 힙: [' + ah.join(', ') + ']'; },
-                            undo: function() { renderNodes(pns2, n); renderIndeg(pind, n); renderHeap(phd); renderResult(pr); infoEl.innerHTML = '<strong>' + vv2 + '</strong> 처리 중...'; }
+                            action: function() { renderNodes(ans, n); renderIndeg(aind, n); renderHeap(ah); infoEl.innerHTML = vv2 + ' processing complete. Heap: [' + ah.join(', ') + ']'; },
+                            undo: function() { renderNodes(pns2, n); renderIndeg(pind, n); renderHeap(phd); renderResult(pr); infoEl.innerHTML = '<strong>' + vv2 + '</strong> processing...'; }
                         });
                     })(v, JSON.parse(JSON.stringify(afterNodeStates)), JSON.parse(JSON.stringify(afterIndeg)), afterHeap.slice(), desc2,
                        JSON.parse(JSON.stringify(prevNodeStates)), JSON.parse(JSON.stringify(prevIndeg)), curHeapDisplay.slice(), curResult.slice());
@@ -1279,9 +1279,9 @@ for (int i = 0; i &lt; result.size(); i++)
                     }
                     (function(vv3, dns, pns3, pind2, phd2, pr2) {
                         steps.push({
-                            description: vv3 + '에는 이웃이 없습니다. 처리 완료!',
-                            action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' 처리 완료 (이웃 없음)'; },
-                            undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderHeap(phd2); renderResult(pr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> 처리 중...'; }
+                            description: vv3 + ' has no neighbors. Processing complete!',
+                            action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' processing complete (no neighbors)'; },
+                            undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderHeap(phd2); renderResult(pr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> processing...'; }
                         });
                     })(v, JSON.parse(JSON.stringify(doneNodeStates)), JSON.parse(JSON.stringify(prevNodeStates)), JSON.parse(JSON.stringify(prevIndeg)), curHeapDisplay.slice(), curResult.slice());
                 }
@@ -1290,15 +1290,15 @@ for (int i = 0; i &lt; result.size(); i++)
             // Final step
             var finalResult = simResult.slice();
             steps.push({
-                description: '위상 정렬 완료! 결과: ' + finalResult.join(' → '),
+                description: 'Topological sort complete! Result: ' + finalResult.join(' → '),
                 action: function() {
                     var fs = {};
                     for (var f = 1; f <= n; f++) fs[f] = 'done';
                     renderNodes(fs, n); renderHeap([]); renderResult(finalResult);
                     if (finalResult.length < n) {
-                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--red);">사이클 존재! ' + finalResult.length + '/' + n + '개만 정렬됨</strong>';
+                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--red);">Cycle detected! Only ' + finalResult.length + '/' + n + ' sorted</strong>';
                     } else {
-                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">위상 정렬 완료! 결과: ' + finalResult.join(' ') + '</strong>';
+                        infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Topological sort complete! Result: ' + finalResult.join(' ') + '</strong>';
                     }
                 },
                 undo: function() {}
@@ -1317,7 +1317,7 @@ for (int i = 0; i &lt; result.size(); i++)
             renderIndeg(g.indeg, n);
             renderHeap([]);
             renderResult([]);
-            infoEl.innerHTML = '<span style="color:var(--text2);">최소 힙을 사용한 위상 정렬을 시작합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with min-heap.</span>';
             var steps = buildSteps(n, edges);
             self._initStepController(container, steps, suffix);
         }
@@ -1336,7 +1336,7 @@ for (int i = 0; i &lt; result.size(); i++)
     },
 
     // ====================================================================
-    // Simulation 3: 최종 순위 (boj-3665) — 간선 반전 + 위상 정렬
+    // Simulation 3: Final Ranking (boj-3665) — Edge Reversal + Topological Sort
     // ====================================================================
     _renderVizRanking(container) {
         var self = this, suffix = '-ranking';
@@ -1344,17 +1344,17 @@ for (int i = 0; i &lt; result.size(); i++)
         var DEFAULT_SWAPS_STR = '';
 
         container.innerHTML =
-            '<h3 style="margin-bottom:8px;">최종 순위 — 간선 반전 + 위상 정렬</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">작년 순위로부터 간선을 만들고 위상 정렬합니다. 값을 바꿔보세요!</p>' +
+            '<h3 style="margin-bottom:8px;">Final Ranking — Edge Reversal + Topological Sort</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Build edges from last year\'s ranking and apply topological sort. Try changing the values!</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">작년 순위: <input type="text" id="ts-rank-order" value="' + DEFAULT_RANK_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
-                '<label style="font-weight:600;">바뀐 쌍 (A B 형태): <input type="text" id="ts-rank-swaps" value="' + DEFAULT_SWAPS_STR + '" placeholder="예: 2 1, 3 1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
+                '<label style="font-weight:600;">Last year ranking: <input type="text" id="ts-rank-order" value="' + DEFAULT_RANK_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;"></label>' +
+                '<label style="font-weight:600;">Changed pairs (A B format): <input type="text" id="ts-rank-swaps" value="' + DEFAULT_SWAPS_STR + '" placeholder="e.g. 2 1, 3 1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="ts-rank-reset">🔄</button>' +
             '</div>' +
             '<div id="rk-graph' + suffix + '" style="margin-bottom:12px;text-align:center;"></div>' +
             '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
-                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">큐</div><div id="rk-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
-                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">결과</div><div id="rk-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Queue</div><div id="rk-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Result</div><div id="rk-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
             '</div>' +
             '<div id="rk-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1377,7 +1377,7 @@ for (int i = 0; i &lt; result.size(); i++)
             }
             html += '</div>';
             if (edgeList.length > 0) {
-                html += '<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">간선: ';
+                html += '<div style="margin-top:8px;font-size:0.85rem;color:var(--text2);">Edges: ';
                 html += edgeList.map(function(e) { return e[0] + '\u2192' + e[1]; }).join(', ');
                 html += '</div>';
             }
@@ -1432,9 +1432,9 @@ for (int i = 0; i &lt; result.size(); i++)
 
             (function(ae, ins, ids) {
                 steps.push({
-                    description: '작년 순위 [' + lastRank.join(',') + ']에서 모든 쌍의 간선 생성: ' + edgeStr,
-                    action: function() { renderGraph(ae, ins, n); infoEl.innerHTML = '간선 생성 완료. in-degree: ' + ids; },
-                    undo: function() { renderGraph([], ins, n); infoEl.innerHTML = '<span style="color:var(--text2);">작년 순위로부터 간선을 생성한 뒤 위상 정렬합니다.</span>'; }
+                    description: 'Build edges for all pairs from last year ranking [' + lastRank.join(',') + ']: ' + edgeStr,
+                    action: function() { renderGraph(ae, ins, n); infoEl.innerHTML = 'Edge construction complete. in-degree: ' + ids; },
+                    undo: function() { renderGraph([], ins, n); infoEl.innerHTML = '<span style="color:var(--text2);">Building edges from last year ranking, then applying topological sort.</span>'; }
                 });
             })(allEdges.slice(), JSON.parse(JSON.stringify(initNodes)), indegStr);
 
@@ -1467,8 +1467,8 @@ for (int i = 0; i &lt; result.size(); i++)
 
                 (function(ae2, ins2, sids, swpDesc) {
                     steps.push({
-                        description: '바뀐 쌍을 적용하여 간선을 반전합니다. 현재 간선: ' + swapEdgeStr,
-                        action: function() { renderGraph(ae2, ins2, n); infoEl.innerHTML = '간선 반전 완료. in-degree: ' + sids; },
+                        description: 'Apply changed pairs to reverse edges. Current edges: ' + swapEdgeStr,
+                        action: function() { renderGraph(ae2, ins2, n); infoEl.innerHTML = 'Edge reversal complete. in-degree: ' + sids; },
                         undo: function() {}
                     });
                 })(allEdges.slice(), JSON.parse(JSON.stringify(initNodes)), swapIndegStr, swaps);
@@ -1487,7 +1487,7 @@ for (int i = 0; i &lt; result.size(); i++)
             if (zeroNodes.length === 0) {
                 steps.push({
                     description: 'No node with in-degree 0! There may be a cycle.',
-                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">IMPOSSIBLE — 사이클 존재!</strong>'; },
+                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">IMPOSSIBLE — Cycle detected!</strong>'; },
                     undo: function() {}
                 });
                 return steps;
@@ -1499,8 +1499,8 @@ for (int i = 0; i &lt; result.size(); i++)
                 for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 steps.push({
-                    description: 'in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 큐에 넣습니다.',
-                    action: function() { renderGraph(ae3, queuedNodes, n); renderQueue(zn.slice()); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → 큐에 추가'; },
+                    description: 'Add nodes ' + zn.join(', ') + ' (in-degree 0) to the queue.',
+                    action: function() { renderGraph(ae3, queuedNodes, n); renderQueue(zn.slice()); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → added to queue'; },
                     undo: function() {}
                 });
             })(zeroNodes.slice(), allEdges.slice());
@@ -1543,14 +1543,14 @@ for (int i = 0; i &lt; result.size(); i++)
                     else afterNodeStates[an] = 'default';
                 }
 
-                var desc = v + '을(를) 꺼내 결과에 추가.';
+                var desc = 'Dequeue ' + v + ' and add to result.';
                 if (neighbors.length > 0) {
-                    desc += ' 이웃 [' + neighbors.join(', ') + ']의 in-degree 줄임.';
+                    desc += ' Decrease in-degree of neighbors [' + neighbors.join(', ') + '].';
                     if (newQueued.length > 0) {
-                        desc += ' ' + newQueued.join(', ') + '의 in-degree가 0이 되어 큐에 추가!';
+                        desc += ' ' + newQueued.join(', ') + ' reached in-degree 0, added to queue!';
                     }
                 } else {
-                    desc += ' 이웃이 없습니다.';
+                    desc += ' No neighbors.';
                 }
 
                 var curQueue = simQueue.slice();
@@ -1559,7 +1559,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 (function(vv, ans2, cq, cr, desc4, ae4) {
                     steps.push({
                         description: desc4,
-                        action: function() { renderGraph(ae4, ans2, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = vv + ' 처리 완료'; },
+                        action: function() { renderGraph(ae4, ans2, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = vv + ' processing complete'; },
                         undo: function() {}
                     });
                 })(v, JSON.parse(JSON.stringify(afterNodeStates)), curQueue.slice(), curResult.slice(), desc, allEdges.slice());
@@ -1571,34 +1571,34 @@ for (int i = 0; i &lt; result.size(); i++)
             (function(fr, ae5, amb) {
                 if (fr.length < n) {
                     steps.push({
-                        description: 'IMPOSSIBLE — 사이클이 존재하여 위상 정렬이 불가능합니다!',
+                        description: 'IMPOSSIBLE — A cycle exists, so topological sort is not possible!',
                         action: function() {
                             var fs = {};
                             for (var f = 1; f <= n; f++) fs[f] = fr.indexOf(f) >= 0 ? 'done' : 'default';
                             renderGraph(ae5, fs, n); renderQueue([]); renderResult(fr);
-                            infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--red);">IMPOSSIBLE — 사이클 존재! ' + fr.length + '/' + n + '개만 정렬됨</strong>';
+                            infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--red);">IMPOSSIBLE — Cycle detected! Only ' + fr.length + '/' + n + ' sorted</strong>';
                         },
                         undo: function() {}
                     });
                 } else if (amb) {
                     steps.push({
-                        description: '순위를 확정할 수 없습니다 (?). 큐에 2개 이상이 동시에 있었습니다.',
+                        description: 'Cannot determine a unique ranking (?). The queue had 2+ nodes at the same time.',
                         action: function() {
                             var fs2 = {};
                             for (var f2 = 1; f2 <= n; f2++) fs2[f2] = 'done';
                             renderGraph(ae5, fs2, n); renderQueue([]); renderResult(fr);
-                            infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--yellow-vivid,#f9a825);">? — 순위 확정 불가</strong>';
+                            infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--yellow-vivid,#f9a825);">? — Ranking cannot be determined</strong>';
                         },
                         undo: function() {}
                     });
                 } else {
                     steps.push({
-                        description: '위상 정렬 완료! 결과: ' + fr.join(' → '),
+                        description: 'Topological sort complete! Result: ' + fr.join(' → '),
                         action: function() {
                             var fs3 = {};
                             for (var f3 = 1; f3 <= n; f3++) fs3[f3] = 'done';
                             renderGraph(ae5, fs3, n); renderQueue([]); renderResult(fr);
-                            infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">위상 정렬 완료! 결과: ' + fr.join(' ') + '</strong>';
+                            infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Topological sort complete! Result: ' + fr.join(' ') + '</strong>';
                         },
                         undo: function() {}
                     });
@@ -1618,7 +1618,7 @@ for (int i = 0; i &lt; result.size(); i++)
             renderGraph([], initNodes, n);
             renderQueue([]);
             renderResult([]);
-            infoEl.innerHTML = '<span style="color:var(--text2);">작년 순위로부터 간선을 생성한 뒤 위상 정렬합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Building edges from last year ranking, then applying topological sort.</span>';
             var steps = buildSteps(lastRank, swaps);
             self._initStepController(container, steps, suffix);
         }
@@ -1640,22 +1640,22 @@ for (int i = 0; i &lt; result.size(); i++)
 
     // ===== Problem Stages =====
     stages: [
-        { num: 1, title: '기본 위상 정렬', desc: 'in-degree와 BFS를 활용한 기본 위상 정렬 (Gold III)', problemIds: ['boj-2252'] },
-        { num: 2, title: '심화 위상 정렬', desc: '우선순위 큐, 사이클 판별 등 심화 응용 (Gold I~II)', problemIds: ['boj-1766', 'boj-3665'] }
+        { num: 1, title: 'Basic Topological Sort', desc: 'Basic topological sort using in-degree and BFS (Gold III)', problemIds: ['boj-2252'] },
+        { num: 2, title: 'Advanced Topological Sort', desc: 'Priority queue, cycle detection, and other advanced applications (Gold I~II)', problemIds: ['boj-1766', 'boj-3665'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ===== 1단계: 기본 위상 정렬 =====
+        // ===== Stage 1: Basic Topological Sort =====
         {
             id: 'boj-2252',
-            title: 'BOJ 2252 - 줄 세우기',
+            title: 'BOJ 2252 - Lineup',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/2252',
-            simIntro: 'Kahn\'s Algorithm으로 학생들을 줄 세우는 과정을 단계별로 확인하세요.',
+            simIntro: 'Watch how Kahn\'s Algorithm lines up students step by step.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>N명의 학생들을 키 순서대로 줄을 세우려고 한다. 일부 학생들의 키를 비교한 결과가 주어진다. 예를 들어, 학생 A가 학생 B 앞에 서야 한다는 것을 알고 있다면 A는 B보다 앞에 서야 한다. 키를 비교한 결과가 주어질 때, 학생들을 줄 세우는 프로그램을 작성하시오. 답이 여러 가지인 경우 아무거나 출력한다.</p>
+                <p>We want to line up N students by height. Some height comparison results between students are given. For example, if we know that student A must stand in front of student B, then A must appear before B. Given the comparison results, write a program that lines up the students. If there are multiple valid answers, print any one of them.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 2\n1 3\n2 3</pre></div>
                     <div><strong>Output</strong><pre>1 2 3</pre></div>
@@ -1669,16 +1669,16 @@ for (int i = 0; i &lt; result.size(); i++)
             `,
             hints: [
                 {
-                    title: '순서가 정해진 정렬?',
-                    content: 'A가 B 앞이라는 조건이 여러 개 주어져요. 이 조건을 <strong>모두 만족하는 순서</strong>를 찾아야 합니다.<br>이런 문제를 <strong>"위상 정렬"</strong>이라고 불러요!'
+                    title: 'Sorting with ordering constraints?',
+                    content: 'We are given multiple conditions like "A must come before B." We need to find an order that <strong>satisfies all conditions</strong>.<br>This type of problem is called <strong>"Topological Sort"</strong>!'
                 },
                 {
-                    title: '진입차수가 0인 노드부터',
-                    content: '아무도 "나보다 앞에 서야 한다"고 지정하지 않은 학생 — 즉 <strong>진입차수가 0</strong>인 학생을 먼저 세울 수 있어요.<br>그 학생을 세우면, 그 학생 뒤에 와야 하는 학생들의 진입차수가 1씩 줄어듭니다.'
+                    title: 'Start from nodes with in-degree 0',
+                    content: 'A student that nobody is required to stand before — meaning a student with <strong>in-degree 0</strong> — can be placed first.<br>Once that student is placed, the in-degree of students who must come after decreases by 1.'
                 },
                 {
-                    title: 'BFS(Kahn\'s 알고리즘)로 구현',
-                    content: '큐에 진입차수 0인 노드를 넣고, 하나씩 빼면서 연결된 노드의 진입차수를 줄여요. 진입차수가 0이 되면 큐에 추가!<br><br><span class="lang-py">Python: <code>deque</code>를 사용해 BFS 구현</span><span class="lang-cpp">C++: <code>queue</code>를 사용해 BFS 구현</span>'
+                    title: 'Implement with BFS (Kahn\'s Algorithm)',
+                    content: 'Add all nodes with in-degree 0 to a queue, dequeue one at a time, and decrease the in-degree of connected nodes. When in-degree becomes 0, add to queue!<br><br><span class="lang-py">Python: Implement BFS using <code>deque</code></span><span class="lang-cpp">C++: Implement BFS using <code>queue</code></span>'
                 }
             ],
             templates: {
@@ -1687,37 +1687,37 @@ for (int i = 0; i &lt; result.size(); i++)
             },
             solutions: [{
                 approach: 'Kahn\'s Algorithm (BFS)',
-                description: 'in-degree가 0인 노드부터 큐에 넣고 BFS로 위상 정렬합니다.',
+                description: 'Start by enqueuing nodes with in-degree 0 and perform topological sort via BFS.',
                 timeComplexity: 'O(N + M)',
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구축', desc: '인접 리스트와 in-degree 배열을 만들어야\nBFS 위상 정렬의 기반이 됩니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nin_degree = [0] * (N + 1)\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1' },
-                        { title: 'in-degree 0인 노드 큐에 추가', desc: '선행 조건이 없는 노드(in-degree 0)를\n먼저 처리할 수 있으므로 큐에 넣습니다.', code: 'queue = deque()\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        queue.append(i)' },
-                        { title: 'BFS 위상 정렬', desc: '큐에서 꺼낸 노드의 이웃 in-degree를 줄여\n0이 되면 큐에 추가하는 Kahn\'s Algorithm 핵심 루프.', code: 'result = []\nwhile queue:\n    v = queue.popleft()\n    result.append(v)\n    for u in graph[v]:\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            queue.append(u)' },
-                        { title: '출력', desc: '위상 정렬 결과를 공백 구분으로 출력합니다.', code: 'print(*result)' }
+                        { title: 'Input and Graph Construction', desc: 'Build the adjacency list and in-degree array\nas the foundation for BFS topological sort.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nin_degree = [0] * (N + 1)\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1' },
+                        { title: 'Add in-degree 0 nodes to queue', desc: 'Nodes with no prerequisites (in-degree 0) can\nbe processed first, so add them to the queue.', code: 'queue = deque()\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        queue.append(i)' },
+                        { title: 'BFS Topological Sort', desc: 'Decrease in-degree of neighbors for each dequeued node.\nWhen in-degree reaches 0, add to queue — core of Kahn\'s Algorithm.', code: 'result = []\nwhile queue:\n    v = queue.popleft()\n    result.append(v)\n    for u in graph[v]:\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            queue.append(u)' },
+                        { title: 'Output', desc: 'Print the topological sort result separated by spaces.', code: 'print(*result)' }
                     ],
                     cpp: [
-                        { title: '입력 및 그래프 구축', desc: '인접 리스트와 in-degree 배열을 만들어야\nBFS 위상 정렬의 기반이 됩니다.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }' },
-                        { title: 'in-degree 0인 노드 큐에 추가', desc: '선행 조건이 없는 노드를 queue에 넣어\n위상 정렬의 시작점으로 사용합니다.', code: '    queue<int> q;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) q.push(i);\n    }' },
-                        { title: 'BFS 위상 정렬', desc: '큐에서 꺼내며 이웃의 in-degree를 줄이고,\n0이 되면 큐에 추가하는 Kahn\'s Algorithm 핵심.', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        printf("%d ", v);\n        for (int u : graph[v]) {\n            if (--in_degree[u] == 0) q.push(u);\n        }\n    }' },
-                        { title: '출력', desc: '위상 정렬 결과를 출력하고 프로그램을 종료합니다.', code: '    return 0;\n}' }
+                        { title: 'Input and Graph Construction', desc: 'Build the adjacency list and in-degree array\nas the foundation for BFS topological sort.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }' },
+                        { title: 'Add in-degree 0 nodes to queue', desc: 'Add prerequisite-free nodes to the queue\nas the starting points for topological sort.', code: '    queue<int> q;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) q.push(i);\n    }' },
+                        { title: 'BFS Topological Sort', desc: 'Dequeue nodes and decrease neighbor in-degrees.\nWhen in-degree reaches 0, add to queue — core of Kahn\'s Algorithm.', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        printf("%d ", v);\n        for (int u : graph[v]) {\n            if (--in_degree[u] == 0) q.push(u);\n        }\n    }' },
+                        { title: 'Output', desc: 'Print the topological sort result and exit.', code: '    return 0;\n}' }
                     ]
                 },
                 get templates() { return topologicalSortTopic.problems[0].templates; }
             }]
         },
 
-        // ===== 2단계: 심화 위상 정렬 =====
+        // ===== Stage 2: Advanced Topological Sort =====
         {
             id: 'boj-1766',
-            title: 'BOJ 1766 - 문제집',
+            title: 'BOJ 1766 - Workbook',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/1766',
-            simIntro: '최소 힙을 사용하여 번호가 작은 문제부터 풀어나가는 과정을 확인하세요.',
+            simIntro: 'Watch how a min-heap is used to solve easier (lower-numbered) problems first.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>민오는 1번부터 N번까지 총 N개의 문제로 되어 있는 문제집을 풀려고 한다. 문제는 난이도 순서로 출제되어 있어서 1번 문제가 가장 쉽고 N번 문제가 가장 어렵다. 먼저 풀어야 하는 문제 쌍이 M개 주어진다. 가능하면 쉬운 문제부터(번호가 작은 것부터) 풀려고 한다. 문제를 풀 순서를 출력하시오.</p>
+                <p>Mino wants to solve a workbook consisting of N problems numbered 1 to N. The problems are ordered by difficulty, with problem 1 being the easiest and problem N the hardest. M prerequisite pairs are given (problem A must be solved before problem B). Mino wants to solve easier problems first (lower-numbered ones) whenever possible. Print the order in which the problems should be solved.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4 2\n4 2\n3 1</pre></div>
                     <div><strong>Output</strong><pre>3 1 4 2</pre></div>
@@ -1727,16 +1727,16 @@ for (int i = 0; i &lt; result.size(); i++)
             `,
             hints: [
                 {
-                    title: '위상 정렬 + 쉬운 문제 우선',
-                    content: '"먼저 풀어야 하는 조건"이 있으니 위상 정렬이 필요해요. 그런데 조건이 하나 더 — <strong>"가능하면 쉬운 문제부터"</strong>, 즉 번호가 작은 것을 우선해야 합니다.'
+                    title: 'Topological sort + easier problems first',
+                    content: 'Since there are "must solve first" conditions, we need topological sort. But there is one more constraint — <strong>"solve easier problems first when possible"</strong>, meaning prioritize smaller numbers.'
                 },
                 {
-                    title: '일반 큐로는 안 돼!',
-                    content: '2252번처럼 일반 큐를 쓰면 진입차수 0인 노드가 여러 개일 때 <strong>아무거나</strong> 먼저 처리해버려요.<br>번호가 작은 것을 먼저 골라낼 방법이 없습니다!'
+                    title: 'A regular queue will not work!',
+                    content: 'If we use a regular queue like in problem 2252, when multiple nodes have in-degree 0, it processes <strong>any of them</strong> first.<br>There is no way to always pick the smallest number!'
                 },
                 {
-                    title: '우선순위 큐(최소 힙)로!',
-                    content: '큐 대신 <strong>최소 힙</strong>을 쓰면 진입차수 0인 노드 중 항상 번호가 <strong>가장 작은 것</strong>을 먼저 처리할 수 있어요.<br><br><span class="lang-py">Python: <code>heapq</code> — 기본이 최소 힙이라 바로 사용 가능</span><span class="lang-cpp">C++: <code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code> — greater를 넣어야 최소 힙</span>'
+                    title: 'Use a priority queue (min-heap)!',
+                    content: 'If we use a <strong>min-heap</strong> instead of a queue, we can always process the <strong>smallest-numbered node</strong> among those with in-degree 0.<br><br><span class="lang-py">Python: <code>heapq</code> — it is a min-heap by default, ready to use</span><span class="lang-cpp">C++: <code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code> — must add greater for min-heap</span>'
                 }
             ],
             templates: {
@@ -1744,22 +1744,22 @@ for (int i = 0; i &lt; result.size(); i++)
                 cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }\n\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) pq.push(i);\n    }\n\n    while (!pq.empty()) {\n        int v = pq.top(); pq.pop();\n        printf("%d ", v);\n        for (int u : graph[v]) {\n            if (--in_degree[u] == 0) pq.push(u);\n        }\n    }\n    return 0;\n}'
             },
             solutions: [{
-                approach: '최소 힙 + Kahn\'s Algorithm',
-                description: '일반 큐 대신 최소 힙을 사용하여 번호가 작은 문제부터 처리합니다.',
+                approach: 'Min-Heap + Kahn\'s Algorithm',
+                description: 'Use a min-heap instead of a regular queue to process smaller-numbered problems first.',
                 timeComplexity: 'O((N + M) log N)',
                 spaceComplexity: 'O(N + M)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 그래프 구축', desc: '선행 조건을 인접 리스트로 저장하고\nin-degree를 세어 위상 정렬을 준비합니다.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nin_degree = [0] * (N + 1)\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1' },
-                        { title: '최소 힙 초기화', desc: '번호가 작은 문제를 먼저 풀어야 하므로\n일반 큐 대신 최소 힙을 사용합니다.', code: 'heap = []\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        heapq.heappush(heap, i)' },
-                        { title: '힙 기반 위상 정렬', desc: 'heappop으로 항상 가장 작은 번호를 먼저 꺼내어\n"쉬운 문제부터" 조건을 자동으로 만족합니다.', code: 'result = []\nwhile heap:\n    v = heapq.heappop(heap)\n    result.append(v)\n    for u in graph[v]:\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            heapq.heappush(heap, u)' },
-                        { title: '출력', desc: '최소 힙으로 정렬된 결과를 출력합니다.', code: 'print(*result)' }
+                        { title: 'Input and Graph Construction', desc: 'Store prerequisites as an adjacency list and\ncount in-degrees to prepare for topological sort.', code: 'import sys\nimport heapq\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nin_degree = [0] * (N + 1)\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1' },
+                        { title: 'Initialize Min-Heap', desc: 'Since we want to solve easier problems first,\nuse a min-heap instead of a regular queue.', code: 'heap = []\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        heapq.heappush(heap, i)' },
+                        { title: 'Heap-Based Topological Sort', desc: 'heappop always extracts the smallest number first,\nautomatically satisfying the "easier problems first" constraint.', code: 'result = []\nwhile heap:\n    v = heapq.heappop(heap)\n    result.append(v)\n    for u in graph[v]:\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            heapq.heappush(heap, u)' },
+                        { title: 'Output', desc: 'Print the result sorted by min-heap.', code: 'print(*result)' }
                     ],
                     cpp: [
-                        { title: '입력 및 그래프 구축', desc: '선행 조건을 인접 리스트로 저장하고\nin-degree를 세어 위상 정렬을 준비합니다.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }' },
-                        { title: '최소 힙 초기화', desc: 'priority_queue에 greater<int>를 넣으면 최소 힙!\n기본은 최대 힙이라 주의.', code: '    // greater<int> → 최소 힙 (기본은 최대 힙)\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) pq.push(i);\n    }' },
-                        { title: '힙 기반 위상 정렬', desc: 'pq.top()이 항상 최솟값을 반환하므로\n작은 번호부터 자동으로 처리됩니다.', code: '    while (!pq.empty()) {\n        int v = pq.top(); pq.pop();\n        printf("%d ", v);\n        for (int u : graph[v]) {\n            if (--in_degree[u] == 0) pq.push(u);\n        }\n    }' },
-                        { title: '출력', desc: '위상 정렬 결과를 출력하고 프로그램을 종료합니다.', code: '    return 0;\n}' }
+                        { title: 'Input and Graph Construction', desc: 'Store prerequisites as an adjacency list and\ncount in-degrees to prepare for topological sort.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }' },
+                        { title: 'Initialize Min-Heap', desc: 'Adding greater<int> to priority_queue makes it a min-heap!\nThe default is max-heap, so be careful.', code: '    // greater<int> -> min-heap (default is max-heap)\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) pq.push(i);\n    }' },
+                        { title: 'Heap-Based Topological Sort', desc: 'pq.top() always returns the minimum value,\nso smaller numbers are processed automatically first.', code: '    while (!pq.empty()) {\n        int v = pq.top(); pq.pop();\n        printf("%d ", v);\n        for (int u : graph[v]) {\n            if (--in_degree[u] == 0) pq.push(u);\n        }\n    }' },
+                        { title: 'Output', desc: 'Print the topological sort result and exit.', code: '    return 0;\n}' }
                     ]
                 },
                 get templates() { return topologicalSortTopic.problems[1].templates; }
@@ -1767,55 +1767,55 @@ for (int i = 0; i &lt; result.size(); i++)
         },
         {
             id: 'boj-3665',
-            title: 'BOJ 3665 - 최종 순위',
+            title: 'BOJ 3665 - Final Ranking',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/3665',
-            simIntro: '작년 순위로부터 간선을 만들고 위상 정렬하는 과정을 확인하세요.',
+            simIntro: 'Watch how edges are built from last year\'s ranking and topological sort is applied.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>올해 ACM-ICPC 대전 인터넷 예선에는 총 n개의 팀이 참가했다. 작년 순위가 주어지고, 올해 상대적인 순위가 바뀐 쌍이 주어진다. 바뀐 정보를 이용해서 올해 순위를 만들어라. 확실한 순위를 찾을 수 없다면 "?", 일관성이 없는 경우 "IMPOSSIBLE"을 출력한다.</p>
+                <p>A total of n teams participated in this year's ACM-ICPC Daejeon Internet Preliminary. Last year's ranking is given, along with pairs of teams whose relative ranking changed this year. Use the changed information to determine this year's ranking. If the ranking cannot be uniquely determined, print "?". If there is an inconsistency, print "IMPOSSIBLE".</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3\n5\n5 4 3 2 1\n2\n2 4\n3 4\n3\n2 3 1\n0\n4\n1 2 3 4\n3\n1 2\n3 4\n2 3</pre></div>
                     <div><strong>Output</strong><pre>5 3 2 4 1\n2 3 1\nIMPOSSIBLE</pre></div>
                 </div></div>
                 <h4>Constraints</h4>
-                <ul><li>2 ≤ n ≤ 500</li><li>0 ≤ m ≤ 25,000</li><li>T는 테스트 케이스 수</li></ul>
+                <ul><li>2 ≤ n ≤ 500</li><li>0 ≤ m ≤ 25,000</li><li>T is the number of test cases</li></ul>
             `,
             hints: [
                 {
-                    title: '작년 순위에서 시작',
-                    content: '작년 순위가 곧 초기 위상 정렬 결과예요. 앞에 있는 팀 → 뒤에 있는 팀으로 <strong>모든 쌍</strong>에 간선을 만들면 DAG가 됩니다.<br>예: [5,4,3,2,1]이면 5→4, 5→3, ..., 4→3, 4→2, ... 모든 쌍!'
+                    title: 'Start from last year\'s ranking',
+                    content: 'Last year\'s ranking is essentially an initial topological sort result. Create edges from earlier-ranked teams to later-ranked teams for <strong>all pairs</strong>, forming a DAG.<br>Example: If [5,4,3,2,1] then 5→4, 5→3, ..., 4→3, 4→2, ... all pairs!'
                 },
                 {
-                    title: '간선 뒤집기가 핵심',
-                    content: '올해 바뀐 쌍의 간선 방향을 <strong>뒤집는 것</strong>이 이 문제의 핵심이에요.<br>작년에 A가 B보다 앞이었는데 올해 뒤집혔다면 → A→B 간선을 제거하고 B→A로 변경. 진입차수도 함께 조정합니다.'
+                    title: 'Edge reversal is the key',
+                    content: '<strong>Reversing the edge direction</strong> for changed pairs is the core of this problem.<br>If A was ranked above B last year but it flipped this year → remove the A→B edge and add B→A instead. Adjust in-degrees accordingly.'
                 },
                 {
-                    title: 'IMPOSSIBLE과 ?',
-                    content: '위상 정렬 도중 큐에 노드가 <strong>2개 이상</strong>이면 순서를 확정할 수 없어요 → <strong>"?"</strong> 출력.<br>모든 노드를 방문하지 못하면 사이클이 존재한다는 뜻 → <strong>"IMPOSSIBLE"</strong> 출력.'
+                    title: 'IMPOSSIBLE and ?',
+                    content: 'During topological sort, if the queue has <strong>2 or more</strong> nodes at the same time, the ranking cannot be uniquely determined → print <strong>"?"</strong>.<br>If not all nodes are visited, a cycle exists → print <strong>"IMPOSSIBLE"</strong>.'
                 }
             ],
             templates: {
-                python: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    n = int(input())\n    rank = list(map(int, input().split()))\n\n    # 모든 쌍에 대해 간선 생성\n    graph = [[False] * (n + 1) for _ in range(n + 1)]\n    in_degree = [0] * (n + 1)\n\n    for i in range(n):\n        for j in range(i + 1, n):\n            graph[rank[i]][rank[j]] = True\n            in_degree[rank[j]] += 1\n\n    m = int(input())\n    for _ in range(m):\n        a, b = map(int, input().split())\n        if graph[a][b]:\n            graph[a][b] = False\n            graph[b][a] = True\n            in_degree[b] -= 1\n            in_degree[a] += 1\n        else:\n            graph[b][a] = False\n            graph[a][b] = True\n            in_degree[a] -= 1\n            in_degree[b] += 1\n\n    queue = deque()\n    for i in range(1, n + 1):\n        if in_degree[i] == 0:\n            queue.append(i)\n\n    result = []\n    ambiguous = False\n\n    for _ in range(n):\n        if len(queue) == 0:\n            break\n        if len(queue) > 1:\n            ambiguous = True\n        v = queue.popleft()\n        result.append(v)\n        for u in range(1, n + 1):\n            if graph[v][u]:\n                in_degree[u] -= 1\n                if in_degree[u] == 0:\n                    queue.append(u)\n\n    if len(result) != n:\n        print("IMPOSSIBLE")\n    elif ambiguous:\n        print("?")\n    else:\n        print(*result)',
+                python: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nT = int(input())\nfor _ in range(T):\n    n = int(input())\n    rank = list(map(int, input().split()))\n\n    # Create edges for all pairs\n    graph = [[False] * (n + 1) for _ in range(n + 1)]\n    in_degree = [0] * (n + 1)\n\n    for i in range(n):\n        for j in range(i + 1, n):\n            graph[rank[i]][rank[j]] = True\n            in_degree[rank[j]] += 1\n\n    m = int(input())\n    for _ in range(m):\n        a, b = map(int, input().split())\n        if graph[a][b]:\n            graph[a][b] = False\n            graph[b][a] = True\n            in_degree[b] -= 1\n            in_degree[a] += 1\n        else:\n            graph[b][a] = False\n            graph[a][b] = True\n            in_degree[a] -= 1\n            in_degree[b] += 1\n\n    queue = deque()\n    for i in range(1, n + 1):\n        if in_degree[i] == 0:\n            queue.append(i)\n\n    result = []\n    ambiguous = False\n\n    for _ in range(n):\n        if len(queue) == 0:\n            break\n        if len(queue) > 1:\n            ambiguous = True\n        v = queue.popleft()\n        result.append(v)\n        for u in range(1, n + 1):\n            if graph[v][u]:\n                in_degree[u] -= 1\n                if in_degree[u] == 0:\n                    queue.append(u)\n\n    if len(result) != n:\n        print("IMPOSSIBLE")\n    elif ambiguous:\n        print("?")\n    else:\n        print(*result)',
                 cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int T;\n    scanf("%d", &T);\n    while (T--) {\n        int n;\n        scanf("%d", &n);\n        vector<int> rank_arr(n);\n        for (int i = 0; i < n; i++) scanf("%d", &rank_arr[i]);\n\n        vector<vector<bool>> graph(n + 1, vector<bool>(n + 1, false));\n        vector<int> in_deg(n + 1, 0);\n\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                graph[rank_arr[i]][rank_arr[j]] = true;\n                in_deg[rank_arr[j]]++;\n            }\n        }\n\n        int m;\n        scanf("%d", &m);\n        for (int i = 0; i < m; i++) {\n            int a, b;\n            scanf("%d %d", &a, &b);\n            if (graph[a][b]) {\n                graph[a][b] = false; graph[b][a] = true;\n                in_deg[b]--; in_deg[a]++;\n            } else {\n                graph[b][a] = false; graph[a][b] = true;\n                in_deg[a]--; in_deg[b]++;\n            }\n        }\n\n        queue<int> q;\n        for (int i = 1; i <= n; i++) {\n            if (in_deg[i] == 0) q.push(i);\n        }\n\n        vector<int> result;\n        bool ambiguous = false;\n\n        for (int i = 0; i < n; i++) {\n            if (q.empty()) { result.clear(); break; }\n            if (q.size() > 1) ambiguous = true;\n            int v = q.front(); q.pop();\n            result.push_back(v);\n            for (int u = 1; u <= n; u++) {\n                if (graph[v][u]) {\n                    if (--in_deg[u] == 0) q.push(u);\n                }\n            }\n        }\n\n        if ((int)result.size() != n) printf("IMPOSSIBLE\\n");\n        else if (ambiguous) printf("?\\n");\n        else {\n            for (int i = 0; i < n; i++)\n                printf("%d%c", result[i], i == n - 1 ? \'\\n\' : \' \');\n        }\n    }\n    return 0;\n}'
             },
             solutions: [{
-                approach: '간선 반전 + Kahn\'s Algorithm',
-                description: '작년 순위로 모든 쌍의 간선을 만들고, 바뀐 쌍의 간선을 뒤집은 뒤 위상 정렬합니다.',
+                approach: 'Edge Reversal + Kahn\'s Algorithm',
+                description: 'Build edges for all pairs from last year\'s ranking, reverse edges for changed pairs, then apply topological sort.',
                 timeComplexity: 'O(N^2)',
                 spaceComplexity: 'O(N^2)',
                 codeSteps: {
                     python: [
-                        { title: '입력 및 모든 쌍 간선 생성', desc: '작년 순위에서 앞→뒤 모든 쌍에 간선을 만들어\n"앞선 팀이 더 높은 순위"라는 관계를 그래프로 표현합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nn = int(input())\nrank = list(map(int, input().split()))\n\ngraph = [[False] * (n + 1) for _ in range(n + 1)]\nin_degree = [0] * (n + 1)\n\nfor i in range(n):\n    for j in range(i + 1, n):\n        graph[rank[i]][rank[j]] = True\n        in_degree[rank[j]] += 1' },
-                        { title: '바뀐 쌍 간선 반전', desc: '올해 상대적 순서가 바뀐 쌍의 간선 방향을\n뒤집어 새로운 순위 관계를 반영합니다.', code: 'm = int(input())\nfor _ in range(m):\n    a, b = map(int, input().split())\n    if graph[a][b]:\n        graph[a][b] = False\n        graph[b][a] = True\n        in_degree[b] -= 1\n        in_degree[a] += 1\n    else:\n        graph[b][a] = False\n        graph[a][b] = True\n        in_degree[a] -= 1\n        in_degree[b] += 1' },
-                        { title: '위상 정렬 + 판별', desc: '큐에 동시에 2개 이상 있으면 순서 불확정("?"),\n결과 수가 n보다 적으면 사이클("IMPOSSIBLE").', code: 'queue = deque()\nfor i in range(1, n + 1):\n    if in_degree[i] == 0:\n        queue.append(i)\n\nresult = []\nambiguous = False\n\nfor _ in range(n):\n    if len(queue) == 0: break\n    if len(queue) > 1: ambiguous = True\n    v = queue.popleft()\n    result.append(v)\n    for u in range(1, n + 1):\n        if graph[v][u]:\n            in_degree[u] -= 1\n            if in_degree[u] == 0:\n                queue.append(u)' },
-                        { title: 'Output Result', desc: '사이클이면 IMPOSSIBLE, 순서 불확정이면 ?,\n그 외엔 확정된 올해 순위를 출력합니다.', code: 'if len(result) != n:\n    print("IMPOSSIBLE")\nelif ambiguous:\n    print("?")\nelse:\n    print(*result)' }
+                        { title: 'Input and Build All-Pair Edges', desc: 'Create edges from earlier to later for all pairs\nin last year\'s ranking, representing "higher rank" relationships as a graph.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nn = int(input())\nrank = list(map(int, input().split()))\n\ngraph = [[False] * (n + 1) for _ in range(n + 1)]\nin_degree = [0] * (n + 1)\n\nfor i in range(n):\n    for j in range(i + 1, n):\n        graph[rank[i]][rank[j]] = True\n        in_degree[rank[j]] += 1' },
+                        { title: 'Reverse Changed Pair Edges', desc: 'Reverse the edge direction for pairs whose relative\norder changed this year, reflecting new ranking relationships.', code: 'm = int(input())\nfor _ in range(m):\n    a, b = map(int, input().split())\n    if graph[a][b]:\n        graph[a][b] = False\n        graph[b][a] = True\n        in_degree[b] -= 1\n        in_degree[a] += 1\n    else:\n        graph[b][a] = False\n        graph[a][b] = True\n        in_degree[a] -= 1\n        in_degree[b] += 1' },
+                        { title: 'Topological Sort + Detection', desc: 'If queue has 2+ nodes simultaneously, ranking is ambiguous ("?").\nIf result count is less than n, a cycle exists ("IMPOSSIBLE").', code: 'queue = deque()\nfor i in range(1, n + 1):\n    if in_degree[i] == 0:\n        queue.append(i)\n\nresult = []\nambiguous = False\n\nfor _ in range(n):\n    if len(queue) == 0: break\n    if len(queue) > 1: ambiguous = True\n    v = queue.popleft()\n    result.append(v)\n    for u in range(1, n + 1):\n        if graph[v][u]:\n            in_degree[u] -= 1\n            if in_degree[u] == 0:\n                queue.append(u)' },
+                        { title: 'Output Result', desc: 'Print IMPOSSIBLE for cycles, ? for ambiguous ranking,\notherwise print the confirmed ranking for this year.', code: 'if len(result) != n:\n    print("IMPOSSIBLE")\nelif ambiguous:\n    print("?")\nelse:\n    print(*result)' }
                     ],
                     cpp: [
-                        { title: '입력 및 모든 쌍 간선 생성', desc: '작년 순위에서 앞→뒤 모든 쌍에 간선.\n2차원 bool 배열로 O(1) 간선 확인.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int T; scanf("%d", &T);\n    while (T--) {\n        int n; scanf("%d", &n);\n        vector<int> rank_arr(n);\n        for (int i = 0; i < n; i++) scanf("%d", &rank_arr[i]);\n\n        vector<vector<bool>> graph(n+1, vector<bool>(n+1, false));\n        vector<int> in_deg(n+1, 0);\n        for (int i = 0; i < n; i++)\n            for (int j = i+1; j < n; j++) {\n                graph[rank_arr[i]][rank_arr[j]] = true;\n                in_deg[rank_arr[j]]++;\n            }' },
-                        { title: '바뀐 쌍 간선 반전', desc: '기존 방향을 뒤집고 in-degree 갱신.', code: '        int m; scanf("%d", &m);\n        for (int i = 0; i < m; i++) {\n            int a, b; scanf("%d %d", &a, &b);\n            if (graph[a][b]) {\n                graph[a][b] = false; graph[b][a] = true;\n                in_deg[b]--; in_deg[a]++;\n            } else {\n                graph[b][a] = false; graph[a][b] = true;\n                in_deg[a]--; in_deg[b]++;\n            }\n        }' },
-                        { title: '위상 정렬 + 판별', desc: '큐에 2개 이상 → "?", 결과<n → "IMPOSSIBLE".', code: '        queue<int> q;\n        for (int i = 1; i <= n; i++)\n            if (in_deg[i] == 0) q.push(i);\n\n        vector<int> result;\n        bool ambiguous = false;\n        for (int i = 0; i < n; i++) {\n            if (q.empty()) break;\n            if (q.size() > 1) ambiguous = true;\n            int v = q.front(); q.pop();\n            result.push_back(v);\n            for (int u = 1; u <= n; u++)\n                if (graph[v][u] && --in_deg[u] == 0) q.push(u);\n        }' },
-                        { title: 'Output Result', desc: '사이클이면 IMPOSSIBLE, 순서 불확정이면 ?,\n그 외엔 확정된 올해 순위를 출력합니다.', code: '        if ((int)result.size() != n) printf("IMPOSSIBLE\\n");\n        else if (ambiguous) printf("?\\n");\n        else {\n            for (int i = 0; i < n; i++)\n                printf("%d%c", result[i], i==n-1?\'\\n\':\' \');\n        }\n    }\n    return 0;\n}' }
+                        { title: 'Input and Build All-Pair Edges', desc: 'Build edges for all pairs from last year ranking.\n2D bool array for O(1) edge lookup.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int T; scanf("%d", &T);\n    while (T--) {\n        int n; scanf("%d", &n);\n        vector<int> rank_arr(n);\n        for (int i = 0; i < n; i++) scanf("%d", &rank_arr[i]);\n\n        vector<vector<bool>> graph(n+1, vector<bool>(n+1, false));\n        vector<int> in_deg(n+1, 0);\n        for (int i = 0; i < n; i++)\n            for (int j = i+1; j < n; j++) {\n                graph[rank_arr[i]][rank_arr[j]] = true;\n                in_deg[rank_arr[j]]++;\n            }' },
+                        { title: 'Reverse Changed Pair Edges', desc: 'Reverse existing edge direction and update in-degrees.', code: '        int m; scanf("%d", &m);\n        for (int i = 0; i < m; i++) {\n            int a, b; scanf("%d %d", &a, &b);\n            if (graph[a][b]) {\n                graph[a][b] = false; graph[b][a] = true;\n                in_deg[b]--; in_deg[a]++;\n            } else {\n                graph[b][a] = false; graph[a][b] = true;\n                in_deg[a]--; in_deg[b]++;\n            }\n        }' },
+                        { title: 'Topological Sort + Detection', desc: 'Queue has 2+ nodes at once -> "?", result < n -> "IMPOSSIBLE".', code: '        queue<int> q;\n        for (int i = 1; i <= n; i++)\n            if (in_deg[i] == 0) q.push(i);\n\n        vector<int> result;\n        bool ambiguous = false;\n        for (int i = 0; i < n; i++) {\n            if (q.empty()) break;\n            if (q.size() > 1) ambiguous = true;\n            int v = q.front(); q.pop();\n            result.push_back(v);\n            for (int u = 1; u <= n; u++)\n                if (graph[v][u] && --in_deg[u] == 0) q.push(u);\n        }' },
+                        { title: 'Output Result', desc: 'Print IMPOSSIBLE for cycles, ? for ambiguous ranking,\notherwise print the confirmed ranking for this year.', code: '        if ((int)result.size() != n) printf("IMPOSSIBLE\\n");\n        else if (ambiguous) printf("?\\n");\n        else {\n            for (int i = 0; i < n; i++)\n                printf("%d%c", result[i], i==n-1?\'\\n\':\' \');\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
                 get templates() { return topologicalSortTopic.problems[2].templates; }

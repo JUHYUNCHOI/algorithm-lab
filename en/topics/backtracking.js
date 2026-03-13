@@ -163,22 +163,22 @@ var backtrackingTopic = {
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">위 과정에서 "되돌아가기"가 일어나는 순간은 언제입니까?</span>
+                        <span class="think-box-question-text">At what moment does "backtracking" occur in the process above?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        두 번째 숫자까지 골라서 하나의 수열을 완성한 뒤,
-                        그 선택을 <strong>취소</strong>하고 다른 두 번째 숫자를 시도할 때 되돌아가기가 일어납니다.<br>
-                        또한 두 번째 자리의 모든 선택을 시도한 뒤,
-                        첫 번째 자리의 선택까지 취소하고 다른 첫 번째 숫자를 시도할 때도 되돌아갑니다.<br><br>
-                        이것이 바로 <strong>백트래킹</strong>입니다!
+                        After picking up to the second number to complete one sequence,
+                        backtracking occurs when you <strong>undo</strong> that choice and try a different second number.<br>
+                        It also occurs when you've tried all choices for the second slot,
+                        undo even the first slot's choice, and try a different first number.<br><br>
+                        That is exactly what <strong>backtracking</strong> is!
                     </div>
                 </div>
             </div>
 
-            <!-- ② 백트래킹의 핵심 3요소 -->
+            <!-- 2. The 3 Core Elements of Backtracking -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">2</span> 백트래킹의 핵심 3요소</div>
+                <div class="concept-section-title"><span class="section-num">2</span> The 3 Core Elements of Backtracking</div>
                 <div class="concept-grid" style="grid-template-columns: 1fr 1fr 1fr;">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -188,8 +188,8 @@ var backtrackingTopic = {
                                 <path d="M32 60 L48 60" stroke="var(--accent)" stroke-width="3"/>
                             </svg>
                         </div>
-                        <h3>☝️ 선택하기</h3>
-                        <p>가능한 선택지 중에서 하나를 고릅니다.</p>
+                        <h3>☝️ Choose</h3>
+                        <p>Pick one option from the available choices.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
@@ -198,8 +198,8 @@ var backtrackingTopic = {
                                 <path d="M30 40 L37 48 L52 32" fill="none" stroke="var(--green)" stroke-width="3"/>
                             </svg>
                         </div>
-                        <h3>✅ 조건 확인</h3>
-                        <p>이 선택이 조건에 맞는지 확인합니다. 맞지 않으면 이 선택을 버립니다.</p>
+                        <h3>✅ Check Constraints</h3>
+                        <p>Verify whether this choice satisfies the constraints. If not, discard it.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
@@ -208,32 +208,32 @@ var backtrackingTopic = {
                                 <polygon points="55,38 55,52 48,45" fill="var(--red)"/>
                             </svg>
                         </div>
-                        <h3>↩️ 되돌아가기</h3>
-                        <p>선택을 취소하고 이전 상태로 돌아가서 다른 선택을 시도합니다.</p>
+                        <h3>↩️ Undo (Backtrack)</h3>
+                        <p>Undo the choice, return to the previous state, and try a different option.</p>
                     </div>
                 </div>
 
-                <span class="lang-py"><div class="code-block"><pre><code class="language-python">def backtrack(현재상태):
-    if 정답을_찾았으면:
-        결과에_추가
+                <span class="lang-py"><div class="code-block"><pre><code class="language-python">def backtrack(current_state):
+    if found_answer:
+        add_to_results
         return
 
-    for 선택 in 선택목록:
-        if 유효한_선택인지(선택):    # ✅ 조건 확인
-            선택하기(선택)           # ☝️ 선택
-            backtrack(다음상태)       # 재귀로 다음 단계
-            선택_취소(선택)          # ↩️ 되돌아가기</code></pre></div></span>
-                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">void backtrack(State&amp; 현재상태) {
-    if (정답을_찾았으면) {
-        결과에_추가;
+    for choice in choices:
+        if is_valid(choice):        # ✅ Check constraints
+            make_choice(choice)     # ☝️ Choose
+            backtrack(next_state)   # Recurse to next step
+            undo_choice(choice)     # ↩️ Backtrack</code></pre></div></span>
+                <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">void backtrack(State&amp; current_state) {
+    if (found_answer) {
+        add_to_results;
         return;
     }
 
-    for (auto&amp; 선택 : 선택목록) {
-        if (유효한_선택인지(선택)) {    // ✅ 조건 확인
-            선택하기(선택);           // ☝️ 선택
-            backtrack(다음상태);       // 재귀로 다음 단계
-            선택_취소(선택);          // ↩️ 되돌아가기
+    for (auto&amp; choice : choices) {
+        if (is_valid(choice)) {        // ✅ Check constraints
+            make_choice(choice);       // ☝️ Choose
+            backtrack(next_state);     // Recurse to next step
+            undo_choice(choice);       // ↩️ Backtrack
         }
     }
 }</code></pre></div></span>
@@ -244,105 +244,105 @@ var backtrackingTopic = {
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">위 코드에서 "선택_취소(선택)" 줄을 빼면 어떻게 됩니까?</span>
+                        <span class="think-box-question-text">What happens if you remove the "undo_choice(choice)" line from the code above?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        선택을 취소하지 않으면 이전에 한 선택이 그대로 남아있게 됩니다.
-                        그래서 다음 선택을 시도할 때 잘못된 상태에서 진행합니다.<br>
-                        예를 들어 [1, 2]를 선택한 상태에서 2를 취소하지 않고 3을 추가하면
-                        [1, 2, 3]이 되어 버립니다. 우리가 원하는 것은 [1, 3]인데 말입니다!<br><br>
-                        <strong>되돌리기는 백트래킹의 핵심</strong>입니다.
+                        Without undoing, the previous choice stays in place.
+                        So the next attempt proceeds from an incorrect state.<br>
+                        For example, if [1, 2] was chosen and you add 3 without undoing 2,
+                        you get [1, 2, 3] instead of [1, 3], which is what we actually want!<br><br>
+                        <strong>Undoing is the core of backtracking</strong>.
                     </div>
                 </div>
             </div>
 
-            <!-- ③ 가지치기란? -->
+            <!-- 3. What is Pruning? -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> 가지치기란? (Pruning)</div>
-                <p style="margin-bottom: 1rem;">백트래킹에서 가장 중요한 기술은
-                    <strong>가지치기(Pruning)</strong>입니다.
-                    조건에 맞지 않는 선택을 <strong>일찍 걸러내어</strong> 아예 탐색하지 않는 것입니다.</p>
+                <div class="concept-section-title"><span class="section-num">3</span> What is Pruning?</div>
+                <p style="margin-bottom: 1rem;">The most important technique in backtracking is
+                    <strong>pruning</strong>.
+                    It means <strong>filtering out invalid choices early</strong> so they are never explored at all.</p>
 
                 <div class="execution-flow-compare">
                     <div class="flow-grid">
                         <div class="flow-card topdown-flow">
-                            <div class="flow-label">❌ 가지치기 없이 (모든 경우 탐색)</div>
+                            <div class="flow-label">❌ Without Pruning (explore all cases)</div>
                             <div class="flow-trace">
-                                <div>1→1 (같은 숫자! 중복)</div>
+                                <div>1→1 (same number! duplicate)</div>
                                 <div>1→2 ✓</div>
                                 <div>1→3 ✓</div>
                                 <div>2→1 ✓</div>
-                                <div>2→2 (같은 숫자! 중복)</div>
+                                <div>2→2 (same number! duplicate)</div>
                                 <div>2→3 ✓</div>
                                 <div>3→1 ✓</div>
                                 <div>3→2 ✓</div>
-                                <div>3→3 (같은 숫자! 중복)</div>
-                                <div style="margin-top:6px;font-weight:700;">→ 총 9가지를 모두 확인</div>
+                                <div>3→3 (same number! duplicate)</div>
+                                <div style="margin-top:6px;font-weight:700;">→ Must check all 9 cases</div>
                             </div>
                         </div>
                         <div class="flow-card bottomup-flow">
-                            <div class="flow-label">✂️ 가지치기 적용 (조건에 안 맞으면 건너뜀)</div>
+                            <div class="flow-label">✂️ With Pruning (skip invalid choices)</div>
                             <div class="flow-trace">
-                                <div>1→1 ✕ 이미 사용! <strong>건너뜀</strong></div>
+                                <div>1→1 ✕ Already used! <strong>Skip</strong></div>
                                 <div>1→2 ✓</div>
                                 <div>1→3 ✓</div>
                                 <div>2→1 ✓</div>
-                                <div>2→2 ✕ 이미 사용! <strong>건너뜀</strong></div>
+                                <div>2→2 ✕ Already used! <strong>Skip</strong></div>
                                 <div>2→3 ✓</div>
                                 <div>3→1 ✓</div>
                                 <div>3→2 ✓</div>
-                                <div>3→3 ✕ 이미 사용! <strong>건너뜀</strong></div>
-                                <div style="margin-top:6px;font-weight:700;">→ 6가지만 확인하면 충분</div>
+                                <div>3→3 ✕ Already used! <strong>Skip</strong></div>
+                                <div style="margin-top:6px;font-weight:700;">→ Only 6 cases to check</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="key-difference-box">
-                    <div>✂️ 가지치기를 잘 하면 탐색 범위가 크게 줄어들어 훨씬 빨라집니다</div>
-                    <div>📊 N-Queen (8×8): 모든 경우 약 <strong>1680만 가지</strong> → 가지치기 적용 시 약 <strong>15,000가지</strong>만 탐색</div>
-                    <div>💡 "이 선택은 이미 안 된다"는 것을 빨리 알수록 성능이 좋아집니다</div>
+                    <div>✂️ Good pruning drastically reduces the search space and makes things much faster</div>
+                    <div>📊 N-Queen (8x8): All cases ~<strong>16.8 million</strong> → With pruning, only ~<strong>15,000</strong> explored</div>
+                    <div>💡 The sooner you realize "this choice is already invalid," the better the performance</div>
                 </div>
                 <div style="margin-top:0.6rem;">
-                    <a href="https://en.wikipedia.org/wiki/Backtracking" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Backtracking 알고리즘 ↗</a>
+                    <a href="https://en.wikipedia.org/wiki/Backtracking" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Backtracking Algorithm ↗</a>
                 </div>
             </div>
 
-            <!-- ④ 백트래킹 vs 완전탐색 -->
+            <!-- 4. Backtracking vs Brute Force -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">4</span> 백트래킹 vs 완전탐색</div>
+                <div class="concept-section-title"><span class="section-num">4</span> Backtracking vs Brute Force</div>
                 <div class="approach-grid">
                     <div class="approach-card">
-                        <h3>🔍 완전탐색 (Brute Force)</h3>
-                        <p class="approach-desc">모든 경우의 수를 전부 만들어 본 뒤에 확인합니다</p>
-                        <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 중첩 반복문으로 모든 경우 생성
+                        <h3>🔍 Brute Force</h3>
+                        <p class="approach-desc">Generate all possible cases first, then check each one</p>
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Nested loops to generate all cases
 for i in range(1, n+1):
     for j in range(1, n+1):
-        if i != j:  # 다 만든 뒤에 확인
+        if i != j:  # Check after generating
             print(i, j)</code></pre></div></span>
-                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 중첩 반복문으로 모든 경우 생성
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Nested loops to generate all cases
 for (int i = 1; i &lt;= n; i++) {
     for (int j = 1; j &lt;= n; j++) {
-        if (i != j)  // 다 만든 뒤에 확인
+        if (i != j)  // Check after generating
             cout &lt;&lt; i &lt;&lt; " " &lt;&lt; j &lt;&lt; endl;
     }
 }</code></pre></div></span>
                     </div>
                     <div class="approach-card">
-                        <h3>🔙 백트래킹 (Backtracking)</h3>
-                        <p class="approach-desc">조건에 맞지 않으면 즉시 되돌아갑니다</p>
+                        <h3>🔙 Backtracking</h3>
+                        <p class="approach-desc">If a choice violates the constraint, backtrack immediately</p>
                         <span class="lang-py"><div class="code-block"><pre><code class="language-python">def solve(path, used):
     if len(path) == 2:
         print(*path)
         return
     for i in range(1, n+1):
-        if not used[i]:   # 먼저 확인!
+        if not used[i]:   # Check first!
             used[i] = True
             path.append(i)
             solve(path, used)
-            path.pop()       # 되돌리기
-            used[i] = False  # 되돌리기</code></pre></div></span>
+            path.pop()       # Undo
+            used[i] = False  # Undo</code></pre></div></span>
                         <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">void solve(vector&lt;int&gt;&amp; path, vector&lt;bool&gt;&amp; used, int n) {
     if (path.size() == 2) {
         for (int x : path) cout &lt;&lt; x &lt;&lt; " ";
@@ -350,12 +350,12 @@ for (int i = 1; i &lt;= n; i++) {
         return;
     }
     for (int i = 1; i &lt;= n; i++) {
-        if (!used[i]) {       // 먼저 확인!
+        if (!used[i]) {       // Check first!
             used[i] = true;
             path.push_back(i);
             solve(path, used, n);
-            path.pop_back();  // 되돌리기
-            used[i] = false;  // 되돌리기
+            path.pop_back();  // Undo
+            used[i] = false;  // Undo
         }
     }
 }</code></pre></div></span>
@@ -365,57 +365,57 @@ for (int i = 1; i &lt;= n; i++) {
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">N이 커지면 완전탐색과 백트래킹의 차이가 얼마나 벌어집니까?</span>
+                        <span class="think-box-question-text">As N grows, how much difference is there between brute force and backtracking?</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        N=10에서 2개를 순서대로 고르기(순열):<br>
-                        완전탐색: 10×10 = <strong>100가지</strong>를 모두 만든 뒤 걸러냅니다<br>
-                        백트래킹: 10×9 = <strong>90가지</strong>만 탐색합니다 (10가지를 아예 안 만듦)<br><br>
-                        차이가 작아 보이지만, N-Queen처럼 조건이 복잡한 문제에서는
-                        백트래킹이 탐색량을 <strong>수백~수천 배</strong> 줄여 줍니다.
+                        Picking 2 from N=10 in order (permutation):<br>
+                        Brute force: 10x10 = <strong>100 cases</strong> generated, then filtered<br>
+                        Backtracking: 10x9 = only <strong>90 cases</strong> explored (10 are never generated)<br><br>
+                        The difference seems small, but for complex problems like N-Queen,
+                        backtracking can reduce exploration by <strong>hundreds to thousands of times</strong>.
                     </div>
                 </div>
             </div>
 
-            <!-- ⑤ 백트래킹 문제 푸는 4단계 -->
+            <!-- 5. 4 Steps to Solve Backtracking Problems -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">5</span> 백트래킹 문제 푸는 4단계</div>
+                <div class="concept-section-title"><span class="section-num">5</span> 4 Steps to Solve Backtracking Problems</div>
                 <div class="step-cards">
                     <div class="step-card">
                         <span class="step-num">1</span>
-                        <h4>선택지 정하기</h4>
-                        <p>각 단계에서 어떤 것을 고를 수 있는지 파악합니다</p>
+                        <h4>Identify Choices</h4>
+                        <p>Figure out what options are available at each step</p>
                     </div>
                     <div class="step-card">
                         <span class="step-num">2</span>
-                        <h4>조건 만들기</h4>
-                        <p>유효한 선택인지 확인하는 조건을 만듭니다 (가지치기 기준)</p>
+                        <h4>Define Constraints</h4>
+                        <p>Create conditions to check whether a choice is valid (pruning criteria)</p>
                     </div>
                     <div class="step-card">
                         <span class="step-num">3</span>
-                        <h4>재귀로 다음 단계</h4>
-                        <p>선택을 확정한 뒤, 재귀 호출로 다음 단계를 진행합니다</p>
+                        <h4>Recurse to Next Step</h4>
+                        <p>After committing to a choice, recurse to proceed to the next step</p>
                     </div>
                     <div class="step-card">
                         <span class="step-num">4</span>
-                        <h4>되돌리기</h4>
-                        <p>재귀가 끝나면 선택을 취소하고, 다른 선택을 시도합니다</p>
+                        <h4>Undo (Backtrack)</h4>
+                        <p>When recursion returns, undo the choice and try a different one</p>
                     </div>
                 </div>
 
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">N-Queen 문제를 위 4단계로 정리해 보세요. (N×N 체스판에 퀸 N개를 서로 공격 못 하게 놓기)</span>
+                        <span class="think-box-question-text">Apply the 4 steps above to the N-Queen problem. (Place N queens on an NxN board so none attack each other)</span>
                     </div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
                     <div class="think-box-answer">
-                        <strong>1. 선택지:</strong> 각 행에서 퀸을 놓을 열 번호 (0 ~ N-1)<br>
-                        <strong>2. 조건:</strong> 같은 열에 퀸이 없고, 대각선에도 퀸이 없어야 합니다<br>
-                        <strong>3. 재귀:</strong> 현재 행에 퀸을 놓고, 다음 행으로 넘어갑니다<br>
-                        <strong>4. 되돌리기:</strong> 다음 행에서 실패하면, 현재 행의 퀸을 다른 열로 옮깁니다<br><br>
-                        이 패턴을 잘 기억하세요! 시각화 탭에서 직접 확인할 수 있습니다.
+                        <strong>1. Choices:</strong> Column number (0 ~ N-1) to place a queen in each row<br>
+                        <strong>2. Constraints:</strong> No queen in the same column, and no queen on the diagonals<br>
+                        <strong>3. Recurse:</strong> Place a queen in the current row, then move to the next row<br>
+                        <strong>4. Undo:</strong> If the next row fails, move the current row's queen to a different column<br><br>
+                        Remember this pattern well! You can see it in action in the Simulation tab.
                     </div>
                 </div>
             </div>
@@ -513,12 +513,12 @@ for (int i = 1; i &lt;= n; i++) {
             if (depth === 0) {
                 path = [value];
                 currentDepth = 1;
-                instructionEl.textContent = '첫 번째로 ' + value + '을(를) 선택했습니다. 두 번째 숫자를 고르세요!';
+                instructionEl.textContent = 'You chose ' + value + ' as the first number. Now pick the second!';
             } else if (depth === 1) {
                 path = [path[0], value];
                 results.push(path.slice());
                 updateResults();
-                instructionEl.textContent = '[' + path.join(', ') + '] 완성! 클릭하여 되돌아가세요';
+                instructionEl.textContent = '[' + path.join(', ') + '] complete! Click to backtrack';
                 currentDepth = 2;
             }
             renderTree();
@@ -541,7 +541,7 @@ for (int i = 1; i &lt;= n; i++) {
                 if (nextSecond) {
                     path = [first];
                     currentDepth = 1;
-                    instructionEl.textContent = '되돌아갔습니다! 다음 두 번째 숫자를 고르세요';
+                    instructionEl.textContent = 'Backtracked! Pick the next second number';
                     renderTree();
                 } else {
                     var nextFirst = null;
@@ -549,12 +549,12 @@ for (int i = 1; i &lt;= n; i++) {
                     if (nextFirst) {
                         path = [];
                         currentDepth = 0;
-                        instructionEl.textContent = '첫 번째 선택도 되돌렸습니다! 다음 첫 번째 숫자를 고르세요';
+                        instructionEl.textContent = 'Backtracked the first choice too! Pick the next first number';
                         renderTree();
                     } else {
                         path = [];
                         currentDepth = -1;
-                        instructionEl.textContent = '✅ 모든 경우를 찾았습니다! 총 ' + results.length + '개';
+                        instructionEl.textContent = '✅ Found all cases! Total: ' + results.length;
                         resetBtn.classList.remove('hidden');
                         renderTree();
                     }
@@ -563,7 +563,7 @@ for (int i = 1; i &lt;= n; i++) {
         };
 
         var updateResults = function() {
-            resultsEl.innerHTML = '찾은 수열: ' + results.map(function(r) { return '<span class="bt-result-tag">[' + r.join(', ') + ']</span>'; }).join(' ');
+            resultsEl.innerHTML = 'Found sequences: ' + results.map(function(r) { return '<span class="bt-result-tag">[' + r.join(', ') + ']</span>'; }).join(' ');
         };
 
         resetBtn.addEventListener('click', function() {
@@ -571,7 +571,7 @@ for (int i = 1; i &lt;= n; i++) {
             path = [];
             currentDepth = 0;
             resultsEl.innerHTML = '';
-            instructionEl.textContent = '👆 노드를 클릭하여 선택을 진행하세요!';
+            instructionEl.textContent = '👆 Click a node to make a selection!';
             resetBtn.classList.add('hidden');
             renderTree();
         });
@@ -579,13 +579,13 @@ for (int i = 1; i &lt;= n; i++) {
         renderTree();
     },
 
-    // ===== 시각화 렌더링 (개념 탭 전용) =====
+    // ===== Visualization Rendering (Concept Tab Only) =====
     renderVisualize(container) {
         var self = this;
         var suffix = '-concept-bt';
         container.innerHTML =
-            '<h2>백트래킹 시각화</h2>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">N=4, M=2에서 순열을 생성하는 백트래킹 과정입니다.</p>' +
+            '<h2>Backtracking Visualization</h2>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Backtracking process for generating permutations with N=4, M=2.</p>' +
             '<div id="bt-path' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
             '<div id="bt-used' + suffix + '" style="text-align:center;margin-bottom:12px;"></div>' +
             '<div id="bt-results' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;min-height:36px;margin-bottom:12px;text-align:center;"></div>' +
@@ -601,7 +601,7 @@ for (int i = 1; i &lt;= n; i++) {
             }
         }
         renderUsed([false, false, false, false, false]);
-        resultsEl.innerHTML = '<span style="color:var(--text3);">찾은 수열이 여기에 표시됩니다</span>';
+        resultsEl.innerHTML = '<span style="color:var(--text3);">Found sequences will appear here</span>';
         var steps = [];
         var path = [], used = [false, false, false, false, false];
         var foundResults = [];
@@ -612,7 +612,7 @@ for (int i = 1; i &lt;= n; i++) {
                 foundResults.push(snap);
                 (function(snap, rc) {
                     steps.push({
-                        description: '수열 [' + snap.join(', ') + '] 완성! (' + rc + '번째)',
+                        description: 'Sequence [' + snap.join(', ') + '] complete! (#' + rc + ')',
                         action: function() {
                             pathEl.textContent = 'path = [ ' + snap.join(', ') + ' ] ✓';
                             pathEl.style.color = 'var(--green)';
@@ -622,7 +622,7 @@ for (int i = 1; i &lt;= n; i++) {
                             var prev = snap.slice(0, -1);
                             pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
                             pathEl.style.color = '';
-                            resultsEl.innerHTML = foundResults.slice(0, rc - 1).length > 0 ? foundResults.slice(0, rc - 1).map(function(r) { return '<span style="display:inline-block;padding:4px 8px;margin:2px;background:var(--green)15;border-radius:6px;font-size:0.85rem;">[' + r.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">찾은 수열이 여기에 표시됩니다</span>';
+                            resultsEl.innerHTML = foundResults.slice(0, rc - 1).length > 0 ? foundResults.slice(0, rc - 1).map(function(r) { return '<span style="display:inline-block;padding:4px 8px;margin:2px;background:var(--green)15;border-radius:6px;font-size:0.85rem;">[' + r.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">Found sequences will appear here</span>';
                         }
                     });
                 })(snap, rc);
@@ -632,7 +632,7 @@ for (int i = 1; i &lt;= n; i++) {
                 if (used[i]) {
                     (function(ci, snapPath, snapUsed) {
                         steps.push({
-                            description: '숫자 ' + ci + '는 이미 사용 중 → 건너뜀',
+                            description: 'Number ' + ci + ' is already in use → Skip',
                             action: function() { pathEl.textContent = 'path = [ ' + snapPath.join(', ') + (snapPath.length > 0 ? ', ' : '') + ci + '? ]'; pathEl.style.color = 'var(--red)'; setTimeout(function() { pathEl.textContent = 'path = [ ' + (snapPath.length > 0 ? snapPath.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = ''; }, 300); renderUsed(snapUsed); },
                             undo: function() { pathEl.textContent = 'path = [ ' + (snapPath.length > 0 ? snapPath.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = ''; renderUsed(snapUsed); }
                         });
@@ -643,7 +643,7 @@ for (int i = 1; i &lt;= n; i++) {
                 path.push(i);
                 (function(ci, snapPath, snapUsed) {
                     steps.push({
-                        description: '숫자 ' + ci + '를 선택 → path = [' + snapPath.join(', ') + ']',
+                        description: 'Choose number ' + ci + ' → path = [' + snapPath.join(', ') + ']',
                         action: function() { pathEl.textContent = 'path = [ ' + snapPath.join(', ') + (snapPath.length < M ? ', ___' : '') + ' ]'; pathEl.style.color = ''; renderUsed(snapUsed); },
                         undo: function() { var prev = snapPath.slice(0, -1); pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]'; var prevUsed = snapUsed.slice(); prevUsed[ci] = false; renderUsed(prevUsed); }
                     });
@@ -653,7 +653,7 @@ for (int i = 1; i &lt;= n; i++) {
                 used[i] = false;
                 (function(ci, snapPath, snapUsed) {
                     steps.push({
-                        description: '숫자 ' + ci + '를 되돌림 → path = [' + (snapPath.length > 0 ? snapPath.join(', ') + ', ___' : '___') + ']',
+                        description: 'Undo number ' + ci + ' → path = [' + (snapPath.length > 0 ? snapPath.join(', ') + ', ___' : '___') + ']',
                         action: function() { pathEl.textContent = 'path = [ ' + (snapPath.length > 0 ? snapPath.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = ''; renderUsed(snapUsed); },
                         undo: function() { var restored = snapPath.slice(); restored.push(ci); pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ]'; var restoredUsed = snapUsed.slice(); restoredUsed[ci] = true; renderUsed(restoredUsed); }
                     });
@@ -661,7 +661,7 @@ for (int i = 1; i &lt;= n; i++) {
             }
         };
         solve(0);
-        steps.push({ description: '탐색 완료! 총 ' + foundResults.length + '개의 수열을 찾았습니다', action: function() {}, undo: function() {} });
+        steps.push({ description: 'Search complete! Total:' + foundResults.length + ' sequences found', action: function() {}, undo: function() {} });
         self._initStepController(container, steps, suffix);
     },
 
@@ -676,9 +676,9 @@ for (int i = 1; i &lt;= n; i++) {
 
     _createStepControls(suffix) {
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
+            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
             '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
+            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
             '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
     },
 
@@ -717,20 +717,20 @@ for (int i = 1; i &lt;= n; i++) {
         updateUI();
     },
     // ====================================================================
-    // Simulation 1: N과 M (1) — 순열 (boj-15649)
+    // Simulation 1: N and M (1) — Permutation (boj-15649)
     // ====================================================================
     _renderVizNM1(contentEl) {
         var self = this;
         var suffix = '-nm1';
         var defaultN = 4, defaultM = 2;
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (1) — 순열 생성</h3>' +
+            '<h3 style="margin-bottom:8px;">N and M (1) — Permutation Generation</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">N: <input type="number" id="bt-nm1-n" value="' + defaultN + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm1-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm1-reset">🔄</button>' +
             '</div>' +
-            '<p id="nm1-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 없이 ' + defaultM + '개를 골라 순열을 생성합니다.</p>' +
+            '<p id="nm1-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pick' + defaultM + ' without repetition to generate permutations.</p>' +
             '<div id="nm1-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
             '<div id="nm1-used' + suffix + '" style="text-align:center;margin-bottom:8px;"></div>' +
             '<div id="nm1-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
@@ -743,39 +743,39 @@ for (int i = 1; i &lt;= n; i++) {
         var inputM = contentEl.querySelector('#bt-nm1-m');
         var resetBtn = contentEl.querySelector('#bt-nm1-reset');
         function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 중복 없이 ' + M + '개를 골라 순열을 생성합니다.';
+            descEl.textContent = '{1..' + N + '}, pick' + M + ' without repetition to generate permutations.';
             function renderUsed(u) { var h = ''; for (var i = 1; i <= N; i++) h += '<span style="display:inline-block;width:30px;height:30px;line-height:30px;text-align:center;margin:2px;border-radius:6px;font-weight:600;font-size:0.85rem;' + (u[i] ? 'background:var(--accent);color:white;' : 'background:var(--bg2);') + '">' + i + '</span>'; usedEl.innerHTML = h; }
             var initUsed = []; for (var i = 0; i <= N; i++) initUsed.push(false);
             renderUsed(initUsed);
             pathEl.textContent = 'path = [ ]'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">수열이 여기에 표시됩니다</span>';
+            resultsEl.innerHTML = '<span style="color:var(--text3);">Sequences will appear here</span>';
             var steps = [], path = [], used = initUsed.slice(), found = [];
             var solve = function(depth) {
                 if (depth === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '수열 [' + s.join(', ') + '] 완성! (' + r + '번째)',
+                    (function(s,r) { steps.push({ description: 'Sequence [' + s.join(', ') + '] complete! (#' + r + ')',
                         action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">수열이 여기에 표시됩니다</span>'; }
+                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Sequences will appear here</span>'; }
                     }); })(snap, rc); return; }
                 for (var i = 1; i <= N; i++) {
-                    if (used[i]) { (function(ci,sp,su) { steps.push({ description: ci + '는 사용 중 → 건너뜀 (가지치기)',
+                    if (used[i]) { (function(ci,sp,su) { steps.push({ description: ci + ' is in use → Skip (pruning)',
                         action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ':'') + ci + '? ]'; pathEl.style.color = 'var(--red)'; renderUsed(su); },
                         undo: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; renderUsed(su); }
                     }); })(i,path.slice(),used.slice()); continue; }
                     used[i] = true; path.push(i);
-                    (function(ci,sp,su) { steps.push({ description: ci + '를 선택 → path = [' + sp.join(', ') + ']',
+                    (function(ci,sp,su) { steps.push({ description: ci + ' chosen → path = [' + sp.join(', ') + ']',
                         action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ]'; pathEl.style.color = ''; renderUsed(su); },
                         undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; var pu = su.slice(); pu[ci] = false; renderUsed(pu); }
                     }); })(i,path.slice(),used.slice());
                     solve(depth + 1);
                     path.pop(); used[i] = false;
-                    (function(ci,sp,su) { steps.push({ description: ci + '를 되돌림',
+                    (function(ci,sp,su) { steps.push({ description: ci + ' undone',
                         action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; renderUsed(su); },
                         undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ]'; var ru = su.slice(); ru[ci] = true; renderUsed(ru); }
                     }); })(i,path.slice(),used.slice());
                 }
             };
             solve(0);
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개', action: function(){}, undo: function(){} });
+            steps.push({ description: 'Search complete! Total: ' + found.length, action: function(){}, undo: function(){} });
             self._initStepController(contentEl, steps, suffix);
         }
         resetBtn.addEventListener('click', function() {
@@ -789,19 +789,19 @@ for (int i = 1; i &lt;= n; i++) {
     },
 
     // ====================================================================
-    // Simulation 2: N과 M (2) — 조합 (boj-15650)
+    // Simulation 2: N and M (2) — Combination (boj-15650)
     // ====================================================================
     _renderVizNM2(contentEl) {
         var self = this, suffix = '-nm2';
         var defaultN = 4, defaultM = 2;
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (2) — 조합 생성</h3>' +
+            '<h3 style="margin-bottom:8px;">N and M (2) — Combination Generation</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">N: <input type="number" id="bt-nm2-n" value="' + defaultN + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm2-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm2-reset">🔄</button>' +
             '</div>' +
-            '<p id="nm2-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 ' + defaultM + '개를 오름차순으로 고릅니다. start 파라미터로 중복을 방지합니다.</p>' +
+            '<p id="nm2-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pick' + defaultM + ' in ascending order. The start parameter prevents duplicates.</p>' +
             '<div id="nm2-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
             '<div id="nm2-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
             self._createStepControls(suffix);
@@ -812,32 +812,32 @@ for (int i = 1; i &lt;= n; i++) {
         var inputM = contentEl.querySelector('#bt-nm2-m');
         var resetBtn = contentEl.querySelector('#bt-nm2-reset');
         function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 ' + M + '개를 오름차순으로 고릅니다. start 파라미터로 중복을 방지합니다.';
+            descEl.textContent = '{1..' + N + '}, pick' + M + ' in ascending order. The start parameter prevents duplicates.';
             pathEl.textContent = 'path = [ ], start = 1'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">조합이 여기에 표시됩니다</span>';
+            resultsEl.innerHTML = '<span style="color:var(--text3);">Combinations will appear here</span>';
             var steps = [], path = [], found = [];
             var solve = function(start) {
                 if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '조합 [' + s.join(', ') + '] 완성! (' + r + '번째)',
+                    (function(s,r) { steps.push({ description: 'Combination [' + s.join(', ') + '] complete! (#' + r + ')',
                         action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">조합이 여기에 표시됩니다</span>'; }
+                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Combinations will appear here</span>'; }
                     }); })(snap,rc); return; }
                 for (var i = start; i <= N; i++) {
                     path.push(i);
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 선택 (start=' + st + ') → path = [' + sp.join(', ') + ']',
+                    (function(ci,sp,st) { steps.push({ description: ci + ' chosen (start=' + st + ') → path = [' + sp.join(', ') + ']',
                         action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ], start = ' + (ci+1); pathEl.style.color = ''; },
                         undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + st; }
                     }); })(i,path.slice(),start);
                     solve(i + 1);
                     path.pop();
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 되돌림',
+                    (function(ci,sp,st) { steps.push({ description: ci + ' undone',
                         action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ], start = ' + st; pathEl.style.color = ''; },
                         undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ], start = ' + (ci+1); }
                     }); })(i,path.slice(),start);
                 }
             };
             solve(1);
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 조합', action: function(){}, undo: function(){} });
+            steps.push({ description: 'Search complete! Total:' + found.length + ' combinations', action: function(){}, undo: function(){} });
             self._initStepController(contentEl, steps, suffix);
         }
         resetBtn.addEventListener('click', function() {
@@ -851,19 +851,19 @@ for (int i = 1; i &lt;= n; i++) {
     },
 
     // ====================================================================
-    // Simulation 3: N과 M (3) — 중복 순열 (boj-15651)
+    // Simulation 3: N and M (3) — Perm. w/ Repetition (boj-15651)
     // ====================================================================
     _renderVizNM3(contentEl) {
         var self = this, suffix = '-nm3';
         var defaultN = 3, defaultM = 2;
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (3) — 중복 순열</h3>' +
+            '<h3 style="margin-bottom:8px;">N and M (3) — Perm. w/ Repetition</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">N: <input type="number" id="bt-nm3-n" value="' + defaultN + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm3-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm3-reset">🔄</button>' +
             '</div>' +
-            '<p id="nm3-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 허용하여 ' + defaultM + '개를 고릅니다. used 배열이 없습니다!</p>' +
+            '<p id="nm3-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pick' + defaultM + ' with repetition allowed. No used array needed!</p>' +
             '<div id="nm3-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
             '<div id="nm3-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
             self._createStepControls(suffix);
@@ -874,32 +874,32 @@ for (int i = 1; i &lt;= n; i++) {
         var inputM = contentEl.querySelector('#bt-nm3-m');
         var resetBtn = contentEl.querySelector('#bt-nm3-reset');
         function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 중복 허용하여 ' + M + '개를 고릅니다. used 배열이 없습니다!';
+            descEl.textContent = '{1..' + N + '}, pick' + M + ' with repetition allowed. No used array needed!';
             pathEl.textContent = 'path = [ ]'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">중복 순열이 여기에 표시됩니다</span>';
+            resultsEl.innerHTML = '<span style="color:var(--text3);">Permutations w/ repetition will appear here</span>';
             var steps = [], path = [], found = [];
             var solve = function() {
                 if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] 완성! (' + r + '번째)',
+                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] complete! (#' + r + ')',
                         action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">중복 순열이 여기에 표시됩니다</span>'; }
+                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Permutations w/ repetition will appear here</span>'; }
                     }); })(snap,rc); return; }
                 for (var i = 1; i <= N; i++) {
                     path.push(i);
-                    (function(ci,sp) { steps.push({ description: ci + '를 선택 → path = [' + sp.join(', ') + '] (중복 허용)',
+                    (function(ci,sp) { steps.push({ description: ci + ' chosen → path = [' + sp.join(', ') + '] (repetition allowed)',
                         action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ]'; pathEl.style.color = ''; },
                         undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; }
                     }); })(i,path.slice());
                     solve();
                     path.pop();
-                    (function(ci,sp) { steps.push({ description: ci + '를 되돌림',
+                    (function(ci,sp) { steps.push({ description: ci + ' undone',
                         action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; },
                         undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ]'; }
                     }); })(i,path.slice());
                 }
             };
             solve();
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개 (N^M = ' + N + '^' + M + ' = ' + Math.pow(N,M) + ')', action: function(){}, undo: function(){} });
+            steps.push({ description: 'Search complete! Total:' + found.length + ' (N^M = ' + N + '^' + M + ' = ' + Math.pow(N,M) + ')', action: function(){}, undo: function(){} });
             self._initStepController(contentEl, steps, suffix);
         }
         resetBtn.addEventListener('click', function() {
@@ -913,19 +913,19 @@ for (int i = 1; i &lt;= n; i++) {
     },
 
     // ====================================================================
-    // Simulation 4: N과 M (4) — 중복 조합 (boj-15652)
+    // Simulation 4: N and M (4) — Comb. w/ Repetition (boj-15652)
     // ====================================================================
     _renderVizNM4(contentEl) {
         var self = this, suffix = '-nm4';
         var defaultN = 3, defaultM = 2;
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (4) — 중복 조합</h3>' +
+            '<h3 style="margin-bottom:8px;">N and M (4) — Comb. w/ Repetition</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">N: <input type="number" id="bt-nm4-n" value="' + defaultN + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm4-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm4-reset">🔄</button>' +
             '</div>' +
-            '<p id="nm4-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 허용 + 비내림차순으로 ' + defaultM + '개를 고릅니다. start를 i로 넘깁니다 (i+1 아님!).</p>' +
+            '<p id="nm4-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pickrepetition allowed + non-decreasing order,' + defaultM + '. Pass start as i (not i+1!).</p>' +
             '<div id="nm4-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
             '<div id="nm4-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
             self._createStepControls(suffix);
@@ -936,32 +936,32 @@ for (int i = 1; i &lt;= n; i++) {
         var inputM = contentEl.querySelector('#bt-nm4-m');
         var resetBtn = contentEl.querySelector('#bt-nm4-reset');
         function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 중복 허용 + 비내림차순으로 ' + M + '개를 고릅니다. start를 i로 넘깁니다 (i+1 아님!).';
+            descEl.textContent = '{1..' + N + '}, pickrepetition allowed + non-decreasing order,' + M + '. Pass start as i (not i+1!).';
             pathEl.textContent = 'path = [ ], start = 1'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">중복 조합이 여기에 표시됩니다</span>';
+            resultsEl.innerHTML = '<span style="color:var(--text3);">Combinations w/ repetition will appear here</span>';
             var steps = [], path = [], found = [];
             var solve = function(start) {
                 if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] 완성! (' + r + '번째)',
+                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] complete! (#' + r + ')',
                         action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">중복 조합이 여기에 표시됩니다</span>'; }
+                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Combinations w/ repetition will appear here</span>'; }
                     }); })(snap,rc); return; }
                 for (var i = start; i <= N; i++) {
                     path.push(i);
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 선택 (start=' + st + ') → path = [' + sp.join(', ') + ']',
+                    (function(ci,sp,st) { steps.push({ description: ci + ' chosen (start=' + st + ') → path = [' + sp.join(', ') + ']',
                         action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ], start = ' + ci; pathEl.style.color = ''; },
                         undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + st; }
                     }); })(i,path.slice(),start);
                     solve(i); // i, not i+1!
                     path.pop();
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 되돌림',
+                    (function(ci,sp,st) { steps.push({ description: ci + ' undone',
                         action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ], start = ' + st; pathEl.style.color = ''; },
                         undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ], start = ' + ci; }
                     }); })(i,path.slice(),start);
                 }
             };
             solve(1);
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 중복 조합', action: function(){}, undo: function(){} });
+            steps.push({ description: 'Search complete! Total:' + found.length + ' combinations w/ repetition', action: function(){}, undo: function(){} });
             self._initStepController(contentEl, steps, suffix);
         }
         resetBtn.addEventListener('click', function() {
@@ -974,17 +974,17 @@ for (int i = 1; i &lt;= n; i++) {
         buildAndRun(defaultN, defaultM);
     },
     // ====================================================================
-    // Simulation 5: 연산자 끼워넣기 (boj-14888)
+    // Simulation 5: Operator Insertion (boj-14888)
     // ====================================================================
     _renderVizOperator(contentEl) {
         var self = this, suffix = '-op';
         var defaultNums = [1, 2, 3], defaultOps = [1, 1, 0, 0]; // +1, -1
         var opSyms = ['+', '-', '*', '/'];
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">연산자 끼워넣기</h3>' +
+            '<h3 style="margin-bottom:8px;">Operator Insertion</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">숫자: <input type="text" id="bt-op-nums" value="' + defaultNums.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:120px;" placeholder="1,2,3"></label>' +
-            '<label style="font-weight:600;">연산자(+,-,*,/): <input type="text" id="bt-op-ops" value="' + defaultOps.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;" placeholder="1,1,0,0"></label>' +
+            '<label style="font-weight:600;">Numbers:<input type="text" id="bt-op-nums" value="' + defaultNums.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:120px;" placeholder="1,2,3"></label>' +
+            '<label style="font-weight:600;">Operators(+,-,*,/):<input type="text" id="bt-op-ops" value="' + defaultOps.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;" placeholder="1,1,0,0"></label>' +
             '<button class="btn btn-primary" id="bt-op-reset">🔄</button>' +
             '</div>' +
             '<p id="op-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
@@ -1001,11 +1001,11 @@ for (int i = 1; i &lt;= n; i++) {
         var resetBtn = contentEl.querySelector('#bt-op-reset');
         function buildAndRun(nums, ops) {
             var initExpr = nums.join(' ☐ ');
-            descEl.textContent = '숫자 [' + nums.join(', ') + '], 연산자 +' + ops[0] + '개 -' + ops[1] + '개 *' + ops[2] + '개 /' + ops[3] + '개. 모든 배치를 시도하여 최대/최소를 구합니다.';
+            descEl.textContent = 'Numbers [' + nums.join(', ') + '], operators: +' + ops[0] + ' -' + ops[1] + ' *' + ops[2] + ' /' + ops[3] + '. Try all arrangements to find max/min.';
             exprEl.textContent = initExpr; exprEl.style.color = '';
-            function renderOps(o) { opsEl.innerHTML = '남은 연산자: + ' + o[0] + '개, - ' + o[1] + '개, * ' + o[2] + '개, / ' + o[3] + '개'; }
+            function renderOps(o) { opsEl.innerHTML = 'Remaining operators: +' + o[0] + ', -' + o[1] + ', * ' + o[2] + ', /' + o[3] + ''; }
             renderOps(ops);
-            infoEl.innerHTML = '<span style="color:var(--text2);">최댓값과 최솟값을 찾습니다</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Finding max and min values</span>';
             var steps = [], results = [], maxV = -Infinity, minV = Infinity;
             var curOps = ops.slice();
             var solve = function(idx, current, expr) {
@@ -1015,9 +1015,9 @@ for (int i = 1; i &lt;= n; i++) {
                     if (current < minV) minV = current;
                     var rc = results.length, cm = maxV, cn = minV, ce = expr, cv = current;
                     (function(rc, cm, cn, ce, cv) {
-                        steps.push({ description: ce + ' = ' + cv + ' (현재 max=' + cm + ', min=' + cn + ')',
-                            action: function() { exprEl.textContent = ce + ' = ' + cv; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '결과 ' + rc + '개 | <strong>max = ' + cm + '</strong>, <strong>min = ' + cn + '</strong>'; },
-                            undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; var prev = rc > 1 ? results[rc-2] : null; infoEl.innerHTML = prev ? '결과 ' + (rc-1) + '개' : '<span style="color:var(--text2);">최댓값과 최솟값을 찾습니다</span>'; }
+                        steps.push({ description: ce + ' = ' + cv + ' (current max=' + cm + ', min=' + cn + ')',
+                            action: function() { exprEl.textContent = ce + ' = ' + cv; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = 'Result' + rc + ' |<strong>max = ' + cm + '</strong>, <strong>min = ' + cn + '</strong>'; },
+                            undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; var prev = rc > 1 ? results[rc-2] : null; infoEl.innerHTML = prev ? 'Result' + (rc-1) + '' : '<span style="color:var(--text2);">Finding max and min values</span>'; }
                         });
                     })(rc, cm, cn, ce, cv);
                     return;
@@ -1033,7 +1033,7 @@ for (int i = 1; i &lt;= n; i++) {
                         var newExpr = expr + ' ' + opSyms[i] + ' ' + nums[idx];
                         var snapOps = curOps.slice();
                         (function(ci, ne, so, prevExpr) {
-                            steps.push({ description: opSyms[ci] + ' ' + nums[idx] + ' 시도 → ' + ne,
+                            steps.push({ description: opSyms[ci] + ' ' + nums[idx] + ' try →' + ne,
                                 action: function() { exprEl.textContent = ne + (idx < nums.length - 1 ? ' ☐ ...' : ''); exprEl.style.color = ''; renderOps(so); },
                                 undo: function() { var po = so.slice(); po[ci]++; exprEl.textContent = prevExpr + ' ☐ ...'; renderOps(po); }
                             });
@@ -1045,8 +1045,8 @@ for (int i = 1; i &lt;= n; i++) {
             };
             solve(1, nums[0], '' + nums[0]);
             var fm = maxV, fn = minV;
-            steps.push({ description: '완료! 최댓값 = ' + fm + ', 최솟값 = ' + fn,
-                action: function() { exprEl.textContent = 'max = ' + fm + ', min = ' + fn; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최댓값 = ' + fm + ', 최솟값 = ' + fn + '</strong>'; },
+            steps.push({ description: 'Done! max =' + fm + ', min =' + fn,
+                action: function() { exprEl.textContent = 'max = ' + fm + ', min = ' + fn; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ max =' + fm + ', min =' + fn + '</strong>'; },
                 undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; }
             });
             self._initStepController(contentEl, steps, suffix);
@@ -1060,7 +1060,7 @@ for (int i = 1; i &lt;= n; i++) {
             opsArr = opsArr.slice(0, 4);
             var totalOps = opsArr[0] + opsArr[1] + opsArr[2] + opsArr[3];
             if (totalOps !== nums.length - 1) {
-                alert('연산자 개수의 합은 ' + (nums.length - 1) + '이어야 합니다 (숫자 ' + nums.length + '개 - 1). 현재: ' + totalOps);
+                alert('Total operator count must be' + (nums.length - 1) + ' (numbers:' + nums.length + ' - 1). Current:' + totalOps);
                 return;
             }
             inputNums.value = nums.join(',');
@@ -1072,18 +1072,18 @@ for (int i = 1; i &lt;= n; i++) {
     },
 
     // ====================================================================
-    // Simulation 6: 스타트와 링크 (boj-14889)
+    // Simulation 6: Start and Link (boj-14889)
     // ====================================================================
     _renderVizTeam(contentEl) {
         var self = this, suffix = '-team';
         var defaultN = 4;
         var defaultS = [[0,1,2,3],[4,0,5,6],[7,1,0,2],[3,4,5,0]];
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">스타트와 링크 — 팀 분배</h3>' +
+            '<h3 style="margin-bottom:8px;">Start and Link — Team Split</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N (짝수): <input type="number" id="bt-team-n" value="' + defaultN + '" min="4" max="8" step="2" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<label style="font-weight:600;">N (even):<input type="number" id="bt-team-n" value="' + defaultN + '" min="4" max="8" step="2" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-team-reset">🔄</button>' +
-            '<span style="font-size:0.8rem;color:var(--text3);">N 변경 시 랜덤 시너지 행렬 생성</span>' +
+            '<span style="font-size:0.8rem;color:var(--text3);">Changing N generates a random synergy matrix</span>' +
             '</div>' +
             '<p id="tm-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="tm-teams' + suffix + '" style="display:flex;gap:16px;justify-content:center;margin-bottom:8px;"></div>' +
@@ -1100,20 +1100,20 @@ for (int i = 1; i &lt;= n; i++) {
             return S;
         }
         function buildAndRun(N, S) {
-            descEl.textContent = N + '명을 ' + (N/2) + '명씩 두 팀으로 나누어 시너지 차이를 최소화합니다.';
+            descEl.textContent = N + ' people into' + (N/2) + ' each. Minimize the synergy difference.';
             function renderTeams(startT, linkT, s1, s2) {
                 teamsEl.innerHTML =
                     '<div style="flex:1;text-align:center;padding:10px;border-radius:8px;background:var(--accent)10;border:2px solid var(--accent);">' +
-                    '<div style="font-weight:600;margin-bottom:4px;color:var(--accent);">Start 팀</div>' +
+                    '<div style="font-weight:600;margin-bottom:4px;color:var(--accent);">Start Team</div>' +
                     '<div>' + (startT.length > 0 ? startT.map(function(x){return '<span style="display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;margin:2px;border-radius:50%;background:var(--accent);color:white;font-weight:600;font-size:0.8rem;">' + (x+1) + '</span>';}).join('') : '-') + '</div>' +
-                    (s1 !== null ? '<div style="font-size:0.85rem;margin-top:4px;">시너지: ' + s1 + '</div>' : '') + '</div>' +
+                    (s1 !== null ? '<div style="font-size:0.85rem;margin-top:4px;">Synergy:' + s1 + '</div>' : '') + '</div>' +
                     '<div style="flex:1;text-align:center;padding:10px;border-radius:8px;background:var(--green)10;border:2px solid var(--green);">' +
-                    '<div style="font-weight:600;margin-bottom:4px;color:var(--green);">Link 팀</div>' +
+                    '<div style="font-weight:600;margin-bottom:4px;color:var(--green);">Link Team</div>' +
                     '<div>' + (linkT.length > 0 ? linkT.map(function(x){return '<span style="display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;margin:2px;border-radius:50%;background:var(--green);color:white;font-weight:600;font-size:0.8rem;">' + (x+1) + '</span>';}).join('') : '-') + '</div>' +
-                    (s2 !== null ? '<div style="font-size:0.85rem;margin-top:4px;">시너지: ' + s2 + '</div>' : '') + '</div>';
+                    (s2 !== null ? '<div style="font-size:0.85rem;margin-top:4px;">Synergy:' + s2 + '</div>' : '') + '</div>';
             }
             renderTeams([], [], null, null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">시너지 차이의 최솟값을 찾습니다</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Finding the minimum synergy difference</span>';
             function calcSynergy(team) { var t = 0; for (var i = 0; i < team.length; i++) for (var j = i+1; j < team.length; j++) t += S[team[i]][team[j]] + S[team[j]][team[i]]; return t; }
             var steps = [], ans = Infinity;
             // enumerate C(N, N/2) combinations
@@ -1131,15 +1131,15 @@ for (int i = 1; i &lt;= n; i++) {
                 var diff = Math.abs(s1 - s2);
                 if (diff < ans) ans = diff;
                 (function(st, lt, s1, s2, diff, ca) {
-                    steps.push({ description: 'Start=[' + st.map(function(x){return x+1;}).join(',') + '] Link=[' + lt.map(function(x){return x+1;}).join(',') + '] → 시너지 차이 = |' + s1 + '-' + s2 + '| = ' + diff + (diff === ca ? ' (현재 최소!)' : ''),
-                        action: function() { renderTeams(st, lt, s1, s2); infoEl.innerHTML = '차이 = |' + s1 + ' - ' + s2 + '| = <strong>' + diff + '</strong>' + (diff === ca ? ' <span style="color:var(--green);">← 최소!</span>' : '') + ' | 현재 최솟값 = ' + ca; },
-                        undo: function() { renderTeams([], [], null, null); infoEl.innerHTML = '<span style="color:var(--text2);">시너지 차이의 최솟값을 찾습니다</span>'; }
+                    steps.push({ description: 'Start=[' + st.map(function(x){return x+1;}).join(',') + '] Link=[' + lt.map(function(x){return x+1;}).join(',') + '] → synergy diff = |' + s1 + '-' + s2 + '| = ' + diff + (diff === ca ? ' (current min!)' : ''),
+                        action: function() { renderTeams(st, lt, s1, s2); infoEl.innerHTML = 'diff = |' + s1 + ' - ' + s2 + '| = <strong>' + diff + '</strong>' + (diff === ca ? ' <span style="color:var(--green);">← min!</span>' : '') + ' | current min =' + ca; },
+                        undo: function() { renderTeams([], [], null, null); infoEl.innerHTML = '<span style="color:var(--text2);">Finding the minimum synergy difference</span>'; }
                     });
                 })(startT, linkT, s1, s2, diff, ans);
             }
             var fa = ans;
-            steps.push({ description: '완료! 최소 차이 = ' + fa,
-                action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최소 시너지 차이 = ' + fa + '</strong>'; },
+            steps.push({ description: 'Done! Minimum difference =' + fa,
+                action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Min synergy difference =' + fa + '</strong>'; },
                 undo: function() {}
             });
             self._initStepController(contentEl, steps, suffix);
@@ -1178,7 +1178,7 @@ for (int i = 1; i &lt;= n; i++) {
         var inputN = contentEl.querySelector('#bt-queen-n');
         var resetBtn = contentEl.querySelector('#bt-queen-reset');
         function buildAndRun(n) {
-            descEl.textContent = n + '\u00d7' + n + ' 체스판에 퀸 ' + n + '개를 서로 공격할 수 없게 놓습니다.';
+            descEl.textContent = n + '\u00d7' + n + ' chessboard: place' + n + ' queens so none attack each other.';
             var cellSize = n <= 5 ? 48 : (n <= 6 ? 42 : 36);
             boardEl.style.gridTemplateColumns = 'repeat(' + n + ',' + cellSize + 'px)';
             boardEl.innerHTML = '';
@@ -1192,7 +1192,7 @@ for (int i = 1; i &lt;= n; i++) {
                 }
             }
             function getCell(r, c) { return boardEl.querySelector('[data-row="' + r + '"][data-col="' + c + '"]'); }
-            infoEl.innerHTML = '<span style="color:var(--text2);">행별로 퀸을 배치합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Placing queens row by row.</span>';
             var steps = [], queens = [], solCount = 0;
             for (var i = 0; i < n; i++) queens.push(-1);
             function isValid(row, col) { for (var r = 0; r < row; r++) { if (queens[r] === col || Math.abs(queens[r]-col) === Math.abs(r-row)) return false; } return true; }
@@ -1201,8 +1201,8 @@ for (int i = 1; i &lt;= n; i++) {
                     solCount++;
                     var sc = solCount, qs = queens.slice();
                     (function(sc, qs) {
-                        steps.push({ description: sc + '번째 해를 찾았습니다!',
-                            action: function() { for (var r = 0; r < n; r++) getCell(r, qs[r]).style.background = '#00b894'; infoEl.innerHTML = '<strong style="color:var(--green);">' + sc + '번째 해 발견!</strong>'; },
+                        steps.push({ description: sc + 'th solution found!',
+                            action: function() { for (var r = 0; r < n; r++) getCell(r, qs[r]).style.background = '#00b894'; infoEl.innerHTML = '<strong style="color:var(--green);">' + sc + 'th solution found!</strong>'; },
                             undo: function() { for (var r = 0; r < n; r++) getCell(r, qs[r]).style.background = (r+qs[r])%2===0 ? '#f0d9b5' : '#b58863'; }
                         });
                     })(sc, qs);
@@ -1211,7 +1211,7 @@ for (int i = 1; i &lt;= n; i++) {
                 for (var col = 0; col < n; col++) {
                     var cr = row, cc = col;
                     (function(cr, cc) {
-                        steps.push({ description: (cr+1) + '행 ' + (cc+1) + '열에 퀸을 시도...',
+                        steps.push({ description: (cr+1) + 'row' + (cc+1) + 'col: try queen...',
                             action: function() { getCell(cr, cc).textContent = '?'; getCell(cr, cc).style.background = '#fdcb6e'; },
                             undo: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }
                         });
@@ -1219,7 +1219,7 @@ for (int i = 1; i &lt;= n; i++) {
                     if (isValid(row, col)) {
                         queens[row] = col;
                         (function(cr, cc) {
-                            steps.push({ description: '\u2705 ' + (cr+1) + '행 ' + (cc+1) + '열: 충돌 없음! 퀸 배치',
+                            steps.push({ description: '\u2705 ' + (cr+1) + 'row' + (cc+1) + 'col: No conflict! Place queen',
                                 action: function() { getCell(cr, cc).textContent = '\u265b'; getCell(cr, cc).style.background = '#d63031'; getCell(cr,cc).style.color = 'white'; },
                                 undo: function() { getCell(cr, cc).textContent = '?'; getCell(cr, cc).style.background = '#fdcb6e'; getCell(cr,cc).style.color = ''; }
                             });
@@ -1227,14 +1227,14 @@ for (int i = 1; i &lt;= n; i++) {
                         solve(row + 1);
                         queens[row] = -1;
                         (function(cr, cc) {
-                            steps.push({ description: '\u21a9\ufe0f ' + (cr+1) + '행 ' + (cc+1) + '열 퀸 제거',
+                            steps.push({ description: '\u21a9\ufe0f ' + (cr+1) + 'row' + (cc+1) + 'col: remove queen',
                                 action: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; getCell(cr,cc).style.color = ''; },
                                 undo: function() { getCell(cr, cc).textContent = '\u265b'; getCell(cr, cc).style.background = '#d63031'; getCell(cr,cc).style.color = 'white'; }
                             });
                         })(cr, cc);
                     } else {
                         (function(cr, cc) {
-                            steps.push({ description: '\u274c ' + (cr+1) + '행 ' + (cc+1) + '열: 충돌! 건너뜀',
+                            steps.push({ description: '\u274c ' + (cr+1) + 'row' + (cc+1) + 'col: Conflict! Skip',
                                 action: function() { getCell(cr, cc).textContent = '\u2715'; getCell(cr, cc).style.background = '#e17055'; setTimeout(function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }, 400); },
                                 undo: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }
                             });
@@ -1244,7 +1244,7 @@ for (int i = 1; i &lt;= n; i++) {
             };
             solve(0);
             var fsc = solCount;
-            steps.push({ description: '탐색 완료! ' + fsc + '개의 해를 찾았습니다', action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 총 ' + fsc + '개의 해</strong>'; }, undo: function(){} });
+            steps.push({ description: 'Search complete!' + fsc + ' solutions found', action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 Total:' + fsc + ' solutions</strong>'; }, undo: function(){} });
             self._initStepController(contentEl, steps, suffix);
         }
         resetBtn.addEventListener('click', function() {
@@ -1257,24 +1257,24 @@ for (int i = 1; i &lt;= n; i++) {
     },
 
     // ====================================================================
-    // Simulation 8: 스도쿠 (boj-2580)
+    // Simulation 8: Sudoku (boj-2580)
     // ====================================================================
     _renderVizSudoku(contentEl) {
         var self = this, suffix = '-sdk';
         // 4x4 mini sudoku presets
         var presets = [
-            { name: '퍼즐 1 (빈칸 8개)', board: [[1,0,0,4],[0,4,1,0],[0,1,4,0],[4,0,0,1]] },
-            { name: '퍼즐 2 (빈칸 10개)', board: [[0,0,3,0],[0,3,0,1],[1,0,0,0],[0,0,1,0]] },
-            { name: '퍼즐 3 (빈칸 6개)', board: [[0,2,0,4],[3,0,0,2],[2,0,0,3],[0,3,0,1]] }
+            { name: 'Puzzle 1 (8 blanks)', board: [[1,0,0,4],[0,4,1,0],[0,1,4,0],[4,0,0,1]] },
+            { name: 'Puzzle 2 (10 blanks)', board: [[0,0,3,0],[0,3,0,1],[1,0,0,0],[0,0,1,0]] },
+            { name: 'Puzzle 3 (6 blanks)', board: [[0,2,0,4],[3,0,0,2],[2,0,0,3],[0,3,0,1]] }
         ];
         var selectOptions = presets.map(function(p, i) { return '<option value="' + i + '">' + p.name + '</option>'; }).join('');
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">스도쿠 (4\u00d74 미니)</h3>' +
+            '<h3 style="margin-bottom:8px;">Sudoku (4\u00d74 mini)</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">퍼즐 선택: <select id="bt-sudo-preset" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;">' + selectOptions + '</select></label>' +
+            '<label style="font-weight:600;">Select puzzle:<select id="bt-sudo-preset" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;">' + selectOptions + '</select></label>' +
             '<button class="btn btn-primary" id="bt-sudo-reset">\ud83d\udd04</button>' +
             '</div>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">4\u00d74 스도쿠의 빈 칸을 백트래킹으로 채웁니다. 각 행, 열, 2\u00d72 박스에 1~4가 하나씩.</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">4\u00d74 Sudoku: fill blank cells using backtracking. Each row, column, 2\u00d72 box must contain 1-4 exactly once.</p>' +
             '<div id="sdk-board' + suffix + '" style="display:grid;grid-template-columns:repeat(4,48px);gap:2px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sdk-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1298,7 +1298,7 @@ for (int i = 1; i &lt;= n; i++) {
                 }
             }
             function getCell(r, c) { return boardEl.querySelector('[data-row="' + r + '"][data-col="' + c + '"]'); }
-            infoEl.innerHTML = '<span style="color:var(--text2);">빈 칸에 1~4를 넣어봅니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Trying 1-4 in empty cells.</span>';
             var blanks = [];
             for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) if (board[r][c] === 0) blanks.push([r, c]);
             var steps = [];
@@ -1313,8 +1313,8 @@ for (int i = 1; i &lt;= n; i++) {
                 if (solved) return;
                 if (idx === blanks.length) {
                     solved = true;
-                    steps.push({ description: '\u2705 스도쿠 완성!',
-                        action: function() { for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) { var cl = getCell(r,c); if (board[r][c] === 0) cl.style.color = 'var(--green)'; } infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 스도쿠 완성!</strong>'; },
+                    steps.push({ description: '\u2705 Sudoku complete!',
+                        action: function() { for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) { var cl = getCell(r,c); if (board[r][c] === 0) cl.style.color = 'var(--green)'; } infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 Sudoku complete!</strong>'; },
                         undo: function() { for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) { var cl = getCell(r,c); cl.style.color = ''; } }
                     });
                     return;
@@ -1323,15 +1323,15 @@ for (int i = 1; i &lt;= n; i++) {
                 for (var num = 1; num <= 4; num++) {
                     if (solved) return;
                     (function(br, bc, num) {
-                        steps.push({ description: '(' + (br+1) + ',' + (bc+1) + ')에 ' + num + '을 시도...',
-                            action: function() { getCell(br, bc).textContent = num; getCell(br, bc).style.color = '#6c5ce7'; infoEl.innerHTML = '(' + (br+1) + ',' + (bc+1) + ')에 ' + num + ' 시도 중...'; },
+                        steps.push({ description: '(' + (br+1) + ',' + (bc+1) + ')' + num + ' trying...',
+                            action: function() { getCell(br, bc).textContent = num; getCell(br, bc).style.color = '#6c5ce7'; infoEl.innerHTML = '(' + (br+1) + ',' + (bc+1) + ')' + num + ' trying...'; },
                             undo: function() { getCell(br, bc).textContent = ''; getCell(br, bc).style.color = ''; }
                         });
                     })(br, bc, num);
                     if (isValid(br, bc, num)) {
                         gridState[br][bc] = num;
                         (function(br, bc, num) {
-                            steps.push({ description: '\u2705 (' + (br+1) + ',' + (bc+1) + ') = ' + num + ' 가능! 배치',
+                            steps.push({ description: '\u2705 (' + (br+1) + ',' + (bc+1) + ') = ' + num + ' valid! Place',
                                 action: function() { getCell(br, bc).textContent = num; getCell(br, bc).style.color = 'var(--accent)'; },
                                 undo: function() { getCell(br, bc).textContent = num; getCell(br, bc).style.color = '#6c5ce7'; }
                             });
@@ -1340,14 +1340,14 @@ for (int i = 1; i &lt;= n; i++) {
                         if (solved) return;
                         gridState[br][bc] = 0;
                         (function(br, bc) {
-                            steps.push({ description: '\u21a9\ufe0f (' + (br+1) + ',' + (bc+1) + ') 되돌림',
+                            steps.push({ description: '\u21a9\ufe0f (' + (br+1) + ',' + (bc+1) + ') undo',
                                 action: function() { getCell(br, bc).textContent = ''; getCell(br, bc).style.color = ''; },
                                 undo: function() {}
                             });
                         })(br, bc);
                     } else {
                         (function(br, bc, num) {
-                            steps.push({ description: '\u274c (' + (br+1) + ',' + (bc+1) + ')에 ' + num + ' 불가 (충돌)',
+                            steps.push({ description: '\u274c (' + (br+1) + ',' + (bc+1) + ')' + num + ' invalid (conflict)',
                                 action: function() { getCell(br, bc).style.background = '#e1705530'; setTimeout(function() { getCell(br, bc).style.background = 'white'; getCell(br, bc).textContent = ''; getCell(br,bc).style.color = ''; }, 300); },
                                 undo: function() { getCell(br, bc).textContent = ''; getCell(br, bc).style.color = ''; getCell(br, bc).style.background = 'white'; }
                             });
@@ -1369,26 +1369,26 @@ for (int i = 1; i &lt;= n; i++) {
     // ===== Empty Stub =====
     renderProblem(container) {},
 
-    // ===== 3단계 문제 구성 =====
+    // ===== 3-Stage Problem Structure =====
     stages: [
-        { num: 1, title: '기본 백트래킹', desc: 'N과 M 시리즈 (Silver III)', problemIds: ['boj-15649', 'boj-15650', 'boj-15651', 'boj-15652'] },
-        { num: 2, title: '응용 백트래킹', desc: '조건이 복잡한 문제 (Silver I)', problemIds: ['boj-14888', 'boj-14889'] },
-        { num: 3, title: '심화 백트래킹', desc: '고전 백트래킹 문제 (Gold IV~V)', problemIds: ['boj-9663', 'boj-2580'] }
+        { num: 1, title: 'Basic Backtracking', desc: 'N and M Series (Silver III)', problemIds: ['boj-15649', 'boj-15650', 'boj-15651', 'boj-15652'] },
+        { num: 2, title: 'Applied Backtracking', desc: 'Complex constraint problems (Silver I)', problemIds: ['boj-14888', 'boj-14889'] },
+        { num: 3, title: 'Advanced Backtracking', desc: 'Classic backtracking problems (Gold IV~V)', problemIds: ['boj-9663', 'boj-2580'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ========== 1단계: 기본 백트래킹 ==========
+        // ========== Stage 1: Basic Backtracking ==========
         {
             id: 'boj-15649',
-            title: 'BOJ 15649 - N과 M (1)',
+            title: 'BOJ 15649 - N and M (1)',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/15649',
-            simIntro: 'used 배열을 사용한 순열 생성 백트래킹 과정을 관찰하세요.',
+            simIntro: 'Observe the backtracking process of permutation generation using a used array.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
-                <ul><li>1부터 N까지 자연수 중에서 중복 없이 M개를 고른 수열</li></ul>
+                <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following condition.</p>
+                <ul><li>A sequence of M numbers chosen from 1 to N without repetition</li></ul>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -1401,29 +1401,29 @@ for (int i = 1; i &lt;= n; i++) {
                 <ul><li>1 ≤ M ≤ N ≤ 8</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: '1~N에서 M개를 뽑는 모든 수열을 만들어야 해. 가장 직관적인 방법은? M중 for문! 예를 들어 M=3이면 <code>for i / for j / for k</code>로 전부 돌리면 되지 않을까?' },
-                { title: 'But there\'s a problem with this', content: 'M이 몇인지 <strong>입력으로</strong> 들어오잖아. M=2면 2중 for문, M=5면 5중 for문... 코드로는 "M중 for문"을 짤 수가 없어! 게다가 중복 체크도 매번 직접 해줘야 하고.' },
-                { title: 'What if we try this?', content: 'for문 대신 <strong>재귀</strong>를 쓰면 깊이가 자유자재야! <code>backtrack()</code> 함수가 자기 자신을 호출하면서 한 자리씩 채워가는 거지. 그리고 <code>used</code> 배열로 "이미 쓴 숫자"를 표시해두면 중복 방지도 깔끔해.<br><br>핵심 패턴: <strong>선택 → 재귀 → 되돌리기</strong><br>숫자를 고르고 → 다음 자리로 재귀하고 → 돌아오면 <code>used[i] = False</code>와 <code>path.pop()</code>으로 원상복구해서 다른 숫자를 시도해.' }
+                { title: 'First intuition', content: 'We need to generate all sequences of M numbers from 1~N. The most intuitive approach? M nested for loops! For example, if M=3, just use <code>for i / for j / for k</code> to try everything, right?' },
+                { title: 'But there\'s a problem with this', content: 'M is given as <strong>input</strong>. If M=2 we need 2 nested loops, if M=5 we need 5 nested loops... we can\'t write "M nested for loops" in code! Plus we\'d need to manually check for duplicates each time.' },
+                { title: 'What if we try this?', content: 'If we use <strong>recursion</strong> instead of for loops, the depth is flexible! The <code>backtrack()</code> function calls itself, filling one position at a time. And by using a <code>used</code> array to mark "already used numbers," duplicate prevention is clean.<br><br>Core pattern: <strong>Choose → Recurse → Undo</strong><br>Pick a number → recurse to the next position → when returning, restore with <code>used[i] = False</code> and <code>path.pop()</code> to try other numbers.' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []\nused = [False] * (n + 1)\n\ndef backtrack():\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(1, n + 1):\n        if not used[i]:\n            used[i] = True\n            path.append(i)\n            backtrack()\n            path.pop()\n            used[i] = False\n\nbacktrack()',
                 cpp: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];\nbool used[9];\n\nvoid backtrack(int depth) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = 1; i <= n; i++) {\n        if (!used[i]) {\n            used[i] = true;\n            path[depth] = i;\n            backtrack(depth + 1);\n            used[i] = false;\n        }\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    backtrack(0);\n}'
             },
             solutions: [{
-                approach: 'used 배열 백트래킹',
-                description: 'used 배열로 사용 여부를 추적하며 순열을 생성한다',
+                approach: 'Backtracking with used array',
+                description: 'Generate permutations by tracking usage with a used array',
                 timeComplexity: 'O(N!/(N-M)!)',
                 spaceComplexity: 'O(M)',
                 codeSteps: {
                     python: [
-                        { title: '기본 세팅', desc: 'used 배열로 각 숫자의 사용 여부를 추적합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []\nused = [False] * (n + 1)' },
-                        { title: '백트래킹 함수', desc: '길이가 M이면 출력하고, 아니면 1~N 중 미사용 숫자를 탐색합니다.', code: 'def backtrack():\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(1, n + 1):\n        if not used[i]:' },
-                        { title: '선택과 되돌리기', desc: '숫자를 선택 후 재귀하고, 돌아오면 원상복구하여 다른 선택을 시도합니다.', code: '            used[i] = True\n            path.append(i)\n            backtrack()\n            path.pop()\n            used[i] = False\n\nbacktrack()' }
+                        { title: 'Setup', desc: 'Track each number\'s usage status with the used array.', code: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []\nused = [False] * (n + 1)' },
+                        { title: 'Backtracking function', desc: 'If length equals M, print; otherwise, explore unused numbers from 1~N.', code: 'def backtrack():\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(1, n + 1):\n        if not used[i]:' },
+                        { title: 'Choose and Undo', desc: 'Choose a number and recurse; on return, restore to try other choices.', code: '            used[i] = True\n            path.append(i)\n            backtrack()\n            path.pop()\n            used[i] = False\n\nbacktrack()' }
                     ],
                     cpp: [
-                        { title: '기본 세팅', desc: 'path를 depth 인덱스로 관리.\nused 배열로 사용 여부 추적.', code: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];\nbool used[9];' },
-                        { title: '백트래킹 함수', desc: 'depth가 M이면 출력, 아니면 미사용 숫자를 순회합니다.', code: 'void backtrack(int depth) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = 1; i <= n; i++) {\n        if (!used[i]) {' },
-                        { title: '선택과 되돌리기', desc: '선택 → 재귀 → 복구의 백트래킹 핵심 패턴입니다.', code: '            used[i] = true;\n            path[depth] = i;\n            backtrack(depth + 1);\n            used[i] = false;  // 되돌리기\n        }\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    backtrack(0);\n}' }
+                        { title: 'Setup', desc: 'Manage path by depth index.\nTrack usage with used array.', code: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];\nbool used[9];' },
+                        { title: 'Backtracking function', desc: 'If depth equals M, print; otherwise, iterate through unused numbers.', code: 'void backtrack(int depth) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = 1; i <= n; i++) {\n        if (!used[i]) {' },
+                        { title: 'Choose and Undo', desc: 'Choose \u2192 Recurse \u2192 Restore: the core backtracking pattern.', code: '            used[i] = true;\n            path[depth] = i;\n            backtrack(depth + 1);\n            used[i] = false;  // Undo\n        }\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    backtrack(0);\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[0].templates; }
@@ -1431,14 +1431,14 @@ for (int i = 1; i &lt;= n; i++) {
         },
         {
             id: 'boj-15650',
-            title: 'BOJ 15650 - N과 M (2)',
+            title: 'BOJ 15650 - N and M (2)',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/15650',
-            simIntro: 'start 파라미터로 오름차순 조합을 생성하는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of generating ascending combinations using the start parameter.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
-                <ul><li>1부터 N까지 자연수 중에서 중복 없이 M개를 고른 수열</li><li>고른 수열은 오름차순이어야 한다.</li></ul>
+                <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following conditions.</p>
+                <ul><li>A sequence of M numbers chosen from 1 to N without repetition</li><li>The chosen sequence must be in ascending order.</li></ul>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -1451,29 +1451,29 @@ for (int i = 1; i &lt;= n; i++) {
                 <ul><li>1 ≤ M ≤ N ≤ 8</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: 'N과 M (1)처럼 수열을 다 만들고, 오름차순이 아닌 것만 걸러내면 되지 않을까? <code>used</code> 배열로 순열 만들고, 출력 전에 정렬 여부를 체크하는 거야.' },
-                { title: 'But there\'s a problem with this', content: '그러면 N!/(N-M)!개를 다 만들어 놓고 대부분을 버리게 돼. 예를 들어 N=8, M=4면 1680개를 만들어서 70개만 남기는 셈이야. <strong>만들기 전에</strong> 걸러낼 수 없을까?' },
-                { title: 'What if we try this?', content: '핵심 아이디어: 이전에 고른 숫자보다 <strong>큰 것만</strong> 고르면 자동으로 오름차순이야!<br><br><code>backtrack(start)</code>에서 반복문을 <code>start</code>부터 시작하고, 재귀할 때 <code>i+1</code>을 넘기면 돼. 이러면 <code>used</code> 배열도 필요 없어! <code>start</code> 파라미터가 "여기부터만 골라"라고 범위를 제한해주니까.' }
+                { title: 'First intuition', content: 'Like N and M (1), what if we generate all sequences and just filter out the non-ascending ones? Make permutations with the <code>used</code> array, then check if they\'re sorted before printing.' },
+                { title: 'But there\'s a problem with this', content: 'Then we\'d generate N!/(N-M)! sequences and discard most of them. For example, with N=8, M=4, that\'s generating 1680 to keep only 70. Can\'t we filter <strong>before generating</strong>?' },
+                { title: 'What if we try this?', content: 'Key idea: if we only pick numbers <strong>greater than</strong> the previous choice, the result is automatically ascending!<br><br>In <code>backtrack(start)</code>, start the loop from <code>start</code>, and pass <code>i+1</code> when recursing. Then we don\'t even need the <code>used</code> array! The <code>start</code> parameter restricts the range to "pick only from here onwards."' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []\n\ndef backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):\n        path.append(i)\n        backtrack(i + 1)\n        path.pop()\n\nbacktrack(1)',
                 cpp: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];\n\nvoid backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {\n        path[depth] = i;\n        backtrack(depth + 1, i + 1);\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    backtrack(0, 1);\n}'
             },
             solutions: [{
-                approach: 'start 파라미터 조합',
-                description: 'start 파라미터로 오름차순 조합만 생성한다',
+                approach: 'Combination with start parameter',
+                description: 'Generate only ascending combinations using the start parameter',
                 timeComplexity: 'O(C(N,M))',
                 spaceComplexity: 'O(M)',
                 codeSteps: {
                     python: [
-                        { title: '세팅', desc: 'used 배열 없이 start 파라미터만으로 조합을 구성합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []' },
-                        { title: 'start 파라미터', desc: 'start부터 순회하므로 이전 숫자를 다시 고르지 않아 오름차순이 보장됩니다.', code: 'def backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):' },
-                        { title: 'i+1로 재귀', desc: 'i+1을 넘겨 자기보다 큰 수만 선택하게 하여 중복 없는 조합을 만듭니다.', code: '        path.append(i)\n        backtrack(i + 1)  # i+1로 오름차순 보장\n        path.pop()\n\nbacktrack(1)' }
+                        { title: 'Setup', desc: 'No used array needed -- the start parameter alone controls combinations.', code: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []' },
+                        { title: 'start parameter', desc: 'Iterating from start ensures we never re-pick previous numbers, guaranteeing ascending order.', code: 'def backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):' },
+                        { title: 'Recurse with i+1', desc: 'Passing i+1 ensures only numbers greater than the current are chosen, producing duplicate-free combinations.', code: '        path.append(i)\n        backtrack(i + 1)  # i+1 guarantees ascending order\n        path.pop()\n\nbacktrack(1)' }
                     ],
                     cpp: [
-                        { title: '세팅', desc: 'used 배열 불필요 — start 파라미터가 순서를 제어합니다.', code: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];' },
-                        { title: 'start 파라미터', desc: 'used 배열 불필요 — start가 중복 방지.', code: 'void backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {' },
-                        { title: 'i+1로 재귀', desc: 'i+1을 넘겨 현재보다 큰 수만 선택 → 오름차순 조합.', code: '        path[depth] = i;\n        backtrack(depth + 1, i + 1);  // i+1로 오름차순 보장\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    backtrack(0, 1);\n}' }
+                        { title: 'Setup', desc: 'No used array needed -- start parameter controls ordering.', code: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];' },
+                        { title: 'start parameter', desc: 'No used array needed -- start prevents duplicates.', code: 'void backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {' },
+                        { title: 'Recurse with i+1', desc: 'Passing i+1 selects only numbers greater than current \u2192 ascending combinations.', code: '        path[depth] = i;\n        backtrack(depth + 1, i + 1);  // i+1 guarantees ascending order\n    }\n}\n\nint main() {\n    cin >> n >> m;\n    backtrack(0, 1);\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[1].templates; }
@@ -1481,14 +1481,14 @@ for (int i = 1; i &lt;= n; i++) {
         },
         {
             id: 'boj-15651',
-            title: 'BOJ 15651 - N과 M (3)',
+            title: 'BOJ 15651 - N and M (3)',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/15651',
-            simIntro: '중복을 허용하는 순열 생성 과정을 관찰하세요. used 배열이 없습니다!',
+            simIntro: 'Observe the permutation generation process with repetition allowed. No used array!',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
-                <ul><li>1부터 N까지 자연수 중에서 M개를 고른 수열</li><li>같은 수를 여러 번 골라도 된다.</li></ul>
+                <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following conditions.</p>
+                <ul><li>A sequence of M numbers chosen from 1 to N</li><li>The same number can be chosen multiple times.</li></ul>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -1501,29 +1501,29 @@ for (int i = 1; i &lt;= n; i++) {
                 <ul><li>1 ≤ M ≤ N ≤ 7</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: 'N과 M (1)과 비슷한데, 이번엔 같은 숫자를 여러 번 써도 돼! 그러면 (1)처럼 <code>used</code> 배열을 쓰되, 재귀 후 되돌릴 때 다시 허용하면 되려나?' },
-                { title: 'But there\'s a problem with this', content: '잠깐, <code>used</code>를 쓰고 되돌리는 건 (1)에서 이미 하고 있잖아! 중복을 <strong>허용</strong>하는 거니까, 애초에 "이 숫자 썼는지" 확인 자체가 필요 없는 거야.' },
-                { title: 'What if we try this?', content: '<code>used</code> 배열을 <strong>완전히 없애면</strong> 끝! 매번 1~N 전체를 자유롭게 골라. 코드가 오히려 (1)보다 더 간단해져.<br><br>단, 출력량이 N<sup>M</sup>개로 어마어마하게 많아질 수 있으니 빠른 출력이 필수야!<br><span class="lang-py">Python: <code>sys.stdout.write()</code>로 한 번에 모아서 출력</span><span class="lang-cpp">C++: <code>printf</code> 또는 <code>ios::sync_with_stdio(false)</code> 사용</span>' }
+                { title: 'First intuition', content: 'Similar to N and M (1), but this time we can use the same number multiple times! So use a <code>used</code> array like (1), but re-allow the number after returning from recursion?' },
+                { title: 'But there\'s a problem with this', content: 'Wait, using and restoring <code>used</code> is what (1) already does! Since repetition is <strong>allowed</strong>, we don\'t even need to check "was this number used" at all.' },
+                { title: 'What if we try this?', content: 'Just <strong>completely remove</strong> the <code>used</code> array! Freely pick from all of 1~N every time. The code is actually simpler than (1).<br><br>However, the output can be enormous (N<sup>M</sup> sequences), so fast output is essential!<br><span class="lang-py">Python: Collect results and print all at once with <code>sys.stdout.write()</code></span><span class="lang-cpp">C++: Use <code>printf</code> or <code>ios::sync_with_stdio(false)</code></span>' }
             ],
             templates: {
                 python: 'import sys\n\nn, m = map(int, sys.stdin.readline().split())\npath = []\nresult = []\n\ndef backtrack():\n    if len(path) == m:\n        result.append(\' \'.join(map(str, path)))\n        return\n    for i in range(1, n + 1):\n        path.append(i)\n        backtrack()\n        path.pop()\n\nbacktrack()\nsys.stdout.write(\'\\n\'.join(result))',
                 cpp: '#include <cstdio>\n\nint n, m;\nint path[8];\n\nvoid backtrack(int depth) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            printf("%d%c", path[i], i < m-1 ? \' \' : \'\\n\');\n        return;\n    }\n    for (int i = 1; i <= n; i++) {\n        path[depth] = i;\n        backtrack(depth + 1);\n    }\n}\n\nint main() {\n    scanf("%d %d", &n, &m);\n    backtrack(0);\n}'
             },
             solutions: [{
-                approach: '제한 없는 중복 순열',
-                description: 'used 배열 없이 모든 조합을 생성한다',
+                approach: 'Unrestricted permutation with repetition',
+                description: 'Generate all combinations without a used array',
                 timeComplexity: 'O(N^M)',
                 spaceComplexity: 'O(M)',
                 codeSteps: {
                     python: [
-                        { title: '세팅', desc: 'result에 모아 한 번에 출력 — 출력량이 N^M으로 많기 때문입니다.', code: 'import sys\n\nn, m = map(int, sys.stdin.readline().split())\npath = []\nresult = []' },
-                        { title: '백트래킹 (used 없음)', desc: '중복 허용이라 used 체크 없이 매번 1~N 전부 선택 가능합니다.', code: 'def backtrack():\n    if len(path) == m:\n        result.append(\' \'.join(map(str, path)))\n        return\n    for i in range(1, n + 1):  # 제한 없이 1~N\n        path.append(i)\n        backtrack()\n        path.pop()' },
-                        { title: '전체 출력 최적화', desc: 'stdout.write로 한 번에 출력하여 I/O 병목을 줄입니다.', code: 'backtrack()\nsys.stdout.write(\'\\n\'.join(result))' }
+                        { title: 'Setup', desc: 'Collect results for batch output -- N^M sequences can be very many.', code: 'import sys\n\nn, m = map(int, sys.stdin.readline().split())\npath = []\nresult = []' },
+                        { title: 'Backtracking (no used)', desc: 'Repetition allowed, so no used check -- freely pick from 1~N each time.', code: 'def backtrack():\n    if len(path) == m:\n        result.append(\' \'.join(map(str, path)))\n        return\n    for i in range(1, n + 1):  # Unrestricted 1~N\n        path.append(i)\n        backtrack()\n        path.pop()' },
+                        { title: 'Batch output optimization', desc: 'Print all at once with stdout.write to reduce I/O bottleneck.', code: 'backtrack()\nsys.stdout.write(\'\\n\'.join(result))' }
                     ],
                     cpp: [
-                        { title: '세팅', desc: 'printf로 빠른 출력 — N^M개가 많을 수 있음.', code: '#include <cstdio>\n\nint n, m;\nint path[8];' },
-                        { title: '백트래킹 (used 없음)', desc: '중복 허용이라 used 체크 없이 1~N 전체 순회.', code: 'void backtrack(int depth) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            printf("%d%c", path[i], i < m-1 ? \' \' : \'\\n\');\n        return;\n    }\n    for (int i = 1; i <= n; i++) {\n        path[depth] = i;\n        backtrack(depth + 1);\n    }\n}' },
-                        { title: '입력 및 실행', desc: 'scanf로 빠른 입력 — printf와 짝을 맞춥니다.', code: 'int main() {\n    scanf("%d %d", &n, &m);\n    backtrack(0);\n}' }
+                        { title: 'Setup', desc: 'Fast output with printf -- N^M sequences can be many.', code: '#include <cstdio>\n\nint n, m;\nint path[8];' },
+                        { title: 'Backtracking (no used)', desc: 'Repetition allowed, so no used check -- iterate all 1~N.', code: 'void backtrack(int depth) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            printf("%d%c", path[i], i < m-1 ? \' \' : \'\\n\');\n        return;\n    }\n    for (int i = 1; i <= n; i++) {\n        path[depth] = i;\n        backtrack(depth + 1);\n    }\n}' },
+                        { title: 'Input and execution', desc: 'Fast input with scanf -- pairs with printf.', code: 'int main() {\n    scanf("%d %d", &n, &m);\n    backtrack(0);\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[2].templates; }
@@ -1531,14 +1531,14 @@ for (int i = 1; i &lt;= n; i++) {
         },
         {
             id: 'boj-15652',
-            title: 'BOJ 15652 - N과 M (4)',
+            title: 'BOJ 15652 - N and M (4)',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/15652',
-            simIntro: '중복 조합을 생성하는 과정을 관찰하세요. start를 i로 넘기는 것이 핵심입니다!',
+            simIntro: 'Observe the process of generating combinations with repetition. The key is passing i (not i+1) to start!',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
-                <ul><li>1부터 N까지 자연수 중에서 M개를 고른 수열</li><li>같은 수를 여러 번 골라도 된다.</li><li>고른 수열은 비내림차순이어야 한다.</li></ul>
+                <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following conditions.</p>
+                <ul><li>A sequence of M numbers chosen from 1 to N</li><li>The same number can be chosen multiple times.</li><li>The chosen sequence must be in non-decreasing order.</li></ul>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -1551,45 +1551,45 @@ for (int i = 1; i &lt;= n; i++) {
                 <ul><li>1 ≤ M ≤ N ≤ 8</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: '비내림차순 + 중복 허용이라... (3)처럼 중복 허용으로 전부 만들고, 비내림차순이 아닌 건 버리면 되지 않을까? 아니면 (2)의 오름차순 코드에서 중복만 허용하면?' },
-                { title: 'But there\'s a problem with this', content: '(3)처럼 전부 만들고 거르면 낭비가 크고, (2)의 코드는 <code>i+1</code>을 넘기니까 같은 수를 다시 못 골라. 그럼 어디를 바꿔야 "같은 수도 다시 고를 수 있게" 될까?' },
-                { title: 'What if we try this?', content: '(2)에서 딱 한 글자만 바꾸면 돼! 재귀 호출 시 <code>i+1</code> 대신 <code>i</code>를 넘기면, 자기 자신을 다시 선택할 수 있어. <code>start</code>가 안 올라가니까 같은 수를 또 고를 수 있는 거지.<br><br>📌 <strong>N과 M 시리즈 정리:</strong><br>(1) 순서 O, 중복 X → <code>used</code> 배열<br>(2) 순서 X, 중복 X → <code>start</code>, <code>i+1</code><br>(3) 순서 O, 중복 O → 제한 없음<br>(4) 순서 X, 중복 O → <code>start</code>, <code>i</code>' }
+                { title: 'First intuition', content: 'Non-decreasing + repetition allowed... Generate everything like (3) and filter out non-ascending ones? Or take (2)\'s ascending code and just allow repetition?' },
+                { title: 'But there\'s a problem with this', content: 'Generating everything like (3) and filtering is wasteful, and (2)\'s code passes <code>i+1</code> so it can\'t re-pick the same number. So what do we need to change to "allow picking the same number again"?' },
+                { title: 'What if we try this?', content: 'Just change one character from (2)! Pass <code>i</code> instead of <code>i+1</code> in the recursive call, allowing the same number to be picked again. Since <code>start</code> doesn\'t increase, you can pick the same number repeatedly.<br><br><strong>N and M Series Summary:</strong><br>(1) Order matters, no repetition \u2192 <code>used</code> array<br>(2) Order doesn\'t matter, no repetition \u2192 <code>start</code>, <code>i+1</code><br>(3) Order matters, repetition allowed \u2192 no restrictions<br>(4) Order doesn\'t matter, repetition allowed \u2192 <code>start</code>, <code>i</code>' }
             ],
             templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []\n\ndef backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):\n        path.append(i)\n        backtrack(i)    # i+1이 아닌 i!\n        path.pop()\n\nbacktrack(1)',
-                cpp: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];\n\nvoid backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {\n        path[depth] = i;\n        backtrack(depth + 1, i);  // i+1이 아닌 i!\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(0);\n    cin >> n >> m;\n    backtrack(0, 1);\n}'
+                python: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []\n\ndef backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):\n        path.append(i)\n        backtrack(i)    # i, not i+1!\n        path.pop()\n\nbacktrack(1)',
+                cpp: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];\n\nvoid backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {\n        path[depth] = i;\n        backtrack(depth + 1, i);  // i, not i+1!\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(0);\n    cin >> n >> m;\n    backtrack(0, 1);\n}'
             },
             solutions: [{
-                approach: 'start 파라미터 중복 조합',
-                description: 'start를 i로 넘겨 중복 허용 비내림차순 조합을 생성한다',
+                approach: 'Combination with repetition using start parameter',
+                description: 'Generate non-decreasing combinations with repetition by passing i to start',
                 timeComplexity: 'O(C(N+M-1,M))',
                 spaceComplexity: 'O(M)',
                 codeSteps: {
                     python: [
-                        { title: '세팅', desc: 'N과 M (2)와 구조 동일 — 차이는 재귀 호출 인자뿐입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []' },
-                        { title: 'start 파라미터', desc: 'start부터 순회하여 비내림차순을 보장합니다.', code: 'def backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):' },
-                        { title: 'i로 재귀 (i+1 아님)', desc: 'i를 넘기면 같은 수를 다시 고를 수 있어 중복 조합이 됩니다.', code: '        path.append(i)\n        backtrack(i)    # i+1이 아닌 i!\n        path.pop()\n\nbacktrack(1)' }
+                        { title: 'Setup', desc: 'Same structure as N and M (2) -- only the recursive argument differs.', code: 'import sys\ninput = sys.stdin.readline\n\nn, m = map(int, input().split())\npath = []' },
+                        { title: 'start parameter', desc: 'Iterating from start ensures non-decreasing order.', code: 'def backtrack(start):\n    if len(path) == m:\n        print(*path)\n        return\n    for i in range(start, n + 1):' },
+                        { title: 'Recurse with i (not i+1)', desc: 'Passing i allows re-picking the same number, creating combinations with repetition.', code: '        path.append(i)\n        backtrack(i)    # i, not i+1!\n        path.pop()\n\nbacktrack(1)' }
                     ],
                     cpp: [
-                        { title: '세팅', desc: 'N과 M (2)와 동일한 구조 — 재귀 인자만 다릅니다.', code: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];' },
-                        { title: 'start 파라미터', desc: 'start 이상의 수만 순회하여 비내림차순을 유지합니다.', code: 'void backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {' },
-                        { title: 'i로 재귀 (i+1 아님)', desc: 'i+1이 아닌 i → 같은 수를 또 선택 가능.', code: '        path[depth] = i;\n        backtrack(depth + 1, i);  // i+1이 아닌 i!\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(0);\n    cin >> n >> m;\n    backtrack(0, 1);\n}' }
+                        { title: 'Setup', desc: 'Same structure as N and M (2) -- only the recursive argument differs.', code: '#include <iostream>\nusing namespace std;\n\nint n, m;\nint path[9];' },
+                        { title: 'start parameter', desc: 'Iterate only numbers >= start to maintain non-decreasing order.', code: 'void backtrack(int depth, int start) {\n    if (depth == m) {\n        for (int i = 0; i < m; i++)\n            cout << path[i] << (i < m-1 ? " " : "\\n");\n        return;\n    }\n    for (int i = start; i <= n; i++) {' },
+                        { title: 'Recurse with i (not i+1)', desc: 'i instead of i+1 \u2192 allows re-picking the same number.', code: '        path[depth] = i;\n        backtrack(depth + 1, i);  // i, not i+1!\n    }\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(0);\n    cin >> n >> m;\n    backtrack(0, 1);\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[3].templates; }
             }]
         },
-        // ========== 2단계: 응용 백트래킹 ==========
+        // ========== Stage 2: Applied Backtracking ==========
         {
             id: 'boj-14888',
-            title: 'BOJ 14888 - 연산자 끼워넣기',
+            title: 'BOJ 14888 - Operator Insertion',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/14888',
-            simIntro: '연산자를 배치하며 최대/최소를 찾는 백트래킹 과정을 관찰하세요.',
+            simIntro: 'Observe the backtracking process of placing operators to find max/min values.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>N개의 수로 이루어진 수열 A1, A2, ..., AN이 주어진다. 또, 수와 수 사이에 끼워넣을 수 있는 N-1개의 연산자가 주어진다. 연산자는 덧셈(+), 뺄셈(-), 곱셈(\u00d7), 나눗셈(\u00f7)으로만 이루어져 있다.</p>
-                <p>식의 계산은 연산자 우선 순위를 무시하고 앞에서부터 진행한다. 나눗셈은 정수 나눗셈(C++14의 기준)으로 몫만 취한다. 음수를 양수로 나눌 때는 양수로 바꾼 뒤 몫을 취하고 음수로 바꾼다.</p>
+                <p>A sequence of N numbers A1, A2, ..., AN is given. Also, N-1 operators to insert between the numbers are given. The operators consist only of addition(+), subtraction(-), multiplication(\u00d7), and division(\u00f7).</p>
+                <p>The expression is evaluated left to right, ignoring operator precedence. Division is integer division (as in C++14), taking only the quotient. When dividing a negative number by a positive, first convert to positive, take the quotient, then negate.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2\n5 6\n0 0 1 0</pre></div>
                     <div><strong>Output</strong><pre>30\n30</pre></div>
@@ -1603,33 +1603,33 @@ for (int i = 1; i &lt;= n; i++) {
                     <div><strong>Output</strong><pre>54\n-24</pre></div>
                 </div></div>
                 <h4>Constraints</h4>
-                <ul><li>2 \u2264 N \u2264 11</li><li>1 \u2264 A<sub>i</sub> \u2264 100</li><li>연산자 개수의 합은 N-1</li></ul>
+                <ul><li>2 \u2264 N \u2264 11</li><li>1 \u2264 A<sub>i</sub> \u2264 100</li><li>Total operator count must beN-1</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: '숫자 사이에 연산자 N-1개를 끼워 넣는 거니까... 연산자의 모든 <strong>순서</strong>를 시도해보면 되지 않을까? 예를 들어 [+, -, ×] 가 있으면 이걸 배치하는 모든 순열을 만들어서 계산해보는 거야.' },
-                { title: 'But there\'s a problem with this', content: '같은 종류의 연산자가 여러 개일 수 있어! 예를 들어 +가 2개, ×가 1개면, 순열로 만들면 중복 배치가 생기고 비효율적이야. 연산자를 "종류별 개수"로 관리하면 더 깔끔하지 않을까?' },
-                { title: 'What if we try this?', content: '<code>ops = [+개수, -개수, ×개수, ÷개수]</code>로 남은 개수를 관리해! 각 자리에서 남은 연산자 4종류를 확인하고, 개수가 0보다 큰 것만 사용해. 쓸 때 <code>ops[i] -= 1</code>, 되돌릴 때 <code>ops[i] += 1</code> — 백트래킹 핵심 패턴이야.' },
-                { title: '함정 주의: 나눗셈!', content: '이 문제의 나눗셈은 <strong>0 방향으로 버림</strong>이야. 양수끼리는 상관없지만, 음수가 섞이면 조심해야 해!<br><span class="lang-py">Python: <code>a // b</code>는 음수에서 바닥 방향으로 내림해서 결과가 달라. <code>int(a / b)</code>를 써야 0 방향 버림이 돼!</span><span class="lang-cpp">C++: <code>a / b</code>가 기본적으로 0 방향 버림이라 그대로 쓰면 돼.</span>' }
+                { title: 'First intuition', content: 'We\'re inserting N-1 operators between numbers... Try every possible <strong>ordering</strong> of operators? For example, if we have [+, -, \u00d7], generate all permutations and evaluate each.' },
+                { title: 'But there\'s a problem with this', content: 'There can be multiple operators of the same type! For example, with 2 pluses and 1 times, permutations create duplicate arrangements and are inefficient. Managing operators as "count per type" would be much cleaner.' },
+                { title: 'What if we try this?', content: 'Manage remaining counts with <code>ops = [+count, -count, \u00d7count, \u00f7count]</code>! At each position, check all 4 operator types and use only those with count > 0. Consume with <code>ops[i] -= 1</code>, restore with <code>ops[i] += 1</code> -- the core backtracking pattern.' },
+                { title: 'Watch out: Division!', content: 'Division in this problem <strong>truncates toward zero</strong>. No issue with positive numbers, but be careful with negatives!<br><span class="lang-py">Python: <code>a // b</code> floors toward negative infinity, giving different results. Use <code>int(a / b)</code> for truncation toward zero!</span><span class="lang-cpp">C++: <code>a / b</code> truncates toward zero by default, so just use it as-is.</span>' }
             ],
             templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\nops = list(map(int, input().split()))  # +, -, *, //\n\nmax_val = -1e9\nmin_val = 1e9\n\ndef backtrack(idx, current):\n    global max_val, min_val\n    if idx == n:\n        max_val = max(max_val, current)\n        min_val = min(min_val, current)\n        return\n    for i in range(4):\n        if ops[i] > 0:\n            ops[i] -= 1\n            if i == 0:   nxt = current + nums[idx]\n            elif i == 1: nxt = current - nums[idx]\n            elif i == 2: nxt = current * nums[idx]\n            else:        nxt = int(current / nums[idx])  # 0 방향 버림\n            backtrack(idx + 1, nxt)\n            ops[i] += 1\n\nbacktrack(1, nums[0])\nprint(max_val)\nprint(min_val)',
+                python: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\nops = list(map(int, input().split()))  # +, -, *, //\n\nmax_val = -1e9\nmin_val = 1e9\n\ndef backtrack(idx, current):\n    global max_val, min_val\n    if idx == n:\n        max_val = max(max_val, current)\n        min_val = min(min_val, current)\n        return\n    for i in range(4):\n        if ops[i] > 0:\n            ops[i] -= 1\n            if i == 0:   nxt = current + nums[idx]\n            elif i == 1: nxt = current - nums[idx]\n            elif i == 2: nxt = current * nums[idx]\n            else:        nxt = int(current / nums[idx])  # truncate toward zero\n            backtrack(idx + 1, nxt)\n            ops[i] += 1\n\nbacktrack(1, nums[0])\nprint(max_val)\nprint(min_val)',
                 cpp: '#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint n, nums[12], ops[4];\nint maxVal = -1e9, minVal = 1e9;\n\nvoid backtrack(int idx, int cur) {\n    if (idx == n) {\n        maxVal = max(maxVal, cur);\n        minVal = min(minVal, cur);\n        return;\n    }\n    for (int i = 0; i < 4; i++) {\n        if (ops[i] > 0) {\n            ops[i]--;\n            int nxt;\n            if (i == 0) nxt = cur + nums[idx];\n            else if (i == 1) nxt = cur - nums[idx];\n            else if (i == 2) nxt = cur * nums[idx];\n            else nxt = cur / nums[idx];\n            backtrack(idx + 1, nxt);\n            ops[i]++;\n        }\n    }\n}\n\nint main() {\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> nums[i];\n    for (int i = 0; i < 4; i++) cin >> ops[i];\n    backtrack(1, nums[0]);\n    cout << maxVal << "\\n" << minVal << endl;\n}'
             },
             solutions: [{
-                approach: '연산자 배치 백트래킹',
-                description: '연산자 개수를 소모/복구하며 모든 배치를 시도한다',
+                approach: 'Operator placement backtracking',
+                description: 'Consume/restore operator counts to try all placements',
                 timeComplexity: 'O(4^(N-1))',
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: 'Process Input', desc: 'ops 리스트로 +, -, *, // 각 연산자의 남은 개수를 관리합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\nops = list(map(int, input().split()))\n\nmax_val = -1e9\nmin_val = 1e9' },
-                        { title: '연산자 소모/복구', desc: '연산자를 하나 쓰고(ops[i]-=1) 재귀 후 복구(ops[i]+=1)하여 모든 배치를 시도합니다.', code: 'def backtrack(idx, current):\n    global max_val, min_val\n    if idx == n:\n        max_val = max(max_val, current)\n        min_val = min(min_val, current)\n        return\n    for i in range(4):\n        if ops[i] > 0:\n            ops[i] -= 1\n            if i == 0:   nxt = current + nums[idx]\n            elif i == 1: nxt = current - nums[idx]\n            elif i == 2: nxt = current * nums[idx]\n            else:        nxt = int(current / nums[idx])\n            backtrack(idx + 1, nxt)\n            ops[i] += 1' },
-                        { title: '최대/최소 갱신', desc: '첫 번째 수(nums[0])부터 시작해 모든 연산자 배치의 최대/최소를 구합니다.', code: 'backtrack(1, nums[0])\nprint(max_val)\nprint(min_val)' }
+                        { title: 'Process Input', desc: 'Manage remaining count of each operator (+, -, *, //) with the ops list.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\nops = list(map(int, input().split()))\n\nmax_val = -1e9\nmin_val = 1e9' },
+                        { title: 'Consume/Restore operators', desc: 'Use an operator (ops[i]-=1), recurse, then restore (ops[i]+=1) to try all placements.', code: 'def backtrack(idx, current):\n    global max_val, min_val\n    if idx == n:\n        max_val = max(max_val, current)\n        min_val = min(min_val, current)\n        return\n    for i in range(4):\n        if ops[i] > 0:\n            ops[i] -= 1\n            if i == 0:   nxt = current + nums[idx]\n            elif i == 1: nxt = current - nums[idx]\n            elif i == 2: nxt = current * nums[idx]\n            else:        nxt = int(current / nums[idx])\n            backtrack(idx + 1, nxt)\n            ops[i] += 1' },
+                        { title: 'Update max/min', desc: 'Start from the first number (nums[0]) and find max/min across all operator placements.', code: 'backtrack(1, nums[0])\nprint(max_val)\nprint(min_val)' }
                     ],
                     cpp: [
-                        { title: 'Process Input', desc: 'ops[4]로 +, -, *, / 각 연산자의 남은 개수를 관리합니다.', code: '#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint n, nums[12], ops[4];\nint maxVal = -1e9, minVal = 1e9;' },
-                        { title: '연산자 소모/복구', desc: 'C++ 정수 나눗셈은 기본이 0 방향 버림 → 별도 처리 불필요.', code: 'void backtrack(int idx, int cur) {\n    if (idx == n) {\n        maxVal = max(maxVal, cur);\n        minVal = min(minVal, cur);\n        return;\n    }\n    for (int i = 0; i < 4; i++) {\n        if (ops[i] > 0) {\n            ops[i]--;\n            int nxt;\n            if (i == 0) nxt = cur + nums[idx];\n            else if (i == 1) nxt = cur - nums[idx];\n            else if (i == 2) nxt = cur * nums[idx];\n            else nxt = cur / nums[idx];  // 0 방향 버림 (C++ 기본)\n            backtrack(idx + 1, nxt);\n            ops[i]++;  // 되돌리기\n        }\n    }\n}' },
-                        { title: '최대/최소 갱신', desc: 'nums[0]을 초기값으로 시작해 모든 배치를 탐색합니다.', code: 'int main() {\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> nums[i];\n    for (int i = 0; i < 4; i++) cin >> ops[i];\n    backtrack(1, nums[0]);\n    cout << maxVal << "\\n" << minVal << endl;\n}' }
+                        { title: 'Process Input', desc: 'Manage remaining count of each operator (+, -, *, /) with ops[4].', code: '#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nint n, nums[12], ops[4];\nint maxVal = -1e9, minVal = 1e9;' },
+                        { title: 'Consume/Restore operators', desc: 'C++ integer division truncates toward zero by default -- no special handling needed.', code: 'void backtrack(int idx, int cur) {\n    if (idx == n) {\n        maxVal = max(maxVal, cur);\n        minVal = min(minVal, cur);\n        return;\n    }\n    for (int i = 0; i < 4; i++) {\n        if (ops[i] > 0) {\n            ops[i]--;\n            int nxt;\n            if (i == 0) nxt = cur + nums[idx];\n            else if (i == 1) nxt = cur - nums[idx];\n            else if (i == 2) nxt = cur * nums[idx];\n            else nxt = cur / nums[idx];  // truncate toward zero (C++ default)\n            backtrack(idx + 1, nxt);\n            ops[i]++;  // Undo\n        }\n    }\n}' },
+                        { title: 'Update max/min', desc: 'Start from nums[0] as the initial value and explore all placements.', code: 'int main() {\n    cin >> n;\n    for (int i = 0; i < n; i++) cin >> nums[i];\n    for (int i = 0; i < 4; i++) cin >> ops[i];\n    backtrack(1, nums[0]);\n    cout << maxVal << "\\n" << minVal << endl;\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[4].templates; }
@@ -1637,13 +1637,13 @@ for (int i = 1; i &lt;= n; i++) {
         },
         {
             id: 'boj-14889',
-            title: 'BOJ 14889 - 스타트와 링크',
+            title: 'BOJ 14889 - Start and Link',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/14889',
-            simIntro: 'N명을 두 팀으로 나누며 시너지 차이를 최소화하는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of splitting N people into two teams while minimizing the synergy difference.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>짝수 N명을 N/2명씩 두 팀으로 나눈다. S<sub>ij</sub>는 i번과 j번이 같은 팀일 때 능력치. 팀의 능력치는 팀원 쌍의 S<sub>ij</sub> 합. 두 팀의 능력치 차이의 최솟값을 구하시오.</p>
+                <p>Split even number N people into two teams of N/2 each. S<sub>ij</sub> is the ability when person i and person j are on the same team. A team's ability is the sum of S<sub>ij</sub> for all pairs in the team. Find the minimum difference in ability between the two teams.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4\n0 1 2 3\n4 0 5 6\n7 1 0 2\n3 4 5 0</pre></div>
                     <div><strong>Output</strong><pre>0</pre></div>
@@ -1653,79 +1653,79 @@ for (int i = 1; i &lt;= n; i++) {
                     <div><strong>Output</strong><pre>2</pre></div>
                 </div></div>
                 <h4>Constraints</h4>
-                <ul><li>4 \u2264 N \u2264 20 (짝수)</li><li>1 \u2264 S<sub>ij</sub> \u2264 100</li><li>S<sub>ii</sub> = 0</li></ul>
+                <ul><li>4 \u2264 N \u2264 20 (even)</li><li>1 \u2264 S<sub>ij</sub> \u2264 100</li><li>S<sub>ii</sub> = 0</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: 'N명을 두 팀으로 나누는 거니까, 모든 가능한 팀 조합을 만들어보면 되지 않을까? N명 중 N/2명을 고르면 그게 스타트 팀이고, 나머지가 링크 팀이잖아.' },
-                { title: 'But there\'s a problem with this', content: '맞아, 근데 N이 최대 20이야. C(20, 10) = 184,756가지인데, 각 조합마다 팀 능력치를 계산해야 해. 능력치는 팀원 모든 쌍 (i, j)에 대해 <code>S[i][j] + S[j][i]</code>를 합산하는 거라 O(N<sup>2</sup>)이 걸려. 그래도 전체적으로는 충분하긴 한데... 더 줄일 수 있을까?' },
-                { title: 'What if we try this?', content: '팀 나누기는 0번 사람부터 순서대로 "스타트에 넣을까, 말까?"를 결정하는 백트래킹으로 구현해. N과 M (2)의 조합 패턴과 비슷해!<br><br>💡 <strong>가지치기 팁:</strong> {1,2,3}을 스타트로 고르는 것과 {4,5,6}을 스타트로 고르는 건 서로 반대팀일 뿐 결과가 같아 (대칭). 그래서 0번 사람은 <strong>항상 스타트 팀에 고정</strong>하면 탐색량이 절반으로 줄어!' }
+                { title: 'First intuition', content: 'We\'re splitting N people into two teams, so why not try all possible team combinations? Pick N/2 people for the Start team, and the rest become the Link team.' },
+                { title: 'But there\'s a problem with this', content: 'Right, but N can be up to 20. C(20, 10) = 184,756 combinations, and for each one we must compute the team synergy. Synergy requires summing <code>S[i][j] + S[j][i]</code> for all pairs (i, j), which takes O(N<sup>2</sup>). Overall it\'s still feasible, but can we do better?' },
+                { title: 'What if we try this?', content: 'Implement team splitting as backtracking: for each person starting from 0, decide "put in Start team or not?" Similar to the combination pattern from N and M (2)!<br><br>Pruning tip: Choosing {1,2,3} for Start and {4,5,6} for Start produce mirror results (symmetry). So if we <strong>always fix person 0 on the Start team</strong>, the search space is cut in half!' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ns = [list(map(int, input().split())) for _ in range(n)]\nans = float(\'inf\')\n\ndef calc(team):\n    total = 0\n    for i in range(len(team)):\n        for j in range(i+1, len(team)):\n            total += s[team[i]][team[j]] + s[team[j]][team[i]]\n    return total\n\ndef backtrack(idx, team):\n    global ans\n    if len(team) == n // 2:\n        other = [i for i in range(n) if i not in set(team)]\n        diff = abs(calc(team) - calc(other))\n        ans = min(ans, diff)\n        return\n    if idx >= n:\n        return\n    if n - idx < n // 2 - len(team):\n        return\n    team.append(idx)\n    backtrack(idx + 1, team)\n    team.pop()\n    backtrack(idx + 1, team)\n\nbacktrack(0, [])\nprint(ans)',
                 cpp: '#include <iostream>\n#include <algorithm>\n#include <cmath>\nusing namespace std;\n\nint n, s[20][20];\nbool team[20];\nint ans = 1e9;\n\nvoid backtrack(int idx, int cnt) {\n    if (cnt == n / 2) {\n        int s1 = 0, s2 = 0;\n        for (int i = 0; i < n; i++)\n            for (int j = i+1; j < n; j++) {\n                if (team[i] && team[j])\n                    s1 += s[i][j] + s[j][i];\n                else if (!team[i] && !team[j])\n                    s2 += s[i][j] + s[j][i];\n            }\n        ans = min(ans, abs(s1 - s2));\n        return;\n    }\n    if (idx >= n) return;\n    if (n - idx < n/2 - cnt) return;\n    team[idx] = true;\n    backtrack(idx + 1, cnt + 1);\n    team[idx] = false;\n    backtrack(idx + 1, cnt);\n}\n\nint main() {\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < n; j++)\n            cin >> s[i][j];\n    backtrack(0, 0);\n    cout << ans << endl;\n}'
             },
             solutions: [{
-                approach: '팀 분배 백트래킹',
-                description: 'N명 중 N/2명을 선택하여 시너지 차이를 최소화한다',
+                approach: 'Team split backtracking',
+                description: 'Select N/2 out of N people to minimize the synergy difference',
                 timeComplexity: 'O(C(N,N/2)*N^2)',
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '입력과 초기화', desc: 'N×N 시너지 행렬을 읽고, 최솟값을 무한대로 초기화합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ns = [list(map(int, input().split())) for _ in range(n)]\nans = float(\'inf\')' },
-                        { title: 'N/2명 선택', desc: '각 사람을 팀에 넣거나 빼며 C(N,N/2) 조합을 탐색합니다.', code: 'def backtrack(idx, team):\n    global ans\n    if len(team) == n // 2:\n        other = [i for i in range(n) if i not in set(team)]\n        diff = abs(calc(team) - calc(other))\n        ans = min(ans, diff)\n        return\n    if idx >= n or n - idx < n // 2 - len(team):\n        return\n    team.append(idx)\n    backtrack(idx + 1, team)\n    team.pop()\n    backtrack(idx + 1, team)' },
-                        { title: '시너지 계산과 차이', desc: '팀원 모든 쌍의 S[i][j]+S[j][i]를 합산하여 두 팀 차이를 구합니다.', code: 'def calc(team):\n    total = 0\n    for i in range(len(team)):\n        for j in range(i+1, len(team)):\n            total += s[team[i]][team[j]] + s[team[j]][team[i]]\n    return total\n\nbacktrack(0, [])\nprint(ans)' }
+                        { title: 'Input and initialization', desc: 'Read the N*N synergy matrix and initialize the minimum to infinity.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ns = [list(map(int, input().split())) for _ in range(n)]\nans = float(\'inf\')' },
+                        { title: 'Select N/2 people', desc: 'Include or exclude each person from the team, exploring C(N,N/2) combinations.', code: 'def backtrack(idx, team):\n    global ans\n    if len(team) == n // 2:\n        other = [i for i in range(n) if i not in set(team)]\n        diff = abs(calc(team) - calc(other))\n        ans = min(ans, diff)\n        return\n    if idx >= n or n - idx < n // 2 - len(team):\n        return\n    team.append(idx)\n    backtrack(idx + 1, team)\n    team.pop()\n    backtrack(idx + 1, team)' },
+                        { title: 'Synergy calculation and difference', desc: 'Sum S[i][j]+S[j][i] for all team member pairs to get the difference between two teams.', code: 'def calc(team):\n    total = 0\n    for i in range(len(team)):\n        for j in range(i+1, len(team)):\n            total += s[team[i]][team[j]] + s[team[j]][team[i]]\n    return total\n\nbacktrack(0, [])\nprint(ans)' }
                     ],
                     cpp: [
-                        { title: '입력과 초기화', desc: 'bool team[] 배열로 팀 소속 관리.\nPython의 list.append/pop 대신 bool 토글.', code: '#include <iostream>\n#include <algorithm>\n#include <cmath>\nusing namespace std;\n\nint n, s[20][20];\nbool team[20];\nint ans = 1e9;' },
-                        { title: 'N/2명 선택', desc: '가지치기: 남은 인원이 부족하면 조기 종료.', code: 'void backtrack(int idx, int cnt) {\n    if (cnt == n / 2) {\n        int s1 = 0, s2 = 0;\n        for (int i = 0; i < n; i++)\n            for (int j = i + 1; j < n; j++) {\n                if (team[i] && team[j])\n                    s1 += s[i][j] + s[j][i];\n                else if (!team[i] && !team[j])\n                    s2 += s[i][j] + s[j][i];\n            }\n        ans = min(ans, abs(s1 - s2));\n        return;\n    }\n    if (idx >= n || n - idx < n/2 - cnt) return;\n    team[idx] = true;\n    backtrack(idx + 1, cnt + 1);\n    team[idx] = false;  // 되돌리기\n    backtrack(idx + 1, cnt);\n}' },
-                        { title: '시너지 계산과 차이', desc: 'team[] 배열로 팀 분류 후, 쌍별 시너지 합을 비교합니다.', code: 'int main() {\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < n; j++)\n            cin >> s[i][j];\n    backtrack(0, 0);\n    cout << ans << endl;\n}' }
+                        { title: 'Input and initialization', desc: 'Manage team membership with bool team[].\nUse bool toggle instead of Python\'s list.append/pop.', code: '#include <iostream>\n#include <algorithm>\n#include <cmath>\nusing namespace std;\n\nint n, s[20][20];\nbool team[20];\nint ans = 1e9;' },
+                        { title: 'Select N/2 people', desc: 'Pruning: early termination if remaining people are insufficient.', code: 'void backtrack(int idx, int cnt) {\n    if (cnt == n / 2) {\n        int s1 = 0, s2 = 0;\n        for (int i = 0; i < n; i++)\n            for (int j = i + 1; j < n; j++) {\n                if (team[i] && team[j])\n                    s1 += s[i][j] + s[j][i];\n                else if (!team[i] && !team[j])\n                    s2 += s[i][j] + s[j][i];\n            }\n        ans = min(ans, abs(s1 - s2));\n        return;\n    }\n    if (idx >= n || n - idx < n/2 - cnt) return;\n    team[idx] = true;\n    backtrack(idx + 1, cnt + 1);\n    team[idx] = false;  // Undo\n    backtrack(idx + 1, cnt);\n}' },
+                        { title: 'Synergy calculation and difference', desc: 'Classify teams using team[] array, then compare pairwise synergy sums.', code: 'int main() {\n    cin >> n;\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < n; j++)\n            cin >> s[i][j];\n    backtrack(0, 0);\n    cout << ans << endl;\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[5].templates; }
             }]
         },
-        // ========== 3단계: 심화 백트래킹 ==========
+        // ========== Stage 3: Advanced Backtracking ==========
         {
             id: 'boj-9663',
             title: 'BOJ 9663 - N-Queen',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/9663',
-            simIntro: '4×4 체스판에서 퀸을 배치하고 충돌을 확인하는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of placing queens on a 4x4 board and checking for conflicts.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>N\u00d7N인 체스판 위에 퀸 N개를 서로 공격할 수 없게 놓는 문제이다. N이 주어졌을 때, 퀸을 놓는 방법의 수를 구하는 프로그램을 작성하시오.</p>
+                <p>Place N queens on an N\u00d7N chessboard so that no two queens attack each other. Given N, write a program to find the number of ways to place the queens.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>8</pre></div>
                     <div><strong>Output</strong><pre>92</pre></div>
                 </div></div>
                 <h4>Constraints</h4>
-                <ul><li>1 \u2264 N \u2264 15 (단, 시간제한 10초)</li></ul>
+                <ul><li>1 \u2264 N \u2264 15 (time limit: 10 seconds)</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: 'N×N 체스판의 모든 칸에 퀸을 놓아볼까? N개의 퀸을 N<sup>2</sup>개의 칸 중에 배치하는 모든 경우의 수를 시도하면... 되긴 하겠지?' },
-                { title: 'But there\'s a problem with this', content: 'N=8이면 64칸 중 8개를 고르는 건 C(64, 8) = 약 44억 가지야! 너무 많아. 하지만 잠깐 — 퀸은 같은 행에 두 개가 올 수 없으니까, <strong>한 행에 하나씩</strong>만 놓으면 N<sup>N</sup>으로 줄어들고, 거기서 충돌 체크로 더 가지치기하면 훨씬 빨라져.' },
-                { title: 'What if we try this?', content: '행별로 퀸을 놓을 <strong>열</strong>을 선택하면서 백트래킹해! 행 충돌은 구조적으로 불가능하고, 확인할 건 세 가지:<br>① 같은 열에 이미 퀸이 있나? → <code>col[c]</code><br>② ↘ 대각선에 퀸이 있나? → 같은 대각선은 <code>row - col</code> 값이 같아! → <code>diag1[r-c+N]</code><br>③ ↗ 대각선에 퀸이 있나? → 같은 대각선은 <code>row + col</code> 값이 같아! → <code>diag2[r+c]</code>' },
-                { title: '더 빠르게 할 수 있어!', content: '2차원 보드 대신 <strong>1차원 배열 3개</strong>(col, diag1, diag2)만 쓰면 충돌 확인이 O(1)이야. 매번 보드를 탐색할 필요 없이 배열 인덱스 하나만 보면 되니까 엄청 빨라져. N=15까지도 10초 안에 해결할 수 있어!' }
+                { title: 'First intuition', content: 'Try placing queens on every cell of the N\u00d7N board? Try all ways to place N queens in N<sup>2</sup> cells... it would work, right?' },
+                { title: 'But there\'s a problem with this', content: 'For N=8, choosing 8 from 64 cells is C(64, 8) \u2248 4.4 billion! Way too many. But wait -- since no two queens can be in the same row, placing <strong>one per row</strong> reduces it to N<sup>N</sup>, and conflict checking prunes it much further.' },
+                { title: 'What if we try this?', content: 'Backtrack by choosing a <strong>column</strong> for each row! Row conflicts are structurally impossible, so we just check three things:<br>1. Is there already a queen in this column? \u2192 <code>col[c]</code><br>2. Is there a queen on the \u2198 diagonal? \u2192 Same diagonal has same <code>row - col</code> value! \u2192 <code>diag1[r-c+N]</code><br>3. Is there a queen on the \u2197 diagonal? \u2192 Same diagonal has same <code>row + col</code> value! \u2192 <code>diag2[r+c]</code>' },
+                { title: 'We can make it even faster!', content: 'Instead of a 2D board, use just <strong>3 one-dimensional arrays</strong> (col, diag1, diag2) for O(1) conflict checking. No need to scan the board each time -- just check one array index. This is fast enough to handle N=15 within 10 seconds!' }
             ],
             templates: {
                 python: 'import sys\n\nn = int(sys.stdin.readline())\ncol = [False] * n\ndiag1 = [False] * (2 * n)  # row - col + n\ndiag2 = [False] * (2 * n)  # row + col\ncount = 0\n\ndef solve(row):\n    global count\n    if row == n:\n        count += 1\n        return\n    for c in range(n):\n        if not col[c] and not diag1[row - c + n] and not diag2[row + c]:\n            col[c] = diag1[row - c + n] = diag2[row + c] = True\n            solve(row + 1)\n            col[c] = diag1[row - c + n] = diag2[row + c] = False\n\nsolve(0)\nprint(count)',
                 cpp: '#include <iostream>\nusing namespace std;\n\nint n, cnt = 0;\nbool col[15], diag1[30], diag2[30];\n\nvoid solve(int row) {\n    if (row == n) { cnt++; return; }\n    for (int c = 0; c < n; c++) {\n        if (!col[c] && !diag1[row-c+n] && !diag2[row+c]) {\n            col[c] = diag1[row-c+n] = diag2[row+c] = true;\n            solve(row + 1);\n            col[c] = diag1[row-c+n] = diag2[row+c] = false;\n        }\n    }\n}\n\nint main() {\n    cin >> n;\n    solve(0);\n    cout << cnt << endl;\n}'
             },
             solutions: [{
-                approach: '열/대각선 체크 백트래킹',
-                description: 'col, diag1, diag2 배열로 O(1) 충돌 체크한다',
+                approach: 'Column/diagonal check backtracking',
+                description: 'O(1) conflict checking with col, diag1, diag2 arrays',
                 timeComplexity: 'O(N!)',
                 spaceComplexity: 'O(N)',
                 codeSteps: {
                     python: [
-                        { title: '충돌 배열 세팅', desc: 'col/diag1/diag2 세 배열로 열과 양쪽 대각선 사용 여부를 O(1)에 체크합니다.', code: 'import sys\n\nn = int(sys.stdin.readline())\ncol = [False] * n\ndiag1 = [False] * (2 * n)  # row - col + n\ndiag2 = [False] * (2 * n)  # row + col\ncount = 0' },
-                        { title: '행별 퀸 배치', desc: '한 행에 퀸을 하나만 놓으므로, 행별로 열을 선택하며 재귀합니다.', code: 'def solve(row):\n    global count\n    if row == n:\n        count += 1\n        return\n    for c in range(n):' },
-                        { title: '대각선 충돌 체크', desc: 'row-c+n(↘ 대각선), row+c(↗ 대각선) 인덱스로 충돌을 판별합니다.', code: '        if not col[c] and not diag1[row - c + n] and not diag2[row + c]:\n            col[c] = diag1[row - c + n] = diag2[row + c] = True\n            solve(row + 1)\n            col[c] = diag1[row - c + n] = diag2[row + c] = False\n\nsolve(0)\nprint(count)' }
+                        { title: 'Conflict array setup', desc: 'Three arrays (col/diag1/diag2) for O(1) checking of column and both diagonal conflicts.', code: 'import sys\n\nn = int(sys.stdin.readline())\ncol = [False] * n\ndiag1 = [False] * (2 * n)  # row - col + n\ndiag2 = [False] * (2 * n)  # row + col\ncount = 0' },
+                        { title: 'Place queen per row', desc: 'Since only one queen per row, recursively select a column for each row.', code: 'def solve(row):\n    global count\n    if row == n:\n        count += 1\n        return\n    for c in range(n):' },
+                        { title: 'Diagonal conflict check', desc: 'row-c+n (\u2198 diagonal), row+c (\u2197 diagonal) as indices to detect conflicts.', code: '        if not col[c] and not diag1[row - c + n] and not diag2[row + c]:\n            col[c] = diag1[row - c + n] = diag2[row + c] = True\n            solve(row + 1)\n            col[c] = diag1[row - c + n] = diag2[row + c] = False\n\nsolve(0)\nprint(count)' }
                     ],
                     cpp: [
-                        { title: '충돌 배열 세팅', desc: 'col: 열 사용 여부, diag1/diag2: 대각선 사용 여부.\nbool 배열 3개로 O(1) 충돌 체크.', code: '#include <iostream>\nusing namespace std;\n\nint n, cnt = 0;\nbool col[15], diag1[30], diag2[30];' },
-                        { title: '행별 퀸 배치', desc: '행마다 열을 하나 선택 — 행 충돌은 구조적으로 불가능합니다.', code: 'void solve(int row) {\n    if (row == n) {\n        cnt++;\n        return;\n    }\n    for (int c = 0; c < n; c++) {' },
-                        { title: '대각선 충돌 체크', desc: 'row-c+n: ↘ 대각선 인덱스 (음수 방지).\nrow+c: ↗ 대각선 인덱스.', code: '        if (!col[c] && !diag1[row-c+n] && !diag2[row+c]) {\n            col[c] = diag1[row-c+n] = diag2[row+c] = true;\n            solve(row + 1);\n            col[c] = diag1[row-c+n] = diag2[row+c] = false;\n        }\n    }\n}\n\nint main() {\n    cin >> n;\n    solve(0);\n    cout << cnt << endl;\n}' }
+                        { title: 'Conflict array setup', desc: 'col: column usage, diag1/diag2: diagonal usage.\nThree bool arrays for O(1) conflict checking.', code: '#include <iostream>\nusing namespace std;\n\nint n, cnt = 0;\nbool col[15], diag1[30], diag2[30];' },
+                        { title: 'Place queen per row', desc: 'Select one column per row -- row conflicts are structurally impossible.', code: 'void solve(int row) {\n    if (row == n) {\n        cnt++;\n        return;\n    }\n    for (int c = 0; c < n; c++) {' },
+                        { title: 'Diagonal conflict check', desc: 'row-c+n: \u2198 diagonal index (prevents negative).\nrow+c: \u2197 diagonal index.', code: '        if (!col[c] && !diag1[row-c+n] && !diag2[row+c]) {\n            col[c] = diag1[row-c+n] = diag2[row+c] = true;\n            solve(row + 1);\n            col[c] = diag1[row-c+n] = diag2[row+c] = false;\n        }\n    }\n}\n\nint main() {\n    cin >> n;\n    solve(0);\n    cout << cnt << endl;\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[6].templates; }
@@ -1733,46 +1733,46 @@ for (int i = 1; i &lt;= n; i++) {
         },
         {
             id: 'boj-2580',
-            title: 'BOJ 2580 - 스도쿠',
+            title: 'BOJ 2580 - Sudoku',
             difficulty: 'gold',
             link: 'https://www.acmicpc.net/problem/2580',
-            simIntro: '4×4 미니 스도쿠에서 빈 칸을 채우는 백트래킹 과정을 관찰하세요.',
+            simIntro: 'Observe the backtracking process of filling blank cells in a 4x4 mini Sudoku.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>스도쿠는 18세기 스위스 수학자가 만든 '라틴 사각형'이라는 퍼즐에서 유래한 것으로, 가로 9칸, 세로 9칸으로 이루어져 있는 표에 1부터 9까지의 숫자를 채워넣는 퍼즐이다.</p>
-                <p>같은 행, 같은 열, 같은 3\u00d73 정사각형 안에는 같은 숫자가 들어가지 않도록 하면서 빈 칸(0)을 채워 완성하시오. 답이 여러 개이면 하나만 출력.</p>
+                <p>Sudoku originates from the 'Latin Square' puzzle created by an 18th-century Swiss mathematician. It is a puzzle where you fill numbers 1 through 9 into a 9-row, 9-column grid.</p>
+                <p>Fill in the blank cells (0) such that no number repeats in the same row, same column, or same 3\u00d73 box. If there are multiple answers, print only one.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>0 3 5 4 6 9 2 7 8\n7 8 2 1 0 5 6 0 9\n0 6 0 2 7 8 1 3 5\n3 2 1 0 4 6 8 9 7\n8 0 4 9 1 3 5 0 6\n5 9 6 8 2 0 4 1 3\n9 1 7 6 5 2 0 8 0\n6 0 3 7 0 1 9 5 2\n2 5 8 3 9 4 7 6 0</pre></div>
                     <div><strong>Output</strong><pre>1 3 5 4 6 9 2 7 8\n7 8 2 1 3 5 6 4 9\n4 6 9 2 7 8 1 3 5\n3 2 1 5 4 6 8 9 7\n8 7 4 9 1 3 5 2 6\n5 9 6 8 2 7 4 1 3\n9 1 7 6 5 2 3 8 4\n6 4 3 7 8 1 9 5 2\n2 5 8 3 9 4 7 6 1</pre></div>
                 </div></div>
                 <h4>Constraints</h4>
-                <ul><li>빈 칸은 0으로 표시</li><li>답이 여러 개이면 하나만 출력</li></ul>
+                <ul><li>Blank cells are represented as 0</li><li>If there are multiple answers, print only one</li></ul>
             `,
             hints: [
-                { title: 'First intuition', content: '빈 칸에 1~9를 넣어보면 되지 않을까? 첫 번째 빈 칸에 1을 넣어보고, 두 번째 빈 칸에 1을 넣어보고... 이런 식으로 모든 경우를 시도하는 거야.' },
-                { title: 'But there\'s a problem with this', content: '빈 칸이 많으면 9<sup>빈칸수</sup>가지를 전부 시도하게 돼! 하지만 스도쿠는 규칙이 빡빡하잖아 — 같은 행, 같은 열, 같은 3×3 박스에 중복 불가. 이 조건을 <strong>넣는 순간에</strong> 체크하면 불가능한 가지를 미리 잘라낼 수 있어.' },
-                { title: 'What if we try this?', content: '빈 칸 좌표를 미리 모아두고, 순서대로 하나씩 채워가면서 백트래킹해!<br><br>매번 숫자를 넣을 때 세 가지를 확인해:<br>① 같은 <strong>행</strong>에 이 숫자가 있나?<br>② 같은 <strong>열</strong>에 이 숫자가 있나?<br>③ 같은 <strong>3×3 박스</strong>에 이 숫자가 있나?<br><br>3×3 박스의 시작점은 <code>(row//3*3, col//3*3)</code>로 계산해. 실패하면 0으로 되돌리고 다음 숫자를 시도!' },
-                { title: '마지막 포인트: 즉시 종료!', content: '답이 여러 개일 수 있지만 <strong>하나만 출력</strong>하면 돼. 빈 칸을 모두 채우면 바로 출력하고 프로그램을 종료해야 해.<br><span class="lang-py">Python: <code>sys.exit()</code>로 즉시 종료</span><span class="lang-cpp">C++: <code>exit(0)</code>으로 즉시 종료</span><br><br>💡 더 빠르게 하려면? 가능한 숫자가 <strong>가장 적은</strong> 빈 칸부터 채우면 가지치기 효과가 커져!' }
+                { title: 'First intuition', content: 'How about trying 1~9 in each blank cell? Put 1 in the first blank, then 1 in the second blank... try every possibility like this.' },
+                { title: 'But there\'s a problem with this', content: 'With many blanks, we\'d try 9<sup>blanks</sup> possibilities! But Sudoku has strict rules -- no repeats in the same row, column, or 3\u00d73 box. If we check these constraints <strong>at the moment of placing</strong>, we can prune impossible branches early.' },
+                { title: 'What if we try this?', content: 'Collect all blank cell coordinates upfront, then fill them one by one with backtracking!<br><br>Each time we place a number, check three things:<br>1. Is this number already in the same <strong>row</strong>?<br>2. Is this number already in the same <strong>column</strong>?<br>3. Is this number already in the same <strong>3\u00d73 box</strong>?<br><br>The 3\u00d73 box starting point is <code>(row//3*3, col//3*3)</code>. If it fails, reset to 0 and try the next number!' },
+                { title: 'Final point: Immediate termination!', content: 'There may be multiple answers, but we only need to <strong>print one</strong>. Once all blanks are filled, print immediately and terminate the program.<br><span class="lang-py">Python: Terminate immediately with <code>sys.exit()</code></span><span class="lang-cpp">C++: Terminate immediately with <code>exit(0)</code></span><br><br>Want it faster? Fill blanks with the <strong>fewest possible numbers</strong> first for stronger pruning!' }
             ],
             templates: {
                 python: 'import sys\ninput = sys.stdin.readline\n\nboard = [list(map(int, input().split())) for _ in range(9)]\nblanks = [(r, c) for r in range(9) for c in range(9) if board[r][c] == 0]\n\ndef is_valid(r, c, num):\n    if num in board[r]: return False\n    for i in range(9):\n        if board[i][c] == num: return False\n    sr, sc = r // 3 * 3, c // 3 * 3\n    for i in range(sr, sr + 3):\n        for j in range(sc, sc + 3):\n            if board[i][j] == num: return False\n    return True\n\ndef solve(idx):\n    if idx == len(blanks):\n        for row in board:\n            print(*row)\n        sys.exit()\n    r, c = blanks[idx]\n    for num in range(1, 10):\n        if is_valid(r, c, num):\n            board[r][c] = num\n            solve(idx + 1)\n            board[r][c] = 0\n\nsolve(0)',
                 cpp: '#include <iostream>\n#include <vector>\n#include <cstdlib>\nusing namespace std;\n\nint board[9][9];\nvector<pair<int,int>> blanks;\n\nbool isValid(int r, int c, int num) {\n    for (int i = 0; i < 9; i++) {\n        if (board[r][i] == num) return false;\n        if (board[i][c] == num) return false;\n    }\n    int sr = r/3*3, sc = c/3*3;\n    for (int i = sr; i < sr+3; i++)\n        for (int j = sc; j < sc+3; j++)\n            if (board[i][j] == num) return false;\n    return true;\n}\n\nvoid solve(int idx) {\n    if (idx == blanks.size()) {\n        for (int i = 0; i < 9; i++) {\n            for (int j = 0; j < 9; j++)\n                cout << board[i][j] << (j < 8 ? " " : "\\n");\n        }\n        exit(0);\n    }\n    auto [r, c] = blanks[idx];\n    for (int num = 1; num <= 9; num++) {\n        if (isValid(r, c, num)) {\n            board[r][c] = num;\n            solve(idx + 1);\n            board[r][c] = 0;\n        }\n    }\n}\n\nint main() {\n    for (int i = 0; i < 9; i++)\n        for (int j = 0; j < 9; j++) {\n            cin >> board[i][j];\n            if (board[i][j] == 0) blanks.push_back({i, j});\n        }\n    solve(0);\n}'
             },
             solutions: [{
-                approach: '빈칸 채우기 백트래킹',
-                description: '빈칸을 순서대로 1~9를 넣어보며 충돌 검사한다',
-                timeComplexity: 'O(9^빈칸수)',
+                approach: 'Blank cell filling backtracking',
+                description: 'Try 1~9 in each blank cell sequentially with conflict checking',
+                timeComplexity: 'O(9^blanks)',
                 spaceComplexity: 'O(81)',
                 codeSteps: {
                     python: [
-                        { title: '빈칸 수집', desc: '빈칸(0) 좌표를 미리 모아두면 순서대로 채우기만 하면 됩니다.', code: 'import sys\ninput = sys.stdin.readline\n\nboard = [list(map(int, input().split())) for _ in range(9)]\nblanks = [(r, c) for r in range(9) for c in range(9) if board[r][c] == 0]' },
-                        { title: '행/열/박스 검증', desc: '같은 행, 열, 3x3 박스에 중복이 없는지 확인합니다.', code: 'def is_valid(r, c, num):\n    if num in board[r]: return False\n    for i in range(9):\n        if board[i][c] == num: return False\n    sr, sc = r // 3 * 3, c // 3 * 3\n    for i in range(sr, sr + 3):\n        for j in range(sc, sc + 3):\n            if board[i][j] == num: return False\n    return True' },
-                        { title: '채우기와 출력', desc: '1~9를 넣어보고 실패 시 0으로 되돌리며, 완성 시 sys.exit()로 즉시 종료합니다.', code: 'def solve(idx):\n    if idx == len(blanks):\n        for row in board:\n            print(*row)\n        sys.exit()\n    r, c = blanks[idx]\n    for num in range(1, 10):\n        if is_valid(r, c, num):\n            board[r][c] = num\n            solve(idx + 1)\n            board[r][c] = 0\n\nsolve(0)' }
+                        { title: 'Collect blanks', desc: 'Gather blank (0) cell coordinates upfront so we just fill them in order.', code: 'import sys\ninput = sys.stdin.readline\n\nboard = [list(map(int, input().split())) for _ in range(9)]\nblanks = [(r, c) for r in range(9) for c in range(9) if board[r][c] == 0]' },
+                        { title: 'Row/Column/Box validation', desc: 'Check there are no duplicates in the same row, column, or 3x3 box.', code: 'def is_valid(r, c, num):\n    if num in board[r]: return False\n    for i in range(9):\n        if board[i][c] == num: return False\n    sr, sc = r // 3 * 3, c // 3 * 3\n    for i in range(sr, sr + 3):\n        for j in range(sc, sc + 3):\n            if board[i][j] == num: return False\n    return True' },
+                        { title: 'Fill and output', desc: 'Try 1~9, reset to 0 on failure; when complete, immediately exit with sys.exit().', code: 'def solve(idx):\n    if idx == len(blanks):\n        for row in board:\n            print(*row)\n        sys.exit()\n    r, c = blanks[idx]\n    for num in range(1, 10):\n        if is_valid(r, c, num):\n            board[r][c] = num\n            solve(idx + 1)\n            board[r][c] = 0\n\nsolve(0)' }
                     ],
                     cpp: [
-                        { title: '빈칸 수집', desc: 'auto [r, c]로 구조적 바인딩 (C++17).\nexit(0)으로 답 찾으면 즉시 종료.', code: '#include <iostream>\n#include <vector>\n#include <cstdlib>\nusing namespace std;\n\nint board[9][9];\nvector<pair<int,int>> blanks;' },
-                        { title: '행/열/박스 검증', desc: 'r/3*3, c/3*3으로 3x3 박스 시작점을 계산합니다.', code: 'bool isValid(int r, int c, int num) {\n    for (int i = 0; i < 9; i++) {\n        if (board[r][i] == num) return false;  // 행\n        if (board[i][c] == num) return false;  // 열\n    }\n    int sr = r/3*3, sc = c/3*3;  // 3x3 박스 시작점\n    for (int i = sr; i < sr+3; i++)\n        for (int j = sc; j < sc+3; j++)\n            if (board[i][j] == num) return false;\n    return true;\n}' },
-                        { title: '채우기와 출력', desc: '1~9를 넣어보고 실패 시 0으로 되돌리며, exit(0)으로 첫 답 즉시 종료합니다.', code: 'void solve(int idx) {\n    if (idx == (int)blanks.size()) {\n        for (int i = 0; i < 9; i++) {\n            for (int j = 0; j < 9; j++)\n                cout << board[i][j] << (j < 8 ? " " : "\\n");\n        }\n        exit(0);  // 답 하나만 출력 후 즉시 종료\n    }\n    auto [r, c] = blanks[idx];\n    for (int num = 1; num <= 9; num++) {\n        if (isValid(r, c, num)) {\n            board[r][c] = num;\n            solve(idx + 1);\n            board[r][c] = 0;  // 되돌리기\n        }\n    }\n}\n\nint main() {\n    for (int i = 0; i < 9; i++)\n        for (int j = 0; j < 9; j++) {\n            cin >> board[i][j];\n            if (board[i][j] == 0)\n                blanks.push_back({i, j});\n        }\n    solve(0);\n}' }
+                        { title: 'Collect blanks', desc: 'Structured binding with auto [r, c] (C++17).\nexit(0) terminates immediately when answer is found.', code: '#include <iostream>\n#include <vector>\n#include <cstdlib>\nusing namespace std;\n\nint board[9][9];\nvector<pair<int,int>> blanks;' },
+                        { title: 'Row/Column/Box validation', desc: 'Compute 3x3 box starting point with r/3*3, c/3*3.', code: 'bool isValid(int r, int c, int num) {\n    for (int i = 0; i < 9; i++) {\n        if (board[r][i] == num) return false;  // row\n        if (board[i][c] == num) return false;  // column\n    }\n    int sr = r/3*3, sc = c/3*3;  // 3x3 box start\n    for (int i = sr; i < sr+3; i++)\n        for (int j = sc; j < sc+3; j++)\n            if (board[i][j] == num) return false;\n    return true;\n}' },
+                        { title: 'Fill and output', desc: 'Try 1~9, reset to 0 on failure; exit(0) terminates immediately on first answer.', code: 'void solve(int idx) {\n    if (idx == (int)blanks.size()) {\n        for (int i = 0; i < 9; i++) {\n            for (int j = 0; j < 9; j++)\n                cout << board[i][j] << (j < 8 ? " " : "\\n");\n        }\n        exit(0);  // Print one answer and terminate\n    }\n    auto [r, c] = blanks[idx];\n    for (int num = 1; num <= 9; num++) {\n        if (isValid(r, c, num)) {\n            board[r][c] = num;\n            solve(idx + 1);\n            board[r][c] = 0;  // Undo\n        }\n    }\n}\n\nint main() {\n    for (int i = 0; i < 9; i++)\n        for (int j = 0; j < 9; j++) {\n            cin >> board[i][j];\n            if (board[i][j] == 0)\n                blanks.push_back({i, j});\n        }\n    solve(0);\n}' }
                     ]
                 },
                 get templates() { return backtrackingTopic.problems[7].templates; }

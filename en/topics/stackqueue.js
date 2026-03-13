@@ -1,24 +1,24 @@
 // =========================================================
-// 스택과 큐 (Stack & Queue) 토픽 모듈
+// Stack & Queue Topic Module
 // =========================================================
 const stackQueueTopic = {
     id: 'stackqueue',
-    title: '스택과 큐',
+    title: 'Stack & Queue',
     icon: '📦',
     category: 'Data Structures',
     order: 4,
-    description: 'LIFO 스택과 FIFO 큐의 원리, 괄호 검증, 덱 활용',
-    relatedNote: '이 외에도 모노톤 스택, 후위 표기식 변환, 슬라이딩 윈도우 최대값(덱) 등이 스택/큐 문제에 자주 출제됩니다.',
+    description: 'Principles of LIFO stacks and FIFO queues, bracket validation, and deque usage',
+    relatedNote: 'Other commonly tested stack/queue problems include monotone stacks, postfix expression conversion, and sliding window maximum (deque).',
 
     sidebarExpandable: true,
 
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
-        'boj-10773': { type: '스택 기본',   color: 'var(--accent)', vizMethod: '_renderVizZero' },
-        'lc-20':     { type: '괄호 검증',   color: '#e17055',      vizMethod: '_renderVizParentheses' },
-        'boj-2164':  { type: '큐 활용',     color: '#6c5ce7',      vizMethod: '_renderVizCard2' },
-        'lc-155':    { type: '보조 스택',   color: 'var(--green)',  vizMethod: '_renderVizMinStack' }
+        'boj-10773': { type: 'Stack Basics',       color: 'var(--accent)', vizMethod: '_renderVizZero' },
+        'lc-20':     { type: 'Bracket Validation', color: '#e17055',      vizMethod: '_renderVizParentheses' },
+        'boj-2164':  { type: 'Queue Usage',        color: '#6c5ce7',      vizMethod: '_renderVizCard2' },
+        'lc-155':    { type: 'Auxiliary Stack',     color: 'var(--green)',  vizMethod: '_renderVizMinStack' }
     },
 
     getProblemTabs(problemId) {
@@ -153,17 +153,17 @@ const stackQueueTopic = {
     renderConcept(container) {
         container.innerHTML = `
             <div class="hero">
-                <h2>📦 스택과 큐 (Stack & Queue)</h2>
-                <p class="hero-sub">데이터를 넣고 빼는 두 가지 규칙을 배워봅시다!</p>
+                <h2>📦 Stack & Queue</h2>
+                <p class="hero-sub">Let's learn two rules for inserting and removing data!</p>
             </div>
 
-            <!-- 섹션 1: 스택 -->
+            <!-- Section 1: Stack -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">1</span> 스택 (Stack)</div>
+                <div class="concept-section-title"><span class="section-num">1</span> Stack</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 스택은 <em>"접시 쌓기"</em>입니다!
-                    접시를 위에서 쌓고(push), 위에서만 꺼냅니다(pop).
-                    가장 나중에 올린 접시를 가장 먼저 꺼내죠. 이것이 <strong>LIFO</strong>(Last In, First Out)입니다.
+                    <strong>Understanding by analogy:</strong> A stack is like <em>"stacking plates"</em>!
+                    You stack plates from the top (push) and can only take them off from the top (pop).
+                    The plate placed last is the first one removed. This is <strong>LIFO</strong> (Last In, First Out).
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Push & Pop</div>
@@ -174,38 +174,38 @@ const stackQueueTopic = {
                     </div>
                     <div class="concept-demo-body">
                         <div class="demo-stack-wrap">
-                            <div class="demo-stack-label">스택</div>
+                            <div class="demo-stack-label">Stack</div>
                             <div class="demo-stack" id="sq-demo-stack">
                                 <div class="demo-stack-empty">(Empty)</div>
                             </div>
                         </div>
                     </div>
-                    <div class="concept-demo-msg" id="sq-demo-stack-msg">👆 Push 버튼을 눌러 스택에 숫자를 넣어보세요!</div>
+                    <div class="concept-demo-msg" id="sq-demo-stack-msg">👆 Press the Push button to add numbers to the stack!</div>
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">push</text></svg></div>
                         <h3>push(x)</h3>
-                        <p>스택 맨 위에 원소 x를 넣습니다. <span class="lang-py">Python에서는 <code>append()</code></span><span class="lang-cpp">C++은 <code>push()</code></span>.</p>
+                        <p>Pushes element x onto the top of the stack. <span class="lang-py">In Python, use <code>append()</code></span><span class="lang-cpp">In C++, use <code>push()</code></span>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">pop</text></svg></div>
                         <h3>pop()</h3>
-                        <p>스택 맨 위 원소를 꺼내고 반환합니다. 비어있으면 에러! <code>O(1)</code> 연산입니다.</p>
+                        <p>Removes and returns the top element. Raises an error if empty! An <code>O(1)</code> operation.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">peek</text></svg></div>
                         <h3>peek / top</h3>
-                        <p>꺼내지 않고 맨 위 원소를 확인합니다. <span class="lang-py">Python에서는 <code>stack[-1]</code></span><span class="lang-cpp">C++에서는 <code>stk.top()</code></span>.</p>
+                        <p>Views the top element without removing it. <span class="lang-py">In Python, use <code>stack[-1]</code></span><span class="lang-cpp">In C++, use <code>stk.top()</code></span>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">LIFO</text></svg></div>
                         <h3>Usage Examples</h3>
-                        <p>괄호 검증, 뒤로가기 기능, 재귀 호출 스택, DFS 구현에 쓰입니다.</p>
+                        <p>Used in bracket validation, browser back button, recursion call stack, and DFS implementation.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 스택 기본 사용 (Python은 리스트가 스택!)
+                    <pre><code class="language-python"># Basic stack usage (In Python, a list IS a stack!)
 stack = []
 stack.append(1)   # push → [1]
 stack.append(2)   # push → [1, 2]
@@ -227,27 +227,27 @@ stk.pop();            // pop  → {1, 2}
 cout &lt;&lt; stk.size();   // size → 2</code></pre>
                 </div></span>
                 <div style="margin-top:0.5rem;">
-                    <span class="lang-py"><a href="https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: 리스트를 스택으로 사용하기 ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/stack" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: stack ↗</a></span>
+                    <span class="lang-py"><a href="https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: Using Lists as Stacks ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/stack" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: stack ↗</a></span>
                 </div>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 웹 브라우저의 "뒤로가기" 버튼은 어떤 자료구조를 쓸까요?
-                    방문한 페이지를 스택에 쌓고, 뒤로가기를 누르면 pop!
+                    <strong>💡 Think about it:</strong> What data structure does a web browser's "Back" button use?
+                    Visited pages are pushed onto a stack, and pressing Back pops the top!
                 </div>
             </div>
 
-            <!-- 섹션 2: 큐 -->
+            <!-- Section 2: Queue -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">2</span> 큐 (Queue)</div>
+                <div class="concept-section-title"><span class="section-num">2</span> Queue</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 큐는 <em>"편의점 줄 서기"</em>입니다!
-                    먼저 줄 선 사람이 먼저 계산합니다. 뒤에서 들어가고(enqueue), 앞에서 나옵니다(dequeue).
-                    이것이 <strong>FIFO</strong>(First In, First Out)입니다.
+                    <strong>Understanding by analogy:</strong> A queue is like <em>"waiting in line at a store"</em>!
+                    The first person in line is served first. Items enter from the back (enqueue) and leave from the front (dequeue).
+                    This is <strong>FIFO</strong> (First In, First Out).
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Enqueue & Dequeue</div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sq-demo-enqueue">📥 Enqueue (뒤에 추가)</button>
-                        <button class="concept-demo-btn danger" id="sq-demo-dequeue" disabled>📤 Dequeue (앞에서 제거)</button>
+                        <button class="concept-demo-btn" id="sq-demo-enqueue">📥 Enqueue (add to back)</button>
+                        <button class="concept-demo-btn danger" id="sq-demo-dequeue" disabled>📤 Dequeue (remove from front)</button>
                     </div>
                     <div class="concept-demo-body">
                         <div class="demo-queue-wrap">
@@ -260,23 +260,23 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
                             </div>
                         </div>
                     </div>
-                    <div class="concept-demo-msg" id="sq-demo-queue-msg">👆 Enqueue 버튼을 눌러 큐에 데이터를 넣어보세요!</div>
+                    <div class="concept-demo-msg" id="sq-demo-queue-msg">👆 Press the Enqueue button to add data to the queue!</div>
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">enqueue</text></svg></div>
                         <h3>enqueue(x)</h3>
-                        <p>큐의 뒤쪽에 원소를 넣습니다. <span class="lang-py"><code>append()</code>와 동일</span><span class="lang-cpp"><code>push()</code>와 동일</span>.</p>
+                        <p>Adds an element to the back of the queue. <span class="lang-py">Same as <code>append()</code></span><span class="lang-cpp">Same as <code>push()</code></span>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--red, #e17055)">dequeue</text></svg></div>
                         <h3>dequeue()</h3>
-                        <p>큐의 앞쪽에서 원소를 꺼냅니다. <span class="lang-py">Python <code>deque</code>의 <code>popleft()</code></span><span class="lang-cpp">C++ <code>queue</code>의 <code>front()</code> + <code>pop()</code></span>.</p>
+                        <p>Removes an element from the front of the queue. <span class="lang-py">Python <code>deque</code>'s <code>popleft()</code></span><span class="lang-cpp">C++ <code>queue</code>'s <code>front()</code> + <code>pop()</code></span>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">FIFO</text></svg></div>
                         <h3>Usage Examples</h3>
-                        <p>BFS 탐색, 프린터 큐, 프로세스 스케줄링에 쓰입니다.</p>
+                        <p>Used in BFS traversal, printer queues, and process scheduling.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -289,8 +289,8 @@ q.append(3)     # enqueue → [1, 2, 3]
 val = q.popleft()  # dequeue → 1, q = [2, 3]
 front = q[0]       # peek   → 2
 
-# ⚠️ list의 pop(0)은 O(n)이라 느립니다!
-# deque의 popleft()는 O(1)이므로 반드시 deque를 쓰세요.</code></pre>
+# ⚠️ list.pop(0) is O(n) and slow!
+# deque.popleft() is O(1), so always use deque.</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
                     <pre><code class="language-cpp">#include &lt;queue&gt;
@@ -304,29 +304,29 @@ int val = q.front(); // peek   → 1
 q.pop();             // dequeue → {2, 3}
 int f = q.front();   // peek   → 2
 
-// C++ queue는 front()로 확인, pop()으로 제거
-// front()+pop() 모두 O(1) 연산입니다.</code></pre>
+// C++ queue: front() to view, pop() to remove
+// Both front() and pop() are O(1) operations.</code></pre>
                 </div></span>
                 <div style="margin-top:0.5rem;">
                     <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: deque ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: queue ↗</a></span>
                 </div>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> <span class="lang-py">Python에서 <code>list.pop(0)</code>이 느린 이유는?
-                    맨 앞 원소를 빼면 나머지 원소를 한 칸씩 앞으로 밀어야 하기 때문입니다 → O(n)!</span><span class="lang-cpp">큐에서 <code>front()</code>와 <code>pop()</code>이 분리된 이유는?
-                    예외 안전성(exception safety) 때문입니다 — 값 반환과 제거를 분리해야 안전합니다!</span>
+                    <strong>💡 Think about it:</strong> <span class="lang-py">Why is <code>list.pop(0)</code> slow in Python?
+                    Because removing the front element requires shifting all remaining elements one position forward -- O(n)!</span><span class="lang-cpp">Why are <code>front()</code> and <code>pop()</code> separate in a queue?
+                    For exception safety -- separating value retrieval from removal is safer!</span>
                 </div>
             </div>
 
-            <!-- 섹션 3: 덱 -->
+            <!-- Section 3: Deque -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> 덱 (Deque, Double-Ended Queue)</div>
+                <div class="concept-section-title"><span class="section-num">3</span> Deque (Double-Ended Queue)</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 덱은 <em>"양쪽 문이 있는 터널"</em>입니다!
-                    앞에서도 넣고 뺄 수 있고, 뒤에서도 넣고 뺄 수 있습니다.
-                    스택과 큐를 모두 대체할 수 있는 <strong>만능 자료구조</strong>입니다.
+                    <strong>Understanding by analogy:</strong> A deque is like a <em>"tunnel with doors on both ends"</em>!
+                    You can insert and remove from both the front and the back.
+                    It is a <strong>versatile data structure</strong> that can replace both stacks and queues.
                 </div>
                 <div class="concept-demo">
-                    <div class="concept-demo-title">🎮 Try It — 양방향 삽입/삭제</div>
+                    <div class="concept-demo-title">🎮 Try It — Double-Ended Insert/Remove</div>
                     <div class="concept-demo-btns">
                         <button class="concept-demo-btn" id="sq-demo-appendleft">◀ appendleft</button>
                         <button class="concept-demo-btn" id="sq-demo-append">append ▶</button>
@@ -344,18 +344,18 @@ int f = q.front();   // peek   → 2
                             </div>
                         </div>
                     </div>
-                    <div class="concept-demo-msg" id="sq-demo-deque-msg">👆 양쪽 버튼을 눌러 앞/뒤로 자유롭게 넣고 빼보세요!</div>
+                    <div class="concept-demo-msg" id="sq-demo-deque-msg">👆 Press the buttons to freely insert and remove from both ends!</div>
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="10" font-weight="bold" fill="var(--accent)">←append→</text></svg></div>
-                        <h3>양방향 삽입</h3>
-                        <p><span class="lang-py"><code>appendleft(x)</code>: 앞에 추가, <code>append(x)</code>: 뒤에 추가.</span><span class="lang-cpp"><code>push_front(x)</code>: 앞에 추가, <code>push_back(x)</code>: 뒤에 추가.</span> 모두 O(1)!</p>
+                        <h3>Double-Ended Insert</h3>
+                        <p><span class="lang-py"><code>appendleft(x)</code>: add to front, <code>append(x)</code>: add to back.</span><span class="lang-cpp"><code>push_front(x)</code>: add to front, <code>push_back(x)</code>: add to back.</span> All O(1)!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="10" font-weight="bold" fill="var(--red, #e17055)">←pop→</text></svg></div>
-                        <h3>양방향 삭제</h3>
-                        <p><span class="lang-py"><code>popleft()</code>: 앞에서 제거, <code>pop()</code>: 뒤에서 제거.</span><span class="lang-cpp"><code>pop_front()</code>: 앞에서 제거, <code>pop_back()</code>: 뒤에서 제거.</span> 모두 O(1)!</p>
+                        <h3>Double-Ended Remove</h3>
+                        <p><span class="lang-py"><code>popleft()</code>: remove from front, <code>pop()</code>: remove from back.</span><span class="lang-cpp"><code>pop_front()</code>: remove from front, <code>pop_back()</code>: remove from back.</span> All O(1)!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -367,11 +367,11 @@ dq.append(4)      # [0, 1, 2, 3, 4]
 dq.popleft()       # 0,  dq = [1, 2, 3, 4]
 dq.pop()           # 4,  dq = [1, 2, 3]
 
-# 덱은 슬라이딩 윈도우 최대/최소에도 활용!
-# maxlen을 지정하면 자동으로 오래된 원소가 빠집니다.
+# Deques are also used for sliding window max/min!
+# Setting maxlen automatically removes old elements.
 dq = deque(maxlen=3)
 dq.append(1); dq.append(2); dq.append(3)  # [1, 2, 3]
-dq.append(4)  # [2, 3, 4] ← 1이 자동으로 빠짐!</code></pre>
+dq.append(4)  # [2, 3, 4] ← 1 is automatically removed!</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
                     <pre><code class="language-cpp">#include &lt;deque&gt;
@@ -380,66 +380,66 @@ using namespace std;
 deque&lt;int&gt; dq = {1, 2, 3};
 dq.push_front(0);  // {0, 1, 2, 3}
 dq.push_back(4);   // {0, 1, 2, 3, 4}
-dq.pop_front();    // 0 제거, dq = {1, 2, 3, 4}
-dq.pop_back();     // 4 제거, dq = {1, 2, 3}
+dq.pop_front();    // removes 0, dq = {1, 2, 3, 4}
+dq.pop_back();     // removes 4, dq = {1, 2, 3}
 
-// 덱은 슬라이딩 윈도우 최대/최소에도 활용!
-// C++에서는 크기 제한을 직접 관리합니다.
+// Deques are also used for sliding window max/min!
+// In C++, you manage size limits manually.
 deque&lt;int&gt; dq2;
 dq2.push_back(1); dq2.push_back(2); dq2.push_back(3);
 dq2.push_back(4);
 if (dq2.size() > 3) dq2.pop_front();
-// dq2 = {2, 3, 4} ← 1이 수동으로 빠짐!</code></pre>
+// dq2 = {2, 3, 4} ← 1 is manually removed!</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> "스택을 구현하세요"라는 문제가 나오면?
-                    <span class="lang-py">Python에서는 그냥 리스트를 쓰면 됩니다! <code>append()</code>와 <code>pop()</code>이 O(1)이니까요.
-                    큐를 구현할 때만 <code>deque</code>를 쓰면 됩니다.</span><span class="lang-cpp">C++에서는 <code>stack&lt;int&gt;</code>를 쓰면 됩니다! <code>push()</code>와 <code>pop()</code>이 O(1)이니까요.
-                    큐를 구현할 때는 <code>queue&lt;int&gt;</code>, 덱은 <code>deque&lt;int&gt;</code>를 쓰면 됩니다.</span>
+                    <strong>💡 Think about it:</strong> What if a problem asks you to "implement a stack"?
+                    <span class="lang-py">In Python, just use a list! <code>append()</code> and <code>pop()</code> are both O(1).
+                    Only use <code>deque</code> when implementing a queue.</span><span class="lang-cpp">In C++, use <code>stack&lt;int&gt;</code>! <code>push()</code> and <code>pop()</code> are both O(1).
+                    For queues use <code>queue&lt;int&gt;</code>, and for deques use <code>deque&lt;int&gt;</code>.</span>
                 </div>
             </div>
 
-            <!-- 섹션 4: 괄호 검증 패턴 -->
+            <!-- Section 4: Bracket Validation Pattern -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">4</span> 스택 핵심 패턴: 괄호 검증</div>
+                <div class="concept-section-title"><span class="section-num">4</span> Key Stack Pattern: Bracket Validation</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 괄호 검증은 <em>"짝꿍 찾기 게임"</em>입니다!
-                    여는 괄호가 나오면 스택에 넣고, 닫는 괄호가 나오면 스택에서 짝꿍을 꺼내서 맞는지 확인합니다.
-                    끝났을 때 스택이 비어있으면 모든 괄호가 짝이 맞는 것입니다!
+                    <strong>Understanding by analogy:</strong> Bracket validation is like a <em>"matching pairs game"</em>!
+                    When an opening bracket appears, push it onto the stack. When a closing bracket appears, pop from the stack and check if they match.
+                    If the stack is empty at the end, all brackets are properly matched!
                 </div>
                 <div class="concept-demo">
-                    <div class="concept-demo-title">🎮 Try It — 괄호 검증 시뮬레이션</div>
+                    <div class="concept-demo-title">🎮 Try It — Bracket Validation Simulation</div>
                     <div class="demo-paren-input" id="sq-demo-paren-input"></div>
                     <div style="display:flex;gap:12px;align-items:center;justify-content:center;margin-bottom:0.8rem;">
-                        <div class="demo-paren-stack-label">스택:</div>
+                        <div class="demo-paren-stack-label">Stack:</div>
                         <div class="demo-paren-stack" id="sq-demo-paren-stack">
                             <span style="color:var(--text3);font-size:0.85rem;">(Empty)</span>
                         </div>
                     </div>
                     <div class="demo-paren-step-info">
                         <div class="concept-demo-btns" style="margin-bottom:0;">
-                            <button class="concept-demo-btn" id="sq-demo-paren-next">다음 스텝 →</button>
-                            <button class="concept-demo-btn green" id="sq-demo-paren-reset" style="display:none;">↺ 처음부터</button>
+                            <button class="concept-demo-btn" id="sq-demo-paren-next">Next Step →</button>
+                            <button class="concept-demo-btn green" id="sq-demo-paren-reset" style="display:none;">↺ Start Over</button>
                         </div>
                         <span id="sq-demo-paren-counter" style="font-size:0.85rem;color:var(--text2);font-weight:600;"></span>
                     </div>
-                    <div class="concept-demo-msg" id="sq-demo-paren-msg">👆 "다음 스텝" 버튼을 눌러 괄호를 하나씩 확인해보세요!</div>
+                    <div class="concept-demo-msg" id="sq-demo-paren-msg">👆 Press "Next Step" to check each bracket one by one!</div>
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="28" font-size="20" fill="var(--accent)">(</text></svg></div>
                         <h3>Step 1</h3>
-                        <p>여는 괄호 <code>( [ {</code>를 만나면 스택에 push합니다.</p>
+                        <p>When you encounter an opening bracket <code>( [ {</code>, push it onto the stack.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="28" font-size="20" fill="var(--red, #e17055)">)</text></svg></div>
                         <h3>Step 2</h3>
-                        <p>닫는 괄호를 만나면 스택에서 pop해서 <strong>짝이 맞는지</strong> 확인합니다.</p>
+                        <p>When you encounter a closing bracket, pop from the stack and check if <strong>they match</strong>.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="6" y="28" font-size="20" fill="var(--green)">✓</text></svg></div>
                         <h3>Step 3</h3>
-                        <p>끝까지 확인 후 스택이 <strong>비어있으면</strong> 유효한 괄호입니다!</p>
+                        <p>After checking everything, if the stack is <strong>empty</strong>, the brackets are valid!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -449,13 +449,13 @@ if (dq2.size() > 3) dq2.pop_front();
 
     for c in s:
         if c in '([{':
-            stack.append(c)     # 여는 괄호 → push
+            stack.append(c)     # opening bracket → push
         elif c in ')]}':
             if not stack or stack[-1] != pairs[c]:
-                return False    # 짝이 안 맞음!
-            stack.pop()         # 짝이 맞으면 pop
+                return False    # mismatch!
+            stack.pop()         # match found, pop
 
-    return len(stack) == 0  # 남은 괄호가 없어야 함
+    return len(stack) == 0  # no remaining brackets
 
 print(is_valid("([{}])"))   # True
 print(is_valid("([)]"))     # False</code></pre>
@@ -474,35 +474,35 @@ bool isValid(string s) {
 
     for (char c : s) {
         if (c == '(' || c == '[' || c == '{') {
-            stk.push(c);        // 여는 괄호 → push
+            stk.push(c);        // opening bracket → push
         } else if (pairs.count(c)) {
             if (stk.empty() || stk.top() != pairs[c])
-                return false;    // 짝이 안 맞음!
-            stk.pop();           // 짝이 맞으면 pop
+                return false;    // mismatch!
+            stk.pop();           // match found, pop
         }
     }
-    return stk.empty();  // 남은 괄호가 없어야 함
+    return stk.empty();  // no remaining brackets
 }
 
 // isValid("([{}])") → true
 // isValid("([)]")   → false</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 괄호 문제는 스택의 가장 대표적인 응용입니다.
-                    이 패턴이 익숙해지면, "최근에 열린 것과 먼저 짝짓기"가 필요한 모든 문제에 스택을 떠올릴 수 있습니다!
+                    <strong>💡 Think about it:</strong> Bracket problems are the most classic application of stacks.
+                    Once you are comfortable with this pattern, you can apply stacks to any problem that requires "matching with the most recently opened item first"!
                 </div>
             </div>
         `;
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
 
-        // ========== 인라인 데모 인터랙션 ==========
+        // ========== Inline Demo Interactions ==========
 
-        // ── 공통 헬퍼: DOM 요소 생성 ──
+        // ── Common Helper: DOM Element Creation ──
         const _mkItem = (text, enterCls) => {
             const el = document.createElement('div');
             el.className = 'demo-item' + (enterCls ? ' ' + enterCls : '');
             el.textContent = text;
-            // 진입 애니메이션 끝나면 클래스 제거 (재사용 대비)
+            // Remove class after enter animation ends (for reuse)
             if (enterCls) el.addEventListener('animationend', () => el.classList.remove(enterCls), { once: true });
             return el;
         };
@@ -512,7 +512,7 @@ bool isValid(string s) {
             el.addEventListener('animationend', () => { el.remove(); if (onDone) onDone(); }, { once: true });
         };
 
-        // --- 1. 스택 Push/Pop 데모 (DOM 직접 조작) ---
+        // --- 1. Stack Push/Pop Demo (Direct DOM manipulation) ---
         {
             const stackEl = container.querySelector('#sq-demo-stack');
             const pushBtn = container.querySelector('#sq-demo-push');
@@ -548,7 +548,7 @@ bool isValid(string s) {
 
             pushBtn.addEventListener('click', () => {
                 if (stack.length >= 6 || animating) return;
-                // 비어있음 표시 제거
+                // Remove empty indicator
                 const empty = stackEl.querySelector('.demo-stack-empty');
                 if (empty) empty.remove();
                 const val = values[pushIdx % values.length];
@@ -557,7 +557,7 @@ bool isValid(string s) {
                 const el = _mkItem(val, 'enter-stack');
                 stackEl.appendChild(el);
                 updateStackTags();
-                msgEl.textContent = 'push(' + val + ') → 스택 맨 위에 ' + val + '을(를) 넣었습니다. 스택: [' + stack.join(', ') + ']';
+                msgEl.textContent = 'push(' + val + ') → Placed ' + val + ' on top of the stack. Stack: [' + stack.join(', ') + ']';
             });
 
             popBtn.addEventListener('click', () => {
@@ -571,13 +571,13 @@ bool isValid(string s) {
                     if (stack.length === 0) stackEl.innerHTML = '<div class="demo-stack-empty">(Empty)</div>';
                     updateStackTags();
                 });
-                msgEl.textContent = 'pop() → 맨 위의 ' + val + '을(를) 꺼냈습니다! (LIFO) 스택: [' + stack.join(', ') + ']';
+                msgEl.textContent = 'pop() → Removed ' + val + ' from the top! (LIFO) Stack: [' + stack.join(', ') + ']';
             });
 
             peekBtn.addEventListener('click', () => {
                 if (stack.length === 0) return;
                 const val = stack[stack.length - 1];
-                msgEl.textContent = 'peek() → 맨 위 원소는 ' + val + '입니다. (꺼내지 않고 확인만!)';
+                msgEl.textContent = 'peek() → The top element is ' + val + '. (Just looking, not removing!)';
                 const topEl = stackEl.querySelector('.top-item');
                 if (topEl) {
                     topEl.style.transform = 'scale(1.15)';
@@ -587,7 +587,7 @@ bool isValid(string s) {
             });
         }
 
-        // --- 2. 큐 Enqueue/Dequeue 데모 (DOM 직접 조작) ---
+        // --- 2. Queue Enqueue/Dequeue Demo (Direct DOM manipulation) ---
         {
             const queueEl = container.querySelector('#sq-demo-queue');
             const enqBtn = container.querySelector('#sq-demo-enqueue');
@@ -624,7 +624,7 @@ bool isValid(string s) {
                 const el = _mkItem(val, 'enter-right');
                 queueEl.appendChild(el);
                 updateQueueTags();
-                msgEl.textContent = 'enqueue("' + val + '") → 뒤(back)에 추가! 큐: [' + queue.join(', ') + ']';
+                msgEl.textContent = 'enqueue("' + val + '") → Added to the back! Queue: [' + queue.join(', ') + ']';
             });
 
             deqBtn.addEventListener('click', () => {
@@ -638,11 +638,11 @@ bool isValid(string s) {
                     if (queue.length === 0) queueEl.innerHTML = '<div class="demo-queue-empty">(Empty)</div>';
                     updateQueueTags();
                 });
-                msgEl.textContent = 'dequeue() → 앞(front)의 "' + val + '"을(를) 꺼냈습니다! (FIFO) 큐: [' + queue.join(', ') + ']';
+                msgEl.textContent = 'dequeue() → Removed "' + val + '" from the front! (FIFO) Queue: [' + queue.join(', ') + ']';
             });
         }
 
-        // --- 3. 덱 양방향 데모 (DOM 직접 조작) ---
+        // --- 3. Deque Double-Ended Demo (Direct DOM manipulation) ---
         {
             const dequeEl = container.querySelector('#sq-demo-deque');
             const appendLeftBtn = container.querySelector('#sq-demo-appendleft');
@@ -681,7 +681,7 @@ bool isValid(string s) {
                 const el = _mkItem(val, 'enter-left');
                 dequeEl.prepend(el);
                 updateDequeTags();
-                msgEl.textContent = 'appendleft(' + val + ') → 앞(front)에 추가! O(1) 덱: [' + deque.join(', ') + ']';
+                msgEl.textContent = 'appendleft(' + val + ') → Added to front! O(1) Deque: [' + deque.join(', ') + ']';
             });
 
             appendBtn.addEventListener('click', () => {
@@ -693,7 +693,7 @@ bool isValid(string s) {
                 const el = _mkItem(val, 'enter-right');
                 dequeEl.appendChild(el);
                 updateDequeTags();
-                msgEl.textContent = 'append(' + val + ') → 뒤(back)에 추가! O(1) 덱: [' + deque.join(', ') + ']';
+                msgEl.textContent = 'append(' + val + ') → Added to back! O(1) Deque: [' + deque.join(', ') + ']';
             });
 
             popLeftBtn.addEventListener('click', () => {
@@ -708,7 +708,7 @@ bool isValid(string s) {
                     if (deque.length === 0) dequeEl.innerHTML = '<div class="demo-queue-empty">(Empty)</div>';
                     updateDequeTags();
                 });
-                msgEl.textContent = 'popleft() → 앞의 ' + val + '을(를) 제거! O(1) 덱: [' + deque.join(', ') + ']';
+                msgEl.textContent = 'popleft() → Removed ' + val + ' from front! O(1) Deque: [' + deque.join(', ') + ']';
             });
 
             popRightBtn.addEventListener('click', () => {
@@ -723,11 +723,11 @@ bool isValid(string s) {
                     if (deque.length === 0) dequeEl.innerHTML = '<div class="demo-queue-empty">(Empty)</div>';
                     updateDequeTags();
                 });
-                msgEl.textContent = 'pop() → 뒤의 ' + val + '을(를) 제거! O(1) 덱: [' + deque.join(', ') + ']';
+                msgEl.textContent = 'pop() → Removed ' + val + ' from back! O(1) Deque: [' + deque.join(', ') + ']';
             });
         }
 
-        // --- 4. 괄호 검증 스텝 데모 ---
+        // --- 4. Bracket Validation Step Demo ---
         {
             const input = '([{}])';
             const chars = input.split('');
@@ -742,12 +742,12 @@ bool isValid(string s) {
             let stack = [];
             let matchedIndices = [];
 
-            // 초기 렌더
+            // Initial render
             inputEl.innerHTML = chars.map(c => '<div class="demo-paren-char">' + c + '</div>').join('');
             counterEl.textContent = '0 / ' + (chars.length + 1);
 
             const renderParenState = () => {
-                // Input 문자열 렌더
+                // Render input string
                 const charEls = inputEl.querySelectorAll('.demo-paren-char');
                 charEls.forEach((el, i) => {
                     el.className = 'demo-paren-char';
@@ -755,7 +755,7 @@ bool isValid(string s) {
                     if (matchedIndices.includes(i)) el.classList.add('done');
                 });
 
-                // 스택 렌더
+                // Render stack
                 if (stack.length === 0) {
                     stackEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">(Empty)</span>';
                 } else {
@@ -775,11 +775,11 @@ bool isValid(string s) {
                         stack.push(c);
                         step++;
                         renderParenState();
-                        msgEl.textContent = '"' + c + '" → 여는 괄호! 스택에 push 합니다. 스택: [' + stack.join(', ') + ']';
+                        msgEl.textContent = '"' + c + '" → Opening bracket! Push onto stack. Stack: [' + stack.join(', ') + ']';
                     } else {
                         const top = stack[stack.length - 1];
                         stack.pop();
-                        // 짝 인덱스 찾기
+                        // Find matching pair index
                         const openIdx = chars.lastIndexOf(pairs[c], step - 1);
                         for (let j = step - 1; j >= 0; j--) {
                             if (chars[j] === pairs[c] && !matchedIndices.includes(j)) {
@@ -790,16 +790,16 @@ bool isValid(string s) {
                         matchedIndices.push(step);
                         step++;
                         renderParenState();
-                        msgEl.textContent = '"' + c + '" → 닫는 괄호! pop "' + top + '" → 짝이 맞습니다 ✓ 스택: [' + stack.join(', ') + ']';
+                        msgEl.textContent = '"' + c + '" → Closing bracket! pop "' + top + '" → Match found ✓ Stack: [' + stack.join(', ') + ']';
                     }
                 } else {
-                    // 최종 판정
+                    // Final verdict
                     step++;
                     renderParenState();
                     if (stack.length === 0) {
-                        msgEl.innerHTML = '✅ <strong>스택이 비었으므로 모든 괄호가 유효합니다!</strong> → return true';
+                        msgEl.innerHTML = '✅ <strong>Stack is empty, so all brackets are valid!</strong> → return true';
                     } else {
-                        msgEl.innerHTML = '❌ <strong>스택에 남은 괄호가 있어 유효하지 않습니다!</strong> → return false';
+                        msgEl.innerHTML = '❌ <strong>Brackets remain in the stack, so it is invalid!</strong> → return false';
                     }
                     nextBtn.style.display = 'none';
                     resetBtn.style.display = '';
@@ -811,13 +811,13 @@ bool isValid(string s) {
                 stack = [];
                 matchedIndices = [];
                 renderParenState();
-                msgEl.textContent = '👆 "다음 스텝" 버튼을 눌러 괄호를 하나씩 확인해보세요!';
+                msgEl.textContent = '👆 Press "Next Step" to check each bracket one by one!';
                 nextBtn.style.display = '';
                 resetBtn.style.display = 'none';
             });
         }
 
-        // think-box 토글
+        // think-box toggle
         container.querySelectorAll('.think-box-trigger').forEach(btn => {
             btn.addEventListener('click', () => {
                 const box = btn.closest('.think-box');
@@ -837,7 +837,7 @@ bool isValid(string s) {
 
     renderVisualize(container) { container.innerHTML = ''; },
 
-    // ── 애니메이션 헬퍼: DOM 요소를 HTML 문자열 기준으로 업데이트 ──
+    // ── Animation Helper: Update DOM element from HTML string ──
     _updateElFromHTML(existingEl, htmlString) {
         const wrapper = document.createElement('div');
         wrapper.innerHTML = htmlString;
@@ -850,8 +850,8 @@ bool isValid(string s) {
         else existingEl.removeAttribute('style');
     },
 
-    // ── 애니메이션 헬퍼: 컨테이너의 자식을 목표 상태로 동기화 ──
-    // targetItems: [{html: '<div class="str-char-box ...">값</div>'}]
+    // ── Animation Helper: Sync container children to target state ──
+    // targetItems: [{html: '<div class="str-char-box ...">value</div>'}]
     // opts: { enterClass, removeClass, removePosition('end'|'start'), emptyHTML, animate }
     _syncContainer(containerEl, targetItems, opts) {
         const self = this;
@@ -862,26 +862,26 @@ bool isValid(string s) {
         const emptyHTML = o.emptyHTML || '';
         const animate = o.animate !== false;
 
-        // 1. 진행 중인 퇴장 애니메이션 즉시 정리
+        // 1. Clean up ongoing exit animations immediately
         containerEl.querySelectorAll('.anim-removing').forEach(el => el.remove());
-        // 진행 중인 진입 애니메이션 클래스도 정리
+        // Also clean up ongoing enter animation classes
         containerEl.querySelectorAll('.anim-enter-stack, .anim-enter-right').forEach(el => {
             el.classList.remove('anim-enter-stack', 'anim-enter-right');
         });
 
-        // 2. 빈 상태 플레이스홀더 제거
+        // 2. Remove empty state placeholder
         const placeholder = containerEl.querySelector('[data-empty]');
         if (placeholder) placeholder.remove();
 
-        // 3. 현재 .str-char-box 요소들
+        // 3. Current .str-char-box elements
         const currentChildren = Array.from(containerEl.querySelectorAll(':scope > .str-char-box'));
         const currentCount = currentChildren.length;
         const targetCount = targetItems.length;
 
-        // 4. 목표가 비어있는 경우
+        // 4. Target is empty
         if (targetCount === 0) {
             if (animate && currentCount > 0 && removeCls) {
-                // 마지막/첫 요소에 퇴장 애니메이션
+                // Exit animation on last/first element
                 const idx = removePos === 'start' ? 0 : currentCount - 1;
                 const el = currentChildren[idx];
                 el.classList.add(removeCls, 'anim-removing');
@@ -891,7 +891,7 @@ bool isValid(string s) {
                         containerEl.innerHTML = emptyHTML;
                     }
                 }, { once: true });
-                // 나머지는 즉시 제거
+                // Remove the rest immediately
                 currentChildren.forEach((c, i) => { if (i !== idx) c.remove(); });
             } else {
                 containerEl.innerHTML = emptyHTML;
@@ -899,7 +899,7 @@ bool isValid(string s) {
             return;
         }
 
-        // 5. 현재 비어있는 경우 → 전부 새로 생성
+        // 5. Currently empty → create all new elements
         if (currentCount === 0) {
             containerEl.innerHTML = '';
             targetItems.forEach((item, i) => {
@@ -915,13 +915,13 @@ bool isValid(string s) {
             return;
         }
 
-        // 6. 요소 추가 (push / enqueue)
+        // 6. Elements added (push / enqueue)
         if (targetCount > currentCount) {
-            // 기존 요소 업데이트
+            // Update existing elements
             for (let i = 0; i < currentCount; i++) {
                 self._updateElFromHTML(currentChildren[i], targetItems[i].html);
             }
-            // 새 요소 추가
+            // Add new elements
             for (let i = currentCount; i < targetCount; i++) {
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = targetItems[i].html;
@@ -935,10 +935,10 @@ bool isValid(string s) {
             return;
         }
 
-        // 7. 요소 삭제 (pop / dequeue)
+        // 7. Elements removed (pop / dequeue)
         if (targetCount < currentCount) {
             if (removePos === 'start') {
-                // 큐: 앞에서 제거
+                // Queue: remove from front
                 const removedCount = currentCount - targetCount;
                 for (let i = 0; i < removedCount; i++) {
                     const el = currentChildren[i];
@@ -949,12 +949,12 @@ bool isValid(string s) {
                         el.remove();
                     }
                 }
-                // 나머지 업데이트
+                // Update remaining
                 for (let i = removedCount; i < currentCount; i++) {
                     self._updateElFromHTML(currentChildren[i], targetItems[i - removedCount].html);
                 }
             } else {
-                // 스택: 끝에서 제거
+                // Stack: remove from end
                 for (let i = currentCount - 1; i >= targetCount; i--) {
                     const el = currentChildren[i];
                     if (animate && removeCls) {
@@ -964,7 +964,7 @@ bool isValid(string s) {
                         el.remove();
                     }
                 }
-                // 나머지 업데이트
+                // Update remaining
                 for (let i = 0; i < targetCount; i++) {
                     self._updateElFromHTML(currentChildren[i], targetItems[i].html);
                 }
@@ -972,7 +972,7 @@ bool isValid(string s) {
             return;
         }
 
-        // 8. 같은 개수 → in-place 업데이트 (CSS transition이 색 전환 처리)
+        // 8. Same count → in-place update (CSS transition handles color changes)
         for (let i = 0; i < targetCount; i++) {
             self._updateElFromHTML(currentChildren[i], targetItems[i].html);
         }
@@ -986,9 +986,9 @@ bool isValid(string s) {
     _createStepControls(suffix) {
         const s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; 이전</button>' +
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
             '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before Start</span>' +
-            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 &rarr;</button>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
             '</div>';
     },
 
@@ -1043,24 +1043,24 @@ bool isValid(string s) {
         updateUI();
     },
 
-    // ── 제로 (BOJ 10773) 시각화 ──
+    // ── Zero (BOJ 10773) Visualization ──
     _renderVizZero(container) {
         const self = this;
         var DEFAULT_ZERO_NUMS = '1, 3, 5, 4, 0, 0, 7, 0, 0, 6';
 
         var inputFieldHTML = '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">입력 수열: <input type="text" id="sq-zero-input" value="' + DEFAULT_ZERO_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+            '<label style="font-weight:600;">Input Sequence: <input type="text" id="sq-zero-input" value="' + DEFAULT_ZERO_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="sq-zero-reset">🔄</button>' +
             '</div>';
 
         var vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;max-width:320px;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">입력 수열</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Input Sequence</div>' +
             '<div id="sq-input-zero" style="display:flex;gap:4px;flex-wrap:wrap;"></div>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">스택</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Stack</div>' +
             '<div id="sq-stack-zero" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:80px;width:100px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
             '</div>' +
             '<div style="flex:0 0 auto;">' +
@@ -1080,20 +1080,20 @@ bool isValid(string s) {
         function buildZeroSteps(nums) {
             var states = [];
             var stack = [];
-            states.push({ stack: [], highlight: -1, desc: '스택으로 수를 관리합니다. 0이 입력되면 가장 최근 수를 pop합니다.' });
+            states.push({ stack: [], highlight: -1, desc: 'We manage numbers with a stack. When 0 is entered, pop the most recent number.' });
 
             nums.forEach(function(n, i) {
                 if (n === 0) {
                     var popped = stack[stack.length - 1];
                     stack = stack.slice(0, -1);
-                    states.push({ stack: [].concat(stack), highlight: i, desc: '입력: 0 → pop() → ' + popped + ' 제거! 스택: [' + stack.join(', ') + ']' });
+                    states.push({ stack: [].concat(stack), highlight: i, desc: 'Input: 0 → pop() → removed ' + popped + '! Stack: [' + stack.join(', ') + ']' });
                 } else {
                     stack = [].concat(stack, [n]);
-                    states.push({ stack: [].concat(stack), highlight: i, desc: 'push(' + n + ') → 스택: [' + stack.join(', ') + ']' });
+                    states.push({ stack: [].concat(stack), highlight: i, desc: 'push(' + n + ') → Stack: [' + stack.join(', ') + ']' });
                 }
             });
             var finalSum = stack.reduce(function(a, b) { return a + b; }, 0);
-            states.push({ stack: [].concat(stack), highlight: -1, desc: '완료! 남은 수의 합 = ' + finalSum });
+            states.push({ stack: [].concat(stack), highlight: -1, desc: 'Done! Sum of remaining numbers = ' + finalSum });
 
             return states.map(function(st, idx) {
                 return {
@@ -1129,24 +1129,24 @@ bool isValid(string s) {
         resetZeroViz();
     },
 
-    // ── Valid Parentheses (LeetCode 20) 시각화 ──
+    // ── Valid Parentheses (LeetCode 20) Visualization ──
     _renderVizParentheses(container) {
         const self = this;
         var DEFAULT_PAREN_STR = '([{}])';
 
         var inputFieldHTML = '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">괄호 문자열: <input type="text" id="sq-paren-input" value="' + DEFAULT_PAREN_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
+            '<label style="font-weight:600;">Bracket String: <input type="text" id="sq-paren-input" value="' + DEFAULT_PAREN_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
             '<button class="btn btn-primary" id="sq-paren-reset">🔄</button>' +
             '</div>';
 
         var vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">입력 문자열</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Input String</div>' +
             '<div id="sq-input-paren" style="display:flex;gap:4px;flex-wrap:wrap;"></div>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">스택</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Stack</div>' +
             '<div id="sq-stack-paren" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:80px;width:80px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
             '</div></div></div>';
         container.innerHTML = inputFieldHTML + self._createStepDesc('-paren') + vizHTML + self._createStepControls('-paren');
@@ -1156,7 +1156,7 @@ bool isValid(string s) {
 
         function parseParenInput() {
             var raw = container.querySelector('#sq-paren-input').value;
-            // 괄호 문자만 추출
+            // Extract only bracket characters
             return raw.replace(/[^()\[\]{}]/g, '').split('');
         }
 
@@ -1166,32 +1166,32 @@ bool isValid(string s) {
             var stack = [];
             var matchedPairs = [];
             var failed = false;
-            states.push({ stack: [], charIdx: -1, desc: '문자열의 각 문자를 순서대로 확인합니다.', matchedPairs: [] });
+            states.push({ stack: [], charIdx: -1, desc: 'Check each character of the string in order.', matchedPairs: [] });
 
             for (var i = 0; i < chars.length; i++) {
                 var c = chars[i];
                 if ('([{'.indexOf(c) >= 0) {
                     stack = [].concat(stack, [c]);
-                    states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → 여는 괄호! 스택에 push합니다.', matchedPairs: [].concat(matchedPairs) });
+                    states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → Opening bracket! Push onto the stack.', matchedPairs: [].concat(matchedPairs) });
                 } else if (')]}'.indexOf(c) >= 0) {
                     if (stack.length === 0 || stack[stack.length - 1] !== pairs[c]) {
-                        // 짝이 안 맞는 경우
-                        var topVal = stack.length > 0 ? stack[stack.length - 1] : '없음';
-                        states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → 닫는 괄호! 스택 top "' + topVal + '" → 짝이 안 맞습니다 ✗ → false', matchedPairs: [].concat(matchedPairs) });
+                        // Mismatch case
+                        var topVal = stack.length > 0 ? stack[stack.length - 1] : 'none';
+                        states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → Closing bracket! Stack top "' + topVal + '" → Mismatch ✗ → false', matchedPairs: [].concat(matchedPairs) });
                         failed = true;
                         break;
                     }
                     var top = stack[stack.length - 1];
                     stack = stack.slice(0, -1);
                     matchedPairs = [].concat(matchedPairs, [i]);
-                    states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → 닫는 괄호! pop "' + top + '" → 짝이 맞습니다 ✓', matchedPairs: [].concat(matchedPairs) });
+                    states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → Closing bracket! pop "' + top + '" → Match found ✓', matchedPairs: [].concat(matchedPairs) });
                 }
             }
             if (!failed) {
                 if (stack.length === 0) {
-                    states.push({ stack: [].concat(stack), charIdx: -1, desc: '스택이 비어있으므로 유효한 괄호! → true ✓', matchedPairs: [].concat(matchedPairs) });
+                    states.push({ stack: [].concat(stack), charIdx: -1, desc: 'Stack is empty, so brackets are valid! → true ✓', matchedPairs: [].concat(matchedPairs) });
                 } else {
-                    states.push({ stack: [].concat(stack), charIdx: -1, desc: '스택에 남은 괄호가 있으므로 유효하지 않습니다! → false ✗', matchedPairs: [].concat(matchedPairs) });
+                    states.push({ stack: [].concat(stack), charIdx: -1, desc: 'Brackets remain in the stack, so it is invalid! → false ✗', matchedPairs: [].concat(matchedPairs) });
                 }
             }
 
@@ -1227,23 +1227,23 @@ bool isValid(string s) {
         resetParenViz();
     },
 
-    // ── 카드2 (BOJ 2164) 시각화 ──
+    // ── Card2 (BOJ 2164) Visualization ──
     _renderVizCard2(container) {
         const self = this;
         var DEFAULT_CARD_N = 6;
 
         var inputFieldHTML = '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N (카드 수): <input type="number" id="sq-card-input" value="' + DEFAULT_CARD_N + '" min="2" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
+            '<label style="font-weight:600;">N (number of cards): <input type="number" id="sq-card-input" value="' + DEFAULT_CARD_N + '" min="2" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="sq-card-reset">🔄</button>' +
             '</div>';
 
         var vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;">' +
             '<div>' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">큐 (앞 ← → 뒤)</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">Queue (front ← → back)</div>' +
             '<div id="sq-queue-card" style="display:flex;gap:4px;justify-content:center;min-height:44px;align-items:center;flex-wrap:wrap;"></div>' +
             '</div>' +
-            '<div>버린 카드: <span id="sq-discarded-card" style="color:var(--red,#e17055);font-weight:600;"></span></div>' +
+            '<div>Discarded Cards: <span id="sq-discarded-card" style="color:var(--red,#e17055);font-weight:600;"></span></div>' +
             '</div></div>';
         container.innerHTML = inputFieldHTML + self._createStepDesc('-card') + vizHTML + self._createStepControls('-card');
 
@@ -1262,19 +1262,19 @@ bool isValid(string s) {
             var q = [];
             for (var i = 1; i <= N; i++) q.push(i);
             var discarded = [];
-            states.push({ queue: [].concat(q), discarded: [], desc: '카드 1~' + N + '이 위에서부터 순서대로 놓여있습니다.', highlightFront: false, highlightBack: false });
+            states.push({ queue: [].concat(q), discarded: [], desc: 'Cards 1 through ' + N + ' are placed in order from top to bottom.', highlightFront: false, highlightBack: false });
 
             while (q.length > 1) {
                 var removed = q.shift();
                 discarded = [].concat(discarded, [removed]);
-                states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: '맨 위 카드 ' + removed + '을(를) 버립니다.', highlightFront: true, highlightBack: false });
+                states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'Discard the top card ' + removed + '.', highlightFront: true, highlightBack: false });
                 if (q.length > 1) {
                     var moved = q.shift();
                     q.push(moved);
-                    states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: '다음 카드 ' + moved + '을(를) 맨 아래로 옮깁니다.', highlightFront: false, highlightBack: true });
+                    states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'Move the next card ' + moved + ' to the bottom.', highlightFront: false, highlightBack: true });
                 }
             }
-            states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: '마지막 남은 카드는 ' + q[0] + '! 🎉', highlightFront: false, highlightBack: false });
+            states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'The last remaining card is ' + q[0] + '! 🎉', highlightFront: false, highlightBack: false });
 
             return states.map(function(st) {
                 return {
@@ -1289,8 +1289,8 @@ bool isValid(string s) {
                                     ((st.highlightBack && i === st.queue.length - 1) ? ' matched' : '') +
                                     (st.queue.length === 1 ? ' matched' : '') +
                                     '" style="width:40px;text-align:center;font-weight:600;">' + v +
-                                    (i === 0 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">앞</div>' : '') +
-                                    (i === st.queue.length - 1 && st.queue.length > 1 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">뒤</div>' : '') +
+                                    (i === 0 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">front</div>' : '') +
+                                    (i === st.queue.length - 1 && st.queue.length > 1 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">back</div>' : '') +
                                     '</div>';
                             }).join('');
                         }
@@ -1312,25 +1312,25 @@ bool isValid(string s) {
         resetCardViz();
     },
 
-    // ── Min Stack (LeetCode 155) 시각화 ──
+    // ── Min Stack (LeetCode 155) Visualization ──
     _renderVizMinStack(container) {
         const self = this;
         var DEFAULT_MS_OPS = 'push -2, push 0, push -3, getMin, pop, top, getMin';
 
         var inputFieldHTML = '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">연산: <input type="text" id="sq-minstack-input" value="' + DEFAULT_MS_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:420px;"></label>' +
+            '<label style="font-weight:600;">Operations: <input type="text" id="sq-minstack-input" value="' + DEFAULT_MS_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:420px;"></label>' +
             '<button class="btn btn-primary" id="sq-minstack-reset">🔄</button>' +
             '</div>' +
-            '<div style="font-size:0.8rem;color:var(--text3);margin-bottom:12px;margin-top:-12px;">형식: push 값, pop, top, getMin (쉼표로 구분)</div>';
+            '<div style="font-size:0.8rem;color:var(--text3);margin-bottom:12px;margin-top:-12px;">Format: push value, pop, top, getMin (comma separated)</div>';
 
         var vizHTML = '<div class="sim-card">' +
             '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">메인 스택</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Main Stack</div>' +
             '<div id="sq-main-ms" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:120px;width:80px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
             '</div>' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--green);">최솟값 스택</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--green);">Min Stack</div>' +
             '<div id="sq-min-ms" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:120px;width:80px;border:2px solid var(--green);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
             '</div>' +
             '<div style="flex:0 0 auto;">' +
@@ -1366,7 +1366,7 @@ bool isValid(string s) {
 
         function renderMsStack(el, arr) {
             if (arr.length === 0) {
-                el.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(빈)</div>';
+                el.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(empty)</div>';
             } else {
                 el.innerHTML = arr.map(function(v, i) {
                     return '<div class="str-char-box' + (i === arr.length - 1 ? ' comparing' : '') + '" style="text-align:center;font-weight:600;">' + v + '</div>';
@@ -1378,7 +1378,7 @@ bool isValid(string s) {
             var states = [];
             var mainStack = [];
             var minStack = [];
-            states.push({ main: [], min: [], desc: '두 개의 스택: 메인 스택과 최솟값 추적 스택을 준비합니다.', result: '' });
+            states.push({ main: [], min: [], desc: 'Prepare two stacks: a main stack and a min-tracking stack.', result: '' });
 
             for (var i = 0; i < ops.length; i++) {
                 var o = ops[i];
@@ -1386,33 +1386,33 @@ bool isValid(string s) {
                     mainStack = [].concat(mainStack, [o.val]);
                     var curMin = minStack.length === 0 ? o.val : Math.min(o.val, minStack[minStack.length - 1]);
                     minStack = [].concat(minStack, [curMin]);
-                    states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'push(' + o.val + ') → 메인에 ' + o.val + ', 최솟값 스택에 min(' + o.val + ', ' + (minStack.length > 1 ? minStack[minStack.length - 2] : '∅') + ') = ' + curMin, result: '' });
+                    states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'push(' + o.val + ') → main gets ' + o.val + ', min stack gets min(' + o.val + ', ' + (minStack.length > 1 ? minStack[minStack.length - 2] : '∅') + ') = ' + curMin, result: '' });
                 } else if (o.op === 'pop') {
                     if (mainStack.length === 0) {
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'pop() → 스택이 비어있어 실행할 수 없습니다!', result: '' });
+                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'pop() → Stack is empty, cannot execute!', result: '' });
                     } else {
                         var popped = mainStack[mainStack.length - 1];
                         mainStack = mainStack.slice(0, -1);
                         minStack = minStack.slice(0, -1);
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'pop() → ' + popped + ' 제거. 두 스택 모두 pop!', result: '' });
+                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'pop() → removed ' + popped + '. Pop from both stacks!', result: '' });
                     }
                 } else if (o.op === 'top') {
                     if (mainStack.length === 0) {
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'top() → 스택이 비어있어 실행할 수 없습니다!', result: '' });
+                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'top() → Stack is empty, cannot execute!', result: '' });
                     } else {
                         var topVal = mainStack[mainStack.length - 1];
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'top() → 메인 스택 맨 위 값 확인', result: 'top() = ' + topVal });
+                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'top() → Check the top value of the main stack', result: 'top() = ' + topVal });
                     }
                 } else if (o.op === 'getMin') {
                     if (minStack.length === 0) {
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'getMin() → 스택이 비어있어 실행할 수 없습니다!', result: '' });
+                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'getMin() → Stack is empty, cannot execute!', result: '' });
                     } else {
                         var minVal = minStack[minStack.length - 1];
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'getMin() → 최솟값 스택 맨 위 = 현재 최솟값!', result: 'getMin() = ' + minVal });
+                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'getMin() → Top of the min stack = current minimum!', result: 'getMin() = ' + minVal });
                     }
                 }
             }
-            states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: '보조 스택 덕분에 getMin()이 항상 O(1)! 🎉', result: '' });
+            states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'Thanks to the auxiliary stack, getMin() is always O(1)!', result: '' });
 
             return states.map(function(st) {
                 return {
@@ -1429,8 +1429,8 @@ bool isValid(string s) {
         function resetMsViz() {
             var ops = parseMsInput();
             if (ops.length === 0) return;
-            mainEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(빈)</div>';
-            minEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(빈)</div>';
+            mainEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(empty)</div>';
+            minEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(empty)</div>';
             resultEl.textContent = '';
             var steps = buildMsSteps(ops);
             self._initStepController(container, steps, '-ms');
@@ -1442,20 +1442,20 @@ bool isValid(string s) {
 
     // ===== Problem Tab =====
     stages: [
-        { num: 1, title: '기본 스택·큐 다루기', desc: '스택과 큐의 기본 연산과 괄호 검증 (Silver~Easy)', problemIds: ['boj-10773', 'lc-20'] },
-        { num: 2, title: '스택·큐 응용', desc: '덱 활용과 단조 스택 (Silver~Medium)', problemIds: ['boj-2164', 'lc-155'] }
+        { num: 1, title: 'Basic Stack & Queue', desc: 'Basic stack/queue operations and bracket validation (Silver~Easy)', problemIds: ['boj-10773', 'lc-20'] },
+        { num: 2, title: 'Stack & Queue Applications', desc: 'Deque usage and monotone stack (Silver~Medium)', problemIds: ['boj-2164', 'lc-155'] }
     ],
 
     problems: [
         {
             id: 'boj-10773',
-            title: 'BOJ 10773 - 제로',
+            title: 'BOJ 10773 - Zero',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/10773',
-            simIntro: '0이 입력되면 가장 최근 수를 스택에서 pop하는 과정을 확인해보세요.',
+            simIntro: 'See how the most recent number is popped from the stack when 0 is given as input.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>나코더 기장 재민이는 장부를 정리하는 중이다. 그런데 재민이는 매우 활발하여 재미있는 일을 생각해냈다. 재민이가 K개의 수를 불러준다. 어떤 수가 "0"이 아닌 경우에는 해당 수를 장부에 적고, "0"인 경우에는 가장 최근에 적은 수를 지운다. 재민이가 게임을 끝마쳤을 때, 장부에 적혀 있는 수의 합을 구하는 프로그램을 작성하시오. 0을 입력받을 때 지울 수가 반드시 존재한다.</p>
+                <p>Jaemin, the leader of Nacoder, is organizing the ledger. Being very energetic, he came up with a fun game. Jaemin calls out K numbers. If a number is not "0", write it in the ledger. If it is "0", erase the most recently written number. When the game is over, write a program to find the sum of all numbers remaining in the ledger. When 0 is given, there is always a number to erase.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4\n3\n0\n4\n0</pre></div>
@@ -1470,37 +1470,37 @@ bool isValid(string s) {
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 &le; K &le; 100,000</li>
-                    <li>1 &le; 수 &le; 100,000</li>
-                    <li>0을 입력받을 때 지울 수가 반드시 존재</li>
+                    <li>1 &le; each number &le; 100,000</li>
+                    <li>When 0 is given, there is always a number to erase</li>
                 </ul>
             `,
             hints: [
-                { title: 'First intuition', content: '숫자를 부르면 적고, 0을 부르면 지운다… 일단 <strong>리스트에 숫자를 넣으면</strong> 되지 않을까?<br><br>예를 들어: 3이 들어오면 → [3], 다음에 0이 오면 → 3을 지움 → []<br>1, 5, 0이 들어오면 → [1, 5] → 0이니까 지움 → [1]<br><br>그런데 "지운다"가 정확히 뭘 지우는 걸까요? <strong>"가장 최근에 적은 수"</strong>를 지우는 거예요!' },
-                { title: '근데 "가장 최근"을 어떻게 빼지?', content: '"가장 최근에 넣은 걸 빼는" 이 패턴… 뭔가 익숙하지 않나요?<br><br>접시를 쌓아놓고 <strong>맨 위에 있는 접시부터 빼는 것</strong>과 같아요!<br>한쪽 끝에서만 넣고, 한쪽 끝에서만 빼는 패턴 — 바로 <strong>LIFO(후입선출) = 스택</strong>이에요!<br><br>숫자가 오면 push, 0이 오면 pop하면 자연스럽게 "가장 최근 수"가 빠집니다.' },
-                { title: '스택으로 구현하면 이렇게!', content: '① 0이 아닌 수 → <code>push(x)</code><br>② 0이면 → <code>pop()</code> (가장 최근 수가 빠짐)<br>③ K번 반복 후 → 스택에 남은 수들의 합이 정답!<br><br>문제 조건상 0일 때 스택이 비어있지 않음이 보장되므로, 별도 체크는 불필요해요.<br>시간 복잡도: <strong>O(K)</strong> — push/pop 모두 O(1)이라 K번 반복이면 O(K)!' },
-                { title: 'In Python/C++!', content: '<span class="lang-py">Python에선 <code>list</code>가 곧 스택!<br><code>append(x)</code>로 push, <code>pop()</code>으로 pop — 둘 다 O(1)이에요.<br>마지막에 <code>sum(stack)</code>으로 남은 수의 합을 구하면 끝!</span><span class="lang-cpp">C++에선 <code>stack&lt;int&gt;</code>를 사용!<br><code>push(x)</code>로 넣고, <code>pop()</code>으로 빼요.<br>다만 <code>sum()</code>이 없으므로, <code>while (!st.empty())</code>로 하나씩 꺼내서 합산합니다.</span>' }
+                { title: 'First intuition', content: 'Write numbers down and erase when 0 comes... How about just <strong>putting numbers into a list</strong>?<br><br>For example: 3 comes in → [3], then 0 comes → erase 3 → []<br>1, 5, 0 come in → [1, 5] → 0 means erase → [1]<br><br>But what exactly does "erase" remove? It removes <strong>"the most recently written number"</strong>!' },
+                { title: 'How do we remove "the most recent"?', content: '"Removing the most recently added item"... Does this pattern sound familiar?<br><br>It is like stacking plates and <strong>removing from the top</strong>!<br>Adding and removing from only one end -- that is <strong>LIFO (Last In, First Out) = Stack</strong>!<br><br>When a number comes, push it. When 0 comes, pop. The "most recent number" is naturally removed.' },
+                { title: 'Implementing with a stack!', content: '1. Non-zero number → <code>push(x)</code><br>2. Zero → <code>pop()</code> (most recent number is removed)<br>3. After K iterations → the sum of remaining numbers in the stack is the answer!<br><br>The problem guarantees the stack is never empty when 0 is given, so no extra check is needed.<br>Time complexity: <strong>O(K)</strong> -- push/pop are both O(1), so K iterations means O(K)!' },
+                { title: 'In Python/C++!', content: '<span class="lang-py">In Python, a <code>list</code> IS a stack!<br><code>append(x)</code> for push, <code>pop()</code> for pop -- both O(1).<br>At the end, <code>sum(stack)</code> gives the sum of remaining numbers!</span><span class="lang-cpp">In C++, use <code>stack&lt;int&gt;</code>!<br><code>push(x)</code> to add, <code>pop()</code> to remove.<br>Since there is no <code>sum()</code>, use <code>while (!st.empty())</code> to pop and accumulate one by one.</span>' }
             ],
             inputDefault: 0,
             solve() { return '0'; },
             solutions: [
                 {
-                    approach: '스택 활용',
-                    description: '0이 나오면 pop, 아니면 push한 뒤 남은 합을 구합니다.',
+                    approach: 'Using a Stack',
+                    description: 'Pop on 0, push otherwise, then sum the remaining values.',
                     timeComplexity: 'O(K)',
                     spaceComplexity: 'O(K)',
                     get templates() { return stackQueueTopic.problems[0].templates; },
                     codeSteps: {
                         python: [
-                            { title: '입력 설정', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # 스택: 마지막에 넣은 걸 먼저 꺼냄 (LIFO)', desc: '왜 스택? → 0이 나오면 "가장 최근 수"를 지워야 하니까!\nLIFO(후입선출) 구조가 딱 맞습니다.' },
-                            { title: '반복문', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # 스택: 마지막에 넣은 걸 먼저 꺼냄 (LIFO)\n\nfor _ in range(K):\n    n = int(input())  # 각 수를 하나씩 입력', desc: 'K번 반복하며 각 숫자를 입력받습니다.\n수가 0인지 아닌지에 따라 동작이 달라집니다.' },
-                            { title: '조건 분기', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # 스택: 마지막에 넣은 걸 먼저 꺼냄 (LIFO)\n\nfor _ in range(K):\n    n = int(input())\n    if n == 0:          # 0 = "직전 수를 지워라!"\n        stack.pop()     # LIFO → 가장 최근 수가 빠짐\n    else:\n        stack.append(n) # 0이 아니면 일단 쌓아둔다', desc: '핵심 로직: 0이면 pop, 아니면 push!\npop()은 항상 가장 최근에 넣은 수를 제거합니다.\n→ 스택이라서 가능한 O(1) 연산!' },
-                            { title: 'Output Result', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # 스택: 마지막에 넣은 걸 먼저 꺼냄 (LIFO)\n\nfor _ in range(K):\n    n = int(input())\n    if n == 0:          # 0 = "직전 수를 지워라!"\n        stack.pop()     # LIFO → 가장 최근 수가 빠짐\n    else:\n        stack.append(n) # 0이 아니면 일단 쌓아둔다\n\nprint(sum(stack))  # 지우기 끝난 뒤 남은 수들의 합', desc: '모든 0 처리가 끝난 뒤 스택에 남아있는 수들의 합!' }
+                            { title: 'Input Setup', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # Stack: last in, first out (LIFO)', desc: 'Why a stack? Because when 0 appears, we must remove "the most recent number"!\nThe LIFO structure is a perfect fit.' },
+                            { title: 'Loop', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # Stack: last in, first out (LIFO)\n\nfor _ in range(K):\n    n = int(input())  # Read each number one by one', desc: 'Loop K times, reading each number.\nThe behavior differs depending on whether it is 0 or not.' },
+                            { title: 'Conditional Branch', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # Stack: last in, first out (LIFO)\n\nfor _ in range(K):\n    n = int(input())\n    if n == 0:          # 0 = "erase the last number!"\n        stack.pop()     # LIFO: most recent number is removed\n    else:\n        stack.append(n) # Not 0, so push it onto the stack', desc: 'Core logic: pop on 0, push otherwise!\npop() always removes the most recently added number.\nThis is an O(1) operation thanks to the stack!' },
+                            { title: 'Output Result', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # Stack: last in, first out (LIFO)\n\nfor _ in range(K):\n    n = int(input())\n    if n == 0:          # 0 = "erase the last number!"\n        stack.pop()     # LIFO: most recent number is removed\n    else:\n        stack.append(n) # Not 0, so push it onto the stack\n\nprint(sum(stack))  # Sum of remaining numbers after all erasures', desc: 'The sum of all numbers remaining in the stack after processing all zeros!' }
                         ],
                         cpp: [
-                            { title: '입력 설정', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // 스택: LIFO (후입선출)', desc: '왜 스택? → 0이 나오면 "가장 최근 수"를 지워야 하니까!\nLIFO(후입선출) 구조가 딱 맞습니다.\nC++의 stack은 <stack> 헤더에서 제공합니다.' },
-                            { title: '반복문', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // 스택: LIFO (후입선출)\n\n    while (K--) {       // K번 반복\n        int n;\n        cin >> n;       // 각 수를 하나씩 입력', desc: 'while (K--)는 K를 하나씩 줄이면서 0이 될 때까지 반복합니다.\n수가 0인지 아닌지에 따라 동작이 달라집니다.' },
-                            { title: '조건 분기', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // 스택: LIFO (후입선출)\n\n    while (K--) {\n        int n;\n        cin >> n;\n        if (n == 0)       // 0 → "직전 수를 지워라!"\n            st.pop();     // LIFO → 가장 최근 수가 빠짐\n        else\n            st.push(n);   // 0이 아니면 쌓아둔다', desc: '핵심 로직: 0이면 pop, 아니면 push!\nC++에서는 push()로 넣고 pop()으로 뺍니다.\npop()은 항상 가장 최근에 넣은 수를 제거 → O(1) 연산!' },
-                            { title: 'Output Result', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // 스택: LIFO (후입선출)\n\n    while (K--) {\n        int n;\n        cin >> n;\n        if (n == 0)       // 0 → "직전 수를 지워라!"\n            st.pop();     // LIFO → 가장 최근 수가 빠짐\n        else\n            st.push(n);   // 0이 아니면 쌓아둔다\n    }\n\n    int total = 0;\n    while (!st.empty()) {   // 스택이 빌 때까지\n        total += st.top();  // top()으로 값 읽고\n        st.pop();           // pop()으로 제거\n    }\n    cout << total << endl;  // 남은 수들의 합 출력', desc: 'C++ stack은 sum()이 없으므로 하나씩 꺼내서 더합니다.\ntop()은 값만 반환(제거 X), pop()은 제거만 (반환 X)!\n이 차이가 Python의 pop()과 다른 점입니다.' }
+                            { title: 'Input Setup', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // Stack: LIFO (Last In, First Out)', desc: 'Why a stack? Because when 0 appears, we must remove "the most recent number"!\nThe LIFO structure is a perfect fit.\nC++ provides stack via the <stack> header.' },
+                            { title: 'Loop', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // Stack: LIFO (Last In, First Out)\n\n    while (K--) {       // Repeat K times\n        int n;\n        cin >> n;       // Read each number one by one', desc: 'while (K--) decrements K each iteration until it reaches 0.\nThe behavior differs depending on whether the number is 0 or not.' },
+                            { title: 'Conditional Branch', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // Stack: LIFO (Last In, First Out)\n\n    while (K--) {\n        int n;\n        cin >> n;\n        if (n == 0)       // 0 = "erase the last number!"\n            st.pop();     // LIFO: most recent number is removed\n        else\n            st.push(n);   // Not 0, so push it onto the stack', desc: 'Core logic: pop on 0, push otherwise!\nIn C++, use push() to add and pop() to remove.\npop() always removes the most recently added number -- O(1)!' },
+                            { title: 'Output Result', code: '#include <iostream>\n#include <stack>\nusing namespace std;\n\nint main() {\n    int K;\n    cin >> K;\n    stack<int> st;  // Stack: LIFO (Last In, First Out)\n\n    while (K--) {\n        int n;\n        cin >> n;\n        if (n == 0)       // 0 = "erase the last number!"\n            st.pop();     // LIFO: most recent number is removed\n        else\n            st.push(n);   // Not 0, so push it onto the stack\n    }\n\n    int total = 0;\n    while (!st.empty()) {   // Until the stack is empty\n        total += st.top();  // Read value with top()\n        st.pop();           // Remove with pop()\n    }\n    cout << total << endl;  // Print sum of remaining numbers', desc: 'C++ stack has no sum(), so we pop and accumulate one by one.\ntop() only returns the value (no removal), pop() only removes (no return)!\nThis is different from Python where pop() does both.' }
                         ]
                     }
                 }
@@ -1546,15 +1546,15 @@ int main() {
             title: 'LeetCode 20 - Valid Parentheses',
             difficulty: 'easy',
             link: 'https://leetcode.com/problems/valid-parentheses/',
-            simIntro: '여는 괄호를 스택에 push하고, 닫는 괄호가 나오면 짝이 맞는지 확인하는 과정을 살펴보세요.',
+            simIntro: 'Watch how opening brackets are pushed onto the stack and matched when a closing bracket appears.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>문자열 <code>s</code>가 <code>'('</code>, <code>')'</code>, <code>'{'</code>, <code>'}'</code>, <code>'['</code>, <code>']'</code>로만 이루어져 있을 때, 입력 문자열이 유효한지 판별하세요.</p>
-                <p>유효한 조건:</p>
+                <p>Given a string <code>s</code> containing just the characters <code>'('</code>, <code>')'</code>, <code>'{'</code>, <code>'}'</code>, <code>'['</code>, and <code>']'</code>, determine if the input string is valid.</p>
+                <p>An input string is valid if:</p>
                 <ol>
-                    <li>열린 괄호는 <strong>같은 종류의 괄호</strong>로 닫혀야 한다.</li>
-                    <li>열린 괄호는 <strong>올바른 순서</strong>로 닫혀야 한다.</li>
-                    <li>모든 닫힌 괄호에는 <strong>같은 유형의 열린 괄호</strong>가 있어야 한다.</li>
+                    <li>Open brackets must be closed by the <strong>same type of brackets</strong>.</li>
+                    <li>Open brackets must be closed in the <strong>correct order</strong>.</li>
+                    <li>Every close bracket has a corresponding <strong>open bracket of the same type</strong>.</li>
                 </ol>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
@@ -1575,38 +1575,38 @@ int main() {
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 &le; s.length &le; 10<sup>4</sup></li>
-                    <li><code>s</code>는 <code>'()[]{}'</code> 문자로만 구성</li>
+                    <li><code>s</code> consists of parentheses only <code>'()[]{}'</code></li>
                 </ul>
             `,
             hints: [
-                { title: 'First intuition', content: '여는 괄호랑 닫는 괄호 <strong>개수가 같으면</strong> 유효한 거 아닐까?<br><br><code>"()"</code> → 여는 1개, 닫는 1개 → 유효 ✓<br><code>"()[]{}"</code> → 여는 3개, 닫는 3개 → 유효 ✓<br><br>개수만 세면 간단하게 풀 수 있을 것 같은데…' },
-                { title: 'But there\'s a problem with this', content: '<code>"(]"</code> → 여는 괄호 1개, 닫는 괄호 1개… <strong>개수는 맞는데 유효하지 않아요!</strong><br><code>"([)]"</code> → 여는 2개, 닫는 2개… 역시 개수는 맞지만 유효하지 않아요!<br><br>개수만으로는 <strong>"종류"</strong>(괄호 모양이 같은지)와 <strong>"순서"</strong>(안쪽 괄호를 먼저 닫는지)를 확인할 수 없습니다.<br>그럼 종류와 순서를 둘 다 체크하려면 어떻게 해야 할까요?' },
-                { title: 'What if we try this?', content: '<code>"([{}])"</code>를 보면: <code>(</code> → <code>[</code> → <code>{</code> 순서로 열었으니,<br><code>}</code> → <code>]</code> → <code>)</code> 순서로, <strong>가장 최근에 연 괄호부터</strong> 닫아야 해요.<br><br>"가장 최근에 넣은 것을 빼서 비교"… 이 패턴, 어디서 본 것 같지 않나요? → <strong>스택</strong>!<br>여는 괄호 → push, 닫는 괄호가 나오면 → pop해서 짝이 맞나 확인하면 돼요.<br><br>주의할 점 두 가지:<br>① 닫는 괄호인데 <strong>스택이 비어있으면?</strong> → 짝이 없으니 실패<br>② 끝까지 봤는데 <strong>스택에 남아있으면?</strong> → 안 닫힌 괄호가 있으니 실패' },
-                { title: 'In Python/C++!', content: '짝을 매핑해두면 닫는 괄호가 나왔을 때 O(1)로 비교할 수 있어요:<br><br><span class="lang-py">Python: <code>pairs = {")" : "(", "]" : "[", "}" : "{"}</code> (딕셔너리)<br>스택은 <code>list</code>의 <code>append/pop</code>으로 구현!<br>닫는 괄호 → <code>stack[-1] != pairs[c]</code>이면 짝 불일치 → <code>False</code></span><span class="lang-cpp">C++: <code>unordered_map&lt;char,char&gt;</code>로 매핑하거나 if/else로 비교<br>스택은 <code>stack&lt;char&gt;</code>의 <code>push/top/pop</code>으로 구현!<br>닫는 괄호 → <code>st.top() != pairs[c]</code>이면 짝 불일치 → <code>false</code></span>' }
+                { title: 'First intuition', content: 'What if the <strong>number of opening and closing brackets are equal</strong>, it is valid?<br><br><code>"()"</code> → 1 open, 1 close → valid ✓<br><code>"()[]{}"</code> → 3 open, 3 close → valid ✓<br><br>It seems like just counting would be a simple solution...' },
+                { title: 'But there is a problem with this', content: '<code>"(]"</code> → 1 open bracket, 1 close bracket... <strong>The counts match but it is not valid!</strong><br><code>"([)]"</code> → 2 open, 2 close... Again counts match but it is not valid!<br><br>Counting alone cannot verify the <strong>"type"</strong> (same bracket shape) and <strong>"order"</strong> (inner brackets close first).<br>So how can we check both type and order?' },
+                { title: 'What if we try this?', content: 'Look at <code>"([{}])"</code>: opened in order <code>(</code> → <code>[</code> → <code>{</code>,<br>so they must close in order <code>}</code> → <code>]</code> → <code>)</code>, closing <strong>the most recently opened bracket first</strong>.<br><br>"Remove the most recently added and compare"... Does this pattern look familiar? → <strong>Stack</strong>!<br>Opening bracket → push, closing bracket → pop and check if they match.<br><br>Two edge cases to watch:<br>1. Closing bracket but <strong>stack is empty?</strong> → No match, fail<br>2. Finished scanning but <strong>stack still has items?</strong> → Unclosed brackets remain, fail' },
+                { title: 'In Python/C++!', content: 'Pre-mapping pairs lets us compare in O(1) when a closing bracket appears:<br><br><span class="lang-py">Python: <code>pairs = {")" : "(", "]" : "[", "}" : "{"}</code> (dictionary)<br>Stack is implemented with <code>list</code> using <code>append/pop</code>!<br>Closing bracket → if <code>stack[-1] != pairs[c]</code>, mismatch → <code>False</code></span><span class="lang-cpp">C++: Map with <code>unordered_map&lt;char,char&gt;</code> or use if/else<br>Stack is <code>stack&lt;char&gt;</code> with <code>push/top/pop</code>!<br>Closing bracket → if <code>st.top() != pairs[c]</code>, mismatch → <code>false</code></span>' }
             ],
             inputDefault: 0,
             solve() { return 'true'; },
             solutions: [
                 {
-                    approach: '스택 기반 괄호 매칭',
-                    description: '여는 괄호는 push, 닫는 괄호가 나오면 top과 비교하여 매칭합니다.',
+                    approach: 'Stack-Based Bracket Matching',
+                    description: 'Push opening brackets, compare closing brackets against the top to match.',
                     timeComplexity: 'O(n)',
                     spaceComplexity: 'O(n)',
                     get templates() { return stackQueueTopic.problems[1].templates; },
                     codeSteps: {
                         python: [
-                            { title: '초기 설정', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # 여는 괄호를 쌓아두는 스택\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # 닫는→여는 매핑', desc: '왜 딕셔너리? → 닫는 괄호가 나왔을 때 짝을 O(1)로 찾으려고!\npairs[")"] = "(" 이런 식으로 매핑합니다.' },
-                            { title: '문자 순회', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # 여는 괄호를 쌓아두는 스택\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # 닫는→여는 매핑\n\n        for c in s:  # 한 글자씩 확인', desc: '문자열의 각 문자를 하나씩 확인합니다.\n여는 괄호인지 닫는 괄호인지에 따라 처리가 다릅니다.' },
-                            { title: '여는 괄호 push', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # 여는 괄호를 쌓아두는 스택\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # 닫는→여는 매핑\n\n        for c in s:\n            if c in \'([{\':\n                stack.append(c)  # 나중에 짝을 확인할 때까지 보관', desc: '왜 push? → 여는 괄호는 아직 짝을 모르니까 일단 보관!\n나중에 닫는 괄호가 나올 때 꺼내서 비교합니다.' },
-                            { title: '닫는 괄호 검증', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # 여는 괄호를 쌓아두는 스택\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # 닫는→여는 매핑\n\n        for c in s:\n            if c in \'([{\':\n                stack.append(c)  # 나중에 짝을 확인할 때까지 보관\n            elif c in \')]}\':\n                if not stack or stack[-1] != pairs[c]:  # 스택 비었거나 짝 불일치\n                    return False\n                stack.pop()  # 짝 맞으면 소비!', desc: '핵심: 닫는 괄호가 나오면 스택 top과 비교!\nnot stack → 짝 지을 여는 괄호가 없음 → 실패\nstack[-1] != pairs[c] → 가장 최근 여는 괄호와 짝이 안 맞음 → 실패' },
-                            { title: '최종 판정', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # 여는 괄호를 쌓아두는 스택\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # 닫는→여는 매핑\n\n        for c in s:\n            if c in \'([{\':\n                stack.append(c)  # 나중에 짝을 확인할 때까지 보관\n            elif c in \')]}\':\n                if not stack or stack[-1] != pairs[c]:  # 스택 비었거나 짝 불일치\n                    return False\n                stack.pop()  # 짝 맞으면 소비!\n\n        return len(stack) == 0  # 남은 여는 괄호 있으면 실패!', desc: '왜 len(stack) == 0?\n→ 스택에 여는 괄호가 남아있으면 짝을 못 찾은 것!\n"(()" 같은 경우 스택에 "("가 남아있어서 False.' }
+                            { title: 'Initial Setup', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # Stack to hold opening brackets\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # closing→opening mapping', desc: 'Why a dictionary? To find the matching pair in O(1) when a closing bracket appears!\npairs[")"] = "(" and so on.' },
+                            { title: 'Character Traversal', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # Stack to hold opening brackets\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # closing→opening mapping\n\n        for c in s:  # Check each character one by one', desc: 'Examine each character in the string one by one.\nProcessing differs depending on whether it is opening or closing.' },
+                            { title: 'Push Opening Brackets', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # Stack to hold opening brackets\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # closing→opening mapping\n\n        for c in s:\n            if c in \'([{\':\n                stack.append(c)  # Hold until we find its closing match', desc: 'Why push? Opening brackets do not have a match yet, so we store them!\nWe will pop and compare when a closing bracket appears later.' },
+                            { title: 'Validate Closing Brackets', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # Stack to hold opening brackets\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # closing→opening mapping\n\n        for c in s:\n            if c in \'([{\':\n                stack.append(c)  # Hold until we find its closing match\n            elif c in \')]}\':\n                if not stack or stack[-1] != pairs[c]:  # Stack empty or mismatch\n                    return False\n                stack.pop()  # Match found, consume it!', desc: 'Key point: when a closing bracket appears, compare with the stack top!\nnot stack → no opening bracket to pair with → fail\nstack[-1] != pairs[c] → most recent opening bracket does not match → fail' },
+                            { title: 'Final Verdict', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # Stack to hold opening brackets\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # closing→opening mapping\n\n        for c in s:\n            if c in \'([{\':\n                stack.append(c)  # Hold until we find its closing match\n            elif c in \')]}\':\n                if not stack or stack[-1] != pairs[c]:  # Stack empty or mismatch\n                    return False\n                stack.pop()  # Match found, consume it!\n\n        return len(stack) == 0  # Remaining opening brackets = fail!', desc: 'Why len(stack) == 0?\nIf opening brackets remain in the stack, they were never matched!\nFor example, "(()": "(" remains in the stack, so return False.' }
                         ],
                         cpp: [
-                            { title: '초기 설정', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;  // 여는 괄호를 쌓아두는 스택\n        // 닫는→여는 괄호 매핑 (O(1) 조회용)\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };', desc: '왜 unordered_map? → 닫는 괄호가 나왔을 때 짝을 O(1)로 찾으려고!\npairs[\')\'] = \'(\' 이런 식으로 매핑합니다.\nC++에서는 stack<char>로 문자 스택을 만듭니다.' },
-                            { title: '문자 순회', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {  // 한 글자씩 확인', desc: 'range-based for문으로 문자열의 각 문자를 순회합니다.\n여는 괄호인지 닫는 괄호인지에 따라 처리가 다릅니다.' },
-                            { title: '여는 괄호 push', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {\n            if (c == \'(\' || c == \'[\' || c == \'{\')\n                st.push(c);  // 나중에 짝을 확인할 때까지 보관', desc: '왜 push? → 여는 괄호는 아직 짝을 모르니까 일단 보관!\n나중에 닫는 괄호가 나올 때 꺼내서 비교합니다.' },
-                            { title: '닫는 괄호 검증', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {\n            if (c == \'(\' || c == \'[\' || c == \'{\')\n                st.push(c);  // 나중에 짝을 확인할 때까지 보관\n            else {\n                // 스택 비었거나 짝 불일치 → 실패\n                if (st.empty() || st.top() != pairs[c])\n                    return false;\n                st.pop();    // 짝 맞으면 소비!', desc: '핵심: 닫는 괄호가 나오면 스택 top과 비교!\nst.empty() → 짝 지을 여는 괄호가 없음 → 실패\nst.top() != pairs[c] → 가장 최근 여는 괄호와 짝이 안 맞음 → 실패' },
-                            { title: '최종 판정', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {\n            if (c == \'(\' || c == \'[\' || c == \'{\')\n                st.push(c);\n            else {\n                if (st.empty() || st.top() != pairs[c])\n                    return false;\n                st.pop();\n            }\n        }\n\n        return st.empty();  // 남은 여는 괄호 있으면 실패!\n    }\n};', desc: '왜 st.empty()?\n→ 스택에 여는 괄호가 남아있으면 짝을 못 찾은 것!\n"(()" 같은 경우 스택에 \'(\'가 남아있어서 false.' }
+                            { title: 'Initial Setup', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;  // Stack to hold opening brackets\n        // closing→opening bracket mapping (O(1) lookup)\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };', desc: 'Why unordered_map? To find the matching pair in O(1) when a closing bracket appears!\npairs[\')\'] = \'(\' and so on.\nIn C++, use stack<char> to create a character stack.' },
+                            { title: 'Character Traversal', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {  // Check each character one by one', desc: 'Range-based for loop iterates through each character in the string.\nProcessing differs depending on whether it is opening or closing.' },
+                            { title: 'Push Opening Brackets', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {\n            if (c == \'(\' || c == \'[\' || c == \'{\')\n                st.push(c);  // Hold until we find its closing match', desc: 'Why push? Opening brackets do not have a match yet, so we store them!\nWe will pop and compare when a closing bracket appears later.' },
+                            { title: 'Validate Closing Brackets', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {\n            if (c == \'(\' || c == \'[\' || c == \'{\')\n                st.push(c);  // Hold until we find its closing match\n            else {\n                // Stack empty or mismatch → fail\n                if (st.empty() || st.top() != pairs[c])\n                    return false;\n                st.pop();    // Match found, consume it!', desc: 'Key point: when a closing bracket appears, compare with the stack top!\nst.empty() → no opening bracket to pair with → fail\nst.top() != pairs[c] → most recent opening bracket does not match → fail' },
+                            { title: 'Final Verdict', code: '#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> pairs = {\n            {\')\', \'(\'}, {\']\', \'[\'}, {\'}\', \'{\'}\n        };\n\n        for (char c : s) {\n            if (c == \'(\' || c == \'[\' || c == \'{\')\n                st.push(c);\n            else {\n                if (st.empty() || st.top() != pairs[c])\n                    return false;\n                st.pop();\n            }\n        }\n\n        return st.empty();  // Remaining opening brackets = fail!\n    }\n};', desc: 'Why st.empty()?\nIf opening brackets remain in the stack, they were never matched!\nFor example, "(()": \'(\' remains in the stack, so return false.' }
                         ]
                     }
                 }
@@ -1647,13 +1647,13 @@ public:
         },
         {
             id: 'boj-2164',
-            title: 'BOJ 2164 - 카드2',
+            title: 'BOJ 2164 - Card2',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2164',
-            simIntro: '큐에서 맨 위 카드를 버리고, 다음 카드를 맨 아래로 보내는 과정을 관찰해보세요.',
+            simIntro: 'Watch how the top card is discarded from the queue and the next card is moved to the bottom.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>N장의 카드가 있다. 각 카드는 차례로 1부터 N까지의 번호가 붙어 있으며, 1번 카드가 제일 위에, N번 카드가 제일 아래인 상태로 놓여 있다. 이제 다음과 같은 동작을 카드가 한 장 남을 때까지 반복하게 된다. 우선 제일 위에 있는 카드를 바닥에 버린다. 그 다음 제일 위에 있는 카드를 제일 아래에 있는 카드 밑으로 옮긴다. 마지막에 남게 되는 카드를 구하시오.</p>
+                <p>There are N cards. Each card is numbered from 1 to N, with card 1 on top and card N on the bottom. The following operations are repeated until only one card remains: First, discard the top card. Then move the next top card to the bottom. Find the last remaining card.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>6</pre></div>
@@ -1666,33 +1666,33 @@ public:
                 </ul>
             `,
             hints: [
-                { title: '문제를 쉽게 이해해보자', content: 'N=4일 때 카드가 [1, 2, 3, 4]로 놓여있어요.<br>"<strong>맨 위를 버리고 → 그다음 맨 위를 맨 아래로</strong>" 반복!<br><br>1 버림 → 2를 아래로 → [3, 4, 2]<br>3 버림 → 4를 아래로 → [2, 4]<br>2 버림 → 답: <strong>4</strong><br><br>한쪽(위)에서 빼서 다른 쪽(아래)으로 넣는 패턴이에요!' },
-                { title: '배열로 해볼까?', content: '배열 앞에서 빼고 뒤에 넣으면 동작은 하겠죠?<br>(<span class="lang-py">Python: <code>list.pop(0)</code></span><span class="lang-cpp">C++: <code>erase(v.begin())</code></span>)<br><br>근데 "앞에서 빼기"가 매번 뭘 하는지 생각해봐요…' },
-                { title: '배열 앞에서 빼기의 함정!', content: '배열 앞에서 빼면 <strong>나머지를 전부 한 칸씩 앞으로 당겨야</strong> 해요 → <strong>O(n)</strong><br>(<span class="lang-py">Python: <code>list.pop(0)</code></span><span class="lang-cpp">C++: <code>vector.erase(begin())</code></span> 둘 다 O(n))<br><br>카드가 <strong>50만 장</strong>이면? 매번 O(n)씩 반복 → 총 O(n²) → <strong>시간 초과!</strong> 😱<br>"앞에서 빼는 게 빠른" 자료구조가 필요합니다.' },
-                { title: '큐(Queue)를 쓰면 해결!', content: '큐를 쓰면 앞에서 빼기가 <strong>O(1)</strong>!<br><br><span class="lang-py">Python: <code>collections.deque</code>의 <code>popleft()</code></span><span class="lang-cpp">C++: <code>queue&lt;int&gt;</code>의 <code>front()</code> + <code>pop()</code></span><br><br>앞에서 빼고 뒤에 넣는 FIFO 구조가 이 문제에 딱 맞습니다!' },
-                { title: '큐가 뭔데 이렇게 빠른 거야?', content: '<strong>큐(Queue)</strong> = FIFO (선입선출) 자료구조<br>앞에서 빼기와 뒤에 넣기가 모두 <strong>O(1)</strong>이에요.<br><br><span class="lang-py">Python: <code>from collections import deque</code> → <code>popleft()</code> O(1)</span><span class="lang-cpp">C++: <code>#include &lt;queue&gt;</code> → <code>front()</code> + <code>pop()</code> O(1)</span><br><br>배열의 앞에서 빼기 O(n)과 비교하면 <strong>큰 데이터에서 차이가 어마어마</strong>해요!' }
+                { title: 'Understanding the problem', content: 'When N=4, cards are arranged as [1, 2, 3, 4].<br>"<strong>Discard the top card, then move the next top to the bottom</strong>" -- repeat!<br><br>Discard 1 → move 2 to bottom → [3, 4, 2]<br>Discard 3 → move 4 to bottom → [2, 4]<br>Discard 2 → answer: <strong>4</strong><br><br>This is a pattern of removing from one end (top) and inserting at the other (bottom)!' },
+                { title: 'How about using an array?', content: 'Removing from the front and adding to the back of an array would work, right?<br>(<span class="lang-py">Python: <code>list.pop(0)</code></span><span class="lang-cpp">C++: <code>erase(v.begin())</code></span>)<br><br>But think about what "removing from the front" actually does each time...' },
+                { title: 'The trap of removing from the front of an array!', content: 'Removing from the front means <strong>shifting all remaining elements forward by one</strong> → <strong>O(n)</strong><br>(<span class="lang-py">Python: <code>list.pop(0)</code></span><span class="lang-cpp">C++: <code>vector.erase(begin())</code></span> are both O(n))<br><br>What if there are <strong>500,000 cards</strong>? O(n) per operation × n repetitions → O(n squared) → <strong>Time Limit Exceeded!</strong><br>We need a data structure where "removing from the front is fast".' },
+                { title: 'A Queue solves it!', content: 'With a queue, removing from the front is <strong>O(1)</strong>!<br><br><span class="lang-py">Python: <code>collections.deque</code> with <code>popleft()</code></span><span class="lang-cpp">C++: <code>queue&lt;int&gt;</code> with <code>front()</code> + <code>pop()</code></span><br><br>The FIFO structure of removing from the front and adding to the back is a perfect fit for this problem!' },
+                { title: 'Why is a queue so fast?', content: '<strong>Queue</strong> = FIFO (First In, First Out) data structure<br>Both removing from the front and adding to the back are <strong>O(1)</strong>.<br><br><span class="lang-py">Python: <code>from collections import deque</code> → <code>popleft()</code> O(1)</span><span class="lang-cpp">C++: <code>#include &lt;queue&gt;</code> → <code>front()</code> + <code>pop()</code> O(1)</span><br><br>Compared to O(n) for removing from the front of an array, <strong>the difference is enormous for large data</strong>!' }
             ],
             inputDefault: 0,
             solve() { return '4'; },
             solutions: [
                 {
-                    approach: '큐(deque) 시뮬레이션',
-                    description: '맨 앞 카드를 버리고, 다음 카드를 뒤로 보내는 과정을 반복합니다.',
+                    approach: 'Queue (deque) Simulation',
+                    description: 'Repeatedly discard the front card and move the next card to the back.',
                     timeComplexity: 'O(N)',
                     spaceComplexity: 'O(N)',
                     get templates() { return stackQueueTopic.problems[2].templates; },
                     codeSteps: {
                         python: [
-                            { title: '초기 설정', code: 'from collections import deque  # 양쪽 끝 O(1) 삽입/삭제\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # 1~N 카드를 큐에 (앞=맨 위)', desc: '왜 deque? → 리스트의 pop(0)은 O(n)이지만 deque.popleft()는 O(1)!\n카드를 앞에서 빼는 연산이 핵심이라 deque가 필수입니다.' },
-                            { title: '반복 조건', code: 'from collections import deque  # 양쪽 끝 O(1) 삽입/삭제\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # 1~N 카드를 큐에 (앞=맨 위)\n\nwhile len(q) > 1:  # 카드 1장 남을 때까지', desc: '카드가 1장 남으면 그게 정답!\n매 반복마다 카드가 1장씩 줄어듭니다 (버리기 때문).' },
-                            { title: '카드 조작', code: 'from collections import deque  # 양쪽 끝 O(1) 삽입/삭제\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # 1~N 카드를 큐에 (앞=맨 위)\n\nwhile len(q) > 1:\n    q.popleft()            # ① 맨 위 카드 버리기 (O(1))\n    q.append(q.popleft())  # ② 다음 카드를 맨 아래로 이동', desc: '핵심 2단계:\n① popleft() → 맨 위 카드를 버림\n② popleft()로 꺼내서 append()로 맨 뒤에 → 맨 아래로 이동\n모두 O(1)이라 전체 O(N)!' },
-                            { title: 'Output Result', code: 'from collections import deque  # 양쪽 끝 O(1) 삽입/삭제\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # 1~N 카드를 큐에 (앞=맨 위)\n\nwhile len(q) > 1:\n    q.popleft()            # ① 맨 위 카드 버리기 (O(1))\n    q.append(q.popleft())  # ② 다음 카드를 맨 아래로 이동\n\nprint(q[0])  # 마지막 남은 카드!', desc: '마지막 남은 한 장이 정답입니다.' }
+                            { title: 'Initial Setup', code: 'from collections import deque  # O(1) insert/remove from both ends\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # Cards 1~N in queue (front = top)', desc: 'Why deque? list.pop(0) is O(n) but deque.popleft() is O(1)!\nSince removing from the front is the key operation, deque is essential.' },
+                            { title: 'Loop Condition', code: 'from collections import deque  # O(1) insert/remove from both ends\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # Cards 1~N in queue (front = top)\n\nwhile len(q) > 1:  # Until 1 card remains', desc: 'When 1 card remains, that is the answer!\nEach iteration removes one card (by discarding).' },
+                            { title: 'Card Operations', code: 'from collections import deque  # O(1) insert/remove from both ends\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # Cards 1~N in queue (front = top)\n\nwhile len(q) > 1:\n    q.popleft()            # Step 1: Discard the top card (O(1))\n    q.append(q.popleft())  # Step 2: Move the next card to the bottom', desc: 'Two key steps:\nStep 1: popleft() discards the top card\nStep 2: popleft() to take the next, append() to put it at the back\nAll O(1), so total is O(N)!' },
+                            { title: 'Output Result', code: 'from collections import deque  # O(1) insert/remove from both ends\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # Cards 1~N in queue (front = top)\n\nwhile len(q) > 1:\n    q.popleft()            # Step 1: Discard the top card (O(1))\n    q.append(q.popleft())  # Step 2: Move the next card to the bottom\n\nprint(q[0])  # The last remaining card!', desc: 'The last remaining card is the answer.' }
                         ],
                         cpp: [
-                            { title: '초기 설정', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // 큐: FIFO (선입선출)\n    for (int i = 1; i <= N; i++)\n        q.push(i);  // 1~N 카드를 큐에 넣기', desc: '왜 queue? → 앞에서 빼고(pop) 뒤에 넣는(push) 구조!\nC++의 queue는 <queue> 헤더에서 제공합니다.\nfront()로 맨 앞을 확인하고 pop()으로 제거합니다.' },
-                            { title: '반복 조건', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // 큐: FIFO (선입선출)\n    for (int i = 1; i <= N; i++)\n        q.push(i);\n\n    while (q.size() > 1) {  // 카드 1장 남을 때까지', desc: '카드가 1장 남으면 그게 정답!\n매 반복마다 카드가 1장씩 줄어듭니다 (버리기 때문).' },
-                            { title: '카드 조작', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // 큐: FIFO (선입선출)\n    for (int i = 1; i <= N; i++)\n        q.push(i);\n\n    while (q.size() > 1) {\n        q.pop();              // ① 맨 위 카드 버리기\n        q.push(q.front());    // ② 다음 카드를 맨 아래로 이동\n        q.pop();              // ② front를 제거 (push 후)', desc: '핵심 3단계:\n① pop() → 맨 위 카드를 버림\n② front()로 값을 읽어서 push()로 맨 뒤에 넣고\n   다시 pop()으로 원래 위치에서 제거\nC++의 pop()은 값을 반환하지 않으므로 front()로 먼저 읽어야 합니다!' },
-                            { title: 'Output Result', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // 큐: FIFO (선입선출)\n    for (int i = 1; i <= N; i++)\n        q.push(i);\n\n    while (q.size() > 1) {\n        q.pop();              // ① 맨 위 카드 버리기\n        q.push(q.front());    // ② 다음 카드를 맨 아래로 이동\n        q.pop();              // ② front를 제거\n    }\n\n    cout << q.front() << endl;  // 마지막 남은 카드!', desc: '마지막 남은 한 장이 정답입니다.\nq.front()로 큐의 맨 앞 값을 확인합니다.' }
+                            { title: 'Initial Setup', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // Queue: FIFO (First In, First Out)\n    for (int i = 1; i <= N; i++)\n        q.push(i);  // Put cards 1~N into the queue', desc: 'Why queue? It supports removing from front (pop) and adding to back (push)!\nC++ provides queue via the <queue> header.\nUse front() to view the front and pop() to remove it.' },
+                            { title: 'Loop Condition', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // Queue: FIFO (First In, First Out)\n    for (int i = 1; i <= N; i++)\n        q.push(i);\n\n    while (q.size() > 1) {  // Until 1 card remains', desc: 'When 1 card remains, that is the answer!\nEach iteration removes one card (by discarding).' },
+                            { title: 'Card Operations', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // Queue: FIFO (First In, First Out)\n    for (int i = 1; i <= N; i++)\n        q.push(i);\n\n    while (q.size() > 1) {\n        q.pop();              // Step 1: Discard the top card\n        q.push(q.front());    // Step 2: Move the next card to the bottom\n        q.pop();              // Step 2 cont: Remove from original position (after push)', desc: 'Three key steps:\nStep 1: pop() discards the top card\nStep 2: front() reads the value, push() puts it at the back,\n   then pop() removes from the original position\nC++ pop() does not return a value, so you must read with front() first!' },
+                            { title: 'Output Result', code: '#include <iostream>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    queue<int> q;  // Queue: FIFO (First In, First Out)\n    for (int i = 1; i <= N; i++)\n        q.push(i);\n\n    while (q.size() > 1) {\n        q.pop();              // Step 1: Discard the top card\n        q.push(q.front());    // Step 2: Move the next card to the bottom\n        q.pop();              // Remove from original position\n    }\n\n    cout << q.front() << endl;  // The last remaining card!', desc: 'The last remaining card is the answer.\nq.front() returns the front value of the queue.' }
                         ]
                     }
                 }
@@ -1706,8 +1706,8 @@ N = int(input())
 q = deque(range(1, N + 1))
 
 while len(q) > 1:
-    q.popleft()          # 맨 위 카드 버리기
-    q.append(q.popleft()) # 다음 카드를 맨 아래로
+    q.popleft()          # Discard the top card
+    q.append(q.popleft()) # Move the next card to the bottom
 
 print(q[0])`,
                 cpp: `#include <iostream>
@@ -1721,8 +1721,8 @@ int main() {
     for (int i = 1; i <= N; i++) q.push(i);
 
     while (q.size() > 1) {
-        q.pop();             // 맨 위 버리기
-        q.push(q.front());   // 다음 카드를 맨 아래로
+        q.pop();             // Discard the top card
+        q.push(q.front());   // Move the next card to the bottom
         q.pop();
     }
     printf("%d\\n", q.front());
@@ -1734,18 +1734,18 @@ int main() {
             title: 'LeetCode 155 - Min Stack',
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/min-stack/',
-            simIntro: '메인 스택과 최솟값 추적 보조 스택이 함께 동작하는 모습을 확인해보세요.',
+            simIntro: 'Watch how the main stack and the min-tracking auxiliary stack work together.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>다음 연산을 지원하는 <code>MinStack</code> 클래스를 설계하세요.</p>
+                <p>Design a <code>MinStack</code> class that supports the following operations.</p>
                 <ul>
-                    <li><code>MinStack()</code> — 스택 객체를 초기화합니다.</li>
-                    <li><code>void push(int val)</code> — <code>val</code>을 스택에 넣습니다.</li>
-                    <li><code>void pop()</code> — 스택의 맨 위 원소를 제거합니다.</li>
-                    <li><code>int top()</code> — 스택의 맨 위 원소를 가져옵니다.</li>
-                    <li><code>int getMin()</code> — 스택에서 최솟값을 가져옵니다.</li>
+                    <li><code>MinStack()</code> — initializes the stack object.</li>
+                    <li><code>void push(int val)</code> — pushes <code>val</code> onto the stack.</li>
+                    <li><code>void pop()</code> — removes the element on the top of the stack.</li>
+                    <li><code>int top()</code> — gets the top element of the stack.</li>
+                    <li><code>int getMin()</code> — retrieves the minimum element in the stack.</li>
                 </ul>
-                <p>각 함수는 <strong>O(1) 시간</strong>에 동작해야 합니다.</p>
+                <p>Each function must run in <strong>O(1) time</strong>.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>["MinStack","push","push","push","getMin","pop","top","getMin"]\n[[], [-2], [0], [-3], [], [], [], []]</pre></div>
@@ -1755,38 +1755,38 @@ int main() {
                 <h4>Constraints</h4>
                 <ul>
                     <li>-2<sup>31</sup> &le; val &le; 2<sup>31</sup> - 1</li>
-                    <li><code>pop</code>, <code>top</code>, <code>getMin</code>은 비어있지 않은 스택에서만 호출</li>
-                    <li>최대 3 × 10<sup>4</sup>번 호출</li>
+                    <li><code>pop</code>, <code>top</code>, <code>getMin</code> will only be called on non-empty stacks</li>
+                    <li>At most 3 × 10<sup>4</sup> calls</li>
                 </ul>
             `,
             hints: [
-                { title: '문제를 쉽게 이해해보자', content: '<code>push</code>, <code>pop</code>, <code>top</code>은 일반 스택이랑 똑같아요. 어려운 건 <strong>getMin()</strong>!<br><br><code>getMin()</code>이 항상 현재 스택에서 <strong>가장 작은 값을 O(1)에 반환</strong>해야 해요.<br>보통 최솟값을 찾으려면 전체를 봐야 하는데… O(1)이라고?' },
-                { title: 'min 변수 하나면 되지 않을까?', content: '스택에 값을 넣을 때마다 <code>min_val = min(min_val, x)</code>로 갱신하면?<br><br><code>push(5)</code>, <code>push(2)</code>, <code>push(7)</code> → min_val = 2 ✓<br>근데 <code>pop()</code>으로 <strong>2를 빼면?</strong> min_val이 2인데 2는 이제 없잖아요!' },
-                { title: 'pop하면 이전 최솟값을 어떻게 알지?', content: '2를 pop했으면 그 전의 최솟값(5)으로 <strong>돌아가야</strong> 해요.<br><br>"이전 상태로 돌아간다"… 뭔가 <strong>스택스러운</strong> 느낌이 들지 않나요?<br>각 시점의 최솟값을 "기억"해두면 어떨까요?' },
-                { title: '보조 스택으로 각 시점의 최솟값 기억하기', content: '<strong>min_stack</strong>이라는 스택을 하나 더 만들자!<br><br><code>push(x)</code>할 때: min_stack에도 <code>min(x, 현재 min_stack의 top)</code>을 push<br><code>pop()</code>할 때: min_stack에서도 pop → 자동으로 이전 최솟값이 top!<br><code>getMin()</code>: min_stack의 top을 보면 끝 → <strong>O(1)!</strong>' },
-                { title: '예시로 확인해보자', content: '<code>push(5)</code>: stack=[5], min_stack=[<strong>5</strong>]<br><code>push(2)</code>: stack=[5,2], min_stack=[5,<strong>2</strong>] ← min(2,5)=2<br><code>push(7)</code>: stack=[5,2,7], min_stack=[5,2,<strong>2</strong>] ← min(7,2)=2<br><br><code>pop()</code>: stack=[5,2], min_stack=[5,<strong>2</strong>] → getMin()=2 ✓<br><code>pop()</code>: stack=[5], min_stack=[<strong>5</strong>] → getMin()=5 ✓<br><br>2가 빠졌는데 자동으로 최솟값이 5로 복원돼요! 🎉' }
+                { title: 'Understanding the problem', content: '<code>push</code>, <code>pop</code>, <code>top</code> are the same as a regular stack. The tricky part is <strong>getMin()</strong>!<br><br><code>getMin()</code> must always <strong>return the smallest value in the stack in O(1)</strong>.<br>Normally, finding the minimum requires scanning everything... but O(1)?' },
+                { title: 'Would a single min variable work?', content: 'What if we update <code>min_val = min(min_val, x)</code> every time we push?<br><br><code>push(5)</code>, <code>push(2)</code>, <code>push(7)</code> → min_val = 2 ✓<br>But what if we <code>pop()</code> and <strong>remove 2?</strong> min_val is still 2, but 2 is gone!' },
+                { title: 'After popping, how do we know the previous minimum?', content: 'After popping 2, we need to <strong>revert</strong> to the previous minimum (5).<br><br>"Reverting to a previous state"... Does that feel <strong>stack-like</strong>?<br>What if we "remember" the minimum at each point in time?' },
+                { title: 'Use an auxiliary stack to remember the min at each point', content: 'Create one more stack called <strong>min_stack</strong>!<br><br>On <code>push(x)</code>: also push <code>min(x, current top of min_stack)</code> onto min_stack<br>On <code>pop()</code>: also pop from min_stack → the previous minimum automatically becomes the top!<br><code>getMin()</code>: just look at the top of min_stack → <strong>O(1)!</strong>' },
+                { title: 'Verify with an example', content: '<code>push(5)</code>: stack=[5], min_stack=[<strong>5</strong>]<br><code>push(2)</code>: stack=[5,2], min_stack=[5,<strong>2</strong>] ← min(2,5)=2<br><code>push(7)</code>: stack=[5,2,7], min_stack=[5,2,<strong>2</strong>] ← min(7,2)=2<br><br><code>pop()</code>: stack=[5,2], min_stack=[5,<strong>2</strong>] → getMin()=2 ✓<br><code>pop()</code>: stack=[5], min_stack=[<strong>5</strong>] → getMin()=5 ✓<br><br>Even though 2 was removed, the minimum automatically reverts to 5!' }
             ],
             inputDefault: 0,
             solve() { return '-3, 0, -2'; },
             solutions: [
                 {
-                    approach: '보조 스택으로 최솟값 추적',
-                    description: '메인 스택과 별도로 최솟값 스택을 유지하여 O(1) getMin을 구현합니다.',
+                    approach: 'Auxiliary Stack for Min Tracking',
+                    description: 'Maintain a separate min stack alongside the main stack for O(1) getMin.',
                     timeComplexity: 'O(1) per op',
                     spaceComplexity: 'O(n)',
                     get templates() { return stackQueueTopic.problems[3].templates; },
                     codeSteps: {
                         python: [
-                            { title: 'Initialize', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # 메인 스택: 실제 데이터\n        self.min_stack = []  # 보조 스택: 각 시점의 최솟값 기록', desc: '왜 스택 2개? → getMin()을 O(1)로 하려면 "지금 최솟값이 뭔지" 항상 알아야!\nmin_stack의 top이 항상 현재 최솟값을 가리킵니다.' },
-                            { title: 'push 구현', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # 메인 스택: 실제 데이터\n        self.min_stack = []  # 보조 스택: 각 시점의 최솟값 기록\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)              # 새로운 최솟값!\n        else:\n            self.min_stack.append(self.min_stack[-1])  # 최솟값 변동 없음 → 그대로 복사', desc: '핵심: push할 때 min_stack에도 항상 함께 push!\nval이 현재 최솟값 이하면 → val을 넣고\n아니면 → 기존 최솟값을 그대로 복사해서 넣음\n→ 두 스택의 높이가 항상 같다!' },
-                            { title: 'pop 구현', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # 메인 스택: 실제 데이터\n        self.min_stack = []  # 보조 스택: 각 시점의 최솟값 기록\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n        else:\n            self.min_stack.append(self.min_stack[-1])\n\n    def pop(self) -> None:\n        self.stack.pop()      # 메인에서 제거\n        self.min_stack.pop()  # 보조도 같이 제거 → 높이 동기화!', desc: '왜 둘 다 pop?\n→ 두 스택 높이를 항상 동기화해야 하니까!\npop 후에도 min_stack[-1]이 정확한 최솟값을 가리킵니다.' },
-                            { title: 'top과 getMin', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # 메인 스택: 실제 데이터\n        self.min_stack = []  # 보조 스택: 각 시점의 최솟값 기록\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n        else:\n            self.min_stack.append(self.min_stack[-1])\n\n    def pop(self) -> None:\n        self.stack.pop()\n        self.min_stack.pop()\n\n    def top(self) -> int:\n        return self.stack[-1]      # 메인 스택의 top\n\n    def getMin(self) -> int:\n        return self.min_stack[-1]  # 보조 스택의 top = 현재 최솟값! O(1)', desc: '모든 연산이 O(1)!\ntop() → stack[-1], getMin() → min_stack[-1]\n보조 스택 덕분에 최솟값을 매번 탐색할 필요가 없습니다.' }
+                            { title: 'Initialize', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # Main stack: actual data\n        self.min_stack = []  # Auxiliary stack: records the min at each point', desc: 'Why two stacks? To make getMin() O(1), we must always know "what the current min is"!\nThe top of min_stack always points to the current minimum.' },
+                            { title: 'Implement push', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # Main stack: actual data\n        self.min_stack = []  # Auxiliary stack: records the min at each point\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)              # New minimum!\n        else:\n            self.min_stack.append(self.min_stack[-1])  # Min unchanged, copy as-is', desc: 'Key: always push to min_stack along with the main stack!\nIf val is less than or equal to current min → push val\nOtherwise → copy the existing min as-is\nThis keeps both stacks at the same height!' },
+                            { title: 'Implement pop', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # Main stack: actual data\n        self.min_stack = []  # Auxiliary stack: records the min at each point\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n        else:\n            self.min_stack.append(self.min_stack[-1])\n\n    def pop(self) -> None:\n        self.stack.pop()      # Remove from main\n        self.min_stack.pop()  # Remove from aux too → keep heights in sync!', desc: 'Why pop both?\nTo always keep the two stacks synchronized in height!\nAfter popping, min_stack[-1] still points to the correct minimum.' },
+                            { title: 'top and getMin', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # Main stack: actual data\n        self.min_stack = []  # Auxiliary stack: records the min at each point\n\n    def push(self, val: int) -> None:\n        self.stack.append(val)\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n        else:\n            self.min_stack.append(self.min_stack[-1])\n\n    def pop(self) -> None:\n        self.stack.pop()\n        self.min_stack.pop()\n\n    def top(self) -> int:\n        return self.stack[-1]      # Top of main stack\n\n    def getMin(self) -> int:\n        return self.min_stack[-1]  # Top of aux stack = current min! O(1)', desc: 'All operations are O(1)!\ntop() → stack[-1], getMin() → min_stack[-1]\nThanks to the auxiliary stack, there is no need to scan for the minimum each time.' }
                         ],
                         cpp: [
-                            { title: 'Initialize', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // 메인 스택: 실제 데이터\n    stack<int> minSt;    // 보조 스택: 각 시점의 최솟값 기록', desc: '왜 스택 2개? → getMin()을 O(1)로 하려면 "지금 최솟값이 뭔지" 항상 알아야!\nminSt의 top()이 항상 현재 최솟값을 가리킵니다.\nC++에서는 stack<int>로 정수 스택을 만듭니다.' },
-                            { title: 'push 구현', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // 메인 스택\n    stack<int> minSt;    // 보조 스택: 각 시점의 최솟값\n\npublic:\n    void push(int val) {\n        st.push(val);\n        // 보조 스택이 비었거나 새 값이 최솟값 이하면 갱신\n        if (minSt.empty() || val <= minSt.top())\n            minSt.push(val);              // 새로운 최솟값!\n        else\n            minSt.push(minSt.top());      // 기존 최솟값 유지 → 그대로 복사', desc: '핵심: push할 때 minSt에도 항상 함께 push!\nval이 현재 최솟값 이하면 → val을 넣고\n아니면 → 기존 최솟값을 그대로 복사해서 넣음\n→ 두 스택의 높이가 항상 같다!' },
-                            { title: 'pop 구현', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // 메인 스택\n    stack<int> minSt;    // 보조 스택: 각 시점의 최솟값\n\npublic:\n    void push(int val) {\n        st.push(val);\n        if (minSt.empty() || val <= minSt.top())\n            minSt.push(val);\n        else\n            minSt.push(minSt.top());\n    }\n\n    void pop() {\n        st.pop();      // 메인에서 제거\n        minSt.pop();   // 보조도 같이 제거 → 높이 동기화!', desc: '왜 둘 다 pop?\n→ 두 스택 높이를 항상 동기화해야 하니까!\npop 후에도 minSt.top()이 정확한 최솟값을 가리킵니다.' },
-                            { title: 'top과 getMin', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // 메인 스택\n    stack<int> minSt;    // 보조 스택: 각 시점의 최솟값\n\npublic:\n    void push(int val) {\n        st.push(val);\n        if (minSt.empty() || val <= minSt.top())\n            minSt.push(val);\n        else\n            minSt.push(minSt.top());\n    }\n\n    void pop() {\n        st.pop();\n        minSt.pop();\n    }\n\n    int top() {\n        return st.top();       // 메인 스택의 top\n    }\n\n    int getMin() {\n        return minSt.top();    // 보조 스택의 top = 현재 최솟값! O(1)\n    }\n};', desc: '모든 연산이 O(1)!\ntop() → st.top(), getMin() → minSt.top()\n보조 스택 덕분에 최솟값을 매번 탐색할 필요가 없습니다.' }
+                            { title: 'Initialize', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // Main stack: actual data\n    stack<int> minSt;    // Auxiliary stack: records the min at each point', desc: 'Why two stacks? To make getMin() O(1), we must always know "what the current min is"!\nminSt.top() always points to the current minimum.\nIn C++, use stack<int> to create an integer stack.' },
+                            { title: 'Implement push', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // Main stack\n    stack<int> minSt;    // Auxiliary stack: min at each point\n\npublic:\n    void push(int val) {\n        st.push(val);\n        // If aux stack is empty or new value is <= current min, update\n        if (minSt.empty() || val <= minSt.top())\n            minSt.push(val);              // New minimum!\n        else\n            minSt.push(minSt.top());      // Min unchanged, copy as-is', desc: 'Key: always push to minSt along with the main stack!\nIf val is less than or equal to current min → push val\nOtherwise → copy the existing min as-is\nThis keeps both stacks at the same height!' },
+                            { title: 'Implement pop', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // Main stack\n    stack<int> minSt;    // Auxiliary stack: min at each point\n\npublic:\n    void push(int val) {\n        st.push(val);\n        if (minSt.empty() || val <= minSt.top())\n            minSt.push(val);\n        else\n            minSt.push(minSt.top());\n    }\n\n    void pop() {\n        st.pop();      // Remove from main\n        minSt.pop();   // Remove from aux too → keep heights in sync!', desc: 'Why pop both?\nTo always keep the two stacks synchronized in height!\nAfter popping, minSt.top() still points to the correct minimum.' },
+                            { title: 'top and getMin', code: '#include <stack>\nusing namespace std;\n\nclass MinStack {\n    stack<int> st;       // Main stack\n    stack<int> minSt;    // Auxiliary stack: min at each point\n\npublic:\n    void push(int val) {\n        st.push(val);\n        if (minSt.empty() || val <= minSt.top())\n            minSt.push(val);\n        else\n            minSt.push(minSt.top());\n    }\n\n    void pop() {\n        st.pop();\n        minSt.pop();\n    }\n\n    int top() {\n        return st.top();       // Top of main stack\n    }\n\n    int getMin() {\n        return minSt.top();    // Top of aux stack = current min! O(1)\n    }\n};', desc: 'All operations are O(1)!\ntop() → st.top(), getMin() → minSt.top()\nThanks to the auxiliary stack, there is no need to scan for the minimum each time.' }
                         ]
                     }
                 }
@@ -1795,11 +1795,11 @@ int main() {
                 python: `class MinStack:
     def __init__(self):
         self.stack = []
-        self.min_stack = []  # 보조 스택: 각 시점의 최솟값
+        self.min_stack = []  # Auxiliary stack: min at each point
 
     def push(self, val: int) -> None:
         self.stack.append(val)
-        # min_stack이 비어있거나, 새 값이 더 작으면 갱신
+        # If min_stack is empty or new value is smaller, update
         if not self.min_stack or val <= self.min_stack[-1]:
             self.min_stack.append(val)
         else:
@@ -1857,7 +1857,7 @@ public:
 
         const hintsSection = document.createElement('div');
         hintsSection.className = 'hints-section';
-        hintsSection.innerHTML = '<h3>단계별 힌트</h3>';
+        hintsSection.innerHTML = '<h3>Step-by-step Hints</h3>';
         const hintsDiv = document.createElement('div');
         hintsDiv.className = 'hints-steps';
         const openedState = {};
@@ -1878,7 +1878,7 @@ public:
 
         const solveArea = document.createElement('div');
         solveArea.className = 'solve-area';
-        solveArea.innerHTML = `<div class="editor-header"><h3>풀이 작성</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option></select></div><textarea id="code-editor" spellcheck="false" placeholder="Write your code here..."></textarea><div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ 실행</button><button id="check-btn" class="btn btn-success">✓ 정답 확인</button></div><div id="output-area" class="output-area"><div class="output-label">실행 결과</div><pre id="output-text"></pre></div>`;
+        solveArea.innerHTML = `<div class="editor-header"><h3>Write Solution</h3><select id="lang-select"><option value="python">Python</option><option value="cpp">C++</option></select></div><textarea id="code-editor" spellcheck="false" placeholder="Write your code here..."></textarea><div class="editor-actions"><button id="run-btn" class="btn btn-primary">▶ Run</button><button id="check-btn" class="btn btn-success">✓ Check Answer</button></div><div id="output-area" class="output-area"><div class="output-label">Output</div><pre id="output-text"></pre></div>`;
         container.appendChild(solveArea);
 
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
@@ -1887,8 +1887,8 @@ public:
         editor.value = problem.templates.python;
         langSelect.addEventListener('change', () => { editor.value = problem.templates[langSelect.value]; });
         editor.addEventListener('keydown', (e) => { if (e.key === 'Tab') { e.preventDefault(); const s = editor.selectionStart; editor.value = editor.value.substring(0, s) + '    ' + editor.value.substring(editor.selectionEnd); editor.selectionStart = editor.selectionEnd = s + 4; } });
-        container.querySelector('#run-btn').addEventListener('click', () => { const expected = problem.solve(problem.inputDefault); this._showOutput(container, `예상 정답:\n${expected}\n\n(코드가 위 결과를 출력하면 정답입니다)`); });
-        container.querySelector('#check-btn').addEventListener('click', () => { const expected = problem.solve(problem.inputDefault); const site = isLeetCode ? 'LeetCode' : 'BOJ'; this._showOutput(container, `예상 정답:\n${expected}\n\n💡 코드를 ${site}에 제출하여 정답을 확인하세요!`); });
+        container.querySelector('#run-btn').addEventListener('click', () => { const expected = problem.solve(problem.inputDefault); this._showOutput(container, `Expected answer:\n${expected}\n\n(Your code is correct if it produces the above output)`); });
+        container.querySelector('#check-btn').addEventListener('click', () => { const expected = problem.solve(problem.inputDefault); const site = isLeetCode ? 'LeetCode' : 'BOJ'; this._showOutput(container, `Expected answer:\n${expected}\n\nSubmit your code on ${site} to verify!`); });
     },
 
     _showOutput(container, text, status) {

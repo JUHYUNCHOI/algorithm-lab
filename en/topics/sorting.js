@@ -321,7 +321,7 @@ void merge(vector&lt;int&gt;&amp; arr, int l, int m, int r) {
 
     int i = 0, j = 0, k = l;
     while (i &lt; (int)left.size() &amp;&amp; j &lt; (int)right.size()) {
-        if (left[i] &lt;= right[j])   // 안정 정렬을 위해 &lt;=
+        if (left[i] &lt;= right[j])   // &lt;= for stable sort
             arr[k++] = left[i++];
         else
             arr[k++] = right[j++];
@@ -334,34 +334,34 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
     if (l &gt;= r) return;
 
     int m = l + (r - l) / 2;
-    merge_sort(arr, l, m);       // 왼쪽 반 정렬
-    merge_sort(arr, m + 1, r);   // 오른쪽 반 정렬
-    merge(arr, l, m, r);         // Union (Merge)
+    merge_sort(arr, l, m);       // Sort left half
+    merge_sort(arr, m + 1, r);   // Sort right half
+    merge(arr, l, m, r);         // Merge
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 병합 정렬은 항상 O(n log n)입니다!
-                    최악의 경우에도 안정적이지만, 추가 메모리 O(n)이 필요하다는 단점이 있습니다.
+                    <strong>💡 Think about it:</strong> Merge Sort is always O(n log n)!
+                    It's stable even in the worst case, but the downside is it requires O(n) extra memory.
                 </div>
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> 퀵 정렬: 평균 O(n log n)</div>
+                <div class="concept-section-title"><span class="section-num">3</span> Quick Sort: Average O(n log n)</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 퀵 정렬은 <em>"기준을 정해서 좌우로 나누기"</em>입니다!
-                    피벗(기준값)을 하나 고르고, 작은 것은 왼쪽, 큰 것은 오른쪽으로 보냅니다.
-                    그 후 왼쪽과 오른쪽을 각각 다시 정렬합니다.
+                    <strong>Understanding by analogy:</strong> Quick Sort is <em>"pick a pivot and partition left and right"</em>!
+                    Choose a pivot value, send smaller elements left and larger elements right.
+                    Then recursively sort each side.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">pivot</text></svg></div>
-                        <h3>피벗 선택</h3>
-                        <p>기준값을 고릅니다. 보통 맨 앞, 맨 뒤, 또는 중간값을 선택합니다.</p>
+                        <h3>Pivot Selection</h3>
+                        <p>Choose a reference value. Typically the first, last, or middle element.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">O(n²)</text></svg></div>
-                        <h3>최악의 경우</h3>
-                        <p>이미 정렬된 배열에서 피벗이 맨 끝이면 O(n²)! 랜덤 피벗으로 방지합니다.</p>
+                        <h3>Worst Case</h3>
+                        <p>If the pivot is always at the end on an already-sorted array, it's O(n²)! Use a random pivot to avoid this.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -369,17 +369,17 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
     if len(arr) <= 1:
         return arr
 
-    pivot = arr[len(arr) // 2]  # 중간값을 피벗으로
+    pivot = arr[len(arr) // 2]  # Use middle element as pivot
     left = [x for x in arr if x < pivot]
     mid = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
 
     return quick_sort(left) + mid + quick_sort(right)
 
-# 실전에서는 Python의 내장 정렬을 씁니다!
+# In practice, use Python's built-in sort!
 arr = [38, 27, 43, 3, 9, 82, 10]
-arr.sort()          # 제자리 정렬 (TimSort, O(n log n))
-sorted_arr = sorted(arr)  # 새 리스트 반환</code></pre>
+arr.sort()          # In-place sort (TimSort, O(n log n))
+sorted_arr = sorted(arr)  # Returns a new list</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
                     <pre><code class="language-cpp">#include &lt;vector&gt;
@@ -387,7 +387,7 @@ sorted_arr = sorted(arr)  # 새 리스트 반환</code></pre>
 using namespace std;
 
 int partition(vector&lt;int&gt;&amp; arr, int lo, int hi) {
-    int pivot = arr[hi];  // 마지막 원소를 피벗으로
+    int pivot = arr[hi];  // Use last element as pivot
     int i = lo - 1;
     for (int j = lo; j &lt; hi; j++) {
         if (arr[j] &lt; pivot)
@@ -404,7 +404,7 @@ void quick_sort(vector&lt;int&gt;&amp; arr, int lo, int hi) {
     quick_sort(arr, p + 1, hi);
 }
 
-// 실전에서는 C++의 내장 정렬을 씁니다!
+// In practice, use C++'s built-in sort!
 vector&lt;int&gt; arr = {38, 27, 43, 3, 9, 82, 10};
 sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                 </div></span>
@@ -412,73 +412,73 @@ sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                     <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#list.sort" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: list.sort() / sorted() ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/algorithm/sort" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: std::sort() ↗</a></span>
                 </div>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 코딩 테스트에서는 대부분 <code>sort()</code>를 사용합니다!
-                    하지만 정렬 알고리즘의 원리를 알면 <strong>정렬 기준 커스터마이즈</strong><span class="lang-py">(<code>key</code>, <code>lambda</code>)</span><span class="lang-cpp">(비교 함수, 람다)</span>를
-                    자유자재로 활용할 수 있습니다.
+                    <strong>💡 Think about it:</strong> In coding tests, you almost always use <code>sort()</code>!
+                    But knowing how sorting algorithms work lets you <strong>customize sort criteria</strong><span class="lang-py"> (<code>key</code>, <code>lambda</code>)</span><span class="lang-cpp"> (comparator functions, lambdas)</span>
+                    with ease.
                 </div>
                 <div class="concept-demo">
-                    <div class="concept-demo-title">병합 정렬 vs 퀵 정렬, 뭐가 다를까?</div>
+                    <div class="concept-demo-title">Merge Sort vs Quick Sort — What's the Difference?</div>
                     <div style="margin-top:1rem;overflow-x:auto;">
                         <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
                             <thead><tr style="background:var(--bg2);">
-                                <th style="padding:10px;text-align:left;border:1px solid var(--bg3);">비교 항목</th>
-                                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">병합 정렬</th>
-                                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">퀵 정렬</th>
+                                <th style="padding:10px;text-align:left;border:1px solid var(--bg3);">Comparison</th>
+                                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">Merge Sort</th>
+                                <th style="padding:10px;text-align:center;border:1px solid var(--bg3);">Quick Sort</th>
                             </tr></thead>
                             <tbody>
-                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">평균 시간</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">O(n log n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">O(n log n)</td></tr>
-                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">최악 시간</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--green);">O(n log n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--red);font-weight:600;">O(n²) ⚠️</td></tr>
-                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">추가 메모리</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">O(n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--green);">O(log n)</td></tr>
-                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">안정 정렬?</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--green);">✅</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--red);">❌</td></tr>
-                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">핵심 장점</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">항상 O(n log n) 보장</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">실전에서 가장 빠름 (캐시 효율)</td></tr>
-                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">동작 방식</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">분할 → 정렬 → 합치기</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">피벗 기준 분할 → 재귀</td></tr>
+                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">Average Time</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">O(n log n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">O(n log n)</td></tr>
+                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">Worst Time</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--green);">O(n log n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--red);font-weight:600;">O(n²) ⚠️</td></tr>
+                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">Extra Memory</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">O(n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--green);">O(log n)</td></tr>
+                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">Stable?</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--green);">✅</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;color:var(--red);">❌</td></tr>
+                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">Key Strength</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">Always guaranteed O(n log n)</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">Fastest in practice (cache-friendly)</td></tr>
+                                <tr><td style="padding:8px 10px;border:1px solid var(--bg3);font-weight:600;">How It Works</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">Divide → Sort → Merge</td><td style="padding:8px 10px;border:1px solid var(--bg3);text-align:center;">Partition by pivot → Recurse</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div style="margin-top:1rem;padding:10px 14px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:6px;font-size:0.88rem;line-height:1.7;">
-                        <strong>실전에서는 퀵 정렬이 보통 더 빠른 이유:</strong> 같은 O(n log n)이지만, 퀵 정렬은 제자리(in-place) 정렬이라 캐시 히트율이 높아서 실제 속도가 빠릅니다. 병합 정렬은 합칠 때마다 새 배열을 만들어야 해서 메모리 접근이 분산됩니다.
+                        <strong>Why Quick Sort is usually faster in practice:</strong> Both are O(n log n), but Quick Sort is an in-place sort with a higher cache hit rate, making it faster in real-world usage. Merge Sort needs to create new arrays every time it merges, which scatters memory accesses.
                     </div>
                     <div style="margin-top:0.7rem;padding:10px 14px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:6px;font-size:0.88rem;line-height:1.7;">
-                        <strong>하지만 최악 O(n²)을 피하려면?</strong> 피벗을 랜덤으로 고르거나, median-of-three 전략(맨 앞·중간·맨 뒤 중 중간값 선택)을 씁니다. C++의 <code>std::sort()</code>는 이런 문제를 해결하기 위해 퀵 정렬 + 힙 정렬을 합친 IntroSort를 사용합니다.
+                        <strong>How to avoid worst-case O(n²)?</strong> Choose the pivot randomly or use the median-of-three strategy (pick the median of first, middle, and last elements). C++'s <code>std::sort()</code> uses IntroSort, a hybrid of Quick Sort + Heap Sort, to solve this problem.
                     </div>
                 </div>
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">4</span> 정렬 활용 패턴</div>
+                <div class="concept-section-title"><span class="section-num">4</span> Sorting Application Patterns</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> 정렬은 그 자체가 목적이 아니라 <em>"다른 문제를 풀기 위한 전처리"</em>입니다!
-                    정렬해놓으면 이분 탐색, 투 포인터, 그룹화 등 다양한 기법을 적용할 수 있습니다.
+                    <strong>Understanding by analogy:</strong> Sorting is not the goal itself, but <em>"preprocessing to solve other problems"</em>!
+                    Once sorted, you can apply binary search, two pointers, grouping, and many other techniques.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--accent)">key=</text></svg></div>
-                        <h3>커스텀 정렬</h3>
-                        <p><span class="lang-py"><code>sort(key=lambda x: ...)</code>로 원하는 기준으로 정렬!</span><span class="lang-cpp"><code>sort(begin, end, 비교함수)</code>로 원하는 기준으로 정렬!</span> 좌표 정렬, 문자열 정렬 등.</p>
+                        <h3>Custom Sort</h3>
+                        <p><span class="lang-py"><code>sort(key=lambda x: ...)</code> to sort by any criteria!</span><span class="lang-cpp"><code>sort(begin, end, comparator)</code> to sort by any criteria!</span> Coordinate sorting, string sorting, etc.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--green)">stable</text></svg></div>
-                        <h3>안정 정렬</h3>
-                        <p>같은 값의 원래 순서가 유지됩니다. <span class="lang-py">Python의 sort()는 안정 정렬(TimSort)!</span><span class="lang-cpp">C++의 <code>stable_sort()</code>가 안정 정렬! (<code>sort()</code>는 불안정)</span></p>
+                        <h3>Stable Sort</h3>
+                        <p>The original order of equal values is preserved. <span class="lang-py">Python's sort() is stable (TimSort)!</span><span class="lang-cpp">C++'s <code>stable_sort()</code> is stable! (<code>sort()</code> is unstable)</span></p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
-                    <pre><code class="language-python"># 커스텀 정렬 예시
+                    <pre><code class="language-python"># Custom sort examples
 coords = [(3, 4), (1, 2), (3, 1), (1, 5)]
 
-# x좌표 기준, 같으면 y좌표 기준
+# Sort by x, then by y if equal
 coords.sort(key=lambda p: (p[0], p[1]))
 # [(1, 2), (1, 5), (3, 1), (3, 4)]
 
-# 문자열 길이 기준
+# Sort by string length
 words = ["banana", "pie", "apple", "fig"]
 words.sort(key=len)  # ["pie", "fig", "apple", "banana"]
 
-# 여러 기준: 길이 오름차순 → 같으면 사전순
+# Multiple criteria: ascending length → then lexicographic
 words.sort(key=lambda w: (len(w), w))</code></pre>
                 </div></span>
                 <span class="lang-cpp"><div class="code-block">
-                    <pre><code class="language-cpp">// 커스텀 정렬 예시
+                    <pre><code class="language-cpp">// Custom sort examples
 #include &lt;vector&gt;
 #include &lt;algorithm&gt;
 #include &lt;string&gt;
@@ -486,12 +486,12 @@ using namespace std;
 
 vector&lt;pair&lt;int,int&gt;&gt; coords = {{3,4},{1,2},{3,1},{1,5}};
 
-// x좌표 기준, 같으면 y좌표 기준
+// Sort by x, then by y if equal
 sort(coords.begin(), coords.end());
-// pair는 기본적으로 first → second 순 비교
+// pair compares by first, then second by default
 // {{1,2},{1,5},{3,1},{3,4}}
 
-// 문자열 길이 기준
+// Sort by string length
 vector&lt;string&gt; words = {"banana","pie","apple","fig"};
 sort(words.begin(), words.end(),
     [](const string&amp; a, const string&amp; b) {
@@ -499,7 +499,7 @@ sort(words.begin(), words.end(),
     });
 // {"pie","fig","apple","banana"}
 
-// 여러 기준: 길이 오름차순 → 같으면 사전순
+// Multiple criteria: ascending length → then lexicographic
 sort(words.begin(), words.end(),
     [](const string&amp; a, const string&amp; b) {
         if (a.size() != b.size()) return a.size() &lt; b.size();
@@ -507,53 +507,53 @@ sort(words.begin(), words.end(),
     });</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong>
-                    <span class="lang-py">C++의 <code>sort()</code>에서 커스텀 비교 함수를 쓸 때는
-                    <code>sort(v.begin(), v.end(), [](auto& a, auto& b) { ... })</code> 형태입니다.</span>
-                    <span class="lang-cpp">Python의 <code>sort()</code>에서 커스텀 정렬을 쓸 때는
-                    <code>sort(key=lambda x: ...)</code> 형태로, 비교 함수 대신 키 함수를 씁니다.</span>
+                    <strong>💡 Think about it:</strong>
+                    <span class="lang-py">In C++, custom comparators for <code>sort()</code> use the form
+                    <code>sort(v.begin(), v.end(), [](auto& a, auto& b) { ... })</code>.</span>
+                    <span class="lang-cpp">In Python, custom sorting uses <code>sort(key=lambda x: ...)</code>,
+                    using a key function instead of a comparator.</span>
                 </div>
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">5</span> 실전: Python과 C++의 sort()는 어떤 정렬?</div>
+                <div class="concept-section-title"><span class="section-num">5</span> In Practice: What Sort Does Python/C++ sort() Use?</div>
                 <div class="analogy-box">
-                    <strong>Key Point:</strong> 우리가 직접 선택/삽입/버블 정렬을 구현할 일은 거의 없습니다.
-                    실전에서는 언어가 제공하는 <code>sort()</code>를 씁니다.
-                    그런데 이 <code>sort()</code>는 내부적으로 <em>어떤 정렬 알고리즘</em>을 쓸까요?
+                    <strong>Key Point:</strong> You'll rarely implement Selection/Insertion/Bubble Sort yourself.
+                    In practice, you use the language's built-in <code>sort()</code>.
+                    But what sorting algorithm does <code>sort()</code> use internally?
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card" style="border-left:3px solid var(--yellow);">
                         <h3>🐍 Python: TimSort</h3>
-                        <p><strong>삽입 정렬 + 병합 정렬</strong>의 하이브리드</p>
+                        <p>A hybrid of <strong>Insertion Sort + Merge Sort</strong></p>
                         <ul style="font-size:0.88rem;margin-top:8px;padding-left:1.2rem;">
-                            <li>데이터에서 이미 정렬된 구간(<strong>run</strong>)을 찾아 활용</li>
-                            <li>작은 구간은 <strong>삽입 정렬</strong>로 빠르게 정렬</li>
-                            <li>큰 구간은 <strong>병합 정렬</strong>로 합침</li>
-                            <li><strong>안정 정렬</strong> → 같은 키이면 원래 순서 유지</li>
+                            <li>Finds already-sorted segments (<strong>runs</strong>) in the data and leverages them</li>
+                            <li>Small segments are sorted quickly with <strong>Insertion Sort</strong></li>
+                            <li>Large segments are merged with <strong>Merge Sort</strong></li>
+                            <li><strong>Stable sort</strong> → preserves original order for equal keys</li>
                         </ul>
                         <div style="margin-top:8px;padding:6px 10px;background:rgba(243,156,18,0.08);border-radius:8px;font-size:0.82rem;">
-                            💡 실세계 데이터는 부분적으로 정렬되어 있는 경우가 많아서,<br>
-                            이를 활용하는 TimSort가 실전에서 매우 빠릅니다!
+                            💡 Real-world data is often partially sorted,<br>
+                            so TimSort, which leverages this, is very fast in practice!
                         </div>
                     </div>
                     <div class="concept-card" style="border-left:3px solid var(--accent);">
                         <h3>⚡ C++: IntroSort</h3>
-                        <p><strong>퀵 정렬 + 힙 정렬 + 삽입 정렬</strong>의 하이브리드</p>
+                        <p>A hybrid of <strong>Quick Sort + Heap Sort + Insertion Sort</strong></p>
                         <ul style="font-size:0.88rem;margin-top:8px;padding-left:1.2rem;">
-                            <li>기본은 <strong>퀵 정렬</strong> (평균적으로 가장 빠름)</li>
-                            <li>재귀 깊이가 깊어지면 <strong>힙 정렬</strong>로 전환 → 최악 O(n²) 방지</li>
-                            <li>작은 구간은 <strong>삽입 정렬</strong>로 마무리</li>
-                            <li><strong>불안정 정렬</strong> → 안정 정렬이 필요하면 <code>stable_sort()</code> 사용</li>
+                            <li>Primarily uses <strong>Quick Sort</strong> (fastest on average)</li>
+                            <li>Switches to <strong>Heap Sort</strong> when recursion depth gets too deep → prevents worst-case O(n²)</li>
+                            <li>Small segments are finished with <strong>Insertion Sort</strong></li>
+                            <li><strong>Unstable sort</strong> → use <code>stable_sort()</code> when stability is needed</li>
                         </ul>
                         <div style="margin-top:8px;padding:6px 10px;background:rgba(108,92,231,0.08);border-radius:8px;font-size:0.82rem;">
-                            💡 <code>std::sort()</code>는 불안정! 순서 보장이 필요하면<br>
-                            <code>std::stable_sort()</code>를 써야 합니다.
+                            💡 <code>std::sort()</code> is unstable! If you need order preservation,<br>
+                            you must use <code>std::stable_sort()</code>.
                         </div>
                     </div>
                 </div>
                 <div class="concept-demo">
-                    <div class="concept-demo-title">비교: Python vs C++ 정렬</div>
+                    <div class="concept-demo-title">Comparison: Python vs C++ Sort</div>
                     <div style="overflow-x:auto;">
                         <table style="width:100%;border-collapse:collapse;font-size:0.88rem;margin-top:8px;">
                             <tr style="background:var(--bg2);">
@@ -561,11 +561,11 @@ sort(words.begin(), words.end(),
                                 <th style="padding:8px 12px;text-align:center;border-bottom:2px solid var(--border);">🐍 Python <code>sort()</code></th>
                                 <th style="padding:8px 12px;text-align:center;border-bottom:2px solid var(--border);">⚡ C++ <code>std::sort()</code></th>
                             </tr>
-                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">알고리즘</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">TimSort</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">IntroSort</td></tr>
-                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">평균</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td></tr>
-                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">최악</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td></tr>
-                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">안정 정렬?</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;color:var(--green);">✅ 안정</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;color:var(--red);">❌ 불안정</td></tr>
-                            <tr><td style="padding:6px 12px;font-weight:600;">안정 버전</td><td style="padding:6px 12px;text-align:center;">기본이 안정!</td><td style="padding:6px 12px;text-align:center;"><code>stable_sort()</code></td></tr>
+                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">Algorithm</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">TimSort</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">IntroSort</td></tr>
+                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">Average</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td></tr>
+                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">Worst</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;">O(n log n)</td></tr>
+                            <tr><td style="padding:6px 12px;border-bottom:1px solid var(--border);font-weight:600;">Stable?</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;color:var(--green);">✅ Stable</td><td style="padding:6px 12px;border-bottom:1px solid var(--border);text-align:center;color:var(--red);">❌ Unstable</td></tr>
+                            <tr><td style="padding:6px 12px;font-weight:600;">Stable Version</td><td style="padding:6px 12px;text-align:center;">Stable by default!</td><td style="padding:6px 12px;text-align:center;"><code>stable_sort()</code></td></tr>
                         </table>
                     </div>
                 </div>
@@ -645,7 +645,7 @@ sort(words.begin(), words.end(),
         updateUI();
     },
 
-    // ── 바 차트 렌더 유틸 ──
+    // ── Bar chart render utility ──
     _renderBars(el, arr, sortedUpTo, comparing, minIdx) {
         var maxVal = Math.max.apply(null, arr);
         el.innerHTML = arr.map(function(v, i) {
@@ -660,14 +660,14 @@ sort(words.begin(), words.end(),
         }).join('');
     },
 
-    // ── 선택 정렬 (boj-2750) ──
+    // ── Selection Sort (boj-2750) ──
     _renderVizSelection(container) {
         var self = this;
         var DEFAULT_SEL_ARR = [38, 27, 43, 3, 9, 82, 10];
 
         container.innerHTML =
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">배열: <input type="text" id="sort-sel-input" value="' + DEFAULT_SEL_ARR.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+                '<label style="font-weight:600;">Array: <input type="text" id="sort-sel-input" value="' + DEFAULT_SEL_ARR.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
                 '<button class="btn btn-primary" id="sort-sel-reset">🔄</button>' +
             '</div>' +
             '<div class="viz-area">' +
@@ -682,7 +682,7 @@ sort(words.begin(), words.end(),
         function buildSelectionSteps(original) {
             var states = [];
             var simArr = original.slice();
-            states.push({ arr: simArr.slice(), sortedUpTo: -1, minIdx: -1, desc: '초기 배열: [' + original.join(', ') + ']. 선택 정렬을 시작합니다!' });
+            states.push({ arr: simArr.slice(), sortedUpTo: -1, minIdx: -1, desc: 'Initial array: [' + original.join(', ') + ']. Starting Selection Sort!' });
 
             for (var i = 0; i < simArr.length - 1; i++) {
                 var minIdx = i;
@@ -690,13 +690,13 @@ sort(words.begin(), words.end(),
                     if (simArr[j] < simArr[minIdx]) minIdx = j;
                 }
                 states.push({ arr: simArr.slice(), sortedUpTo: i - 1, minIdx: minIdx,
-                    desc: i + '번 위치: 최솟값 ' + simArr[minIdx] + '을(를) 찾았습니다! (인덱스 ' + minIdx + ')' });
+                    desc: 'Position ' + i + ': Found minimum ' + simArr[minIdx] + '! (index ' + minIdx + ')' });
                 var tmp = simArr[i]; simArr[i] = simArr[minIdx]; simArr[minIdx] = tmp;
                 states.push({ arr: simArr.slice(), sortedUpTo: i, minIdx: -1,
-                    desc: '교환 완료 → [' + simArr.join(', ') + ']. ' + i + '번 위치 확정!' });
+                    desc: 'Swap complete → [' + simArr.join(', ') + ']. Position ' + i + ' finalized!' });
             }
             states.push({ arr: simArr.slice(), sortedUpTo: simArr.length - 1, minIdx: -1,
-                desc: '정렬 완료! [' + simArr.join(', ') + ']. 선택 정렬의 시간복잡도는 항상 O(n²)입니다.' });
+                desc: 'Sort complete! [' + simArr.join(', ') + ']. Selection Sort always has O(n²) time complexity.' });
 
             return states.map(function(st) {
                 return { description: st.desc, action: function() {
@@ -720,18 +720,18 @@ sort(words.begin(), words.end(),
         resetSelection();
     },
 
-    // ── 좌표 정렬 (boj-11650) ──
+    // ── Coordinate Sort (boj-11650) ──
     _renderVizCoordSort(container) {
         var self = this;
         var DEFAULT_COORDS = [[3,4],[1,1],[1,-1],[2,2],[3,3]];
 
         container.innerHTML =
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">좌표 (x y 쌍): <input type="text" id="sort-coord-input" value="' + DEFAULT_COORDS.map(function(c) { return c[0] + ' ' + c[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+                '<label style="font-weight:600;">Coordinates (x y pairs): <input type="text" id="sort-coord-input" value="' + DEFAULT_COORDS.map(function(c) { return c[0] + ' ' + c[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="sort-coord-reset">🔄</button>' +
             '</div>' +
             '<div class="viz-area">' +
-                '<div style="font-weight:600;margin-bottom:8px;">좌표 배열</div>' +
+                '<div style="font-weight:600;margin-bottom:8px;">Coordinate Array</div>' +
                 '<div id="sort-coords" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:50px;padding:12px 0;"></div>' +
                 '<div id="sort-desc-coord" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
@@ -753,23 +753,23 @@ sort(words.begin(), words.end(),
             var states = [];
             var simArr = coords.map(function(c) { return c.slice(); });
             states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: -1, comp: -1,
-                desc: '초기 좌표: ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + '. 튜플 정렬을 시작합니다!' });
+                desc: 'Initial coordinates: ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + '. Starting tuple sort!' });
 
             for (var i = 1; i < simArr.length; i++) {
                 var key = simArr[i].slice();
                 var j = i - 1;
                 states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: i - 1, comp: i,
-                    desc: '(' + key[0] + ', ' + key[1] + ')을 올바른 위치에 삽입합니다.' });
+                    desc: 'Inserting (' + key[0] + ', ' + key[1] + ') into the correct position.' });
                 while (j >= 0 && (simArr[j][0] > key[0] || (simArr[j][0] === key[0] && simArr[j][1] > key[1]))) {
                     simArr[j + 1] = simArr[j];
                     j--;
                 }
                 simArr[j + 1] = key;
                 states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: i, comp: -1,
-                    desc: '삽입 완료: ' + simArr.slice(0, i + 1).map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') });
+                    desc: 'Insertion complete: ' + simArr.slice(0, i + 1).map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') });
             }
             states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: simArr.length - 1, comp: -1,
-                desc: '정렬 완료! ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + ' ✓' });
+                desc: 'Sort complete! ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + ' ✓' });
 
             return states.map(function(st) {
                 return { description: st.desc, action: function() {
@@ -798,20 +798,20 @@ sort(words.begin(), words.end(),
         resetCoord();
     },
 
-    // ── 구간 병합 (lc-56) ──
+    // ── Interval Merge (lc-56) ──
     _renderVizMergeIntervals(container) {
         var self = this;
         var DEFAULT_INTERVALS = [[1,3],[2,6],[8,10],[15,18]];
 
         container.innerHTML =
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">구간 (start end 쌍): <input type="text" id="sort-merge-input" value="' + DEFAULT_INTERVALS.map(function(iv) { return iv[0] + ' ' + iv[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
+                '<label style="font-weight:600;">Intervals (start end pairs): <input type="text" id="sort-merge-input" value="' + DEFAULT_INTERVALS.map(function(iv) { return iv[0] + ' ' + iv[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="sort-merge-reset">🔄</button>' +
             '</div>' +
             '<div class="viz-area">' +
-                '<div style="font-weight:600;margin-bottom:8px;">구간 배열 (시작점 정렬 후)</div>' +
+                '<div style="font-weight:600;margin-bottom:8px;">Interval Array (sorted by start)</div>' +
                 '<div id="sort-intervals" style="position:relative;min-height:60px;padding:20px 0;"></div>' +
-                '<div style="font-weight:600;margin-top:12px;margin-bottom:8px;">병합 결과</div>' +
+                '<div style="font-weight:600;margin-top:12px;margin-bottom:8px;">Merge Result</div>' +
                 '<div id="sort-merged" style="position:relative;min-height:60px;padding:8px 0;"></div>' +
                 '<div id="sort-desc-intv" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
@@ -840,11 +840,11 @@ sort(words.begin(), words.end(),
             var states = [];
             var merged = [];
             states.push({ intervals: intervals, merged: [], highlight: -1,
-                desc: '구간: ' + intervals.map(function(v) { return '[' + v + ']'; }).join(', ') + '. 시작점으로 정렬되어 있습니다.' });
+                desc: 'Intervals: ' + intervals.map(function(v) { return '[' + v + ']'; }).join(', ') + '. Already sorted by start point.' });
 
             merged.push(intervals[0].slice());
             states.push({ intervals: intervals, merged: merged.map(function(v) { return v.slice(); }), highlight: 0,
-                desc: '첫 구간 [' + intervals[0] + ']을 결과에 추가합니다.' });
+                desc: 'Add the first interval [' + intervals[0] + '] to the result.' });
 
             for (var i = 1; i < intervals.length; i++) {
                 var cur = intervals[i];
@@ -852,15 +852,15 @@ sort(words.begin(), words.end(),
                 if (cur[0] <= last[1]) {
                     last[1] = Math.max(last[1], cur[1]);
                     states.push({ intervals: intervals, merged: merged.map(function(v) { return v.slice(); }), highlight: i,
-                        desc: '[' + cur + '] 시작(' + cur[0] + ') \u2264 이전 끝(' + last[1] + ') \u2192 겹침! 병합하여 [' + last[0] + ',' + last[1] + ']' });
+                        desc: '[' + cur + '] start(' + cur[0] + ') \u2264 prev end(' + last[1] + ') \u2192 Overlap! Merged to [' + last[0] + ',' + last[1] + ']' });
                 } else {
                     merged.push(cur.slice());
                     states.push({ intervals: intervals, merged: merged.map(function(v) { return v.slice(); }), highlight: i,
-                        desc: '[' + cur + '] 시작(' + cur[0] + ') > 이전 끝 \u2192 겹치지 않음. 새 구간 추가!' });
+                        desc: '[' + cur + '] start(' + cur[0] + ') > prev end \u2192 No overlap. Add new interval!' });
                 }
             }
             states.push({ intervals: intervals, merged: merged.map(function(v) { return v.slice(); }), highlight: -1,
-                desc: '병합 완료! 결과: ' + merged.map(function(v) { return '[' + v + ']'; }).join(', ') + ' \u2713' });
+                desc: 'Merge complete! Result: ' + merged.map(function(v) { return '[' + v + ']'; }).join(', ') + ' \u2713' });
 
             return states.map(function(st) {
                 return { description: st.desc, action: function() {
@@ -891,7 +891,7 @@ sort(words.begin(), words.end(),
         resetMerge();
     },
 
-    // ── 안정 정렬 (boj-10814) ──
+    // ── Stable Sort (boj-10814) ──
     _renderVizStableSort(container) {
         var self = this;
         var DEFAULT_STABLE = '21 Junkyu, 21 Dohyun, 20 Sunyoung, 22 Alice, 20 Bob';
@@ -899,11 +899,11 @@ sort(words.begin(), words.end(),
 
         container.innerHTML =
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-                '<label style="font-weight:600;">나이 이름 목록: <input type="text" id="sort-stable-input" value="' + DEFAULT_STABLE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:360px;"></label>' +
+                '<label style="font-weight:600;">Age Name list: <input type="text" id="sort-stable-input" value="' + DEFAULT_STABLE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:360px;"></label>' +
                 '<button class="btn btn-primary" id="sort-stable-reset">🔄</button>' +
             '</div>' +
             '<div class="viz-area">' +
-                '<div style="font-weight:600;margin-bottom:8px;">회원 목록 (입력 순서)</div>' +
+                '<div style="font-weight:600;margin-bottom:8px;">Member List (input order)</div>' +
                 '<div id="sort-members" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:12px 0;"></div>' +
                 '<div id="sort-desc-stable" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
@@ -926,7 +926,7 @@ sort(words.begin(), words.end(),
             var states = [];
             var simArr = members.map(function(m) { return { age: m.age, name: m.name, order: m.order }; });
             states.push({ arr: simArr.slice(), sortedUpTo: -1,
-                desc: '초기 입력: ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '. 나이 기준 안정 정렬 시작!' });
+                desc: 'Initial input: ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '. Starting stable sort by age!' });
 
             // Insertion sort by age only (stable)
             for (var i = 1; i < simArr.length; i++) {
@@ -938,7 +938,7 @@ sort(words.begin(), words.end(),
                 }
                 simArr[j + 1] = key;
                 states.push({ arr: simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }), sortedUpTo: i,
-                    desc: key.age + ' ' + key.name + '을 삽입 \u2192 나이 같은 경우 입력 순서 유지! (안정 정렬)' });
+                    desc: 'Insert ' + key.age + ' ' + key.name + ' \u2192 When ages are equal, input order is preserved! (stable sort)' });
             }
             // Find same-age groups for final description
             var ageGroups = {};
@@ -949,11 +949,11 @@ sort(words.begin(), words.end(),
             var stableNote = '';
             Object.keys(ageGroups).forEach(function(age) {
                 if (ageGroups[age].length > 1) {
-                    stableNote += ' 나이 ' + age + '인 ' + ageGroups[age].join(', ') + '의 입력 순서가 유지됩니다.';
+                    stableNote += ' Age ' + age + ': ' + ageGroups[age].join(', ') + ' — input order preserved.';
                 }
             });
             states.push({ arr: simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }), sortedUpTo: simArr.length - 1,
-                desc: '정렬 완료! ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '.' + (stableNote || '') + ' \u2713' });
+                desc: 'Sort complete! ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '.' + (stableNote || '') + ' \u2713' });
 
             return states.map(function(st) {
                 return { description: st.desc, action: function() {
@@ -992,20 +992,20 @@ sort(words.begin(), words.end(),
 
     // ===== Problem Tab =====
     stages: [
-        { num: 1, title: '기본 정렬', desc: '정렬 구현과 커스텀 정렬 (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
-        { num: 2, title: '정렬 응용', desc: '정렬 기반 문제 풀이 (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
+        { num: 1, title: 'Basic Sort', desc: 'Sort implementation and custom sorting (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
+        { num: 2, title: 'Sort Applications', desc: 'Sorting-based problem solving (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
     ],
 
     problems: [
         {
             id: 'boj-2750',
-            title: 'BOJ 2750 - 수 정렬하기',
+            title: 'BOJ 2750 - Sort Numbers',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2750',
-            simIntro: '선택 정렬로 배열을 정렬하는 과정을 관찰하세요. 매번 최솟값을 찾아 교환합니다.',
+            simIntro: 'Observe how Selection Sort sorts an array. Each time, it finds the minimum and swaps it.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>N개의 수가 주어졌을 때, 이를 오름차순으로 정렬하는 프로그램을 작성하시오.</p>
+                <p>Given N numbers, write a program that sorts them in ascending order.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5\n5\n2\n3\n4\n1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3\n4\n5</pre></div>
@@ -1013,14 +1013,14 @@ sort(words.begin(), words.end(),
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 &le; N &le; 1,000</li>
-                    <li>|수| &le; 1,000</li>
-                    <li>수는 중복되지 않는다.</li>
+                    <li>|number| &le; 1,000</li>
+                    <li>Numbers do not repeat.</li>
                 </ul>
             `,
             hints: [
-                { title: '가장 단순한 방법', content: '아는 정렬 아무거나 쓰면 돼요! 선택 정렬, 삽입 정렬, 버블 정렬 — 뭘 쓰든 OK.<br>N &le; 1,000이라서 O(n&sup2;)도 시간 안에 충분히 들어와요. 직접 구현해보는 좋은 연습 문제!' },
-                { title: '더 빠른 정렬도 가능', content: '직접 구현 대신 내장 정렬을 쓰면 O(n log n)으로 훨씬 빨라요.<br><span class="lang-py">Python: <code>sorted()</code>나 <code>.sort()</code>는 O(n log n) Timsort를 사용합니다.</span><span class="lang-cpp">C++: <code>sort()</code>는 O(n log n) IntroSort를 사용합니다. <code>&lt;algorithm&gt;</code> 헤더 필요!</span>' },
-                { title: '입출력 최적화', content: '정렬은 맞는데 시간 초과? 입출력이 병목일 수 있어요!<br><span class="lang-py">Python: <code>sys.stdin.readline</code>으로 빠른 입력 + <code>"\\n".join()</code>으로 한 번에 출력</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 빠른 입출력</span>' }
+                { title: 'The simplest approach', content: 'Use any sorting algorithm you know! Selection Sort, Insertion Sort, Bubble Sort — anything works.<br>Since N &le; 1,000, even O(n&sup2;) fits within the time limit. A great practice problem for implementing sorts yourself!' },
+                { title: 'Faster sort is possible', content: 'Instead of implementing yourself, built-in sort gives you O(n log n) — much faster.<br><span class="lang-py">Python: <code>sorted()</code> or <code>.sort()</code> uses O(n log n) Timsort.</span><span class="lang-cpp">C++: <code>sort()</code> uses O(n log n) IntroSort. Requires <code>&lt;algorithm&gt;</code> header!</span>' },
+                { title: 'I/O optimization', content: 'Sort is correct but getting TLE? I/O might be the bottleneck!<br><span class="lang-py">Python: Use <code>sys.stdin.readline</code> for fast input + <code>"\\n".join()</code> for batch output</span><span class="lang-cpp">C++: Use <code>ios::sync_with_stdio(false)</code> and <code>cin.tie(nullptr)</code> for fast I/O</span>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()\nprint('\\n'.join(map(str, arr)))`,
@@ -1029,34 +1029,34 @@ sort(words.begin(), words.end(),
 #include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    scanf("%d", &N);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n    sort(arr.begin(), arr.end());\n    for (int x : arr) printf("%d\\n", x);\n}`
             },
             solutions: [{
-                approach: '내장 sort 사용',
-                description: '리스트에 입력을 담고 sort()를 호출합니다.',
+                approach: 'Using built-in sort',
+                description: 'Store input in a list and call sort().',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
                 get templates() { return sortingTopic.problems[0].templates; },
                 codeSteps: {
                     python: [
-                        { title: '입력 받기', desc: 'sys.stdin.readline으로 빠른 입력을 받아 배열에 저장합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]' },
-                        { title: 'Sort', desc: '내장 sort()는 TimSort(O(n log n))를 사용하므로 가장 빠르고 간편합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()' },
-                        { title: '출력', desc: 'join으로 한 번에 출력하면 print를 반복하는 것보다 훨씬 빠릅니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()\nprint(\'\\n\'.join(map(str, arr)))' }
+                        { title: 'Read Input', desc: 'Use sys.stdin.readline for fast input and store in an array.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]' },
+                        { title: 'Sort', desc: 'Built-in sort() uses TimSort (O(n log n)), the fastest and simplest option.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()' },
+                        { title: 'Output', desc: 'Using join for batch output is much faster than calling print repeatedly.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()\nprint(\'\\n\'.join(map(str, arr)))' }
                     ],
                     cpp: [
-                        { title: '입력 받기', desc: 'vector에 N개의 정수를 입력받아 저장합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];' },
-                        { title: 'Sort', desc: 'STL sort()는 IntroSort(O(n log n))를 사용하므로 직접 구현보다 빠르고 안전합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    sort(arr.begin(), arr.end());  // O(n log n) IntroSort' },
-                        { title: '출력', desc: '"\\n"을 사용해 줄바꿈 출력합니다. endl보다 빠릅니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    sort(arr.begin(), arr.end());\n\n    for (int x : arr) cout << x << "\\n";\n}' }
+                        { title: 'Read Input', desc: 'Read N integers into a vector.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];' },
+                        { title: 'Sort', desc: 'STL sort() uses IntroSort (O(n log n)), faster and safer than manual implementation.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    sort(arr.begin(), arr.end());  // O(n log n) IntroSort' },
+                        { title: 'Output', desc: 'Use "\\n" for newline output. Faster than endl.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) cin >> arr[i];\n\n    sort(arr.begin(), arr.end());\n\n    for (int x : arr) cout << x << "\\n";\n}' }
                     ]
                 }
             }]
         },
         {
             id: 'boj-11650',
-            title: 'BOJ 11650 - 좌표 정렬하기',
+            title: 'BOJ 11650 - Sort Coordinates',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11650',
-            simIntro: '좌표를 (x, y) 튜플로 만들고 정렬하는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of creating (x, y) tuples from coordinates and sorting them.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>2차원 평면 위의 점 N개가 주어진다. 좌표를 x좌표가 증가하는 순으로, x좌표가 같으면 y좌표가 증가하는 순서로 정렬한 다음 출력하는 프로그램을 작성하시오.</p>
+                <p>Given N points on a 2D plane, write a program that sorts the coordinates in ascending order of x-coordinate, and if x-coordinates are equal, in ascending order of y-coordinate, then prints the result.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5\n3 4\n1 1\n1 -1\n2 2\n3 3</pre></div>
                     <div><strong>Output</strong><pre>1 -1\n1 1\n2 2\n3 3\n3 4</pre></div>
@@ -1065,37 +1065,37 @@ sort(words.begin(), words.end(),
                 <ul>
                     <li>1 &le; N &le; 100,000</li>
                     <li>-100,000 &le; x, y &le; 100,000</li>
-                    <li>좌표는 정수이다.</li>
+                    <li>Coordinates are integers.</li>
                 </ul>
             `,
             hints: [
-                { title: '좌표 정렬 = 비교 기준이 2개', content: 'x좌표 먼저 비교하고, 같으면 y좌표를 비교해야 해요. 비교 함수를 직접 만들어야 할까?' },
-                { title: '튜플/pair 정렬의 마법', content: '직접 비교 함수를 만들 필요 없어요!<br><span class="lang-py">Python: <code>(x, y)</code> 튜플을 정렬하면 자동으로 x 우선, y 차선으로 정렬돼요. 그냥 <code>coords.sort()</code> 한 줄이면 끝!</span><span class="lang-cpp">C++: <code>pair&lt;int,int&gt;</code>를 <code>sort()</code>하면 first 기준 정렬, 같으면 second 기준으로 자동 정렬돼요!</span>' },
-                { title: '입출력이 핵심', content: 'N이 최대 100,000이므로 빠른 입출력이 필수예요. 느린 입출력을 쓰면 정답인데도 시간 초과!<br><span class="lang-py">Python: <code>sys.stdin.readline</code>으로 빠른 입력</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 빠른 입출력</span>' }
+                { title: 'Coordinate sort = 2 comparison keys', content: 'Compare x first, then y if x is equal. Do we need to write a custom comparator?' },
+                { title: 'The magic of tuple/pair sorting', content: 'No need to write a custom comparator!<br><span class="lang-py">Python: Sorting <code>(x, y)</code> tuples automatically sorts by x first, then y. Just <code>coords.sort()</code> — one line!</span><span class="lang-cpp">C++: Sorting <code>pair&lt;int,int&gt;</code> with <code>sort()</code> automatically sorts by first, then second!</span>' },
+                { title: 'I/O is the key', content: 'Since N can be up to 100,000, fast I/O is essential. Slow I/O can cause TLE even with a correct solution!<br><span class="lang-py">Python: Use <code>sys.stdin.readline</code> for fast input</span><span class="lang-cpp">C++: Use <code>ios::sync_with_stdio(false)</code> and <code>cin.tie(nullptr)</code> for fast I/O</span>' }
             ],
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()  # 튜플은 자동으로 (x, y) 순 정렬!\n\noutput = []\nfor x, y in coords:\n    output.append(f"{x} {y}")\nprint('\\n'.join(output))`,
+                python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()  # Tuples auto-sort by (x, y) order!\n\noutput = []\nfor x, y in coords:\n    output.append(f"{x} {y}")\nprint('\\n'.join(output))`,
                 cpp: `#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <utility>\nusing namespace std;\n\nint main() {\n    int N;\n    scanf("%d", &N);\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        scanf("%d %d", &coords[i].first, &coords[i].second);\n    sort(coords.begin(), coords.end());\n    for (auto& [x, y] : coords)\n        printf("%d %d\\n", x, y);\n}`
             },
             solutions: [{
-                approach: '튜플 정렬',
-                description: '좌표를 (x, y) 튜플로 만들면 자동으로 x → y 순으로 정렬됩니다.',
+                approach: 'Tuple sorting',
+                description: 'Storing coordinates as (x, y) tuples enables automatic x → y sorting.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
                 get templates() { return sortingTopic.problems[1].templates; },
                 codeSteps: {
                     python: [
-                        { title: '입력 받기', desc: '좌표를 (x, y) 튜플로 저장하면 정렬 시 자동으로 x → y 순 비교됩니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))' },
-                        { title: '튜플 정렬', desc: 'Python 튜플은 첫 번째 원소부터 순서대로 비교하므로 별도 key 없이 sort()만 호출하면 됩니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()  # (x, y) 순 자동 정렬!' },
-                        { title: '출력', desc: 'f-string으로 포맷팅 후 join으로 한 번에 출력하여 속도를 높입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()\n\noutput = []\nfor x, y in coords:\n    output.append(f"{x} {y}")\nprint(\'\\n\'.join(output))' }
+                        { title: 'Read Input', desc: 'Store coordinates as (x, y) tuples so they auto-compare by x then y when sorted.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))' },
+                        { title: 'Tuple Sort', desc: 'Python tuples compare element by element, so just calling sort() with no key is enough.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()  # Auto-sorts by (x, y) order!' },
+                        { title: 'Output', desc: 'Format with f-string and batch output with join for better speed.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()\n\noutput = []\nfor x, y in coords:\n    output.append(f"{x} {y}")\nprint(\'\\n\'.join(output))' }
                     ],
                     cpp: [
-                        { title: '입력 받기', desc: 'pair<int,int>로 좌표를 저장하면 정렬 시 first → second 순으로 자동 비교됩니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        cin >> coords[i].first >> coords[i].second;' },
-                        { title: 'pair 정렬', desc: 'STL sort()는 pair를 자동으로 first 우선, 같으면 second 순으로 비교합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        cin >> coords[i].first >> coords[i].second;\n\n    sort(coords.begin(), coords.end());  // pair 자동 정렬 (first 먼저, 같으면 second)' },
-                        { title: '출력', desc: '구조화 바인딩(auto& [x, y])으로 깔끔하게 출력합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        cin >> coords[i].first >> coords[i].second;\n\n    sort(coords.begin(), coords.end());\n\n    for (auto& [x, y] : coords)\n        cout << x << " " << y << "\\n";\n}' }
+                        { title: 'Read Input', desc: 'Storing coordinates as pair<int,int> enables auto-comparison by first then second when sorted.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        cin >> coords[i].first >> coords[i].second;' },
+                        { title: 'Pair Sort', desc: 'STL sort() automatically compares pairs by first, then by second if equal.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        cin >> coords[i].first >> coords[i].second;\n\n    sort(coords.begin(), coords.end());  // Pair auto-sort (first, then second)' },
+                        { title: 'Output', desc: 'Use structured bindings (auto& [x, y]) for clean output.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int,int>> coords(N);\n    for (int i = 0; i < N; i++)\n        cin >> coords[i].first >> coords[i].second;\n\n    sort(coords.begin(), coords.end());\n\n    for (auto& [x, y] : coords)\n        cout << x << " " << y << "\\n";\n}' }
                     ]
                 }
             }]
@@ -1105,18 +1105,18 @@ sort(words.begin(), words.end(),
             title: 'LeetCode 56 - Merge Intervals',
             difficulty: 'medium',
             link: 'https://leetcode.com/problems/merge-intervals/',
-            simIntro: '시작점으로 정렬한 뒤, 겹치는 구간을 순서대로 병합하는 과정을 관찰하세요.',
+            simIntro: 'Observe the process of sorting by start point, then merging overlapping intervals in order.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>구간 배열 <code>intervals</code>가 주어집니다. <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code>입니다. 겹치는 구간을 모두 합치고, 겹치지 않는 구간만 남긴 배열을 반환하세요.</p>
+                <p>Given an array of <code>intervals</code> where <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code>, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the intervals in the input.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>intervals = [[1,3],[2,6],[8,10],[15,18]]</pre></div>
                     <div><strong>Output</strong><pre>[[1,6],[8,10],[15,18]]</pre></div>
-                </div><p class="example-explain">구간 [1,3]과 [2,6]이 겹치므로 [1,6]으로 합칩니다.</p></div>
+                </div><p class="example-explain">Intervals [1,3] and [2,6] overlap, so they are merged into [1,6].</p></div>
                 <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>intervals = [[1,4],[4,5]]</pre></div>
                     <div><strong>Output</strong><pre>[[1,5]]</pre></div>
-                </div><p class="example-explain">구간 [1,4]와 [4,5]는 겹치는 것으로 간주합니다.</p></div>
+                </div><p class="example-explain">Intervals [1,4] and [4,5] are considered overlapping.</p></div>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 &le; intervals.length &le; 10<sup>4</sup></li>
@@ -1125,45 +1125,45 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: '처음 생각: 하나씩 비교?', content: '모든 구간 쌍을 하나씩 비교하면 겹치는지 알 수 있어요. 하지만 구간이 n개면 비교 횟수가 O(n&sup2;)... 구간이 10,000개면 1억 번 비교!' },
-                { title: '정렬하면 쉬워진다!', content: '<strong>시작점 기준으로 정렬</strong>하면, 겹치는 구간은 반드시 연속으로 나열돼요. 그러면 앞에서부터 한 번만 스캔하면서 합치면 끝! 정렬 O(n log n) + 순회 O(n) = <strong>O(n log n)</strong>' },
-                { title: '합치기 로직', content: '현재 구간의 끝 &ge; 다음 구간의 시작이면 겹치니까 합쳐요 → <code>끝 = max(현재 끝, 다음 끝)</code>.<br>겹치지 않으면? 새 구간을 결과에 추가하고 다음으로 넘어가면 돼요.' }
+                { title: 'First thought: compare one by one?', content: 'You could compare every pair of intervals to check for overlap. But with n intervals, that\'s O(n&sup2;) comparisons... With 10,000 intervals, that\'s 100 million comparisons!' },
+                { title: 'Sorting makes it easy!', content: '<strong>Sort by start point</strong>, and overlapping intervals will always be adjacent. Then just scan once from left to right and merge! Sort O(n log n) + scan O(n) = <strong>O(n log n)</strong>' },
+                { title: 'Merge logic', content: 'If the current interval\'s end &ge; next interval\'s start, they overlap — merge them: <code>end = max(current end, next end)</code>.<br>If they don\'t overlap? Add the new interval to the result and move on.' }
             ],
             templates: {
-                python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # 시작점 기준 정렬\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # 겹침!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
+                python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # Sort by start point\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # Overlap!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
                 cpp: `class Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end());\n        vector<vector<int>> merged = {intervals[0]};\n\n        for (int i = 1; i < intervals.size(); i++) {\n            if (intervals[i][0] <= merged.back()[1])\n                merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n            else\n                merged.push_back(intervals[i]);\n        }\n        return merged;\n    }\n};`
             },
             solutions: [{
-                approach: '정렬 + 순차 병합',
-                description: '시작점 기준 정렬 후, 겹치면 end를 max로 갱신합니다.',
+                approach: 'Sort + Sequential Merge',
+                description: 'Sort by start point, then update end with max when overlapping.',
                 timeComplexity: 'O(n log n)',
                 spaceComplexity: 'O(n)',
                 get templates() { return sortingTopic.problems[2].templates; },
                 codeSteps: {
                     python: [
-                        { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
-                        { title: '첫 구간 추가', desc: '결과 리스트에 첫 구간을 넣어 비교의 시작점을 만듭니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]' },
-                        { title: '겹침 판별 + 병합', desc: '현재 구간의 시작이 이전 구간의 끝 이하이면 겹치므로, end를 max로 확장합니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:  # 겹침!\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])' },
-                        { title: 'Return Result', desc: '병합이 완료된 구간 리스트를 반환합니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n\n    return merged' }
+                        { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
+                        { title: 'Add First Interval', desc: 'Put the first interval in the result list as the starting point for comparison.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]' },
+                        { title: 'Overlap Check + Merge', desc: 'If the current interval\'s start is less than or equal to the previous interval\'s end, they overlap — extend end with max.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:  # Overlap!\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])' },
+                        { title: 'Return Result', desc: 'Return the merged interval list.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n\n    return merged' }
                     ],
                     cpp: [
-                        { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());' },
-                        { title: '첫 구간 추가', desc: '결과 벡터에 첫 구간을 넣어 비교의 시작점을 만듭니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};' },
-                        { title: '겹침 판별 + 병합', desc: '현재 구간의 시작이 이전 구간의 끝 이하이면 겹치므로, end를 max로 확장합니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }' },
-                        { title: 'Return Result', desc: '병합이 완료된 구간 벡터를 반환합니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }\n\n    return merged;\n}' }
+                        { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());' },
+                        { title: 'Add First Interval', desc: 'Put the first interval in the result vector as the starting point for comparison.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};' },
+                        { title: 'Overlap Check + Merge', desc: 'If the current interval\'s start is less than or equal to the previous interval\'s end, they overlap — extend end with max.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }' },
+                        { title: 'Return Result', desc: 'Return the merged interval vector.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }\n\n    return merged;\n}' }
                     ]
                 }
             }]
         },
         {
             id: 'boj-10814',
-            title: 'BOJ 10814 - 나이순 정렬',
+            title: 'BOJ 10814 - Sort by Age',
             difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/10814',
-            simIntro: '안정 정렬(Stable Sort)로 나이 기준 정렬 시 입력 순서가 유지되는 과정을 관찰하세요.',
+            simIntro: 'Observe how Stable Sort preserves input order when sorting by age.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>온라인 저지에 가입한 사람들의 나이와 이름이 가입한 순서대로 주어진다. 이때, 회원들을 나이가 증가하는 순으로, 나이가 같으면 먼저 가입한 사람이 앞에 오는 순서로 정렬하는 프로그램을 작성하시오.</p>
+                <p>You are given the ages and names of people who signed up for an online judge, in the order they registered. Write a program that sorts the members in ascending order of age, and for members with the same age, those who registered earlier should come first.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3\n21 Junkyu\n21 Dohyun\n20 Sunyoung</pre></div>
                     <div><strong>Output</strong><pre>20 Sunyoung\n21 Junkyu\n21 Dohyun</pre></div>
@@ -1171,38 +1171,38 @@ sort(words.begin(), words.end(),
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 &le; N &le; 100,000</li>
-                    <li>1 &le; 나이 &le; 200</li>
-                    <li>이름은 알파벳 대소문자로만 이루어져 있고, 길이는 100 이하이다.</li>
+                    <li>1 &le; age &le; 200</li>
+                    <li>Names consist of uppercase and lowercase letters only, with length at most 100.</li>
                 </ul>
             `,
             hints: [
-                { title: '나이순 정렬인데, 같은 나이는?', content: '나이 기준으로 정렬하는 건 쉬워요. 그런데 문제를 잘 보면 — 같은 나이일 때 <strong>먼저 가입한 사람이 앞</strong>에 와야 해요. 즉, 같은 나이면 입력 순서를 유지해야 해요. 이런 정렬을 <strong>"안정 정렬(stable sort)"</strong>이라고 해요.' },
-                { title: '안정 정렬 활용', content: '나이만 기준(key)으로 정렬하면, 안정 정렬 덕분에 같은 나이끼리는 원래 순서가 유지돼요!<br><span class="lang-py">Python: <code>sorted()</code>와 <code>.sort()</code>는 기본이 안정 정렬(TimSort)! <code>key=lambda x: int(x.split()[0])</code>이면 끝.</span><span class="lang-cpp">C++: <code>stable_sort()</code>를 사용하면 돼요. 주의: <code>sort()</code>는 불안정 정렬이라 같은 나이 순서가 바뀔 수 있어요!</span>' },
-                { title: '시간 복잡도', content: 'O(n log n)이면 충분해요. N &le; 100,000이므로 넉넉합니다.' }
+                { title: 'Sort by age, but what about same age?', content: 'Sorting by age is easy. But look carefully — for the same age, <strong>whoever registered first should come first</strong>. In other words, for equal ages, the input order must be preserved. This kind of sort is called a <strong>"stable sort"</strong>.' },
+                { title: 'Using stable sort', content: 'If you sort by age only (as the key), stable sort preserves the original order for equal ages!<br><span class="lang-py">Python: <code>sorted()</code> and <code>.sort()</code> are stable by default (TimSort)! Just use <code>key=lambda x: int(x.split()[0])</code>.</span><span class="lang-cpp">C++: Use <code>stable_sort()</code>. Warning: <code>sort()</code> is unstable — it may reorder elements with the same age!</span>' },
+                { title: 'Time complexity', content: 'O(n log n) is sufficient. With N &le; 100,000, it fits comfortably.' }
             ],
             templates: {
-                python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\n# Python sort는 안정 정렬 → 나이만 기준으로 정렬해도 입력 순서 유지\nmembers.sort(key=lambda x: x[0])\n\nfor age, name in members:\n    print(age, name)`,
+                python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\n# Python sort is stable → sorting by age only preserves input order\nmembers.sort(key=lambda x: x[0])\n\nfor age, name in members:\n    print(age, name)`,
                 cpp: `#include <iostream>
 #include <vector>
 #include <algorithm>
-#include <utility>\nusing namespace std;\n\nint main() {\n    int N;\n    scanf("%d", &N);\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    // stable_sort: 같은 나이면 입력 순서 유지\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });\n\n    for (auto& [age, name] : v)\n        printf("%d %s\\n", age, name.c_str());\n}`
+#include <utility>\nusing namespace std;\n\nint main() {\n    int N;\n    scanf("%d", &N);\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    // stable_sort: preserves input order for same age\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });\n\n    for (auto& [age, name] : v)\n        printf("%d %s\\n", age, name.c_str());\n}`
             },
             solutions: [{
-                approach: '안정 정렬 활용',
-                description: '나이만 기준으로 sort()하면 안정 정렬 덕분에 입력 순서가 자동 유지됩니다.',
+                approach: 'Using stable sort',
+                description: 'Sorting by age only with sort() automatically preserves input order thanks to stable sort.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
                 get templates() { return sortingTopic.problems[3].templates; },
                 codeSteps: {
                     python: [
-                        { title: '입력 받기', desc: '나이(int)와 이름(str)을 튜플로 저장합니다. 나이만 정렬 키로 쓸 예정입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))' },
-                        { title: '나이 기준 정렬 (안정)', desc: 'Python sort()는 안정 정렬(TimSort)이므로, 나이만 key로 주면 같은 나이끼리 입력 순서가 유지됩니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\n# Python sort는 안정 정렬!\nmembers.sort(key=lambda x: x[0])' },
-                        { title: '출력', desc: '정렬된 결과를 나이와 이름 순서로 출력합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\nmembers.sort(key=lambda x: x[0])\n\nfor age, name in members:\n    print(age, name)' }
+                        { title: 'Read Input', desc: 'Store age (int) and name (str) as tuples. We\'ll only use age as the sort key.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))' },
+                        { title: 'Sort by Age (Stable)', desc: 'Python sort() is a stable sort (TimSort), so using only age as the key preserves input order for equal ages.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\n# Python sort is stable!\nmembers.sort(key=lambda x: x[0])' },
+                        { title: 'Output', desc: 'Print the sorted result with age and name.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\nmembers.sort(key=lambda x: x[0])\n\nfor age, name in members:\n    print(age, name)' }
                     ],
                     cpp: [
-                        { title: '입력 받기', desc: 'pair<int, string>으로 나이와 이름을 함께 저장합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;' },
-                        { title: '나이 기준 안정 정렬', desc: 'C++ sort()는 불안정 정렬이므로 stable_sort()를 써야 같은 나이끼리 입력 순서가 보장됩니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    // stable_sort: 같은 키이면 입력 순서 유지!\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });' },
-                        { title: '출력', desc: '구조화 바인딩으로 나이와 이름을 깔끔하게 출력합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });\n\n    for (auto& [age, name] : v)\n        cout << age << " " << name << "\\n";\n}' }
+                        { title: 'Read Input', desc: 'Store age and name together as pair<int, string>.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;' },
+                        { title: 'Stable Sort by Age', desc: 'C++ sort() is unstable, so stable_sort() is needed to preserve input order for equal ages.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    // stable_sort: preserves input order for equal keys!\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });' },
+                        { title: 'Output', desc: 'Use structured bindings to cleanly output age and name.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });\n\n    for (auto& [age, name] : v)\n        cout << age << " " << name << "\\n";\n}' }
                     ]
                 }
             }]
