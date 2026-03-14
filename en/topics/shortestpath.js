@@ -529,6 +529,7 @@ var shortestPathTopic = {
             '</div>' +
             '<div id="sp-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;">' +
             '<span style="color:var(--text2);">Running Dijkstra starting from A.</span></div>' +
+            self._createStepDesc(suffix) +
             self._createStepControls(suffix);
 
         var distEl = container.querySelector('#sp-dist-' + suffix);
@@ -653,28 +654,35 @@ var shortestPathTopic = {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25B6 Click Next to start</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>\u25C0 Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next \u25B6</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">\u25B6 Press Next to begin</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '\u25B6 Press Next to begin'; }
+            if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
@@ -719,6 +727,7 @@ var shortestPathTopic = {
                 '<label style="font-weight:600;">Edges (from to weight): <input type="text" id="sp-dijk-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
                 '<button class="btn btn-primary" id="sp-dijk-reset">\uD83D\uDD04</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="sp-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -859,6 +868,7 @@ var shortestPathTopic = {
                 '<label style="font-weight:600;">Edges (from to weight): <input type="text" id="sp-floyd-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
                 '<button class="btn btn-primary" id="sp-floyd-reset">\uD83D\uDD04</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="sp-grid' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1008,6 +1018,7 @@ var shortestPathTopic = {
                 '<label style="font-weight:600;">Edges (from to weight): <input type="text" id="sp-mincost-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
                 '<button class="btn btn-primary" id="sp-mincost-reset">\uD83D\uDD04</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="sp-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1153,6 +1164,7 @@ var shortestPathTopic = {
                 '<label style="font-weight:600;">Edges (from to weight): <input type="text" id="sp-delay-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
                 '<button class="btn btn-primary" id="sp-delay-reset">\uD83D\uDD04</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="sp-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);

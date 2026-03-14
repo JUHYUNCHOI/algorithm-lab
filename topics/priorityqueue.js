@@ -340,22 +340,29 @@ var priorityQueueTopic = {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 ▶</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
@@ -394,6 +401,7 @@ var priorityQueueTopic = {
             '<label style="font-weight:600;">연산: <input type="text" id="pq-maxh-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:320px;"></label>' +
             '<button class="btn btn-primary" id="pq-maxh-reset">\uD83D\uDD04</button></div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: "1 값" = 삽입, "0" = 삭제 (쉼표 구분). 예: 1 5, 1 3, 0, 1 7, 0</p>' +
+            self._createStepDesc(suffix) +
             '<div id="mxh-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="mxh-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -462,6 +470,7 @@ var priorityQueueTopic = {
             '<label style="font-weight:600;">연산: <input type="text" id="pq-minh-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:320px;"></label>' +
             '<button class="btn btn-primary" id="pq-minh-reset">\uD83D\uDD04</button></div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: "1 값" = 삽입, "0" = 삭제 (쉼표 구분). 예: 1 5, 1 1, 0, 1 3, 0</p>' +
+            self._createStepDesc(suffix) +
             '<div id="mnh-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="mnh-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -530,6 +539,7 @@ var priorityQueueTopic = {
             '<label style="font-weight:600;">연산: <input type="text" id="pq-absh-input" value="' + DEFAULT_OPS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:320px;"></label>' +
             '<button class="btn btn-primary" id="pq-absh-reset">\uD83D\uDD04</button></div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: 0이 아닌 정수 = 삽입, 0 = 삭제 (쉼표 구분). 예: 1, -1, 0, -2, 3, 0</p>' +
+            self._createStepDesc(suffix) +
             '<div id="abh-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="abh-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -593,6 +603,7 @@ var priorityQueueTopic = {
             '<label style="font-weight:600;">행 데이터: <input type="text" id="pq-nth-rows" value="' + DEFAULT_ROWS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="pq-nth-reset">\uD83D\uDD04</button></div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">행은 쉼표로 구분, 행 내부는 공백으로 구분. 예: 12 7 9, 13 8 11, 21 10 26</p>' +
+            self._createStepDesc(suffix) +
             '<div id="nth-heap' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="nth-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -660,6 +671,7 @@ var priorityQueueTopic = {
             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">' +
             '<div><div style="text-align:center;font-weight:700;padding:6px;border-radius:8px;background:rgba(108,92,231,0.1);color:var(--primary);margin-bottom:4px;">최대 힙 (작은 절반)</div><div id="md-max' + suffix + '" style="min-height:48px;padding:8px;background:var(--bg);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;"></div></div>' +
             '<div><div style="text-align:center;font-weight:700;padding:6px;border-radius:8px;background:rgba(0,184,148,0.1);color:var(--green);margin-bottom:4px;">최소 힙 (큰 절반)</div><div id="md-min' + suffix + '" style="min-height:48px;padding:8px;background:var(--bg);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;"></div></div></div>' +
+            self._createStepDesc(suffix) +
             '<div id="md-val' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:700;padding:10px;background:linear-gradient(135deg,rgba(108,92,231,0.08),rgba(0,184,148,0.08));border:2px solid var(--primary);border-radius:12px;margin-bottom:12px;">현재 중앙값: ?</div>' +
             '<div id="md-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -730,6 +742,7 @@ var priorityQueueTopic = {
             '<label style="font-weight:600;">가방 용량: <input type="text" id="pq-jewel-bags" value="' + DEFAULT_BAGS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:120px;"></label>' +
             '<button class="btn btn-primary" id="pq-jewel-reset">\uD83D\uDD04</button></div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">보석: "무게 가격" 쌍을 쉼표로 구분. 가방: 용량을 쉼표로 구분.</p>' +
+            self._createStepDesc(suffix) +
             '<div id="jw-heap' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="jw-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -833,7 +846,7 @@ var priorityQueueTopic = {
             '<button class="btn" id="pq-reset-btn-' + suffix + '">초기화</button></div>' +
             '<div id="pq-arr-' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;min-height:48px;"></div>' +
             '<div id="pq-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:var(--radius);min-height:36px;text-align:center;font-weight:600;"></div>' +
-            self._createStepControls(suffix) + '</div>';
+            self._createStepDesc(suffix) + self._createStepControls(suffix) + '</div>';
         var arrEl = container.querySelector('#pq-arr-' + suffix);
         var infoEl = container.querySelector('#pq-info-' + suffix);
         function renderAll(h, msg) {
@@ -897,7 +910,7 @@ var priorityQueueTopic = {
             '<div id="cm-min-' + suffix + '" style="min-height:48px;padding:8px;background:var(--bg);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;"></div></div></div>' +
             '<div id="cm-val-' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:700;padding:10px;border:2px solid var(--primary);border-radius:12px;margin-bottom:12px;">현재 중앙값: ?</div>' +
             '<div id="cm-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
-            self._createStepControls(suffix) + '</div>';
+            self._createStepDesc(suffix) + self._createStepControls(suffix) + '</div>';
         var maxEl = container.querySelector('#cm-max-' + suffix);
         var minEl = container.querySelector('#cm-min-' + suffix);
         var valEl = container.querySelector('#cm-val-' + suffix);

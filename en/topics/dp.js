@@ -505,29 +505,35 @@ int fib(int n) {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25b6 Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var prevBtn = container.querySelector('#viz-prev' + suffix);
+        var nextBtn = container.querySelector('#viz-next' + suffix);
+        var counter = container.querySelector('#viz-step-counter' + suffix);
+        var desc = container.querySelector('#viz-step-desc' + suffix);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -586,6 +592,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N: <input type="number" id="dp-fib-n" value="' + n + '" min="3" max="40" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-fib-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">fib(' + n + ') call count: Recursion vs DP</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Recursion has explosive duplicate calls, but DP needs only n-2 operations.</p>' +
                 '<div id="fib1-area' + suffix + '" style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">' +
@@ -665,6 +672,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">c: <input type="number" id="dp-fun-c" value="' + c + '" min="-1" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
                 '<button class="btn btn-primary" id="dp-fun-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">w(' + a + ',' + b + ',' + c + ') Memoization</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Storing in the memo table skips duplicate calls.</p>' +
                 '<div id="fun-log' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;font-size:0.85rem;min-height:60px;margin-bottom:12px;white-space:pre-line;"></div>' +
@@ -754,6 +762,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N: <input type="number" id="dp-1to-n" value="' + n + '" min="2" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-1to-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">' + n + ' to 1: Minimum Operations</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i] = minimum number of operations to make i into 1</p>' +
                 '<div id="to1-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -815,6 +824,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N: <input type="number" id="dp-tile-n" value="' + n + '" min="3" max="15" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-tile-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">01 Tile: Sequences of length N=' + n + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i] = dp[i-1] + dp[i-2] (same as Fibonacci!)</p>' +
                 '<div id="tile-cells' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -897,6 +907,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Scores (comma-separated): <input type="text" id="dp-stair-input" value="' + sc.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="dp-stair-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Climbing Stairs (no 3 consecutive)</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Scores: [' + sc.join(',') + ']</p>' +
                 '<div id="st-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -965,6 +976,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Wine amounts (comma-separated): <input type="text" id="dp-wine-input" value="' + w.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="dp-wine-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Wine Tasting (no 3 consecutive)</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Glasses: [' + w.join(',') + ']. You can also choose to skip!</p>' +
                 '<div id="wn-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1061,6 +1073,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Array (comma-separated): <input type="text" id="dp-maxsub-input" value="' + a.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
                 '<button class="btn btn-primary" id="dp-maxsub-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Maximum Subarray Sum (Kadane Algorithm)</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">[' + a.join(',') + ']</p>' +
                 '<div id="ms-cells' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1138,6 +1151,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N (digits): <input type="number" id="dp-easystair-n" value="' + n + '" min="1" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-easystair-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Easy Staircase Number: Length ' + n + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[length][last_digit]: transition from digit j to j-1, j+1</p>' +
                 '<div id="es-grid' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1226,6 +1240,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Costs (rows separated by ;): <input type="text" id="dp-rgb-input" value="' + costStrs.join('; ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="dp-rgb-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">RGB Street: Min cost for ' + n + ' houses</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Neighbors must be different colors!</p>' +
                 '<div id="rgb-grid' + suffix + '" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:300px;margin:0 auto 12px;"></div>' +
@@ -1299,6 +1314,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Triangle (rows separated by ;): <input type="text" id="dp-tri-input" value="' + triStrs.join('; ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
                 '<button class="btn btn-primary" id="dp-tri-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Integer Triangle: Bottom-Up Max Path</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Building up from bottom to top to find maximum sum.</p>' +
                 '<div id="tri-grid' + suffix + '" style="text-align:center;margin-bottom:12px;"></div>' +
@@ -1390,6 +1406,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Array (comma-separated): <input type="text" id="dp-lis-input" value="' + a.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="dp-lis-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">LIS: [' + a.join(',') + ']</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i] = length of longest increasing subsequence ending at a[i]</p>' +
                 '<div id="lis-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1463,6 +1480,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Array (comma-separated): <input type="text" id="dp-bitonic-input" value="' + a.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:240px;"></label>' +
                 '<button class="btn btn-primary" id="dp-bitonic-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Bitonic Subsequence: LIS + LDS</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">[' + a.join(',') + ']. max of lis[i]+lds[i]-1</p>' +
                 '<div id="bi-cells' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1547,6 +1565,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">Wires (A B pairs, comma-separated): <input type="text" id="dp-wire-input" value="' + wireStr + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
                 '<button class="btn btn-primary" id="dp-wire-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">Electric Wires: LIS of B after sorting by A</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Sorted by A: B=[' + res.b.join(',') + ']. Find LIS length then N-LIS</p>' +
                 '<div id="wr-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1684,6 +1703,7 @@ int fib(int n) {
                     '<input id="dp-lcs-b' + suffix + '" type="text" value="' + b + '" style="width:120px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:inherit;">' +
                     '<button id="dp-lcs-reset' + suffix + '" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);cursor:pointer;font-size:0.85rem;" title="Reset with input values">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">LCS: ' + a + ' vs ' + b + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i][j] = LCS length of A[:i] and B[:j]</p>' +
                 '<div id="lcs-grid' + suffix + '" style="overflow-x:auto;margin-bottom:12px;"></div>' +
@@ -1840,6 +1860,7 @@ int fib(int n) {
                     '<input id="dp-knapsack-w' + suffix + '" type="number" value="' + W + '" min="1" max="30" style="width:60px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:inherit;">' +
                     '<button id="dp-knapsack-reset' + suffix + '" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);cursor:pointer;font-size:0.85rem;" title="Reset with input values">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">0/1 Knapsack: capacity ' + W + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">Items: ' + itemsDesc + '. Solving with 1D DP</p>' +
                 '<div id="kn-cells' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;"></div>' +

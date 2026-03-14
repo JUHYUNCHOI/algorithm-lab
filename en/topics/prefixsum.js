@@ -474,7 +474,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;" id="cv1d-arr-' + suffix + '"></div>' +
             '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;" id="cv1d-pref-' + suffix + '"></div>' +
             '<div id="cv1d-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
-            self._createStepControls(suffix) + '</div>';
+            self._createStepDesc(suffix) + self._createStepControls(suffix) + '</div>';
         var arrEl = container.querySelector('#cv1d-arr-' + suffix);
         var prefEl = container.querySelector('#cv1d-pref-' + suffix);
         var infoEl = container.querySelector('#cv1d-info-' + suffix);
@@ -504,7 +504,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<div class="viz-card"><h3>2D Prefix Sum</h3>' +
             '<p style="color:var(--text2);margin-bottom:12px;">Use 2D prefix sums and the inclusion-exclusion principle to compute region sums.</p>' +
             '<div id="cv2d-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
-            self._createStepControls(suffix) + '</div>';
+            self._createStepDesc(suffix) + self._createStepControls(suffix) + '</div>';
         var infoEl = container.querySelector('#cv2d-info-' + suffix);
         var grid = [[1,2,3],[4,5,6],[7,8,9]];
         var prefix = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
@@ -534,28 +534,35 @@ int query(int r1, int c1, int r2, int c2) {\n\
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ Click Next to start</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next ▶</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
+            if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '▶ Click Next to start'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
@@ -592,6 +599,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<label style="font-weight:600;">Queries (i j): <input type="text" id="ps-range-queries" value="1 3, 2 4, 5 5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
             '<button class="btn btn-primary" id="ps-range-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="rng-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="rng-pref' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="rng-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -659,6 +667,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<label style="font-weight:600;">K: <input type="number" id="ps-window-k" value="2" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="ps-window-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="win-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="win-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -725,6 +734,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<label style="font-weight:600;">Queries (char l r): <input type="text" id="ps-char-queries" value="a 0 12, s 0 12, a 3 7, a 0 5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="btn btn-primary" id="ps-char-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="ch-str' + suffix + '" style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="ch-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -790,6 +800,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<label style="font-weight:600;">M: <input type="number" id="ps-mod-m" value="3" min="2" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="ps-mod-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="mod-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="mod-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -852,6 +863,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<label style="font-weight:600;">Queries (x1 y1 x2 y2): <input type="text" id="ps-2d-queries" value="2 2 3 4, 3 4 3 4, 1 1 4 4" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="ps-2d-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="d2-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
 
@@ -916,6 +928,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             '<button class="btn btn-primary" id="ps-chess-reset">🔄</button>' +
             '<span style="color:var(--text3);font-size:0.8rem;">(all-B NxN board)</span>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="cs-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
 

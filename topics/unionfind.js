@@ -443,22 +443,29 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 ▶</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
@@ -505,6 +512,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             '<div id="uf-tree-' + suffix + '" style="min-height:160px;background:var(--bg);border-radius:var(--radius);padding:12px;font-family:var(--font-mono, monospace);white-space:pre;line-height:1.6;font-size:0.92rem;"></div>' +
             '</div>' +
             '<div id="uf-info-' + suffix + '" style="padding:10px;background:var(--bg);border-radius:var(--radius);min-height:36px;text-align:center;"></div>' +
+            self._createStepDesc(suffix) +
             self._createStepControls(suffix) +
             '</div>' +
             '<div class="graph-legend" style="margin-top:12px;">' +
@@ -713,6 +721,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             '<button class="btn btn-primary" id="uf-basic-reset">🔄</button>' +
             '</div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: <code>0 a b</code> = union(a,b), <code>1 a b</code> = find(a)==find(b)? — 쉼표로 구분</p>' +
+            self._createStepDesc(suffix) +
             '<div id="uf-par' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="uf-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -861,6 +870,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             '<button class="btn btn-primary" id="uf-travel-reset">🔄</button>' +
             '</div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">노선 형식: <code>a b</code> 쌍을 쉼표로 구분, 여행경로: 도시 번호를 공백으로 구분</p>' +
+            self._createStepDesc(suffix) +
             '<div id="tv-par' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="tv-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1008,6 +1018,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             '<button class="btn btn-primary" id="uf-island-reset">🔄</button>' +
             '</div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: 행을 <code>;</code>으로 구분, 칸은 공백으로 구분. 예: <code>1 1 0; 1 0 1; 0 1 1</code></p>' +
+            self._createStepDesc(suffix) +
             '<div id="is-grid' + suffix + '" style="display:inline-grid;gap:4px;margin-bottom:12px;"></div>' +
             '<div id="is-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1163,6 +1174,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             '<button class="btn btn-primary" id="uf-friend-reset">🔄</button>' +
             '</div>' +
             '<p style="color:var(--text2);margin-bottom:12px;font-size:0.85rem;">형식: <code>이름1 이름2</code> 쌍을 쉼표로 구분. 예: <code>Fred Barney, Barney Betty</code></p>' +
+            self._createStepDesc(suffix) +
             '<div id="fn-names' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="fn-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);

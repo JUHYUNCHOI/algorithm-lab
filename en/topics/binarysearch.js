@@ -314,29 +314,35 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25b6 Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var prevBtn = container.querySelector('#viz-prev' + suffix);
+        var nextBtn = container.querySelector('#viz-next' + suffix);
+        var counter = container.querySelector('#viz-step-counter' + suffix);
+        var desc = container.querySelector('#viz-step-desc' + suffix);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -372,6 +378,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">target: <input type="number" id="bs-basic-target" value="' + DEFAULT_TARGET + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="bs-basic-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="bs-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="bs-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="bs-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -457,6 +464,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">target: <input type="number" id="bs-bound-target" value="' + DEFAULT_TARGET + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="bs-bound-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="bd-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="bd-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="bd-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -521,6 +529,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">Required N: <input type="number" id="bs-cable-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="bs-cable-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="cb-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="cb-bars' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="cb-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -600,6 +609,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">Required M: <input type="number" id="bs-tree-m" value="' + DEFAULT_M + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="bs-tree-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="tr-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="tr-chart' + suffix + '" style="display:flex;gap:16px;justify-content:center;align-items:flex-end;height:160px;margin-bottom:12px;position:relative;"></div>' +
             '<div id="tr-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -678,6 +688,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">Routers C: <input type="number" id="bs-router-c" value="' + DEFAULT_C + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="bs-router-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="rt-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="rt-line' + suffix + '" style="position:relative;height:80px;margin:16px 0;"></div>' +
             '<div id="rt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -764,6 +775,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">K: <input type="number" id="bs-kth-k" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="bs-kth-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="kt-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="kt-table' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="kt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -849,6 +861,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 '<label style="font-weight:600;">Sequence: <input type="text" id="bs-lis-arr" value="' + DEFAULT_A.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="bs-lis-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="lis-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div style="margin-bottom:8px;"><strong>Original Sequence</strong></div>' +
             '<div id="lis-arr' + suffix + '" style="display:flex;gap:4px;margin-bottom:16px;"></div>' +

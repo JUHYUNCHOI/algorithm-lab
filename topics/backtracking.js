@@ -586,6 +586,7 @@ for (int i = 1; i &lt;= n; i++) {
         container.innerHTML =
             '<h2>백트래킹 시각화</h2>' +
             '<p style="color:var(--text2);margin-bottom:12px;">N=4, M=2에서 순열을 생성하는 백트래킹 과정입니다.</p>' +
+            self._createStepDesc(suffix) +
             '<div id="bt-path' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
             '<div id="bt-used' + suffix + '" style="text-align:center;margin-bottom:12px;"></div>' +
             '<div id="bt-results' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;min-height:36px;margin-bottom:12px;text-align:center;"></div>' +
@@ -674,29 +675,35 @@ for (int i = 1; i &lt;= n; i++) {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var prevBtn = container.querySelector('#viz-prev' + suffix);
+        var nextBtn = container.querySelector('#viz-next' + suffix);
+        var counter = container.querySelector('#viz-step-counter' + suffix);
+        var desc = container.querySelector('#viz-step-desc' + suffix);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -730,6 +737,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm1-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm1-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="nm1-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 없이 ' + defaultM + '개를 골라 순열을 생성합니다.</p>' +
             '<div id="nm1-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
             '<div id="nm1-used' + suffix + '" style="text-align:center;margin-bottom:8px;"></div>' +
@@ -801,6 +809,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm2-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm2-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="nm2-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 ' + defaultM + '개를 오름차순으로 고릅니다. start 파라미터로 중복을 방지합니다.</p>' +
             '<div id="nm2-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
             '<div id="nm2-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
@@ -863,6 +872,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm3-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm3-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="nm3-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 허용하여 ' + defaultM + '개를 고릅니다. used 배열이 없습니다!</p>' +
             '<div id="nm3-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
             '<div id="nm3-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
@@ -925,6 +935,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<label style="font-weight:600;">M: <input type="number" id="bt-nm4-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-nm4-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="nm4-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 허용 + 비내림차순으로 ' + defaultM + '개를 고릅니다. start를 i로 넘깁니다 (i+1 아님!).</p>' +
             '<div id="nm4-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
             '<div id="nm4-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
@@ -987,6 +998,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<label style="font-weight:600;">연산자(+,-,*,/): <input type="text" id="bt-op-ops" value="' + defaultOps.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;" placeholder="1,1,0,0"></label>' +
             '<button class="btn btn-primary" id="bt-op-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="op-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="op-expr' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:600;margin-bottom:8px;"></div>' +
             '<div id="op-ops' + suffix + '" style="text-align:center;margin-bottom:8px;font-size:0.85rem;"></div>' +
@@ -1085,6 +1097,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<button class="btn btn-primary" id="bt-team-reset">🔄</button>' +
             '<span style="font-size:0.8rem;color:var(--text3);">N 변경 시 랜덤 시너지 행렬 생성</span>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="tm-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="tm-teams' + suffix + '" style="display:flex;gap:16px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="tm-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -1168,6 +1181,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<label style="font-weight:600;">N: <input type="number" id="bt-queen-n" value="' + defaultN + '" min="4" max="8" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
             '<button class="btn btn-primary" id="bt-queen-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="nq-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="nq-board' + suffix + '" style="display:grid;gap:2px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="nq-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -1275,6 +1289,7 @@ for (int i = 1; i &lt;= n; i++) {
             '<button class="btn btn-primary" id="bt-sudo-reset">\ud83d\udd04</button>' +
             '</div>' +
             '<p style="color:var(--text2);margin-bottom:12px;">4\u00d74 스도쿠의 빈 칸을 백트래킹으로 채웁니다. 각 행, 열, 2\u00d72 박스에 1~4가 하나씩.</p>' +
+            self._createStepDesc(suffix) +
             '<div id="sdk-board' + suffix + '" style="display:grid;grid-template-columns:repeat(4,48px);gap:2px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sdk-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);

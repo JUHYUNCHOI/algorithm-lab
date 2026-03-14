@@ -505,29 +505,35 @@ int fib(int n) {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var prevBtn = container.querySelector('#viz-prev' + suffix);
+        var nextBtn = container.querySelector('#viz-next' + suffix);
+        var counter = container.querySelector('#viz-step-counter' + suffix);
+        var desc = container.querySelector('#viz-step-desc' + suffix);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -586,6 +592,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N: <input type="number" id="dp-fib-n" value="' + n + '" min="3" max="40" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-fib-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">fib(' + n + ') 호출 횟수: 재귀 vs DP</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">재귀는 중복 호출이 폭발하지만, DP는 n-2번이면 충분합니다.</p>' +
                 '<div id="fib1-area' + suffix + '" style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">' +
@@ -665,6 +672,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">c: <input type="number" id="dp-fun-c" value="' + c + '" min="-1" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
                 '<button class="btn btn-primary" id="dp-fun-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">w(' + a + ',' + b + ',' + c + ') 메모이제이션</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">memo 테이블에 저장하면 중복 호출을 건너뜁니다.</p>' +
                 '<div id="fun-log' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;font-size:0.85rem;min-height:60px;margin-bottom:12px;white-space:pre-line;"></div>' +
@@ -754,6 +762,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N: <input type="number" id="dp-1to-n" value="' + n + '" min="2" max="20" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-1to-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">' + n + ' → 1 최소 연산</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i] = i를 1로 만드는 최소 횟수</p>' +
                 '<div id="to1-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -815,6 +824,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N: <input type="number" id="dp-tile-n" value="' + n + '" min="3" max="15" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-tile-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">01타일: 길이 N=' + n + '인 수열</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i] = dp[i-1] + dp[i-2] (피보나치와 동일!)</p>' +
                 '<div id="tile-cells' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -897,6 +907,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">점수 (쉼표 구분): <input type="text" id="dp-stair-input" value="' + sc.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="dp-stair-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">계단 오르기 (연속 3개 불가)</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">점수: [' + sc.join(',') + ']</p>' +
                 '<div id="st-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -965,6 +976,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">포도주 양 (쉼표 구분): <input type="text" id="dp-wine-input" value="' + w.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="dp-wine-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">포도주 시식 (3연속 불가)</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">잔: [' + w.join(',') + ']. 안 마시는 선택도 가능!</p>' +
                 '<div id="wn-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1061,6 +1073,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">배열 (쉼표 구분): <input type="text" id="dp-maxsub-input" value="' + a.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
                 '<button class="btn btn-primary" id="dp-maxsub-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">연속합 (카데인 알고리즘)</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">[' + a.join(',') + ']</p>' +
                 '<div id="ms-cells' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1138,6 +1151,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">N (자릿수): <input type="number" id="dp-easystair-n" value="' + n + '" min="1" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
                 '<button class="btn btn-primary" id="dp-easystair-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">쉬운 계단 수: 길이 ' + n + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[길이][끝자리]: 끝자리 j에서 j-1, j+1로 전이</p>' +
                 '<div id="es-grid' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1226,6 +1240,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">비용 (행을 ;로 구분): <input type="text" id="dp-rgb-input" value="' + costStrs.join('; ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="dp-rgb-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">RGB거리: ' + n + '집 최소 비용</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">이웃은 다른 색!</p>' +
                 '<div id="rgb-grid' + suffix + '" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:300px;margin:0 auto 12px;"></div>' +
@@ -1299,6 +1314,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">삼각형 (행을 ;로 구분): <input type="text" id="dp-tri-input" value="' + triStrs.join('; ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
                 '<button class="btn btn-primary" id="dp-tri-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">정수 삼각형: 아래→위 최대 경로</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">아래에서 위로 올라가며 최대 합을 구합니다.</p>' +
                 '<div id="tri-grid' + suffix + '" style="text-align:center;margin-bottom:12px;"></div>' +
@@ -1390,6 +1406,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">배열 (쉼표 구분): <input type="text" id="dp-lis-input" value="' + a.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="dp-lis-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">LIS: [' + a.join(',') + ']</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i] = a[i]로 끝나는 가장 긴 증가 수열 길이</p>' +
                 '<div id="lis-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1463,6 +1480,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">배열 (쉼표 구분): <input type="text" id="dp-bitonic-input" value="' + a.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:240px;"></label>' +
                 '<button class="btn btn-primary" id="dp-bitonic-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">바이토닉 수열: LIS + LDS</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">[' + a.join(',') + ']. lis[i]+lds[i]-1의 최대</p>' +
                 '<div id="bi-cells' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1547,6 +1565,7 @@ int fib(int n) {
                 '<label style="font-weight:600;">전깃줄 (A B 쌍, 쉼표 구분): <input type="text" id="dp-wire-input" value="' + wireStr + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
                 '<button class="btn btn-primary" id="dp-wire-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">전깃줄: A 정렬 후 B의 LIS</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">A 기준 정렬: B=[' + res.b.join(',') + ']. LIS 길이를 구한 뒤 N-LIS</p>' +
                 '<div id="wr-cells' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>' +
@@ -1684,6 +1703,7 @@ int fib(int n) {
                     '<input id="dp-lcs-b' + suffix + '" type="text" value="' + b + '" style="width:120px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:inherit;">' +
                     '<button id="dp-lcs-reset' + suffix + '" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);cursor:pointer;font-size:0.85rem;" title="입력값으로 재시작">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">LCS: ' + a + ' vs ' + b + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">dp[i][j] = A[:i]와 B[:j]의 최장 공통 부분수열 길이</p>' +
                 '<div id="lcs-grid' + suffix + '" style="overflow-x:auto;margin-bottom:12px;"></div>' +
@@ -1840,6 +1860,7 @@ int fib(int n) {
                     '<input id="dp-knapsack-w' + suffix + '" type="number" value="' + W + '" min="1" max="30" style="width:60px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:inherit;">' +
                     '<button id="dp-knapsack-reset' + suffix + '" style="padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);cursor:pointer;font-size:0.85rem;" title="입력값으로 재시작">🔄</button>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 '<h3 style="margin-bottom:8px;">0/1 배낭: 용량 ' + W + '</h3>' +
                 '<p style="color:var(--text2);margin-bottom:12px;">물건: ' + itemsDesc + '. 1차원 DP로 풀기</p>' +
                 '<div id="kn-cells' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:12px;"></div>' +

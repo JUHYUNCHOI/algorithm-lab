@@ -349,22 +349,29 @@ var trieTopic = {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 ▶</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
@@ -416,6 +423,7 @@ var trieTopic = {
             '<div id="str-words-' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);">없음</div>' +
             '</div>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             self._createStepControls(suffix) +
             '<div style="display:flex;gap:16px;padding:10px 16px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-top:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">' +
             '<span><span class="str-char-box" style="display:inline-flex;width:22px;height:22px;font-size:11px;vertical-align:middle;margin:0;padding:0;align-items:center;justify-content:center;border-radius:6px;">R</span> 기존 노드</span>' +
@@ -591,6 +599,7 @@ var trieTopic = {
             '<label style="font-weight:600;">삽입할 단어: <input type="text" id="trie-impl-input" value="' + DEFAULT_WORDS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="trie-impl-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="str-tree' + suffix + '" style="display:flex;flex-direction:column;align-items:center;min-height:180px;margin-bottom:12px;"></div>' +
             '<div id="str-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -740,6 +749,7 @@ var trieTopic = {
             '<label style="font-weight:600;">검색어: <input type="text" id="trie-set-query" value="' + DEFAULT_QUERIES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="btn btn-primary" id="trie-set-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div style="display:flex;gap:24px;margin-bottom:12px;flex-wrap:wrap;">' +
             '<div style="flex:1;min-width:180px;"><div style="font-weight:700;margin-bottom:6px;color:var(--text2);">집합 S</div>' +
             '<div id="str-set' + suffix + '" class="graph-queue-display" style="min-height:42px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;font-weight:600;"></div></div>' +
@@ -862,6 +872,7 @@ var trieTopic = {
             '<label style="font-weight:600;">전화번호: <input type="text" id="trie-phone-input" value="' + DEFAULT_NUMBERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="trie-phone-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="str-tree' + suffix + '" style="display:flex;flex-direction:column;align-items:center;min-height:160px;margin-bottom:12px;overflow-x:auto;"></div>' +
             '<div id="str-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -980,6 +991,7 @@ var trieTopic = {
             '<label style="font-weight:600;">문자열: <input type="text" id="trie-lcp-input" value="' + DEFAULT_STRS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="trie-lcp-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="str-chars' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="str-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);

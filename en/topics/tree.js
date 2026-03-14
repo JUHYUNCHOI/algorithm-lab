@@ -549,28 +549,35 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25B6 Click Next to start</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
+            if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
@@ -821,6 +828,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             '<label style="font-weight:600;">Tree (level-order): <input type="text" id="tree-depth-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="btn btn-primary" id="tree-depth-reset">🔄</button></div>' +
             '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">Enter in BFS order. null = empty node. e.g.: 3, 9, 20, null, null, 15, 7</p>' +
+            self._createStepDesc(suffix) +
             '<div id="depth-svg' + suffix + '"></div>' +
             '<div id="depth-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">Current depth: 0</span></div>' +
             self._createStepControls(suffix);
@@ -1061,6 +1069,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             '<label style="font-weight:600;">Tree (level-order): <input type="text" id="tree-invert-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="btn btn-primary" id="tree-invert-reset">🔄</button></div>' +
             '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">Enter in BFS order. null = empty node. e.g.: 4, 2, 7, 1, 3, 6, 9</p>' +
+            self._createStepDesc(suffix) +
             '<div id="inv-svg' + suffix + '"></div>' +
             '<div id="inv-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"><span style="color:var(--text2);">Swap the left and right children at each node.</span></div>' +
             self._createStepControls(suffix);
@@ -1240,6 +1249,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             '<label style="font-weight:600;">Tree (level-order): <input type="text" id="tree-level-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
             '<button class="btn btn-primary" id="tree-level-reset">🔄</button></div>' +
             '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">Enter in BFS order. null = empty node. e.g.: 3, 9, 20, null, null, 15, 7</p>' +
+            self._createStepDesc(suffix) +
             '<div id="lvl-svg' + suffix + '"></div>' +
             '<div id="lvl-queue' + suffix + '" style="margin-bottom:8px;text-align:center;font-size:0.9rem;"><strong>Queue:</strong> <span style="color:var(--text3);">Empty</span></div>' +
             '<div id="lvl-result' + suffix + '" style="margin-bottom:12px;text-align:center;font-size:0.9rem;"><strong>Result:</strong> <span style="color:var(--text3);">[]</span></div>' +
@@ -1473,6 +1483,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             '<label style="font-weight:600;">Tree (level-order): <input type="text" id="tree-trav-input" value="' + DEFAULT_TREE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:380px;"></label>' +
             '<button class="btn btn-primary" id="tree-trav-reset">🔄</button></div>' +
             '<p style="color:var(--text3);font-size:0.8rem;margin-bottom:12px;">Enter in BFS order. null = empty node. e.g.: A, B, C, D, null, E, F</p>' +
+            self._createStepDesc(suffix) +
             '<div id="trav-svg' + suffix + '"></div>' +
             '<div id="trav-pre' + suffix + '" style="margin-bottom:4px;font-size:0.9rem;"><strong style="color:var(--accent);">Preorder:</strong> <span id="trav-pre-val' + suffix + '"></span></div>' +
             '<div id="trav-in' + suffix + '" style="margin-bottom:4px;font-size:0.9rem;"><strong style="color:var(--green);">Inorder:</strong> <span id="trav-in-val' + suffix + '"></span></div>' +

@@ -573,6 +573,7 @@ int main() {
             '</label>' +
             '<button class="btn btn-primary" id="bit-viz-start-' + suffix + '">Start</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div class="graph-svg-container" style="min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;">' +
             '<div id="bit-array-display-' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="bit-xor-display-' + suffix + '" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;"></div>' +
@@ -746,29 +747,35 @@ int main() {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25b6 Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var prevBtn = container.querySelector('#viz-prev' + suffix);
+        var nextBtn = container.querySelector('#viz-next' + suffix);
+        var counter = container.querySelector('#viz-step-counter' + suffix);
+        var desc = container.querySelector('#viz-step-desc' + suffix);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -801,6 +808,7 @@ int main() {
             '<label style="font-weight:600;">n: <input type="number" id="bit-hw-input" value="' + DEFAULT_N + '" min="0" max="1023" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;"></label>' +
             '<button class="btn btn-primary" id="bit-hw-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="hw-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="hw-bits' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="hw-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -906,6 +914,7 @@ int main() {
             '<label style="font-weight:600;">Array: <input type="text" id="bit-single-input" value="' + DEFAULT_NUMS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="bit-single-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="sn-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="sn-arr' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sn-xor' + suffix + '" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;margin-bottom:8px;"></div>' +
@@ -1061,6 +1070,7 @@ int main() {
             '<button class="btn btn-primary" id="bit-mask-reset">🔄</button>' +
             '</div>' +
             '<p style="color:var(--text3);font-size:0.8rem;margin-top:-12px;margin-bottom:16px;">Format: add N, remove N, check N, toggle N, all, empty (comma-separated)</p>' +
+            self._createStepDesc(suffix) +
             '<p id="bms-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">Represent a set with a single integer and perform add/remove/toggle/check operations.</p>' +
             '<div id="bms-bits' + suffix + '" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="bms-set' + suffix + '" style="text-align:center;margin-bottom:8px;font-weight:600;color:var(--accent);"></div>' +
@@ -1206,6 +1216,7 @@ int main() {
             '<button class="btn btn-primary" id="bit-subset-reset">🔄</button>' +
             '<span style="font-size:0.8rem;color:var(--text3);">Max ' + MAX_ELEMENTS + ' elements</span>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<p id="sub-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
             '<div id="sub-mask' + suffix + '" style="display:flex;gap:4px;justify-content:center;margin-bottom:8px;"></div>' +
             '<div id="sub-arr' + suffix + '" style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;"></div>' +

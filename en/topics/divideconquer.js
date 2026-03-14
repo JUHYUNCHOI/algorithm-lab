@@ -440,29 +440,35 @@ var divideConquerTopic = {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25b6 Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var prevBtn = container.querySelector('#viz-prev' + suffix);
+        var nextBtn = container.querySelector('#viz-next' + suffix);
+        var counter = container.querySelector('#viz-step-counter' + suffix);
+        var desc = container.querySelector('#viz-step-desc' + suffix);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -496,6 +502,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">Grid (rows separated by /): <input type="text" id="dc-paper-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-paper-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:12px;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -635,6 +642,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">Grid (rows separated by /): <input type="text" id="dc-quad-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-quad-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:8px;"></div>' +
             '<div id="dc-result' + suffix + '" style="font-family:monospace;font-size:1.1rem;padding:8px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:30px;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -785,6 +793,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">Grid (-1,0,1 / row sep /): <input type="text" id="dc-nine-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-nine-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:12px;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -912,6 +921,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">C: <input type="number" id="dc-pow-c" value="' + DEF_C + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="dc-pow-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-tree' + suffix + '" style="margin-bottom:12px;padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1023,6 +1033,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">P(prime): <input type="number" id="dc-binom-mod" value="' + DEF_MOD + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="dc-binom-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-calc' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;margin-bottom:12px;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1094,6 +1105,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">B: <input type="text" id="dc-matmul-b" value="' + DEF_B + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:140px;"></label>' +
             '<button class="btn btn-primary" id="dc-matmul-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-mat' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;margin-bottom:12px;text-align:center;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1171,6 +1183,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">mod: <input type="number" id="dc-matpow-mod" value="' + DEF_MOD + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;"></label>' +
             '<button class="btn btn-primary" id="dc-matpow-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-mat' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;margin-bottom:12px;text-align:center;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1268,6 +1281,7 @@ var divideConquerTopic = {
             '<button class="btn btn-primary" id="dc-fibmat-reset">🔄</button>' +
             '<span style="font-size:0.8rem;color:var(--text3);">(range 1~50 for visualization)</span>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-fib' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;font-family:monospace;margin-bottom:12px;text-align:center;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1359,6 +1373,7 @@ var divideConquerTopic = {
             '<label style="font-weight:600;">Heights (comma-separated): <input type="text" id="dc-histo-input" value="' + DEF_BARS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="dc-histo-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="dc-bars' + suffix + '" style="display:flex;gap:2px;align-items:flex-end;height:160px;margin-bottom:12px;"></div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);

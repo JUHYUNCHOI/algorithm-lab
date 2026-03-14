@@ -388,13 +388,18 @@ const recursionTopic = {
         s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn viz-step-btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '" class="viz-step-counter">시작 전</span>' +
-            '<button class="btn btn-primary viz-step-btn" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div>' +
-            '<div id="str-desc-' + suffix + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 ▶</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
@@ -402,10 +407,11 @@ const recursionTopic = {
         var state = self._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var counter = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var counter = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
 
         var updateUI = function() {
             var idx = state.currentStep;
@@ -485,6 +491,7 @@ const recursionTopic = {
                         </div>
                     </div>
                 </div>
+                ${self._createStepDesc('concept-fact')}
                 ${self._createStepControls('concept-fact')}
             `;
 
@@ -603,6 +610,7 @@ const recursionTopic = {
                         </div>
                     </div>
                 </div>
+                ${self._createStepDesc('concept-fib')}
                 ${self._createStepControls('concept-fib')}
             `;
 
@@ -752,6 +760,7 @@ const recursionTopic = {
                         </div>
                     </div>
                 </div>
+                ${self._createStepDesc('concept-hanoi')}
                 ${self._createStepControls('concept-hanoi')}
             `;
 
@@ -1010,6 +1019,7 @@ const recursionTopic = {
                     '<label style="font-weight:600;">N: <input type="number" id="rec-fact-n" value="' + n + '" min="1" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
                     '<button class="btn btn-primary" id="rec-fact-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc('fact') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>factorial(' + n + ') 콜 스택</h3></div>' +
                 '<div class="viz-panel-body"><div id="sim-stack-fact" class="viz-call-stack"></div></div></div>' +
                 self._createStepControls('fact');
@@ -1093,6 +1103,7 @@ const recursionTopic = {
                     '<label style="font-weight:600;">N: <input type="number" id="rec-fib-n" value="' + n + '" min="2" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
                     '<button class="btn btn-primary" id="rec-fib-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc('fib') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>fib(' + n + ') 재귀 트리</h3>' +
                 '<div class="counter">호출: <span id="sim-fib-cnt">0</span>번</div></div>' +
                 '<div class="viz-panel-body"><div id="sim-log-fib" class="viz-call-log" style="max-height:300px;overflow-y:auto;"></div></div></div>' +
@@ -1214,6 +1225,7 @@ const recursionTopic = {
                     '<label style="font-weight:600;">문자열: <input type="text" id="rec-pal-input" value="' + str + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:180px;background:var(--card);color:var(--text);"></label>' +
                     '<button class="btn btn-primary" id="rec-pal-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc('pal') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>회문 검사: "' + str + '"</h3>' +
                 '<div class="counter">호출: <span id="sim-pal-cnt">0</span>번</div></div>' +
                 '<div class="viz-panel-body">' +
@@ -1332,6 +1344,59 @@ const recursionTopic = {
         var DEFAULT_ARR = [5, 3, 8, 1, 2];
         var DEFAULT_K = 7;
 
+        var boxStyle = 'display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:10px;font-weight:700;font-size:1rem;border:2px solid var(--border);background:var(--card);color:var(--text);margin:3px;transition:all 0.3s;';
+        var boxActiveStyle = boxStyle + 'border-color:var(--yellow);background:rgba(253,203,110,0.18);box-shadow:0 0 8px var(--yellow);';
+        var boxMergedStyle = boxStyle + 'border-color:var(--green);background:rgba(0,206,158,0.13);box-shadow:0 0 8px var(--green);';
+        var boxKthStyle = boxStyle + 'border-color:var(--accent);background:rgba(108,92,231,0.18);box-shadow:0 0 12px var(--accent);';
+        var boxDimStyle = boxStyle + 'opacity:0.35;';
+        var labelStyle = 'font-size:0.7rem;color:var(--text3);text-align:center;';
+
+        function renderBoxes(arr, highlights) {
+            var h = highlights || {};
+            var html = '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2px;">';
+            for (var i = 0; i < arr.length; i++) {
+                var st = boxStyle;
+                if (h.kth === i) st = boxKthStyle;
+                else if (h.merged && i >= h.merged[0] && i <= h.merged[1]) st = boxMergedStyle;
+                else if (h.active && i >= h.active[0] && i <= h.active[1]) st = boxActiveStyle;
+                else if (h.dim && (i < h.dim[0] || i > h.dim[1])) st = boxDimStyle;
+                html += '<div style="display:inline-flex;flex-direction:column;align-items:center;">';
+                html += '<div style="' + st + '">' + arr[i] + '</div>';
+                html += '<div style="' + labelStyle + '">[' + i + ']</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function renderTmpBoxes(tmp, pointer, style) {
+            var html = '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2px;margin-top:8px;">';
+            html += '<span style="font-size:0.8rem;color:var(--text2);margin-right:6px;align-self:center;">tmp:</span>';
+            for (var i = 0; i < tmp.length; i++) {
+                var st = (i === pointer) ? (style || boxActiveStyle) : boxMergedStyle;
+                html += '<div style="' + st + '">' + tmp[i] + '</div>';
+            }
+            if (tmp.length === 0) html += '<span style="color:var(--text3);font-size:0.85rem;">(비어있음)</span>';
+            html += '</div>';
+            return html;
+        }
+
+        function renderPointers(arr, ptrs) {
+            var html = '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:2px;">';
+            for (var i = 0; i < arr.length; i++) {
+                var lbl = '';
+                for (var p = 0; p < ptrs.length; p++) {
+                    if (ptrs[p].idx === i) lbl += (lbl ? ',' : '') + ptrs[p].name;
+                }
+                html += '<div style="width:44px;margin:3px;text-align:center;">';
+                if (lbl) html += '<div style="font-size:0.7rem;color:var(--accent);font-weight:700;">▲ ' + lbl + '</div>';
+                else html += '<div style="height:16px;"></div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
         function buildAndRender(arr, k) {
             container.innerHTML =
                 '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
@@ -1339,93 +1404,213 @@ const recursionTopic = {
                     '<label style="font-weight:600;">K: <input type="number" id="rec-merge-k" value="' + k + '" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;background:var(--card);color:var(--text);"></label>' +
                     '<button class="btn btn-primary" id="rec-merge-reset">🔄</button>' +
                 '</div>' +
-                '<div class="viz-panel"><div class="viz-panel-header"><h3>병합 정렬: [' + arr.join(', ') + ']</h3></div>' +
-                '<div class="viz-panel-body">' +
-                '<div id="sim-merge-display" style="font-family:monospace;font-size:0.95rem;line-height:2;"></div>' +
-                '</div></div>' +
+                self._createStepDesc('merge') +
+                '<div class="sim-card" style="min-height:220px;">' +
+                '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
+                    '<h3 style="margin:0;font-size:1rem;">배열 A</h3>' +
+                    '<span id="sim-merge-cnt" style="font-size:0.85rem;color:var(--text2);"></span>' +
+                '</div>' +
+                '<div id="sim-merge-main"></div>' +
+                '<div id="sim-merge-tmp" style="margin-top:12px;"></div>' +
+                '<div id="sim-merge-info" style="margin-top:12px;font-size:0.9rem;"></div>' +
+                '</div>' +
                 self._createStepControls('merge');
 
-            var displayEl = container.querySelector('#sim-merge-display');
+            var mainEl = container.querySelector('#sim-merge-main');
+            var tmpEl = container.querySelector('#sim-merge-tmp');
+            var infoEl = container.querySelector('#sim-merge-info');
+            var cntEl = container.querySelector('#sim-merge-cnt');
 
-            // Run merge sort and record step snapshots
-            var snapshots = [];
-            var savedValues = [];
-            var workArr = arr.slice();
+            // --- 병합 정렬 실행하면서 세부 스텝 기록 ---
+            var vizSteps = [];
+            var a = arr.slice();
+            var saveCnt = 0;
+            var kthValue = null;
+            var foundK = false;
 
-            function recordMergeSort(a, p, r, segments) {
-                if (p >= r) return;
-                var q = Math.floor((p + r) / 2);
-                recordMergeSort(a, p, q, segments);
-                recordMergeSort(a, q + 1, r, segments);
-                // Merge
-                var tmp = [];
-                var i = p, j = q + 1;
-                while (i <= q && j <= r) {
-                    if (a[i] <= a[j]) tmp.push(a[i++]);
-                    else tmp.push(a[j++]);
-                }
-                while (i <= q) tmp.push(a[i++]);
-                while (j <= r) tmp.push(a[j++]);
-                var startSave = savedValues.length + 1;
-                for (var x = 0; x < tmp.length; x++) {
-                    a[p + x] = tmp[x];
-                    savedValues.push(tmp[x]);
-                }
-                var endSave = savedValues.length;
-                snapshots.push({
-                    desc: '병합: [' + p + '..' + q + '] + [' + (q+1) + '..' + r + '] → [' + tmp.join(', ') + '] (저장 ' + startSave + '~' + endSave + '번째)',
-                    array: a.slice(),
-                    mergedStart: p,
-                    mergedEnd: r,
-                    saveStart: startSave,
-                    saveEnd: endSave
-                });
+            function addStep(desc, renderFn) {
+                vizSteps.push({ description: desc, render: renderFn });
             }
 
-            recordMergeSort(workArr, 0, arr.length - 1);
-
-            var kthValue = (k >= 1 && k <= savedValues.length) ? savedValues[k - 1] : -1;
-
-            // Build visual steps
-            var stepsData = [];
-            stepsData.push({
-                description: '초기 배열: [' + arr.join(', ') + ']',
-                html: '<div>[' + arr.join(', ') + ']</div>'
+            // 초기 상태
+            var initSnap = a.slice();
+            addStep('초기 배열 A = [' + arr.join(', ') + ']. 이 배열을 병합 정렬합니다.', function() {
+                mainEl.innerHTML = renderBoxes(initSnap, {});
+                tmpEl.innerHTML = '';
+                infoEl.innerHTML = '';
+                cntEl.textContent = '';
             });
 
-            snapshots.forEach(function(snap) {
-                var arrStr = '[' + snap.array.join(', ') + ']';
-                var kInfo = '';
-                if (k >= snap.saveStart && k <= snap.saveEnd) {
-                    kInfo = '<div style="margin-top:8px;color:var(--accent);">K=' + k + '번째 저장값: <strong>' + kthValue + '</strong></div>';
-                }
-                stepsData.push({
-                    description: snap.desc,
-                    html: '<div><span style="color:var(--green)">' + arrStr + '</span></div>' + kInfo
-                });
-            });
+            function recordMergeSort(p, r, depth) {
+                if (p >= r) return;
+                var q = Math.floor((p + r) / 2);
 
-            var finalDesc = kthValue !== -1
-                ? '✅ 완료! K=' + k + '번째 저장값: ' + kthValue
-                : '✅ 완료! 저장 횟수가 K=' + k + '보다 적어서 결과는 -1';
-            stepsData.push({
-                description: finalDesc,
-                html: '<div style="color:var(--accent);font-weight:700;">' + finalDesc + '</div>'
-            });
+                // 분할 스텝 — 스냅샷 캡처
+                var splitSnap = a.slice();
+                var depthLabel = depth === 0 ? '' : ' (깊이 ' + depth + ')';
+                addStep(
+                    '분할' + depthLabel + ': A[' + p + '..' + r + ']을 A[' + p + '..' + q + ']과 A[' + (q+1) + '..' + r + ']로 나눕니다. 가운데 = (' + p + '+' + r + ')÷2 = ' + q,
+                    (function(snap, pp, qq, rr) { return function() {
+                        mainEl.innerHTML = renderBoxes(snap, { active: [pp, rr] }) +
+                            '<div style="display:flex;justify-content:center;gap:20px;margin-top:10px;">' +
+                            '<span style="font-size:0.85rem;color:var(--accent);border:1px dashed var(--accent);border-radius:8px;padding:4px 10px;">왼쪽 [' + pp + '..' + qq + ']</span>' +
+                            '<span style="font-size:0.85rem;color:var(--green);border:1px dashed var(--green);border-radius:8px;padding:4px 10px;">오른쪽 [' + (qq+1) + '..' + rr + ']</span>' +
+                            '</div>';
+                        tmpEl.innerHTML = '';
+                        infoEl.innerHTML = '';
+                    }; })(splitSnap, p, q, r)
+                );
 
-            var vizSteps = [];
-            stepsData.forEach(function(s, i) {
-                vizSteps.push({
-                    description: s.description,
-                    action: function() { displayEl.innerHTML = s.html; },
-                    undo: function() {
-                        if (i > 0) displayEl.innerHTML = stepsData[i-1].html;
-                        else displayEl.innerHTML = '';
+                recordMergeSort(p, q, depth + 1);
+                recordMergeSort(q + 1, r, depth + 1);
+
+                // --- 병합 단계: 세부 비교를 매 스텝 기록 ---
+                var leftArr = a.slice(p, q + 1);
+                var rightArr = a.slice(q + 1, r + 1);
+                var mergeStartSnap = a.slice();
+                addStep(
+                    '병합 시작: 왼쪽 [' + leftArr.join(', ') + ']과 오른쪽 [' + rightArr.join(', ') + ']을 합칩니다.',
+                    (function(snap, pp, qq, rr, la, ra) { return function() {
+                        mainEl.innerHTML = renderBoxes(snap, { active: [pp, rr] }) +
+                            '<div style="display:flex;justify-content:center;gap:20px;margin-top:10px;">' +
+                            '<span style="font-size:0.85rem;color:var(--accent);border:1px dashed var(--accent);border-radius:8px;padding:4px 10px;">왼쪽 [' + la.join(', ') + ']</span>' +
+                            '<span style="font-size:0.85rem;color:var(--green);border:1px dashed var(--green);border-radius:8px;padding:4px 10px;">오른쪽 [' + ra.join(', ') + ']</span>' +
+                            '</div>';
+                        tmpEl.innerHTML = renderTmpBoxes([], -1);
+                        infoEl.innerHTML = '<span style="color:var(--text2);">i=' + pp + ', j=' + (qq+1) + ' — 양쪽 첫 원소부터 비교합니다</span>';
+                    }; })(mergeStartSnap, p, q, r, leftArr, rightArr)
+                );
+
+                var tmp = [];
+                var li = 0, ri = 0;
+                var leftCopy = leftArr.slice();
+                var rightCopy = rightArr.slice();
+
+                // 양쪽 비교 스텝들
+                while (li < leftCopy.length && ri < rightCopy.length) {
+                    var lv = leftCopy[li], rv = rightCopy[ri];
+                    var chosen, side;
+                    if (lv <= rv) {
+                        chosen = lv; side = 'left'; li++;
+                    } else {
+                        chosen = rv; side = 'right'; ri++;
                     }
+                    tmp.push(chosen);
+                    var tmpSnapshot = tmp.slice();
+                    var liSnap = li, riSnap = ri;
+                    var cmpSnap = mergeStartSnap;
+
+                    addStep(
+                        '비교: ' + lv + (side === 'left' ? ' ≤ ' : ' > ') + rv + ' → ' +
+                        (side === 'left' ? '왼쪽 ' + chosen : '오른쪽 ' + chosen) +
+                        '을 tmp에 넣습니다',
+                        (function(snap, pp, rr, ts, lis, ris, lc, rc) { return function() {
+                            mainEl.innerHTML = renderBoxes(snap, { active: [pp, rr] });
+                            tmpEl.innerHTML = renderTmpBoxes(ts, ts.length - 1);
+                            var nextInfo = '';
+                            if (lis < lc.length && ris < rc.length) {
+                                nextInfo = '다음 비교: 왼쪽[' + lis + ']=' + lc[lis] + ' vs 오른쪽[' + ris + ']=' + rc[ris];
+                            } else if (lis < lc.length) {
+                                nextInfo = '오른쪽 소진! 왼쪽 나머지를 그대로 tmp에 넣습니다';
+                            } else {
+                                nextInfo = '왼쪽 소진! 오른쪽 나머지를 그대로 tmp에 넣습니다';
+                            }
+                            infoEl.innerHTML = '<span style="color:var(--text2);">' + nextInfo + '</span>';
+                        }; })(cmpSnap, p, r, tmpSnapshot, liSnap, riSnap, leftCopy, rightCopy)
+                    );
+                }
+
+                // 나머지 원소 추가
+                while (li < leftCopy.length) {
+                    tmp.push(leftCopy[li]);
+                    li++;
+                    var tmpSnap2 = tmp.slice();
+                    addStep(
+                        '왼쪽 나머지 ' + leftCopy[li - 1] + '을 tmp에 넣습니다',
+                        (function(snap, ts, pp, rr) { return function() {
+                            mainEl.innerHTML = renderBoxes(snap, { active: [pp, rr] });
+                            tmpEl.innerHTML = renderTmpBoxes(ts, ts.length - 1);
+                            infoEl.innerHTML = '';
+                        }; })(mergeStartSnap, tmpSnap2, p, r)
+                    );
+                }
+                while (ri < rightCopy.length) {
+                    tmp.push(rightCopy[ri]);
+                    ri++;
+                    var tmpSnap3 = tmp.slice();
+                    addStep(
+                        '오른쪽 나머지 ' + rightCopy[ri - 1] + '을 tmp에 넣습니다',
+                        (function(snap, ts, pp, rr) { return function() {
+                            mainEl.innerHTML = renderBoxes(snap, { active: [pp, rr] });
+                            tmpEl.innerHTML = renderTmpBoxes(ts, ts.length - 1);
+                            infoEl.innerHTML = '';
+                        }; })(mergeStartSnap, tmpSnap3, p, r)
+                    );
+                }
+
+                // tmp → A로 복사 (개별 스텝)
+                for (var x = 0; x < tmp.length; x++) {
+                    a[p + x] = tmp[x];
+                    saveCnt++;
+                    var isKth = (saveCnt === k);
+                    if (isKth) kthValue = tmp[x];
+                    var arrSnap = a.slice();
+                    var curCnt = saveCnt;
+                    var curVal = tmp[x];
+                    var curIdx = p + x;
+
+                    addStep(
+                        'A[' + curIdx + '] = ' + curVal + ' 저장 (저장 ' + curCnt + '번째)' + (isKth ? ' ← K번째!' : ''),
+                        (function(as, ci, cv, cc, ik, pp, rr) { return function() {
+                            var hl = {};
+                            if (ik) hl.kth = ci;
+                            else hl.merged = [pp, rr];
+                            mainEl.innerHTML = renderBoxes(as, hl) +
+                                renderPointers(as, [{ idx: ci, name: 'A[' + ci + ']' }]);
+                            tmpEl.innerHTML = '';
+                            cntEl.textContent = '저장 횟수: ' + cc;
+                            if (ik) {
+                                infoEl.innerHTML = '<div style="padding:8px 14px;background:rgba(108,92,231,0.1);border-radius:10px;border:1px solid var(--accent);color:var(--accent);font-weight:700;">🎯 K=' + cc + '번째 저장값 = ' + cv + '</div>';
+                            } else {
+                                infoEl.innerHTML = '';
+                            }
+                        }; })(arrSnap, curIdx, curVal, curCnt, isKth, p, r)
+                    );
+                }
+            }
+
+            recordMergeSort(0, arr.length - 1, 0);
+
+            // 최종 결과
+            var finalKth = kthValue;
+            var finalCnt = saveCnt;
+            addStep(
+                kthValue !== null
+                    ? '✅ 완료! 총 ' + finalCnt + '회 저장. K=' + k + '번째 저장값: ' + finalKth
+                    : '✅ 완료! 총 ' + finalCnt + '회 저장. K=' + k + '보다 적어서 결과는 -1',
+                function() {
+                    mainEl.innerHTML = renderBoxes(a, {});
+                    tmpEl.innerHTML = '';
+                    cntEl.textContent = '저장 횟수: ' + finalCnt;
+                    if (finalKth !== null) {
+                        infoEl.innerHTML = '<div style="padding:10px 16px;background:rgba(0,206,158,0.1);border-radius:10px;border:1px solid var(--green);color:var(--green);font-weight:700;font-size:1.1rem;">정답: ' + finalKth + '</div>';
+                    } else {
+                        infoEl.innerHTML = '<div style="padding:10px 16px;background:rgba(255,71,87,0.08);border-radius:10px;border:1px solid var(--red);color:var(--red);font-weight:700;">저장 횟수(' + finalCnt + ')가 K(' + k + ')보다 적습니다 → -1</div>';
+                    }
+                }
+            );
+
+            // vizSteps를 action/undo 형태로 변환
+            var steps = [];
+            vizSteps.forEach(function(s, i) {
+                steps.push({
+                    description: s.description,
+                    action: function(dir) { s.render(); },
+                    undo: function() { if (i > 0) vizSteps[i - 1].render(); }
                 });
             });
 
-            self._initStepController(container, vizSteps, 'merge');
+            self._initStepController(container, steps, 'merge');
 
             container.querySelector('#rec-merge-reset').addEventListener('click', function() {
                 var arrVal = container.querySelector('#rec-merge-input').value.split(',').map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n); });
@@ -1455,6 +1640,7 @@ const recursionTopic = {
                     '<label style="font-weight:600;">N: <input type="number" id="rec-cantor-n" value="' + n + '" min="0" max="3" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
                     '<button class="btn btn-primary" id="rec-cantor-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc('cantor') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>칸토어 집합 (N=' + n + ', 길이 ' + len + ')</h3></div>' +
                 '<div class="viz-panel-body">' +
                 '<div id="sim-cantor-display" style="font-family:monospace;font-size:1.1rem;line-height:2.5;letter-spacing:2px;"></div>' +
@@ -1557,6 +1743,7 @@ const recursionTopic = {
                     '</select></label>' +
                     '<button class="btn btn-primary" id="rec-star-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc('star') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>별 찍기 - 10 (N=' + n + ')</h3></div>' +
                 '<div class="viz-panel-body">' +
                 '<pre id="sim-star-display" style="font-family:monospace;font-size:' + (n <= 9 ? '0.75rem' : '0.4rem') + ';line-height:1.2;letter-spacing:1px;"></pre>' +
@@ -1655,6 +1842,7 @@ const recursionTopic = {
                     '<label style="font-weight:600;">원판 수: <input type="number" id="rec-hanoi-n" value="' + n + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);"></label>' +
                     '<button class="btn btn-primary" id="rec-hanoi-reset">🔄</button>' +
                 '</div>' +
+                self._createStepDesc('hanoi2') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>하노이 탑 (' + n + '개 원판)</h3>' +
                 '<div class="counter">이동: <span id="sim-hanoi-cnt">0</span> / ' + totalMoves + '</div></div>' +
                 '<div class="viz-panel-body">' +

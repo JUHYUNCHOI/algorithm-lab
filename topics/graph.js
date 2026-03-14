@@ -491,22 +491,29 @@ var graphTopic = {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc: function(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25B6 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls: function(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>\u25C0 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 \u25B6</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">\u25B6 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 ▶</button>' +
+            '</div>';
     },
 
     _initStepController: function(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
@@ -547,6 +554,7 @@ var graphTopic = {
             '<label style="font-weight:600;">N: <input type="number" id="gr-virus-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-virus-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:240px;"></label>' +
             '<button class="btn btn-primary" id="gr-virus-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -637,6 +645,7 @@ var graphTopic = {
             '<label style="font-weight:600;">시작: <input type="number" id="gr-dfs1-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-dfs1-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="gr-dfs1-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -710,6 +719,7 @@ var graphTopic = {
             '<label style="font-weight:600;">시작: <input type="number" id="gr-dfs2-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-dfs2-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="gr-dfs2-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -781,6 +791,7 @@ var graphTopic = {
             '<label style="font-weight:600;">시작: <input type="number" id="gr-bfs1-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-bfs1-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="gr-bfs1-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -861,6 +872,7 @@ var graphTopic = {
             '<label style="font-weight:600;">시작: <input type="number" id="gr-bfs2-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-bfs2-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="gr-bfs2-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -937,6 +949,7 @@ var graphTopic = {
             '<label style="font-weight:600;">시작: <input type="number" id="gr-dfsbfs-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-dfsbfs-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="gr-dfsbfs-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1008,6 +1021,7 @@ var graphTopic = {
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-cab-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
             '<button class="btn btn-primary" id="gr-cab-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1075,6 +1089,7 @@ var graphTopic = {
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-cpx-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
             '<button class="btn btn-primary" id="gr-cpx-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1138,6 +1153,7 @@ var graphTopic = {
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">격자 (1=길, 0=벽; 행은 ; 구분): <input type="text" id="gr-maze-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
             '<button class="btn btn-primary" id="gr-maze-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1218,6 +1234,7 @@ var graphTopic = {
             '<label style="font-weight:600;">N (시작): <input type="number" id="gr-hide-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<label style="font-weight:600;">K (목표): <input type="number" id="gr-hide-k" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="gr-hide-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1296,6 +1313,7 @@ var graphTopic = {
             '<label style="font-weight:600;">시작(r,c): <input type="text" id="gr-knight-start" value="' + DEFAULT_SR + ',' + DEFAULT_SC + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<label style="font-weight:600;">목표(r,c): <input type="text" id="gr-knight-end" value="' + DEFAULT_ER + ',' + DEFAULT_EC + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;"></label>' +
             '<button class="btn btn-primary" id="gr-knight-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1371,6 +1389,7 @@ var graphTopic = {
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-tom-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
             '<button class="btn btn-primary" id="gr-tom-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1445,6 +1464,7 @@ var graphTopic = {
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">3D 격자: <input type="text" id="gr-tom3-layers" value="' + DEFAULT_LAYERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
             '<button class="btn btn-primary" id="gr-tom3-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1532,6 +1552,7 @@ var graphTopic = {
             '<label style="font-weight:600;">사다리 (a b, ...): <input type="text" id="gr-snake-ladders" value="' + DEFAULT_LADDERS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
             '<label style="font-weight:600;">뱀 (a b, ...): <input type="text" id="gr-snake-snakes" value="' + DEFAULT_SNAKES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
             '<button class="btn btn-primary" id="gr-snake-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1620,6 +1641,7 @@ var graphTopic = {
             '<label style="font-weight:600;">N: <input type="number" id="gr-bip-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
             '<label style="font-weight:600;">간선: <input type="text" id="gr-bip-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
             '<button class="btn btn-primary" id="gr-bip-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -1695,6 +1717,7 @@ var graphTopic = {
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">격자 (행은 ; 구분): <input type="text" id="gr-wall-grid" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:300px;"></label>' +
             '<button class="btn btn-primary" id="gr-wall-reset">\uD83D\uDD04</button></div>' +
+            self._createStepDesc(suffix) +
             '<div id="viz-area' + suffix + '" style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:60px;"></div>' +
             '<div id="viz-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);

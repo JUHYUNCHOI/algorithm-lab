@@ -439,28 +439,35 @@ int main() {
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ Prev</button>' +
-            '<span id="str-indicator-' + suffix + '">Before Start</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">Next ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ Click Next to start</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next ▶</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { indicator.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
+            if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '▶ Click Next to start'; }
             else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
         }
         var actionDelay = 350;
@@ -495,6 +502,7 @@ int main() {
                 '<label style="font-weight:600;">Change (K): <input type="number" id="gr-coin-input" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:140px;"></label>' +
                 '<button class="btn btn-primary" id="gr-coin-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="cn-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="cn-coins' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="cn-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -564,6 +572,7 @@ int main() {
                 '<label style="font-weight:600;">Withdrawal time: <input type="text" id="gr-atm-input" value="' + DEFAULT_ARR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="gr-atm-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="atm-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="atm-bars' + suffix + '" style="margin-bottom:12px;"></div>' +
             '<div id="atm-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -634,6 +643,7 @@ int main() {
                 '<label style="font-weight:600;">Meetings (start end, ...): <input type="text" id="gr-meet-input" value="' + DEFAULT_MEETINGS + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:360px;"></label>' +
                 '<button class="btn btn-primary" id="gr-meet-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="mt-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="mt-area' + suffix + '" style="position:relative;margin-bottom:12px;border-left:2px solid var(--border);padding-left:40px;"></div>' +
             '<div id="mt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
@@ -741,6 +751,7 @@ int main() {
                 '<label style="font-weight:600;">Expression: <input type="text" id="gr-bracket-input" value="' + DEFAULT_EXPR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
                 '<button class="btn btn-primary" id="gr-bracket-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="bk-expr' + suffix + '" style="font-size:1.3rem;font-weight:700;text-align:center;padding:16px;background:var(--bg);border-radius:8px;margin-bottom:12px;font-family:monospace;"></div>' +
             '<div id="bk-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
@@ -878,6 +889,7 @@ int main() {
                 '<label style="font-weight:600;">Fuel prices: <input type="text" id="gr-gas-price" value="' + DEFAULT_PRICE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:160px;"></label>' +
                 '<button class="btn btn-primary" id="gr-gas-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="gs-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="gs-road' + suffix + '" style="position:relative;height:100px;margin:16px 0;"></div>' +
             '<div id="gs-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +

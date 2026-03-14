@@ -486,22 +486,29 @@ for (int i = 0; i &lt; result.size(); i++)
         s.steps = []; s.currentStep = -1;
     },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls(suffix) {
+        var s = suffix || '';
         return '<div class="viz-step-controls">' +
-            '<button class="btn" id="str-prev-' + suffix + '" disabled>◀ 이전</button>' +
-            '<span id="str-indicator-' + suffix + '">시작 전</span>' +
-            '<button class="btn btn-primary" id="str-next-' + suffix + '">다음 ▶</button>' +
-            '</div><div id="str-desc-' + suffix + '" class="viz-step-desc" style="text-align:center;margin-top:8px;color:var(--text2);font-size:0.9rem;">▶ 다음 버튼을 눌러 시작하세요</div>';
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>◀ 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 ▶</button>' +
+            '</div>';
     },
 
     _initStepController(container, steps, suffix) {
         var state = this._vizState;
         state.steps = steps;
         state.currentStep = -1;
-        var prevBtn = container.querySelector('#str-prev-' + suffix);
-        var nextBtn = container.querySelector('#str-next-' + suffix);
-        var indicator = container.querySelector('#str-indicator-' + suffix);
-        var desc = container.querySelector('#str-desc-' + suffix);
+        var s = suffix || '';
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        var indicator = container.querySelector('#viz-step-counter' + s);
+        var desc = container.querySelector('#viz-step-desc' + s);
         if (!prevBtn || !nextBtn) return;
         function updateUI() {
             var idx = state.currentStep, total = state.steps.length;
@@ -618,6 +625,7 @@ for (int i = 0; i &lt; result.size(); i++)
                         '<div class="graph-queue-display" id="ts-result-display-' + suffix + '"></div>' +
                     '</div>' +
                 '</div>' +
+                self._createStepDesc(suffix) +
                 self._createStepControls(suffix) +
             '</div>' +
             '<div class="graph-legend" style="margin-top:12px;">' +
@@ -815,6 +823,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 '<label style="font-weight:600;">간선 (A B 형태): <input type="text" id="ts-lineup-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="ts-lineup-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="lu-nodes' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="lu-indeg' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
@@ -1075,6 +1084,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 '<label style="font-weight:600;">선행조건 (A B 형태): <input type="text" id="ts-work-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:220px;"></label>' +
                 '<button class="btn btn-primary" id="ts-work-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="wb-nodes' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div id="wb-indeg' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
@@ -1351,6 +1361,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 '<label style="font-weight:600;">바뀐 쌍 (A B 형태): <input type="text" id="ts-rank-swaps" value="' + DEFAULT_SWAPS_STR + '" placeholder="예: 2 1, 3 1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
                 '<button class="btn btn-primary" id="ts-rank-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc(suffix) +
             '<div id="rk-graph' + suffix + '" style="margin-bottom:12px;text-align:center;"></div>' +
             '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
                 '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">큐</div><div id="rk-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
