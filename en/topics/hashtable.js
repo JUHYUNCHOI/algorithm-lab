@@ -1315,7 +1315,8 @@ struct HashTable {
                     <button class="btn btn-primary" id="ht-ss-start">🔄</button>
                     <span style="margin-left:auto;font-size:0.88rem;color:var(--text2);">Subarrays found: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
                 </div>
-                <div id="ht-ss-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                <div id="ht-ss-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>
+                <div id="ht-ss-bars" style="margin-bottom:16px;width:100%;"></div>
                 <div style="margin-bottom:12px;width:100%;">
                     <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">Sum Record <span style="font-weight:400;font-size:0.82rem;">(How many times has the sum been X so far?)</span></div>
                     <div id="ht-ss-pc" style="display:flex;flex-direction:column;gap:3px;"></div>
@@ -1324,6 +1325,7 @@ struct HashTable {
             ${self._createStepControls('-ss')}
         `;
         const boxesEl = container.querySelector('#ht-ss-boxes');
+        const barsEl = container.querySelector('#ht-ss-bars');
         const pcEl = container.querySelector('#ht-ss-pc');
         const cntEl = container.querySelector('#ht-ss-cnt');
 
@@ -1333,6 +1335,42 @@ struct HashTable {
             const k = parseInt(container.querySelector('#ht-ss-k').value) || 0;
             boxesEl.innerHTML = '';
             arr.forEach((v, i) => { const b = document.createElement('div'); b.className = 'str-char-box'; b.textContent = v; b.dataset.idx = i; boxesEl.appendChild(b); });
+            // ──── Prefix sum bar chart ────
+            var prefixSums = [];
+            var runSum = 0;
+            arr.forEach(function(v) { runSum += v; prefixSums.push(runSum); });
+            var maxPS = Math.max.apply(null, prefixSums);
+            if (maxPS <= 0) maxPS = 1;
+
+            function renderBars(upToIdx, matchStart, matchEnd, matchPrevSum) {
+                if (upToIdx < 0) { barsEl.innerHTML = ''; return; }
+                var html = '<div style="display:flex;flex-direction:column;gap:5px;padding:12px 0;">';
+                for (var bi = 0; bi <= upToIdx && bi < prefixSums.length; bi++) {
+                    var ps = prefixSums[bi];
+                    var pct = Math.max(Math.round((ps / maxPS) * 100), 10);
+                    var isMatch = (matchStart !== undefined && bi >= matchStart && bi <= matchEnd);
+                    var isCurrent = (bi === upToIdx);
+                    var barColor = isCurrent ? 'var(--accent)' : 'rgba(108,92,231,0.45)';
+                    html += '<div style="display:flex;align-items:center;gap:10px;">';
+                    html += '<span style="font-size:0.82rem;color:var(--text2);min-width:20px;text-align:right;font-weight:600;">' + bi + '</span>';
+                    if (isMatch && matchPrevSum !== undefined && isCurrent) {
+                        var prevW = matchPrevSum > 0 ? Math.max(Math.round((matchPrevSum / ps) * 100), 12) : 0;
+                        html += '<div style="flex:0 0 ' + pct + '%;display:flex;height:36px;border-radius:8px;overflow:hidden;box-shadow:0 0 16px rgba(0,184,148,0.4);">';
+                        if (matchPrevSum > 0) {
+                            html += '<div style="flex:0 0 ' + prevW + '%;background:rgba(108,92,231,0.3);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.85rem;font-weight:700;border-right:2px dashed rgba(255,255,255,0.6);">' + matchPrevSum + '</div>';
+                        }
+                        html += '<div style="flex:1;background:var(--green);display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:800;letter-spacing:0.5px;">' + (ps - matchPrevSum) + '</div>';
+                        html += '</div>';
+                        html += '<span style="font-size:0.95rem;font-weight:800;color:var(--green);">' + ps + ' → ' + matchPrevSum + ' + <u>' + (ps - matchPrevSum) + '</u>(=k!)</span>';
+                    } else {
+                        html += '<div style="flex:0 0 ' + pct + '%;height:36px;background:' + barColor + ';border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:0.92rem;font-weight:700;' + (isCurrent ? 'box-shadow:0 0 10px rgba(108,92,231,0.4);' : '') + '">' + ps + '</div>';
+                    }
+                    html += '</div>';
+                }
+                html += '</div>';
+                barsEl.innerHTML = html;
+            }
+
             function renderPcTable(pc, highlightKey) {
                 return Object.entries(pc).map(function(e) {
                     var key = e[0], val = e[1];
@@ -1350,11 +1388,11 @@ struct HashTable {
 
             function saveState() {
                 return { boxes: Array.from(boxesEl.children).map(b => ({ cls: b.className, st: b.style.cssText })),
-                    pc: pcEl.innerHTML, cnt: cntEl.innerHTML };
+                    pc: pcEl.innerHTML, cnt: cntEl.innerHTML, bars: barsEl.innerHTML };
             }
             function restoreState(s) {
                 Array.from(boxesEl.children).forEach((b, i) => { b.className = s.boxes[i].cls; b.style.cssText = s.boxes[i].st; });
-                pcEl.innerHTML = s.pc; cntEl.innerHTML = s.cnt;
+                pcEl.innerHTML = s.pc; cntEl.innerHTML = s.cnt; barsEl.innerHTML = s.bars;
             }
 
             const steps = [];
@@ -1363,12 +1401,13 @@ struct HashTable {
             let prefixSum = 0, count = 0;
 
             // ──── Step 0: Core idea explanation ────
-            steps.push({ description: '<strong>Setup</strong>: We\'ll scan the array left to right, keeping a running <em>"prefix sum"</em> (sum from start to here).<br>At each position, we look up <strong>prefix sum − k</strong> in a hashmap.<br>Why? If some earlier position had that prefix sum, then the subarray from there+1 to here sums to exactly <strong>k</strong>!<br><br>Hashmap starts as <code>{0: 1}</code> — meaning "a sum of 0 occurred once"<br>(the empty prefix before any element).',
+            steps.push({ description: '<strong>Core idea</strong> — compute prefix sums, check if <strong>prefix − k</strong> was seen before in hashmap. If yes, that subarray sums to k! Start with {0:1} (nothing added yet).',
                 _before: null,
                 action: function() {
                     this._before = saveState();
                     pcEl.innerHTML = renderPcTable({0: 1});
                     cntEl.textContent = '0';
+                    renderBars(-1);
                 },
                 undo: function() { restoreState(this._before); }
             });
@@ -1397,62 +1436,74 @@ struct HashTable {
                 var prevPosLabel = prevPos < 0 ? 'Before Start' : 'index ' + prevPos;
 
                 // ──── Step A: Add ────
-                steps.push({ description: '<strong>[Index ' + i + ']</strong> arr[' + i + '] = ' + num + '. Prefix sum (0 to ' + i + ') = ' + formula + '. <em>We\'ll use this to check if any subarray ending here sums to k.</em>',
+                (function(ci, ccs, cformula, cpcBefore, ccountBefore) {
+                steps.push({ description: '<strong>[' + ci + ']</strong> prefix sum = ' + cformula,
                     _before: null,
                     action: function() {
                         this._before = saveState();
-                        Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < i ? ' matched' : ''); b.style.cssText = ''; });
-                        boxesEl.children[i].className = 'str-char-box comparing';
-                        pcEl.innerHTML = renderPcTable(pcBeforeRecord);
-                        cntEl.textContent = countBefore;
+                        Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < ci ? ' matched' : ''); b.style.cssText = ''; });
+                        boxesEl.children[ci].className = 'str-char-box comparing';
+                        pcEl.innerHTML = renderPcTable(cpcBefore);
+                        cntEl.textContent = ccountBefore;
+                        renderBars(ci);
                     },
                     undo: function() { restoreState(this._before); }
                 });
+                })(i, cs, formula, pcBeforeRecord, countBefore);
 
                 if (cf > 0) {
                     // ──── Step B: Lookup (match found) ────
-                    steps.push({ description: 'Prefix sum <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. Look up "was there a previous prefix sum = ' + cd + '?" in the hashmap. <em>Why? If so, the subarray between that point and here sums to ' + cs + '−' + cd + '=' + k + '!</em> → <span style="color:var(--green);font-weight:700;">Yes! (' + prevPosLabel + ')</span>',
+                    (function(ci, ccs, ccd, cprevPosLabel, cpcBefore, ccountBefore) {
+                    steps.push({ description: ccs + ' − k(' + k + ') = <strong>' + ccd + '</strong> → in hashmap? <span style="color:var(--green);font-weight:700;">Found!</span> (' + cprevPosLabel + ')',
                         _before: null,
                         action: function() {
                             this._before = saveState();
-                            Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < i ? ' matched' : ''); b.style.cssText = ''; });
-                            boxesEl.children[i].className = 'str-char-box comparing';
-                            pcEl.innerHTML = renderPcTable(pcBeforeRecord, cd);
-                            cntEl.textContent = countBefore;
+                            Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < ci ? ' matched' : ''); b.style.cssText = ''; });
+                            boxesEl.children[ci].className = 'str-char-box comparing';
+                            pcEl.innerHTML = renderPcTable(cpcBefore, ccd);
+                            cntEl.textContent = ccountBefore;
+                            renderBars(ci);
                         },
                         undo: function() { restoreState(this._before); }
                     });
+                    })(i, cs, cd, prevPosLabel, pcBeforeRecord, countBefore);
 
                     // ──── Step C: Found! ────
                     var subArr = arr.slice(cSS, cSE + 1);
 
-                    steps.push({ description: '<span style="color:var(--green);font-weight:700;">Found!</span> Prefix sum at ' + prevPosLabel + ' was ' + cd + ', here at index ' + cSE + ' it\'s ' + cs + '. Subarray [' + subArr.join(', ') + '] sum = ' + cs + ' − ' + cd + ' = <strong>' + k + '</strong> = k! Also record current prefix sum ' + cs + ' in the hashmap.',
+                    (function(ci, ccs, ccd, ccSS, ccSE, csubArr, cpcAfter, ccountAfter) {
+                    steps.push({ description: '<span style="color:var(--green);font-weight:700;">🎯 Found!</span> [' + csubArr.join(', ') + '] → sum = ' + ccs + ' − ' + ccd + ' = <strong>' + k + '</strong> = k!',
                         _before: null,
                         action: function() {
                             this._before = saveState();
-                            Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j <= i ? ' matched' : ''); b.style.cssText = ''; });
-                            boxesEl.children[i].className = 'str-char-box comparing';
-                            for (var j = cSS; j <= cSE; j++) {
+                            Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j <= ci ? ' matched' : ''); b.style.cssText = ''; });
+                            boxesEl.children[ci].className = 'str-char-box comparing';
+                            for (var j = ccSS; j <= ccSE; j++) {
                                 boxesEl.children[j].style.cssText = 'border-bottom:3px solid var(--green);background:rgba(0,184,148,0.12);';
                             }
-                            pcEl.innerHTML = renderPcTable(pcAfterRecord);
-                            cntEl.textContent = countAfter;
+                            pcEl.innerHTML = renderPcTable(cpcAfter);
+                            cntEl.textContent = ccountAfter;
+                            renderBars(ci, ccSS, ccSE, ccd);
                         },
                         undo: function() { restoreState(this._before); }
                     });
+                    })(i, cs, cd, cSS, cSE, subArr, pcAfterRecord, countAfter);
                 } else {
                     // ──── Step B: Lookup (no match) ────
-                    steps.push({ description: 'Prefix sum <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. Look up "previous prefix sum = ' + cd + '?" in hashmap. <em>Why? If found, that subarray would sum to k!</em> → <span style="color:var(--text3);">Not found.</span> No subarray ending here sums to k. Record current prefix sum ' + cs + ' in hashmap and move on.',
+                    (function(ci, ccs, ccd, cpcAfter, ccountAfter) {
+                    steps.push({ description: ccs + ' − k(' + k + ') = <strong>' + ccd + '</strong> → in hashmap? <span style="color:var(--text3);">No.</span> Record ' + ccs + ', move on.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
-                            Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j <= i ? ' matched' : ''); b.style.cssText = ''; });
-                            boxesEl.children[i].className = 'str-char-box comparing';
-                            pcEl.innerHTML = renderPcTable(pcAfterRecord);
-                            cntEl.textContent = countAfter;
+                            Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j <= ci ? ' matched' : ''); b.style.cssText = ''; });
+                            boxesEl.children[ci].className = 'str-char-box comparing';
+                            pcEl.innerHTML = renderPcTable(cpcAfter);
+                            cntEl.textContent = ccountAfter;
+                            renderBars(ci);
                         },
                         undo: function() { restoreState(this._before); }
                     });
+                    })(i, cs, cd, pcAfterRecord, countAfter);
                 }
             });
 
