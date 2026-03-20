@@ -1318,7 +1318,7 @@ for (int i = 1; i &lt;= n; i++) {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2019,6 +2019,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>문제</h3>
                 <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
                 <ul><li>1부터 N까지 자연수 중에서 중복 없이 M개를 고른 수열</li></ul>
+                <h4>입력</h4>
+                <p>첫째 줄에 자연수 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 8)</p>
+                <h4>출력</h4>
+                <p>한 줄에 하나씩 문제의 조건을 만족하는 수열을 출력한다. 중복되는 수열을 여러 번 출력하면 안되며, 각 수열은 공백으로 구분해서 출력해야 한다.</p>
+                <p>수열은 사전 순으로 증가하는 순서로 출력해야 한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3 1</pre></div>
                     <div><strong>출력</strong><pre>1\n2\n3</pre></div>
@@ -2069,6 +2074,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>문제</h3>
                 <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
                 <ul><li>1부터 N까지 자연수 중에서 중복 없이 M개를 고른 수열</li><li>고른 수열은 오름차순이어야 한다.</li></ul>
+                <h4>입력</h4>
+                <p>첫째 줄에 자연수 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 8)</p>
+                <h4>출력</h4>
+                <p>한 줄에 하나씩 문제의 조건을 만족하는 수열을 출력한다. 중복되는 수열을 여러 번 출력하면 안되며, 각 수열은 공백으로 구분해서 출력해야 한다.</p>
+                <p>수열은 사전 순으로 증가하는 순서로 출력해야 한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3 1</pre></div>
                     <div><strong>출력</strong><pre>1\n2\n3</pre></div>
@@ -2119,6 +2129,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>문제</h3>
                 <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
                 <ul><li>1부터 N까지 자연수 중에서 M개를 고른 수열</li><li>같은 수를 여러 번 골라도 된다.</li></ul>
+                <h4>입력</h4>
+                <p>첫째 줄에 자연수 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 7)</p>
+                <h4>출력</h4>
+                <p>한 줄에 하나씩 문제의 조건을 만족하는 수열을 출력한다. 중복되는 수열을 여러 번 출력하면 안되며, 각 수열은 공백으로 구분해서 출력해야 한다.</p>
+                <p>수열은 사전 순으로 증가하는 순서로 출력해야 한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3 1</pre></div>
                     <div><strong>출력</strong><pre>1\n2\n3</pre></div>
@@ -2169,6 +2184,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>문제</h3>
                 <p>자연수 N과 M이 주어졌을 때, 아래 조건을 만족하는 길이가 M인 수열을 모두 구하는 프로그램을 작성하시오.</p>
                 <ul><li>1부터 N까지 자연수 중에서 M개를 고른 수열</li><li>같은 수를 여러 번 골라도 된다.</li><li>고른 수열은 비내림차순이어야 한다.</li></ul>
+                <h4>입력</h4>
+                <p>첫째 줄에 자연수 N과 M이 주어진다. (1 ≤ M ≤ N ≤ 8)</p>
+                <h4>출력</h4>
+                <p>한 줄에 하나씩 문제의 조건을 만족하는 수열을 출력한다. 중복되는 수열을 여러 번 출력하면 안되며, 각 수열은 공백으로 구분해서 출력해야 한다.</p>
+                <p>수열은 사전 순으로 증가하는 순서로 출력해야 한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3 1</pre></div>
                     <div><strong>출력</strong><pre>1\n2\n3</pre></div>
@@ -2220,6 +2240,10 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>문제</h3>
                 <p>N개의 수로 이루어진 수열 A1, A2, ..., AN이 주어진다. 또, 수와 수 사이에 끼워넣을 수 있는 N-1개의 연산자가 주어진다. 연산자는 덧셈(+), 뺄셈(-), 곱셈(\u00d7), 나눗셈(\u00f7)으로만 이루어져 있다.</p>
                 <p>식의 계산은 연산자 우선 순위를 무시하고 앞에서부터 진행한다. 나눗셈은 정수 나눗셈(C++14의 기준)으로 몫만 취한다. 음수를 양수로 나눌 때는 양수로 바꾼 뒤 몫을 취하고 음수로 바꾼다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 수의 개수 N(2 ≤ N ≤ 11)이 주어진다. 둘째 줄에는 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어진다. (1 ≤ A<sub>i</sub> ≤ 100) 셋째 줄에는 합이 N-1인 4개의 정수가 주어지는데, 차례대로 덧셈(+)의 개수, 뺄셈(-)의 개수, 곱셈(\u00d7)의 개수, 나눗셈(\u00f7)의 개수이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 만들 수 있는 식의 결과의 최댓값을, 둘째 줄에는 최솟값을 출력한다. 연산자를 어떻게 끼워넣어도 항상 -10억보다 크거나 같고, 10억보다 작거나 같은 결과가 나오는 입력만 주어진다. 또한, 앞에서부터 계산했을 때, 중간에 계산되는 식의 결과도 항상 -10억보다 크거나 같고, 10억보다 작거나 같다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>2\n5 6\n0 0 1 0</pre></div>
                     <div><strong>출력</strong><pre>30\n30</pre></div>
@@ -2274,6 +2298,10 @@ for (int i = 1; i &lt;= n; i++) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>짝수 N명을 N/2명씩 두 팀으로 나눈다. S<sub>ij</sub>는 i번과 j번이 같은 팀일 때 능력치. 팀의 능력치는 팀원 쌍의 S<sub>ij</sub> 합. 두 팀의 능력치 차이의 최솟값을 구하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 N(4 ≤ N ≤ 20, N은 짝수)이 주어진다. 둘째 줄부터 N개의 줄에 S가 주어진다. 각 줄은 N개의 수로 이루어져 있고, i번 줄의 j번째 수는 S<sub>ij</sub>이다. S<sub>ii</sub>는 항상 0이고, 나머지 S<sub>ij</sub>는 1보다 크거나 같고, 100보다 작거나 같은 정수이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 스타트 팀과 링크 팀의 능력치의 차이의 최솟값을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4\n0 1 2 3\n4 0 5 6\n7 1 0 2\n3 4 5 0</pre></div>
                     <div><strong>출력</strong><pre>0</pre></div>
@@ -2324,6 +2352,10 @@ for (int i = 1; i &lt;= n; i++) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>N\u00d7N인 체스판 위에 퀸 N개를 서로 공격할 수 없게 놓는 문제이다. N이 주어졌을 때, 퀸을 놓는 방법의 수를 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 N이 주어진다. (1 ≤ N < 15)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 퀸 N개를 서로 공격할 수 없게 놓는 경우의 수를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>8</pre></div>
                     <div><strong>출력</strong><pre>92</pre></div>
@@ -2371,6 +2403,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>문제</h3>
                 <p>스도쿠는 18세기 스위스 수학자가 만든 '라틴 사각형'이라는 퍼즐에서 유래한 것으로, 가로 9칸, 세로 9칸으로 이루어져 있는 표에 1부터 9까지의 숫자를 채워넣는 퍼즐이다.</p>
                 <p>같은 행, 같은 열, 같은 3\u00d73 정사각형 안에는 같은 숫자가 들어가지 않도록 하면서 빈 칸(0)을 채워 완성하시오. 답이 여러 개이면 하나만 출력.</p>
+                <h4>입력</h4>
+                <p>아홉 줄에 걸쳐 한 줄에 9개씩 게임 시작 전 스도쿠판 각 줄에 쓰여 있는 숫자가 한 칸씩 띄워서 차례로 주어진다. 스도쿠 판의 빈 칸의 경우에는 0이 주어진다. 스도쿠 판을 규칙대로 채울 수 없는 경우의 입력은 주어지지 않는다.</p>
+                <h4>출력</h4>
+                <p>모든 빈 칸이 채워진 스도쿠 판의 최종 모습을 아홉 줄에 걸쳐 한 줄에 9개씩 한 칸씩 띄워서 출력한다.</p>
+                <p>스도쿠 판을 채우는 방법이 여럿인 경우는 그 중 하나만을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>0 3 5 4 6 9 2 7 8\n7 8 2 1 0 5 6 0 9\n0 6 0 2 7 8 1 3 5\n3 2 1 0 4 6 8 9 7\n8 0 4 9 1 3 5 0 6\n5 9 6 8 2 0 4 1 3\n9 1 7 6 5 2 0 8 0\n6 0 3 7 0 1 9 5 2\n2 5 8 3 9 4 7 6 0</pre></div>
                     <div><strong>출력</strong><pre>1 3 5 4 6 9 2 7 8\n7 8 2 1 3 5 6 4 9\n4 6 9 2 7 8 1 3 5\n3 2 1 5 4 6 8 9 7\n8 7 4 9 1 3 5 2 6\n5 9 6 8 2 7 4 1 3\n9 1 7 6 5 2 3 8 4\n6 4 3 7 8 1 9 5 2\n2 5 8 3 9 4 7 6 1</pre></div>

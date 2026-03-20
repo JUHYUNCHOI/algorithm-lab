@@ -1784,7 +1784,7 @@ int main() {
                 if (desc) desc.style.display = 'none';
             } else {
                 counter.textContent = `${idx + 1} / ${total}`;
-                if (desc) { desc.textContent = state.steps[idx].description; desc.style.display = ''; }
+                if (desc) { desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; desc.style.display = ''; }
             }
         };
 
@@ -2973,6 +2973,10 @@ public:
                 <h3>Problem</h3>
                 <p>Given a sequence of N numbers,
                 find the number of <strong>contiguous subsequences</strong> whose sum equals M.</p>
+                <h4>Input</h4>
+                <p>The first line contains N (1 &le; N &le; 10,000) and M (1 &le; M &le; 300,000,000). The next line contains A[1], A[2], ..., A[N] separated by spaces. Each A[x] is a natural number not exceeding 30,000.</p>
+                <h4>Output</h4>
+                <p>Print the number of cases on the first line.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>N = 4, M = 2

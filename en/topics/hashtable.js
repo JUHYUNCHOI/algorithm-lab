@@ -1136,7 +1136,7 @@ struct HashTable {
             const idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0); nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = 'Before Start'; desc.innerHTML = '▶ Click Next to start'; }
-            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.innerHTML = state.steps[idx].description; }
+            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         };
         var actionDelay = 350;
         nextBtn.addEventListener('click', () => { if (state.currentStep >= state.steps.length - 1) return; state.currentStep++; updateUI(); setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay); });
@@ -1313,31 +1313,17 @@ struct HashTable {
                     <label>Array: <input type="text" id="ht-ss-input" value="${DEFAULT_ARR.join(', ')}" style="width:280px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
                     <label>k: <input type="number" id="ht-ss-k" value="${DEFAULT_K}" style="width:60px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
                     <button class="btn btn-primary" id="ht-ss-start">🔄</button>
+                    <span style="margin-left:auto;font-size:0.88rem;color:var(--text2);">Subarrays found: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
                 </div>
                 <div id="ht-ss-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>
-                <div id="ht-ss-explain" style="padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg);margin-bottom:12px;">
-                    <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9rem;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span style="font-size:0.82rem;color:var(--text2);font-weight:600;">Prefix Sum Comparison</span>
-                            <span style="font-size:0.82rem;">Subarrays found: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
-                        </div>
-                        <div>① Sum so far: <span id="ht-ss-sum" style="font-weight:700;">—</span></div>
-                        <div>② Previous prefix sum: <span id="ht-ss-lookup" style="font-weight:700;">—</span></div>
-                        <div id="ht-ss-result" style="border-top:1px dashed var(--border);padding-top:6px;margin-top:2px;font-weight:600;color:var(--text3);">—</div>
-                    </div>
-                </div>
                 <div style="margin-bottom:12px;width:100%;">
-                    <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">③ Sum Record <span style="font-weight:400;font-size:0.82rem;">(How many times has the sum been X so far?)</span></div>
+                    <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">Sum Record <span style="font-weight:400;font-size:0.82rem;">(How many times has the sum been X so far?)</span></div>
                     <div id="ht-ss-pc" style="display:flex;flex-direction:column;gap:3px;"></div>
                 </div>
             </div>
             ${self._createStepControls('-ss')}
         `;
         const boxesEl = container.querySelector('#ht-ss-boxes');
-        const explainEl = container.querySelector('#ht-ss-explain');
-        const sumEl = container.querySelector('#ht-ss-sum');
-        const lookupEl = container.querySelector('#ht-ss-lookup');
-        const resultEl = container.querySelector('#ht-ss-result');
         const pcEl = container.querySelector('#ht-ss-pc');
         const cntEl = container.querySelector('#ht-ss-cnt');
 
@@ -1360,21 +1346,14 @@ struct HashTable {
                         (isHL ? '<span style="color:var(--accent);font-weight:600;margin-left:auto;">← Found!</span>' : '') + '</div>';
                 }).join('');
             }
-            sumEl.innerHTML = '—'; lookupEl.innerHTML = '—'; resultEl.innerHTML = '—'; resultEl.style.color = 'var(--text3)';
-            explainEl.style.borderColor = 'var(--border)'; explainEl.style.background = 'var(--bg)';
             pcEl.innerHTML = renderPcTable({0: 1}); cntEl.textContent = '0';
 
             function saveState() {
                 return { boxes: Array.from(boxesEl.children).map(b => ({ cls: b.className, st: b.style.cssText })),
-                    sum: sumEl.innerHTML, lookup: lookupEl.innerHTML, result: resultEl.innerHTML, resultColor: resultEl.style.color,
-                    explainBorder: explainEl.style.borderColor, explainBg: explainEl.style.background,
                     pc: pcEl.innerHTML, cnt: cntEl.innerHTML };
             }
             function restoreState(s) {
                 Array.from(boxesEl.children).forEach((b, i) => { b.className = s.boxes[i].cls; b.style.cssText = s.boxes[i].st; });
-                sumEl.innerHTML = s.sum; lookupEl.innerHTML = s.lookup;
-                resultEl.innerHTML = s.result; resultEl.style.color = s.resultColor;
-                explainEl.style.borderColor = s.explainBorder; explainEl.style.background = s.explainBg;
                 pcEl.innerHTML = s.pc; cntEl.innerHTML = s.cnt;
             }
 
@@ -1384,15 +1363,10 @@ struct HashTable {
             let prefixSum = 0, count = 0;
 
             // ──── Step 0: Core idea explanation ────
-            steps.push({ description: '<strong>Core idea</strong>: Let "prefix sum" = sum from index 0 to i. If at some earlier index j the prefix sum was (current prefix sum − k), then the <strong>subarray from j+1 to i has sum = k</strong>! We use a hashmap to record how many times each prefix sum has appeared. Sum=0 is initialized to 1 (the state before any element — "empty prefix").',
+            steps.push({ description: '<strong>Setup</strong>: We\'ll scan the array left to right, keeping a running <em>"prefix sum"</em> (sum from start to here).<br>At each position, we look up <strong>prefix sum − k</strong> in a hashmap.<br>Why? If some earlier position had that prefix sum, then the subarray from there+1 to here sums to exactly <strong>k</strong>!<br><br>Hashmap starts as <code>{0: 1}</code> — meaning "a sum of 0 occurred once"<br>(the empty prefix before any element).',
                 _before: null,
                 action: function() {
                     this._before = saveState();
-                    sumEl.innerHTML = '—';
-                    lookupEl.innerHTML = '—';
-                    resultEl.innerHTML = '<span style="color:var(--accent);">current_sum − k = prev_sum → that subarray sums to k!</span>';
-                    resultEl.style.color = 'var(--accent)';
-                    explainEl.style.borderColor = 'var(--accent)'; explainEl.style.background = 'rgba(108,92,231,0.05)';
                     pcEl.innerHTML = renderPcTable({0: 1});
                     cntEl.textContent = '0';
                 },
@@ -1429,10 +1403,6 @@ struct HashTable {
                         this._before = saveState();
                         Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < i ? ' matched' : ''); b.style.cssText = ''; });
                         boxesEl.children[i].className = 'str-char-box comparing';
-                        sumEl.innerHTML = formula;
-                        lookupEl.innerHTML = '—';
-                        resultEl.innerHTML = '—'; resultEl.style.color = 'var(--text3)';
-                        explainEl.style.borderColor = 'var(--border)'; explainEl.style.background = 'var(--bg)';
                         pcEl.innerHTML = renderPcTable(pcBeforeRecord);
                         cntEl.textContent = countBefore;
                     },
@@ -1441,19 +1411,12 @@ struct HashTable {
 
                 if (cf > 0) {
                     // ──── Step B: Lookup (match found) ────
-                    var lookupMatch = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
-                        ' → <span style="color:var(--green);">Point where sum=' + cd + ': ' + prevPosLabel + '!</span>';
-
                     steps.push({ description: 'Prefix sum <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. Look up "was there a previous prefix sum = ' + cd + '?" in the hashmap. <em>Why? If so, the subarray between that point and here sums to ' + cs + '−' + cd + '=' + k + '!</em> → <span style="color:var(--green);font-weight:700;">Yes! (' + prevPosLabel + ')</span>',
                         _before: null,
                         action: function() {
                             this._before = saveState();
                             Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < i ? ' matched' : ''); b.style.cssText = ''; });
                             boxesEl.children[i].className = 'str-char-box comparing';
-                            sumEl.innerHTML = formula;
-                            lookupEl.innerHTML = lookupMatch;
-                            resultEl.innerHTML = '—'; resultEl.style.color = 'var(--text3)';
-                            explainEl.style.borderColor = 'var(--accent)'; explainEl.style.background = 'rgba(108,92,231,0.05)';
                             pcEl.innerHTML = renderPcTable(pcBeforeRecord, cd);
                             cntEl.textContent = countBefore;
                         },
@@ -1462,7 +1425,6 @@ struct HashTable {
 
                     // ──── Step C: Found! ────
                     var subArr = arr.slice(cSS, cSE + 1);
-                    var resultMatch = '→ After ' + prevPosLabel + ' (index ' + cSS + ') ~ here (index ' + cSE + ') = <strong>[' + subArr.join(', ') + ']</strong>, sum = ' + cs + ' − ' + cd + ' = ' + k + ' = k ✅';
 
                     steps.push({ description: '<span style="color:var(--green);font-weight:700;">Found!</span> Prefix sum at ' + prevPosLabel + ' was ' + cd + ', here at index ' + cSE + ' it\'s ' + cs + '. Subarray [' + subArr.join(', ') + '] sum = ' + cs + ' − ' + cd + ' = <strong>' + k + '</strong> = k! Also record current prefix sum ' + cs + ' in the hashmap.',
                         _before: null,
@@ -1473,10 +1435,6 @@ struct HashTable {
                             for (var j = cSS; j <= cSE; j++) {
                                 boxesEl.children[j].style.cssText = 'border-bottom:3px solid var(--green);background:rgba(0,184,148,0.12);';
                             }
-                            sumEl.innerHTML = formula;
-                            lookupEl.innerHTML = lookupMatch;
-                            resultEl.innerHTML = resultMatch; resultEl.style.color = 'var(--green)';
-                            explainEl.style.borderColor = 'var(--green)'; explainEl.style.background = 'rgba(0,184,148,0.06)';
                             pcEl.innerHTML = renderPcTable(pcAfterRecord);
                             cntEl.textContent = countAfter;
                         },
@@ -1484,19 +1442,12 @@ struct HashTable {
                     });
                 } else {
                     // ──── Step B: Lookup (no match) ────
-                    var lookupMiss = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
-                        ' → <span style="color:var(--text3);">No point where sum=' + cd + '</span>';
-
                     steps.push({ description: 'Prefix sum <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. Look up "previous prefix sum = ' + cd + '?" in hashmap. <em>Why? If found, that subarray would sum to k!</em> → <span style="color:var(--text3);">Not found.</span> No subarray ending here sums to k. Record current prefix sum ' + cs + ' in hashmap and move on.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
                             Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j <= i ? ' matched' : ''); b.style.cssText = ''; });
                             boxesEl.children[i].className = 'str-char-box comparing';
-                            sumEl.innerHTML = formula;
-                            lookupEl.innerHTML = lookupMiss;
-                            resultEl.innerHTML = '→ No contiguous subarray'; resultEl.style.color = 'var(--text3)';
-                            explainEl.style.borderColor = 'var(--border)'; explainEl.style.background = 'var(--bg)';
                             pcEl.innerHTML = renderPcTable(pcAfterRecord);
                             cntEl.textContent = countAfter;
                         },
@@ -1509,8 +1460,6 @@ struct HashTable {
                 action: function() {
                     this._before = saveState();
                     Array.from(boxesEl.children).forEach(function(b) { b.className = 'str-char-box matched'; b.style.cssText = ''; });
-                    resultEl.innerHTML = '✅ Found <strong>' + count + '</strong> total!'; resultEl.style.color = 'var(--green)';
-                    explainEl.style.borderColor = 'var(--green)'; explainEl.style.background = 'rgba(0,184,148,0.06)';
                     cntEl.innerHTML = '<span style="color:var(--green);">' + count + '</span>';
                 },
                 undo: function() { restoreState(this._before); }
@@ -2017,6 +1966,10 @@ public:
             descriptionHTML: `<h3>Problem</h3>
                 <p>You are given entry logs. <code>"enter"</code> means entering, <code>"leave"</code> means leaving.
                 Print the <strong>people still remaining</strong> at the company in reverse alphabetical order.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of log entries n (1 &le; n &le; 10<sup>6</sup>). Each of the next n lines contains a name and "enter" or "leave". Names consist of uppercase and lowercase letters with length between 1 and 20.</p>
+                <h4>Output</h4>
+                <p>Print all people currently at the company in reverse alphabetical order, one per line.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4

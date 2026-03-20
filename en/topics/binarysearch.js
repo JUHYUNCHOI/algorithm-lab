@@ -656,7 +656,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = 'Before start'; desc.innerHTML = '▶ Click Next to start'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1425,6 +1425,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Given N integers A[1], A[2], ..., A[N], write a program to determine whether an integer X exists in this set.</p>
+                <h4>Input</h4>
+                <p>The first line contains the natural number N (1 ≤ N ≤ 100,000). The next line contains N integers A[1], A[2], ..., A[N]. The next line contains M (1 ≤ M ≤ 100,000). The next line contains M numbers to check for existence in A. All integers are in the range -2<sup>31</sup> to less than 2<sup>31</sup>.</p>
+                <h4>Output</h4>
+                <p>Print M lines of answers. Print 1 if the number exists, 0 if it does not.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5\n4 1 5 2 3\n5\n1 3 7 9 5</pre></div>
                     <div><strong>Output</strong><pre>1\n1\n0\n0\n1</pre></div>
@@ -1473,6 +1477,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>A number card has one integer written on it. Sanggeun has N number cards. Given M integers, write a program to find how many number cards Sanggeun has with each given number.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of number cards Sanggeun has, N (1 ≤ N ≤ 500,000). The second line contains the integers written on each card, separated by spaces. The numbers on the cards are in the range -10,000,000 to 10,000,000. The third line contains M (1 ≤ M ≤ 500,000). The fourth line contains M integers to query.</p>
+                <h4>Output</h4>
+                <p>Print how many of each of the M given numbers Sanggeun has, separated by spaces on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>10\n6 3 2 10 10 10 -10 -10 7 3\n8\n10 9 -5 2 3 4 5 -10</pre></div>
                     <div><strong>Output</strong><pre>3 0 0 1 2 0 0 2</pre></div>
@@ -1521,6 +1529,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Young-sik already has K LAN cables and wants to cut them to make N cables of equal length. Assume there is no loss when cutting. It is guaranteed that N cables can always be made from the K cables. Making more than N counts as making N. Find the maximum possible length of each cable.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of LAN cables K that Young-sik already has and the number of cables N needed. K is an integer between 1 and 10,000, and N is an integer between 1 and 1,000,000. K ≤ N always holds. The next K lines contain the length of each cable as an integer in centimeters. The cable length is a natural number ≤ 2<sup>31</sup>-1.</p>
+                <h4>Output</h4>
+                <p>Print the maximum cable length in centimeters as an integer on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4 11\n802\n743\n457\n539</pre></div>
                     <div><strong>Output</strong><pre>200</pre></div>
@@ -1571,6 +1583,11 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Sanggeun needs M meters of wood. When a cutter height H is set, all trees in a row are cut at height H, removing everything above H. Trees shorter than H are not cut. Find the maximum height H that the cutter can be set to in order to take home at least M meters of wood.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of trees N and the length of wood M that Sanggeun wants to take home. (1 ≤ N ≤ 1,000,000, 1 ≤ M ≤ 2,000,000,000)</p>
+                <p>The second line contains the heights of the trees. The sum of tree heights is always ≥ M, so Sanggeun can always take home the needed wood. Heights are non-negative integers ≤ 1,000,000,000.</p>
+                <h4>Output</h4>
+                <p>Print the maximum height that can be set on the cutter to take home at least M meters of wood.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4 7\n20 15 10 17</pre></div>
                     <div><strong>Output</strong><pre>15</pre></div>
@@ -1623,6 +1640,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Dohyun has N houses on a number line. Given the coordinates of each house, he wants to install C routers. He wants to maximize the minimum distance between any two adjacent routers. Print this maximum possible minimum distance.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of houses N (2 ≤ N ≤ 200,000) and the number of routers C (2 ≤ C ≤ N), separated by one or more spaces. From the second line, N lines each contain a house coordinate x<sub>i</sub> (0 ≤ x<sub>i</sub> ≤ 1,000,000,000).</p>
+                <h4>Output</h4>
+                <p>Print the maximum distance between the two closest routers on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 3\n1\n2\n8\n4\n9</pre></div>
                     <div><strong>Output</strong><pre>3</pre></div>
@@ -1673,6 +1694,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Sejun created an N*N array A where A[i][j] = i * j. If all these values are placed into a 1D array B of size N*N and B is sorted in ascending order, find B[k]. Array indices for A and B start from 1.</p>
+                <h4>Input</h4>
+                <p>The first line contains the size of the array N. N is a natural number ≤ 10<sup>5</sup>. The second line contains k. k is a natural number ≤ min(10<sup>9</sup>, N<sup>2</sup>).</p>
+                <h4>Output</h4>
+                <p>Print B[k].</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3\n7</pre></div>
                     <div><strong>Output</strong><pre>6</pre></div>
@@ -1720,6 +1745,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Given a sequence A, write a program to find the length of the longest increasing subsequence. For example, if A = {10, 20, 10, 30, 20, 50}, the longest increasing subsequence is A = {<strong>10</strong>, <strong>20</strong>, 10, <strong>30</strong>, 20, <strong>50</strong>}, and its length is 4.</p>
+                <h4>Input</h4>
+                <p>The first line contains the size of sequence A, N (1 ≤ N ≤ 1,000,000). The second line contains the elements A<sub>i</sub> of the sequence. (1 ≤ A<sub>i</sub> ≤ 1,000,000)</p>
+                <h4>Output</h4>
+                <p>Print the length of the longest increasing subsequence of sequence A on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>6\n10 20 10 30 20 50</pre></div>
                     <div><strong>Output</strong><pre>4</pre></div>

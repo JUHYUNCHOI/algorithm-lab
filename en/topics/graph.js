@@ -1116,7 +1116,7 @@ var graphTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2470,6 +2470,10 @@ var graphTopic = {
                 <p>A new type of worm virus spreads through a network. When a computer is infected with the worm virus, all computers connected to it through the network also become infected.</p>
                 <p>For example, suppose 7 computers are connected on a network as shown in Figure 1. If computer 1 is infected with the worm virus, the virus spreads through computers 2 and 5 to reach computers 3 and 6, infecting 2, 3, 5, 6 (four computers total). However, computers 4 and 7 are not connected to computer 1 on the network, so they are not affected.</p>
                 <p>One day, computer 1 was infected with the worm virus. Given the number of computers and their network connections, write a program to output the number of computers that will be infected through computer 1.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of computers. The number of computers is a positive integer ≤ 100, and each computer is numbered sequentially starting from 1. The second line contains the number of directly connected computer pairs on the network. Following that, each line contains a pair of computer numbers that are directly connected on the network.</p>
+                <h4>Output</h4>
+                <p>Print the number of computers that will be infected by the worm virus through computer 1 on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>7
 6
@@ -2591,6 +2595,11 @@ int main() {
                 <h3>Problem</h3>
                 <p>Given an undirected graph with N vertices and M edges. Starting from vertex R, visit nodes using Depth-First Search (DFS) and output the visit order of each node.</p>
                 <p>Visit adjacent vertices in <strong>ascending order</strong>. The starting vertex has visit order 1. Output 0 for vertices unreachable from the starting vertex.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of vertices N (5 ≤ N ≤ 100,000), the number of edges M (1 ≤ M ≤ 200,000), and the starting vertex R (1 ≤ R ≤ N).</p>
+                <p>The next M lines contain edge information u v, representing a bidirectional edge with weight 1 between vertex u and vertex v. (1 ≤ u &lt; v ≤ N, u ≠ v) All (u, v) pairs are distinct.</p>
+                <h4>Output</h4>
+                <p>Print N lines, one integer per line. The i-th line contains the visit order of vertex i. The visit order of the starting vertex is 1. Print 0 if the vertex is unreachable from the starting vertex.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 5 1
 1 4
@@ -2706,6 +2715,11 @@ int main() {
                 <h3>Problem</h3>
                 <p>Given an undirected graph with N vertices and M edges. Starting from vertex R, visit nodes using Depth-First Search (DFS) and output the visit order of each node.</p>
                 <p>Visit adjacent vertices in <strong>descending order</strong>. The starting vertex has visit order 1. Output 0 for vertices unreachable from the starting vertex.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of vertices N (5 ≤ N ≤ 100,000), the number of edges M (1 ≤ M ≤ 200,000), and the starting vertex R (1 ≤ R ≤ N).</p>
+                <p>The next M lines contain edge information u v, representing a bidirectional edge with weight 1 between vertex u and vertex v. (1 ≤ u &lt; v ≤ N, u ≠ v) All (u, v) pairs are distinct.</p>
+                <h4>Output</h4>
+                <p>Print N lines, one integer per line. The i-th line contains the visit order of vertex i. The visit order of the starting vertex is 1. Print 0 if the vertex is unreachable from the starting vertex.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 5 1
 1 4
@@ -2820,6 +2834,11 @@ int main() {
                 <h3>Problem</h3>
                 <p>Given an undirected graph with N vertices and M edges. Starting from vertex R, visit nodes using Breadth-First Search (BFS) and output the visit order of each node.</p>
                 <p>Visit adjacent vertices in <strong>ascending order</strong>. The starting vertex has visit order 1. Output 0 for vertices unreachable from the starting vertex.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of vertices N (5 ≤ N ≤ 100,000), the number of edges M (1 ≤ M ≤ 200,000), and the starting vertex R (1 ≤ R ≤ N).</p>
+                <p>The next M lines contain edge information u v, representing a bidirectional edge with weight 1 between vertex u and vertex v. (1 ≤ u &lt; v ≤ N, u ≠ v) All (u, v) pairs are distinct.</p>
+                <h4>Output</h4>
+                <p>Print N lines, one integer per line. The i-th line contains the visit order of vertex i. The visit order of the starting vertex is 1. Print 0 if the vertex is unreachable from the starting vertex.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 5 1
 1 4
@@ -2947,6 +2966,11 @@ int main() {
                 <h3>Problem</h3>
                 <p>Given an undirected graph with N vertices and M edges. Starting from vertex R, visit nodes using Breadth-First Search (BFS) and output the visit order of each node.</p>
                 <p>Visit adjacent vertices in <strong>descending order</strong>. The starting vertex has visit order 1. Output 0 for vertices unreachable from the starting vertex.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of vertices N (5 ≤ N ≤ 100,000), the number of edges M (1 ≤ M ≤ 200,000), and the starting vertex R (1 ≤ R ≤ N).</p>
+                <p>The next M lines contain edge information u v, representing a bidirectional edge with weight 1 between vertex u and vertex v. (1 ≤ u &lt; v ≤ N, u ≠ v) All (u, v) pairs are distinct.</p>
+                <h4>Output</h4>
+                <p>Print N lines, one integer per line. The i-th line contains the visit order of vertex i. The visit order of the starting vertex is 1. Print 0 if the vertex is unreachable from the starting vertex.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 5 1
 1 4
@@ -3071,6 +3095,10 @@ int main() {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Write a program that outputs the results of DFS and BFS traversals on a graph. When multiple vertices can be visited, visit the one with the smaller number first. Terminate when there are no more vertices to visit. Vertex numbers range from 1 to N.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of vertices N (1 ≤ N ≤ 1,000), the number of edges M (1 ≤ M ≤ 10,000), and the starting vertex number V. The next M lines each contain two vertex numbers connected by an edge. There may be multiple edges between two vertices. The edges are bidirectional.</p>
+                <h4>Output</h4>
+                <p>Print the result of DFS on the first line, and the result of BFS on the next line. Print the vertices in order of visitation starting from V.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4 5 1
 1 2
@@ -3233,6 +3261,10 @@ int main() {
                 <p>Hanna, a next-generation farmer, decided to grow organic cabbage in the highlands of Gangwon-do. Since growing cabbage without pesticides requires protecting them from insects, Hanna decided to purchase cabbage white worms that are effective at pest prevention. These worms live near the cabbages and protect them by eating harmful insects.</p>
                 <p>If even one cabbage white worm lives in a cabbage, the worm can move to adjacent cabbages, so those cabbages are also protected from pests. A cabbage is considered adjacent if another cabbage is located in one of the four directions: up, down, left, or right.</p>
                 <p>Since the land where Hanna grows cabbage is uneven, cabbages are planted here and there. Since only one cabbage white worm is needed per cluster of adjacent cabbages, we can find the total number of worms needed by counting how many separate clusters of adjacent cabbages exist. For example, if the cabbage field is arranged as shown below, a minimum of 5 cabbage white worms are needed.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases T. For each test case, the first line contains the width M (1 ≤ M ≤ 50) and height N (1 ≤ N ≤ 50) of the cabbage field, and the number of cabbage locations K (1 ≤ K ≤ 2,500). The next K lines contain cabbage positions X (0 ≤ X ≤ M-1), Y (0 ≤ Y ≤ N-1). No two cabbages share the same position.</p>
+                <h4>Output</h4>
+                <p>For each test case, print the minimum number of cabbage white worms needed.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>1
 5 3 6
@@ -3367,6 +3399,10 @@ int main() {
                 <h3>Problem</h3>
                 <p>As shown in Figure 1, there is a square-shaped map. 1 indicates a location with a house, and 0 indicates one without. Cheolsu wants to define neighborhoods (groups of connected houses) on this map and assign numbers to them. Here, "connected" means that another house is located to the left, right, above, or below. Houses on a diagonal are not considered connected.</p>
                 <p>Write a program that reads the map, outputs the number of neighborhoods, and outputs the number of houses in each neighborhood sorted in ascending order.</p>
+                <h4>Input</h4>
+                <p>The first line contains the size of the map N (a square, so width and height are the same, 5 ≤ N ≤ 25). The next N lines each contain N values (0 or 1).</p>
+                <h4>Output</h4>
+                <p>Print the total number of neighborhoods on the first line. Then print the number of houses in each neighborhood, sorted in ascending order, one per line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>7
 0110100
@@ -3499,6 +3535,10 @@ int main() {
                 <h3>Problem</h3>
                 <p>There is a maze represented by an N by M array. In the maze, 1 represents a passable cell and 0 represents an impassable cell. Given such a maze, write a program to find the minimum number of cells that must be passed through when moving from (1, 1) to (N, M). When moving from one cell to another, you can only move to adjacent cells.</p>
                 <p>In the example above, 15 cells must be passed through to reach position (N, M). When counting cells, both the starting and ending positions are included.</p>
+                <h4>Input</h4>
+                <p>The first line contains two integers N, M (2 ≤ N, M ≤ 100). The next N lines contain M integers representing the maze. The numbers are given <strong>concatenated</strong> (no spaces).</p>
+                <h4>Output</h4>
+                <p>Print the minimum number of cells to pass through on the first line. It is guaranteed that a path to the destination always exists.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4 6
 101111
@@ -3613,6 +3653,10 @@ int main() {
                 <h3>Problem</h3>
                 <p>Subin is currently at point N (0 <= N <= 100,000), and their sibling is at point K (0 <= K <= 100,000). Subin can walk or teleport. If Subin is at position X and walks, they move to X-1 or X+1 after 1 second. If they teleport, they move to position 2*X after 1 second.</p>
                 <p>Given the positions of Subin and their sibling, write a program to find the fastest time (in seconds) for Subin to find their sibling.</p>
+                <h4>Input</h4>
+                <p>The first line contains Subin's position N and the sibling's position K. N and K are integers.</p>
+                <h4>Output</h4>
+                <p>Print the fastest time for Subin to find their sibling.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 17</pre></div>
                     <div><strong>Output</strong><pre>4</pre></div>
@@ -3709,6 +3753,10 @@ int main() {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>A knight is placed on a chessboard. The cells the knight can move to in one step are shown in the figure below. The cell the knight wants to move to is given. How many moves does the knight need to reach that cell?</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases. Each test case consists of three lines. The first line contains the length of one side of the chessboard l (4 ≤ l ≤ 300). The chessboard size is l x l. Each cell is represented by a pair of numbers {0, ..., l-1} x {0, ..., l-1}. The second and third lines contain the knight's current cell and the target cell, respectively.</p>
+                <h4>Output</h4>
+                <p>For each test case, print the minimum number of moves for the knight.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3
 8
@@ -3836,6 +3884,10 @@ int main() {
                 <p>Among the tomatoes stored in the warehouse, some may be ripe while others are still unripe. After one day of storage, unripe tomatoes adjacent to ripe tomatoes become ripe due to the influence of the ripe tomatoes. Adjacent cells of a tomato refer to the four directions: left, right, front, and back. Tomatoes in diagonal directions are not affected, and we assume tomatoes do not ripen on their own.</p>
                 <p>Write a program to find the minimum number of days until all stored tomatoes are ripe. Note that some cells in the box may not contain tomatoes. Integer 1 represents a ripe tomato, integer 0 represents an unripe tomato, and integer -1 represents an empty cell.</p>
                 <p>If all tomatoes cannot ripen, output -1. If all tomatoes are already ripe when stored, output 0.</p>
+                <h4>Input</h4>
+                <p>The first line contains two integers M and N representing the size of the box. M is the number of horizontal cells and N is the number of vertical cells, where 2 ≤ M, N ≤ 1,000. From the second line, N lines contain the tomato information. Each line contains M integers: 1 for ripe, 0 for unripe, -1 for empty. At least one tomato is given in the input.</p>
+                <h4>Output</h4>
+                <p>Print the minimum number of days until all tomatoes are ripe. If all tomatoes are already ripe when stored, print 0. If not all tomatoes can ripen, print -1.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>6 4
 0 0 0 0 0 0
@@ -3986,6 +4038,10 @@ int main() {
                 <p>Cheolsu has a large warehouse at his tomato farm for storing tomatoes. Tomatoes are stored in the warehouse by placing them one by one in the cells of grid-shaped boxes.</p>
                 <p>Among the stored tomatoes, some may be ripe while others are still unripe. After one day, unripe tomatoes adjacent to ripe tomatoes become ripe. Adjacent cells of a tomato refer to the <strong>six directions</strong>: up, down, left, right, front, and back. Tomatoes in diagonal directions are not affected, and we assume tomatoes do not ripen on their own.</p>
                 <p>Write a program to find the minimum number of days until all stored tomatoes are ripe. Note that some cells in the box may not contain tomatoes.</p>
+                <h4>Input</h4>
+                <p>The first line contains two integers M, N and the number of stacked boxes H. M is the number of horizontal cells, N is the number of vertical cells, where 2 ≤ M, N ≤ 100, 1 ≤ H ≤ 100. From the second line, tomato information is given from the bottom box to the top box. Each box has N lines with M integers: 1 for ripe, 0 for unripe, -1 for empty. At least one tomato is given in the input.</p>
+                <h4>Output</h4>
+                <p>Print the minimum number of days until all tomatoes are ripe. If all tomatoes are already ripe when stored, print 0. If not all tomatoes can ripen, print -1.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 3 2
 0 0 0 0 0
@@ -4128,6 +4184,13 @@ int main() {
                 <h3>Problem</h3>
                 <p>Cubelover, who enjoys playing the Snakes and Ladders game, became curious about the minimum number of dice rolls needed to get from square 1 to square 100, achievable on any game board.</p>
                 <p>The game involves rolling a die and moving the game piece by the number rolled. If the piece lands on a snake, it slides down. If it lands on a ladder, it climbs up. The die is rolled with the piece on the board, and the die value indicates the number of squares to move. The piece cannot move past square 100. If the piece lands on a ladder, it must climb up; if it lands on a snake, it must slide down.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of ladders N (1 ≤ N ≤ 15) and the number of snakes M (1 ≤ M ≤ 15).</p>
+                <p>The next N lines contain ladder information x, y (x &lt; y). Landing on square x moves you to square y.</p>
+                <p>The next M lines contain snake information u, v (u &gt; v). Landing on square u moves you to square v.</p>
+                <p>Squares 1 and 100 have no ladder or snake. No square has more than one ladder or snake.</p>
+                <h4>Output</h4>
+                <p>Print the minimum number of dice rolls needed to get from square 1 to square 100.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 7
 32 62
@@ -4247,6 +4310,10 @@ int main() {
                 <h3>Problem</h3>
                 <p>When the set of vertices of a graph can be partitioned into two groups such that no two vertices within the same group are adjacent, such a graph is called a Bipartite Graph.</p>
                 <p>Given a graph as input, write a program to determine whether the graph is bipartite or not.</p>
+                <h4>Input</h4>
+                <p>The input consists of multiple test cases. The first line contains the number of test cases K. For each test case, the first line contains the number of vertices V and the number of edges E, separated by a space. Vertices are numbered from 1 to V. The next E lines each contain two adjacent vertex numbers u, v (1 ≤ u, v ≤ V), separated by a space.</p>
+                <h4>Output</h4>
+                <p>For each of the K test cases, print YES if the graph is bipartite, NO otherwise, one per line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2
 3 2
@@ -4382,6 +4449,10 @@ int main() {
                 <p>There is a map represented as an N by M matrix. In the map, 0 indicates a passable location and 1 indicates a wall that cannot be passed. You want to move from (1, 1) to (N, M) using the shortest path. The shortest path means the path passing through the fewest cells, counting both the starting and ending cells.</p>
                 <p>If breaking one wall during movement results in a shorter path, you may break up to one wall and continue moving.</p>
                 <p>From each cell, you can move to an adjacent cell in the four directions: up, down, left, and right. Given the map, write a program to find the shortest path.</p>
+                <h4>Input</h4>
+                <p>The first line contains N (1 ≤ N ≤ 1,000) and M (1 ≤ M ≤ 1,000). The next N lines contain M digits representing the map. (1, 1) and (N, M) are always 0.</p>
+                <h4>Output</h4>
+                <p>Print the shortest distance on the first line. If impossible, print -1.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>6 4
 0100

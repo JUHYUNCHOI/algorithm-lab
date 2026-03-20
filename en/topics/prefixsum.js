@@ -1048,7 +1048,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1500,6 +1500,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>Input</strong><pre>5 3\n5 4 3 2 1\n1 3\n2 4\n5 5</pre></div>
                     <div><strong>Output</strong><pre>12\n9\n1</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the count of numbers N and the number of queries M. The second line contains N numbers. Each number is a natural number no greater than 1,000. From the third line, M lines each contain the range i and j for which the sum should be computed.</p>
+                <h4>Output</h4>
+                <p>Output M lines total, each containing the sum from the i-th number to the j-th number.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 100,000</li>
@@ -1551,6 +1555,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>Input</strong><pre>10 5\n3 -2 -4 -9 0 3 7 13 8 -3</pre></div>
                     <div><strong>Output</strong><pre>31</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains two integers N and K. (2 ≤ N ≤ 100,000, 1 ≤ K ≤ N) The second line contains N integers representing the daily temperatures. Each temperature is between -100 and 100 inclusive.</p>
+                <h4>Output</h4>
+                <p>Output the maximum sum of temperatures over K consecutive days.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>2 ≤ N ≤ 100,000</li>
@@ -1600,6 +1608,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>Input</strong><pre>seungjaehwang\n4\na 0 5\na 0 12\ns 0 12\nn 2 7</pre></div>
                     <div><strong>Output</strong><pre>0\n2\n1\n1</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains a string S consisting only of lowercase letters. The second line contains the number of queries q. From the third line, q lines each contain a lowercase letter a and two integers l, r.</p>
+                <h4>Output</h4>
+                <p>For each query, output the number of times character a appears from the l-th to the r-th character of S (0-indexed).</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ |S| ≤ 200,000</li>
@@ -1647,6 +1659,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>Input</strong><pre>5 3\n1 2 3 1 2</pre></div>
                     <div><strong>Output</strong><pre>7</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains N and M. (1 ≤ N ≤ 10<sup>6</sup>, 2 ≤ M ≤ 10<sup>3</sup>) The second line contains N numbers A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>. (0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
+                <h4>Output</h4>
+                <p>Output the number of contiguous subarrays whose sum is divisible by M.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 10<sup>6</sup></li>
@@ -1696,6 +1712,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>Input</strong><pre>4 3\n1 2 3 4\n2 3 4 5\n3 4 5 6\n4 5 6 7\n2 2 3 4\n3 4 3 4\n1 1 4 4</pre></div>
                     <div><strong>Output</strong><pre>27\n6\n64</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the table size N and the number of queries M. (1 ≤ N ≤ 1,024, 1 ≤ M ≤ 100,000) From the second line, N lines contain the numbers in the table, given row by row starting from row 1. The next M lines each contain four integers x1, y1, x2, y2, representing the region from (x1, y1) to (x2, y2). Each number in the table is a natural number no greater than 1,000. (x1 ≤ x2, y1 ≤ y2)</p>
+                <h4>Output</h4>
+                <p>Output M lines, each containing the sum from (x1, y1) to (x2, y2).</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 1,024</li>
@@ -1747,6 +1767,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>Input</strong><pre>8 8 8\nWBWBWBWB\nBWBWBWBW\nWBWBWBWB\nBWBWBWBW\nWBWBWBWB\nBWBWBWBW\nWBWBWBWB\nBWBWBWBW</pre></div>
                     <div><strong>Output</strong><pre>0</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains integers N, M, and K. From the second line, N lines contain the state of each row of the board as a string of length M consisting of B and W.</p>
+                <h4>Output</h4>
+                <p>Output the minimum number of squares that need to be repainted.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ K ≤ min(N, M)</li>

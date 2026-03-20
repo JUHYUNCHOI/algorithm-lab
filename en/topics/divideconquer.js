@@ -1016,7 +1016,7 @@ var divideConquerTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2549,6 +2549,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>8\n1 1 0 0 0 0 1 1\n1 1 0 0 0 0 1 1\n0 0 0 0 1 1 0 0\n0 0 0 0 1 1 0 0\n1 0 0 0 1 1 1 1\n0 1 0 0 1 1 1 1\n0 0 1 1 1 1 1 1\n0 0 1 1 1 1 1 1</pre></div>
         <div><strong>Output</strong><pre>9\n7</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains the side length N of the entire paper. N is one of 2, 4, 8, 16, 32, 64, 128. From the second line to the (N+1)-th line, the colors of the square cells in each row are given from top to bottom. White cells are represented as 0 and blue cells as 1, with N numbers per line separated by spaces.</p>
+    <h4>Output</h4>
+    <p>The first line outputs the number of white paper pieces, and the second line outputs the number of blue paper pieces.</p>
     <h4>Constraints</h4>
     <ul><li>N is one of 2, 4, 8, 16, 32, 64, 128</li></ul>
 `,
@@ -2592,6 +2596,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>8\n11110000\n11110000\n00011100\n00011100\n11110000\n11110000\n11110011\n11110011</pre></div>
         <div><strong>Output</strong><pre>((110(0101))(0010)(1(0010)0)100)</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains the size N of the image. N is always a power of 2, in the range 1 ≤ N ≤ 64. From the second line, N strings of length N are given. Each character is 0 or 1, where 0 means white and 1 means black.</p>
+    <h4>Output</h4>
+    <p>Output the compressed result of the image.</p>
     <h4>Constraints</h4>
     <ul><li>N is a power of 2</li><li>1 ≤ N ≤ 64</li></ul>
 `,
@@ -2635,6 +2643,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>9\n0 0 0 1 1 1 -1 -1 -1\n0 0 0 1 1 1 -1 -1 -1\n0 0 0 1 1 1 -1 -1 -1\n1 1 1 0 0 0 0 0 0\n1 1 1 0 0 0 0 0 0\n1 1 1 0 0 0 0 0 0\n0 1 -1 0 1 -1 0 1 -1\n0 -1 1 0 -1 1 0 -1 1\n0 1 -1 1 0 -1 0 1 -1</pre></div>
         <div><strong>Output</strong><pre>10\n12\n11</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains N (1 ≤ N ≤ 3<sup>7</sup>, N is of the form 3<sup>k</sup>). The next N lines contain N integers each representing the matrix.</p>
+    <h4>Output</h4>
+    <p>The first line outputs the count of papers filled with only -1, the second line the count of papers filled with only 0, and the third line the count of papers filled with only 1.</p>
     <h4>Constraints</h4>
     <ul><li>N is of the form 3<sup>k</sup> (1 ≤ k ≤ 7, i.e., N ≤ 2,187)</li><li>Each cell contains only -1, 0, or 1</li></ul>
 `,
@@ -2680,6 +2692,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>10 11 12</pre></div>
         <div><strong>Output</strong><pre>4</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains A, B, and C separated by spaces.</p>
+    <h4>Output</h4>
+    <p>The first line outputs the remainder of A raised to the B-th power divided by C.</p>
     <h4>Constraints</h4>
     <ul><li>A, B, C are all natural numbers at most 2,147,483,647</li></ul>
 `,
@@ -2723,6 +2739,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>5 2</pre></div>
         <div><strong>Output</strong><pre>10</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains N and K. (1 ≤ N ≤ 4,000,000, 0 ≤ K ≤ N)</p>
+    <h4>Output</h4>
+    <p>Output C(N, K) modulo 1,000,000,007.</p>
     <h4>Constraints</h4>
     <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
 `,
@@ -2768,6 +2788,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>3 2\n1 2\n3 4\n5 6\n2 3\n-1 -2 0\n0 0 3</pre></div>
         <div><strong>Output</strong><pre>-1 -2 6\n-3 -6 12\n-5 -10 18</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains the size N and M of matrix A. The next N lines contain M elements of matrix A in order. Then the size M and K of matrix B is given. The following M lines contain K elements of matrix B in order.</p>
+    <h4>Output</h4>
+    <p>Output the product of matrices A and B from the first line over N lines. Elements in each row are separated by spaces.</p>
     <h4>Constraints</h4>
     <ul><li>1 ≤ N, M, K ≤ 100</li><li>Absolute value of matrix elements ≤ 100</li><li>Absolute value of result matrix elements ≤ 2<sup>31</sup></li></ul>
 `,
@@ -2815,6 +2839,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>3 3\n1 2 3\n4 5 6\n7 8 9</pre></div>
         <div><strong>Output</strong><pre>468 576 684\n62 305 548\n656 34 412</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains the matrix size N and B. (2 ≤ N ≤ 5, 1 ≤ B ≤ 100,000,000,000) The next N lines contain the elements of the matrix. Each element is a natural number or 0, no greater than 1,000.</p>
+    <h4>Output</h4>
+    <p>Output the result of matrix A raised to the B-th power over N lines, with each element taken modulo 1,000.</p>
     <h4>Constraints</h4>
     <ul><li>2 ≤ N ≤ 5</li><li>1 ≤ B ≤ 100,000,000,000</li></ul>
 `,
@@ -2858,6 +2886,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>1000</pre></div>
         <div><strong>Output</strong><pre>517691607</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The first line contains n. n is a natural number or 0, no greater than 1,000,000,000,000,000,000.</p>
+    <h4>Output</h4>
+    <p>Output the n-th Fibonacci number modulo 1,000,000,007.</p>
     <h4>Constraints</h4>
     <ul><li>0 ≤ n ≤ 10<sup>18</sup></li></ul>
 `,
@@ -2903,6 +2935,10 @@ var divideConquerTopic = {
         <div><strong>Input</strong><pre>7 2 1 4 5 1 3 3\n4 1000 1000 1000 1000\n0</pre></div>
         <div><strong>Output</strong><pre>8\n4000</pre></div>
     </div></div>
+    <h4>Input</h4>
+    <p>The input consists of multiple test cases. Each test case is a single line, where the first number is n (1 ≤ n ≤ 100,000), the number of rectangles. The following n integers h<sub>1</sub>, ..., h<sub>n</sub> (0 ≤ h<sub>i</sub> ≤ 1,000,000,000) are the heights of the rectangles from left to right. All rectangles have width 1. The last line of input contains a single 0.</p>
+    <h4>Output</h4>
+    <p>For each test case, output the area of the largest rectangle in the histogram.</p>
     <h4>Constraints</h4>
     <ul><li>1 ≤ n ≤ 100,000</li><li>0 ≤ height ≤ 1,000,000,000</li><li>Program terminates when 0 is given as input</li></ul>
 `,

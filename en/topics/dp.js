@@ -906,7 +906,7 @@ int fib(int n) {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2295,6 +2295,10 @@ int fib(int n) {
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Seojun is a teaching assistant for a dynamic programming class. Let us verify how much faster DP is compared to recursive calls. Print the number of base-case executions of the recursive Fibonacci function and the number of assignments in the DP version for the nth Fibonacci number.</p>
+    <h4>Input</h4>
+    <p>The first line contains n. (5 ≤ n ≤ 40)</p>
+    <h4>Output</h4>
+    <p>Print the number of base-case operations for the recursive call and the number of base-case operations for dynamic programming, separated by a space, on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>5</pre></div>
         <div><strong>Output</strong><pre>5 3</pre></div>
@@ -2351,6 +2355,10 @@ int fib(int n) {
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Compute the result of the recursive function w(a, b, c). Use memoization for efficient computation. Input repeats until EOF, and terminates when a=b=c=-1.</p>
+    <h4>Input</h4>
+    <p>The input consists of multiple test cases. Each test case contains three integers a, b, c on one line. The input ends with -1 -1 -1, which should not be processed. (-50 ≤ a, b, c ≤ 50)</p>
+    <h4>Output</h4>
+    <p>For each test case, print the value of w(a, b, c). See the example for the output format.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>1 1 1
 2 2 2
@@ -2421,6 +2429,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>There are three operations available for integer X: if X is divisible by 3, divide by 3; if X is divisible by 2, divide by 2; subtract 1. Given integer N, find the minimum number of operations to reduce it to 1.</p>
+    <h4>Input</h4>
+    <p>The first line contains the integer N. (1 ≤ N ≤ 10<sup>6</sup>)</p>
+    <h4>Output</h4>
+    <p>Print the minimum number of operations on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>2</pre></div>
         <div><strong>Output</strong><pre>1</pre></div>
@@ -2482,6 +2494,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>A binary sequence is given. This sequence consists of 0s and 1s. Using "00" tiles and "1" tiles, output the number of ways to create a sequence of length N, modulo 15746.</p>
+    <h4>Input</h4>
+    <p>The first line contains the natural number N. (1 ≤ N ≤ 1,000,000)</p>
+    <h4>Output</h4>
+    <p>Print the number of all binary sequences of length N that Jiwon can create, modulo 15746, on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>4</pre></div>
         <div><strong>Output</strong><pre>5</pre></div>
@@ -2538,6 +2554,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>The stair climbing game goes from the starting point below the stairs to the destination at the top. Stepping on a stair earns the score written on it. You cannot step on three consecutive stairs. You must step on the last stair. Find the maximum total score.</p>
+    <h4>Input</h4>
+    <p>The first line contains the number of stairs. From the second line, one score per line is given in order starting from the bottom stair. The number of stairs is a natural number ≤ 300, and each score is a natural number ≤ 10,000.</p>
+    <h4>Output</h4>
+    <p>Print the maximum total score obtainable in the stair climbing game on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>6
 10
@@ -2604,6 +2624,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Wine glasses are lined up in a row, and you want to drink wine following these rules. When you select a glass, you must drink all the wine in it, then put it back in its original position. You cannot drink from 3 consecutive glasses. Find the maximum amount of wine you can drink.</p>
+    <h4>Input</h4>
+    <p>The first line contains the number of wine glasses n. (1 ≤ n ≤ 10,000) From the second line to the (n+1)-th line, the amount of wine in each glass is given in order. The wine amount is a non-negative integer ≤ 1,000.</p>
+    <h4>Output</h4>
+    <p>Print the maximum amount of wine that can be consumed on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>6
 6
@@ -2669,6 +2693,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Given a sequence of n integers, find the largest sum obtainable by selecting some consecutive numbers. At least one number must be selected.</p>
+    <h4>Input</h4>
+    <p>The first line contains the integer n (1 ≤ n ≤ 100,000), and the second line contains a sequence of n integers. Each number is an integer ≥ -1,000 and ≤ 1,000.</p>
+    <h4>Output</h4>
+    <p>Print the answer on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>10
 10 -4 3 1 5 6 -35 12 21 -1</pre></div>
@@ -2728,6 +2756,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Consider the number 45656. Every pair of adjacent digits differs by exactly 1. Such numbers are called staircase numbers. Given N, find how many staircase numbers of length N exist. Numbers starting with 0 are not staircase numbers. Print the answer modulo 1,000,000,000.</p>
+    <h4>Input</h4>
+    <p>The first line contains N. N is a natural number between 1 and 100 inclusive.</p>
+    <h4>Output</h4>
+    <p>Print the answer modulo 1,000,000,000 on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>1</pre></div>
         <div><strong>Output</strong><pre>9</pre></div>
@@ -2796,6 +2828,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>There are N houses on RGB Street. The street is a line segment with houses 1 through N in order. Each house must be painted one of red, green, or blue. Adjacent houses cannot be the same color. Given the cost of painting each house red, green, or blue, find the minimum total cost of painting all houses.</p>
+    <h4>Input</h4>
+    <p>The first line contains the number of houses N (2 ≤ N ≤ 1,000). From the second line, N lines each contain the cost of painting each house red, green, and blue, one house per line starting from house 1. The painting cost is a natural number ≤ 1,000.</p>
+    <h4>Output</h4>
+    <p>Print the minimum cost of painting all houses on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>3
 26 40 83
@@ -2861,6 +2897,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Moving from the top of an integer triangle downward, only moving diagonally left or right, find the path that maximizes the sum of selected numbers.</p>
+    <h4>Input</h4>
+    <p>The first line contains the size of the triangle n (1 ≤ n ≤ 500), and from the second line to the (n+1)-th line, the integer triangle is given.</p>
+    <h4>Output</h4>
+    <p>Print the maximum sum of numbers along the path on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>5
 7
@@ -2927,6 +2967,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Given sequence A, write a program to find the length of the longest increasing subsequence (LIS). For example, if A = {10, 20, 10, 30, 20, 50}, the LIS is {10, 20, 30, 50} with length 4.</p>
+    <h4>Input</h4>
+    <p>The first line contains the size of sequence A, N (1 ≤ N ≤ 1,000). The second line contains the elements A<sub>i</sub> of the sequence. (1 ≤ A<sub>i</sub> ≤ 1,000)</p>
+    <h4>Output</h4>
+    <p>Print the length of the longest increasing subsequence of sequence A on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>6
 10 20 10 30 20 50</pre></div>
@@ -2985,6 +3029,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Sequence S is called bitonic if for some S<sub>k</sub>, S<sub>1</sub> &lt; S<sub>2</sub> &lt; ... &lt; S<sub>k-1</sub> &lt; S<sub>k</sub> &gt; S<sub>k+1</sub> &gt; ... &gt; S<sub>N-1</sub> &gt; S<sub>N</sub>. Given a sequence, find the length of the longest bitonic subsequence.</p>
+    <h4>Input</h4>
+    <p>The first line contains the size of sequence A, N, and the second line contains the elements A<sub>i</sub> of the sequence. (1 ≤ N ≤ 1,000, 1 ≤ A<sub>i</sub> ≤ 1,000)</p>
+    <h4>Output</h4>
+    <p>Print the length of the longest bitonic subsequence of sequence A on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>10
 1 5 2 1 4 3 4 5 2 1</pre></div>
@@ -3049,6 +3097,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>There are electric wires between two utility poles A and B. To eliminate all crossings, some wires need to be removed. Find the minimum number of wires to remove.</p>
+    <h4>Input</h4>
+    <p>The first line contains the number of electric wires between the two poles. The number is a natural number ≤ 100. From the second line, one wire per line is given as the position number on pole A and pole B, in order. Position numbers are natural numbers ≤ 500, and no two wires connect to the same position.</p>
+    <h4>Output</h4>
+    <p>Print the minimum number of wires to remove so that no remaining wires cross on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>8
 1 8
@@ -3118,6 +3170,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>The LCS (Longest Common Subsequence) problem is to find the longest subsequence that is common to both given sequences.</p>
+    <h4>Input</h4>
+    <p>Two strings are given on the first and second lines. The strings consist of uppercase letters only and have a maximum length of 1,000 characters.</p>
+    <h4>Output</h4>
+    <p>Print the length of the LCS of the two input strings on the first line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>ACAYKP
 CAPCAK</pre></div>
@@ -3178,6 +3234,10 @@ CAPCAK</pre></div>
             descriptionHTML: `
     <h3>Problem</h3>
     <p>Junseo has N items he thinks are needed for a trip. Each item has weight W and value V. Find the maximum total value of items that can be placed in the knapsack. The weight limit is K.</p>
+    <h4>Input</h4>
+    <p>The first line contains the number of items N (1 ≤ N ≤ 100) and the maximum weight K (1 ≤ K ≤ 100,000) that Junseo can carry. From the second line, N lines each contain the weight W (1 ≤ W ≤ 100,000) and value V (0 ≤ V ≤ 1,000) of each item.</p>
+    <h4>Output</h4>
+    <p>Print the maximum total value of items that can fit in the knapsack on one line.</p>
     <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
         <div><strong>Input</strong><pre>4 7
 6 13

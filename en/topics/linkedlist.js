@@ -1586,6 +1586,10 @@ public:
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>N people sit in a circle numbered from 1 to N, and a positive integer K (&le; N) is given. Starting from the first person, every K-th person is eliminated. Once a person is removed, the process continues around the remaining circle. This process repeats until all N people have been eliminated. The order in which people are removed is called the (N, K)-Josephus permutation. The (7, 3)-Josephus permutation is &lt;3, 6, 2, 7, 5, 1, 4&gt;.</p>
+                <h4>Input</h4>
+                <p>The first line contains N and K separated by a space. (1 &le; K &le; N &le; 5,000)</p>
+                <h4>Output</h4>
+                <p>Print the Josephus permutation as shown in the example.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>7 3</pre></div>

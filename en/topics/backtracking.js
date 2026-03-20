@@ -1376,7 +1376,7 @@ for (int i = 1; i &lt;= n; i++) {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2077,6 +2077,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>Problem</h3>
                 <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following condition.</p>
                 <ul><li>A sequence of M numbers chosen from 1 to N without repetition</li></ul>
+                <h4>Input</h4>
+                <p>The first line contains natural numbers N and M. (1 ≤ M ≤ N ≤ 8)</p>
+                <h4>Output</h4>
+                <p>Print one sequence per line satisfying the condition. Do not print duplicate sequences, and separate numbers in each sequence with spaces.</p>
+                <p>Sequences must be printed in lexicographic (dictionary) ascending order.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -2127,6 +2132,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>Problem</h3>
                 <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following conditions.</p>
                 <ul><li>A sequence of M numbers chosen from 1 to N without repetition</li><li>The chosen sequence must be in ascending order.</li></ul>
+                <h4>Input</h4>
+                <p>The first line contains natural numbers N and M. (1 ≤ M ≤ N ≤ 8)</p>
+                <h4>Output</h4>
+                <p>Print one sequence per line satisfying the conditions. Do not print duplicate sequences, and separate numbers in each sequence with spaces.</p>
+                <p>Sequences must be printed in lexicographic (dictionary) ascending order.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -2177,6 +2187,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>Problem</h3>
                 <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following conditions.</p>
                 <ul><li>A sequence of M numbers chosen from 1 to N</li><li>The same number can be chosen multiple times.</li></ul>
+                <h4>Input</h4>
+                <p>The first line contains natural numbers N and M. (1 ≤ M ≤ N ≤ 7)</p>
+                <h4>Output</h4>
+                <p>Print one sequence per line satisfying the conditions. Do not print duplicate sequences, and separate numbers in each sequence with spaces.</p>
+                <p>Sequences must be printed in lexicographic (dictionary) ascending order.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -2227,6 +2242,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>Problem</h3>
                 <p>Given natural numbers N and M, write a program that prints all sequences of length M satisfying the following conditions.</p>
                 <ul><li>A sequence of M numbers chosen from 1 to N</li><li>The same number can be chosen multiple times.</li><li>The chosen sequence must be in non-decreasing order.</li></ul>
+                <h4>Input</h4>
+                <p>The first line contains natural numbers N and M. (1 ≤ M ≤ N ≤ 8)</p>
+                <h4>Output</h4>
+                <p>Print one sequence per line satisfying the conditions. Do not print duplicate sequences, and separate numbers in each sequence with spaces.</p>
+                <p>Sequences must be printed in lexicographic (dictionary) ascending order.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3 1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3</pre></div>
@@ -2278,6 +2298,10 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>Problem</h3>
                 <p>A sequence of N numbers A1, A2, ..., AN is given. Also, N-1 operators to insert between the numbers are given. The operators consist only of addition(+), subtraction(-), multiplication(\u00d7), and division(\u00f7).</p>
                 <p>The expression is evaluated left to right, ignoring operator precedence. Division is integer division (as in C++14), taking only the quotient. When dividing a negative number by a positive, first convert to positive, take the quotient, then negate.</p>
+                <h4>Input</h4>
+                <p>The first line contains the count of numbers N (2 ≤ N ≤ 11). The second line contains A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>. (1 ≤ A<sub>i</sub> ≤ 100) The third line contains 4 integers whose sum equals N-1, representing the counts of addition(+), subtraction(-), multiplication(x), and division(÷) in order.</p>
+                <h4>Output</h4>
+                <p>Print the maximum result of the expression on the first line and the minimum on the second line. The result of any operator arrangement is always between -1 billion and 1 billion inclusive.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2\n5 6\n0 0 1 0</pre></div>
                     <div><strong>Output</strong><pre>30\n30</pre></div>
@@ -2332,6 +2356,10 @@ for (int i = 1; i &lt;= n; i++) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Split even number N people into two teams of N/2 each. S<sub>ij</sub> is the ability when person i and person j are on the same team. A team's ability is the sum of S<sub>ij</sub> for all pairs in the team. Find the minimum difference in ability between the two teams.</p>
+                <h4>Input</h4>
+                <p>The first line contains N (4 ≤ N ≤ 20, N is even). From the second line, N lines each contain N numbers representing S. Each line's j-th number is S<sub>ij</sub>. S<sub>ii</sub> is always 0, and all other S<sub>ij</sub> are integers between 1 and 100 inclusive.</p>
+                <h4>Output</h4>
+                <p>Print the minimum difference between the Start team and Link team abilities on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4\n0 1 2 3\n4 0 5 6\n7 1 0 2\n3 4 5 0</pre></div>
                     <div><strong>Output</strong><pre>0</pre></div>
@@ -2382,6 +2410,10 @@ for (int i = 1; i &lt;= n; i++) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Place N queens on an N\u00d7N chessboard so that no two queens attack each other. Given N, write a program to find the number of ways to place the queens.</p>
+                <h4>Input</h4>
+                <p>The first line contains N. (1 ≤ N &lt; 15)</p>
+                <h4>Output</h4>
+                <p>Print the number of ways to place N queens so that they cannot attack each other on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>8</pre></div>
                     <div><strong>Output</strong><pre>92</pre></div>
@@ -2429,6 +2461,11 @@ for (int i = 1; i &lt;= n; i++) {
                 <h3>Problem</h3>
                 <p>Sudoku originates from the 'Latin Square' puzzle created by an 18th-century Swiss mathematician. It is a puzzle where you fill numbers 1 through 9 into a 9-row, 9-column grid.</p>
                 <p>Fill in the blank cells (0) such that no number repeats in the same row, same column, or same 3\u00d73 box. If there are multiple answers, print only one.</p>
+                <h4>Input</h4>
+                <p>Nine lines, each containing 9 numbers separated by spaces, represent the initial Sudoku board. Blank cells are given as 0. No unsolvable input is given.</p>
+                <h4>Output</h4>
+                <p>Print the completed Sudoku board over nine lines, each containing 9 numbers separated by spaces.</p>
+                <p>If there are multiple solutions, print only one.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>0 3 5 4 6 9 2 7 8\n7 8 2 1 0 5 6 0 9\n0 6 0 2 7 8 1 3 5\n3 2 1 0 4 6 8 9 7\n8 0 4 9 1 3 5 0 6\n5 9 6 8 2 0 4 1 3\n9 1 7 6 5 2 0 8 0\n6 0 3 7 0 1 9 5 2\n2 5 8 3 9 4 7 6 0</pre></div>
                     <div><strong>Output</strong><pre>1 3 5 4 6 9 2 7 8\n7 8 2 1 3 5 6 4 9\n4 6 9 2 7 8 1 3 5\n3 2 1 5 4 6 8 9 7\n8 7 4 9 1 3 5 2 6\n5 9 6 8 2 7 4 1 3\n9 1 7 6 5 2 3 8 4\n6 4 3 7 8 1 9 5 2\n2 5 8 3 9 4 7 6 1</pre></div>

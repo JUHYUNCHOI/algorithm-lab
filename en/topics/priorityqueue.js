@@ -863,7 +863,7 @@ var priorityQueueTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1472,6 +1472,10 @@ var priorityQueueTopic = {
                 <p>Insert a natural number x into the array. Print the largest value in the array and remove it.</p>
                 <p>The program starts with an empty array.</p>
                 <p>If x is a natural number, insert x into the array. If x is 0, print the largest value in the array and remove it. If the array is empty when asked to print the largest value, print 0.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of operations N (1 &le; N &le; 100,000). Each of the next N lines contains an integer x representing an operation. If x is a natural number, it means inserting x into the array; if x is 0, it means printing and removing the largest value. x is a natural number less than 2<sup>31</sup> or 0, and negative integers are not given as input.</p>
+                <h4>Output</h4>
+                <p>Print the answer once for each time 0 is given in the input, one per line. If the array is empty when asked to print the largest value, print 0.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>13
@@ -1543,6 +1547,10 @@ var priorityQueueTopic = {
                 <p>There is a well-known data structure called a min heap. Write a program that supports the following operations using a min heap.</p>
                 <p>Insert a natural number x into the array. Print the smallest value in the array and remove it.</p>
                 <p>If x is a natural number, insert x into the array. If x is 0, print the smallest value and remove it. If the array is empty, print 0.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of operations N (1 &le; N &le; 100,000). Each of the next N lines contains an integer x representing an operation. If x is a natural number, it means inserting x into the array; if x is 0, it means printing and removing the smallest value. x is a natural number less than 2<sup>31</sup> or 0, and negative integers are not given as input.</p>
+                <h4>Output</h4>
+                <p>Print the answer once for each time 0 is given in the input, one per line. If the array is empty when asked to print the smallest value, print 0.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>9
@@ -1607,6 +1615,10 @@ var priorityQueueTopic = {
                 <p>An absolute value heap is a data structure that supports the following operations.</p>
                 <p>Insert an integer x (x != 0) into the array. Print the value with the smallest absolute value and remove it from the array. If there are multiple values with the smallest absolute value, print the smallest one among them and remove it.</p>
                 <p>If x is not 0, insert x into the array. If x is 0, print and remove the value with the smallest absolute value.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of operations N (1 &le; N &le; 100,000). Each of the next N lines contains an integer x representing an operation. If x is not 0, it means inserting x into the array; if x is 0, it means printing and removing the value with the smallest absolute value. The input integers are greater than -2<sup>31</sup> and less than 2<sup>31</sup>.</p>
+                <h4>Output</h4>
+                <p>Print the answer once for each time 0 is given in the input, one per line. If the array is empty when asked to print the value with the smallest absolute value, print 0.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>18
@@ -1685,6 +1697,10 @@ var priorityQueueTopic = {
                 <h3>Problem</h3>
                 <p>An N x N table is filled with N<sup>2</sup> numbers. The numbers have one property: every number is greater than the number directly above it. Find the Nth largest number.</p>
                 <p>The memory limit is 12MB.</p>
+                <h4>Input</h4>
+                <p>The first line contains N (1 &le; N &le; 1,500). Each of the next N lines contains N numbers. The numbers in the table are integers between -1,000,000,000 and 1,000,000,000.</p>
+                <h4>Output</h4>
+                <p>Print the Nth largest number on the first line.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5
@@ -1740,6 +1756,10 @@ var priorityQueueTopic = {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Read a sequence of numbers, and every time an odd-numbered element is read, print the median of all values read so far.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases T. For each test case, the first line contains the sequence size M, and the following lines contain the elements of the sequence with up to 10 per line. M is an odd number at most 9999.</p>
+                <h4>Output</h4>
+                <p>For each test case, print the number of medians on the first line, then print the medians on the following lines with up to 10 per line.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3
@@ -1806,6 +1826,12 @@ var priorityQueueTopic = {
                 <h3>Problem</h3>
                 <p>The world-famous thief Sangdeok has decided to rob a jewelry store. There are N jewels in the store. Each jewel has a weight M<sub>i</sub> and a value V<sub>i</sub>. Sangdeok has K bags, and each bag can hold a maximum weight of C<sub>i</sub>. Each bag can hold at most one jewel.</p>
                 <p>Find the maximum total value of jewels that Sangdeok can steal.</p>
+                <h4>Input</h4>
+                <p>The first line contains N and K. (1 &le; N, K &le; 300,000)</p>
+                <p>Each of the next N lines contains the weight M<sub>i</sub> and value V<sub>i</sub> of each jewel. (0 &le; M<sub>i</sub>, V<sub>i</sub> &le; 1,000,000)</p>
+                <p>Each of the next K lines contains the maximum weight C<sub>i</sub> that each bag can hold. (1 &le; C<sub>i</sub> &le; 100,000,000)</p>
+                <h4>Output</h4>
+                <p>Print the maximum total value of jewels that Sangdeok can steal on the first line.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2 1

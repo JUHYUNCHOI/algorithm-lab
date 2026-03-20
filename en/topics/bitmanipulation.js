@@ -1115,7 +1115,7 @@ int main() {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1880,6 +1880,11 @@ int main() {
                     <li><code>all</code>: Change S to {1, 2, ..., 20}</li>
                     <li><code>empty</code>: Change S to the empty set</li>
                 </ul>
+                <h4>Input</h4>
+                <p>The first line contains the number of operations M (1 &le; M &le; 3,000,000).</p>
+                <p>From the second line, each of the M lines contains one operation to perform.</p>
+                <h4>Output</h4>
+                <p>For each <code>check</code> operation, print the result.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>26\nadd 1\nadd 2\ncheck 1\ncheck 2\nremove 2\ncheck 1\ncheck 2\ntoggle 3\ncheck 1\ncheck 2\ncheck 3\ncheck 4\nall\ncheck 10\ncheck 15\nempty\ncheck 1\ntoggle 1\ncheck 1\ntoggle 1\ncheck 1\nall\ncheck 5\ntoggle 5\ncheck 5\ncheck 1</pre></div>
                     <div><strong>Output</strong><pre>1\n1\n1\n0\n1\n0\n1\n0\n1\n1\n0\n1\n1\n0\n1\n0\n1</pre></div>

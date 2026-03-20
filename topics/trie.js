@@ -808,7 +808,7 @@ var trieTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1596,6 +1596,10 @@ var trieTopic = {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>총 N개의 문자열로 이루어진 집합 S가 주어진다. 입력으로 주어지는 M개의 문자열 중에서 집합 S에 포함되어 있는 것이 총 몇 개인지 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 문자열의 개수 N과 M (1 &le; N &le; 10,000, 1 &le; M &le; 10,000)이 주어진다. 다음 N개의 줄에는 집합 S에 포함되어 있는 문자열들이 주어진다. 다음 M개의 줄에는 검사해야 하는 문자열들이 주어진다. 입력으로 주어지는 문자열은 알파벳 소문자로만 이루어져 있으며, 길이는 500을 넘지 않는다. 집합 S에 같은 문자열이 여러 번 주어지는 경우는 없다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 M개의 문자열 중에 총 몇 개가 집합 S에 포함되어 있는지 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 11
 baekjoononlinejudge
@@ -1663,6 +1667,10 @@ judge</pre></div>
                 <h3>문제</h3>
                 <p>전화번호 목록이 주어진다. 이때, 이 목록이 일관성이 있는지 없는지를 구해야 한다.</p>
                 <p>전화번호 목록이 일관성을 유지하려면, 한 번호가 다른 번호의 접두어인 경우가 없어야 한다. 예를 들어, 긴급전화가 911이고, 선영이의 집 전화번호가 91125426이면 선영이에게 전화를 걸 수 없다. 911을 누르는 순간 긴급전화가 걸리기 때문이다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 테스트 케이스의 수 t(1 &le; t &le; 50)가 주어진다. 각 테스트 케이스의 첫째 줄에는 전화번호의 수 n(1 &le; n &le; 10,000)이 주어진다. 다음 n개의 줄에는 목록에 포함되어 있는 전화번호가 하나씩 주어진다. 전화번호의 길이는 최대 10자리이며, 목록에 같은 전화번호가 중복해서 들어있는 경우는 없다.</p>
+                <h4>출력</h4>
+                <p>각 테스트 케이스에 대해서, 일관성 있는 목록인 경우에는 "YES", 그렇지 않은 경우에는 "NO"를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>2
 3

@@ -1066,7 +1066,7 @@ const recursionTopic = {
                 desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
             } else {
                 counter.textContent = 'Step ' + (idx + 1) + ' / ' + total;
-                desc.textContent = state.steps[idx].description;
+                desc.innerHTML = '<span>' + state.steps[idx].description + '</span>';
             }
         };
 
@@ -2579,6 +2579,10 @@ const recursionTopic = {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>0보다 크거나 같은 정수 N이 주어진다. 이때, N!을 출력하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 정수 N(0 ≤ N ≤ 20)이 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 N!을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>10</pre></div>
                     <div><strong>출력</strong><pre>3628800</pre></div>
@@ -2638,6 +2642,10 @@ const recursionTopic = {
                 <p>피보나치 수는 0과 1로 시작한다. 0번째 피보나치 수는 0이고, 1번째 피보나치 수는 1이다. 그 다음 2번째부터는 바로 앞 두 피보나치 수의 합이 된다.</p>
                 <p>이를 식으로 써보면 Fn = Fn-1 + Fn-2 (n ≥ 2)가 된다.</p>
                 <p>n이 주어졌을 때, n번째 피보나치 수를 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 n이 주어진다. n은 20보다 작거나 같은 자연수 또는 0이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 n번째 피보나치 수를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>10</pre></div>
                     <div><strong>출력</strong><pre>55</pre></div>
@@ -2691,6 +2699,11 @@ const recursionTopic = {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>정수를 문자열로 변환한 다음, 그 문자열이 팰린드롬인지 재귀 함수를 이용해 판별하려 한다. isPalindrome 함수가 주어졌을 때, 각 문자열에 대해 팰린드롬 여부(1 또는 0)와 재귀 함수 recursion의 호출 횟수를 출력하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 테스트케이스의 개수 T가 주어진다. (1 ≤ T ≤ 1,000)</p>
+                <p>둘째 줄부터 T개의 줄에 알파벳 대문자로 구성된 문자열 S가 주어진다. (1 ≤ |S| ≤ 1,000)</p>
+                <h4>출력</h4>
+                <p>각 테스트케이스마다, isPalindrome 함수의 반환값과 recursion 함수의 호출 횟수를 한 줄에 공백으로 구분하여 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3
 AAA
@@ -2748,6 +2761,11 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>오늘도 서준이는 병합 정렬 수업 조교를 맡았다. 아래는 오름차순으로 정렬하는 병합 정렬 의사 코드이다. 배열 A가 주어졌을 때, 병합 정렬로 배열을 오름차순으로 정렬할 경우 배열 A에 K번째로 저장되는 수를 구하는 프로그램을 작성하시오. 저장 횟수가 K보다 작으면 -1을 출력한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 배열 A의 크기 N(5 ≤ N ≤ 500,000), 저장 횟수 K(1 ≤ K ≤ 10<sup>8</sup>)가 주어진다.</p>
+                <p>다음 줄에 서로 다른 배열 A의 원소 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어진다. (1 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
+                <h4>출력</h4>
+                <p>배열 A에 K번째 저장 되는 수를 출력한다. 저장 횟수가 K보다 작으면 -1을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 7
 4 5 1 3 2</pre></div>
@@ -2832,6 +2850,10 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>칸토어 집합은 0과 1 사이의 실수로 이루어진 집합으로, [0, 1]에서 시작하여 각 구간을 3등분하여 가운데 구간을 제거하는 작업을 무한히 반복하여 얻어진다. 길이가 3^N인 문자열에서 시작하여, 가운데 1/3을 공백으로 바꾸는 과정을 반복한다. 입력이 없을 때까지 반복.</p>
+                <h4>입력</h4>
+                <p>입력을 여러 줄로 이루어져 있다. 각 줄에 N이 주어진다. 파일의 끝에서 입력을 멈춘다. N은 0보다 크거나 같고, 12보다 작거나 같은 정수이다.</p>
+                <h4>출력</h4>
+                <p>입력으로 주어진 N에 대해서, 해당하는 칸토어 집합의 근사를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>0</pre></div>
                     <div><strong>출력</strong><pre>-</pre></div>
@@ -2903,6 +2925,10 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>재귀적인 패턴으로 별을 찍어 보자. N이 3의 거듭제곱(3, 9, 27, ...)이라고 할 때, 크기 N의 패턴은 N×N 정사각형 모양이다. 크기 3의 패턴은 가운데가 비어있는 3×3 패턴이고, 크기 N의 패턴은 가운데가 비어있는 (N/3)×(N/3) 패턴을 크기 N/3의 패턴 8개로 둘러싼 형태이다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 N이 주어진다. N은 3의 거듭제곱이다. 즉 어떤 정수 k에 대해 N=3<sup>k</sup>이며, 이때 1 ≤ k < 8이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄부터 N번째 줄까지 별을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>27</pre></div>
                     <div><strong>출력</strong><pre>(27×27 star pattern)</pre></div>
@@ -2967,6 +2993,11 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>세 개의 장대가 있고 첫 번째 장대에 반경이 서로 다른 n개의 원판이 쌓여 있다. 이 원판을 다음과 같은 규칙에 따라 세 번째 장대로 옮기려 한다. 한 번에 한 개의 원판만을 다른 탑으로 옮길 수 있다. 쌓아 놓은 원판은 항상 위의 것이 아래의 것보다 작아야 한다. 이 작업을 수행하는데 필요한 이동 순서를 출력하는 프로그램을 작성하라. 단, 이동 횟수는 최소가 되어야 한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 첫 번째 장대에 쌓인 원판의 개수 N (1 ≤ N ≤ 20)이 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 옮긴 횟수 K를 출력한다.</p>
+                <p>두 번째 줄부터 수행 과정을 출력한다. 두 번째 줄부터 K개의 줄에 걸쳐 두 정수 A B를 빈칸을 사이에 두고 출력하는데, 이는 A번째 탑의 가장 위에 있는 원판을 B번째 탑의 가장 위로 옮긴다는 뜻이다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3</pre></div>
                     <div><strong>출력</strong><pre>7

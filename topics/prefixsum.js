@@ -1048,7 +1048,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1500,6 +1500,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>입력</strong><pre>5 3\n5 4 3 2 1\n1 3\n2 4\n5 5</pre></div>
                     <div><strong>출력</strong><pre>12\n9\n1</pre></div>
                 </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에 수의 개수 N과 합을 구해야 하는 횟수 M이 주어진다. 둘째 줄에는 N개의 수가 주어진다. 수는 1,000보다 작거나 같은 자연수이다. 셋째 줄부터 M개의 줄에는 합을 구해야 하는 구간 i와 j가 주어진다.</p>
+                <h4>출력</h4>
+                <p>총 M개의 줄에 입력으로 주어진 i번째 수부터 j번째 수까지의 합을 출력한다.</p>
                 <h4>제약 조건</h4>
                 <ul>
                     <li>1 ≤ N ≤ 100,000</li>
@@ -1551,6 +1555,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>입력</strong><pre>10 5\n3 -2 -4 -9 0 3 7 13 8 -3</pre></div>
                     <div><strong>출력</strong><pre>31</pre></div>
                 </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에는 두 개의 정수 N과 K가 한 개의 공백을 사이에 두고 순서대로 주어진다. 첫 번째 정수 N은 온도를 측정한 전체 날짜의 수이다. N은 2 이상 100,000 이하이다. 두 번째 정수 K는 합을 구하기 위한 연속적인 날짜의 수이다. K는 1 이상 N 이하이다. 둘째 줄에는 매일 측정한 온도를 나타내는 N개의 정수가 빈칸을 사이에 두고 주어진다. 이 수들은 모두 -100 이상 100 이하이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 연속적인 K일의 온도의 합이 최대가 되는 값을 출력한다.</p>
                 <h4>제약 조건</h4>
                 <ul>
                     <li>2 ≤ N ≤ 100,000</li>
@@ -1600,6 +1608,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>입력</strong><pre>seungjaehwang\n4\na 0 5\na 0 12\ns 0 12\nn 2 7</pre></div>
                     <div><strong>출력</strong><pre>0\n2\n1\n1</pre></div>
                 </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에 알파벳 소문자로만 이루어진 문자열 S가 주어진다. 둘째 줄에는 질의의 수 q가 주어진다. 셋째 줄부터 q개의 줄에는 각 질의를 나타내는 알파벳 소문자 a와 두 정수 l, r이 주어진다.</p>
+                <h4>출력</h4>
+                <p>각 질의에 대해 S의 l번째 문자부터 r번째 문자까지(0-indexed) a가 몇 번 등장하는지 출력한다.</p>
                 <h4>제약 조건</h4>
                 <ul>
                     <li>1 ≤ |S| ≤ 200,000</li>
@@ -1647,6 +1659,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>입력</strong><pre>5 3\n1 2 3 1 2</pre></div>
                     <div><strong>출력</strong><pre>7</pre></div>
                 </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에 N과 M이 주어진다. (1 ≤ N ≤ 10<sup>6</sup>, 2 ≤ M ≤ 10<sup>3</sup>) 둘째 줄에 N개의 수 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어진다. (0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 연속 부분 합이 M으로 나누어 떨어지는 구간의 개수를 출력한다.</p>
                 <h4>제약 조건</h4>
                 <ul>
                     <li>1 ≤ N ≤ 10<sup>6</sup></li>
@@ -1696,6 +1712,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>입력</strong><pre>4 3\n1 2 3 4\n2 3 4 5\n3 4 5 6\n4 5 6 7\n2 2 3 4\n3 4 3 4\n1 1 4 4</pre></div>
                     <div><strong>출력</strong><pre>27\n6\n64</pre></div>
                 </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에 표의 크기 N과 합을 구해야 하는 횟수 M이 주어진다. (1 ≤ N ≤ 1,024, 1 ≤ M ≤ 100,000) 둘째 줄부터 N개의 줄에는 표에 채워져 있는 수가 1행부터 차례대로 주어진다. 다음 M개의 줄에는 네 개의 정수 x1, y1, x2, y2가 주어지며, (x1, y1)부터 (x2, y2)의 합을 구해야 한다. 표에 채워져 있는 수는 1,000보다 작거나 같은 자연수이다. (x1 ≤ x2, y1 ≤ y2)</p>
+                <h4>출력</h4>
+                <p>총 M줄에 걸쳐 (x1, y1)부터 (x2, y2)까지 합을 구해 출력한다.</p>
                 <h4>제약 조건</h4>
                 <ul>
                     <li>1 ≤ N ≤ 1,024</li>
@@ -1747,6 +1767,10 @@ int query(int r1, int c1, int r2, int c2) {\n\
                     <div><strong>입력</strong><pre>8 8 8\nWBWBWBWB\nBWBWBWBW\nWBWBWBWB\nBWBWBWBW\nWBWBWBWB\nBWBWBWBW\nWBWBWBWB\nBWBWBWBW</pre></div>
                     <div><strong>출력</strong><pre>0</pre></div>
                 </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에 정수 N, M, K가 주어진다. 둘째 줄부터 N개의 줄에는 보드의 각 행의 상태가 B와 W로 이루어진 길이 M인 문자열로 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 다시 칠해야 하는 정사각형의 최소 개수를 출력한다.</p>
                 <h4>제약 조건</h4>
                 <ul>
                     <li>1 ≤ K ≤ min(N, M)</li>

@@ -1011,7 +1011,7 @@ bool isValid(string s) {
                 desc.textContent = '▶ Click Next to start';
             } else {
                 counter.textContent = 'Step ' + (idx + 1) + ' / ' + total;
-                desc.textContent = state.steps[idx].description;
+                desc.innerHTML = '<span>' + state.steps[idx].description + '</span>';
             }
         };
         var actionDelay = 350;
@@ -1796,6 +1796,11 @@ bool isValid(string s) {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Jaemin, the leader of Nacoder, is organizing the ledger. Being very energetic, he came up with a fun game. Jaemin calls out K numbers. If a number is not "0", write it in the ledger. If it is "0", erase the most recently written number. When the game is over, write a program to find the sum of all numbers remaining in the ledger. When 0 is given, there is always a number to erase.</p>
+                <h4>Input</h4>
+                <p>The first line contains the integer K. (1 &le; K &le; 100,000)</p>
+                <p>Each of the following K lines contains one integer. Integers range from 0 to 100,000, and if the integer is "0", erase the most recently written number; otherwise, write that number.</p>
+                <h4>Output</h4>
+                <p>Print the sum of all numbers remaining in the ledger when the game is over. This value is at most 2<sup>31</sup> - 1.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>4\n3\n0\n4\n0</pre></div>
@@ -1994,6 +1999,10 @@ public:
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>There are N cards. Each card is numbered from 1 to N, with card 1 on top and card N on the bottom. The following operations are repeated until only one card remains: First, discard the top card. Then move the next top card to the bottom. Find the last remaining card.</p>
+                <h4>Input</h4>
+                <p>The first line contains the integer N (1 &le; N &le; 500,000).</p>
+                <h4>Output</h4>
+                <p>Print the number of the last remaining card.</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>6</pre></div>

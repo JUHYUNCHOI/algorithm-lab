@@ -1217,7 +1217,7 @@ for (int i = 0; i &lt; result.size(); i++)
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2377,6 +2377,10 @@ for (int i = 0; i &lt; result.size(); i++)
                     <div><strong>Input</strong><pre>4 2\n4 2\n3 1</pre></div>
                     <div><strong>Output</strong><pre>4 3 2 1</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains N (1 ≤ N ≤ 32,000) and M (1 ≤ M ≤ 100,000). M is the number of height comparisons. The next M lines each contain two student numbers A and B, meaning student A must stand in front of student B.</p>
+                <h4>Output</h4>
+                <p>Output the result of lining up students from front to back. If there are multiple valid answers, print any one of them.</p>
                 <h4>Constraints</h4>
                 <ul><li>1 ≤ N ≤ 32,000</li><li>1 ≤ M ≤ 100,000</li></ul>
             `,
@@ -2435,6 +2439,10 @@ for (int i = 0; i &lt; result.size(); i++)
                     <div><strong>Input</strong><pre>4 2\n4 2\n3 1</pre></div>
                     <div><strong>Output</strong><pre>3 1 4 2</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of problems N (1 ≤ N ≤ 32,000) and the number of prerequisite pairs M (1 ≤ M ≤ 100,000). From the second line, M lines each contain two integers A and B, meaning problem A should be solved before problem B.</p>
+                <h4>Output</h4>
+                <p>Output the problem numbers in the order they should be solved, separated by spaces.</p>
                 <h4>Constraints</h4>
                 <ul><li>1 ≤ N ≤ 32,000</li><li>1 ≤ M ≤ 100,000</li></ul>
             `,
@@ -2491,6 +2499,10 @@ for (int i = 0; i &lt; result.size(); i++)
                     <div><strong>Input</strong><pre>3\n5\n5 4 3 2 1\n2\n2 4\n3 4\n3\n2 3 1\n0\n4\n1 2 3 4\n3\n1 2\n3 4\n2 3</pre></div>
                     <div><strong>Output</strong><pre>5 3 2 4 1\n2 3 1\nIMPOSSIBLE</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases. For each test case, the first line contains the number of teams n (2 ≤ n ≤ 500). The second line contains the team numbers in last year's ranking order. The third line contains the number of changed pairs m (0 ≤ m ≤ 25,000). The next m lines each contain a pair of teams whose relative ranking has changed.</p>
+                <h4>Output</h4>
+                <p>For each test case, output this year's ranking. If the ranking cannot be uniquely determined, print "?". If the data is inconsistent and no ranking is possible, print "IMPOSSIBLE".</p>
                 <h4>Constraints</h4>
                 <ul><li>2 ≤ n ≤ 500</li><li>0 ≤ m ≤ 25,000</li><li>T is the number of test cases</li></ul>
             `,

@@ -966,7 +966,7 @@ int main() {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '▶ Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1495,6 +1495,11 @@ int main() {
                     <div><strong>Input</strong><pre>10 4790\n1\n5\n10\n50\n100\n500\n1000\n5000\n10000\n50000</pre></div>
                     <div><strong>Output</strong><pre>12</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains N and K. (1 ≤ N ≤ 10, 1 ≤ K ≤ 100,000,000)</p>
+                <p>From the second line, N lines each contain the coin value A<sub>i</sub> in ascending order. (1 ≤ A<sub>i</sub> ≤ 1,000,000, A<sub>1</sub> = 1, and for i ≥ 2, A<sub>i</sub> is a multiple of A<sub>i-1</sub>)</p>
+                <h4>Output</h4>
+                <p>Output the minimum number of coins needed to make K.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 10</li>
@@ -1546,6 +1551,10 @@ int main() {
                     <div><strong>Input</strong><pre>5\n3 1 4 3 2</pre></div>
                     <div><strong>Output</strong><pre>32</pre></div>
                 </div><p>If you rearrange the order to 1, 2, 3, 3, 4, then 1 + 3 + 6 + 9 + 13 = 32</p></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of people N (1 ≤ N ≤ 1,000). The second line contains each person's withdrawal time P<sub>i</sub>. (1 ≤ P<sub>i</sub> ≤ 1,000)</p>
+                <h4>Output</h4>
+                <p>Output the minimum sum of time each person needs to withdraw money.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 1,000</li>
@@ -1599,6 +1608,10 @@ int main() {
                     <div><strong>Input</strong><pre>11\n1 4\n3 5\n0 6\n5 7\n3 8\n5 9\n6 10\n8 11\n8 12\n2 13\n12 14</pre></div>
                     <div><strong>Output</strong><pre>4</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of meetings N (1 ≤ N ≤ 100,000). From the second line, N lines each contain the start and end times of each meeting. Start and end times are natural numbers or 0, no greater than 2<sup>31</sup>-1.</p>
+                <h4>Output</h4>
+                <p>Output the maximum number of meetings that can be scheduled.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 100,000</li>
@@ -1658,6 +1671,10 @@ int main() {
                     <div><strong>Input</strong><pre>00009-00009</pre></div>
                     <div><strong>Output</strong><pre>0</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the expression. The expression consists only of '0'~'9', '+', and '-'. The first and last characters are numbers. Two or more consecutive operators do not appear, and no number has more than 5 consecutive digits. Numbers can start with 0. The length of the expression is at most 50.</p>
+                <h4>Output</h4>
+                <p>Output the minimum value of the expression on the first line.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>The expression contains only '0'~'9', '+', '-'</li>
@@ -1718,6 +1735,10 @@ int main() {
                     <div><strong>Input</strong><pre>4\n3 3 4\n1 1 1 1</pre></div>
                     <div><strong>Output</strong><pre>10</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of cities N (2 ≤ N ≤ 100,000). The second line contains N-1 integers representing the road lengths between adjacent cities, from left to right. The third line contains N integers representing the gas price per liter at each city, from left to right. (1 ≤ road length, price per liter ≤ 1,000,000,000)</p>
+                <h4>Output</h4>
+                <p>Output the minimum cost to travel from the leftmost city to the rightmost city.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>2 ≤ N ≤ 100,000</li>

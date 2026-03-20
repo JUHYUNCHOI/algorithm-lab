@@ -664,7 +664,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = '시작 전'; desc.innerHTML = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1437,6 +1437,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>N개의 정수 A[1], A[2], …, A[N]이 주어져 있을 때, 이 안에 X라는 정수가 존재하는지 알아내는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 자연수 N(1 ≤ N ≤ 100,000)이 주어진다. 다음 줄에는 N개의 정수 A[1], A[2], …, A[N]이 주어진다. 다음 줄에는 M(1 ≤ M ≤ 100,000)이 주어진다. 다음 줄에는 M개의 수들이 주어지는데, 이 수들이 A안에 존재하는지 알아내면 된다. 모든 정수의 범위는 -2<sup>31</sup> 보다 크거나 같고 2<sup>31</sup>보다 작다.</p>
+                <h4>출력</h4>
+                <p>M개의 줄에 답을 출력한다. 존재하면 1을, 존재하지 않으면 0을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5\n4 1 5 2 3\n5\n1 3 7 9 5</pre></div>
                     <div><strong>출력</strong><pre>1\n1\n0\n0\n1</pre></div>
@@ -1485,6 +1489,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>숫자 카드는 정수 하나가 적혀져 있는 카드이다. 상근이는 숫자 카드 N개를 가지고 있다. 정수 M개가 주어졌을 때, 이 수가 적혀있는 숫자 카드를 상근이가 몇 개 가지고 있는지 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 숫자 카드의 개수 N(1 ≤ N ≤ 500,000)이 주어진다. 둘째 줄에는 숫자 카드에 적혀있는 정수가 주어진다. 숫자 카드에 적혀있는 수는 -10,000,000보다 크거나 같고, 10,000,000보다 작거나 같다. 셋째 줄에는 M(1 ≤ M ≤ 500,000)이 주어진다. 넷째 줄에는 상근이가 몇 개 가지고 있는 숫자 카드인지 구해야 할 M개의 정수가 주어지며, 이 수는 공백으로 구분되어져 있다. 이 수도 -10,000,000보다 크거나 같고, 10,000,000보다 작거나 같다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 입력으로 주어진 M개의 수에 대해서, 각 수가 적힌 숫자 카드를 상근이가 몇 개 가지고 있는지를 공백으로 구분해 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>10\n6 3 2 10 10 10 -10 -10 7 3\n8\n10 9 -5 2 3 4 5 -10</pre></div>
                     <div><strong>출력</strong><pre>3 0 0 1 2 0 0 2</pre></div>
@@ -1533,6 +1541,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>집에서 시간을 보내던 오영식은 이미 가지고 있는 K개의 랜선을 잘라서 N개의 같은 길이의 랜선을 만들려고 한다. 편의를 위해 랜선을 자르거나 만들 때 손실되는 길이는 없다고 가정하며, 기존의 K개의 랜선으로 N개의 랜선을 만들 수 없는 경우는 없다고 가정하자. N개보다 많이 만드는 것도 N개를 만드는 것에 포함된다. 만들 수 있는 최대 랜선의 길이를 구하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에는 오영식이 이미 가지고 있는 랜선의 개수 K, 그리고 필요한 랜선의 개수 N이 입력된다. K는 1이상 10,000이하의 정수이고, N은 1이상 1,000,000이하의 정수이다. 그리고 항상 K ≤ N 이다. 그 후 K줄에 걸쳐 이미 가지고 있는 각 랜선의 길이가 센티미터 단위의 정수로 입력된다. 랜선의 길이는 2<sup>31</sup>-1보다 작거나 같은 자연수이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 N개를 만들 수 있는 랜선의 최대 길이를 센티미터 단위의 정수로 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4 11\n802\n743\n457\n539</pre></div>
                     <div><strong>출력</strong><pre>200</pre></div>
@@ -1583,6 +1595,11 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>상근이는 나무 M 미터가 필요하다. 절단기에 높이 H를 지정하면 한 줄에 연속해있는 나무를 모두 높이 H 위의 부분이 잘린다. H보다 작은 나무는 잘리지 않는다. 적어도 M 미터의 나무를 집에 가져가기 위해서 절단기에 설정할 수 있는 높이의 최댓값을 구하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 나무의 수 N과 상근이가 집으로 가져가려고 하는 나무의 길이 M이 주어진다. (1 ≤ N ≤ 1,000,000, 1 ≤ M ≤ 2,000,000,000)</p>
+                <p>둘째 줄에는 나무의 높이가 주어진다. 나무의 높이의 합은 항상 M보다 크거나 같으므로, 상근이는 집에 필요한 나무를 항상 가져갈 수 있다. 높이는 1,000,000,000보다 작거나 같은 양의 정수 또는 0이다.</p>
+                <h4>출력</h4>
+                <p>적어도 M미터의 나무를 집에 가져가기 위해서 절단기에 설정할 수 있는 높이의 최댓값을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4 7\n20 15 10 17</pre></div>
                     <div><strong>출력</strong><pre>15</pre></div>
@@ -1635,6 +1652,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>도현이의 집 N개가 수직선 위에 있다. 집의 좌표가 주어졌을 때, C개의 공유기를 설치하려고 한다. 가장 인접한 두 공유기 사이의 거리를 가능한 한 크게 하여 설치하려고 할 때, 가장 인접한 두 공유기 사이의 최대 거리를 출력하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 집의 개수 N (2 ≤ N ≤ 200,000)과 공유기의 개수 C (2 ≤ C ≤ N)이 하나 이상의 빈 칸을 사이에 두고 주어진다. 둘째 줄부터 N개의 줄에는 집의 좌표를 나타내는 x<sub>i</sub> (0 ≤ x<sub>i</sub> ≤ 1,000,000,000)가 한 줄에 하나씩 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 가장 인접한 두 공유기 사이의 최대 거리를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5 3\n1\n2\n8\n4\n9</pre></div>
                     <div><strong>출력</strong><pre>3</pre></div>
@@ -1685,6 +1706,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>세준이는 크기가 N×N인 배열 A를 만들었다. 배열에 들어있는 수 A[i][j] = i × j 이다. 이 수를 일차원 배열 B에 넣으면 B의 크기는 N×N이 된다. B를 오름차순 정렬했을 때, B[k]를 구해보자. 배열 A와 B의 인덱스는 1부터 시작한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 배열의 크기 N이 주어진다. N은 10<sup>5</sup>보다 작거나 같은 자연수이다. 둘째 줄에 k가 주어진다. k는 min(10<sup>9</sup>, N<sup>2</sup>)보다 작거나 같은 자연수이다.</p>
+                <h4>출력</h4>
+                <p>B[k]를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3\n7</pre></div>
                     <div><strong>출력</strong><pre>6</pre></div>
@@ -1732,6 +1757,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열을 구하는 프로그램을 작성하시오. 예를 들어, 수열 A = {10, 20, 10, 30, 20, 50} 인 경우에 가장 긴 증가하는 부분 수열은 A = {<strong>10</strong>, <strong>20</strong>, 10, <strong>30</strong>, 20, <strong>50</strong>} 이고, 길이는 4이다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 수열 A의 크기 N (1 ≤ N ≤ 1,000,000)이 주어진다. 둘째 줄에는 수열 A를 이루고 있는 A<sub>i</sub>가 주어진다. (1 ≤ A<sub>i</sub> ≤ 1,000,000)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 수열 A의 가장 긴 증가하는 부분 수열의 길이를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>6\n10 20 10 30 20 50</pre></div>
                     <div><strong>출력</strong><pre>4</pre></div>

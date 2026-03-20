@@ -1139,8 +1139,8 @@ struct HashTable {
         const updateUI = () => {
             const idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0); nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { counter.textContent = '시작 전'; desc.innerHTML = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.innerHTML = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = '시작 전'; desc.innerHTML = '<span>▶ 다음 버튼을 눌러 시작하세요</span>'; }
+            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         };
         var actionDelay = 350;
         nextBtn.addEventListener('click', () => { if (state.currentStep >= state.steps.length - 1) return; state.currentStep++; updateUI(); setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay); });
@@ -1317,31 +1317,17 @@ struct HashTable {
                     <label>배열: <input type="text" id="ht-ss-input" value="${DEFAULT_ARR.join(', ')}" style="width:280px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
                     <label>k: <input type="number" id="ht-ss-k" value="${DEFAULT_K}" style="width:60px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
                     <button class="btn btn-primary" id="ht-ss-start">🔄</button>
+                    <span style="margin-left:auto;font-size:0.88rem;color:var(--text2);">찾은 부분배열: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
                 </div>
                 <div id="ht-ss-boxes" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;"></div>
-                <div id="ht-ss-explain" style="padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--bg);margin-bottom:12px;">
-                    <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9rem;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span style="font-size:0.82rem;color:var(--text2);font-weight:600;">누적합 비교</span>
-                            <span style="font-size:0.82rem;">찾은 부분배열: <strong id="ht-ss-cnt" style="color:var(--green);">0</strong></span>
-                        </div>
-                        <div>① 여기까지 합: <span id="ht-ss-sum" style="font-weight:700;">—</span></div>
-                        <div>② 이전 누적합: <span id="ht-ss-lookup" style="font-weight:700;">—</span></div>
-                        <div id="ht-ss-result" style="border-top:1px dashed var(--border);padding-top:6px;margin-top:2px;font-weight:600;color:var(--text3);">—</div>
-                    </div>
-                </div>
                 <div style="margin-bottom:12px;width:100%;">
-                    <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">③ 합 기록 <span style="font-weight:400;font-size:0.82rem;">(여기까지의 합이 X였던 적이 몇 번?)</span></div>
+                    <div style="font-weight:600;margin-bottom:6px;font-size:0.88rem;color:var(--text2);">합 기록 <span style="font-weight:400;font-size:0.82rem;">(여기까지의 합이 X였던 적이 몇 번?)</span></div>
                     <div id="ht-ss-pc" style="display:flex;flex-direction:column;gap:3px;"></div>
                 </div>
             </div>
             ${self._createStepControls('-ss')}
         `;
         const boxesEl = container.querySelector('#ht-ss-boxes');
-        const explainEl = container.querySelector('#ht-ss-explain');
-        const sumEl = container.querySelector('#ht-ss-sum');
-        const lookupEl = container.querySelector('#ht-ss-lookup');
-        const resultEl = container.querySelector('#ht-ss-result');
         const pcEl = container.querySelector('#ht-ss-pc');
         const cntEl = container.querySelector('#ht-ss-cnt');
 
@@ -1364,21 +1350,14 @@ struct HashTable {
                         (isHL ? '<span style="color:var(--accent);font-weight:600;margin-left:auto;">← 찾음!</span>' : '') + '</div>';
                 }).join('');
             }
-            sumEl.innerHTML = '—'; lookupEl.innerHTML = '—'; resultEl.innerHTML = '—'; resultEl.style.color = 'var(--text3)';
-            explainEl.style.borderColor = 'var(--border)'; explainEl.style.background = 'var(--bg)';
             pcEl.innerHTML = renderPcTable({0: 1}); cntEl.textContent = '0';
 
             function saveState() {
                 return { boxes: Array.from(boxesEl.children).map(b => ({ cls: b.className, st: b.style.cssText })),
-                    sum: sumEl.innerHTML, lookup: lookupEl.innerHTML, result: resultEl.innerHTML, resultColor: resultEl.style.color,
-                    explainBorder: explainEl.style.borderColor, explainBg: explainEl.style.background,
                     pc: pcEl.innerHTML, cnt: cntEl.innerHTML };
             }
             function restoreState(s) {
                 Array.from(boxesEl.children).forEach((b, i) => { b.className = s.boxes[i].cls; b.style.cssText = s.boxes[i].st; });
-                sumEl.innerHTML = s.sum; lookupEl.innerHTML = s.lookup;
-                resultEl.innerHTML = s.result; resultEl.style.color = s.resultColor;
-                explainEl.style.borderColor = s.explainBorder; explainEl.style.background = s.explainBg;
                 pcEl.innerHTML = s.pc; cntEl.innerHTML = s.cnt;
             }
 
@@ -1388,15 +1367,10 @@ struct HashTable {
             let prefixSum = 0, count = 0;
 
             // ──── 스텝 0: 핵심 아이디어 설명 ────
-            steps.push({ description: '<strong>핵심 아이디어</strong>: 0번부터 i번까지의 합을 "누적합"이라 하자. 만약 이전 어떤 지점 j까지의 누적합이 (현재 누적합 − k)이면, <strong>j+1번~i번 구간의 합 = k</strong>가 된다! 해시맵에 각 누적합이 몇 번 나왔는지 기록하면서 찾는다. 합=0은 "시작 전"(아무것도 안 더한 상태)이므로 1로 초기화.',
+            steps.push({ description: '<strong>준비 단계</strong> — 앞에서부터 하나씩 더해가면서 "처음~여기까지의 합"(누적합)을 구합니다. 매 위치에서 <strong>누적합 − k</strong>를 해시맵에서 찾아볼 건데, 만약 이전에 그 값이 누적합이었던 적이 있다면? 그때부터 지금까지의 구간 합이 딱 <strong>k</strong>가 됩니다! 해시맵은 <code>{0: 1}</code>로 시작합니다. "아직 아무것도 안 더한 상태(합=0)가 1번 있었다"는 뜻이에요.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
-                    sumEl.innerHTML = '—';
-                    lookupEl.innerHTML = '—';
-                    resultEl.innerHTML = '<span style="color:var(--accent);">현재합 − k = 이전합이면 → 그 구간의 합이 k!</span>';
-                    resultEl.style.color = 'var(--accent)';
-                    explainEl.style.borderColor = 'var(--accent)'; explainEl.style.background = 'rgba(108,92,231,0.05)';
                     pcEl.innerHTML = renderPcTable({0: 1});
                     cntEl.textContent = '0';
                 },
@@ -1433,10 +1407,6 @@ struct HashTable {
                         this._before = saveState();
                         Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < i ? ' matched' : ''); b.style.cssText = ''; });
                         boxesEl.children[i].className = 'str-char-box comparing';
-                        sumEl.innerHTML = formula;
-                        lookupEl.innerHTML = '—';
-                        resultEl.innerHTML = '—'; resultEl.style.color = 'var(--text3)';
-                        explainEl.style.borderColor = 'var(--border)'; explainEl.style.background = 'var(--bg)';
                         pcEl.innerHTML = renderPcTable(pcBeforeRecord);
                         cntEl.textContent = countBefore;
                     },
@@ -1445,19 +1415,12 @@ struct HashTable {
 
                 if (cf > 0) {
                     // ──── 스텝 B: 찾기 (매치 있음) ────
-                    var lookupMatch = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
-                        ' → <span style="color:var(--green);">합=' + cd + '인 지점: ' + prevPosLabel + '!</span>';
-
                     steps.push({ description: '현재 누적합 <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. 해시맵에서 "이전에 누적합=' + cd + '인 지점"을 찾는다. <em>왜? 그 지점 다음~여기까지의 구간합이 ' + cs + '−' + cd + '=' + k + '이 되니까!</em> → <span style="color:var(--green);font-weight:700;">있다! (' + prevPosLabel + ')</span>',
                         _before: null,
                         action: function() {
                             this._before = saveState();
                             Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j < i ? ' matched' : ''); b.style.cssText = ''; });
                             boxesEl.children[i].className = 'str-char-box comparing';
-                            sumEl.innerHTML = formula;
-                            lookupEl.innerHTML = lookupMatch;
-                            resultEl.innerHTML = '—'; resultEl.style.color = 'var(--text3)';
-                            explainEl.style.borderColor = 'var(--accent)'; explainEl.style.background = 'rgba(108,92,231,0.05)';
                             pcEl.innerHTML = renderPcTable(pcBeforeRecord, cd);
                             cntEl.textContent = countBefore;
                         },
@@ -1466,7 +1429,6 @@ struct HashTable {
 
                     // ──── 스텝 C: 발견! ────
                     var subArr = arr.slice(cSS, cSE + 1);
-                    var resultMatch = '→ ' + prevPosLabel + ' 다음(' + cSS + '번) ~ 여기(' + cSE + '번) = <strong>[' + subArr.join(', ') + ']</strong>, 구간합 = ' + cs + ' − ' + cd + ' = ' + k + ' = k ✅';
 
                     steps.push({ description: '<span style="color:var(--green);font-weight:700;">발견!</span> ' + prevPosLabel + '까지 누적합=' + cd + ', 여기(' + cSE + '번)까지 누적합=' + cs + '. 그 사이 구간 [' + subArr.join(', ') + ']의 합 = ' + cs + ' − ' + cd + ' = <strong>' + k + '</strong> = k! 그리고 현재 누적합 ' + cs + '도 해시맵에 기록한다.',
                         _before: null,
@@ -1477,10 +1439,6 @@ struct HashTable {
                             for (var j = cSS; j <= cSE; j++) {
                                 boxesEl.children[j].style.cssText = 'border-bottom:3px solid var(--green);background:rgba(0,184,148,0.12);';
                             }
-                            sumEl.innerHTML = formula;
-                            lookupEl.innerHTML = lookupMatch;
-                            resultEl.innerHTML = resultMatch; resultEl.style.color = 'var(--green)';
-                            explainEl.style.borderColor = 'var(--green)'; explainEl.style.background = 'rgba(0,184,148,0.06)';
                             pcEl.innerHTML = renderPcTable(pcAfterRecord);
                             cntEl.textContent = countAfter;
                         },
@@ -1488,19 +1446,12 @@ struct HashTable {
                     });
                 } else {
                     // ──── 스텝 B: 찾기 (매치 없음) ────
-                    var lookupMiss = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
-                        ' → <span style="color:var(--text3);">합=' + cd + '인 지점 없음</span>';
-
                     steps.push({ description: '현재 누적합 <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. 해시맵에서 "이전에 누적합=' + cd + '인 지점"을 찾는다. <em>왜? 있으면 그 구간의 합이 k니까!</em> → <span style="color:var(--text3);">없다.</span> 여기서 끝나는 합=k 구간은 없다. 현재 누적합 ' + cs + '을 해시맵에 기록하고 넘어간다.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
                             Array.from(boxesEl.children).forEach(function(b, j) { b.className = 'str-char-box' + (j <= i ? ' matched' : ''); b.style.cssText = ''; });
                             boxesEl.children[i].className = 'str-char-box comparing';
-                            sumEl.innerHTML = formula;
-                            lookupEl.innerHTML = lookupMiss;
-                            resultEl.innerHTML = '→ 연속 구간 없음'; resultEl.style.color = 'var(--text3)';
-                            explainEl.style.borderColor = 'var(--border)'; explainEl.style.background = 'var(--bg)';
                             pcEl.innerHTML = renderPcTable(pcAfterRecord);
                             cntEl.textContent = countAfter;
                         },
@@ -1513,8 +1464,6 @@ struct HashTable {
                 action: function() {
                     this._before = saveState();
                     Array.from(boxesEl.children).forEach(function(b) { b.className = 'str-char-box matched'; b.style.cssText = ''; });
-                    resultEl.innerHTML = '✅ 총 <strong>' + count + '</strong>개 발견!'; resultEl.style.color = 'var(--green)';
-                    explainEl.style.borderColor = 'var(--green)'; explainEl.style.background = 'rgba(0,184,148,0.06)';
                     cntEl.innerHTML = '<span style="color:var(--green);">' + count + '</span>';
                 },
                 undo: function() { restoreState(this._before); }
@@ -2021,6 +1970,10 @@ public:
             descriptionHTML: `<h3>문제</h3>
                 <p>출입 기록이 주어집니다. <code>"enter"</code>면 입장, <code>"leave"</code>면 퇴장입니다.
                 현재 회사에 <strong>남아있는 사람</strong>을 사전 역순으로 출력하세요.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 출입 기록의 수 n (1 &le; n &le; 10<sup>6</sup>)이 주어진다. 다음 n개의 줄에는 각 직원의 이름과 "enter" 또는 "leave"가 주어진다. 이름은 알파벳 대소문자로 이루어져 있으며, 길이는 1 이상 20 이하이다.</p>
+                <h4>출력</h4>
+                <p>현재 회사에 있는 모든 사람을 사전 역순으로 한 줄에 한 명씩 출력한다.</p>
 
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4

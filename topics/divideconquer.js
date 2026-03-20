@@ -1017,7 +1017,7 @@ var divideConquerTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2602,6 +2602,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>8\n1 1 0 0 0 0 1 1\n1 1 0 0 0 0 1 1\n0 0 0 0 1 1 0 0\n0 0 0 0 1 1 0 0\n1 0 0 0 1 1 1 1\n0 1 0 0 1 1 1 1\n0 0 1 1 1 1 1 1\n0 0 1 1 1 1 1 1</pre></div>
         <div><strong>출력</strong><pre>9\n7</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에는 전체 종이의 한 변의 길이 N이 주어져 있다. N은 2, 4, 8, 16, 32, 64, 128 중 하나이다. 색종이의 각 가로줄의 정사각형칸들의 색이 윗줄부터 차례로 둘째 줄부터 (N+1)번째 줄까지에 주어진다. 하얀색으로 칠해진 칸은 0, 파란색으로 칠해진 칸은 1로 주어지며, 각 줄마다 N개의 수가 빈 칸을 사이에 두고 주어진다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에는 잘라진 하얀색 색종이의 개수를 출력하고, 둘째 줄에는 파란색 색종이의 개수를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>N은 2, 4, 8, 16, 32, 64, 128 중 하나</li></ul>
 `,
@@ -2645,6 +2649,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>8\n11110000\n11110000\n00011100\n00011100\n11110000\n11110000\n11110011\n11110011</pre></div>
         <div><strong>출력</strong><pre>((110(0101))(0010)(1(0010)0)100)</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에는 영상의 크기를 나타내는 숫자 N이 주어진다. N은 언제나 2의 제곱수로 주어지며, 1 ≤ N ≤ 64의 범위를 가진다. 두 번째 줄부터는 길이 N의 문자열이 N개 주어진다. 각 문자는 0 또는 1이며, 0은 흰색, 1은 검은색을 뜻한다.</p>
+    <h4>출력</h4>
+    <p>영상을 압축한 결과를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>N은 2의 거듭제곱</li><li>1 ≤ N ≤ 64</li></ul>
 `,
@@ -2688,6 +2696,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>9\n0 0 0 1 1 1 -1 -1 -1\n0 0 0 1 1 1 -1 -1 -1\n0 0 0 1 1 1 -1 -1 -1\n1 1 1 0 0 0 0 0 0\n1 1 1 0 0 0 0 0 0\n1 1 1 0 0 0 0 0 0\n0 1 -1 0 1 -1 0 1 -1\n0 -1 1 0 -1 1 0 -1 1\n0 1 -1 1 0 -1 0 1 -1</pre></div>
         <div><strong>출력</strong><pre>10\n12\n11</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 N(1 ≤ N ≤ 3<sup>7</sup>, N은 3<sup>k</sup> 꼴)이 주어진다. 다음 N개의 줄에는 N개의 정수로 행렬이 주어진다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 -1로만 채워진 종이의 개수를, 둘째 줄에 0으로만 채워진 종이의 개수를, 셋째 줄에 1로만 채워진 종이의 개수를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>N은 3<sup>k</sup> 형태 (1 ≤ k ≤ 7, 즉 N ≤ 2,187)</li><li>각 칸은 -1, 0, 1만 포함</li></ul>
 `,
@@ -2733,6 +2745,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>10 11 12</pre></div>
         <div><strong>출력</strong><pre>4</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 A, B, C가 빈 칸을 사이에 두고 주어진다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 A를 B번 곱한 수를 C로 나눈 나머지를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>A, B, C는 모두 2,147,483,647 이하의 자연수</li></ul>
 `,
@@ -2776,6 +2792,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>5 2</pre></div>
         <div><strong>출력</strong><pre>10</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 4,000,000, 0 ≤ K ≤ N)</p>
+    <h4>출력</h4>
+    <p>C(N, K)를 1,000,000,007로 나눈 나머지를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
 `,
@@ -2821,6 +2841,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>3 2\n1 2\n3 4\n5 6\n2 3\n-1 -2 0\n0 0 3</pre></div>
         <div><strong>출력</strong><pre>-1 -2 6\n-3 -6 12\n-5 -10 18</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 행렬 A의 크기 N과 M이 주어진다. 둘째 줄부터 N개의 줄에 행렬 A의 원소 M개가 순서대로 주어진다. 그 다음 줄에 행렬 B의 크기 M과 K가 주어진다. 이어서 M개의 줄에 행렬 B의 원소 K개가 순서대로 주어진다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄부터 N개의 줄에 행렬 A와 B를 곱한 행렬을 출력한다. 행렬의 각 원소는 공백으로 구분한다.</p>
     <h4>제약 조건</h4>
     <ul><li>1 ≤ N, M, K ≤ 100</li><li>행렬 원소의 절댓값 ≤ 100</li><li>결과 행렬 원소의 절댓값 ≤ 2<sup>31</sup></li></ul>
 `,
@@ -2868,6 +2892,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>3 3\n1 2 3\n4 5 6\n7 8 9</pre></div>
         <div><strong>출력</strong><pre>468 576 684\n62 305 548\n656 34 412</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 행렬의 크기 N과 B가 주어진다. (2 ≤ N ≤ 5, 1 ≤ B ≤ 100,000,000,000) 둘째 줄부터 N개의 줄에 행렬의 각 원소가 주어진다. 행렬의 각 원소는 1,000보다 작거나 같은 자연수 또는 0이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄부터 N개의 줄에 걸쳐 행렬 A를 B번 곱한 결과 행렬의 각 원소를 1,000으로 나눈 나머지를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>2 ≤ N ≤ 5</li><li>1 ≤ B ≤ 100,000,000,000</li></ul>
 `,
@@ -2911,6 +2939,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>1000</pre></div>
         <div><strong>출력</strong><pre>517691607</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 n이 주어진다. n은 1,000,000,000,000,000,000보다 작거나 같은 자연수 또는 0이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 n번째 피보나치 수를 1,000,000,007로 나눈 나머지를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>0 ≤ n ≤ 10<sup>18</sup></li></ul>
 `,
@@ -2956,6 +2988,10 @@ var divideConquerTopic = {
         <div><strong>입력</strong><pre>7 2 1 4 5 1 3 3\n4 1000 1000 1000 1000\n0</pre></div>
         <div><strong>출력</strong><pre>8\n4000</pre></div>
     </div></div>
+    <h4>입력</h4>
+    <p>입력은 여러 테스트 케이스로 이루어져 있다. 각 테스트 케이스는 한 줄로 이루어져 있고, 첫 번째 수는 직사각형의 수 n(1 ≤ n ≤ 100,000)이다. 그 다음 n개의 정수 h<sub>1</sub>, ..., h<sub>n</sub> (0 ≤ h<sub>i</sub> ≤ 1,000,000,000)이 주어진다. 이 숫자들은 직사각형의 높이이며, 왼쪽부터 오른쪽 순서이다. 모든 직사각형의 너비는 1이다. 입력의 마지막 줄에는 0이 하나 주어진다.</p>
+    <h4>출력</h4>
+    <p>각 테스트 케이스에 대해서, 히스토그램에서 가장 넓이가 큰 직사각형의 넓이를 출력한다.</p>
     <h4>제약 조건</h4>
     <ul><li>1 ≤ n ≤ 100,000</li><li>0 ≤ 높이 ≤ 1,000,000,000</li><li>0이 입력되면 종료</li></ul>
 `,

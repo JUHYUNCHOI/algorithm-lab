@@ -972,7 +972,7 @@ int main() {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1493,6 +1493,11 @@ int main() {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>준규가 가지고 있는 동전은 총 N종류이고, 각각의 동전을 매우 많이 가지고 있다. 동전을 적절히 사용해서 그 가치의 합을 K로 만들려고 한다. 이때 필요한 동전 개수의 최솟값을 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 10, 1 ≤ K ≤ 100,000,000)</p>
+                <p>둘째 줄부터 N개의 줄에 동전의 가치 A<sub>i</sub>가 오름차순으로 주어진다. (1 ≤ A<sub>i</sub> ≤ 1,000,000, A<sub>1</sub> = 1, i ≥ 2인 경우에 A<sub>i</sub>는 A<sub>i-1</sub>의 배수)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 K원을 만드는데 필요한 동전 개수의 최솟값을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>10 4200\n1\n5\n10\n50\n100\n500\n1000\n5000\n10000\n50000</pre></div>
                     <div><strong>출력</strong><pre>6</pre></div>
@@ -1548,6 +1553,10 @@ int main() {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>인하은행에는 ATM이 1대밖에 없다. 지금 N명이 줄을 서 있다. 각 사람이 돈을 인출하는데 걸리는 시간 Pi가 주어졌을 때, 각 사람이 돈을 인출하는데 필요한 시간의 합의 최솟값을 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 사람의 수 N(1 ≤ N ≤ 1,000)이 주어진다. 둘째 줄에는 각 사람이 돈을 인출하는데 걸리는 시간 P<sub>i</sub>가 주어진다. (1 ≤ P<sub>i</sub> ≤ 1,000)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 각 사람이 돈을 인출하는데 필요한 시간의 합의 최솟값을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5\n3 1 4 3 2</pre></div>
                     <div><strong>출력</strong><pre>32</pre></div>
@@ -1601,6 +1610,10 @@ int main() {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>한 개의 회의실이 있는데 이를 사용하고자 하는 N개의 회의에 대하여 회의실 사용표를 만들려고 한다. 각 회의 I에 대해 시작시간과 끝나는 시간이 주어져 있고, 각 회의가 겹치지 않게 하면서 회의실을 사용할 수 있는 회의의 최대 개수를 찾아보자. 회의가 끝나는 것과 동시에 다음 회의가 시작될 수 있다. 시작시간과 끝나는 시간이 같을 수 있다(이 경우 시작하자마자 끝난 것으로 간주).</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 회의의 수 N(1 ≤ N ≤ 100,000)이 주어진다. 둘째 줄부터 N개의 줄에 각 회의의 시작시간과 끝나는 시간이 주어진다. 시작 시간과 끝나는 시간은 2<sup>31</sup>-1보다 작거나 같은 자연수 또는 0이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 최대 사용할 수 있는 회의의 최대 개수를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>11\n1 4\n3 5\n0 6\n5 7\n3 8\n5 9\n6 10\n8 11\n8 12\n2 13\n12 14</pre></div>
                     <div><strong>출력</strong><pre>4</pre></div>
@@ -1652,6 +1665,10 @@ int main() {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>세준이는 양수와 +, -로 이루어진 식이 있다. 여기에 괄호를 적절히 쳐서 이 식의 값을 최소로 만들려고 한다. 괄호를 적절히 쳐서 이 식의 값을 최소로 만드는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 식이 주어진다. 식은 '0'~'9', '+', 그리고 '-'만으로 이루어져 있고, 가장 처음과 마지막 문자는 숫자이다. 그리고 연속해서 두 개 이상의 연산자가 나타나지 않고, 5자리보다 많이 연속되는 숫자는 없다. 수는 0으로 시작할 수 있다. 입력으로 주어지는 식의 길이는 50보다 작거나 같다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 정답을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>55-50+40</pre></div>
                     <div><strong>출력</strong><pre>-35</pre></div>
@@ -1716,6 +1733,10 @@ int main() {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>일직선 도로 위에 N개의 도시가 있다. 제일 왼쪽 도시에서 제일 오른쪽 도시로 가려 한다. 각 도시에는 주유소가 있고, 1리터당 가격이 다르다. 도시 사이의 거리와 각 도시의 주유 가격이 주어질 때, 제일 왼쪽에서 오른쪽 끝까지 가는데 드는 최소 비용을 구하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 도시의 개수 N(2 ≤ N ≤ 100,000)이 주어진다. 둘째 줄에는 인접한 두 도시를 연결하는 도로의 길이가 제일 왼쪽 도로부터 N-1개 주어진다. 셋째 줄에는 주유소의 리터당 가격이 제일 왼쪽 도시부터 N개 주어진다. (1 ≤ 도로의 길이, 리터당 가격 ≤ 1,000,000,000)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 제일 왼쪽 도시에서 제일 오른쪽 도시로 가는 최소 비용을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4\n2 3 1\n5 2 4 1</pre></div>
                     <div><strong>출력</strong><pre>18</pre></div>

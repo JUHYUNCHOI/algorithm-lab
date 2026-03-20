@@ -1067,7 +1067,7 @@ var shortestPathTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1701,6 +1701,10 @@ var shortestPathTopic = {
                     <div><strong>Input</strong><pre>5 6\n1\n5 1 1\n1 2 2\n1 3 3\n2 3 4\n2 4 5\n3 4 6</pre></div>
                     <div><strong>Output</strong><pre>0\n2\n3\n7\nINF</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of vertices V and edges E. (1 ≤ V ≤ 20,000, 1 ≤ E ≤ 300,000) All vertices are numbered from 1 to V. The second line contains the starting vertex number K (1 ≤ K ≤ V). From the third line, E lines each contain three integers (u, v, w) representing an edge from u to v with weight w. u and v are different, and w is a natural number no greater than 10. Note that multiple edges can exist between two different vertices.</p>
+                <h4>Output</h4>
+                <p>Output V lines. The i-th line contains the shortest path distance to vertex i. Output 0 for the starting vertex itself, and INF if no path exists.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ V ≤ 20,000</li>
@@ -1753,6 +1757,10 @@ var shortestPathTopic = {
                     <div><strong>Input</strong><pre>5\n14\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n3 5 10\n3 1 8\n1 4 2\n5 1 7\n3 4 2\n5 2 4</pre></div>
                     <div><strong>Output</strong><pre>0 2 3 1 4\n12 0 15 2 5\n8 5 0 1 1\n10 7 13 0 3\n7 4 10 6 0</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of cities n (2 ≤ n ≤ 100). The second line contains the number of buses m (1 ≤ m ≤ 100,000). From the third line to the (m+2)-th line, each line contains a bus's departure city, arrival city, and cost. The bus cost is a non-negative integer less than 100,000.</p>
+                <h4>Output</h4>
+                <p>Output n lines. The j-th number on the i-th line is the minimum cost of traveling from city i to city j. If there is no path from i to j, output 0.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>2 ≤ n ≤ 100</li>
@@ -1806,6 +1814,10 @@ var shortestPathTopic = {
                     <div><strong>Input</strong><pre>5\n8\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n1 5</pre></div>
                     <div><strong>Output</strong><pre>4</pre></div>
                 </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of cities N (1 ≤ N ≤ 1,000). The second line contains the number of buses M (1 ≤ M ≤ 100,000). From the third line to the (M+2)-th line, each line contains a bus's departure city, arrival city, and cost. The bus cost is a non-negative integer no greater than 100,000. The (M+3)-th line contains the departure city and destination city numbers.</p>
+                <h4>Output</h4>
+                <p>Output the minimum cost of traveling from the departure city to the destination city.</p>
                 <h4>Constraints</h4>
                 <ul>
                     <li>1 ≤ N ≤ 1,000</li>

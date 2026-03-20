@@ -1118,7 +1118,7 @@ int main() {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1883,6 +1883,11 @@ int main() {
                     <li><code>all</code>: S를 {1, 2, ..., 20}으로 변경</li>
                     <li><code>empty</code>: S를 공집합으로 변경</li>
                 </ul>
+                <h4>입력</h4>
+                <p>첫째 줄에 수행해야 하는 연산의 수 M (1 &le; M &le; 3,000,000)이 주어진다.</p>
+                <p>둘째 줄부터 M개의 줄에 수행해야 하는 연산이 한 줄에 하나씩 주어진다.</p>
+                <h4>출력</h4>
+                <p><code>check</code> 연산이 주어질때마다, 결과를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>26\nadd 1\nadd 2\ncheck 1\ncheck 2\nremove 2\ncheck 1\ncheck 2\ntoggle 3\ncheck 1\ncheck 2\ncheck 3\ncheck 4\nall\ncheck 10\ncheck 15\nempty\ncheck 1\ntoggle 1\ncheck 1\ntoggle 1\ncheck 1\nall\ncheck 5\ntoggle 5\ncheck 5\ncheck 1</pre></div>
                     <div><strong>출력</strong><pre>1\n1\n1\n0\n1\n0\n1\n0\n1\n1\n0\n1\n1\n0\n1\n0\n1</pre></div>

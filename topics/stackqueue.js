@@ -1011,7 +1011,7 @@ bool isValid(string s) {
                 desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
             } else {
                 counter.textContent = 'Step ' + (idx + 1) + ' / ' + total;
-                desc.textContent = state.steps[idx].description;
+                desc.innerHTML = '<span>' + state.steps[idx].description + '</span>';
             }
         };
         var actionDelay = 350;
@@ -1798,6 +1798,11 @@ bool isValid(string s) {
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>나코더 기장 재민이는 장부를 정리하는 중이다. 그런데 재민이는 매우 활발하여 재미있는 일을 생각해냈다. 재민이가 K개의 수를 불러준다. 어떤 수가 "0"이 아닌 경우에는 해당 수를 장부에 적고, "0"인 경우에는 가장 최근에 적은 수를 지운다. 재민이가 게임을 끝마쳤을 때, 장부에 적혀 있는 수의 합을 구하는 프로그램을 작성하시오. 0을 입력받을 때 지울 수가 반드시 존재한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 정수 K가 주어진다. (1 &le; K &le; 100,000)</p>
+                <p>이후 K개의 줄에 정수가 한 개씩 주어진다. 정수는 0에서 100,000 사이의 값을 가지며, 정수가 "0"일 경우에는 가장 최근에 쓴 수를 지우고, 아닐 경우 해당 수를 쓴다. 정수가 "0"일 경우에 지울 수 있는 수가 있음을 보장할 수 있다.</p>
+                <h4>출력</h4>
+                <p>재민이가 게임을 마쳤을 때, 장부에 적혀 있는 수의 합을 출력한다. 이 값은 2<sup>31</sup> - 1보다 작거나 같은 정수이다.</p>
 
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4\n3\n0\n4\n0</pre></div>
@@ -1996,6 +2001,10 @@ public:
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>N장의 카드가 있다. 각 카드는 차례로 1부터 N까지의 번호가 붙어 있으며, 1번 카드가 제일 위에, N번 카드가 제일 아래인 상태로 놓여 있다. 이제 다음과 같은 동작을 카드가 한 장 남을 때까지 반복하게 된다. 우선 제일 위에 있는 카드를 바닥에 버린다. 그 다음 제일 위에 있는 카드를 제일 아래에 있는 카드 밑으로 옮긴다. 마지막에 남게 되는 카드를 구하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 정수 N(1 &le; N &le; 500,000)이 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 남게 되는 카드의 번호를 출력한다.</p>
 
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>6</pre></div>

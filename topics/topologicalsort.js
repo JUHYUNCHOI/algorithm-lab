@@ -1219,7 +1219,7 @@ for (int i = 0; i &lt; result.size(); i++)
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2371,6 +2371,10 @@ for (int i = 0; i &lt; result.size(); i++)
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>N명의 학생들을 키 순서대로 줄을 세우려고 한다. 일부 학생들의 키를 비교한 결과가 주어진다. 예를 들어, 학생 A가 학생 B 앞에 서야 한다는 것을 알고 있다면 A는 B보다 앞에 서야 한다. 키를 비교한 결과가 주어질 때, 학생들을 줄 세우는 프로그램을 작성하시오. 답이 여러 가지인 경우 아무거나 출력한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 N(1 ≤ N ≤ 32,000), M(1 ≤ M ≤ 100,000)이 주어진다. M은 키를 비교한 횟수이다. 다음 M개의 줄에는 키를 비교한 두 학생의 번호 A, B가 주어진다. 이는 학생 A가 학생 B의 앞에 서야 한다는 의미이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 학생들을 앞에서부터 줄을 세운 결과를 출력한다. 답이 여러 가지인 경우에는 아무거나 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3 2\n1 3\n2 3</pre></div>
                     <div><strong>출력</strong><pre>1 2 3</pre></div>
@@ -2433,6 +2437,10 @@ for (int i = 0; i &lt; result.size(); i++)
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>민오는 1번부터 N번까지 총 N개의 문제로 되어 있는 문제집을 풀려고 한다. 문제는 난이도 순서로 출제되어 있어서 1번 문제가 가장 쉽고 N번 문제가 가장 어렵다. 먼저 풀어야 하는 문제 쌍이 M개 주어진다. 가능하면 쉬운 문제부터(번호가 작은 것부터) 풀려고 한다. 문제를 풀 순서를 출력하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 문제의 수 N(1 ≤ N ≤ 32,000)과 먼저 푸는 것이 좋은 문제에 대한 정보의 개수 M(1 ≤ M ≤ 100,000)이 주어진다. 둘째 줄부터 M개의 줄에 걸쳐 두 정수의 순서쌍 A, B가 빈칸을 사이에 두고 주어진다. 이는 A번 문제는 B번 문제보다 먼저 푸는 것이 좋다는 의미이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 문제 번호를 나타내는 1 이상 N 이하의 정수들을 문제를 풀어야 하는 순서대로 빈칸을 사이에 두고 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>4 2\n4 2\n3 1</pre></div>
                     <div><strong>출력</strong><pre>3 1 4 2</pre></div>
@@ -2489,6 +2497,10 @@ for (int i = 0; i &lt; result.size(); i++)
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>올해 ACM-ICPC 대전 인터넷 예선에는 총 n개의 팀이 참가했다. 작년 순위가 주어지고, 올해 상대적인 순위가 바뀐 쌍이 주어진다. 바뀐 정보를 이용해서 올해 순위를 만들어라. 확실한 순위를 찾을 수 없다면 "?", 일관성이 없는 경우 "IMPOSSIBLE"을 출력한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에는 테스트 케이스의 개수가 주어진다. 각 테스트 케이스의 첫째 줄에는 팀의 수 n(2 ≤ n ≤ 500)이 주어진다. 둘째 줄에는 작년에 i등을 한 팀의 번호가 차례대로 주어진다. 셋째 줄에는 상대적인 등수가 바뀐 쌍의 수 m(0 ≤ m ≤ 25,000)이 주어진다. 다음 m개 줄에는 상대적인 등수가 바뀐 쌍이 주어진다.</p>
+                <h4>출력</h4>
+                <p>각 테스트 케이스에 대해서 올해 순위를 출력한다. 만약 확실한 순위를 찾을 수 없다면 "?"를, 데이터에 일관성이 없어서 순위를 정할 수 없는 경우에는 "IMPOSSIBLE"을 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3\n5\n5 4 3 2 1\n2\n2 4\n3 4\n3\n2 3 1\n0\n4\n1 2 3 4\n3\n1 2\n3 4\n2 3</pre></div>
                     <div><strong>출력</strong><pre>5 3 2 4 1\n2 3 1\nIMPOSSIBLE</pre></div>

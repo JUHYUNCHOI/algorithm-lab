@@ -3689,8 +3689,13 @@ button.problem-card:hover {
     line-height: 1.7;
     min-height: 3.2rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
+}
+.viz-step-desc > span,
+.viz-step-desc > div {
+    flex: 1;
+    min-width: 0;
 }
 .viz-step-desc + .sim-card {
     border-top: none;
@@ -3701,6 +3706,7 @@ button.problem-card:hover {
     content: '💬';
     font-size: 1.1rem;
     flex-shrink: 0;
+    margin-top: 2px;
 }
 
 /* ===== Mode Toggle (Bottom-Up / Top-Down) ===== */

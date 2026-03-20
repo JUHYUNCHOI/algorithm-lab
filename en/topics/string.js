@@ -51,7 +51,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
         if (sol.description) {
             const desc = document.createElement('div');
             desc.className = 'approach-desc';
-            desc.textContent = sol.description;
+            desc.innerHTML = '<span>' + sol.description + '</span>';
             panel.appendChild(desc);
         }
 
@@ -372,7 +372,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
             if (refSol.description) {
                 var desc = document.createElement('p');
                 desc.className = 'brute-ref-desc';
-                desc.textContent = refSol.description;
+                desc.innerHTML = '<span>' + refSol.description + '</span>';
                 refContent.appendChild(desc);
             }
 
@@ -2445,7 +2445,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 desc.textContent = '▶ Click Next to begin';
             } else {
                 counter.textContent = `Step ${currentStep + 1} / ${steps.length}`;
-                desc.textContent = steps[currentStep].description;
+                desc.innerHTML = '<span>' + steps[currentStep].description + '</span>';
             }
         };
 
@@ -2488,7 +2488,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 desc.textContent = '▶ Click Next to begin';
             } else {
                 counter.textContent = `Step ${idx + 1} / ${total}`;
-                desc.textContent = state.steps[idx].description;
+                desc.innerHTML = '<span>' + state.steps[idx].description + '</span>';
             }
         };
 
@@ -2532,6 +2532,10 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 <p>A word consisting of uppercase and lowercase letters is given.
                 Print the <strong>most frequently used letter</strong> in uppercase.
                 If there are multiple letters tied for the most frequent, print <code>?</code>.</p>
+                <h4>Input</h4>
+                <p>A word consisting of uppercase and lowercase letters is given. The length of the word does not exceed 1,000,000.</p>
+                <h4>Output</h4>
+                <p>Print the most frequently used letter in uppercase. If there are multiple letters tied for the most frequent, print <code>?</code>.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>Mississipi</pre></div>
                     <div><strong>Output</strong><pre>?</pre></div>
@@ -3192,6 +3196,10 @@ public:
                 Rearrange the letters to form a <strong>palindrome</strong>.
                 Print the lexicographically smallest palindrome possible.</p>
                 <p>If a palindrome cannot be formed, print <code>I'm Sorry Hansoo</code>.</p>
+                <h4>Input</h4>
+                <p>The first line contains the name. It consists of uppercase letters only and has a maximum length of 50.</p>
+                <h4>Output</h4>
+                <p>Print the palindrome formed by rearranging the letters. If multiple palindromes are possible, print the lexicographically smallest one. If a palindrome cannot be formed, print "I'm Sorry Hansoo".</p>
 
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>AABB</pre></div>

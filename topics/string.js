@@ -51,7 +51,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
         if (sol.description) {
             const desc = document.createElement('div');
             desc.className = 'approach-desc';
-            desc.textContent = sol.description;
+            desc.innerHTML = '<span>' + sol.description + '</span>';
             panel.appendChild(desc);
         }
 
@@ -372,7 +372,7 @@ window.renderSolutionsCodeTab = function(el, prob) {
             if (refSol.description) {
                 var desc = document.createElement('p');
                 desc.className = 'brute-ref-desc';
-                desc.textContent = refSol.description;
+                desc.innerHTML = '<span>' + refSol.description + '</span>';
                 refContent.appendChild(desc);
             }
 
@@ -2445,7 +2445,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
             } else {
                 counter.textContent = `Step ${currentStep + 1} / ${steps.length}`;
-                desc.textContent = steps[currentStep].description;
+                desc.innerHTML = '<span>' + steps[currentStep].description + '</span>';
             }
         };
 
@@ -2488,7 +2488,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 desc.textContent = '▶ 다음 버튼을 눌러 시작하세요';
             } else {
                 counter.textContent = `Step ${idx + 1} / ${total}`;
-                desc.textContent = state.steps[idx].description;
+                desc.innerHTML = '<span>' + state.steps[idx].description + '</span>';
             }
         };
 
@@ -2532,6 +2532,10 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 <p>알파벳 대소문자로 이루어진 단어가 주어집니다.
                 이 단어에서 <strong>가장 많이 사용된 알파벳</strong>을 대문자로 출력하세요.
                 가장 많이 사용된 알파벳이 여러 개라면 <code>?</code>를 출력합니다.</p>
+                <h4>입력</h4>
+                <p>알파벳 대소문자로 이루어진 단어가 주어진다. 주어지는 단어의 길이는 1,000,000을 넘지 않는다.</p>
+                <h4>출력</h4>
+                <p>이 단어에서 가장 많이 사용된 알파벳을 대문자로 출력한다. 단, 가장 많이 사용된 알파벳이 여러 개 존재하는 경우에는 <code>?</code>를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>Mississipi</pre></div>
                     <div><strong>출력</strong><pre>?</pre></div>
@@ -3192,6 +3196,10 @@ public:
                 이 이름의 글자들을 재배열해서 <strong>팰린드롬</strong>을 만드세요.
                 가능한 팰린드롬 중 사전순으로 가장 앞서는 것을 출력합니다.</p>
                 <p>팰린드롬을 만들 수 없으면 <code>I'm Sorry Hansoo</code>를 출력합니다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 임한수의 영어 이름이 있다. 알파벳 대문자로만 이루어져 있으며, 길이는 최대 50이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 이름의 글자들을 재배열해서 만들 수 있는 팰린드롬을 출력한다. 만들 수 있는 팰린드롬이 여러 개일 경우 사전순으로 앞서는 것을 출력한다. 만약 팰린드롬을 만들 수 없을 때에는 "I'm Sorry Hansoo"를 출력한다.</p>
 
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>AABB</pre></div>

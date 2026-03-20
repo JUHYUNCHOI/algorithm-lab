@@ -1052,7 +1052,7 @@ const recursionTopic = {
                 desc.textContent = '▶ Click Next to start';
             } else {
                 counter.textContent = 'Step ' + (idx + 1) + ' / ' + total;
-                desc.textContent = state.steps[idx].description;
+                desc.innerHTML = '<span>' + state.steps[idx].description + '</span>';
             }
         };
 
@@ -2565,6 +2565,10 @@ const recursionTopic = {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Given a non-negative integer N, write a program that outputs N!.</p>
+                <h4>Input</h4>
+                <p>The first line contains the integer N (0 ≤ N ≤ 20).</p>
+                <h4>Output</h4>
+                <p>Print N! on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>10</pre></div>
                     <div><strong>Output</strong><pre>3628800</pre></div>
@@ -2624,6 +2628,10 @@ const recursionTopic = {
                 <p>The Fibonacci sequence starts with 0 and 1. The 0th Fibonacci number is 0 and the 1st is 1. From the 2nd onward, each number is the sum of the two preceding Fibonacci numbers.</p>
                 <p>Expressed as a formula: Fn = Fn-1 + Fn-2 (n ≥ 2).</p>
                 <p>Given n, write a program that computes the nth Fibonacci number.</p>
+                <h4>Input</h4>
+                <p>The first line contains n. n is a non-negative integer ≤ 20.</p>
+                <h4>Output</h4>
+                <p>Print the nth Fibonacci number on the first line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>10</pre></div>
                     <div><strong>Output</strong><pre>55</pre></div>
@@ -2677,6 +2685,11 @@ const recursionTopic = {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>We want to convert an integer to a string and determine whether that string is a palindrome using a recursive function. Given the isPalindrome function, for each string output the palindrome result (1 or 0) and the number of times the recursion function is called.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases T (1 ≤ T ≤ 1,000).</p>
+                <p>From the second line, T lines each contain a string S consisting of uppercase letters. (1 ≤ |S| ≤ 1,000)</p>
+                <h4>Output</h4>
+                <p>For each test case, print the return value of isPalindrome and the number of times the recursion function is called, separated by a space, on one line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3
 AAA
@@ -2734,6 +2747,11 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Seojun is again a TA for the merge sort class. Below is the pseudocode for merge sort that sorts in ascending order. Given array A, write a program that finds the Kth value stored into array A when sorting it in ascending order using merge sort. If the total number of stores is less than K, output -1.</p>
+                <h4>Input</h4>
+                <p>The first line contains the size of array A, N (5 ≤ N ≤ 500,000), and the store count K (1 ≤ K ≤ 10<sup>8</sup>).</p>
+                <p>The next line contains N distinct elements A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>. (1 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
+                <h4>Output</h4>
+                <p>Print the Kth value stored into array A. If the number of stores is less than K, print -1.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 7
 4 5 1 3 2</pre></div>
@@ -2818,6 +2836,10 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>The Cantor set is a set of real numbers between 0 and 1, obtained by starting with [0, 1] and infinitely repeating the process of dividing each segment into three equal parts and removing the middle segment. Starting with a string of length 3^N, repeatedly replace the middle 1/3 with spaces. Repeat until there is no more input.</p>
+                <h4>Input</h4>
+                <p>The input consists of multiple lines. Each line contains N. Input stops at end of file. N is a non-negative integer ≤ 12.</p>
+                <h4>Output</h4>
+                <p>For each input N, print the corresponding Cantor set approximation.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>0</pre></div>
                     <div><strong>Output</strong><pre>-</pre></div>
@@ -2889,6 +2911,10 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Let us print stars in a recursive pattern. When N is a power of 3 (3, 9, 27, ...), the pattern of size N is an N x N square. The size-3 pattern is a 3x3 pattern with the center empty, and the size-N pattern consists of 8 patterns of size N/3 surrounding an empty (N/3) x (N/3) center.</p>
+                <h4>Input</h4>
+                <p>The first line contains N. N is a power of 3, i.e., N = 3<sup>k</sup> for some integer k, where 1 ≤ k &lt; 8.</p>
+                <h4>Output</h4>
+                <p>Print the star pattern from the first line to the Nth line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>27</pre></div>
                     <div><strong>Output</strong><pre>(27×27 star pattern)</pre></div>
@@ -2953,6 +2979,11 @@ ABCDA</pre></div>
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>There are three pegs, and n disks of different radii are stacked on the first peg. We want to move these disks to the third peg following these rules: only one disk can be moved at a time, and a larger disk can never be placed on top of a smaller one. Write a program that outputs the move sequence needed to accomplish this. The number of moves must be minimized.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of disks stacked on the first peg, N (1 ≤ N ≤ 20).</p>
+                <h4>Output</h4>
+                <p>Print the number of moves K on the first line.</p>
+                <p>From the second line, print K lines each containing two integers A B separated by a space, meaning move the topmost disk from peg A to the top of peg B.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3</pre></div>
                     <div><strong>Output</strong><pre>7

@@ -907,7 +907,7 @@ int fib(int n) {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2296,6 +2296,10 @@ int fib(int n) {
             descriptionHTML: `
     <h3>문제</h3>
     <p>오늘도 서준이는 동적 프로그래밍 수업 조교를 맡았다. 재귀 호출에 비해 동적 프로그래밍이 얼마나 빠른지 확인해 보자. n번째 피보나치 수를 구하는 재귀 함수의 호출 횟수와 동적 프로그래밍의 대입 횟수를 출력하시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 n이 주어진다. (5 ≤ n ≤ 40)</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 재귀 호출의 기본 연산 횟수와 동적 프로그래밍의 기본 연산 횟수를 공백으로 구분하여 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>5</pre></div>
         <div><strong>출력</strong><pre>5 3</pre></div>
@@ -2352,6 +2356,10 @@ int fib(int n) {
             descriptionHTML: `
     <h3>문제</h3>
     <p>재귀 함수 w(a, b, c)의 결과를 구하시오. 메모이제이션을 사용하여 효율적으로 계산한다. 입력은 EOF까지 반복하며, a=b=c=-1이면 종료.</p>
+    <h4>입력</h4>
+    <p>입력은 여러 개의 테스트 케이스로 이루어져 있다. 각 테스트 케이스는 한 줄에 세 정수 a, b, c가 주어진다. 입력의 마지막은 -1 -1 -1로 나타내며, 세 수가 모두 -1인 경우는 입력의 마지막을 나타내므로 처리하지 않는다. (-50 ≤ a, b, c ≤ 50)</p>
+    <h4>출력</h4>
+    <p>각 테스트 케이스마다 w(a, b, c)의 값을 출력한다. 출력 형식은 예제를 참고한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>1 1 1
 2 2 2
@@ -2422,6 +2430,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>정수 X에 사용할 수 있는 연산은 다음과 같이 세 가지이다. X가 3으로 나누어 떨어지면 3으로 나눈다. X가 2로 나누어 떨어지면 2로 나눈다. 1을 뺀다. 정수 N이 주어졌을 때, 위와 같은 연산 세 개를 적절히 사용해서 1을 만들려고 한다. 연산을 사용하는 횟수의 최솟값을 출력하시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 정수 N이 주어진다. (1 ≤ N ≤ 10<sup>6</sup>)</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 연산을 하는 횟수의 최솟값을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>2</pre></div>
         <div><strong>출력</strong><pre>1</pre></div>
@@ -2483,6 +2495,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>지원이에게 2진 수열이 주어졌다. 이 수열은 0 또는 1로 이루어져 있다. 이 수열에서 00타일과 1타일을 사용하여 길이가 N인 수열을 만드는 방법의 수를 15746으로 나눈 나머지를 출력한다.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 자연수 N이 주어진다. (1 ≤ N ≤ 1,000,000)</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 지원이가 만들 수 있는 길이가 N인 모든 2진 수열의 개수를 15746으로 나눈 나머지를 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>4</pre></div>
         <div><strong>출력</strong><pre>5</pre></div>
@@ -2539,6 +2555,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>계단 오르기 게임은 계단 아래 시작점부터 계단 꼭대기에 위치한 도착점까지 가는 게임이다. 계단을 밟으면 그 계단에 쓰여진 점수를 얻게 된다. 연속된 세 개의 계단을 모두 밟아서는 안 된다. 마지막 도착 계단은 반드시 밟아야 한다. 총 점수의 최댓값을 구하시오.</p>
+    <h4>입력</h4>
+    <p>입력의 첫째 줄에 계단의 개수가 주어진다. 둘째 줄부터 한 줄에 하나씩 제일 아래에 놓인 계단부터 순서대로 각 계단에 쓰여 있는 점수가 주어진다. 계단의 개수는 300 이하의 자연수이고, 계단에 쓰여 있는 점수는 10,000 이하의 자연수이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 계단 오르기 게임에서 얻을 수 있는 총 점수의 최댓값을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>6
 10
@@ -2605,6 +2625,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>포도주 잔이 일렬로 놓여져 있고, 다음과 같은 규칙으로 포도주를 마시려고 한다. 포도주 잔을 선택하면 그 잔에 들어있는 포도주를 모두 마셔야 하고, 마신 후에는 원래 위치에 다시 놓아야 한다. 연속으로 놓여 있는 3잔을 모두 마실 수는 없다. 최대로 마실 수 있는 포도주의 양을 구하시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 포도주 잔의 개수 n이 주어진다. (1 ≤ n ≤ 10,000) 둘째 줄부터 n+1번째 줄까지 포도주 잔에 들어있는 포도주의 양이 순서대로 주어진다. 포도주의 양은 1,000 이하의 음이 아닌 정수이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 최대로 마실 수 있는 포도주의 양을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>6
 6
@@ -2670,6 +2694,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>n개의 정수로 이루어진 임의의 수열이 주어진다. 우리는 이 중 연속된 몇 개의 수를 선택해서 구할 수 있는 합 중 가장 큰 합을 구하려고 한다. 수는 한 개 이상 선택해야 한다.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 정수 n(1 ≤ n ≤ 100,000)이 주어지고, 둘째 줄에는 n개의 정수로 이루어진 수열이 주어진다. 수는 -1,000보다 크거나 같고, 1,000보다 작거나 같은 정수이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 답을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>10
 10 -4 3 1 5 6 -35 12 21 -1</pre></div>
@@ -2729,6 +2757,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>45656이란 수를 보자. 이 수는 인접한 모든 자리의 차이가 1이 난다. 이런 수를 계단 수라고 한다. N이 주어질 때, 길이가 N인 계단 수가 총 몇 개인지 구해보자. 0으로 시작하는 수는 계단수가 아니다. 정답을 1,000,000,000으로 나눈 나머지를 출력한다.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 N이 주어진다. N은 1 이상 100 이하의 자연수이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 정답을 1,000,000,000으로 나눈 나머지를 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>1</pre></div>
         <div><strong>출력</strong><pre>9</pre></div>
@@ -2797,6 +2829,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>RGB거리에는 집이 N개 있다. 거리는 선분으로 나타낼 수 있고, 1번 집부터 N번 집이 순서대로 있다. 집은 빨강, 초록, 파랑 중 하나의 색으로 칠해야 한다. 이웃한 집은 같은 색으로 칠할 수 없다. 각 집을 빨강, 초록, 파랑으로 칠하는 비용이 주어졌을 때, 모든 집을 칠하는 비용의 최솟값을 구하시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 집의 수 N(2 ≤ N ≤ 1,000)이 주어진다. 둘째 줄부터 N개의 줄에는 각 집을 빨강, 초록, 파랑으로 칠하는 비용이 1번 집부터 한 줄에 하나씩 주어진다. 집을 칠하는 비용은 1,000 이하의 자연수이다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 모든 집을 칠하는 비용의 최솟값을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>3
 26 40 83
@@ -2862,6 +2898,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>정수 삼각형의 맨 위에서 아래로 내려오면서, 대각선 왼쪽 또는 오른쪽으로만 이동할 때 선택된 수의 합이 최대가 되는 경로를 찾으시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 삼각형의 크기 n(1 ≤ n ≤ 500)이 주어지고, 둘째 줄부터 n+1번째 줄까지 정수 삼각형이 주어진다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 합이 최대가 되는 경로에 있는 수의 합을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>5
 7
@@ -2928,6 +2968,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>수열 A가 주어졌을 때, 가장 긴 증가하는 부분 수열(LIS)의 길이를 구하는 프로그램을 작성하시오. 예를 들어 수열 A = {10, 20, 10, 30, 20, 50}이면 LIS는 {10, 20, 30, 50}이고 길이는 4이다.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 수열 A의 크기 N (1 ≤ N ≤ 1,000)이 주어진다. 둘째 줄에는 수열 A를 이루고 있는 A<sub>i</sub>가 주어진다. (1 ≤ A<sub>i</sub> ≤ 1,000)</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 수열 A의 가장 긴 증가하는 부분 수열의 길이를 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>6
 10 20 10 30 20 50</pre></div>
@@ -2986,6 +3030,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>수열 S가 어떤 수 S<sub>k</sub>를 기준으로 S<sub>1</sub> &lt; S<sub>2</sub> &lt; ... &lt; S<sub>k-1</sub> &lt; S<sub>k</sub> &gt; S<sub>k+1</sub> &gt; ... &gt; S<sub>N-1</sub> &gt; S<sub>N</sub>을 만족하면 바이토닉 수열이라고 한다. 주어진 수열에서 가장 긴 바이토닉 부분 수열의 길이를 구하시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에 수열 A의 크기 N이 주어지고, 둘째 줄에는 수열 A를 이루고 있는 A<sub>i</sub>가 주어진다. (1 ≤ N ≤ 1,000, 1 ≤ A<sub>i</sub> ≤ 1,000)</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 수열 A의 가장 긴 바이토닉 부분 수열의 길이를 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>10
 1 5 2 1 4 3 4 5 2 1</pre></div>
@@ -3050,6 +3098,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>두 전봇대 A와 B 사이에 전깃줄이 있다. 전깃줄이 교차하지 않게 하기 위해 몇 개의 전깃줄을 제거하려 한다. 제거해야 하는 전깃줄의 최소 개수를 구하시오.</p>
+    <h4>입력</h4>
+    <p>첫째 줄에는 두 전봇대 사이의 전깃줄의 개수가 주어진다. 전깃줄의 개수는 100 이하의 자연수이다. 둘째 줄부터 한 줄에 하나씩 전깃줄이 A전봇대와 연결되는 위치의 번호와 B전봇대와 연결되는 위치의 번호가 차례로 주어진다. 위치의 번호는 500 이하의 자연수이고, 같은 위치에 두 개 이상의 전깃줄이 연결될 수 없다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 남아있는 모든 전깃줄이 서로 교차하지 않게 하기 위해 없애야 하는 전깃줄의 최소 개수를 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>8
 1 8
@@ -3119,6 +3171,10 @@ w(50, 50, 50) = 1048576</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>LCS(Longest Common Subsequence, 최장 공통 부분 수열) 문제는 두 수열이 주어졌을 때, 모두의 부분 수열이 되는 수열 중 가장 긴 것을 찾는 문제이다.</p>
+    <h4>입력</h4>
+    <p>첫째 줄과 둘째 줄에 두 문자열이 주어진다. 문자열은 알파벳 대문자로만 이루어져 있으며, 최대 1000글자로 이루어져 있다.</p>
+    <h4>출력</h4>
+    <p>첫째 줄에 입력으로 주어진 두 문자열의 LCS의 길이를 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>ACAYKP
 CAPCAK</pre></div>
@@ -3179,6 +3235,10 @@ CAPCAK</pre></div>
             descriptionHTML: `
     <h3>문제</h3>
     <p>준서가 여행에 필요하다고 생각하는 N개의 물건이 있다. 각 물건은 무게 W와 가치 V를 가진다. 배낭에 넣을 수 있는 물건들의 가치의 최댓값을 구하시오. 배낭 무게 제한은 K이다.</p>
+    <h4>입력</h4>
+    <p>첫 줄에 물품의 수 N(1 ≤ N ≤ 100)과 준서가 버틸 수 있는 무게 K(1 ≤ K ≤ 100,000)가 주어진다. 두 번째 줄부터 N개의 줄에 거쳐 각 물건의 무게 W(1 ≤ W ≤ 100,000)와 해당 물건의 가치 V(0 ≤ V ≤ 1,000)가 주어진다.</p>
+    <h4>출력</h4>
+    <p>한 줄에 배낭에 넣을 수 있는 물건들의 가치합의 최댓값을 출력한다.</p>
     <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
         <div><strong>입력</strong><pre>4 7
 6 13

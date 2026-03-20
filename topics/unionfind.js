@@ -831,7 +831,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1712,6 +1712,10 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                 <p>초기에 {0}, {1}, ..., {n}이 각각 n+1개의 집합을 이루고 있다. 여기에 합집합 연산과, 두 원소가 같은 집합에 포함되어 있는지를 확인하는 연산을 수행하려고 한다.</p>
                 <p>0 a b: a가 포함된 집합과 b가 포함된 집합을 합친다.</p>
                 <p>1 a b: a와 b가 같은 집합에 포함되어 있는지를 확인한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 n(1 &le; n &le; 1,000,000), m(1 &le; m &le; 100,000)이 주어진다. m은 입력으로 주어지는 연산의 개수이다. 다음 m개의 줄에는 각각의 연산이 주어진다. 합집합은 0 a b의 형태로 입력이 주어진다. 이는 a가 포함되어 있는 집합과, b가 포함되어 있는 집합을 합친다는 의미이다. 두 원소가 같은 집합에 포함되어 있는지를 확인하는 연산은 1 a b의 형태로 입력이 주어진다. a와 b는 n 이하의 자연수 또는 0이며 같을 수도 있다.</p>
+                <h4>출력</h4>
+                <p>1로 시작하는 입력에 대해서 한 줄에 하나씩 "YES" 또는 "NO"로 결과를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>7 8\n0 1 3\n1 1 7\n0 7 6\n1 7 1\n0 3 7\n0 4 2\n0 1 1\n1 1 1</pre></div>
                     <div><strong>출력</strong><pre>NO\nNO\nYES</pre></div>
@@ -1756,6 +1760,10 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>동혁이는 도시를 여행하려고 한다. N개의 도시가 있고, 그 중 일부 쌍이 연결되어 있다. 주어진 여행 경로가 가능한 여행 경로인지 여부를 판별하시오. 같은 도시를 여러 번 방문하는 것도 가능하다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 도시의 수 N이 주어진다. N은 200 이하이다. 둘째 줄에 여행 계획에 속한 도시들의 수 M이 주어진다. M은 1000 이하이다. 다음 N개의 줄에는 N개의 정수로 도시 간의 연결 정보가 주어진다. i번째 줄의 j번째 수는 i번 도시와 j번 도시의 연결 정보이며, 1이면 연결된 것이고 0이면 연결이 되지 않은 것이다. 마지막 줄에는 여행 계획이 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 가능하면 "YES", 불가능하면 "NO"를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3\n3\n0 1 0\n1 0 1\n0 1 0\n1 2 3</pre></div>
                     <div><strong>출력</strong><pre>YES</pre></div>
@@ -1859,6 +1867,10 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>민혁이는 소셜 네트워크 사이트를 하나 만들었다. 두 사람이 친구가 되면, 두 사람의 친구 네트워크에 있는 사람의 수를 출력하는 프로그램을 작성하시오. 친구 관계는 전이적이다 (A-B 친구, B-C 친구 → A-C도 같은 네트워크).</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 테스트 케이스의 개수가 주어진다. 각 테스트 케이스의 첫째 줄에는 친구 관계의 수 F가 주어지며, 1 &le; F &le; 100,000이다. 다음 F개의 줄에는 친구 관계가 주어진다. 친구 관계는 두 사용자의 아이디로 이루어져 있으며, 알파벳 대소문자 또는 숫자로 이루어진 길이 20 이하의 문자열이다.</p>
+                <h4>출력</h4>
+                <p>친구 관계가 생길 때마다, 두 사람의 친구 네트워크에 몇 명이 있는지 구하는 프로그램을 작성하시오.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>2\n3\nFred Barney\nBarney Betty\nBetty Wilma\n3\nFred Barney\nBetty Wilma\nBarney Betty</pre></div>
                     <div><strong>출력</strong><pre>2\n3\n4\n2\n2\n4</pre></div>

@@ -1615,6 +1615,10 @@ sort(words.begin(), words.end(),
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Given N numbers, write a program that sorts them in ascending order.</p>
+                <h4>Input</h4>
+                <p>The first line contains the count of numbers N (1 ≤ N ≤ 1,000). From the second line, N lines each contain a number. The absolute value of each number is ≤ 1,000. Numbers do not repeat.</p>
+                <h4>Output</h4>
+                <p>Print the sorted result in ascending order, one number per line, from the first line to the N-th line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5\n5\n2\n3\n4\n1</pre></div>
                     <div><strong>Output</strong><pre>1\n2\n3\n4\n5</pre></div>
@@ -1666,6 +1670,10 @@ sort(words.begin(), words.end(),
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Given N points on a 2D plane, write a program that sorts the coordinates in ascending order of x-coordinate, and if x-coordinates are equal, in ascending order of y-coordinate, then prints the result.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of points N (1 ≤ N ≤ 100,000). From the second line, N lines each contain the x<sub>i</sub> and y<sub>i</sub> coordinates of the i-th point. (-100,000 ≤ x<sub>i</sub>, y<sub>i</sub> ≤ 100,000) Coordinates are always integers, and no two points share the same position.</p>
+                <h4>Output</h4>
+                <p>Print the sorted points, one per line, from the first line to the N-th line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5\n3 4\n1 1\n1 -1\n2 2\n3 3</pre></div>
                     <div><strong>Output</strong><pre>1 -1\n1 1\n2 2\n3 3\n3 4</pre></div>
@@ -1773,6 +1781,11 @@ sort(words.begin(), words.end(),
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>You are given the ages and names of people who signed up for an online judge, in the order they registered. Write a program that sorts the members in ascending order of age, and for members with the same age, those who registered earlier should come first.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of online judge members N (1 ≤ N ≤ 100,000).</p>
+                <p>From the second line, N lines each contain the age and name of a member, separated by a space. The age is an integer between 1 and 200, and the name is a string of uppercase and lowercase letters with length ≤ 100. The input is given in the order of registration.</p>
+                <h4>Output</h4>
+                <p>Print the members sorted by age in ascending order, one per line, with age and name separated by a space. For members with the same age, those who registered earlier come first.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3\n21 Junkyu\n21 Dohyun\n20 Sunyoung</pre></div>
                     <div><strong>Output</strong><pre>20 Sunyoung\n21 Junkyu\n21 Dohyun</pre></div>

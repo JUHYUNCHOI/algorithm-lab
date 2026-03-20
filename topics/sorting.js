@@ -1618,6 +1618,10 @@ sort(words.begin(), words.end(),
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>N개의 수가 주어졌을 때, 이를 오름차순으로 정렬하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 수의 개수 N(1 ≤ N ≤ 1,000)이 주어진다. 둘째 줄부터 N개의 줄에는 수가 주어진다. 이 수는 절댓값이 1,000보다 작거나 같은 정수이다. 수는 중복되지 않는다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄부터 N개의 줄에 오름차순으로 정렬한 결과를 한 줄에 하나씩 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5\n5\n2\n3\n4\n1</pre></div>
                     <div><strong>출력</strong><pre>1\n2\n3\n4\n5</pre></div>
@@ -1669,6 +1673,10 @@ sort(words.begin(), words.end(),
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>2차원 평면 위의 점 N개가 주어진다. 좌표를 x좌표가 증가하는 순으로, x좌표가 같으면 y좌표가 증가하는 순서로 정렬한 다음 출력하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 점의 개수 N (1 ≤ N ≤ 100,000)이 주어진다. 둘째 줄부터 N개의 줄에는 i번점의 위치 x<sub>i</sub>와 y<sub>i</sub>가 주어진다. (-100,000 ≤ x<sub>i</sub>, y<sub>i</sub> ≤ 100,000) 좌표는 항상 정수이고, 위치가 같은 두 점은 없다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄부터 N개의 줄에 점을 정렬한 결과를 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>5\n3 4\n1 1\n1 -1\n2 2\n3 3</pre></div>
                     <div><strong>출력</strong><pre>1 -1\n1 1\n2 2\n3 3\n3 4</pre></div>
@@ -1776,6 +1784,11 @@ sort(words.begin(), words.end(),
             descriptionHTML: `
                 <h3>문제</h3>
                 <p>온라인 저지에 가입한 사람들의 나이와 이름이 가입한 순서대로 주어진다. 이때, 회원들을 나이가 증가하는 순으로, 나이가 같으면 먼저 가입한 사람이 앞에 오는 순서로 정렬하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 온라인 저지 회원의 수 N이 주어진다. (1 ≤ N ≤ 100,000)</p>
+                <p>둘째 줄부터 N개의 줄에는 각 회원의 나이와 이름이 공백으로 구분되어 주어진다. 나이는 1보다 크거나 같고, 200보다 작거나 같은 정수이고, 이름은 알파벳 대소문자로만 이루어져 있고, 길이가 100보다 작거나 같은 문자열이다. 입력은 가입한 순서로 주어진다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄부터 N개의 줄에 회원들을 나이 순, 나이가 같으면 가입한 순으로 한 줄에 한 명씩 나이와 이름을 공백으로 구분하여 출력한다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>3\n21 Junkyu\n21 Dohyun\n20 Sunyoung</pre></div>
                     <div><strong>출력</strong><pre>20 Sunyoung\n21 Junkyu\n21 Dohyun</pre></div>

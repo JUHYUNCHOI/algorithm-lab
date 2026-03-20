@@ -1238,7 +1238,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -2381,6 +2381,10 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                     <li>Postorder traversal result: DBEGFCA</li>
                 </ul>
                 <p>are the outputs.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of nodes N (1 &le; N &le; 26). From the second line, N lines each contain a node and its left and right children. Node names are uppercase letters starting from A, and A is always the root. A period (.) indicates no child.</p>
+                <h4>Output</h4>
+                <p>Print the preorder traversal result on the first line, the inorder traversal result on the second line, and the postorder traversal result on the third line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>7
 A B C

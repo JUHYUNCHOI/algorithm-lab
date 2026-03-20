@@ -830,7 +830,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1711,6 +1711,10 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                 <p>Initially, {0}, {1}, ..., {n} form n+1 separate sets. Perform union operations and queries to check if two elements belong to the same set.</p>
                 <p>0 a b: Merge the set containing a with the set containing b.</p>
                 <p>1 a b: Check if a and b belong to the same set.</p>
+                <h4>Input</h4>
+                <p>The first line contains n and m. m is the number of operations. From the second line, each of the m lines contains an operation in the form of 0 a b or 1 a b. (1 &le; n &le; 1,000,000, 1 &le; m &le; 100,000)</p>
+                <h4>Output</h4>
+                <p>For each operation starting with 1, print "YES" or "NO" on a separate line.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>7 8\n0 1 3\n1 1 7\n0 7 6\n1 7 1\n0 3 7\n0 4 2\n0 1 1\n1 1 1</pre></div>
                     <div><strong>Output</strong><pre>NO\nNO\nYES</pre></div>
@@ -1755,6 +1759,10 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Donghyuk wants to travel between cities. There are N cities, and some pairs are connected. Determine whether a given travel itinerary is possible. Visiting the same city multiple times is allowed.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of cities N (N &le; 200). The second line contains the number of cities M in the travel plan (M &le; 1000). The next N lines contain N integers each representing the connectivity between cities: 1 means connected, 0 means not connected. The last line contains the travel plan.</p>
+                <h4>Output</h4>
+                <p>Print "YES" if the travel plan is possible, "NO" otherwise.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>3\n3\n0 1 0\n1 0 1\n0 1 0\n1 2 3</pre></div>
                     <div><strong>Output</strong><pre>YES</pre></div>
@@ -1858,6 +1866,10 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Minhyuk built a social networking site. Whenever two people become friends, output the number of people in their combined friend network. Friendship is transitive (if A-B are friends and B-C are friends, then A-C are in the same network).</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases. For each test case, the first line contains the number of friend relationships F (1 &le; F &le; 100,000). The next F lines each contain a friendship represented by two user IDs, which are strings of up to 20 alphanumeric characters.</p>
+                <h4>Output</h4>
+                <p>Whenever a friendship is formed, print the number of people in their combined friend network.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2\n3\nFred Barney\nBarney Betty\nBetty Wilma\n3\nFred Barney\nBetty Wilma\nBarney Betty</pre></div>
                     <div><strong>Output</strong><pre>2\n3\n4\n2\n2\n4</pre></div>

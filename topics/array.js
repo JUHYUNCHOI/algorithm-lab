@@ -1785,7 +1785,7 @@ int main() {
                 if (desc) desc.style.display = 'none';
             } else {
                 counter.textContent = `${idx + 1} / ${total}`;
-                if (desc) { desc.textContent = state.steps[idx].description; desc.style.display = ''; }
+                if (desc) { desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; desc.style.display = ''; }
             }
         };
 
@@ -2974,6 +2974,10 @@ public:
                 <h3>문제</h3>
                 <p>N개의 수로 이루어진 수열에서,
                 <strong>연속된 수들의 부분합</strong> 중 합이 M이 되는 경우의 수를 구하세요.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 N(1 &le; N &le; 10,000), M(1 &le; M &le; 300,000,000)이 주어진다. 다음 줄에는 A[1], A[2], ..., A[N]이 공백으로 분리되어 주어진다. 각각의 A[x]는 30,000을 넘지 않는 자연수이다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 경우의 수를 출력한다.</p>
 
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
                     <div><strong>입력</strong><pre>N = 4, M = 2

@@ -790,7 +790,7 @@ var trieTopic = {
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
             if (idx < 0) { indicator.textContent = 'Before start'; desc.textContent = '\u25B6 Click Next to start'; }
-            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            else { indicator.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = '<span>' + state.steps[idx].description + '</span>'; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -1578,6 +1578,10 @@ var trieTopic = {
             descriptionHTML: `
                 <h3>Problem</h3>
                 <p>Given a set S consisting of N strings, write a program to count how many of the M input strings are contained in set S.</p>
+                <h4>Input</h4>
+                <p>The first line contains N and M (1 &le; N &le; 10,000, 1 &le; M &le; 10,000). The next N lines contain the strings in set S. The next M lines contain the strings to check. All strings consist of lowercase letters only and have length at most 500. No duplicate strings appear in set S.</p>
+                <h4>Output</h4>
+                <p>Print the total number of the M strings that are contained in set S.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>5 11
 baekjoononlinejudge
@@ -1645,6 +1649,10 @@ judge</pre></div>
                 <h3>Problem</h3>
                 <p>Given a list of phone numbers, determine whether the list is consistent or not.</p>
                 <p>For the phone list to be consistent, no number should be a prefix of another. For example, if the emergency number is 911 and a home phone number is 91125426, you cannot call that home number because dialing 911 immediately connects to emergency services.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test cases t (1 &le; t &le; 50). For each test case, the first line contains the number of phone numbers n (1 &le; n &le; 10,000). The next n lines each contain a phone number. Phone numbers have at most 10 digits, and no duplicate phone numbers appear in the list.</p>
+                <h4>Output</h4>
+                <p>For each test case, print "YES" if the list is consistent, "NO" otherwise.</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
                     <div><strong>Input</strong><pre>2
 3
