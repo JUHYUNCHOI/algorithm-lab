@@ -1401,7 +1401,7 @@ struct HashTable {
             let prefixSum = 0, count = 0;
 
             // ──── Step 0: Core idea explanation ────
-            steps.push({ description: '<strong>Core idea</strong> — compute prefix sums, check if <strong>prefix − k</strong> was seen before in hashmap. If yes, that subarray sums to k! Start with {0:1} (nothing added yet).',
+            steps.push({ description: '<strong>Core idea</strong> — subarray sum = (prefix here) − (prefix at start). For it to equal k, we need <strong>start prefix = current − k</strong>! So we store each prefix sum in a hashmap and look up <strong>current − k</strong>. {0:1} means "sum=0 occurred once" (before any element).',
                 _before: null,
                 action: function() {
                     this._before = saveState();

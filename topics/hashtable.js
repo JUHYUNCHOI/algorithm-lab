@@ -1405,7 +1405,7 @@ struct HashTable {
             let prefixSum = 0, count = 0;
 
             // ──── 스텝 0: 핵심 아이디어 설명 ────
-            steps.push({ description: '<strong>핵심 아이디어</strong> — 누적합을 구하면서, 매번 <strong>누적합 − k</strong>가 이전에 나온 적 있는지 해시맵으로 확인. 있으면 그 구간합 = k! 해시맵 {0:1}로 시작 (아무것도 안 더한 상태).',
+            steps.push({ description: '<strong>핵심 아이디어</strong> — 구간합 = (여기까지 누적합) − (시작점 누적합). 구간합이 k가 되려면? <strong>시작점 누적합 = 현재 누적합 − k</strong>여야 한다! 그래서 매번 누적합을 해시맵에 저장하고, <strong>현재 − k</strong>가 이전에 있었는지 찾는다. {0:1}은 "합=0인 상태가 1번 있었다"는 뜻.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
