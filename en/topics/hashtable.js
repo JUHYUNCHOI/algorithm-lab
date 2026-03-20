@@ -1354,14 +1354,16 @@ struct HashTable {
                     html += '<div style="display:flex;align-items:center;gap:10px;">';
                     html += '<span style="font-size:0.82rem;color:var(--text2);min-width:20px;text-align:right;font-weight:600;">' + bi + '</span>';
                     if (isMatch && matchPrevSum !== undefined && isCurrent) {
-                        var prevW = matchPrevSum > 0 ? Math.max(Math.round((matchPrevSum / ps) * 100), 12) : 0;
-                        html += '<div style="flex:0 0 ' + pct + '%;display:flex;height:36px;border-radius:8px;overflow:hidden;box-shadow:0 0 16px rgba(0,184,148,0.4);">';
+                        var prevPct = Math.max(Math.round((matchPrevSum / maxPS) * 100), 0);
+                        var kPct = pct - prevPct;
+                        if (kPct < 8) kPct = 8;
+                        html += '<div style="display:flex;height:36px;align-items:stretch;">';
                         if (matchPrevSum > 0) {
-                            html += '<div style="flex:0 0 ' + prevW + '%;background:rgba(108,92,231,0.3);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.85rem;font-weight:700;border-right:2px dashed rgba(255,255,255,0.6);">' + matchPrevSum + '</div>';
+                            html += '<div style="flex:0 0 ' + prevPct + '%;background:rgba(108,92,231,0.3);border-radius:8px 0 0 8px;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:0.85rem;font-weight:700;border-right:2px dashed rgba(255,255,255,0.8);">' + matchPrevSum + '</div>';
                         }
-                        html += '<div style="flex:1;background:var(--green);display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:800;letter-spacing:0.5px;">' + (ps - matchPrevSum) + '</div>';
+                        html += '<div style="flex:0 0 ' + kPct + '%;background:var(--green);border-radius:' + (matchPrevSum > 0 ? '0 8px 8px 0' : '8px') + ';display:flex;align-items:center;justify-content:center;color:white;font-size:1rem;font-weight:800;box-shadow:0 0 16px rgba(0,184,148,0.4);">' + (ps - matchPrevSum) + '</div>';
                         html += '</div>';
-                        html += '<span style="font-size:0.95rem;font-weight:800;color:var(--green);">' + ps + ' → ' + matchPrevSum + ' + <u>' + (ps - matchPrevSum) + '</u>(=k!)</span>';
+                        html += '<span style="font-size:0.95rem;font-weight:800;color:var(--green);">' + matchPrevSum + ' + <u>' + (ps - matchPrevSum) + '</u> = ' + ps + '</span>';
                     } else {
                         html += '<div style="flex:0 0 ' + pct + '%;height:36px;background:' + barColor + ';border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:0.92rem;font-weight:700;' + (isCurrent ? 'box-shadow:0 0 10px rgba(108,92,231,0.4);' : '') + '">' + ps + '</div>';
                     }
