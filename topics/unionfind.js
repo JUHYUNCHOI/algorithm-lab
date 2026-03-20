@@ -58,7 +58,7 @@ var unionFindTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -418,6 +418,76 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                     </div>
                 </div>
             </div>
+
+            <!-- 섹션 4: 데모 — Union & Find 체험 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">4</span> 데모: Union & Find 체험
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 노드를 클릭해서 Union & Find</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <span style="font-size:0.85rem;color:var(--text2);">노드 2개 클릭 → Union | 노드 1개 클릭 → Find</span>
+                        <button class="concept-demo-btn green" id="uf-demo-uf-reset">↺ 초기화</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="uf-demo-uf-nodes" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="uf-demo-uf-parent" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;font-family:monospace;"></div>
+                        <div id="uf-demo-uf-groups" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                        <div id="uf-demo-uf-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-demo-uf-msg">👆 노드를 클릭해보세요! 2개를 클릭하면 Union(합치기), 1개만 더블클릭하면 Find(대표 찾기)를 수행합니다.</div>
+                </div>
+            </div>
+
+            <!-- 섹션 5: 데모 — 경로 압축 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">5</span> 데모: 경로 압축 시각화
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 긴 체인이 압축되는 과정</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="uf-demo-pc-build">🔗 체인 만들기 (1→2→3→4→5)</button>
+                        <button class="concept-demo-btn" id="uf-demo-pc-find" style="display:none;">🔍 find(5) 실행</button>
+                        <button class="concept-demo-btn green" id="uf-demo-pc-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">트리 구조</div>
+                                <div id="uf-demo-pc-tree" style="font-family:monospace;font-size:0.9rem;line-height:1.8;color:var(--text);"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">parent 배열</div>
+                                <div id="uf-demo-pc-arr" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                            </div>
+                        </div>
+                        <div id="uf-demo-pc-log" style="margin-top:10px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-demo-pc-msg">👆 "체인 만들기"를 눌러 긴 체인을 만든 뒤, "find(5)"를 눌러 경로 압축을 확인하세요!</div>
+                </div>
+            </div>
+
+            <!-- 섹션 6: 데모 — 사이클 탐지 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">6</span> 데모: 사이클 탐지
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 간선을 추가하며 사이클 감지</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="uf-demo-cycle-step">➕ 다음 간선 추가</button>
+                        <button class="concept-demo-btn green" id="uf-demo-cycle-reset">↺ 초기화</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="uf-demo-cycle-edges" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="uf-demo-cycle-nodes" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="uf-demo-cycle-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-demo-cycle-msg">👆 "다음 간선 추가"를 눌러보세요! 사이클이 생기는 순간을 감지합니다.</div>
+                </div>
+            </div>
         `;
 
         this._initConceptInteractions(container);
@@ -432,6 +502,295 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== 데모 1: Union & Find 체험 ======
+        (function() {
+            var N = 6;
+            var parent = [];
+            var selected = [];
+            var groupColors = ['#6c5ce7', '#00b894', '#e17055', '#fdcb6e', '#0984e3', '#d63031'];
+            var nodesEl = container.querySelector('#uf-demo-uf-nodes');
+            var parentEl = container.querySelector('#uf-demo-uf-parent');
+            var groupsEl = container.querySelector('#uf-demo-uf-groups');
+            var logEl = container.querySelector('#uf-demo-uf-log');
+            var resetBtn = container.querySelector('#uf-demo-uf-reset');
+
+            function init() {
+                parent = [];
+                selected = [];
+                for (var i = 0; i < N; i++) parent.push(i);
+                render();
+                logEl.textContent = '노드를 클릭하세요!';
+            }
+
+            function find(x) {
+                if (parent[x] !== x) parent[x] = find(parent[x]);
+                return parent[x];
+            }
+
+            function union(a, b) {
+                a = find(a); b = find(b);
+                if (a !== b) { parent[b] = a; return true; }
+                return false;
+            }
+
+            function render() {
+                nodesEl.innerHTML = '';
+                var groups = {};
+                for (var i = 0; i < N; i++) {
+                    var root = find(i);
+                    if (!groups[root]) groups[root] = [];
+                    groups[root].push(i);
+                }
+
+                for (var i = 0; i < N; i++) {
+                    var root = find(i);
+                    var colorIdx = Object.keys(groups).indexOf(String(root));
+                    var color = groupColors[colorIdx % groupColors.length];
+                    var node = document.createElement('div');
+                    node.style.cssText = 'width:48px;height:48px;border-radius:50%;border:2.5px solid ' + color + ';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;cursor:pointer;transition:all 0.2s ease;color:' + color + ';background:var(--card);user-select:none;';
+                    if (selected.indexOf(i) >= 0) {
+                        node.style.boxShadow = '0 0 10px ' + color;
+                        node.style.transform = 'scale(1.1)';
+                    }
+                    node.textContent = i;
+                    node.dataset.idx = i;
+                    node.addEventListener('click', function() {
+                        var idx = parseInt(this.dataset.idx);
+                        if (selected.indexOf(idx) >= 0) {
+                            selected = selected.filter(function(s) { return s !== idx; });
+                        } else {
+                            selected.push(idx);
+                        }
+                        if (selected.length === 1) {
+                            var root = find(selected[0]);
+                            logEl.innerHTML = '<strong>find(' + selected[0] + ')</strong> = <strong style="color:var(--green);">' + root + '</strong> (대표자). 2번째 노드를 클릭하면 Union합니다.';
+                            render();
+                        } else if (selected.length >= 2) {
+                            var a = selected[0], b = selected[1];
+                            var merged = union(a, b);
+                            if (merged) {
+                                logEl.innerHTML = '<strong>union(' + a + ', ' + b + ')</strong> → <strong style="color:var(--green);">합침!</strong> ' + b + '의 대표가 ' + find(a) + '로 변경';
+                            } else {
+                                logEl.innerHTML = '<strong>union(' + a + ', ' + b + ')</strong> → 이미 같은 그룹! (대표: ' + find(a) + ')';
+                            }
+                            selected = [];
+                            render();
+                        } else {
+                            render();
+                        }
+                    });
+                    nodesEl.appendChild(node);
+                }
+
+                parentEl.textContent = 'parent = [' + parent.join(', ') + ']';
+
+                groupsEl.innerHTML = '';
+                var rootKeys = Object.keys(groups);
+                rootKeys.forEach(function(root, idx) {
+                    var badge = document.createElement('span');
+                    badge.style.cssText = 'padding:4px 10px;border-radius:12px;font-size:0.8rem;font-weight:600;color:#fff;background:' + groupColors[idx % groupColors.length] + ';';
+                    badge.textContent = '그룹 ' + root + ': {' + groups[root].join(', ') + '}';
+                    groupsEl.appendChild(badge);
+                });
+            }
+
+            init();
+            resetBtn.addEventListener('click', init);
+        })();
+
+        // ====== 데모 2: 경로 압축 ======
+        (function() {
+            var parent = [0, 0, 1, 2, 3, 4];
+            var treeEl = container.querySelector('#uf-demo-pc-tree');
+            var arrEl = container.querySelector('#uf-demo-pc-arr');
+            var logEl = container.querySelector('#uf-demo-pc-log');
+            var buildBtn = container.querySelector('#uf-demo-pc-build');
+            var findBtn = container.querySelector('#uf-demo-pc-find');
+            var resetBtn = container.querySelector('#uf-demo-pc-reset');
+
+            function renderTree(highlight) {
+                treeEl.innerHTML = '';
+                var lines = [];
+                function buildLines(node, prefix, isLast) {
+                    var children = [];
+                    for (var i = 0; i < parent.length; i++) {
+                        if (i !== node && parent[i] === node) children.push(i);
+                    }
+                    var nodeStr = '<span style="' + (highlight && highlight.indexOf(node) >= 0 ? 'color:var(--green);font-weight:700;' : 'color:var(--text);') + '">' + node + '</span>';
+                    if (parent[node] === node) nodeStr += ' <span style="font-size:0.75rem;color:var(--accent);">(루트)</span>';
+                    lines.push(prefix + nodeStr);
+                    children.forEach(function(c, i) {
+                        var last = i === children.length - 1;
+                        var connector = last ? '└─ ' : '├─ ';
+                        var nextPrefix = prefix + (last ? '&nbsp;&nbsp;&nbsp;' : '│&nbsp;&nbsp;');
+                        buildLines(c, prefix + connector, last);
+                    });
+                }
+                // find root
+                var root = 0;
+                for (var i = 0; i < parent.length; i++) {
+                    if (parent[i] === i) { root = i; break; }
+                }
+                buildLines(root, '', true);
+                treeEl.innerHTML = lines.map(function(l) { return '<div>' + l + '</div>'; }).join('');
+            }
+
+            function renderArr(highlight) {
+                arrEl.innerHTML = '';
+                for (var i = 0; i < parent.length; i++) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.65rem;">' + i + '</div><div class="str-char-val">' + parent[i] + '</div>';
+                    if (highlight && highlight.indexOf(i) >= 0) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.boxShadow = '0 0 6px var(--green)';
+                    }
+                    arrEl.appendChild(box);
+                }
+            }
+
+            function resetState() {
+                parent = [0, 0, 0, 0, 0, 0];
+                buildBtn.style.display = '';
+                findBtn.style.display = 'none';
+                resetBtn.style.display = 'none';
+                treeEl.innerHTML = '';
+                arrEl.innerHTML = '';
+                logEl.textContent = '"체인 만들기"를 눌러보세요!';
+            }
+            resetState();
+
+            buildBtn.addEventListener('click', function() {
+                parent = [0, 0, 1, 2, 3, 4];
+                renderTree();
+                renderArr();
+                logEl.innerHTML = '체인 생성 완료: 5→4→3→2→1→<strong>0(루트)</strong>. find(5)를 하면 5번 타고 올라가야 합니다!';
+                buildBtn.style.display = 'none';
+                findBtn.style.display = '';
+                resetBtn.style.display = '';
+            });
+
+            findBtn.addEventListener('click', function() {
+                var path = [5, 4, 3, 2, 1, 0];
+                var step = 0;
+                function animate() {
+                    if (step < path.length) {
+                        renderTree(path.slice(0, step + 1));
+                        renderArr(path.slice(0, step + 1));
+                        logEl.innerHTML = 'find(5): ' + path.slice(0, step + 1).join(' → ') + (step < path.length - 1 ? ' → ...' : ' → <strong style="color:var(--green);">루트 발견!</strong>');
+                        step++;
+                        setTimeout(animate, 500);
+                    } else {
+                        setTimeout(function() {
+                            parent = [0, 0, 0, 0, 0, 0];
+                            for (var i = 1; i <= 5; i++) parent[i] = 0;
+                            renderTree([1, 2, 3, 4, 5]);
+                            renderArr([1, 2, 3, 4, 5]);
+                            logEl.innerHTML = '<strong style="color:var(--green);">경로 압축 완료!</strong> 모든 노드가 루트(0)에 직접 연결됩니다. 다음 find는 <strong>1번</strong>이면 됩니다!';
+                        }, 600);
+                    }
+                }
+                findBtn.style.display = 'none';
+                animate();
+            });
+
+            resetBtn.addEventListener('click', resetState);
+        })();
+
+        // ====== 데모 3: 사이클 탐지 ======
+        (function() {
+            var edges = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 1]];
+            var parent = [0, 1, 2, 3, 4];
+            var addedEdges = [];
+            var stepIdx = 0;
+            var cycleFound = false;
+            var edgesEl = container.querySelector('#uf-demo-cycle-edges');
+            var nodesEl = container.querySelector('#uf-demo-cycle-nodes');
+            var logEl = container.querySelector('#uf-demo-cycle-log');
+            var stepBtn = container.querySelector('#uf-demo-cycle-step');
+            var resetBtn = container.querySelector('#uf-demo-cycle-reset');
+
+            function find(x) {
+                if (parent[x] !== x) parent[x] = find(parent[x]);
+                return parent[x];
+            }
+
+            function render() {
+                edgesEl.innerHTML = '';
+                edges.forEach(function(e, i) {
+                    var badge = document.createElement('span');
+                    var added = i < addedEdges.length;
+                    var isCycle = added && addedEdges[i] === 'cycle';
+                    badge.style.cssText = 'padding:4px 10px;border-radius:12px;font-size:0.8rem;font-weight:600;transition:all 0.3s ease;';
+                    if (isCycle) {
+                        badge.style.background = 'rgba(225,112,85,0.2)';
+                        badge.style.color = 'var(--red)';
+                        badge.style.border = '1.5px solid var(--red)';
+                        badge.textContent = e[0] + '-' + e[1] + ' (사이클!)';
+                    } else if (added) {
+                        badge.style.background = 'rgba(0,184,148,0.15)';
+                        badge.style.color = 'var(--green)';
+                        badge.style.border = '1.5px solid var(--green)';
+                        badge.textContent = e[0] + '-' + e[1] + ' ✓';
+                    } else {
+                        badge.style.background = 'var(--bg)';
+                        badge.style.color = 'var(--text3)';
+                        badge.style.border = '1.5px solid var(--border)';
+                        badge.textContent = e[0] + '-' + e[1];
+                    }
+                    edgesEl.appendChild(badge);
+                });
+
+                nodesEl.innerHTML = '';
+                var groups = {};
+                for (var i = 0; i < 5; i++) {
+                    var root = find(i);
+                    if (!groups[root]) groups[root] = [];
+                    groups[root].push(i);
+                }
+                var gColors = ['#6c5ce7', '#00b894', '#e17055', '#fdcb6e', '#0984e3'];
+                for (var i = 0; i < 5; i++) {
+                    var root = find(i);
+                    var cidx = Object.keys(groups).indexOf(String(root));
+                    var node = document.createElement('div');
+                    node.style.cssText = 'width:40px;height:40px;border-radius:50%;border:2.5px solid ' + gColors[cidx % gColors.length] + ';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:' + gColors[cidx % gColors.length] + ';background:var(--card);';
+                    node.textContent = i;
+                    nodesEl.appendChild(node);
+                }
+            }
+
+            function init() {
+                parent = [0, 1, 2, 3, 4];
+                addedEdges = [];
+                stepIdx = 0;
+                cycleFound = false;
+                stepBtn.disabled = false;
+                render();
+                logEl.textContent = '"다음 간선 추가"를 눌러보세요!';
+            }
+            init();
+
+            stepBtn.addEventListener('click', function() {
+                if (stepIdx >= edges.length || cycleFound) return;
+                var e = edges[stepIdx];
+                var ra = find(e[0]), rb = find(e[1]);
+                if (ra === rb) {
+                    addedEdges.push('cycle');
+                    cycleFound = true;
+                    logEl.innerHTML = '<strong style="color:var(--red);">사이클 발견!</strong> 간선 (' + e[0] + '-' + e[1] + '): find(' + e[0] + ')=' + ra + ', find(' + e[1] + ')=' + rb + ' → 같은 그룹이므로 사이클!';
+                    stepBtn.disabled = true;
+                } else {
+                    parent[rb] = ra;
+                    addedEdges.push('ok');
+                    logEl.innerHTML = '간선 (' + e[0] + '-' + e[1] + ') 추가: find(' + e[0] + ')=' + ra + ', find(' + e[1] + ')=' + rb + ' → <strong style="color:var(--green);">다른 그룹, 합침!</strong>';
+                }
+                stepIdx++;
+                render();
+            });
+
+            resetBtn.addEventListener('click', init);
+        })();
     },
 
     // ===== 시각화 상태 =====
@@ -585,7 +944,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 1: union(1, 2)
         steps.push({
-            description: 'union(1, 2): 노드 1과 2를 합칩니다. parent[2] = 1',
+            description: 'union(1, 2): 노드 1과 2를 합칩니다. parent[2]=1 — <strong>같은 집합임을 표시</strong>하기 위해 2의 부모를 1로 연결',
             action: function() {
                 var par = [0, 1, 1, 3, 4, 5, 6];
                 renderParent(par, {1: 'active', 2: 'changed'});
@@ -602,7 +961,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 2: union(3, 4)
         steps.push({
-            description: 'union(3, 4): 노드 3과 4를 합칩니다. parent[4] = 3',
+            description: 'union(3, 4): 노드 3과 4를 합칩니다. parent[4]=3 — 두 노드를 하나의 집합으로 묶기 위해 부모를 연결',
             action: function() {
                 var par = [0, 1, 1, 3, 3, 5, 6];
                 renderParent(par, {3: 'active', 4: 'changed'});
@@ -619,7 +978,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 3: union(5, 6)
         steps.push({
-            description: 'union(5, 6): 노드 5와 6을 합칩니다. parent[6] = 5',
+            description: 'union(5, 6): 노드 5와 6을 합칩니다. parent[6]=5 — 두 노드를 하나의 집합으로 묶기 위해 부모를 연결',
             action: function() {
                 var par = [0, 1, 1, 3, 3, 5, 5];
                 renderParent(par, {5: 'active', 6: 'changed'});
@@ -636,7 +995,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 4: union(1, 3)
         steps.push({
-            description: 'union(1, 3): {1,2}와 {3,4}를 합칩니다. parent[3] = 1',
+            description: 'union(1, 3): {1,2}와 {3,4}를 합칩니다. parent[3]=1 — 각 집합의 <strong>루트끼리</strong> 연결하면 두 집합 전체가 합쳐짐',
             action: function() {
                 var par = [0, 1, 1, 1, 3, 5, 5];
                 renderParent(par, {1: 'active', 3: 'changed'});
@@ -653,7 +1012,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 5: find(4) with path compression
         steps.push({
-            description: 'find(4): 4→3→1 경로를 따라 루트 1을 찾습니다. 경로 압축으로 parent[4] = 1',
+            description: 'find(4): 4→3→1 경로를 따라 루트 1을 찾습니다. <strong>경로 압축</strong>: parent[4]=1로 직접 연결하여 다음 find(4)가 O(1)이 되도록 최적화',
             action: function() {
                 var par = [0, 1, 1, 1, 1, 5, 5];
                 renderParent(par, {4: 'changed', 1: 'active'});
@@ -670,7 +1029,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 6: union(1, 5)
         steps.push({
-            description: 'union(1, 5): {1,2,3,4}와 {5,6}을 합칩니다. parent[5] = 1',
+            description: 'union(1, 5): {1,2,3,4}와 {5,6}을 합칩니다. parent[5]=1 — 모든 노드가 같은 루트를 갖게 되어 하나의 집합으로 통합',
             action: function() {
                 var par = [0, 1, 1, 1, 1, 1, 5];
                 renderParent(par, {1: 'active', 5: 'changed'});
@@ -687,7 +1046,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 7: final
         steps.push({
-            description: '완료! 모든 노드가 루트 1 아래 하나의 집합으로 합쳐졌습니다.',
+            description: '✅ 완료! 모든 노드가 루트 1 아래 하나의 집합 — find()로 아무 두 노드를 비교해도 같은 루트이므로 O(1)에 같은 집합 판별 가능',
             action: function() {
                 var par = [0, 1, 1, 1, 1, 1, 5];
                 renderParent(par);
@@ -788,11 +1147,11 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                         if (!sameSet) highlights[rb] = 'changed';
 
                         var descText = sameSet
-                            ? 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → 이미 같은 집합!'
-                            : 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → parent[' + rb + ']=' + ra;
+                            ? 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → 루트가 같으므로 이미 같은 집합! 합칠 필요 없음'
+                            : 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → 루트가 다르므로 parent[' + rb + ']=' + ra + '로 연결하여 하나의 집합으로 합침';
                         var infoText = sameSet
-                            ? 'union(' + op.a + ',' + op.b + '): 이미 같은 집합이므로 변경 없음.'
-                            : 'union(' + op.a + ',' + op.b + '): parent[' + rb + ']=' + ra + '. {' + op.a + ',' + op.b + '} 같은 집합.';
+                            ? 'union(' + op.a + ',' + op.b + '): 루트가 같으므로 이미 같은 집합 — 변경 없음.'
+                            : 'union(' + op.a + ',' + op.b + '): parent[' + rb + ']=' + ra + '로 연결. 이제 find()로 같은 집합 판별 가능.';
 
                         steps.push({
                             description: descText,
@@ -817,7 +1176,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                         highlights[op.a] = 'active';
                         highlights[op.b] = 'active';
 
-                        var descText = 'find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → ' + (same ? 'YES ✅' : 'NO ❌');
+                        var descText = 'find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → ' + (same ? '루트가 같으므로 같은 집합 YES ✅' : '루트가 다르므로 다른 집합 NO ❌') + ' (경로 압축 적용)';
                         var infoText = same
                             ? '<strong style="color:var(--green);font-size:1.05rem;">✅ find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → 같은 집합! YES</strong>'
                             : '<strong style="color:var(--red, #e17055);font-size:1.05rem;">❌ find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → 다른 집합! NO</strong>';
@@ -934,8 +1293,8 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                     if (!already) highlights[rb] = 'changed';
 
                     var descText = already
-                        ? '노선 ' + edge.a + '-' + edge.b + ': 이미 같은 집합 (find=' + ra + ')'
-                        : '노선 ' + edge.a + '-' + edge.b + ' → union: parent[' + rb + ']=' + ra;
+                        ? '노선 ' + edge.a + '-' + edge.b + ': 루트가 같으므로 이미 연결된 도시 (합칠 필요 없음)'
+                        : '노선 ' + edge.a + '-' + edge.b + ' → union: parent[' + rb + ']=' + ra + ' — 두 도시를 같은 집합으로 연결하여 이동 가능하게 함';
                     var infoText = already
                         ? '도시 ' + edge.a + '과 ' + edge.b + '은 이미 연결되어 있습니다.'
                         : 'union(' + edge.a + ',' + edge.b + '): parent[' + rb + ']=' + ra + '. 도시 ' + edge.a + '과 ' + edge.b + '가 연결됩니다.';
@@ -965,13 +1324,13 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                     var rootList = plan.map(function(c) { return 'find(' + c + ')=' + ufFind(checkPar, c); }).join(', ');
 
                     steps.push({
-                        description: '여행 경로 확인: ' + rootList,
+                        description: '여행 경로 확인: ' + rootList + ' — 모든 도시의 루트가 같으면 이동 가능',
                         action: function() { renderPar(checkPar, N, highlights); infoEl.innerHTML = '여행 도시 대표: ' + rootList; },
                         undo: function() { renderPar(checkPar, N); infoEl.innerHTML = ''; }
                     });
 
                     steps.push({
-                        description: allSame ? '결과: 모든 도시가 같은 집합 → YES ✅' : '결과: 서로 다른 집합 존재 → NO ❌',
+                        description: allSame ? '결과: 모든 도시의 루트가 같으므로 이동 가능 → YES ✅' : '결과: 루트가 다른 도시가 있어 연결이 끊김 → NO ❌',
                         action: function() {
                             renderPar(checkPar, N, highlights);
                             infoEl.innerHTML = allSame
@@ -1082,7 +1441,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
             // Step 1: show initial state with parent array
             steps.push({
-                description: '초기: \'1\' 칸 ' + totalOnes + '개. 각각 독립된 섬. count=' + totalOnes,
+                description: '초기: \'1\' 칸 ' + totalOnes + '개를 각각 독립된 섬으로 시작 — 인접한 칸끼리 union하면 count가 줄어듦',
                 action: function() { renderGrid(grid, R, C, initPar.slice()); infoEl.innerHTML = '각 \'1\' 칸이 독립적인 섬. <strong>count = ' + totalOnes + '</strong>'; },
                 undo: function() { renderGrid(grid, R, C, null); infoEl.innerHTML = '<span style="color:var(--text2);">\'1\' 칸 수 = ' + totalOnes + ' → 초기 섬 개수 = ' + totalOnes + '</span>'; }
             });
@@ -1111,8 +1470,8 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                             highlights[i2] = true;
 
                             var descText = merged
-                                ? 'union(' + i1 + ',' + i2 + '): (' + rr + ',' + cc + ')↔(' + nrr + ',' + ncc + ') 합침. count=' + newCount
-                                : '(' + rr + ',' + cc + ')↔(' + nrr + ',' + ncc + '): 이미 같은 집합. count=' + newCount;
+                                ? 'union(' + i1 + ',' + i2 + '): (' + rr + ',' + cc + ')↔(' + nrr + ',' + ncc + ') 인접한 땅이므로 합침 → 섬 하나 감소, count=' + newCount
+                                : '(' + rr + ',' + cc + ')↔(' + nrr + ',' + ncc + '): 이미 같은 섬에 속함 (루트 동일). count=' + newCount;
                             var infoText = merged
                                 ? '(' + rr + ',' + cc + ')↔(' + nrr + ',' + ncc + ') union! <strong>count = ' + newCount + '</strong>'
                                 : '(' + rr + ',' + cc + ')↔(' + nrr + ',' + ncc + ') 이미 같은 집합. count = ' + newCount;
@@ -1133,7 +1492,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             var finalPar = curPar.slice();
             var finalCount = count;
             steps.push({
-                description: '완료! 섬 ' + finalCount + '개',
+                description: '✅ 완료! 인접한 모든 \'1\' 칸을 union한 결과 → 섬 ' + finalCount + '개',
                 action: function() { renderGrid(grid, R, C, finalPar); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.05rem;">✅ 정답: 섬 ' + finalCount + '개</strong>'; },
                 undo: function() { renderGrid(grid, R, C, finalPar); infoEl.innerHTML = ''; }
             });

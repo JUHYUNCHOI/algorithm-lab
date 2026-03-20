@@ -58,7 +58,7 @@ var shortestPathTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -489,6 +489,100 @@ var shortestPathTopic = {
                     </div>\
                 </div>\
             </div>\
+\
+            <!-- Section 5: Demo — BFS vs Dijkstra -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">5</span> Demo: BFS vs Dijkstra\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Same graph, different results</div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Graph: A→B(1), A→C(4), B→C(2), B→D(6), C→D(1)</div>\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--accent);">BFS Result <span style="font-size:0.8rem;color:var(--text3);">(by edge count)</span></div>\
+                                <div id="sp-demo-bfs-result" style="font-size:0.9rem;color:var(--text2);line-height:1.8;"></div>\
+                                <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-top:12px;">\
+                                    <button id="sp-demo-bfs-prev" class="concept-demo-btn">\u2190 Prev</button>\
+                                    <span id="sp-demo-bfs-counter" style="font-size:0.85rem;color:var(--text2);">Before Start</span>\
+                                    <button id="sp-demo-bfs-next" class="concept-demo-btn">Next \u2192</button>\
+                                </div>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--green);">Dijkstra Result <span style="font-size:0.8rem;color:var(--text3);">(by weight sum)</span></div>\
+                                <div id="sp-demo-dij-result" style="font-size:0.9rem;color:var(--text2);line-height:1.8;"></div>\
+                                <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-top:12px;">\
+                                    <button id="sp-demo-dij-prev" class="concept-demo-btn">\u2190 Prev</button>\
+                                    <span id="sp-demo-dij-counter" style="font-size:0.85rem;color:var(--text2);">Before Start</span>\
+                                    <button id="sp-demo-dij-next" class="concept-demo-btn">Next \u2192</button>\
+                                </div>\
+                            </div>\
+                        </div>\
+                        <div id="sp-demo-compare-log" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-compare-msg">👆 Click "Next \u2192" on BFS and Dijkstra to compare them step by step!</div>\
+                </div>\
+            </div>\
+\
+            <!-- Section 6: Demo — Dijkstra Step-by-Step -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">6</span> Demo: Dijkstra Step-by-Step\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Watch the distance table update</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="sp-demo-step-next">▶ Next Step</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-step-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Distance Table (start: A)</div>\
+                        <div id="sp-demo-step-dist" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div id="sp-demo-step-visited" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;"></div>\
+                        <div id="sp-demo-step-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-step-msg">👆 Click "Next Step" to see how Dijkstra works one step at a time!</div>\
+                </div>\
+            </div>\
+\
+            <!-- Section 7: Demo — Greedy Proof -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">7</span> Demo: Why Does Greedy Work?\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Why the closest unvisited vertex is optimal</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="sp-demo-greedy-btn">💡 Show Proof</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-greedy-viz" style="font-size:0.9rem;color:var(--text);line-height:2;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-greedy-msg">👆 Click the button to see why Dijkstra\'s greedy choice is always optimal!</div>\
+                </div>\
+            </div>\
+\
+            <!-- Section 8: Demo — Bellman-Ford Relaxation -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">8</span> Demo: Bellman-Ford Relaxation Process\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Relax edges V-1 times</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="sp-demo-bf-next">▶ Next Relaxation</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-bf-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Distance Table (start: A) — Edges: A→B(4), A→C(3), B→D(1), C→B(-2), C→D(5)</div>\
+                        <div id="sp-demo-bf-dist" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div id="sp-demo-bf-round" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;"></div>\
+                        <div id="sp-demo-bf-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-bf-msg">👆 Click "Next Relaxation" to see Bellman-Ford relax all edges repeatedly! It works even with negative edges (-2).</div>\
+                </div>\
+            </div>\
         ';
 
         this._initConceptInteractions(container);
@@ -508,6 +602,296 @@ var shortestPathTopic = {
         container.querySelectorAll('pre code').forEach(function(el) {
             if (window.hljs) hljs.highlightElement(el);
         });
+
+        // ====== Demo 1: BFS vs Dijkstra ======
+        (function() {
+            var adj = { A: [['B', 1], ['C', 4]], B: [['C', 2], ['D', 6]], C: [['D', 1]], D: [] };
+            var bfsResult = container.querySelector('#sp-demo-bfs-result');
+            var dijResult = container.querySelector('#sp-demo-dij-result');
+            var logEl = container.querySelector('#sp-demo-compare-log');
+
+            // --- BFS step calculation ---
+            var bfsDist = { A: 0, B: Infinity, C: Infinity, D: Infinity };
+            var bfsQueue = ['A'];
+            var bfsVisited = { A: true };
+            var bfsLines = ['A: distance 0 (start)'];
+            while (bfsQueue.length) {
+                var u = bfsQueue.shift();
+                adj[u].forEach(function(edge) {
+                    var v = edge[0];
+                    if (!bfsVisited[v]) {
+                        bfsVisited[v] = true;
+                        bfsDist[v] = bfsDist[u] + 1;
+                        bfsQueue.push(v);
+                        bfsLines.push(v + ': distance ' + bfsDist[v] + ' (edge count)');
+                    }
+                });
+            }
+            var bfsLogMsg = 'BFS A\u2192D: <strong>' + bfsDist['D'] + ' hops</strong> (edge count). But it ignores weights!';
+
+            // --- Dijkstra step calculation ---
+            var dijDist = { A: 0, B: Infinity, C: Infinity, D: Infinity };
+            var dijVisited = {};
+            var dijLines = ['A: distance 0 (start)'];
+            var pq = [[0, 'A']];
+            while (pq.length) {
+                pq.sort(function(a, b) { return a[0] - b[0]; });
+                var cur = pq.shift();
+                var d = cur[0], uu = cur[1];
+                if (dijVisited[uu]) continue;
+                dijVisited[uu] = true;
+                adj[uu].forEach(function(edge) {
+                    var v = edge[0], w = edge[1];
+                    var nd = d + w;
+                    if (nd < dijDist[v]) {
+                        dijDist[v] = nd;
+                        pq.push([nd, v]);
+                        dijLines.push(v + ': distance ' + nd + ' (path: via ' + uu + ', weight ' + w + ')');
+                    }
+                });
+            }
+            var dijLogMsg = 'Dijkstra A\u2192D: <strong>' + dijDist['D'] + '</strong> (weight sum: A\u2192B(1)\u2192C(2)\u2192D(1)=4). BFS said 2 hops, but the actual shortest cost is <strong>4</strong>!';
+
+            // --- BFS manual controls ---
+            var bfsCur = -1;
+            var bfsPrev = container.querySelector('#sp-demo-bfs-prev');
+            var bfsNext = container.querySelector('#sp-demo-bfs-next');
+            var bfsCounter = container.querySelector('#sp-demo-bfs-counter');
+
+            function updateBfs() {
+                bfsResult.innerHTML = '';
+                for (var i = 0; i <= bfsCur; i++) {
+                    bfsResult.innerHTML += '<div style="animation:fadeIn 0.3s ease;">' + bfsLines[i] + '</div>';
+                }
+                if (bfsCur < 0) {
+                    bfsCounter.textContent = 'Before Start';
+                    logEl.innerHTML = '';
+                } else {
+                    bfsCounter.textContent = (bfsCur + 1) + ' / ' + bfsLines.length;
+                    if (bfsCur === bfsLines.length - 1) {
+                        logEl.innerHTML = bfsLogMsg;
+                    }
+                }
+            }
+
+            bfsNext.addEventListener('click', function() {
+                if (bfsCur < bfsLines.length - 1) { bfsCur++; updateBfs(); }
+            });
+            bfsPrev.addEventListener('click', function() {
+                if (bfsCur >= 0) { bfsCur--; updateBfs(); }
+            });
+
+            // --- Dijkstra manual controls ---
+            var dijCur = -1;
+            var dijPrev = container.querySelector('#sp-demo-dij-prev');
+            var dijNext = container.querySelector('#sp-demo-dij-next');
+            var dijCounter = container.querySelector('#sp-demo-dij-counter');
+
+            function updateDij() {
+                dijResult.innerHTML = '';
+                for (var i = 0; i <= dijCur; i++) {
+                    dijResult.innerHTML += '<div style="animation:fadeIn 0.3s ease;">' + dijLines[i] + '</div>';
+                }
+                if (dijCur < 0) {
+                    dijCounter.textContent = 'Before Start';
+                } else {
+                    dijCounter.textContent = (dijCur + 1) + ' / ' + dijLines.length;
+                    if (dijCur === dijLines.length - 1) {
+                        logEl.innerHTML = dijLogMsg;
+                    }
+                }
+            }
+
+            dijNext.addEventListener('click', function() {
+                if (dijCur < dijLines.length - 1) { dijCur++; updateDij(); }
+            });
+            dijPrev.addEventListener('click', function() {
+                if (dijCur >= 0) { dijCur--; updateDij(); }
+            });
+        })();
+
+        // ====== Demo 2: Dijkstra Step-by-Step ======
+        (function() {
+            var nodes = ['A', 'B', 'C', 'D', 'E'];
+            var adj = { A: [['B', 4], ['C', 2]], B: [['D', 3], ['E', 1]], C: [['B', 1], ['D', 5]], D: [['E', 2]], E: [] };
+            var INF = Infinity;
+            var dist, visited, stepQueue, stepDone;
+
+            var distEl = container.querySelector('#sp-demo-step-dist');
+            var visitedEl = container.querySelector('#sp-demo-step-visited');
+            var logEl = container.querySelector('#sp-demo-step-log');
+            var nextBtn = container.querySelector('#sp-demo-step-next');
+            var resetBtn = container.querySelector('#sp-demo-step-reset');
+
+            function init() {
+                dist = { A: 0, B: INF, C: INF, D: INF, E: INF };
+                visited = {};
+                stepQueue = [[0, 'A']];
+                stepDone = false;
+                renderDist();
+                visitedEl.textContent = 'Visited: (none)';
+                logEl.textContent = 'Click "Next Step" to start!';
+                nextBtn.disabled = false;
+            }
+
+            function renderDist(highlight) {
+                distEl.innerHTML = '';
+                nodes.forEach(function(n) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.style.cssText = 'min-width:50px;text-align:center;transition:all 0.3s ease;';
+                    var val = dist[n] === INF ? '\u221E' : dist[n];
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.7rem;font-weight:700;">' + n + '</div><div class="str-char-val" style="font-size:1rem;">' + val + '</div>';
+                    if (visited[n]) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.background = 'rgba(0,184,148,0.1)';
+                    }
+                    if (highlight === n) {
+                        box.style.borderColor = 'var(--yellow)';
+                        box.style.boxShadow = '0 0 8px var(--yellow)';
+                    }
+                    distEl.appendChild(box);
+                });
+            }
+
+            init();
+
+            nextBtn.addEventListener('click', function() {
+                if (stepDone || stepQueue.length === 0) {
+                    logEl.innerHTML = '<strong style="color:var(--green);">Done!</strong> Found shortest distances to all vertices.';
+                    nextBtn.disabled = true;
+                    return;
+                }
+                stepQueue.sort(function(a, b) { return a[0] - b[0]; });
+                var cur = stepQueue.shift();
+                var d = cur[0], u = cur[1];
+                if (visited[u]) {
+                    logEl.innerHTML = u + ' was already visited, so we skip it (<code>if d > dist[v]: continue</code>)';
+                    return;
+                }
+                visited[u] = true;
+                renderDist(u);
+                visitedEl.textContent = 'Visited: {' + Object.keys(visited).join(', ') + '}';
+                var updates = [];
+                adj[u].forEach(function(edge) {
+                    var v = edge[0], w = edge[1];
+                    var nd = d + w;
+                    if (nd < dist[v]) {
+                        dist[v] = nd;
+                        stepQueue.push([nd, v]);
+                        updates.push(v + ': ' + d + '+' + w + '=' + nd + (nd < (dist[v] === nd ? INF : dist[v]) ? ' (updated!)' : ''));
+                    }
+                });
+                logEl.innerHTML = '<strong style="color:var(--yellow);">Visit ' + u + '</strong> (distance: ' + d + '). ' +
+                    (updates.length ? 'Neighbor updates: ' + updates.join(', ') : 'No neighbors to update');
+
+                setTimeout(function() { renderDist(); }, 400);
+
+                if (Object.keys(visited).length === nodes.length) {
+                    stepDone = true;
+                }
+            });
+
+            resetBtn.addEventListener('click', init);
+        })();
+
+        // ====== Demo 3: Greedy Proof ======
+        (function() {
+            var greedyBtn = container.querySelector('#sp-demo-greedy-btn');
+            var vizEl = container.querySelector('#sp-demo-greedy-viz');
+
+            greedyBtn.addEventListener('click', function() {
+                var steps = [
+                    '<strong>Assumption:</strong> Let u be the unvisited vertex with the shortest distance. dist[u] = d.',
+                    '<strong>Question:</strong> "Could there be a shorter path to u through another route?"',
+                    '<strong>Think about it:</strong> Any other path must go through some <span style="color:var(--red);">unvisited vertex w</span>.',
+                    'But dist[w] \u2265 dist[u]. <span style="color:var(--accent);">(Because u has the shortest distance!)</span>',
+                    'Since all weights are <strong>non-negative (\u22650)</strong>, going through w gives dist[w] + (positive) \u2265 dist[u].',
+                    'Therefore, no other path can be <strong>shorter than dist[u]</strong>.',
+                    '<div style="margin-top:8px;padding:10px 14px;background:rgba(0,184,148,0.1);border-radius:8px;border-left:3px solid var(--green);"><strong style="color:var(--green);">Conclusion:</strong> The closest unvisited vertex\'s distance is already optimal! The greedy choice is always correct.</div>',
+                    '<div style="margin-top:6px;padding:8px 14px;background:rgba(225,112,85,0.1);border-radius:8px;border-left:3px solid var(--red);"><strong style="color:var(--red);">Caution:</strong> What about negative weights? dist[w] + (negative) could be less than dist[u], so the greedy approach fails. That\'s why we need Bellman-Ford!</div>'
+                ];
+                vizEl.innerHTML = '';
+                steps.forEach(function(s, i) {
+                    setTimeout(function() {
+                        vizEl.innerHTML += '<div style="animation:fadeIn 0.3s ease;padding:3px 0;">' + s + '</div>';
+                    }, i * 600);
+                });
+            });
+        })();
+
+        // ====== Demo 4: Bellman-Ford Relaxation ======
+        (function() {
+            var nodes = ['A', 'B', 'C', 'D'];
+            var edges = [['A', 'B', 4], ['A', 'C', 3], ['B', 'D', 1], ['C', 'B', -2], ['C', 'D', 5]];
+            var INF = Infinity;
+            var dist, round, edgeIdx, totalRounds;
+
+            var distEl = container.querySelector('#sp-demo-bf-dist');
+            var roundEl = container.querySelector('#sp-demo-bf-round');
+            var logEl = container.querySelector('#sp-demo-bf-log');
+            var nextBtn = container.querySelector('#sp-demo-bf-next');
+            var resetBtn = container.querySelector('#sp-demo-bf-reset');
+
+            function init() {
+                dist = { A: 0, B: INF, C: INF, D: INF };
+                round = 1;
+                edgeIdx = 0;
+                totalRounds = nodes.length - 1;
+                renderDist();
+                roundEl.textContent = 'Round: 1 / ' + totalRounds + ' | Edge: 0 / ' + edges.length;
+                logEl.textContent = 'Click "Next Relaxation" to start!';
+                nextBtn.disabled = false;
+            }
+
+            function renderDist(highlight) {
+                distEl.innerHTML = '';
+                nodes.forEach(function(n) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.style.cssText = 'min-width:50px;text-align:center;transition:all 0.3s ease;';
+                    var val = dist[n] === INF ? '\u221E' : dist[n];
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.7rem;font-weight:700;">' + n + '</div><div class="str-char-val" style="font-size:1rem;">' + val + '</div>';
+                    if (highlight === n) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.boxShadow = '0 0 8px var(--green)';
+                    }
+                    distEl.appendChild(box);
+                });
+            }
+
+            init();
+
+            nextBtn.addEventListener('click', function() {
+                if (round > totalRounds) {
+                    logEl.innerHTML = '<strong style="color:var(--green);">Done!</strong> ' + totalRounds + ' rounds of relaxation complete. Final distances: ' +
+                        nodes.map(function(n) { return n + '=' + (dist[n] === INF ? '\u221E' : dist[n]); }).join(', ');
+                    nextBtn.disabled = true;
+                    return;
+                }
+                var e = edges[edgeIdx];
+                var u = e[0], v = e[1], w = e[2];
+                var relaxed = false;
+                if (dist[u] !== INF && dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    relaxed = true;
+                    renderDist(v);
+                    logEl.innerHTML = 'Edge (' + u + '\u2192' + v + ', weight ' + w + '): dist[' + u + ']+' + w + ' = <strong>' + dist[v] + '</strong> < previous \u2192 <strong style="color:var(--green);">Updated!</strong>';
+                } else {
+                    renderDist();
+                    var reason = dist[u] === INF ? 'dist[' + u + ']=\u221E so skip' : dist[u] + '+' + w + '=' + (dist[u] + w) + ' \u2265 ' + (dist[v] === INF ? '\u221E' : dist[v]) + ' \u2192 no change';
+                    logEl.innerHTML = 'Edge (' + u + '\u2192' + v + ', weight ' + w + '): ' + reason;
+                }
+                edgeIdx++;
+                if (edgeIdx >= edges.length) {
+                    edgeIdx = 0;
+                    round++;
+                }
+                roundEl.textContent = 'Round: ' + Math.min(round, totalRounds) + ' / ' + totalRounds + ' | Edge: ' + edgeIdx + ' / ' + edges.length;
+            });
+
+            resetBtn.addEventListener('click', init);
+        })();
     },
 
     // ===== Visualization Tab (concept suffix) =====
@@ -571,7 +955,7 @@ var shortestPathTopic = {
         // Step 0: init
         var snap0 = saveSnapshot();
         steps.push({
-            description: 'Initialize: dist[A]=0, rest=\u221E. Push (0, A) to the heap.',
+            description: 'Initialize: dist[A]=0, rest=\u221E \u2014 start node distance is 0, everything else is unknown (infinity). Push (0, A) to the min-heap to begin exploration.',
             action: function() { renderDist(simDist, 0); infoEl.innerHTML = 'dist = [0, \u221E, \u221E, \u221E, \u221E], heap = [(0, A)]'; },
             undo: function() { restoreSnapshot(snap0); }
         });
@@ -606,12 +990,12 @@ var shortestPathTopic = {
             (function(v, d, updates) {
                 var snapBefore;
                 steps.push({
-                    description: 'Pop (' + d + ', ' + NODES[v] + ') from heap and process. ' +
+                    description: 'Pop (' + d + ', ' + NODES[v] + ') from heap \u2014 shortest distance confirmed (greedy: the heap minimum cannot decrease further). ' +
                         (updates.length > 0 ?
-                            updates.map(function(u) {
-                                return NODES[v] + '\u2192' + NODES[u.node] + ': dist=' + (u.oldDist === INF ? '\u221E' : u.oldDist) + ' \u2192 ' + u.newDist;
+                            'Update neighbors: ' + updates.map(function(u) {
+                                return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.oldDist === INF ? '\u221E' : u.oldDist) + ' \u2192 ' + u.newDist + ' (going via ' + NODES[v] + ' is shorter)';
                             }).join(', ') :
-                            'No neighbors to update.'),
+                            'No neighbors have a shorter path through this node.'),
                     action: function() {
                         snapBefore = saveSnapshot();
                         simVisited.push(v);
@@ -630,7 +1014,7 @@ var shortestPathTopic = {
         // Final
         var snapFinal;
         steps.push({
-            description: 'Dijkstra complete! A=0, B=3, C=2, D=6, E=4',
+            description: 'Dijkstra complete! A=0, B=3, C=2, D=6, E=4 \u2014 all shortest distances confirmed greedily',
             action: function() {
                 snapFinal = saveSnapshot();
                 infoEl.innerHTML = '<strong style="color:var(--green);">Done! dist = [0, 3, 2, 6, 4]</strong>';
@@ -777,7 +1161,7 @@ var shortestPathTopic = {
             var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
             var s0 = snap();
             steps.push({
-                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E. Push (0, ' + (startIdx + 1) + ') to heap.',
+                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E \u2014 only the start vertex distance is known (0), all others are unconfirmed. Push (0, ' + (startIdx + 1) + ') to heap to begin.',
                 action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + '], heap=[(0,' + (startIdx + 1) + ')]'; },
                 undo: function() { restore(s0); }
             });
@@ -805,8 +1189,8 @@ var shortestPathTopic = {
                 (function(v, d, updates) {
                     var sb;
                     steps.push({
-                        description: 'Process (' + d + ', ' + NODES[v] + '): ' +
-                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : 'No updates'),
+                        description: 'Pop (' + d + ', ' + NODES[v] + ') \u2014 shortest distance confirmed (heap minimum cannot decrease further). ' +
+                            (updates.length > 0 ? 'Update neighbors: ' + updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + ' (going via ' + NODES[v] + ' is shorter)'; }).join(', ') : 'No shorter path through this node'),
                         action: function() {
                             sb = snap();
                             updates.forEach(function(u) { simDist[u.node] = u.nw; });
@@ -821,7 +1205,7 @@ var shortestPathTopic = {
             var finalDist = td.map(function(v) { return v === INF ? 'INF' : v; }).join(', ');
             var sf;
             steps.push({
-                description: 'Done! dist = [' + finalDist + ']',
+                description: 'Done! dist = [' + finalDist + '] \u2014 all shortest distances confirmed greedily by Dijkstra',
                 action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">Done! dist=[' + finalDist + ']</strong>'; },
                 undo: function() { restore(sf); }
             });
@@ -925,7 +1309,7 @@ var shortestPathTopic = {
 
             var s0 = snapF();
             steps.push({
-                description: 'Initial state: distance matrix from direct edges.',
+                description: 'Initial state: distance matrix from direct edges only \u2014 no intermediate vertices used yet.',
                 action: function() { renderGrid(curDp, -1, -1); infoEl.innerHTML = 'Initial distance matrix'; },
                 undo: function() { restoreF(s0); }
             });
@@ -945,13 +1329,13 @@ var shortestPathTopic = {
                         }
                     }
                     var sb;
-                    var desc = 'Intermediate k=' + (k + 1) + ': ';
+                    var desc = 'Intermediate k=' + (k + 1) + ' \u2014 try routing i\u2192k\u2192j; update if shorter than direct path: ';
                     if (updated.length > 0) {
                         desc += updated.map(function(u) {
-                            return 'dp[' + (u.i + 1) + '][' + (u.j + 1) + '] ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw;
+                            return 'dp[' + (u.i + 1) + '][' + (u.j + 1) + '] ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + ' (via k is shorter)';
                         }).join(', ');
                     } else {
-                        desc += 'No updates';
+                        desc += 'No path through k=' + (k + 1) + ' is shorter';
                     }
                     var snapDp = curDp.map(function(r) { return r.slice(); });
                     var lastUpd = updated.length > 0 ? updated[updated.length - 1] : null;
@@ -970,7 +1354,7 @@ var shortestPathTopic = {
 
             var sfF;
             steps.push({
-                description: 'Floyd-Warshall complete! All-pairs shortest distances are finalized.',
+                description: 'Floyd-Warshall complete! All-pairs shortest distances are finalized after trying every vertex as an intermediate node.',
                 action: function() { sfF = snapF(); infoEl.innerHTML = '<strong style="color:var(--green);">Done!</strong>'; },
                 undo: function() { restoreF(sfF); }
             });
@@ -1068,7 +1452,7 @@ var shortestPathTopic = {
             var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
             var s0 = snap();
             steps.push({
-                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E.',
+                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E \u2014 only the start vertex distance is confirmed (0), all others are unconfirmed.',
                 action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + ']'; },
                 undo: function() { restore(s0); }
             });
@@ -1096,8 +1480,8 @@ var shortestPathTopic = {
                 (function(v, d, updates) {
                     var sb;
                     steps.push({
-                        description: 'Process (' + d + ', ' + NODES[v] + '): ' +
-                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : 'No updates'),
+                        description: 'Pop (' + d + ', ' + NODES[v] + ') \u2014 shortest distance confirmed (heap minimum cannot decrease further). ' +
+                            (updates.length > 0 ? 'Update neighbors: ' + updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + ' (going via ' + NODES[v] + ' is shorter)'; }).join(', ') : 'No shorter path through this node'),
                         action: function() {
                             sb = snap();
                             updates.forEach(function(u) { simDist[u.node] = u.nw; });
@@ -1113,7 +1497,7 @@ var shortestPathTopic = {
             var endDistStr = endDist === INF ? 'INF' : endDist;
             var sf;
             steps.push({
-                description: 'Done! dist[' + (endIdx + 1) + '] = ' + endDistStr + ' is the minimum cost.',
+                description: 'Done! dist[' + (endIdx + 1) + '] = ' + endDistStr + ' \u2014 shortest path from start to destination confirmed by Dijkstra.',
                 action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">Done! ' + (startIdx + 1) + '\u2192' + (endIdx + 1) + ' min cost = ' + endDistStr + '</strong>'; },
                 undo: function() { restore(sf); }
             });
@@ -1214,7 +1598,7 @@ var shortestPathTopic = {
             var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
             var s0 = snap();
             steps.push({
-                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E.',
+                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E \u2014 only the start vertex distance is confirmed (0), all others are unconfirmed.',
                 action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + ']'; },
                 undo: function() { restore(s0); }
             });
@@ -1242,8 +1626,8 @@ var shortestPathTopic = {
                 (function(v, d, updates) {
                     var sb;
                     steps.push({
-                        description: 'Process (' + d + ', ' + NODES[v] + '): ' +
-                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : 'No updates'),
+                        description: 'Pop (' + d + ', ' + NODES[v] + ') \u2014 shortest distance confirmed (heap minimum cannot decrease further). ' +
+                            (updates.length > 0 ? 'Update neighbors: ' + updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + ' (going via ' + NODES[v] + ' is shorter)'; }).join(', ') : 'No shorter path through this node'),
                         action: function() {
                             sb = snap();
                             updates.forEach(function(u) { simDist[u.node] = u.nw; });
@@ -1266,7 +1650,7 @@ var shortestPathTopic = {
 
             var sf;
             steps.push({
-                description: 'Done! ' + (hasUnreachable ? 'Unreachable node exists, answer: -1' : 'max(dist) = ' + maxDist + '. Time for all nodes to receive signal = ' + maxDist + '.'),
+                description: 'Done! ' + (hasUnreachable ? 'Unreachable node exists, answer: -1 \u2014 all nodes must be reached but some cannot be' : 'max(dist) = ' + maxDist + ' \u2014 the farthest node determines when all nodes have received the signal'),
                 action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">Done! ' + (hasUnreachable ? 'Answer: -1' : 'max(dist)=' + maxDist + ' \u2192 Answer: ' + maxDist) + '</strong>'; },
                 undo: function() { restore(sf); }
             });

@@ -67,7 +67,7 @@ var dpTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -156,6 +156,23 @@ var dpTopic = {
                     Now someone asks you <strong>1+1+1+1+1+1</strong>.<br>
                     Would you add from scratch? Or just add 1 to your previous answer (5)?<br><br>
                     DP is exactly this idea. <strong>Store computed results and reuse them</strong>!
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Fibonacci Memoization Table</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Watch the DP table being filled one cell at a time. Already computed values are never recomputed!</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">N:
+                            <input type="number" id="dp-demo-fib-input" value="8" min="3" max="12" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-fib-go">Fill Table</button>
+                        <button class="concept-demo-btn green" id="dp-demo-fib-reset" style="display:none;">Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-fib-table" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;"></div>
+                        <div id="dp-demo-fib-formula" style="text-align:center;font-size:0.95rem;color:var(--text);font-weight:600;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-fib-msg">dp[i] = dp[i-1] + dp[i-2]. Fill from the smallest values first.</div>
                 </div>
 
                 <div class="think-box">
@@ -285,6 +302,23 @@ var dpTopic = {
                         </div>
                     </div>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Climbing Stairs in 4 Steps</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">When you can climb 1 or 2 steps at a time, find the number of ways to reach each step.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">Steps:
+                            <input type="number" id="dp-demo-stair-input" value="6" min="2" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-stair-go">Start Filling</button>
+                        <button class="concept-demo-btn green" id="dp-demo-stair-reset" style="display:none;">Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-stair-viz" style="display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;min-height:120px;padding-bottom:10px;"></div>
+                        <div id="dp-demo-stair-formula" style="text-align:center;font-size:0.95rem;color:var(--text);font-weight:600;min-height:1.5em;margin-top:8px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-stair-msg">dp[i] = dp[i-1] + dp[i-2]. Step i can be reached by climbing 1 from (i-1) or 2 from (i-2)!</div>
+                </div>
             </div>
 
             <!-- Section 4: Top-Down vs Bottom-Up -->
@@ -392,6 +426,33 @@ int fib(int n) {
                         <strong>Practical tip:</strong> In most contests and coding tests, Bottom-Up is preferred. Loops are faster, and there is no risk of stack overflow like with deep recursion.
                     </div>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Top-Down vs Bottom-Up</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Compare how two approaches compute fib(N) -- see how the computation order differs.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">N:
+                            <input type="number" id="dp-demo-compare-input" value="6" min="3" max="8" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-compare-go">Start Comparison</button>
+                        <button class="concept-demo-btn green" id="dp-demo-compare-reset" style="display:none;">Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">Top-Down (recursion+memo)</div>
+                                <div id="dp-demo-td-cells" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;"></div>
+                                <div id="dp-demo-td-log" style="font-size:0.8rem;color:var(--text2);min-height:3em;max-height:100px;overflow-y:auto;"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">Bottom-Up (loop)</div>
+                                <div id="dp-demo-bu-cells" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;"></div>
+                                <div id="dp-demo-bu-log" style="font-size:0.8rem;color:var(--text2);min-height:3em;max-height:100px;overflow-y:auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-compare-msg">Top-Down computes only what is needed, Bottom-Up computes everything from the smallest up.</div>
+                </div>
             </div>
 
             <!-- Section 5: Performance Comparison -->
@@ -429,6 +490,16 @@ int fib(int n) {
                     <div class="roadmap-item"><div class="roadmap-icon">📈</div><h4>Longest Increasing Subsequence (LIS)</h4><p>Increasing Subsequence, Bitonic Sequence, Electric Wires</p></div>
                     <div class="roadmap-item"><div class="roadmap-icon">🔤</div><h4>Longest Common Subsequence (LCS)</h4><p>Comparing two strings, 2D table</p></div>
                     <div class="roadmap-item"><div class="roadmap-icon">🎒</div><h4>Knapsack Problem</h4><p>Choosing the most valuable items within a weight limit</p></div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — DP Type Matching Quiz</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Read the problem description and guess which DP type it belongs to!</p>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-quiz-cards" style="display:flex;flex-direction:column;gap:10px;"></div>
+                        <div id="dp-demo-quiz-score" style="text-align:center;font-size:1rem;font-weight:600;margin-top:12px;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-quiz-msg">Click a problem to see the answer. Green for correct, red for wrong!</div>
                 </div>
 
                 <div class="think-box">
@@ -471,6 +542,308 @@ int fib(int n) {
 
         // syntax highlighting
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // concept demos
+        this._initConceptDemos(container);
+    },
+
+    _initConceptDemos(container) {
+        var self = this;
+
+        // === Demo 1: Fibonacci Memoization Table ===
+        {
+            var fibGoBtn = container.querySelector('#dp-demo-fib-go');
+            var fibResetBtn = container.querySelector('#dp-demo-fib-reset');
+            var fibInput = container.querySelector('#dp-demo-fib-input');
+            var fibTable = container.querySelector('#dp-demo-fib-table');
+            var fibFormula = container.querySelector('#dp-demo-fib-formula');
+            var fibMsg = container.querySelector('#dp-demo-fib-msg');
+
+            function cellStyle(state) {
+                var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : 'var(--bg2)');
+                var border = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : 'var(--border)');
+                var color = (state === 'active' || state === 'done') ? 'white' : 'var(--text3)';
+                var shadow = state === 'active' ? 'box-shadow:0 0 10px var(--yellow)50;transform:scale(1.08);' : '';
+                return 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:52px;border-radius:10px;border:2px solid ' + border + ';background:' + bg + ';color:' + color + ';font-weight:700;font-size:0.9rem;transition:all 0.3s;' + shadow;
+            }
+
+            function renderCells(n, dp, activeIdx) {
+                fibTable.innerHTML = '';
+                for (var i = 1; i <= n; i++) {
+                    var state = (i === activeIdx) ? 'active' : (dp[i] !== undefined ? 'done' : 'empty');
+                    var div = document.createElement('div');
+                    div.style.cssText = cellStyle(state);
+                    div.innerHTML = '<div style="font-size:0.65rem;opacity:0.7;">dp[' + i + ']</div><div>' + (dp[i] !== undefined ? dp[i] : '?') + '</div>';
+                    fibTable.appendChild(div);
+                }
+            }
+
+            fibGoBtn.addEventListener('click', function() {
+                fibGoBtn.style.display = 'none';
+                fibResetBtn.style.display = '';
+                var n = Math.max(3, Math.min(12, parseInt(fibInput.value) || 8));
+                var dp = {};
+                dp[1] = 1; dp[2] = 1;
+                renderCells(n, dp);
+                fibFormula.textContent = 'dp[1] = 1, dp[2] = 1 (initial values)';
+
+                var idx = 3;
+                function nextFill() {
+                    if (idx > n) {
+                        renderCells(n, dp);
+                        fibFormula.innerHTML = 'fib(' + n + ') = <strong style="color:var(--green);">' + dp[n] + '</strong>';
+                        fibMsg.textContent = 'Done! Filled the dp table from smallest to find fib(' + n + ').';
+                        return;
+                    }
+                    renderCells(n, dp, idx);
+                    fibFormula.textContent = 'dp[' + idx + '] = dp[' + (idx - 1) + '](' + dp[idx - 1] + ') + dp[' + (idx - 2) + '](' + dp[idx - 2] + ') = ' + (dp[idx - 1] + dp[idx - 2]);
+                    setTimeout(function() {
+                        dp[idx] = dp[idx - 1] + dp[idx - 2];
+                        renderCells(n, dp);
+                        idx++;
+                        setTimeout(nextFill, 450);
+                    }, 400);
+                }
+                setTimeout(nextFill, 600);
+            });
+
+            fibResetBtn.addEventListener('click', function() {
+                fibGoBtn.style.display = '';
+                fibResetBtn.style.display = 'none';
+                fibTable.innerHTML = '';
+                fibFormula.textContent = '';
+                fibMsg.textContent = 'dp[i] = dp[i-1] + dp[i-2]. Fill from the smallest values first.';
+            });
+        }
+
+        // === Demo 2: Climbing Stairs ===
+        {
+            var stairGoBtn = container.querySelector('#dp-demo-stair-go');
+            var stairResetBtn = container.querySelector('#dp-demo-stair-reset');
+            var stairInput = container.querySelector('#dp-demo-stair-input');
+            var stairViz = container.querySelector('#dp-demo-stair-viz');
+            var stairFormula = container.querySelector('#dp-demo-stair-formula');
+            var stairMsg = container.querySelector('#dp-demo-stair-msg');
+
+            function renderStairs(n, dp, activeIdx) {
+                stairViz.innerHTML = '';
+                for (var i = 0; i <= n; i++) {
+                    var h = 30 + i * 14;
+                    var state = (i === activeIdx) ? 'active' : (dp[i] !== undefined ? 'done' : 'empty');
+                    var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--accent)' : 'var(--bg3)');
+                    var color = (state === 'active' || state === 'done') ? 'white' : 'var(--text3)';
+                    var shadow = state === 'active' ? 'box-shadow:0 0 12px var(--yellow)50;' : '';
+                    var div = document.createElement('div');
+                    div.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:50px;height:' + h + 'px;background:' + bg + ';border-radius:8px 8px 0 0;color:' + color + ';font-weight:700;padding-bottom:6px;transition:all 0.3s;' + shadow;
+                    div.innerHTML = '<div style="font-size:0.65rem;opacity:0.8;">' + (i === 0 ? 'ground' : 'step ' + i) + '</div><div style="font-size:0.9rem;">' + (dp[i] !== undefined ? dp[i] : '?') + '</div>';
+                    stairViz.appendChild(div);
+                }
+            }
+
+            stairGoBtn.addEventListener('click', function() {
+                stairGoBtn.style.display = 'none';
+                stairResetBtn.style.display = '';
+                var n = Math.max(2, Math.min(10, parseInt(stairInput.value) || 6));
+                var dp = {};
+                dp[0] = 1; dp[1] = 1;
+                renderStairs(n, dp);
+                stairFormula.textContent = 'dp[0] = 1 (ground), dp[1] = 1 (1 way)';
+
+                var idx = 2;
+                function nextStep() {
+                    if (idx > n) {
+                        renderStairs(n, dp);
+                        stairFormula.innerHTML = 'Ways to reach step ' + n + ': <strong style="color:var(--green);">' + dp[n] + ' ways</strong>';
+                        stairMsg.textContent = 'Done! Ways for each step = sum of one below (1 step) + two below (2 steps).';
+                        return;
+                    }
+                    renderStairs(n, dp, idx);
+                    dp[idx] = dp[idx - 1] + dp[idx - 2];
+                    stairFormula.textContent = 'dp[' + idx + '] = dp[' + (idx - 1) + '](' + dp[idx - 1] + ') + dp[' + (idx - 2) + '](' + dp[idx - 2] + ') = ' + dp[idx];
+                    setTimeout(function() {
+                        renderStairs(n, dp);
+                        idx++;
+                        setTimeout(nextStep, 450);
+                    }, 400);
+                }
+                setTimeout(nextStep, 600);
+            });
+
+            stairResetBtn.addEventListener('click', function() {
+                stairGoBtn.style.display = '';
+                stairResetBtn.style.display = 'none';
+                stairViz.innerHTML = '';
+                stairFormula.textContent = '';
+                stairMsg.textContent = 'dp[i] = dp[i-1] + dp[i-2]. Step i can be reached by climbing 1 from (i-1) or 2 from (i-2)!';
+            });
+        }
+
+        // === Demo 3: Top-Down vs Bottom-Up Comparison ===
+        {
+            var cmpGoBtn = container.querySelector('#dp-demo-compare-go');
+            var cmpResetBtn = container.querySelector('#dp-demo-compare-reset');
+            var cmpInput = container.querySelector('#dp-demo-compare-input');
+            var tdCells = container.querySelector('#dp-demo-td-cells');
+            var buCells = container.querySelector('#dp-demo-bu-cells');
+            var tdLog = container.querySelector('#dp-demo-td-log');
+            var buLog = container.querySelector('#dp-demo-bu-log');
+            var cmpMsg = container.querySelector('#dp-demo-compare-msg');
+
+            function cmpCellStyle(state) {
+                var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : (state === 'memo' ? 'var(--accent)' : 'var(--bg2)'));
+                var border = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : (state === 'memo' ? 'var(--accent)' : 'var(--border)'));
+                var color = state !== 'empty' ? 'white' : 'var(--text3)';
+                var shadow = state === 'active' ? 'box-shadow:0 0 8px var(--yellow)50;' : '';
+                return 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;height:44px;border-radius:8px;border:2px solid ' + border + ';background:' + bg + ';color:' + color + ';font-weight:700;font-size:0.8rem;transition:all 0.3s;' + shadow;
+            }
+
+            function renderCmpCells(el, n, vals, activeIdx) {
+                el.innerHTML = '';
+                for (var i = 1; i <= n; i++) {
+                    var state = (i === activeIdx) ? 'active' : (vals[i] !== undefined ? 'done' : 'empty');
+                    var div = document.createElement('div');
+                    div.style.cssText = cmpCellStyle(state);
+                    div.innerHTML = '<div style="font-size:0.6rem;opacity:0.7;">[' + i + ']</div>' + (vals[i] !== undefined ? vals[i] : '?');
+                    el.appendChild(div);
+                }
+            }
+
+            cmpGoBtn.addEventListener('click', function() {
+                cmpGoBtn.style.display = 'none';
+                cmpResetBtn.style.display = '';
+                var n = Math.max(3, Math.min(8, parseInt(cmpInput.value) || 6));
+                var tdVals = {}, buVals = {};
+                tdLog.innerHTML = '';
+                buLog.innerHTML = '';
+                renderCmpCells(tdCells, n, tdVals);
+                renderCmpCells(buCells, n, buVals);
+
+                // Bottom-Up: straightforward i=1..n
+                var buSteps = [];
+                buSteps.push({ i: 1, val: 1, log: 'dp[1] = 1 (base case)' });
+                buSteps.push({ i: 2, val: 1, log: 'dp[2] = 1 (base case)' });
+                for (var bi = 3; bi <= n; bi++) {
+                    var bprev = buSteps[bi - 2].val, bprev2 = buSteps[bi - 3].val;
+                    buSteps.push({ i: bi, val: bprev + bprev2, log: 'dp[' + bi + '] = dp[' + (bi - 1) + '] + dp[' + (bi - 2) + '] = ' + (bprev + bprev2) });
+                }
+
+                // Top-Down: simulate recursive call order for fib(n) with memoization
+                var tdSteps = [];
+                var memo = {};
+                function simTD(x) {
+                    if (memo[x] !== undefined) {
+                        tdSteps.push({ i: x, val: memo[x], log: 'fib(' + x + ') = memo[' + x + '] = ' + memo[x] + ' (cached!)' });
+                        return memo[x];
+                    }
+                    if (x <= 2) { memo[x] = 1; tdSteps.push({ i: x, val: 1, log: 'fib(' + x + ') = 1 (base)' }); return 1; }
+                    var a = simTD(x - 1);
+                    var b = simTD(x - 2);
+                    memo[x] = a + b;
+                    tdSteps.push({ i: x, val: a + b, log: 'fib(' + x + ') = ' + a + ' + ' + b + ' = ' + (a + b) });
+                    return a + b;
+                }
+                simTD(n);
+
+                var maxSteps = Math.max(tdSteps.length, buSteps.length);
+                var step = 0;
+                var tdDone = {}, buDone2 = {};
+
+                function animateStep() {
+                    if (step >= maxSteps) {
+                        cmpMsg.textContent = 'Top-Down: ' + tdSteps.length + ' steps, Bottom-Up: ' + buSteps.length + ' steps. Same result, different computation order!';
+                        return;
+                    }
+                    if (step < tdSteps.length) {
+                        var ts = tdSteps[step];
+                        tdDone[ts.i] = ts.val;
+                        renderCmpCells(tdCells, n, tdDone, ts.i);
+                        tdLog.innerHTML += '<div>' + ts.log + '</div>';
+                        tdLog.scrollTop = tdLog.scrollHeight;
+                    }
+                    if (step < buSteps.length) {
+                        var bs = buSteps[step];
+                        buDone2[bs.i] = bs.val;
+                        renderCmpCells(buCells, n, buDone2, bs.i);
+                        buLog.innerHTML += '<div>' + bs.log + '</div>';
+                        buLog.scrollTop = buLog.scrollHeight;
+                    }
+                    step++;
+                    setTimeout(animateStep, 600);
+                }
+                animateStep();
+            });
+
+            cmpResetBtn.addEventListener('click', function() {
+                cmpGoBtn.style.display = '';
+                cmpResetBtn.style.display = 'none';
+                tdCells.innerHTML = '';
+                buCells.innerHTML = '';
+                tdLog.innerHTML = '';
+                buLog.innerHTML = '';
+                cmpMsg.textContent = 'Top-Down computes only what is needed, Bottom-Up computes everything from the smallest up.';
+            });
+        }
+
+        // === Demo 4: DP Type Matching Quiz ===
+        {
+            var quizData = [
+                { q: 'Find the Nth Fibonacci number', answer: '1D DP', options: ['1D DP', '2D DP', 'LIS', 'Knapsack'] },
+                { q: 'Maximum sum path from top to bottom of a triangle', answer: '2D DP', options: ['1D DP', '2D DP', 'LCS', 'Knapsack'] },
+                { q: 'Length of the longest increasing subsequence', answer: 'LIS', options: ['1D DP', 'LIS', 'LCS', 'Knapsack'] },
+                { q: 'Length of the longest common subsequence of two strings', answer: 'LCS', options: ['1D DP', 'LIS', 'LCS', '2D DP'] },
+                { q: 'Maximize value in a bag with weight limit', answer: 'Knapsack', options: ['1D DP', '2D DP', 'LCS', 'Knapsack'] }
+            ];
+            var quizCards = container.querySelector('#dp-demo-quiz-cards');
+            var quizScore = container.querySelector('#dp-demo-quiz-score');
+            var quizMsgEl = container.querySelector('#dp-demo-quiz-msg');
+            var totalCorrect = 0, totalAnswered = 0;
+
+            quizData.forEach(function(item, qIdx) {
+                var card = document.createElement('div');
+                card.style.cssText = 'padding:14px 18px;border-radius:12px;border:2px solid var(--border);background:var(--bg2);transition:all 0.3s;';
+                var qDiv = document.createElement('div');
+                qDiv.style.cssText = 'font-weight:600;font-size:0.95rem;margin-bottom:10px;color:var(--text);';
+                qDiv.textContent = (qIdx + 1) + '. ' + item.q;
+                card.appendChild(qDiv);
+                var optWrap = document.createElement('div');
+                optWrap.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+
+                item.options.forEach(function(opt) {
+                    var btn = document.createElement('button');
+                    btn.style.cssText = 'padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:0.85rem;cursor:pointer;transition:all 0.2s;';
+                    btn.textContent = opt;
+                    btn.addEventListener('click', function() {
+                        if (card.dataset.answered) return;
+                        card.dataset.answered = 'true';
+                        totalAnswered++;
+                        var correct = (opt === item.answer);
+                        if (correct) {
+                            totalCorrect++;
+                            btn.style.background = 'var(--green)';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = 'var(--green)';
+                            card.style.borderColor = 'var(--green)';
+                        } else {
+                            btn.style.background = 'var(--red)';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = 'var(--red)';
+                            card.style.borderColor = 'var(--red)';
+                            optWrap.querySelectorAll('button').forEach(function(b) {
+                                if (b.textContent === item.answer) {
+                                    b.style.background = 'var(--green)';
+                                    b.style.color = 'white';
+                                    b.style.borderColor = 'var(--green)';
+                                }
+                            });
+                        }
+                        quizScore.innerHTML = totalCorrect + ' / ' + totalAnswered + ' correct' + (totalAnswered === quizData.length ? ' — ' + (totalCorrect === quizData.length ? '<span style="color:var(--green);">All correct!</span>' : '<span style="color:var(--accent);">Try again!</span>') : '');
+                    });
+                    optWrap.appendChild(btn);
+                });
+                card.appendChild(optWrap);
+                quizCards.appendChild(card);
+            });
+        }
     },
 
     _initConceptInteractions(container) {
@@ -571,16 +944,16 @@ int fib(int n) {
             var bigDp = Math.max(bigN - 2, 0);
             var ratio = bigDp > 0 ? Math.round(bigRec / bigDp) : 0;
             return [
-                { description: 'When calling fib(' + n + ') recursively, the number of times we reach fib(1) or fib(2) (leaf count) is the basic operation count.',
+                { description: 'When computing fib(' + n + ') recursively, <strong>the same subproblems are recomputed</strong>, causing the call count to grow exponentially.',
                   action: function() { infoEl.innerHTML = 'Recursion: fib(' + n + ')=fib(' + (n-1) + ')+fib(' + (n-2) + '), ... duplicates occur.'; },
                   undo: function() { infoEl.innerHTML = ''; } },
-                { description: 'Recursive fib(' + n + ') basic operation count = fib(' + n + ') value = ' + recCount.toLocaleString() + ' times',
+                { description: 'Recursion <strong>independently recomputes</strong> fib(' + (n-1) + ') and fib(' + (n-2) + ') each time, so the total call count reaches ' + recCount.toLocaleString() + '.',
                   action: function() { recValEl.textContent = recCount.toLocaleString(); infoEl.innerHTML = 'Leaf count (return 1) of recursive call tree = <strong>' + recCount.toLocaleString() + '</strong>'; },
                   undo: function() { recValEl.textContent = '?'; infoEl.innerHTML = ''; } },
-                { description: 'DP uses for i=3..' + n + ', total ' + dpCount + ' additions to compute.',
+                { description: 'DP <strong>stores previously computed values and reuses them</strong>, so from 3 to ' + n + ' only ' + dpCount + ' additions are needed.',
                   action: function() { dpValEl.textContent = dpCount; infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + ' times</strong>'; },
                   undo: function() { dpValEl.textContent = '?'; } },
-                { description: 'n=' + bigN + '? Recursion=' + bigRec.toLocaleString() + ', DP=' + bigDp + '. The difference is explosive!',
+                { description: 'Scale up to n=' + bigN + '? Recursion <strong>explodes exponentially</strong> to ' + bigRec.toLocaleString() + ' calls, but DP still finishes in just ' + bigDp + '.',
                   action: function() { infoEl.innerHTML = '<strong style="color:var(--green);">n=' + bigN + ': Recursion ' + bigRec.toLocaleString() + ' times vs DP ' + bigDp + ' times. DP is ' + ratio.toLocaleString() + 'x faster!</strong>'; },
                   undo: function() { infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + ' times</strong>'; } }
             ];
@@ -649,16 +1022,16 @@ int fib(int n) {
             }
             var memoEntries = Object.keys(memo).slice(0, 4).map(function(k) { return 'w(' + k + ')=' + memo[k]; }).join(', ');
             return [
-                { description: 'Call w(' + a + ',' + b + ',' + c + ') - not in memo, start computing',
+                { description: 'Call w(' + a + ',' + b + ',' + c + ') — not found in memo, so we must <strong>decompose it into subproblems</strong> to compute.',
                   action: function() { lines.push('-> Call w(' + a + ',' + b + ',' + c + ')'); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } },
                 { description: subDesc,
                   action: function() { lines.push('  Need: ' + subCalls); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } },
-                { description: 'Sub-calls are stored in memo, eliminating duplicates',
+                { description: 'Sub-call results are <strong>stored in the memo table</strong>, so future calls with the same arguments skip recomputation entirely.',
                   action: function() { lines.push('  ' + memoEntries + ' stored!'); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } },
-                { description: 'w(' + a + ',' + b + ',' + c + ') = ' + result + ' -> stored in memo!',
+                { description: 'Combining all sub-results gives w(' + a + ',' + b + ',' + c + ') = ' + result + '. Storing this in memo <strong>prevents any future duplicate calls</strong>.',
                   action: function() { lines.push('<- w(' + a + ',' + b + ',' + c + ') = ' + result + ' Stored!'); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } }
             ];
@@ -727,28 +1100,27 @@ int fib(int n) {
             function resetCell(num) { var c = container.querySelector('#to1-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = '?'; c.style.background = 'var(--bg2)';} }
             var steps = [];
             // Step 1: dp[1]=0
-            steps.push({ description: 'dp[1]=0: Already 1, no operation needed',
+            steps.push({ description: 'dp[1]=0: We have <strong>already reached the target</strong> (1), so no operations are needed.',
               action: function() { setCell(1, '0', 'var(--accent)15'); infoEl.innerHTML = 'dp[1] = 0'; },
               undo: function() { resetCell(1); infoEl.innerHTML = ''; } });
-            // Middle steps: fill in batches
-            var batchSize = Math.max(1, Math.floor((n - 1) / 3));
-            var start = 2;
-            while (start <= n - 1) {
-                var end = Math.min(start + batchSize - 1, n - 1);
-                (function(s, e) {
-                    var descs = [];
-                    for (var k = s; k <= e; k++) { descs.push('dp[' + k + ']=' + dp[k]); }
+            // Individual steps: fill each dp[k] separately
+            for (var k = 2; k <= n - 1; k++) {
+                (function(idx) {
+                    var ops = [];
+                    if (idx % 3 === 0) ops.push('÷3→dp[' + (idx/3) + ']=' + dp[idx/3]);
+                    if (idx % 2 === 0) ops.push('÷2→dp[' + (idx/2) + ']=' + dp[idx/2]);
+                    ops.push('-1→dp[' + (idx-1) + ']=' + dp[idx-1]);
+                    var desc = 'To make ' + idx + ' into 1, we try all <strong>three reverse operations</strong> (÷3, ÷2, -1) and pick the path with the fewest prior steps. dp[' + idx + '] = min(' + ops.join(', ') + ')+1 = ' + dp[idx];
                     steps.push({
-                        description: 'Fill dp[' + s + ']~dp[' + e + ']: ' + descs.join(', '),
-                        action: function() { for(var k=s;k<=e;k++) setCell(k, dp[k], 'var(--accent)15'); infoEl.innerHTML = descs.join(', '); },
-                        undo: function() { for(var k=s;k<=e;k++) resetCell(k); }
+                        description: desc,
+                        action: function() { setCell(idx, dp[idx], 'var(--accent)15'); infoEl.innerHTML = desc; },
+                        undo: function() { resetCell(idx); }
                     });
-                })(start, end);
-                start = end + 1;
+                })(k);
             }
             // Final step: show answer and path
             var pathStr = path.join('→');
-            steps.push({ description: 'dp[' + n + ']=' + dp[n] + '. Path: ' + pathStr,
+            steps.push({ description: '<strong>Final answer</strong>: ' + n + ' to 1 takes at minimum ' + dp[n] + ' operations. The optimal path picks the fewest-step option at each number: ' + pathStr,
               action: function() { setCell(n, dp[n], 'var(--green)'); for(var k=0;k<path.length;k++) setCell(path[k], dp[path[k]], 'var(--green)'); infoEl.innerHTML = '<strong style="color:var(--green);">dp[' + n + ']=' + dp[n] + ', Path: ' + pathStr + '</strong>'; },
               undo: function() { setCell(n, dp[n], 'var(--accent)15'); for(var k=0;k<path.length;k++) if(path[k] !== n) setCell(path[k], dp[path[k]], 'var(--accent)15'); } });
             return steps;
@@ -801,16 +1173,16 @@ int fib(int n) {
             function setTile(num, v, bg) { var c = container.querySelector('#tile-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = v; if(bg)c.style.background=bg;} }
             function resetTile(num) { var c = container.querySelector('#tile-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = '?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'dp[1]=1: Only "1" - one way', action: function() { setTile(1,'1','#6c5ce715'); infoEl.innerHTML = 'dp[1]=1 (sequence: 1)'; }, undo: function() { resetTile(1); infoEl.innerHTML=''; } });
-            steps.push({ description: 'dp[2]=2: "11", "00" - two ways', action: function() { setTile(2,'2','#6c5ce715'); infoEl.innerHTML = 'dp[2]=2 (sequences: 11, 00)'; }, undo: function() { resetTile(2); } });
+            steps.push({ description: 'dp[1]=1: A length-1 sequence can only be <strong>"1"</strong>. A standalone "0" is impossible because "00" is a single tile.', action: function() { setTile(1,'1','#6c5ce715'); infoEl.innerHTML = 'dp[1]=1 (sequence: 1)'; }, undo: function() { resetTile(1); infoEl.innerHTML=''; } });
+            steps.push({ description: 'dp[2]=2: A length-2 sequence can be <strong>"1"+"1" or "00" tile</strong> — two ways. These are the base cases.', action: function() { setTile(2,'2','#6c5ce715'); infoEl.innerHTML = 'dp[2]=2 (sequences: 11, 00)'; }, undo: function() { resetTile(2); } });
             for (var i = 3; i < n; i++) {
                 (function(idx) {
-                    steps.push({ description: 'dp[' + idx + ']=dp[' + (idx-1) + ']+dp[' + (idx-2) + ']=' + dp[idx],
+                    steps.push({ description: 'dp[' + idx + ']: <strong>Append "1"</strong> to sequences of length ' + (idx-1) + ' (dp[' + (idx-1) + '] ways) + <strong>append "00"</strong> to sequences of length ' + (idx-2) + ' (dp[' + (idx-2) + '] ways) = ' + dp[idx],
                       action: function() { setTile(idx, dp[idx], '#6c5ce715'); infoEl.innerHTML = 'dp[' + idx + ']=' + dp[idx-1] + '+' + dp[idx-2] + '=' + dp[idx]; },
                       undo: function() { resetTile(idx); } });
                 })(i);
             }
-            steps.push({ description: 'dp[' + n + ']=dp[' + (n-1) + ']+dp[' + (n-2) + ']=' + dp[n] + ' -> Answer!',
+            steps.push({ description: '<strong>Final answer</strong> dp[' + n + ']: append "1" (' + dp[n-1] + ' ways) + append "00" (' + dp[n-2] + ' ways) = ' + dp[n],
               action: function() { setTile(n, dp[n], 'var(--green)'); infoEl.innerHTML = '<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n-1] + '+' + dp[n-2] + '=' + dp[n] + '</strong>'; },
               undo: function() { resetTile(n); } });
             return steps;
@@ -867,11 +1239,11 @@ int fib(int n) {
             function resetSt(num) { var c = container.querySelector('#st-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = 'dp:?'; c.style.background='var(--bg2)';} }
             var steps = [];
             // Initial values
-            steps.push({ description: 'dp[1]=' + dp[1] + (n>=2 ? ', dp[2]=' + dp[2] : ''),
+            steps.push({ description: 'Base cases: dp[1]=' + dp[1] + ' (only step 1 is taken)' + (n>=2 ? ', dp[2]=' + dp[2] + ' (2 consecutive is allowed, so take both)' : ''),
               action: function() { setSt(1, dp[1], '#fdcb6e15'); if(n>=2) setSt(2, dp[2], '#fdcb6e15'); infoEl.innerHTML='dp[1]=' + sc[0] + (n>=2 ? ', dp[2]=' + sc[0] + '+' + sc[1] + '=' + dp[2] : ''); },
               undo: function() { resetSt(1); if(n>=2) resetSt(2); infoEl.innerHTML=''; } });
             if (n >= 3) {
-                steps.push({ description: 'dp[3]=max(' + sc[0] + ',' + sc[1] + ')+' + sc[2] + '=' + dp[3],
+                steps.push({ description: 'dp[3]: The <strong>no-3-consecutive rule</strong> means we can only take one of step 1 or step 2 before step 3 → max(' + sc[0] + ',' + sc[1] + ')+' + sc[2] + '=' + dp[3],
                   action: function() { setSt(3, dp[3], '#fdcb6e15'); infoEl.innerHTML='dp[3]=max(' + sc[0] + ',' + sc[1] + ')+' + sc[2] + '=' + dp[3]; },
                   undo: function() { resetSt(3); } });
             }
@@ -879,7 +1251,7 @@ int fib(int n) {
                 (function(idx) {
                     var opt1 = dp[idx-2] + sc[idx-1];
                     var opt2 = dp[idx-3] + sc[idx-2] + sc[idx-1];
-                    steps.push({ description: 'dp[' + idx + ']=max(' + dp[idx-2] + '+' + sc[idx-1] + ', ' + dp[idx-3] + '+' + sc[idx-2] + '+' + sc[idx-1] + ')=max(' + opt1 + ',' + opt2 + ')=' + dp[idx],
+                    steps.push({ description: 'dp[' + idx + ']: <strong>Jump from 2 back</strong> (dp[' + (idx-2) + ']+' + sc[idx-1] + '=' + opt1 + ') vs <strong>continue from 1 back</strong> (dp[' + (idx-3) + ']+' + sc[idx-2] + '+' + sc[idx-1] + '=' + opt2 + ') → pick the larger = ' + dp[idx],
                       action: function() { setSt(idx, dp[idx], '#fdcb6e15'); infoEl.innerHTML='dp[' + idx + ']=max(' + opt1 + ',' + opt2 + ')=' + dp[idx]; },
                       undo: function() { resetSt(idx); } });
                 })(i);
@@ -888,11 +1260,11 @@ int fib(int n) {
             if (n >= 4) {
                 var fopt1 = dp[n-2] + sc[n-1];
                 var fopt2 = dp[n-3] + sc[n-2] + sc[n-1];
-                steps.push({ description: 'dp[' + n + ']=max(' + dp[n-2] + '+' + sc[n-1] + ', ' + dp[n-3] + '+' + sc[n-2] + '+' + sc[n-1] + ')=' + dp[n] + ' ✅',
+                steps.push({ description: '<strong>Final answer</strong> dp[' + n + ']: jump from 2 back (' + (dp[n-2]+sc[n-1]) + ') vs continue from 1 back (' + (dp[n-3]+sc[n-2]+sc[n-1]) + ') → maximum score = ' + dp[n],
                   action: function() { setSt(n, dp[n], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n] + '</strong>'; },
                   undo: function() { resetSt(n); } });
             } else if (n >= 1) {
-                steps.push({ description: 'Final answer: dp[' + n + ']=' + dp[n],
+                steps.push({ description: '<strong>Final answer</strong>: dp[' + n + ']=' + dp[n],
                   action: function() { setSt(n, dp[n], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n] + '</strong>'; },
                   undo: function() { resetSt(n); } });
             }
@@ -949,20 +1321,20 @@ int fib(int n) {
             function setWn(num,v,bg) { var c = container.querySelector('#wn-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent='dp:'+v; if(bg)c.style.background=bg;} }
             function resetWn(num) { var c = container.querySelector('#wn-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent='dp:?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'dp[1]=' + dp[1] + (n>=2 ? ', dp[2]=' + dp[2] : ''),
+            steps.push({ description: 'Base cases: dp[1]=' + dp[1] + ' (obviously drink the first glass)' + (n>=2 ? ', dp[2]=' + dp[2] + ' (2 consecutive is allowed, so drink both)' : ''),
               action: function() { setWn(1, dp[1], '#00b89415'); if(n>=2) setWn(2, dp[2], '#00b89415'); infoEl.innerHTML='dp[1]=' + w[0] + (n>=2 ? ', dp[2]=' + w[0] + '+' + w[1] + '=' + dp[2] : ''); },
               undo: function() { resetWn(1); if(n>=2) resetWn(2); infoEl.innerHTML=''; } });
             for (var i = 3; i < n; i++) {
                 (function(idx) {
                     var o1 = dp[idx-1], o2 = dp[idx-2] + w[idx-1], o3 = dp[idx-3] + w[idx-2] + w[idx-1];
-                    steps.push({ description: 'dp[' + idx + ']=max(' + o1 + ',' + o2 + ',' + o3 + ')=' + dp[idx],
+                    steps.push({ description: 'dp[' + idx + ']: Three choices — (1)<strong>skip this glass</strong> (' + o1 + '), (2)<strong>drink only this one</strong> (skip prev, dp[' + (idx-2) + ']+' + w[idx-1] + '=' + o2 + '), (3)<strong>drink prev+this consecutively</strong> (dp[' + (idx-3) + ']+' + w[idx-2] + '+' + w[idx-1] + '=' + o3 + ') → max=' + dp[idx],
                       action: function() { setWn(idx, dp[idx], '#00b89415'); infoEl.innerHTML='dp[' + idx + ']=max(' + o1 + ', ' + o2 + ', ' + o3 + ')=' + dp[idx]; },
                       undo: function() { resetWn(idx); } });
                 })(i);
             }
             // Final
             var fo1 = dp[n-1], fo2 = dp[n-2] + w[n-1], fo3 = (n>=3 ? dp[n-3] + w[n-2] + w[n-1] : 0);
-            steps.push({ description: 'dp[' + n + ']=max(' + fo1 + ',' + fo2 + ',' + fo3 + ')=' + dp[n] + ' ✅',
+            steps.push({ description: '<strong>Final answer</strong> dp[' + n + ']: skip (' + fo1 + ') / drink only this (' + fo2 + ') / drink consecutive (' + fo3 + ') → maximum = ' + dp[n],
               action: function() { setWn(n, dp[n], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n] + '</strong>'; },
               undo: function() { resetWn(n); } });
             return steps;
@@ -1029,7 +1401,7 @@ int fib(int n) {
             function setMs(i,v,bg) { var c = container.querySelector('#ms-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent=v; if(bg)c.style.background=bg;} }
             function resetMs(i) { var c = container.querySelector('#ms-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'dp[0]=' + a[0] + ' (start with first element)',
+            steps.push({ description: 'dp[0]=' + a[0] + ': At the first element, there is <strong>no previous subarray</strong>, so the element itself is the maximum contiguous sum.',
               action: function() { setMs(0, curArr[0], '#d6303115'); infoEl.innerHTML='cur=' + curArr[0] + ', ans=' + curArr[0]; },
               undo: function() { resetMs(0); infoEl.innerHTML=''; } });
             // Process in steps of ~3
@@ -1042,11 +1414,16 @@ int fib(int n) {
                 (function(s, e, prevAns, lastStep) {
                     var newAns = prevAns;
                     for (var k = s; k <= e; k++) newAns = Math.max(newAns, curArr[k]);
-                    var desc = 'i=' + s + (s!==e?'~'+e:'') + ': ';
                     var details = [];
-                    for (var k = s; k <= e; k++) details.push('dp[' + k + ']=' + curArr[k]);
-                    desc += details.join(', ');
-                    if (lastStep) desc += '. Final answer=' + res.ans;
+                    for (var k = s; k <= e; k++) {
+                        var extended = (k > 0 ? curArr[k-1] + a[k] : a[k]);
+                        var alone = a[k];
+                        if (k > 0 && extended > alone) details.push('dp[' + k + ']: extending the prev sum is better (' + extended + ')>' + alone + ' → ' + curArr[k]);
+                        else if (k > 0) details.push('dp[' + k + ']: <strong>starting fresh</strong> is better (' + alone + '>=' + extended + ') → ' + curArr[k]);
+                        else details.push('dp[' + k + ']=' + curArr[k]);
+                    }
+                    var desc = details.join(', ');
+                    if (lastStep) desc += '. <strong>Final answer</strong>=' + res.ans;
                     steps.push({
                         description: desc,
                         action: function() {
@@ -1119,22 +1496,22 @@ int fib(int n) {
             function resetEs(j) { var c = container.querySelector('#es-c' + j + suffix); if(c){c.querySelector('div:last-child').textContent='?'; c.style.background='var(--bg2)';} }
             var steps = [];
             // Step 1: length 1
-            steps.push({ description: 'Length 1: dp[1][1~9]=1, dp[1][0]=0 (cannot start with 0)',
+            steps.push({ description: 'Base case: Each digit 1~9 forms one staircase number of length 1. dp[1][0]=0 because <strong>numbers cannot start with 0</strong>.',
               action: function() { setEs(0,'0','var(--bg2)'); for(var j=1;j<=9;j++) setEs(j,'1','#0984e315'); infoEl.innerHTML='Staircase numbers of length 1: 1,2,...,9 (9 total)'; },
               undo: function() { for(var j=0;j<=9;j++) resetEs(j); infoEl.innerHTML=''; } });
             // Steps for each length up to n
             for (var len = 2; len <= n; len++) {
                 (function(l) {
                     var isLast = (l === n);
-                    steps.push({ description: 'Length ' + l + ': dp[' + l + '][0]=' + dpTable[l][0] + ', dp[' + l + '][9]=' + dpTable[l][9],
+                    steps.push({ description: 'Length ' + l + ' boundaries: Ending digit 0 can <strong>only come from 1</strong> (dp[' + l + '][0]=' + dpTable[l][0] + '), ending digit 9 can <strong>only come from 8</strong> (dp[' + l + '][9]=' + dpTable[l][9] + ').',
                       action: function() { setEs(0, dpTable[l][0], '#0984e315'); setEs(9, dpTable[l][9], '#0984e315'); infoEl.innerHTML='End 0: only from 1=' + dpTable[l][0] + ', End 9: only from 8=' + dpTable[l][9]; },
                       undo: function() { var prev = l > 1 ? dpTable[l-1] : null; setEs(0, prev ? prev[0] : '0', prev && prev[0] > 0 ? '#0984e315' : 'var(--bg2)'); setEs(9, prev ? prev[9] : '?', '#0984e315'); } });
-                    steps.push({ description: 'Length ' + l + ': Fill dp[' + l + '][1~8]',
+                    steps.push({ description: 'Length ' + l + ', digits 1~8: Each digit can <strong>come from two adjacent digits (j-1 and j+1)</strong>, so we sum both.',
                       action: function() { for(var j=1;j<=8;j++) setEs(j, dpTable[l][j], '#0984e315'); infoEl.innerHTML='Digits 1~8 come from both neighbors'; },
                       undo: function() { var prev = l > 1 ? dpTable[l-1] : null; for(var j=1;j<=8;j++) setEs(j, prev ? prev[j] : '?', prev ? '#0984e315' : 'var(--bg2)'); } });
                     if (isLast) {
                         var total = 0; for(var j=0;j<=9;j++) total = (total + dpTable[l][j]) % MOD;
-                        steps.push({ description: 'Total: staircase numbers of length ' + l + ' = ' + total,
+                        steps.push({ description: '<strong>Final answer</strong>: Sum all ending digits for length ' + l + ' staircase numbers = ' + total,
                           action: function() { infoEl.innerHTML='<strong style="color:var(--green);">Length ' + l + ' staircase numbers = ' + total.toLocaleString() + '</strong>'; },
                           undo: function() { infoEl.innerHTML='Digits 1~8 come from both neighbors'; } });
                     }
@@ -1198,14 +1575,14 @@ int fib(int n) {
             function resetRgb(i,j) { var c = container.querySelector('#rgb-' + i + '-' + j + suffix); if(c){c.querySelector('div:last-child').textContent=costs[i][j]; c.style.background='var(--bg2)';} }
             var steps = [];
             // First house
-            steps.push({ description: 'House 1: dp[1][R]=' + costs[0][0] + ', dp[1][G]=' + costs[0][1] + ', dp[1][B]=' + costs[0][2],
-              action: function() { for(var j=0;j<3;j++) setRgb(0,j,costs[0][j]+'','#e8439315'); infoEl.innerHTML='First house: direct cost'; },
+            steps.push({ description: 'Base case — House 1: No previous house, so there are <strong>no constraints</strong>. Each color cost becomes the dp value directly. R=' + costs[0][0] + ', G=' + costs[0][1] + ', B=' + costs[0][2],
+              action: function() { for(var j=0;j<3;j++) setRgb(0,j,costs[0][j]+'','#e8439315'); infoEl.innerHTML='First house: no constraint, cost = dp value'; },
               undo: function() { for(var j=0;j<3;j++) resetRgb(0,j); infoEl.innerHTML=''; } });
             // Each subsequent house
             for (var i = 1; i < n; i++) {
                 (function(idx) {
                     var isLast = (idx === n - 1);
-                    steps.push({ description: 'House ' + (idx+1) + ': R=' + dpArr[idx][0] + ', G=' + dpArr[idx][1] + ', B=' + dpArr[idx][2],
+                    steps.push({ description: 'House ' + (idx+1) + ': <strong>Must differ from neighbor</strong>, so each color takes the min of the previous house\'s <em>other two colors</em> + its own cost. R=' + dpArr[idx][0] + ', G=' + dpArr[idx][1] + ', B=' + dpArr[idx][2],
                       action: function() { for(var j=0;j<3;j++) setRgb(idx,j,dpArr[idx][j]+'','#e8439315'); infoEl.innerHTML='dp[' + (idx+1) + '][R]=' + dpArr[idx][0] + ', dp[' + (idx+1) + '][G]=' + dpArr[idx][1] + ', dp[' + (idx+1) + '][B]=' + dpArr[idx][2]; },
                       undo: function() { for(var j=0;j<3;j++) resetRgb(idx,j); } });
                 })(i);
@@ -1225,7 +1602,7 @@ int fib(int n) {
             }
             path.reverse();
             var pathStr = path.map(function(j) { return colorNames[j]; }).join('→');
-            steps.push({ description: 'min=' + minVal + '. Path: ' + pathStr,
+            steps.push({ description: '<strong>Final answer</strong>: Pick the minimum among the last house\'s R/G/B = ' + minVal + '. The optimal path satisfying the neighbor constraint: ' + pathStr,
               action: function() { for(var i=0;i<n;i++) setRgb(i, path[i], dpArr[i][path[i]]+'', 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">Min cost=' + minVal + ' (' + pathStr + ')</strong>'; },
               undo: function() { for(var i=0;i<n;i++) setRgb(i, path[i], dpArr[i][path[i]]+'', '#e8439315'); } });
             return steps;
@@ -1285,21 +1662,21 @@ int fib(int n) {
             function resetTri(i,j) { var c = container.querySelector('#tri-' + i + '-' + j + suffix); if(c){c.textContent=tri[i][j]; c.style.background='var(--bg2)';} }
             var steps = [];
             // Bottom row
-            steps.push({ description: 'Row ' + n + ' (bottom) stays as is: [' + tri[n-1].join(',') + ']',
-              action: function() { for(var j=0;j<tri[n-1].length;j++) setTri(n-1,j,tri[n-1][j],'#fab1a015'); infoEl.innerHTML='Bottom row: initial values'; },
+            steps.push({ description: 'Base case: Row ' + n + ' (bottom) has <strong>nowhere further to go</strong>, so each value is its own maximum sum.',
+              action: function() { for(var j=0;j<tri[n-1].length;j++) setTri(n-1,j,tri[n-1][j],'#fab1a015'); infoEl.innerHTML='Bottom row: value = dp value (no children)'; },
               undo: function() { for(var j=0;j<tri[n-1].length;j++) resetTri(n-1,j); infoEl.innerHTML=''; } });
             // Each row from bottom-1 to 1
             for (var i = n - 2; i >= 1; i--) {
                 (function(row) {
                     var details = [];
                     for (var j = 0; j <= row; j++) details.push(tri[row][j] + '+max(' + dpArr[row+1][j] + ',' + dpArr[row+1][j+1] + ')=' + dpArr[row][j]);
-                    steps.push({ description: 'Row ' + (row+1) + ': ' + details.join(', '),
+                    steps.push({ description: 'Row ' + (row+1) + ': Each cell picks the <strong>larger of its two children below</strong> and adds its own value. ' + details.join(', '),
                       action: function() { for(var j=0;j<=row;j++) setTri(row,j,dpArr[row][j],'#fab1a015'); infoEl.innerHTML=details.join(', '); },
                       undo: function() { for(var j=0;j<=row;j++) resetTri(row,j); } });
                 })(i);
             }
             // Top: answer
-            steps.push({ description: 'Row 1: dp[0][0] = ' + tri[0][0] + ' + max(' + dpArr[1][0] + ',' + dpArr[1][1] + ') = ' + dpArr[0][0],
+            steps.push({ description: '<strong>Top</strong>: ' + tri[0][0] + ' + max(' + dpArr[1][0] + ',' + dpArr[1][1] + ') = ' + dpArr[0][0] + '. All maximum sums from below converge here.',
               action: function() { setTri(0,0,dpArr[0][0],'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">Maximum sum = ' + dpArr[0][0] + '</strong>'; },
               undo: function() { resetTri(0,0); } });
             return steps;
@@ -1372,10 +1749,10 @@ int fib(int n) {
             for (var i = 0; i < n - 1; i++) {
                 (function(idx) {
                     var reason = 'dp[' + idx + ']=' + dp[idx];
-                    if (dp[idx] === 1) reason += ' (no smaller number before)';
+                    if (dp[idx] === 1) reason += ': <strong>no smaller value exists</strong> before a[' + idx + ']=' + a[idx] + ', so it starts its own subsequence';
                     else {
                         for (var j = 0; j < idx; j++) {
-                            if (a[j] < a[idx] && dp[j] + 1 === dp[idx]) { reason += ' (a[' + j + ']=' + a[j] + ' &lt; ' + a[idx] + ')'; break; }
+                            if (a[j] < a[idx] && dp[j] + 1 === dp[idx]) { reason += ': The increasing subsequence ending at a[' + j + ']=' + a[j] + ' (length ' + dp[j] + ') <strong>can be extended by ' + a[idx] + '</strong>, so +1'; break; }
                         }
                     }
                     steps.push({ description: reason,
@@ -1388,7 +1765,7 @@ int fib(int n) {
             var cur = maxLen;
             for (var i = n - 1; i >= 0; i--) { if (dp[i] === cur) { lisPath.unshift(i); cur--; } }
             var lisVals = lisPath.map(function(i) { return a[i]; });
-            steps.push({ description: 'dp[' + (n-1) + ']=' + dp[n-1] + '. LIS length=' + maxLen + ': {' + lisVals.join(',') + '}',
+            steps.push({ description: '<strong>Final answer</strong>: The maximum dp value gives the LIS length = ' + maxLen + '. Actual subsequence: {' + lisVals.join(',') + '}',
               action: function() {
                   setLis(n-1, dp[n-1], '#74b9ff15');
                   for (var k = 0; k < lisPath.length; k++) setLis(lisPath[k], dp[lisPath[k]], 'var(--green)');
@@ -1457,16 +1834,16 @@ int fib(int n) {
             function setBi(i,txt,bg) { var c = container.querySelector('#bi-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent=txt; if(bg)c.style.background=bg;} }
             function resetBi(i) { var c = container.querySelector('#bi-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='?/?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'LIS array (left to right increasing): [' + res.lis.join(',') + ']',
+            steps.push({ description: 'First, compute the <strong>left-to-right LIS</strong>. Each position shows the max length of an increasing run ending here. [' + res.lis.join(',') + ']',
               action: function() { for(var i=0;i<n;i++) setBi(i,'L:'+res.lis[i],'#a29bfe15'); infoEl.innerHTML='LIS array: [' + res.lis.join(',') + ']'; },
               undo: function() { for(var i=0;i<n;i++) resetBi(i); infoEl.innerHTML=''; } });
-            steps.push({ description: 'LDS array (right to left increasing): [' + res.lds.join(',') + ']',
+            steps.push({ description: 'Next, compute the <strong>right-to-left LIS (=LDS)</strong>. Each position shows the max length of a decreasing run starting here. [' + res.lds.join(',') + ']',
               action: function() { for(var i=0;i<n;i++) setBi(i,res.lis[i]+'/'+res.lds[i],'#a29bfe15'); infoEl.innerHTML='LDS array: [' + res.lds.join(',') + ']'; },
               undo: function() { for(var i=0;i<n;i++) setBi(i,'L:'+res.lis[i],'#a29bfe15'); } });
-            steps.push({ description: 'Compute lis[i]+lds[i]-1: [' + res.sums.join(',') + '] -> i=' + res.maxIdx + ' is max(' + res.maxVal + ')',
+            steps.push({ description: '<strong>lis[i]+lds[i]-1</strong>: Using each position as the peak, the total bitonic length is "ascending length + descending length - 1 (to avoid counting self twice)". [' + res.sums.join(',') + '] → i=' + res.maxIdx + ' is the maximum (' + res.maxVal + ')',
               action: function() { for(var i=0;i<n;i++) setBi(i,res.sums[i],(res.sums[i]>=res.maxVal-1?'#a29bfe30':'#a29bfe15')); infoEl.innerHTML='Sum: [' + res.sums.join(',') + '] -> i=' + res.maxIdx + ' is max'; },
               undo: function() { for(var i=0;i<n;i++) setBi(i,res.lis[i]+'/'+res.lds[i],'#a29bfe15'); } });
-            steps.push({ description: 'Longest bitonic length = ' + res.maxVal,
+            steps.push({ description: '<strong>Final answer</strong>: With peak at a[' + res.maxIdx + ']=' + a[res.maxIdx] + ', the longest bitonic subsequence (goes up then down) = ' + res.maxVal,
               action: function() { for(var i=0;i<n;i++) setBi(i,a[i],'var(--bg2)'); setBi(res.maxIdx, a[res.maxIdx], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">Longest bitonic = ' + res.maxVal + ' (peak: a[' + res.maxIdx + ']=' + a[res.maxIdx] + ')</strong>'; },
               undo: function() { for(var i=0;i<n;i++) setBi(i,res.sums[i],(res.sums[i]>=res.maxVal-1?'#a29bfe30':'#a29bfe15')); } });
             return steps;
@@ -1526,26 +1903,25 @@ int fib(int n) {
             function setWr(i,v,bg) { var c = container.querySelector('#wr-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='dp:'+v; if(bg)c.style.background=bg;} }
             function resetWr(i) { var c = container.querySelector('#wr-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='dp:?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'Sorted by A. Find LIS in B=[' + b.join(',') + '].',
-              action: function() { infoEl.innerHTML='B = [' + b.join(', ') + ']. We need to find LIS of this array.'; },
+            steps.push({ description: 'After sorting by A, <strong>wires whose B values are increasing never cross</strong>. So finding the LIS of B gives the maximum non-crossing set.',
+              action: function() { infoEl.innerHTML='B = [' + b.join(', ') + ']. LIS of B = max non-crossing wires!'; },
               undo: function() { infoEl.innerHTML=''; } });
-            // Fill dp in batches
-            var batchSize = Math.max(1, Math.floor(n / 3));
-            var start = 0;
-            while (start < n - 1) {
-                var end = Math.min(start + batchSize - 1, n - 2);
-                (function(s, e) {
-                    var details = [];
-                    for (var k = s; k <= e; k++) details.push('dp[' + k + ']=' + dp[k]);
-                    steps.push({ description: details.join(', '),
-                      action: function() { for(var k=s;k<=e;k++) setWr(k,dp[k],'#55efc415'); infoEl.innerHTML=details.join(', '); },
-                      undo: function() { for(var k=s;k<=e;k++) resetWr(k); } });
-                })(start, end);
-                start = end + 1;
+            // Fill dp individually — each element gets its own step
+            for (var k = 0; k < n - 1; k++) {
+                (function(idx) {
+                    var comparisons = [];
+                    for (var j = 0; j < idx; j++) {
+                        if (b[j] < b[idx]) comparisons.push('B[' + j + ']=' + b[j] + '<' + b[idx]);
+                    }
+                    var desc = 'dp[' + idx + ']=' + dp[idx] + (comparisons.length ? ': ' + comparisons.join(', ') + ' → <strong>can extend after a smaller B value</strong>' : ': no smaller B value before, so <strong>starts alone</strong>');
+                    steps.push({ description: desc,
+                      action: function() { setWr(idx, dp[idx], '#55efc415'); infoEl.innerHTML = desc; },
+                      undo: function() { resetWr(idx); } });
+                })(k);
             }
             // Final
             var remove = n - res.lisLen;
-            steps.push({ description: 'LIS=' + res.lisLen + '. Remove = ' + n + '-' + res.lisLen + ' = ' + remove,
+            steps.push({ description: '<strong>Final answer</strong>: LIS=' + res.lisLen + ' (max non-crossing wires). Total ' + n + ' wires minus ' + res.lisLen + ' kept = <strong>' + remove + ' wires to remove</strong>.',
               action: function() {
                   setWr(n-1, dp[n-1], '#55efc415');
                   // Highlight LIS path
@@ -1657,7 +2033,7 @@ int fib(int n) {
                         ? matchCols.map(function(j){ return 'j=' + j + ': ' + a[row-1] + '=' + b[j-1] + '->diagonal+1=' + dp[row][j]; }).join(', ')
                         : a[row-1] + ' has no match in B->left/up max';
                     steps.push({
-                        description: 'Row ' + row + ': A[' + row + ']=' + a[row-1] + ' vs B. ' + (matchCols.length > 0 ? '+1 at matching chars' : 'no match'),
+                        description: 'Row ' + row + ': Compare A[' + row + ']="' + a[row-1] + '" against each character in B. ' + (matchCols.length > 0 ? '<strong>When characters match</strong>, take the diagonal (both strings\' previous state) + 1. Otherwise, keep the max of left/above.' : 'No matching character found, so all cells keep the max of left/above.'),
                         action: function(dir) {
                             if (dir === 'forward') {
                                 for (var j = 1; j <= m; j++) setLcs(row, j, dp[row][j], '#fd79a815');
@@ -1678,7 +2054,7 @@ int fib(int n) {
 
             // Final step: highlight result
             steps.push({
-                description: 'dp[' + n + '][' + m + ']=' + dp[n][m] + '. LCS length=' + dp[n][m] + (lcsStr ? ': ' + lcsStr : ''),
+                description: '<strong>Final answer</strong>: dp[' + n + '][' + m + ']=' + dp[n][m] + '. The longest common subsequence of both strings has length ' + dp[n][m] + (lcsStr ? ' (LCS: ' + lcsStr + ')' : ''),
                 action: function(dir) {
                     if (dir === 'forward') {
                         setLcs(n, m, dp[n][m], 'var(--green)');
@@ -1792,7 +2168,7 @@ int fib(int n) {
                     }
                     var changeStr = changes.length > 0 ? changes.join(', ') : 'no update';
                     steps.push({
-                        description: 'Item ' + (idx+1) + ' (' + item.w + 'kg, value ' + item.v + '): ' + changeStr,
+                        description: 'Item ' + (idx+1) + ' (' + item.w + 'kg, value ' + item.v + '): For each capacity w, decide "<strong>include this item or not</strong>" — if dp[w-' + item.w + ']+' + item.v + ' exceeds current dp[w], update. ' + changeStr,
                         action: function(dir) {
                             if (dir === 'forward') {
                                 for (var w = 0; w <= W; w++) {
@@ -1824,7 +2200,7 @@ int fib(int n) {
             var totalW = 0, totalV = 0;
             selected.forEach(function(idx) { totalW += items[idx].w; totalV += items[idx].v; });
             steps.push({
-                description: 'dp[' + W + ']=' + finalDp[W] + '. ' + (selDesc ? selDesc + ' selected!' : '') + ' ✅',
+                description: '<strong>Final answer</strong>: Maximum value with capacity ' + W + 'kg = ' + finalDp[W] + '.' + (selDesc ? ' Selected: ' + selDesc : ''),
                 action: function(dir) {
                     if (dir === 'forward') {
                         setKn(W, finalDp[W], 'var(--green)');

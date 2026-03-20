@@ -58,7 +58,7 @@ var bitManipulationTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -540,6 +540,91 @@ int main() {
                     </div>
                 </div>
             </div>
+
+            <!-- 섹션 5: 데모 — 2진수 변환 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">5</span> 데모: 10진수 → 2진수 변환
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 2로 나누기 애니메이션</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="number" id="bit-demo-conv-input" value="42" min="0" max="255" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:80px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="bit-demo-conv-btn">⚙️ 변환 시작</button>
+                        <button class="concept-demo-btn green" id="bit-demo-conv-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bit-demo-conv-steps" style="font-family:monospace;font-size:0.9rem;color:var(--text);line-height:2;"></div>
+                        <div id="bit-demo-conv-result" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-conv-msg">👆 숫자를 입력하고 "변환 시작"을 눌러보세요! 2로 나누기를 반복하며 나머지를 모아 2진수를 만드는 과정을 확인하세요.</div>
+                </div>
+            </div>
+
+            <!-- 섹션 6: 데모 — 비트 연산 시각화 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">6</span> 데모: 비트 연산 시각화
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — AND, OR, XOR, NOT, 시프트</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="number" id="bit-demo-op-a" value="10" min="0" max="255" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:70px;background:var(--card);color:var(--text);">
+                        <select id="bit-demo-op-sel" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">
+                            <option value="and">AND (&)</option>
+                            <option value="or">OR (|)</option>
+                            <option value="xor">XOR (^)</option>
+                            <option value="not">NOT (~)</option>
+                            <option value="shl">왼쪽 시프트 (<<)</option>
+                            <option value="shr">오른쪽 시프트 (>>)</option>
+                        </select>
+                        <input type="number" id="bit-demo-op-b" value="12" min="0" max="255" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:70px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="bit-demo-op-btn">⚡ 계산</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bit-demo-op-viz" style="font-family:monospace;font-size:0.95rem;line-height:2;color:var(--text);"></div>
+                        <div id="bit-demo-op-result" style="margin-top:8px;font-size:0.9rem;color:var(--text2);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-op-msg">👆 두 숫자와 연산을 선택하고 "계산"을 눌러보세요! 비트 단위로 어떻게 동작하는지 확인하세요.</div>
+                </div>
+            </div>
+
+            <!-- 섹션 7: 데모 — 비트 마스크 집합 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">7</span> 데모: 비트 마스크 = 집합
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 비트를 토글하여 원소 추가/제거</div>
+                    <div style="margin-bottom:12px;">
+                        <div id="bit-demo-mask-bits" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;"></div>
+                        <div id="bit-demo-mask-info" style="font-size:0.9rem;color:var(--text2);margin-bottom:8px;font-family:monospace;"></div>
+                        <div id="bit-demo-mask-set" style="font-size:0.9rem;color:var(--text);padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-mask-msg">👆 비트를 클릭해서 켜고 끄세요! 켜진 비트의 위치가 집합의 원소입니다.</div>
+                </div>
+            </div>
+
+            <!-- 섹션 8: 데모 — XOR 짝 없는 수 -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">8</span> 데모: XOR로 짝 없는 수 찾기
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 모든 수를 XOR하면 짝 없는 수만 남는다</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="bit-demo-xor-input" value="4,1,2,1,2" placeholder="쉼표 구분 숫자" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="bit-demo-xor-btn">⚡ XOR 실행</button>
+                        <button class="concept-demo-btn green" id="bit-demo-xor-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bit-demo-xor-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="bit-demo-xor-steps" style="font-family:monospace;font-size:0.9rem;color:var(--text);line-height:2;"></div>
+                        <div id="bit-demo-xor-result" style="margin-top:8px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-xor-msg">👆 숫자를 바꿔보고 "XOR 실행"을 눌러보세요! 짝이 있는 수는 사라지고 혼자인 수만 남습니다.</div>
+                </div>
+            </div>
         `;
         this._initConceptInteractions(container);
     },
@@ -553,6 +638,264 @@ int main() {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== 데모 1: 2진수 변환 ======
+        (function() {
+            var convBtn = container.querySelector('#bit-demo-conv-btn');
+            var resetBtn = container.querySelector('#bit-demo-conv-reset');
+            var inputEl = container.querySelector('#bit-demo-conv-input');
+            var stepsEl = container.querySelector('#bit-demo-conv-steps');
+            var resultEl = container.querySelector('#bit-demo-conv-result');
+            var animating = false;
+
+            convBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                convBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var num = parseInt(inputEl.value) || 0;
+                if (num < 0) num = 0;
+                if (num > 255) num = 255;
+                stepsEl.innerHTML = '';
+                resultEl.textContent = '';
+
+                if (num === 0) {
+                    stepsEl.innerHTML = '<div>0은 2진수로도 <strong>0</strong>입니다!</div>';
+                    resultEl.innerHTML = '<strong>결과:</strong> 0 → <strong style="color:var(--green);">0</strong>';
+                    animating = false;
+                    return;
+                }
+
+                var steps = [];
+                var n = num;
+                while (n > 0) {
+                    var remainder = n % 2;
+                    var quotient = Math.floor(n / 2);
+                    steps.push({ n: n, q: quotient, r: remainder });
+                    n = quotient;
+                }
+
+                var idx = 0;
+                function showStep() {
+                    if (idx >= steps.length) {
+                        var binary = steps.map(function(s) { return s.r; }).reverse().join('');
+                        resultEl.innerHTML = '<strong>결과:</strong> ' + num + ' → <strong style="color:var(--green);">' + binary + '</strong> (나머지를 아래에서 위로 읽습니다!)';
+                        animating = false;
+                        return;
+                    }
+                    var s = steps[idx];
+                    var line = document.createElement('div');
+                    line.style.animation = 'fadeIn 0.3s ease';
+                    line.innerHTML = s.n + ' ÷ 2 = ' + s.q + ' ... <strong style="color:var(--accent);">나머지 ' + s.r + '</strong>';
+                    stepsEl.appendChild(line);
+                    idx++;
+                    setTimeout(showStep, 400);
+                }
+                showStep();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                convBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                stepsEl.innerHTML = '';
+                resultEl.textContent = '';
+            });
+        })();
+
+        // ====== 데모 2: 비트 연산 시각화 ======
+        (function() {
+            var opBtn = container.querySelector('#bit-demo-op-btn');
+            var aInput = container.querySelector('#bit-demo-op-a');
+            var bInput = container.querySelector('#bit-demo-op-b');
+            var selEl = container.querySelector('#bit-demo-op-sel');
+            var vizEl = container.querySelector('#bit-demo-op-viz');
+            var resultEl = container.querySelector('#bit-demo-op-result');
+
+            function toBin(n, bits) {
+                var s = (n >>> 0).toString(2);
+                while (s.length < bits) s = '0' + s;
+                return s.slice(-bits);
+            }
+
+            function colorBits(binStr, highlights) {
+                return binStr.split('').map(function(b, i) {
+                    var color = highlights && highlights[i] ? highlights[i] : 'var(--text)';
+                    return '<span style="color:' + color + ';font-weight:700;">' + b + '</span>';
+                }).join('');
+            }
+
+            opBtn.addEventListener('click', function() {
+                var a = parseInt(aInput.value) || 0;
+                var b = parseInt(bInput.value) || 0;
+                var op = selEl.value;
+                var bits = 8;
+                var result, opSymbol, bitsA = toBin(a, bits), bitsB = toBin(b, bits);
+                var lines = [];
+                var showB = true;
+
+                switch (op) {
+                    case 'and': result = a & b; opSymbol = '&'; break;
+                    case 'or': result = a | b; opSymbol = '|'; break;
+                    case 'xor': result = a ^ b; opSymbol = '^'; break;
+                    case 'not': result = (~a) & 0xFF; opSymbol = '~'; showB = false; break;
+                    case 'shl': result = (a << b) & 0xFF; opSymbol = '<<'; break;
+                    case 'shr': result = a >> b; opSymbol = '>>'; break;
+                }
+
+                var bitsR = toBin(result, bits);
+
+                // Color bits based on result
+                var hA = {}, hB = {}, hR = {};
+                for (var i = 0; i < bits; i++) {
+                    if (op === 'and') {
+                        if (bitsA[i] === '1' && bitsB[i] === '1') { hR[i] = 'var(--green)'; }
+                    } else if (op === 'or') {
+                        if (bitsA[i] === '1' || bitsB[i] === '1') { hR[i] = 'var(--green)'; }
+                    } else if (op === 'xor') {
+                        if (bitsA[i] !== bitsB[i]) { hR[i] = 'var(--yellow)'; }
+                    } else if (op === 'not') {
+                        hR[i] = bitsR[i] === '1' ? 'var(--green)' : 'var(--red)';
+                    }
+                }
+
+                lines.push('&nbsp;&nbsp;' + colorBits(bitsA, hA) + '  ← ' + a);
+                if (showB && (op !== 'shl' && op !== 'shr')) {
+                    lines.push(opSymbol + ' ' + colorBits(bitsB, hB) + '  ← ' + b);
+                } else if (op === 'shl' || op === 'shr') {
+                    lines.push(opSymbol + ' ' + b + '칸');
+                } else {
+                    lines.push(opSymbol);
+                }
+                lines.push('─'.repeat(bits + 2));
+                lines.push('= ' + colorBits(bitsR, hR) + '  ← <strong>' + result + '</strong>');
+
+                vizEl.innerHTML = lines.map(function(l) { return '<div>' + l + '</div>'; }).join('');
+
+                var explanations = {
+                    and: '둘 다 1인 자리만 1이 됩니다.',
+                    or: '하나라도 1이면 1이 됩니다.',
+                    xor: '서로 다른 자리만 1이 됩니다.',
+                    not: '0과 1이 뒤집힙니다. (8비트 기준)',
+                    shl: '비트를 왼쪽으로 ' + b + '칸 밀어 ×2' + (b > 1 ? '^' + b : '') + ' 효과.',
+                    shr: '비트를 오른쪽으로 ' + b + '칸 밀어 ÷2' + (b > 1 ? '^' + b : '') + ' 효과.'
+                };
+                resultEl.textContent = explanations[op];
+            });
+        })();
+
+        // ====== 데모 3: 비트 마스크 집합 ======
+        (function() {
+            var BITS = 6;
+            var mask = 0;
+            var bitsEl = container.querySelector('#bit-demo-mask-bits');
+            var infoEl = container.querySelector('#bit-demo-mask-info');
+            var setEl = container.querySelector('#bit-demo-mask-set');
+
+            function render() {
+                bitsEl.innerHTML = '';
+                for (var i = BITS - 1; i >= 0; i--) {
+                    var isOn = (mask >> i) & 1;
+                    var bit = document.createElement('div');
+                    bit.style.cssText = 'width:44px;height:44px;border-radius:8px;border:2px solid ' + (isOn ? 'var(--green)' : 'var(--border)') +
+                        ';display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s ease;' +
+                        'background:' + (isOn ? 'rgba(0,184,148,0.15)' : 'var(--card)') + ';user-select:none;';
+                    if (isOn) bit.style.boxShadow = '0 0 6px var(--green)';
+                    bit.innerHTML = '<div style="font-size:0.6rem;color:var(--text3);">' + i + '</div><div style="font-size:1.1rem;font-weight:700;color:' + (isOn ? 'var(--green)' : 'var(--text3)') + ';">' + isOn + '</div>';
+                    bit.dataset.idx = i;
+                    bit.addEventListener('click', function() {
+                        var idx = parseInt(this.dataset.idx);
+                        mask ^= (1 << idx);
+                        render();
+                    });
+                    bitsEl.appendChild(bit);
+                }
+
+                infoEl.textContent = '2진수: ' + (mask >>> 0).toString(2).padStart(BITS, '0') + ' | 10진수: ' + mask;
+
+                var elements = [];
+                for (var i = 0; i < BITS; i++) {
+                    if ((mask >> i) & 1) elements.push(i);
+                }
+                setEl.innerHTML = '집합: <strong>{' + (elements.length ? elements.join(', ') : '비어있음') + '}</strong>' +
+                    ' | 원소 수: ' + elements.length;
+            }
+            render();
+        })();
+
+        // ====== 데모 4: XOR 짝 없는 수 찾기 ======
+        (function() {
+            var xorBtn = container.querySelector('#bit-demo-xor-btn');
+            var resetBtn = container.querySelector('#bit-demo-xor-reset');
+            var inputEl = container.querySelector('#bit-demo-xor-input');
+            var arrEl = container.querySelector('#bit-demo-xor-arr');
+            var stepsEl = container.querySelector('#bit-demo-xor-steps');
+            var resultEl = container.querySelector('#bit-demo-xor-result');
+            var animating = false;
+
+            xorBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                xorBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var nums = inputEl.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+                if (nums.length < 2) { resultEl.textContent = '숫자를 2개 이상 입력해주세요!'; animating = false; return; }
+
+                arrEl.innerHTML = '';
+                nums.forEach(function(n) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-val">' + n + '</div>';
+                    arrEl.appendChild(box);
+                });
+
+                stepsEl.innerHTML = '';
+                var xorVal = 0;
+                var idx = 0;
+                function step() {
+                    if (idx >= nums.length) {
+                        resultEl.innerHTML = '<strong style="color:var(--green);">짝 없는 수: ' + xorVal + '</strong> — 짝이 있는 수는 XOR로 사라지고, 혼자인 수만 남습니다!';
+                        // Highlight the answer in array
+                        var boxes = arrEl.querySelectorAll('.str-char-box');
+                        boxes.forEach(function(box) {
+                            if (box.textContent.trim() == String(xorVal)) {
+                                box.style.borderColor = 'var(--green)';
+                                box.style.boxShadow = '0 0 8px var(--green)';
+                            }
+                        });
+                        animating = false;
+                        return;
+                    }
+                    var prev = xorVal;
+                    xorVal ^= nums[idx];
+                    var line = document.createElement('div');
+                    line.style.animation = 'fadeIn 0.3s ease';
+                    line.innerHTML = prev + ' ^ ' + nums[idx] + ' = <strong style="color:var(--accent);">' + xorVal + '</strong>';
+                    stepsEl.appendChild(line);
+
+                    // Highlight current in array
+                    var boxes = arrEl.querySelectorAll('.str-char-box');
+                    boxes.forEach(function(b) { b.style.borderColor = ''; b.style.boxShadow = ''; });
+                    if (boxes[idx]) {
+                        boxes[idx].style.borderColor = 'var(--yellow)';
+                        boxes[idx].style.boxShadow = '0 0 6px var(--yellow)';
+                    }
+
+                    idx++;
+                    setTimeout(step, 500);
+                }
+                step();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                xorBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                arrEl.innerHTML = '';
+                stepsEl.innerHTML = '';
+                resultEl.textContent = '';
+            });
+        })();
     },
 
     // ===== 시각화 탭 =====
@@ -670,7 +1013,7 @@ int main() {
             var runningXor = 0;
 
             steps.push({
-                description: 'result = 0 으로 시작합니다.',
+                description: 'result = 0으로 시작합니다. <em>XOR의 항등원이 0</em>이므로 (a ^ 0 = a), 어떤 수와 XOR해도 그 수 자체가 됩니다.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -695,7 +1038,7 @@ int main() {
 
                 (function(idx, num, prevXor, newXor, prevBin, numBin, newBin, changedBits) {
                     steps.push({
-                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor + ' (2진수: ' + prevBin + ' ^ ' + numBin + ' = ' + newBin + ')',
+                        description: 'result ^= ' + num + ': XOR은 같은 비트끼리 만나면 0, 다르면 1이 됩니다. ' + prevXor + ' ^ ' + num + ' = <strong>' + newXor + '</strong> — 짝이 있는 수는 두 번 XOR되어 상쇄(0)되고, 짝 없는 수만 남습니다.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -722,7 +1065,7 @@ int main() {
 
             var finalResult = runningXor;
             steps.push({
-                description: '완료! 모든 원소를 XOR한 결과: ' + finalResult + ' — 이것이 짝이 없는 수입니다!',
+                description: '완료! 모든 원소를 XOR한 결과: <strong>' + finalResult + '</strong>. 짝이 있는 수는 a ^ a = 0으로 서로 상쇄되어 사라지고, 짝 없는 수 하나만 남습니다.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -857,7 +1200,7 @@ int main() {
                 }
                 (function(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin, numBits) {
                     steps.push({
-                        description: 'count=' + count + ': n=' + prev + ' (' + prevBin + ') & (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ') = ' + next + ' (' + nextBin + ')',
+                        description: '<strong>n & (n-1)</strong>은 가장 오른쪽 1비트를 지우는 트릭입니다. n=' + prev + ' (' + prevBin + ')에서 (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ')을 AND하면, 마지막 1비트만 꺼져서 ' + next + ' (' + nextBin + ')이 됩니다. → count=' + count,
                         action: function() { renderBits(next, removedBit, numBits); infoEl.innerHTML = 'n = ' + prev + ' & ' + (prev - 1) + ' = <strong>' + next + '</strong> — count = <strong>' + count + '</strong>'; },
                         undo: function() { renderBits(prev, -1, numBits); infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + prev + ', count = ' + (count - 1) + '</span>'; }
                     });
@@ -866,7 +1209,7 @@ int main() {
             }
             var finalCount = count;
             steps.push({
-                description: '완료! n = 0이 되었으므로 종료. 1 비트 개수 = ' + finalCount,
+                description: '완료! n이 0이 되면 더 이상 지울 1비트가 없으므로 종료합니다. <strong>n & (n-1)</strong>을 반복한 횟수 = <strong>' + finalCount + '</strong>이 곧 1비트 개수입니다.',
                 action: function() { renderBits(0, -1, numBits); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 1 비트 개수 = ' + finalCount + '</strong>'; },
                 undo: function() { renderBits(0, -1, numBits); infoEl.innerHTML = 'n = 0, count = ' + finalCount; }
             });
@@ -874,7 +1217,7 @@ int main() {
         }
 
         function initSim(n) {
-            descEl.textContent = 'n = ' + n + ' (2진수: ' + (n >>> 0).toString(2) + ')의 1 비트 개수를 셉니다.';
+            descEl.innerHTML = 'n = ' + n + ' (2진수: ' + (n >>> 0).toString(2) + ')의 1비트 개수를 셉니다. <em>n & (n-1)</em>은 매번 가장 오른쪽 1비트를 하나씩 제거하므로, 반복 횟수가 곧 1비트 개수입니다.';
             var numBits = Math.max(8, (n >>> 0).toString(2).length);
             renderBits(n, -1, numBits);
             infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — n & (n-1)을 반복합니다.</span>';
@@ -973,7 +1316,7 @@ int main() {
             var runXor = 0;
 
             steps.push({
-                description: 'result = 0 으로 시작합니다.',
+                description: 'result = 0으로 시작합니다. <em>XOR의 항등원이 0</em>이므로 (a ^ 0 = a), 어떤 수와 XOR해도 그 수 자체가 됩니다.',
                 _before: null,
                 action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'result를 0으로 초기화했습니다.'; },
                 undo: function() { restoreState(this._before); }
@@ -990,7 +1333,7 @@ int main() {
 
                 (function(idx, num, prevXor, newXor, prevBin, newBin, changed, numsRef) {
                     steps.push({
-                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor,
+                        description: 'result ^= ' + num + ': XOR은 같은 비트끼리 만나면 0, 다르면 1이 됩니다. ' + prevXor + ' ^ ' + num + ' = <strong>' + newXor + '</strong> — 짝이 있는 수는 두 번 XOR되어 상쇄되고, 짝 없는 수만 남습니다.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -1017,7 +1360,7 @@ int main() {
             var finalResult = runXor;
             var numsLen = nums.length;
             steps.push({
-                description: '완료! 짝이 없는 수는 ' + finalResult + '입니다!',
+                description: '완료! 짝이 있는 수들은 a ^ a = 0으로 모두 상쇄되어, 짝 없는 수 <strong>' + finalResult + '</strong>만 남았습니다.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -1136,33 +1479,33 @@ int main() {
 
                 if (op.cmd === 'add') {
                     newS = S | (1 << op.x);
-                    desc = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    desc = 'add ' + op.x + ': OR로 특정 비트를 켭니다. <code>1 &lt;&lt; ' + op.x + '</code>은 ' + op.x + '번 위치만 1인 마스크이므로, OR하면 <strong>다른 비트는 그대로 두고</strong> ' + op.x + '번만 1로 설정됩니다. → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트를 1로 설정';
+                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — OR은 0|1=1이므로 ' + op.x + '번 비트만 켜짐';
                 } else if (op.cmd === 'remove') {
                     newS = S & ~(1 << op.x);
-                    desc = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    desc = 'remove ' + op.x + ': NOT으로 마스크를 뒤집은 뒤 AND합니다. <code>~(1 &lt;&lt; ' + op.x + ')</code>은 ' + op.x + '번만 0이고 나머지는 1이므로, AND하면 <strong>' + op.x + '번만 꺼지고</strong> 나머지는 보존됩니다. → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트를 0으로';
+                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — AND는 1&0=0이므로 ' + op.x + '번만 꺼짐';
                 } else if (op.cmd === 'toggle') {
                     newS = S ^ (1 << op.x);
-                    desc = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    desc = 'toggle ' + op.x + ': XOR은 같으면 0, 다르면 1이므로, 현재 비트를 <strong>반전</strong>시킵니다. ' + op.x + '번이 1이었으면 0으로, 0이었으면 1로 바뀝니다. → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — ' + op.x + '번 비트 반전';
+                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — XOR은 1^1=0, 0^1=1이므로 반전';
                 } else if (op.cmd === 'check') {
                     var result = (S >> op.x) & 1;
                     newS = S;
-                    desc = 'check ' + op.x + ': (S &gt;&gt; ' + op.x + ') & 1 = ' + result;
+                    desc = 'check ' + op.x + ': 오른쪽으로 ' + op.x + '칸 시프트하면 ' + op.x + '번 비트가 맨 끝으로 오고, <code>& 1</code>로 그 비트만 추출합니다. → ' + result + ' (' + (result ? '집합에 있음' : '집합에 없음') + ')';
                     hlBit = op.x < showBits ? op.x : -1;
-                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? '있음' : '없음') + ')';
+                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> — 시프트 후 AND 1로 특정 비트 확인 (' + (result ? '있음' : '없음') + ')';
                 } else if (op.cmd === 'all') {
                     newS = (1 << showBits) - 1;
-                    desc = 'all: S = (1 &lt;&lt; ' + showBits + ') - 1 → S = ' + newS;
-                    infoText = 'all: 모든 비트를 1로 설정 → S = ' + newS;
+                    desc = 'all: <code>(1 &lt;&lt; ' + showBits + ') - 1</code>은 하위 ' + showBits + '비트가 모두 1인 수입니다. 이렇게 하면 0~' + (showBits-1) + ' 모든 원소가 집합에 포함됩니다. → S = ' + newS;
+                    infoText = 'all: 2<sup>' + showBits + '</sup>-1 = ' + newS + ' → 모든 비트가 1 (전체 집합)';
                 } else if (op.cmd === 'empty') {
                     newS = 0;
-                    desc = 'empty: S = 0';
-                    infoText = 'empty: 모든 비트를 0으로 → S = 0';
+                    desc = 'empty: S를 0으로 설정하면 모든 비트가 0이 되어 <strong>공집합</strong>이 됩니다. 비트마스크에서 0 = 아무 원소도 없는 상태입니다.';
+                    infoText = 'empty: S = 0 → 모든 비트 0 (공집합)';
                 }
 
                 (function(prevS, newS, desc, hlBit, infoText, showBits) {
@@ -1272,7 +1615,7 @@ int main() {
 
                 (function(mask, subset, maskBin, snapSubsets, nums, n) {
                     steps.push({
-                        description: 'mask = ' + mask + ' (' + maskBin + ') → 부분집합: [' + subset.join(', ') + ']',
+                        description: 'mask = ' + mask + ' (' + maskBin + '): 각 비트가 해당 위치의 원소를 <strong>포함(1)/제외(0)</strong> 결정합니다. → 부분집합: [' + subset.join(', ') + ']',
                         action: function() {
                             renderMask(mask, n);
                             renderArr(mask, nums);
@@ -1302,7 +1645,7 @@ int main() {
 
             var total = (1 << n);
             steps.push({
-                description: '완료! 총 ' + total + '개의 부분집합을 모두 열거했습니다.',
+                description: '완료! n개 원소의 부분집합은 2<sup>n</sup> = <strong>' + total + '</strong>개입니다. 0부터 2<sup>n</sup>-1까지의 정수가 각각 하나의 부분집합에 대응하므로, 비트마스크로 빠짐없이 열거할 수 있습니다.',
                 action: function() {
                     collectedSubsets = [];
                     for (var m = 0; m < (1 << n); m++) {

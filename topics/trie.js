@@ -58,7 +58,7 @@ var trieTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -192,6 +192,23 @@ var trieTopic = {
                 <span class="lang-cpp"><div class="code-block">\
                     <pre><code class="language-cpp">// 트라이 vs 다른 방법 비교\n// N개의 문자열, 평균 길이 L\n\n// 1) vector에서 검색: O(N × L) — 하나씩 비교\n// 2) unordered_set에서 검색: O(L) 평균 — 해시 사용\n// 3) 트라이에서 검색: O(L) 최악 — 항상 빠름!\n\n// 트라이의 진짜 강점: 접두사 검색!\n// "app"으로 시작하는 단어 모두 찾기\n// → vector/set: O(N × L) 전부 확인해야 함\n// → 트라이: O(접두사 길이) + O(결과 수) 매우 빠름!</code></pre>\
                 </div></span>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 트라이 만들기</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">단어를 입력하고 "삽입"을 누르면, 한 글자씩 트라이에 추가되는 과정을 볼 수 있습니다!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="trie-demo-build-input" value="cat" placeholder="단어 입력" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="trie-demo-build-insert">+ 삽입</button>\
+                        <button class="concept-demo-btn" id="trie-demo-build-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">트라이 구조</div>\
+                        <svg id="trie-demo-build-svg" width="400" height="260" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);display:block;margin:0 auto;"></svg>\
+                        <div style="margin-top:10px;font-weight:600;color:var(--text);">삽입된 단어</div>\
+                        <div id="trie-demo-build-words" style="display:flex;gap:8px;flex-wrap:wrap;min-height:30px;margin-top:4px;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-demo-build-msg">"cat", "car", "card" 등을 넣어보세요! 같은 접두사를 공유하는 모습을 관찰하세요.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -249,6 +266,21 @@ var trieTopic = {
                 <span class="lang-cpp"><div class="code-block">\
                     <pre><code class="language-cpp">// C++ 트라이 구현\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;unordered_map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map&lt;char, TrieNode*&gt; children;\n    bool is_end = false;\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new TrieNode();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};\n\n// 사용 예시\nint main() {\n    Trie trie;\n    trie.insert("apple");\n    trie.insert("app");\n    cout &lt;&lt; trie.search("apple") &lt;&lt; endl;      // 1 (true)\n    cout &lt;&lt; trie.search("app") &lt;&lt; endl;        // 1 (true)\n    cout &lt;&lt; trie.search("ap") &lt;&lt; endl;         // 0 (false, is_end가 false!)\n    cout &lt;&lt; trie.startsWith("app") &lt;&lt; endl;    // 1 (true)\n    cout &lt;&lt; trie.startsWith("b") &lt;&lt; endl;      // 0 (false)\n}</code></pre>\
                 </div></span>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 트라이에서 검색</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">트라이에 "apple", "app", "apt", "bat"이 들어있습니다. 검색할 단어를 입력하면 한 글자씩 경로를 따라가며 결과를 보여줍니다!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="trie-demo-search-input" value="app" placeholder="검색할 단어" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="trie-demo-search-step">다음 글자 ▶</button>\
+                        <button class="concept-demo-btn" id="trie-demo-search-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                        <span id="trie-demo-search-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <svg id="trie-demo-search-svg" width="400" height="260" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);display:block;margin:0 auto;"></svg>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-demo-search-msg">"apple", "app", "bat" 등을 검색해보세요! 경로를 따라가다가 없으면 실패, 끝에 is_end가 있으면 성공!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -310,6 +342,21 @@ var trieTopic = {
                 <span class="lang-cpp"><div class="code-block">\
                     <pre><code class="language-cpp">// 트라이 활용 예: 자동완성 구현\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;vector&gt;\n#include &lt;map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    map&lt;char, TrieNode*&gt; children;  // 정렬된 순서 유지\n    bool is_end = false;\n};\n\nclass AutocompleteTrie {\n    TrieNode* root;\n\n    // 현재 노드부터 모든 단어를 수집\n    void collect(TrieNode* node, string& prefix, vector&lt;string&gt;& results) {\n        if (node-&gt;is_end)\n            results.push_back(prefix);\n        for (auto& [ch, child] : node-&gt;children) {\n            prefix.push_back(ch);\n            collect(child, prefix, results);\n            prefix.pop_back();\n        }\n    }\n\npublic:\n    AutocompleteTrie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node-&gt;children.count(ch))\n                node-&gt;children[ch] = new TrieNode();\n            node = node-&gt;children[ch];\n        }\n        node-&gt;is_end = true;\n    }\n\n    vector&lt;string&gt; autocomplete(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node-&gt;children.count(ch))\n                return {};  // 접두사 자체가 없으면 빈 벡터\n            node = node-&gt;children[ch];\n        }\n        vector&lt;string&gt; results;\n        string p = prefix;\n        collect(node, p, results);\n        return results;\n    }\n};\n\n// 사용 예시\nint main() {\n    AutocompleteTrie trie;\n    for (auto& w : {"apple", "app", "application", "apt", "bat"})\n        trie.insert(w);\n\n    for (auto& s : trie.autocomplete("app"))\n        cout &lt;&lt; s &lt;&lt; " ";  // app apple application\n    cout &lt;&lt; endl;\n    for (auto& s : trie.autocomplete("b"))\n        cout &lt;&lt; s &lt;&lt; " ";  // bat\n}</code></pre>\
                 </div></span>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 자동완성</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">접두사를 입력하면, 트라이에 저장된 단어 중 해당 접두사로 시작하는 단어를 즉시 추천합니다!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="trie-demo-auto-input" value="" placeholder="접두사 입력 (예: ap)" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:160px;background:var(--card);color:var(--text);">\
+                        <span style="font-size:0.85rem;color:var(--text2);">단어 목록:</span>\
+                        <input type="text" id="trie-demo-auto-words" value="apple,app,application,apt,bat,ball,banana" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:260px;background:var(--card);color:var(--text);">\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">추천 결과</div>\
+                        <div id="trie-demo-auto-results" style="display:flex;gap:8px;flex-wrap:wrap;min-height:36px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-demo-auto-msg">접두사를 한 글자씩 입력해보세요! 실시간으로 추천 목록이 바뀝니다. "ap" → apple, app, application, apt</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -338,6 +385,389 @@ var trieTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ===== Trie data structure shared across demos =====
+        function TrieNode() { this.children = {}; this.isEnd = false; }
+        function TrieDS() { this.root = new TrieNode(); }
+        TrieDS.prototype.insert = function(word) {
+            var node = this.root;
+            for (var i = 0; i < word.length; i++) {
+                var ch = word[i];
+                if (!node.children[ch]) node.children[ch] = new TrieNode();
+                node = node.children[ch];
+            }
+            node.isEnd = true;
+        };
+        TrieDS.prototype.search = function(word) {
+            var node = this.root;
+            for (var i = 0; i < word.length; i++) {
+                if (!node.children[word[i]]) return null;
+                node = node.children[word[i]];
+            }
+            return node;
+        };
+        TrieDS.prototype.collect = function(node, prefix) {
+            var results = [];
+            if (node.isEnd) results.push(prefix);
+            var keys = Object.keys(node.children).sort();
+            for (var i = 0; i < keys.length; i++) {
+                results = results.concat(this.collect(node.children[keys[i]], prefix + keys[i]));
+            }
+            return results;
+        };
+        TrieDS.prototype.autocomplete = function(prefix) {
+            var node = this.search(prefix);
+            if (!node) return [];
+            return this.collect(node, prefix);
+        };
+
+        // ===== Shared trie rendering helper =====
+        function layoutTrie(root) {
+            // BFS to assign positions to each node
+            var levels = [];
+            var queue = [{node:root, ch:'root', depth:0, parent:null, idx:0}];
+            var allNodes = [];
+            while (queue.length > 0) {
+                var cur = queue.shift();
+                if (!levels[cur.depth]) levels[cur.depth] = [];
+                cur.levelIdx = levels[cur.depth].length;
+                levels[cur.depth].push(cur);
+                allNodes.push(cur);
+                var keys = Object.keys(cur.node.children).sort();
+                for (var i = 0; i < keys.length; i++) {
+                    queue.push({node:cur.node.children[keys[i]], ch:keys[i], depth:cur.depth+1, parent:cur, idx:i});
+                }
+            }
+            // assign x positions
+            var svgW = 400, yGap = 50, startY = 30;
+            allNodes.forEach(function(n) {
+                n.y = startY + n.depth * yGap;
+            });
+            // bottom-up x positioning
+            for (var d = levels.length - 1; d >= 0; d--) {
+                var lvl = levels[d];
+                for (var i = 0; i < lvl.length; i++) {
+                    var n = lvl[i];
+                    var childKeys = Object.keys(n.node.children).sort();
+                    if (childKeys.length === 0) {
+                        // leaf: assign spacing
+                        n.x = null; // will assign later
+                    } else {
+                        // center over children
+                        var childNodes = allNodes.filter(function(c) { return c.parent === n; });
+                        var sumX = 0, cnt = 0;
+                        childNodes.forEach(function(c) { if (c.x !== null && c.x !== undefined) { sumX += c.x; cnt++; } });
+                        if (cnt > 0) n.x = sumX / cnt;
+                    }
+                }
+            }
+            // assign leaf positions with spacing
+            var leafCounter = 0;
+            var leaves = allNodes.filter(function(n) { return Object.keys(n.node.children).length === 0; });
+            var spacing = Math.min(50, (svgW - 40) / Math.max(leaves.length, 1));
+            var startX = (svgW - spacing * (leaves.length - 1)) / 2;
+            leaves.forEach(function(n) { n.x = startX + leafCounter * spacing; leafCounter++; });
+            // re-center parents bottom-up
+            for (var d = levels.length - 1; d >= 0; d--) {
+                levels[d].forEach(function(n) {
+                    var childNodes = allNodes.filter(function(c) { return c.parent === n; });
+                    if (childNodes.length > 0) {
+                        var sumX = 0;
+                        childNodes.forEach(function(c) { sumX += c.x; });
+                        n.x = sumX / childNodes.length;
+                    }
+                });
+            }
+            // clamp
+            allNodes.forEach(function(n) { n.x = Math.max(20, Math.min(svgW - 20, n.x || svgW/2)); });
+            return allNodes;
+        }
+
+        function renderTrieSvg(svgEl, allNodes, highlightPath, highlightResult) {
+            var html = '';
+            // edges
+            allNodes.forEach(function(n) {
+                if (n.parent) {
+                    var edgeColor = 'var(--bg3)';
+                    if (highlightPath && highlightPath.indexOf(n) >= 0 && highlightPath.indexOf(n.parent) >= 0) {
+                        edgeColor = highlightResult === 'searching' ? 'var(--yellow)' : (highlightResult === 'found' ? 'var(--green)' : (highlightResult === 'fail' ? 'var(--red)' : 'var(--accent)'));
+                    }
+                    html += '<line x1="'+n.parent.x+'" y1="'+n.parent.y+'" x2="'+n.x+'" y2="'+n.y+'" stroke="'+edgeColor+'" stroke-width="2.5"/>';
+                }
+            });
+            // nodes
+            allNodes.forEach(function(n) {
+                var r = 16, fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                if (n.node.isEnd) { stroke = 'var(--green)'; }
+                if (highlightPath && highlightPath.indexOf(n) >= 0) {
+                    if (highlightResult === 'searching') { fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333'; }
+                    else if (highlightResult === 'found') { fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white'; }
+                    else if (highlightResult === 'fail') { fill = 'var(--red)'; stroke = 'var(--red)'; txtColor = 'white'; }
+                    else { fill = 'var(--accent)'; stroke = 'var(--accent)'; txtColor = 'white'; }
+                }
+                html += '<circle cx="'+n.x+'" cy="'+n.y+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2.5"/>';
+                html += '<text x="'+n.x+'" y="'+(n.y+5)+'" text-anchor="middle" font-size="13" font-weight="700" fill="'+txtColor+'">'+n.ch+'</text>';
+                if (n.node.isEnd) {
+                    html += '<circle cx="'+(n.x+12)+'" cy="'+(n.y-12)+'" r="5" fill="var(--green)"/>';
+                }
+            });
+            svgEl.innerHTML = html;
+        }
+
+        // ========== Demo 1: 트라이 만들기 ==========
+        (function() {
+            var trie = new TrieDS();
+            var insertedWords = [];
+            var svgEl = container.querySelector('#trie-demo-build-svg');
+            var wordsEl = container.querySelector('#trie-demo-build-words');
+            var inputEl = container.querySelector('#trie-demo-build-input');
+            var insertBtn = container.querySelector('#trie-demo-build-insert');
+            var resetBtn = container.querySelector('#trie-demo-build-reset');
+            var msgEl = container.querySelector('#trie-demo-build-msg');
+
+            function renderBuild() {
+                var allNodes = layoutTrie(trie.root);
+                renderTrieSvg(svgEl, allNodes, null, null);
+                wordsEl.innerHTML = '';
+                insertedWords.forEach(function(w) {
+                    var span = document.createElement('span');
+                    span.style.cssText = 'padding:4px 12px;background:var(--green)15;color:var(--green);border-radius:8px;font-weight:600;font-size:0.85rem;border:1px solid var(--green)30;';
+                    span.textContent = w;
+                    wordsEl.appendChild(span);
+                });
+                if (insertedWords.length === 0) {
+                    wordsEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">아직 삽입된 단어가 없습니다</span>';
+                }
+            }
+
+            function animateInsert(word) {
+                var node = trie.root;
+                var allNodes = layoutTrie(trie.root);
+                var path = [allNodes[0]]; // root
+                var i = 0;
+                insertBtn.disabled = true;
+                function step() {
+                    if (i >= word.length) {
+                        // mark is_end
+                        node.isEnd = true;
+                        insertedWords.push(word);
+                        allNodes = layoutTrie(trie.root);
+                        // find path for highlight
+                        var hp = [allNodes[0]];
+                        var cur = trie.root;
+                        for (var j = 0; j < word.length; j++) {
+                            cur = cur.children[word[j]];
+                            var found = allNodes.filter(function(n) { return n.node === cur; });
+                            if (found.length > 0) hp.push(found[0]);
+                        }
+                        renderTrieSvg(svgEl, allNodes, hp, 'found');
+                        renderBuildWords();
+                        msgEl.textContent = '"' + word + '" 삽입 완료! is_end 표시(초록 점)를 확인하세요.';
+                        msgEl.style.color = 'var(--green)';
+                        insertBtn.disabled = false;
+                        return;
+                    }
+                    var ch = word[i];
+                    if (!node.children[ch]) {
+                        node.children[ch] = new TrieNode();
+                        msgEl.textContent = '"' + ch + '" 노드가 없으므로 새로 만듭니다! (깊이 ' + (i+1) + ')';
+                        msgEl.style.color = 'var(--accent)';
+                    } else {
+                        msgEl.textContent = '"' + ch + '" 노드가 이미 있으므로 따라갑니다. (공유!)';
+                        msgEl.style.color = 'var(--yellow)';
+                    }
+                    node = node.children[ch];
+                    allNodes = layoutTrie(trie.root);
+                    // build path
+                    var hp = [allNodes[0]];
+                    var cur = trie.root;
+                    for (var j = 0; j <= i; j++) {
+                        cur = cur.children[word[j]];
+                        var found = allNodes.filter(function(n) { return n.node === cur; });
+                        if (found.length > 0) hp.push(found[0]);
+                    }
+                    renderTrieSvg(svgEl, allNodes, hp, 'searching');
+                    i++;
+                    setTimeout(step, 500);
+                }
+                step();
+            }
+
+            function renderBuildWords() {
+                wordsEl.innerHTML = '';
+                insertedWords.forEach(function(w) {
+                    var span = document.createElement('span');
+                    span.style.cssText = 'padding:4px 12px;background:var(--green)15;color:var(--green);border-radius:8px;font-weight:600;font-size:0.85rem;border:1px solid var(--green)30;';
+                    span.textContent = w;
+                    wordsEl.appendChild(span);
+                });
+            }
+
+            insertBtn.addEventListener('click', function() {
+                var word = inputEl.value.trim().toLowerCase();
+                if (!word || !/^[a-z]+$/.test(word)) {
+                    msgEl.textContent = '영문 소문자 단어를 입력하세요!';
+                    msgEl.style.color = 'var(--red)';
+                    return;
+                }
+                if (insertedWords.indexOf(word) >= 0) {
+                    msgEl.textContent = '"' + word + '"는 이미 삽입되었습니다!';
+                    msgEl.style.color = 'var(--yellow)';
+                    return;
+                }
+                animateInsert(word);
+            });
+
+            resetBtn.addEventListener('click', function() {
+                trie = new TrieDS();
+                insertedWords = [];
+                renderBuild();
+                msgEl.textContent = '"cat", "car", "card" 등을 넣어보세요! 같은 접두사를 공유하는 모습을 관찰하세요.';
+                msgEl.style.color = 'var(--text2)';
+            });
+
+            renderBuild();
+        })();
+
+        // ========== Demo 2: 트라이에서 검색 ==========
+        (function() {
+            var trie2 = new TrieDS();
+            ['apple','app','apt','bat'].forEach(function(w) { trie2.insert(w); });
+
+            var svgEl = container.querySelector('#trie-demo-search-svg');
+            var inputEl = container.querySelector('#trie-demo-search-input');
+            var stepBtn = container.querySelector('#trie-demo-search-step');
+            var resetBtn = container.querySelector('#trie-demo-search-reset');
+            var counterEl = container.querySelector('#trie-demo-search-counter');
+            var msgEl = container.querySelector('#trie-demo-search-msg');
+
+            var searchWord, searchIdx, searchNode, searchPath, allNodes2, searching;
+
+            function resetSearch() {
+                searchWord = ''; searchIdx = -1; searchNode = null; searchPath = []; searching = false;
+                allNodes2 = layoutTrie(trie2.root);
+                renderTrieSvg(svgEl, allNodes2, null, null);
+                counterEl.textContent = '';
+                stepBtn.disabled = false;
+                msgEl.textContent = '"apple", "app", "bat" 등을 검색해보세요! 경로를 따라가다가 없으면 실패, 끝에 is_end가 있으면 성공!';
+                msgEl.style.color = 'var(--text2)';
+            }
+
+            stepBtn.addEventListener('click', function() {
+                if (!searching) {
+                    // start search
+                    searchWord = inputEl.value.trim().toLowerCase();
+                    if (!searchWord || !/^[a-z]+$/.test(searchWord)) {
+                        msgEl.textContent = '영문 소문자 단어를 입력하세요!';
+                        msgEl.style.color = 'var(--red)';
+                        return;
+                    }
+                    searching = true;
+                    searchIdx = 0;
+                    searchNode = trie2.root;
+                    allNodes2 = layoutTrie(trie2.root);
+                    searchPath = [allNodes2[0]]; // root
+                    renderTrieSvg(svgEl, allNodes2, searchPath, 'searching');
+                    msgEl.textContent = '"' + searchWord + '" 검색 시작! 루트에서 출발합니다.';
+                    msgEl.style.color = 'var(--accent)';
+                    counterEl.textContent = '0 / ' + searchWord.length;
+                    return;
+                }
+
+                if (searchIdx >= searchWord.length) {
+                    // check is_end
+                    if (searchNode.isEnd) {
+                        renderTrieSvg(svgEl, allNodes2, searchPath, 'found');
+                        msgEl.textContent = '"' + searchWord + '" 검색 성공! is_end = true이므로 이 단어는 트라이에 존재합니다.';
+                        msgEl.style.color = 'var(--green)';
+                    } else {
+                        renderTrieSvg(svgEl, allNodes2, searchPath, 'fail');
+                        msgEl.textContent = '"' + searchWord + '" 검색 실패! 경로는 있지만 is_end = false이므로 이 단어는 저장되지 않았습니다.';
+                        msgEl.style.color = 'var(--red)';
+                    }
+                    stepBtn.disabled = true;
+                    searching = false;
+                    return;
+                }
+
+                var ch = searchWord[searchIdx];
+                if (!searchNode.children[ch]) {
+                    // not found
+                    renderTrieSvg(svgEl, allNodes2, searchPath, 'fail');
+                    msgEl.textContent = '"' + ch + '" 자식 노드가 없습니다! "' + searchWord + '" 검색 실패.';
+                    msgEl.style.color = 'var(--red)';
+                    stepBtn.disabled = true;
+                    searching = false;
+                    return;
+                }
+
+                searchNode = searchNode.children[ch];
+                // find this node in allNodes2
+                var found = allNodes2.filter(function(n) { return n.node === searchNode; });
+                if (found.length > 0) searchPath.push(found[0]);
+                searchIdx++;
+                counterEl.textContent = searchIdx + ' / ' + searchWord.length;
+                renderTrieSvg(svgEl, allNodes2, searchPath, 'searching');
+                msgEl.textContent = '"' + ch + '" 노드를 찾았습니다! 따라갑니다. (' + searchIdx + '/' + searchWord.length + ' 글자)';
+                msgEl.style.color = 'var(--yellow)';
+
+                if (searchIdx >= searchWord.length) {
+                    msgEl.textContent += ' 모든 글자를 따라갔습니다. 다음 스텝에서 is_end를 확인합니다!';
+                }
+            });
+
+            resetBtn.addEventListener('click', resetSearch);
+            resetSearch();
+        })();
+
+        // ========== Demo 3: 자동완성 ==========
+        (function() {
+            var autoInput = container.querySelector('#trie-demo-auto-input');
+            var wordsInput = container.querySelector('#trie-demo-auto-words');
+            var resultsEl = container.querySelector('#trie-demo-auto-results');
+            var msgEl = container.querySelector('#trie-demo-auto-msg');
+
+            function buildTrieFromWords(words) {
+                var t = new TrieDS();
+                words.forEach(function(w) { var ww = w.trim().toLowerCase(); if (ww) t.insert(ww); });
+                return t;
+            }
+
+            function update() {
+                var words = wordsInput.value.split(',').map(function(w) { return w.trim(); }).filter(function(w) { return w.length > 0; });
+                var t = buildTrieFromWords(words);
+                var prefix = autoInput.value.trim().toLowerCase();
+                resultsEl.innerHTML = '';
+
+                if (!prefix) {
+                    resultsEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">접두사를 입력하면 추천 결과가 표시됩니다</span>';
+                    msgEl.textContent = '접두사를 한 글자씩 입력해보세요! 실시간으로 추천 목록이 바뀝니다.';
+                    msgEl.style.color = 'var(--text2)';
+                    return;
+                }
+
+                var results = t.autocomplete(prefix);
+                if (results.length === 0) {
+                    resultsEl.innerHTML = '<span style="color:var(--red);font-size:0.85rem;">"' + prefix + '"로 시작하는 단어가 없습니다</span>';
+                    msgEl.textContent = '해당 접두사로 시작하는 단어가 트라이에 없습니다. 다른 접두사를 시도하거나 단어를 추가하세요!';
+                    msgEl.style.color = 'var(--red)';
+                } else {
+                    results.forEach(function(w) {
+                        var span = document.createElement('span');
+                        span.style.cssText = 'padding:6px 14px;background:var(--accent)12;color:var(--accent);border-radius:8px;font-weight:600;font-size:0.9rem;border:1.5px solid var(--accent)30;';
+                        // bold the prefix part
+                        span.innerHTML = '<strong>' + w.substring(0, prefix.length) + '</strong>' + w.substring(prefix.length);
+                        resultsEl.appendChild(span);
+                    });
+                    msgEl.textContent = '"' + prefix + '"로 시작하는 단어 ' + results.length + '개 발견! 트라이에서 접두사 경로를 따라간 뒤, 하위 노드를 모두 수집합니다.';
+                    msgEl.style.color = 'var(--green)';
+                }
+            }
+
+            autoInput.addEventListener('input', update);
+            wordsInput.addEventListener('change', update);
+            update();
+        })();
     },
 
     // ===== 시각화 상태 =====

@@ -61,7 +61,7 @@ var divideConquerTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -409,6 +409,115 @@ var divideConquerTopic = {
                     </div>\
                 </div>\
             </div>\
+\
+            <!-- 6. Demo: Binary Search -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">6</span> Demo: Binary Search — Finding by Divide and Conquer</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Halving a sorted array to find a number</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="number" id="dc-demo-bs-target" value="7" min="0" max="99" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:80px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="dc-demo-bs-btn">🔍 Start Search</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-bs-reset" style="display:none;">↺ Again</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-demo-bs-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div id="dc-demo-bs-pointers" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;margin-bottom:8px;"></div>\
+                        <div id="dc-demo-bs-log" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-bs-msg">👆 Enter a number to find and click "Start Search"! Watch how it halves the array each time.</div>\
+                </div>\
+            </div>\
+\
+            <!-- 7. Demo: Merge Sort 3-Phase -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">7</span> Demo: Merge Sort — Divide, Solve, Combine</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Merge Sort Visualization</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="dc-demo-ms-input" value="5,3,8,1,4,2,7,6" placeholder="Comma-separated numbers" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:200px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="dc-demo-ms-btn">▶ Start Sort</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-ms-reset" style="display:none;">↺ Again</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-demo-ms-viz" style="min-height:120px;overflow-x:auto;"></div>\
+                        <div id="dc-demo-ms-phase" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:2em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-ms-msg">👆 Change the numbers and click "Start Sort"! Watch the 3 phases: Divide → Solve → Combine.</div>\
+                </div>\
+            </div>\
+\
+            <!-- 8. Demo: Overlap Comparison -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">8</span> Demo: Overlap Comparison — D&C vs DP</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Do subproblems overlap?</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-demo-overlap-ms">Merge Sort (no overlap)</button>\
+                        <button class="concept-demo-btn" id="dc-demo-overlap-fib">Fibonacci (overlap!)</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-demo-overlap-viz" style="min-height:140px;overflow-x:auto;font-family:monospace;"></div>\
+                        <div id="dc-demo-overlap-stats" style="margin-top:10px;display:flex;gap:1.5rem;flex-wrap:wrap;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-overlap-msg">👆 Click the buttons to compare call trees! Same color = same subproblem.</div>\
+                </div>\
+            </div>\
+\
+            <!-- 9. Demo: Fast Exponentiation -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">9</span> Demo: Fast Exponentiation — Halve the Exponent!</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Compute x^n fast</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <label style="font-size:0.9rem;color:var(--text);">Base:</label>\
+                        <input type="number" id="dc-demo-pow-base" value="2" min="1" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.9rem;color:var(--text);">Exponent:</label>\
+                        <input type="number" id="dc-demo-pow-exp" value="8" min="1" max="32" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="dc-demo-pow-btn">⚡ Compare</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--red);">Naive Multiplication <span style="font-size:0.85rem;">O(n)</span></div>\
+                                <div id="dc-demo-pow-naive" style="font-size:0.85rem;color:var(--text2);line-height:1.8;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--green);">Divide & Conquer <span style="font-size:0.85rem;">O(log n)</span></div>\
+                                <div id="dc-demo-pow-fast" style="font-size:0.85rem;color:var(--text2);line-height:1.8;"></div>\
+                            </div>\
+                        </div>\
+                        <div id="dc-demo-pow-result" style="margin-top:12px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-pow-msg">👆 Change the base and exponent, then click "Compare"! See how much faster divide and conquer is.</div>\
+                </div>\
+            </div>\
+\
+            <!-- 10. Demo: Paper Quadtree -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">10</span> Demo: Paper Quadtree — Recursive 4-way Split</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Split a 4×4 paper using quadtree</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <span style="font-size:0.85rem;color:var(--text2);">Click cells to toggle color |</span>\
+                        <button class="concept-demo-btn" id="dc-demo-qt-run">🔍 Quadtree Split</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-qt-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div>\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Paper (click to edit)</div>\
+                                <div id="dc-demo-qt-grid" style="display:grid;grid-template-columns:repeat(4,40px);gap:2px;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Quadtree Split Result</div>\
+                                <div id="dc-demo-qt-result" style="font-size:0.9rem;color:var(--text2);line-height:1.8;font-family:monospace;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-qt-msg">👆 Click cells to toggle white/blue, then click "Quadtree Split"! Same color merges, different colors split into 4.</div>\
+                </div>\
+            </div>\
         ';
 
         this._initConceptInteractions(container);
@@ -423,6 +532,445 @@ var divideConquerTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== Demo 1: Binary Search ======
+        (function() {
+            var arr = [1, 3, 5, 7, 9, 12, 15, 18, 21, 25];
+            var searchBtn = container.querySelector('#dc-demo-bs-btn');
+            var resetBtn = container.querySelector('#dc-demo-bs-reset');
+            var targetInput = container.querySelector('#dc-demo-bs-target');
+            var arrEl = container.querySelector('#dc-demo-bs-arr');
+            var pointersEl = container.querySelector('#dc-demo-bs-pointers');
+            var logEl = container.querySelector('#dc-demo-bs-log');
+            var msgEl = container.querySelector('#dc-demo-bs-msg');
+            var animating = false;
+
+            function renderArr(lo, hi, mid, found) {
+                arrEl.innerHTML = '';
+                arr.forEach(function(v, i) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    var labels = [];
+                    if (i === lo) labels.push('L');
+                    if (i === hi) labels.push('R');
+                    if (i === mid) labels.push('mid');
+                    var labelStr = labels.length ? '<div class="str-char-idx" style="font-size:0.65rem;color:var(--accent);font-weight:700;">' + labels.join(',') + '</div>' : '';
+                    box.innerHTML = labelStr + '<div class="str-char-val">' + v + '</div>';
+                    if (i < lo || i > hi) { box.style.opacity = '0.3'; }
+                    if (i === mid && found === true) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.boxShadow = '0 0 8px var(--green)';
+                        box.style.background = 'rgba(0,184,148,0.15)';
+                    } else if (i === mid && found === false) {
+                        box.style.borderColor = 'var(--yellow)';
+                        box.style.boxShadow = '0 0 6px var(--yellow)';
+                    }
+                    arrEl.appendChild(box);
+                });
+            }
+            renderArr(0, arr.length - 1, -1);
+
+            searchBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                searchBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var target = parseInt(targetInput.value);
+                if (isNaN(target)) { msgEl.textContent = 'Please enter a number!'; animating = false; return; }
+                var lo = 0, hi = arr.length - 1;
+                var steps = [];
+                while (lo <= hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    if (arr[mid] === target) { steps.push({ lo: lo, hi: hi, mid: mid, found: true }); break; }
+                    else if (arr[mid] < target) { steps.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'right' }); lo = mid + 1; }
+                    else { steps.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'left' }); hi = mid - 1; }
+                }
+                if (steps.length === 0 || !steps[steps.length - 1].found) {
+                    steps.push({ lo: lo, hi: hi, mid: -1, found: null });
+                }
+                var idx = 0;
+                function playStep() {
+                    if (idx >= steps.length) { animating = false; return; }
+                    var s = steps[idx];
+                    renderArr(s.lo, s.hi, s.mid, s.found);
+                    if (s.found === true) {
+                        pointersEl.innerHTML = '<strong style="color:var(--green);">Found!</strong> arr[' + s.mid + '] = ' + arr[s.mid];
+                        logEl.textContent = 'Total ' + steps.length + ' comparisons (log\u2082(' + arr.length + ') \u2248 ' + Math.ceil(Math.log2(arr.length)) + ')';
+                        animating = false;
+                    } else if (s.found === false) {
+                        pointersEl.innerHTML = 'L=' + s.lo + ', R=' + s.hi + ', mid=' + s.mid + ' \u2192 arr[' + s.mid + ']=' + arr[s.mid];
+                        logEl.textContent = arr[s.mid] + (s.dir === 'right' ? ' < ' + target + ' \u2192 search right half' : ' > ' + target + ' \u2192 search left half');
+                        idx++;
+                        setTimeout(playStep, 800);
+                    } else {
+                        pointersEl.innerHTML = '<strong style="color:var(--red);">' + target + ' is not in the array</strong>';
+                        logEl.textContent = 'Total ' + (steps.length - 1) + ' comparisons';
+                        animating = false;
+                    }
+                }
+                playStep();
+            });
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                searchBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                renderArr(0, arr.length - 1, -1);
+                pointersEl.textContent = '';
+                logEl.textContent = '';
+                msgEl.textContent = '👆 Enter a number to find and click "Start Search"!';
+            });
+        })();
+
+        // ====== Demo 2: Merge Sort 3-Phase ======
+        (function() {
+            var msBtn = container.querySelector('#dc-demo-ms-btn');
+            var msReset = container.querySelector('#dc-demo-ms-reset');
+            var msInput = container.querySelector('#dc-demo-ms-input');
+            var msViz = container.querySelector('#dc-demo-ms-viz');
+            var msPhase = container.querySelector('#dc-demo-ms-phase');
+            var msMsg = container.querySelector('#dc-demo-ms-msg');
+            var animating = false;
+
+            function buildMergeSteps(arr) {
+                var steps = [];
+                function mergeSort(a, depth, label) {
+                    if (a.length <= 1) return a;
+                    var mid = Math.floor(a.length / 2);
+                    var left = a.slice(0, mid);
+                    var right = a.slice(mid);
+                    steps.push({ phase: 'divide', arr: a.slice(), left: left.slice(), right: right.slice(), depth: depth, label: label });
+                    var sl = mergeSort(left, depth + 1, label + 'L');
+                    var sr = mergeSort(right, depth + 1, label + 'R');
+                    var merged = [];
+                    var i = 0, j = 0;
+                    while (i < sl.length && j < sr.length) {
+                        if (sl[i] <= sr[j]) merged.push(sl[i++]);
+                        else merged.push(sr[j++]);
+                    }
+                    while (i < sl.length) merged.push(sl[i++]);
+                    while (j < sr.length) merged.push(sr[j++]);
+                    steps.push({ phase: 'merge', left: sl.slice(), right: sr.slice(), merged: merged.slice(), depth: depth, label: label });
+                    return merged;
+                }
+                mergeSort(arr, 0, '');
+                return steps;
+            }
+
+            function renderMergeStep(step) {
+                var boxStyle = 'display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;font-weight:600;color:var(--text);margin:2px;padding:0 4px;';
+                if (step.phase === 'divide') {
+                    var indent = '&nbsp;'.repeat(step.depth * 4);
+                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                        '<span style="color:var(--accent);font-weight:600;">Divide: </span>' +
+                        '[' + step.arr.join(', ') + '] \u2192 [' + step.left.join(', ') + '] + [' + step.right.join(', ') + ']</div>';
+                    msPhase.innerHTML = '<strong style="color:var(--accent);">1. Divide</strong>: Splitting [' + step.arr.join(', ') + '] in half';
+                } else {
+                    var indent = '&nbsp;'.repeat(step.depth * 4);
+                    var mergedHtml = step.merged.map(function(v) {
+                        return '<span style="' + boxStyle + 'border-color:var(--green);background:rgba(0,184,148,0.1);">' + v + '</span>';
+                    }).join('');
+                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                        '<span style="color:var(--green);font-weight:600;">Combine: </span>' +
+                        '[' + step.left.join(', ') + '] + [' + step.right.join(', ') + '] \u2192 ' + mergedHtml + '</div>';
+                    msPhase.innerHTML = '<strong style="color:var(--green);">3. Combine</strong>: Merging two sorted halves \u2192 [' + step.merged.join(', ') + ']';
+                }
+            }
+
+            msBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                msBtn.style.display = 'none';
+                msReset.style.display = '';
+                var vals = msInput.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+                if (vals.length < 2) { msMsg.textContent = 'Please enter at least 2 numbers!'; animating = false; return; }
+                var steps = buildMergeSteps(vals);
+                msViz.innerHTML = '';
+                var idx = 0;
+                function play() {
+                    if (idx >= steps.length) { msPhase.innerHTML = '<strong style="color:var(--green);">Sort Complete!</strong>'; animating = false; return; }
+                    renderMergeStep(steps[idx]);
+                    idx++;
+                    setTimeout(play, 700);
+                }
+                play();
+            });
+            msReset.addEventListener('click', function() {
+                animating = false;
+                msBtn.style.display = '';
+                msReset.style.display = 'none';
+                msViz.innerHTML = '';
+                msPhase.textContent = '';
+                msMsg.textContent = '👆 Change the numbers and click "Start Sort"!';
+            });
+        })();
+
+        // ====== Demo 3: Overlap Comparison (D&C vs DP) — manual step controls ======
+        (function() {
+            var msBtn = container.querySelector('#dc-demo-overlap-ms');
+            var fibBtn = container.querySelector('#dc-demo-overlap-fib');
+            var vizEl = container.querySelector('#dc-demo-overlap-viz');
+            var statsEl = container.querySelector('#dc-demo-overlap-stats');
+
+            // --- Merge Sort tree: manual step controls ---
+            var msLines = [
+                'sort([5,3,8,1])',
+                '\u251c\u2500 sort(<span style="color:#6c5ce7">[5,3]</span>)',
+                '\u2502  \u251c\u2500 sort([5])',
+                '\u2502  \u2514\u2500 sort([3])',
+                '\u251c\u2500 sort(<span style="color:#00b894">[8,1]</span>)',
+                '\u2502  \u251c\u2500 sort([8])',
+                '\u2502  \u2514\u2500 sort([1])',
+                '\u2514\u2500 merge \u2192 [1,3,5,8]'
+            ];
+            var msStatsHtml =
+                '<div style="padding:8px 14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--accent);">' +
+                '<strong>Divide & Conquer</strong>: All subproblems are <strong style="color:var(--green);">distinct</strong><br>' +
+                'Left [5,3] and right [8,1] are completely independent.</div>';
+            var msStep = -1;
+            var msCtrlHtml =
+                '<div id="dc-ms-ctrl" style="display:none;flex-direction:row;gap:12px;justify-content:center;align-items:center;margin-top:12px;">' +
+                '<button id="dc-ms-prev" class="concept-demo-btn">\u2190 Prev</button>' +
+                '<span id="dc-ms-counter" style="font-size:0.85rem;color:var(--text2);">Before Start</span>' +
+                '<button id="dc-ms-next" class="concept-demo-btn">Next \u2192</button>' +
+                '</div>';
+            vizEl.insertAdjacentHTML('afterend', msCtrlHtml);
+            var msCtrl = container.querySelector('#dc-ms-ctrl');
+            var msPrev = container.querySelector('#dc-ms-prev');
+            var msNext = container.querySelector('#dc-ms-next');
+            var msCounter = container.querySelector('#dc-ms-counter');
+
+            function renderMsTree() {
+                var html = '';
+                for (var i = 0; i <= msStep; i++) {
+                    html += '<div style="padding:2px 0;animation:fadeIn 0.3s ease;">' + msLines[i] + '</div>';
+                }
+                vizEl.innerHTML = html;
+                if (msStep >= msLines.length - 1) {
+                    statsEl.innerHTML = msStatsHtml;
+                } else {
+                    statsEl.innerHTML = '';
+                }
+                msCounter.textContent = msStep < 0 ? 'Before Start' : (msStep + 1) + ' / ' + msLines.length;
+                msPrev.disabled = msStep < 0;
+                msNext.disabled = msStep >= msLines.length - 1;
+            }
+
+            msBtn.addEventListener('click', function() {
+                msStep = -1;
+                vizEl.innerHTML = '';
+                statsEl.innerHTML = '';
+                msCtrl.style.display = 'flex';
+                // hide fib controls if visible
+                fibCtrl.style.display = 'none';
+                fibStep = -1;
+                renderMsTree();
+            });
+            msPrev.addEventListener('click', function() {
+                if (msStep >= 0) { msStep--; renderMsTree(); }
+            });
+            msNext.addEventListener('click', function() {
+                if (msStep < msLines.length - 1) { msStep++; renderMsTree(); }
+            });
+
+            // --- Fibonacci tree: manual step controls ---
+            var fibLines = [
+                'fib(5)',
+                '\u251c\u2500 fib(4)',
+                '\u2502  \u251c\u2500 <span style="color:#e17055;font-weight:700;">fib(3)</span>',
+                '\u2502  \u2502  \u251c\u2500 <span style="color:#fdcb6e;font-weight:700;">fib(2)</span>',
+                '\u2502  \u2502  \u2514\u2500 fib(1)',
+                '\u2502  \u2514\u2500 <span style="color:#fdcb6e;font-weight:700;">fib(2)</span> \u2190 duplicate!',
+                '\u2514\u2500 <span style="color:#e17055;font-weight:700;">fib(3)</span> \u2190 duplicate!',
+                '   \u251c\u2500 <span style="color:#fdcb6e;font-weight:700;">fib(2)</span> \u2190 another duplicate!',
+                '   \u2514\u2500 fib(1)'
+            ];
+            var fibStatsHtml =
+                '<div style="padding:8px 14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--red);">' +
+                '<strong>Overlapping subproblems!</strong> fib(3) is called <strong style="color:var(--red);">2 times</strong>, fib(2) is called <strong style="color:var(--red);">3 times</strong>.<br>' +
+                'In this case, use <strong>DP (memoization)</strong> instead of D&C to eliminate redundant computation.</div>';
+            var fibStep = -1;
+            var fibCtrlHtml =
+                '<div id="dc-fib-ctrl" style="display:none;flex-direction:row;gap:12px;justify-content:center;align-items:center;margin-top:12px;">' +
+                '<button id="dc-fib-prev" class="concept-demo-btn">\u2190 Prev</button>' +
+                '<span id="dc-fib-counter" style="font-size:0.85rem;color:var(--text2);">Before Start</span>' +
+                '<button id="dc-fib-next" class="concept-demo-btn">Next \u2192</button>' +
+                '</div>';
+            msCtrl.insertAdjacentHTML('afterend', fibCtrlHtml);
+            var fibCtrl = container.querySelector('#dc-fib-ctrl');
+            var fibPrev = container.querySelector('#dc-fib-prev');
+            var fibNext = container.querySelector('#dc-fib-next');
+            var fibCounter = container.querySelector('#dc-fib-counter');
+
+            function renderFibTree() {
+                var html = '';
+                for (var i = 0; i <= fibStep; i++) {
+                    html += '<div style="padding:2px 0;animation:fadeIn 0.3s ease;">' + fibLines[i] + '</div>';
+                }
+                vizEl.innerHTML = html;
+                if (fibStep >= fibLines.length - 1) {
+                    statsEl.innerHTML = fibStatsHtml;
+                } else {
+                    statsEl.innerHTML = '';
+                }
+                fibCounter.textContent = fibStep < 0 ? 'Before Start' : (fibStep + 1) + ' / ' + fibLines.length;
+                fibPrev.disabled = fibStep < 0;
+                fibNext.disabled = fibStep >= fibLines.length - 1;
+            }
+
+            fibBtn.addEventListener('click', function() {
+                fibStep = -1;
+                vizEl.innerHTML = '';
+                statsEl.innerHTML = '';
+                fibCtrl.style.display = 'flex';
+                // hide ms controls if visible
+                msCtrl.style.display = 'none';
+                msStep = -1;
+                renderFibTree();
+            });
+            fibPrev.addEventListener('click', function() {
+                if (fibStep >= 0) { fibStep--; renderFibTree(); }
+            });
+            fibNext.addEventListener('click', function() {
+                if (fibStep < fibLines.length - 1) { fibStep++; renderFibTree(); }
+            });
+        })();
+
+        // ====== Demo 4: Fast Exponentiation ======
+        (function() {
+            var powBtn = container.querySelector('#dc-demo-pow-btn');
+            var baseInput = container.querySelector('#dc-demo-pow-base');
+            var expInput = container.querySelector('#dc-demo-pow-exp');
+            var naiveEl = container.querySelector('#dc-demo-pow-naive');
+            var fastEl = container.querySelector('#dc-demo-pow-fast');
+            var resultEl = container.querySelector('#dc-demo-pow-result');
+
+            powBtn.addEventListener('click', function() {
+                var base = parseInt(baseInput.value) || 2;
+                var exp = parseInt(expInput.value) || 8;
+                if (exp > 32) exp = 32;
+                if (base > 10) base = 10;
+
+                // Naive
+                var naiveSteps = [];
+                var val = 1;
+                for (var i = 0; i < exp; i++) {
+                    val *= base;
+                    naiveSteps.push(base + '^' + (i + 1) + ' = ' + val);
+                }
+                naiveEl.innerHTML = naiveSteps.map(function(s, idx) {
+                    return '<div style="animation:fadeIn 0.2s ease ' + (idx * 0.05) + 's both;">' + s + '</div>';
+                }).join('');
+
+                // Fast
+                var fastSteps = [];
+                function fastPow(b, n, prefix) {
+                    if (n === 0) { fastSteps.push(prefix + b + '^0 = 1'); return 1; }
+                    if (n === 1) { fastSteps.push(prefix + b + '^1 = ' + b); return b; }
+                    if (n % 2 === 0) {
+                        fastSteps.push(prefix + b + '^' + n + ' = (' + b + '^' + (n / 2) + ')\u00b2');
+                        var half = fastPow(b, n / 2, prefix + '  ');
+                        var result = half * half;
+                        fastSteps.push(prefix + '= ' + half + '\u00b2 = ' + result);
+                        return result;
+                    } else {
+                        fastSteps.push(prefix + b + '^' + n + ' = ' + b + ' \u00d7 (' + b + '^' + (n - 1) + ')');
+                        var rest = fastPow(b, n - 1, prefix + '  ');
+                        var result = b * rest;
+                        fastSteps.push(prefix + '= ' + b + ' \u00d7 ' + rest + ' = ' + result);
+                        return result;
+                    }
+                }
+                fastPow(base, exp, '');
+                fastEl.innerHTML = fastSteps.map(function(s, idx) {
+                    return '<div style="animation:fadeIn 0.2s ease ' + (idx * 0.08) + 's both;">' + s.replace(/ /g, '&nbsp;') + '</div>';
+                }).join('');
+
+                resultEl.innerHTML = '<strong>Naive</strong>: ' + naiveSteps.length + ' operations | <strong>D&C</strong>: ' +
+                    Math.ceil(Math.log2(exp + 1)) + ' divisions \u2192 <strong style="color:var(--green);">' +
+                    Math.round(naiveSteps.length / Math.max(1, Math.ceil(Math.log2(exp + 1)))) + 'x faster!</strong>';
+            });
+        })();
+
+        // ====== Demo 5: Paper Quadtree ======
+        (function() {
+            var grid = [
+                [0, 0, 1, 1],
+                [0, 0, 1, 1],
+                [1, 0, 1, 1],
+                [0, 1, 1, 1]
+            ];
+            var gridEl = container.querySelector('#dc-demo-qt-grid');
+            var resultEl = container.querySelector('#dc-demo-qt-result');
+            var runBtn = container.querySelector('#dc-demo-qt-run');
+            var resetBtn = container.querySelector('#dc-demo-qt-reset');
+
+            function renderGrid() {
+                gridEl.innerHTML = '';
+                for (var r = 0; r < 4; r++) {
+                    for (var c = 0; c < 4; c++) {
+                        var cell = document.createElement('div');
+                        cell.style.cssText = 'width:40px;height:40px;border:1.5px solid var(--border);border-radius:4px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;';
+                        cell.style.background = grid[r][c] ? 'var(--accent)' : 'var(--card)';
+                        cell.style.color = grid[r][c] ? '#fff' : 'var(--text3)';
+                        cell.textContent = grid[r][c];
+                        cell.dataset.r = r;
+                        cell.dataset.c = c;
+                        cell.addEventListener('click', function() {
+                            var rr = parseInt(this.dataset.r), cc = parseInt(this.dataset.c);
+                            grid[rr][cc] = 1 - grid[rr][cc];
+                            renderGrid();
+                        });
+                        gridEl.appendChild(cell);
+                    }
+                }
+            }
+            renderGrid();
+
+            function quadtree(sr, sc, size, depth) {
+                var allSame = true;
+                var first = grid[sr][sc];
+                for (var r = sr; r < sr + size; r++) {
+                    for (var c = sc; c < sc + size; c++) {
+                        if (grid[r][c] !== first) { allSame = false; break; }
+                    }
+                    if (!allSame) break;
+                }
+                var indent = '&nbsp;'.repeat(depth * 3);
+                if (allSame) {
+                    return [indent + '<span style="color:var(--green);font-weight:600;">' + first + '</span> (' + size + '\u00d7' + size + ' uniform)'];
+                }
+                var half = size / 2;
+                var lines = [indent + '<span style="color:var(--accent);">(</span> \u2190 ' + size + '\u00d7' + size + ' split into 4'];
+                var parts = [
+                    { label: 'TL', r: sr, c: sc },
+                    { label: 'TR', r: sr, c: sc + half },
+                    { label: 'BL', r: sr + half, c: sc },
+                    { label: 'BR', r: sr + half, c: sc + half }
+                ];
+                parts.forEach(function(p) {
+                    var sub = quadtree(p.r, p.c, half, depth + 1);
+                    sub.forEach(function(l) { lines.push(l); });
+                });
+                lines.push(indent + '<span style="color:var(--accent);">)</span>');
+                return lines;
+            }
+
+            runBtn.addEventListener('click', function() {
+                var lines = quadtree(0, 0, 4, 0);
+                resultEl.innerHTML = '';
+                lines.forEach(function(line, i) {
+                    setTimeout(function() {
+                        resultEl.innerHTML += '<div style="animation:fadeIn 0.3s ease;">' + line + '</div>';
+                    }, i * 150);
+                });
+            });
+
+            resetBtn.addEventListener('click', function() {
+                grid = [[0, 0, 1, 1], [0, 0, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1]];
+                renderGrid();
+                resultEl.innerHTML = '';
+            });
+        })();
     },
 
     // ===== Visualization (empty stubs for concept tab) =====
@@ -497,16 +1045,20 @@ var divideConquerTopic = {
         var DEFAULT_GRID = '0011/0011/1011/0111';
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">Paper Cutting</h3>' +
-            '<p style="color:var(--text2);margin-bottom:12px;">Recursively split a 4×4 paper into 4 parts and check if each is a single color. (white=0, blue=1)</p>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Recursively split a 4\u00d74 paper into 4 parts and check if each is a single color. (white=0, blue=1)</p>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
             '<label style="font-weight:600;">Grid (rows separated by /): <input type="text" id="dc-paper-input" value="' + DEFAULT_GRID + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
             '<button class="btn btn-primary" id="dc-paper-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
+            '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:12px;"></div>' +
+            '<div id="dc-tree' + suffix + '" style="flex:1;min-width:220px;max-height:400px;overflow-y:auto;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--bg3);"></div>' +
+            '</div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var gridEl = container.querySelector('#dc-grid' + suffix);
+        var treeEl = container.querySelector('#dc-tree' + suffix);
         var infoEl = container.querySelector('#dc-info' + suffix);
         var inputEl = container.querySelector('#dc-paper-input');
         var resetBtn = container.querySelector('#dc-paper-reset');
@@ -532,6 +1084,41 @@ var divideConquerTopic = {
             var SIZE = grid.length;
             gridEl.style.gridTemplateColumns = 'repeat(' + SIZE + ',48px)';
 
+            var treeNodes = [];
+            var treeNodeId = 0;
+
+            function addTreeNode(r, c, sz, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, label: '[' + r + ',' + c + '] ' + sz + '\u00d7' + sz, depth: depth, status: 'unvisited', parentId: parentId, result: '' });
+                return id;
+            }
+
+            function renderTree(highlightId) {
+                var html = '<div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:8px;">Recursive Call Tree</div>';
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var n = treeNodes[i];
+                    var indent = n.depth * 24;
+                    var borderCol = 'var(--bg3)';
+                    var bgCol = 'var(--bg2)';
+                    var shadow = '';
+                    if (n.status === 'current' || n.status === 'checking') {
+                        borderCol = 'var(--yellow)';
+                        shadow = 'box-shadow:0 0 8px var(--yellow);';
+                    } else if (n.status === 'uniform') {
+                        bgCol = 'var(--green)15';
+                        borderCol = 'var(--green)';
+                        shadow = 'box-shadow:0 0 6px var(--green)40;';
+                    } else if (n.status === 'mixed') {
+                        borderCol = 'var(--red)';
+                        bgCol = 'var(--red)10';
+                    }
+                    if (highlightId === n.id) shadow = 'box-shadow:0 0 10px var(--yellow);';
+                    var resultTag = n.result ? ' <span style="font-size:0.75rem;color:var(--text2);">' + n.result + '</span>' : '';
+                    html += '<div style="margin-left:' + indent + 'px;padding:6px 12px;margin:4px 0;border-radius:8px;border:2px solid ' + borderCol + ';background:' + bgCol + ';font-size:0.85rem;color:var(--text);transition:all 0.3s;' + shadow + '">' + n.label + resultTag + '</div>';
+                }
+                treeEl.innerHTML = html;
+            }
+
             function renderGrid(highlights) {
                 var html = '';
                 for (var r = 0; r < SIZE; r++) {
@@ -543,69 +1130,178 @@ var divideConquerTopic = {
                 gridEl.innerHTML = html;
             }
             renderGrid(null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Inspecting the ' + SIZE + '×' + SIZE + ' paper.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">Inspecting the ' + SIZE + '\u00d7' + SIZE + ' paper.</span>';
 
-            // Recursively generate steps
+            function preAddNodes(r, c, sz, depth, parentId) {
+                var nodeId = addTreeNode(r, c, sz, depth, parentId);
+                var first = grid[r][c], allSame = true;
+                for (var i = r; i < r + sz && allSame; i++)
+                    for (var j = c; j < c + sz && allSame; j++)
+                        if (grid[i][j] !== first) allSame = false;
+                if (!allSame) {
+                    var half = sz / 2;
+                    preAddNodes(r, c, half, depth + 1, nodeId);
+                    preAddNodes(r, c + half, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c + half, half, depth + 1, nodeId);
+                }
+                return nodeId;
+            }
+            preAddNodes(0, 0, SIZE, 0, -1);
+
             var steps = [];
             var whiteCnt = 0, blueCnt = 0;
+            var nodeIdx = 0;
 
-            function buildSteps(r, c, size, grid) {
-                // Check if all cells in the region are the same
+            function buildSteps(r, c, size, grid, depth) {
+                var curNodeIdx = nodeIdx;
+                nodeIdx++;
+
                 var first = grid[r][c];
                 var allSame = true;
+                var diffR = -1, diffC = -1;
                 for (var i = r; i < r + size && allSame; i++)
                     for (var j = c; j < c + size && allSame; j++)
-                        if (grid[i][j] !== first) allSame = false;
+                        if (grid[i][j] !== first) { allSame = false; diffR = i; diffC = j; }
+
+                (function(r2, c2, sz, nid) {
+                    steps.push({
+                        description: 'Region [' + r2 + ',' + c2 + '] ' + sz + '\u00d7' + sz + ' — we need to check if this region is <em>one color</em>. If uniform, it counts as 1 paper; otherwise we must subdivide further.',
+                        action: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz; i++)
+                                for (var j = c2; j < c2 + sz; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Inspecting [' + r2 + ',' + c2 + '] ' + sz + '\u00d7' + sz + ' region.';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'unvisited';
+                            renderGrid(null); renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(r, c, size, curNodeIdx);
+
+                (function(r2, c2, sz, nid, firstVal) {
+                    steps.push({
+                        description: 'Scanning cells one by one. The first color is ' + (firstVal === 1 ? 'blue' : 'white') + ' (' + firstVal + ') — we compare every other cell against this color.',
+                        action: function() {
+                            var h = {};
+                            h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;transform:scale(1.1);';
+                            for (var i = r2; i < r2 + sz; i++)
+                                for (var j = c2; j < c2 + sz; j++)
+                                    if (!(i === r2 && j === c2)) h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'checking';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'First cell [' + r2 + ',' + c2 + '] = <strong>' + firstVal + '</strong> (' + (firstVal === 1 ? 'blue' : 'white') + ')';
+                        },
+                        undo: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz; i++)
+                                for (var j = c2; j < c2 + sz; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(r, c, size, curNodeIdx, first);
 
                 if (allSame) {
                     var color = first === 1 ? 'blue' : 'white';
                     var borderColor = first === 1 ? 'var(--accent)' : 'var(--green)';
-                    (function(r2,c2,sz,col,bc,f) {
+                    (function(r2, c2, sz, col, bc, f, nid) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': all ' + col + '! ' + col + '+1',
+                            description: 'All cells are the same color (' + col + ')! This region can be represented as <strong>one ' + col + ' paper</strong>, so we increment the count.',
                             action: function() {
                                 var h = {};
                                 for (var i = r2; i < r2 + sz; i++)
                                     for (var j = c2; j < c2 + sz; j++)
-                                        h[i + ',' + j] = 'border:3px solid ' + bc + ';box-shadow:0 0 8px ' + bc + '40;';
+                                        h[i + ',' + j] = 'border:3px solid ' + bc + ';box-shadow:0 0 10px ' + bc + '40;';
                                 renderGrid(h);
                                 if (f === 0) whiteCnt++; else blueCnt++;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': all ' + col + ' → <strong>' + col + ' +1</strong> (W:' + whiteCnt + ', B:' + blueCnt + ')';
+                                treeNodes[nid].status = 'uniform';
+                                treeNodes[nid].result = '\u2192 ' + col + ' (W:' + whiteCnt + ' B:' + blueCnt + ')';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '\u00d7' + sz + ': all ' + col + ' \u2192 <strong>' + col + ' +1</strong> (W:' + whiteCnt + ', B:' + blueCnt + ')';
                             },
                             undo: function() {
                                 if (f === 0) whiteCnt--; else blueCnt--;
-                                renderGrid(null);
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
+                                renderGrid(null); renderTree(-1);
                                 infoEl.innerHTML = '(undo)';
                             }
                         });
-                    })(r, c, size, color, borderColor, first);
+                    })(r, c, size, color, borderColor, first, curNodeIdx);
                 } else {
-                    (function(r2,c2,sz) {
+                    (function(r2, c2, sz, nid, dr, dc) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': mixed colors → split into 4!',
+                            description: 'Different color found! [' + dr + ',' + dc + '] = ' + grid[dr][dc] + ' — colors are mixed, so this region <em>cannot be represented as a single paper</em>. We must subdivide.',
                             action: function() {
                                 var h = {};
                                 for (var i = r2; i < r2 + sz; i++)
                                     for (var j = c2; j < c2 + sz; j++)
-                                        h[i + ',' + j] = 'border:3px solid var(--red);';
+                                        h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                                h[dr + ',' + dc] = 'border:3px solid var(--red);box-shadow:0 0 10px var(--red)40;transform:scale(1.1);';
+                                h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;';
                                 renderGrid(h);
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': different colors → <strong>split into 4!</strong>';
+                                treeNodes[nid].status = 'checking';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']=' + grid[r2][c2] + ' vs [' + dr + ',' + dc + ']=' + grid[dr][dc] + ' \u2192 <strong>different colors!</strong>';
                             },
                             undo: function() {
-                                renderGrid(null);
+                                treeNodes[nid].status = 'checking';
+                                renderGrid(null); renderTree(-1);
                                 infoEl.innerHTML = '(undo)';
                             }
                         });
-                    })(r, c, size);
+                    })(r, c, size, curNodeIdx, diffR, diffC);
+
+                    (function(r2, c2, sz, nid) {
+                        var half = sz / 2;
+                        steps.push({
+                            description: 'Colors are mixed, so a single paper is impossible \u2192 <strong>split into 4</strong> equal ' + half + '\u00d7' + half + ' regions. We check each part again to see if it is uniform.',
+                            action: function() {
+                                var h = {};
+                                var colors = ['var(--accent)', 'var(--green)', '#e17055', '#6c5ce7'];
+                                var regions = [[r2,c2],[r2,c2+half],[r2+half,c2],[r2+half,c2+half]];
+                                for (var q = 0; q < 4; q++) {
+                                    var rr = regions[q][0], cc = regions[q][1];
+                                    for (var i = rr; i < rr + half; i++)
+                                        for (var j = cc; j < cc + half; j++)
+                                            h[i + ',' + j] = 'border:3px solid ' + colors[q] + ';';
+                                }
+                                renderGrid(h);
+                                treeNodes[nid].status = 'mixed';
+                                treeNodes[nid].result = '\u2192 split 4';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '\u00d7' + sz + ' \u2192 <strong>split into 4!</strong> Each ' + half + '\u00d7' + half + '.';
+                            },
+                            undo: function() {
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
+                                renderGrid(null); renderTree(-1);
+                                infoEl.innerHTML = '(undo)';
+                            }
+                        });
+                    })(r, c, size, curNodeIdx);
+
                     var half = size / 2;
-                    buildSteps(r, c, half, grid);
-                    buildSteps(r, c + half, half, grid);
-                    buildSteps(r + half, c, half, grid);
-                    buildSteps(r + half, c + half, half, grid);
+                    buildSteps(r, c, half, grid, depth + 1);
+                    buildSteps(r, c + half, half, grid, depth + 1);
+                    buildSteps(r + half, c, half, grid, depth + 1);
+                    buildSteps(r + half, c + half, half, grid, depth + 1);
                 }
             }
             whiteCnt = 0; blueCnt = 0;
-            buildSteps(0, 0, SIZE, grid);
+            nodeIdx = 0;
+            buildSteps(0, 0, SIZE, grid, 0);
             var finalW = 0, finalB = 0;
             (function countAll(r,c,sz) {
                 var f = grid[r][c], ok = true;
@@ -615,10 +1311,16 @@ var divideConquerTopic = {
             })(0,0,SIZE);
             steps.push({
                 description: 'Done! White: ' + finalW + ', Blue: ' + finalB,
-                action: function() { renderGrid(null); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Done! White: ' + finalW + ', Blue: ' + finalB + '</strong>'; },
-                undo: function() { renderGrid(null); infoEl.innerHTML = '(undo)'; }
+                action: function() {
+                    renderGrid(null);
+                    for (var i = 0; i < treeNodes.length; i++) if (treeNodes[i].status !== 'mixed') treeNodes[i].status = 'uniform';
+                    renderTree(-1);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Done! White: ' + finalW + ', Blue: ' + finalB + '</strong>';
+                },
+                undo: function() { renderGrid(null); renderTree(-1); infoEl.innerHTML = '(undo)'; }
             });
             whiteCnt = 0; blueCnt = 0;
+            renderTree(-1);
             self._initStepController(container, steps, suffix);
         }
 
@@ -643,11 +1345,17 @@ var divideConquerTopic = {
             '<button class="btn btn-primary" id="dc-quad-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
+            '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
+            '<div>' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:8px;"></div>' +
             '<div id="dc-result' + suffix + '" style="font-family:monospace;font-size:1.1rem;padding:8px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:30px;"></div>' +
+            '</div>' +
+            '<div id="dc-tree' + suffix + '" style="flex:1;min-width:220px;max-height:400px;overflow-y:auto;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--bg3);"></div>' +
+            '</div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var gridEl = container.querySelector('#dc-grid' + suffix);
+        var treeEl = container.querySelector('#dc-tree' + suffix);
         var resultEl = container.querySelector('#dc-result' + suffix);
         var infoEl = container.querySelector('#dc-info' + suffix);
         var inputEl = container.querySelector('#dc-quad-input');
@@ -668,6 +1376,41 @@ var divideConquerTopic = {
             var SIZE = grid.length;
             gridEl.style.gridTemplateColumns = 'repeat(' + SIZE + ',48px)';
 
+            var treeNodes = [];
+            var treeNodeId = 0;
+
+            function addTreeNode(r, c, sz, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, label: '[' + r + ',' + c + '] ' + sz + '\u00d7' + sz, depth: depth, status: 'unvisited', parentId: parentId, result: '' });
+                return id;
+            }
+
+            function renderTree(highlightId) {
+                var html = '<div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:8px;">Quadtree Structure</div>';
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var n = treeNodes[i];
+                    var indent = n.depth * 24;
+                    var borderCol = 'var(--bg3)';
+                    var bgCol = 'var(--bg2)';
+                    var shadow = '';
+                    if (n.status === 'current' || n.status === 'checking') {
+                        borderCol = 'var(--yellow)';
+                        shadow = 'box-shadow:0 0 8px var(--yellow);';
+                    } else if (n.status === 'uniform') {
+                        bgCol = 'var(--green)15';
+                        borderCol = 'var(--green)';
+                        shadow = 'box-shadow:0 0 6px var(--green)40;';
+                    } else if (n.status === 'mixed') {
+                        borderCol = 'var(--red)';
+                        bgCol = 'var(--red)10';
+                    }
+                    if (highlightId === n.id) shadow = 'box-shadow:0 0 10px var(--yellow);';
+                    var resultTag = n.result ? ' <span style="font-size:0.75rem;color:var(--text2);">' + n.result + '</span>' : '';
+                    html += '<div style="margin-left:' + indent + 'px;padding:6px 12px;margin:4px 0;border-radius:8px;border:2px solid ' + borderCol + ';background:' + bgCol + ';font-size:0.85rem;color:var(--text);transition:all 0.3s;' + shadow + '">' + n.label + resultTag + '</div>';
+                }
+                treeEl.innerHTML = html;
+            }
+
             function renderGrid(highlights) {
                 var html = '';
                 for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) {
@@ -682,10 +1425,23 @@ var divideConquerTopic = {
             resultEl.textContent = '';
             infoEl.innerHTML = '<span style="color:var(--text2);">Starting Quadtree Compression.</span>';
 
-            var steps = [];
-            var resultStr = '';
+            function preAddNodes(r, c, sz, depth, parentId) {
+                var nodeId = addTreeNode(r, c, sz, depth, parentId);
+                var first = grid[r][c], allSame = true;
+                for (var i = r; i < r + sz && allSame; i++)
+                    for (var j = c; j < c + sz && allSame; j++)
+                        if (grid[i][j] !== first) allSame = false;
+                if (!allSame) {
+                    var half = sz / 2;
+                    preAddNodes(r, c, half, depth + 1, nodeId);
+                    preAddNodes(r, c + half, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c + half, half, depth + 1, nodeId);
+                }
+                return nodeId;
+            }
+            preAddNodes(0, 0, SIZE, 0, -1);
 
-            // Compute Quadtree result first
             function quadResult(r, c, sz) {
                 var f = grid[r][c], ok = true;
                 for (var i=r;i<r+sz&&ok;i++) for(var j=c;j<c+sz&&ok;j++) if(grid[i][j]!==f) ok=false;
@@ -695,81 +1451,188 @@ var divideConquerTopic = {
             }
             var finalResult = quadResult(0, 0, SIZE);
 
+            var steps = [];
+            var resultStr = '';
+            var nodeIdx = 0;
+
             function buildSteps(r, c, sz) {
+                var curNodeIdx = nodeIdx;
+                nodeIdx++;
+
                 var f = grid[r][c], ok = true;
-                for (var i=r;i<r+sz&&ok;i++) for(var j=c;j<c+sz&&ok;j++) if(grid[i][j]!==f) ok=false;
+                var diffR = -1, diffC = -1;
+                for (var i=r;i<r+sz&&ok;i++) for(var j=c;j<c+sz&&ok;j++) if(grid[i][j]!==f) { ok=false; diffR=i; diffC=j; }
+
+                (function(r2, c2, sz2, nid) {
+                    steps.push({
+                        description: 'Region [' + r2 + ',' + c2 + '] ' + sz2 + '\u00d7' + sz2 + ' — if all cells have the same value, we can compress it into a single digit; otherwise we need to split into 4.',
+                        action: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz2; i++)
+                                for (var j = c2; j < c2 + sz2; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Inspecting [' + r2 + ',' + c2 + '] ' + sz2 + '\u00d7' + sz2 + ' region.';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'unvisited';
+                            renderGrid(null); renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(r, c, sz, curNodeIdx);
+
+                (function(r2, c2, sz2, nid, firstVal) {
+                    steps.push({
+                        description: 'Scanning cells. The first value is ' + firstVal + ' — we compare the rest to see if they match.',
+                        action: function() {
+                            var h = {};
+                            h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;transform:scale(1.1);';
+                            for (var i = r2; i < r2 + sz2; i++)
+                                for (var j = c2; j < c2 + sz2; j++)
+                                    if (!(i === r2 && j === c2)) h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'checking';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'First cell [' + r2 + ',' + c2 + '] = <strong>' + firstVal + '</strong>';
+                        },
+                        undo: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz2; i++)
+                                for (var j = c2; j < c2 + sz2; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(r, c, sz, curNodeIdx, f);
+
                 if (ok) {
-                    (function(r2,c2,sz2,val) {
+                    (function(r2, c2, sz2, val, nid) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': all' + val + ' → "' + val + '"',
+                            description: 'All cells have the same value ' + val + '! The entire region compresses to a single digit <strong>"' + val + '"</strong>. No further splitting needed.',
                             action: function() {
                                 var h = {};
-                                for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--green);';
+                                for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--green);box-shadow:0 0 8px var(--green)40;';
                                 renderGrid(h);
                                 resultStr += '' + val;
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']: all' + val + ' → <strong>"' + val + '"</strong>';
+                                treeNodes[nid].status = 'uniform';
+                                treeNodes[nid].result = '\u2192 "' + val + '"';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']: all ' + val + ' \u2192 <strong>"' + val + '"</strong> output';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
                                 resultEl.textContent = resultStr;
-                                renderGrid(null);
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
+                                renderGrid(null); renderTree(-1);
                                 infoEl.innerHTML = '(undo)';
                             }
                         });
-                    })(r, c, sz, f);
+                    })(r, c, sz, f, curNodeIdx);
                 } else {
-                    (function(r2,c2,sz2) {
+                    (function(r2, c2, sz2, nid, dr, dc) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': mixed colors → "(" start, divide into 4!',
+                            description: 'Different value found! [' + dr + ',' + dc + '] = ' + grid[dr][dc] + ' — values are mixed, so we cannot compress to a single digit. Must split into 4.',
                             action: function() {
                                 var h = {};
-                                for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--red);';
+                                for (var i = r2; i < r2 + sz2; i++)
+                                    for (var j = c2; j < c2 + sz2; j++)
+                                        h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                                h[dr + ',' + dc] = 'border:3px solid var(--red);box-shadow:0 0 10px var(--red)40;transform:scale(1.1);';
+                                h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;';
+                                renderGrid(h);
+                                treeNodes[nid].status = 'checking';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']=' + grid[r2][c2] + ' vs [' + dr + ',' + dc + ']=' + grid[dr][dc] + ' \u2192 <strong>different values!</strong>';
+                            },
+                            undo: function() {
+                                treeNodes[nid].status = 'checking';
+                                renderGrid(null); renderTree(-1);
+                                infoEl.innerHTML = '(undo)';
+                            }
+                        });
+                    })(r, c, sz, curNodeIdx, diffR, diffC);
+
+                    (function(r2, c2, sz2, nid) {
+                        var half = sz2 / 2;
+                        steps.push({
+                            description: 'Values are mixed, so compression is impossible \u2192 <strong>open "(" and split into 4</strong> equal ' + half + '\u00d7' + half + ' sub-regions to process recursively.',
+                            action: function() {
+                                var h = {};
+                                var colors = ['var(--accent)', 'var(--green)', '#e17055', '#6c5ce7'];
+                                var regions = [[r2,c2],[r2,c2+half],[r2+half,c2],[r2+half,c2+half]];
+                                for (var q = 0; q < 4; q++) {
+                                    var rr = regions[q][0], cc = regions[q][1];
+                                    for (var i = rr; i < rr + half; i++)
+                                        for (var j = cc; j < cc + half; j++)
+                                            h[i + ',' + j] = 'border:3px solid ' + colors[q] + ';';
+                                }
                                 renderGrid(h);
                                 resultStr += '(';
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': mixed → <strong>open "("</strong>';
+                                treeNodes[nid].status = 'mixed';
+                                treeNodes[nid].result = '\u2192 (...)';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '\u00d7' + sz2 + ': mixed \u2192 <strong>open "("</strong>, split into 4!';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
                                 resultEl.textContent = resultStr;
-                                renderGrid(null);
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
+                                renderGrid(null); renderTree(-1);
                                 infoEl.innerHTML = '(undo)';
                             }
                         });
-                    })(r, c, sz);
+                    })(r, c, sz, curNodeIdx);
+
                     var h = sz/2;
                     buildSteps(r, c, h);
                     buildSteps(r, c+h, h);
                     buildSteps(r+h, c, h);
                     buildSteps(r+h, c+h, h);
-                    // Closing parenthesis
-                    (function(r2,c2,sz2) {
+
+                    (function(r2, c2, sz2, nid) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' done → close ")"',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '\u00d7' + sz2 + ' all 4 sub-regions processed \u2192 <strong>close ")"</strong> to finalize this region\'s compressed result.',
                             action: function() {
                                 renderGrid(null);
                                 resultStr += ')';
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] region done → <strong>close ")"</strong>';
+                                renderTree(-1);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] region done \u2192 <strong>close ")"</strong>';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
                                 resultEl.textContent = resultStr;
-                                renderGrid(null);
+                                renderGrid(null); renderTree(-1);
                                 infoEl.innerHTML = '(undo)';
                             }
                         });
-                    })(r, c, sz);
+                    })(r, c, sz, curNodeIdx);
                 }
             }
             buildSteps(0, 0, SIZE);
             steps.push({
                 description: 'Done! Result: ' + finalResult,
-                action: function() { renderGrid(null); resultEl.textContent = finalResult; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Done! ' + finalResult + '</strong>'; },
-                undo: function() { renderGrid(null); infoEl.innerHTML = '(undo)'; }
+                action: function() {
+                    renderGrid(null);
+                    resultEl.textContent = finalResult;
+                    for (var i = 0; i < treeNodes.length; i++) if (treeNodes[i].status !== 'mixed') treeNodes[i].status = 'uniform';
+                    renderTree(-1);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Done! ' + finalResult + '</strong>';
+                },
+                undo: function() { renderGrid(null); renderTree(-1); infoEl.innerHTML = '(undo)'; }
             });
             resultStr = '';
+            renderTree(-1);
             self._initStepController(container, steps, suffix);
         }
 
@@ -844,7 +1707,7 @@ var divideConquerTopic = {
                     (function(r2,c2,sz2,val) {
                         var borderColor = val === -1 ? '#e17055' : val === 0 ? 'var(--green)' : 'var(--accent)';
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': all' + val + ' → ' + val + ' +1',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': all ' + val + ' \u2192 this region is <strong>one paper of value ' + val + '</strong>, so we count it.',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid ' + borderColor + ';box-shadow:0 0 6px ' + borderColor + '40;';
@@ -862,7 +1725,7 @@ var divideConquerTopic = {
                 } else {
                     (function(r2,c2,sz2) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': values are mixed → 9-partition!',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': values are mixed, so it cannot be one paper \u2192 <strong>9-partition</strong> to check each sub-region again.',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--red);';
@@ -964,7 +1827,7 @@ var divideConquerTopic = {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: A + '^' + exp + ': ' + (odd ? 'odd' : 'even') + ' → ' + A + '^' + half + ' × ' + A + '^' + half + (odd ? ' × ' + A : ''),
+                        description: A + '^' + exp + ': exponent is ' + (odd ? 'odd' : 'even') + ', so we only need to compute ' + A + '^' + half + ' \u2192 ' + A + '^' + half + ' \u00d7 ' + A + '^' + half + (odd ? ' \u00d7 ' + A : '') + '. <em>O(B) \u2192 O(log B)</em> reduction!',
                         action: function() {
                             infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + A + '<sup>' + half + '</sup> × ' + A + '<sup>' + half + '</sup>' + (odd ? ' × ' + A : '') + ' (' + (odd ? 'odd: half×half×base' : 'even: half×half') + ')';
                         },
@@ -979,7 +1842,7 @@ var divideConquerTopic = {
             var baseVal = A % C;
             (function(be, bv, lastIdx) {
                 steps.push({
-                    description: 'Base case: ' + A + '^' + be + ' = ' + bv + ' (mod ' + C + ')',
+                    description: 'Base case: exponent is 1, so we cannot divide further and compute directly. ' + A + '^' + be + ' = ' + bv + ' (mod ' + C + ')',
                     action: function() { nodes[lastIdx].value = bv; renderTree(); infoEl.innerHTML = 'base case: ' + A + '<sup>' + be + '</sup> mod ' + C + ' = <strong>' + bv + '</strong>'; },
                     undo: function() { nodes[lastIdx].value = null; renderTree(); infoEl.innerHTML = '(undo)'; }
                 });
@@ -995,7 +1858,7 @@ var divideConquerTopic = {
                     var result = halfVal * halfVal % C;
                     if (exp % 2 === 1) result = result * (A % C) % C;
                     steps.push({
-                        description: 'Combine: ' + A + '^' + exp + ' = ' + halfVal + '×' + halfVal + (exp % 2 === 1 ? '×' + (A%C) : '') + ' mod ' + C + ' = ' + result,
+                        description: 'Combine: square the sub-result (' + A + '^' + Math.floor(exp/2) + '=' + halfVal + ')' + (exp % 2 === 1 ? ' and multiply by the base once more' : '') + ' to get ' + A + '^' + exp + ' = ' + result + ' (mod ' + C + ')',
                         action: function() { nodes[idx].value = result; renderTree(); infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + halfVal + ' × ' + halfVal + (exp % 2 === 1 ? ' × ' + (A%C) : '') + ' mod ' + C + ' = <strong>' + result + '</strong>'; },
                         undo: function() { nodes[idx].value = null; renderTree(); infoEl.innerHTML = '(undo)'; }
                     });
@@ -1060,19 +1923,19 @@ var divideConquerTopic = {
 
             var facStr = fac.map(function(v,i){return i+'!='+v;}).join(', ');
             var steps = [
-                { description: 'Compute factorials: ' + facStr + ' (mod ' + MOD + ')',
+                { description: 'C(N,K) = N!/(K!\u00b7(N-K)!) \u2014 we cannot divide directly in modular arithmetic, so first compute factorials mod ' + MOD + '.',
                   action: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = 'Factorial computation complete (mod ' + MOD + ')'; },
                   undo: function() { calcEl.textContent = 'C(' + N + ',' + K + ') = ' + N + '! / (' + K + '! × ' + (N-K) + '!)'; infoEl.innerHTML = '<span style="color:var(--text2);">Computing modular inverse via Fermat\'s Little Theorem.</span>'; }
                 },
-                { description: 'Fermat\'s Little Theorem: ' + K + '!inverse = ' + fac[K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invK,
+                { description: 'In modular arithmetic, instead of dividing we multiply by the <em>modular inverse</em>. Fermat\'s Little Theorem: ' + K + '! inverse = ' + fac[K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invK,
                   action: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → inverse = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!modular inverse: <strong>' + invK + '</strong>'; },
                   undo: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = 'Factorial computation complete (mod ' + MOD + ')'; }
                 },
-                { description: (N-K) + '!inverse = ' + fac[N-K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invNK,
+                { description: 'By the same principle, compute ' + (N-K) + '! inverse: ' + fac[N-K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invNK,
                   action: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → inverse = ' + fac[N-K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!modular inverse: <strong>' + invNK + '</strong>'; },
                   undo: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → inverse = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!modular inverse: <strong>' + invK + '</strong>'; }
                 },
-                { description: 'Combine: ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = ' + ans,
+                { description: 'Multiplying N! by both inverses achieves the division effect: ' + fac[N] + ' \u00d7 ' + invK + ' \u00d7 ' + invNK + ' mod ' + MOD + ' = ' + ans,
                   action: function() { calcEl.innerHTML = N + '! × (' + K + '!)⁻¹ × (' + (N-K) + '!)⁻¹ = ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = <strong>' + ans + '</strong>'; infoEl.innerHTML = 'C(' + N + ',' + K + ') mod ' + MOD + ' = <strong>' + ans + '</strong>'; },
                   undo: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → inverse = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!modular inverse: <strong>' + invNK + '</strong>'; }
                 },
@@ -1139,7 +2002,7 @@ var divideConquerTopic = {
                         for (var k = 0; k < M; k++) { val += A[ii][k] * B[k][jj]; parts.push(A[ii][k] + '×' + B[k][jj]); }
                         var isLast = (ii === N - 1 && jj === K - 1);
                         steps.push({
-                            description: 'C[' + ii + '][' + jj + '] = ' + parts.join(' + ') + ' = ' + val + (isLast ? '. Done!' : ''),
+                            description: 'C[' + ii + '][' + jj + ']: multiply row ' + ii + ' of A by column ' + jj + ' of B element-wise, then sum = ' + parts.join(' + ') + ' = ' + val + (isLast ? '. Done!' : ''),
                             action: function() {
                                 C[ii][jj] = val;
                                 matEl.innerHTML = showMat(A,'A') + ' × ' + showMat(B,'B') + ' = ' + showMat(C,'C');
@@ -1224,7 +2087,7 @@ var divideConquerTopic = {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: 'M^' + exp + ' = M^' + half + ' × M^' + half + (odd ? ' × M' : '') + ' (' + (odd ? 'odd' : 'even') + ')',
+                        description: 'Exponent ' + exp + ' is ' + (odd ? 'odd' : 'even') + ' \u2192 only compute M^' + half + ', then square' + (odd ? ' and multiply by M' : '') + '. Same divide-and-conquer as number exponentiation!',
                         action: function() { matEl.innerHTML = 'M<sup>' + exp + '</sup> → compute M<sup>' + half + '</sup> first!'; infoEl.innerHTML = (odd ? 'odd' : 'even') + ' exponent: M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> × M<sup>' + half + '</sup>' + (odd ? ' × M' : ''); },
                         undo: function() { matEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
                     });
@@ -1233,7 +2096,7 @@ var divideConquerTopic = {
             // base case: M^1 = M mod MOD
             var M1 = [[M[0][0]%MOD,M[0][1]%MOD],[M[1][0]%MOD,M[1][1]%MOD]];
             steps.push({
-                description: 'M^1 = ' + matStr(M1) + ' (mod ' + MOD + ')',
+                description: 'Base case: exponent 1 means the matrix itself. M^1 = ' + matStr(M1) + ' (mod ' + MOD + ')',
                 action: function() { matEl.innerHTML = showM(M1, 'M¹'); infoEl.innerHTML = 'base case: M<sup>1</sup> = ' + matStr(M1); },
                 undo: function() { matEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
             });
@@ -1244,7 +2107,7 @@ var divideConquerTopic = {
                     var superscripts = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
                     var supStr = ('' + exp).split('').map(function(d){return superscripts[d]||d;}).join('');
                     steps.push({
-                        description: 'M^' + exp + ' = ' + matStr(result),
+                        description: 'Combine: merge sub-results via matrix multiplication to get M^' + exp + ' = ' + matStr(result),
                         action: function() { matEl.innerHTML = showM(result, 'M' + supStr); infoEl.innerHTML = 'M<sup>' + exp + '</sup> = ' + matStr(result); },
                         undo: function() { matEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
                     });
@@ -1315,7 +2178,7 @@ var divideConquerTopic = {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: 'M^' + exp + ' = M^' + half + ' x M^' + half + (odd ? ' x M' : '') + '. ' + (odd ? 'odd' : 'even') + ', so ' + (odd ? 'half x half x M' : 'half x half') + '!',
+                        description: 'M^' + exp + ': exponent is ' + (odd ? 'odd' : 'even') + ' \u2192 compute M^' + half + ' first, then combine as ' + (odd ? 'half\u00d7half\u00d7M' : 'half\u00d7half') + '. O(n) \u2192 O(log n)!',
                         action: function() { fibEl.innerHTML = 'M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> x M<sup>' + half + '</sup>' + (odd ? ' x M' : '') + ' (' + (odd ? 'odd' : 'even') + ')'; infoEl.innerHTML = exp + ' is ' + (odd ? 'odd' : 'even') + ' → <strong>compute M^' + half + ' first</strong>'; },
                         undo: function() { fibEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
                     });
@@ -1325,7 +2188,7 @@ var divideConquerTopic = {
             // base case: M^1
             var M1 = [[1,1],[1,0]];
             steps.push({
-                description: 'M^1 = [[1,1],[1,0]] (base case)',
+                description: 'Base case: M^1 = [[1,1],[1,0]] \u2014 this matrix encodes the Fibonacci recurrence F(n)=F(n-1)+F(n-2).',
                 action: function() { fibEl.innerHTML = 'M<sup>1</sup> = ' + matStr(M1); infoEl.innerHTML = 'base case: M<sup>1</sup> = ' + matStr(M1); },
                 undo: function() { fibEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
             });
@@ -1335,7 +2198,7 @@ var divideConquerTopic = {
                 (function(exp) {
                     var result = matPow(base, exp);
                     steps.push({
-                        description: 'M^' + exp + ' = ' + matStr(result),
+                        description: 'Combine: M^' + exp + ' = ' + matStr(result) + ' \u2192 element [0][1] gives F(' + exp + ') = ' + result[0][1],
                         action: function() { fibEl.innerHTML = 'M<sup>' + exp + '</sup> = ' + matStr(result); infoEl.innerHTML = 'M<sup>' + exp + '</sup>[0][1] = <strong>' + result[0][1] + '</strong>'; },
                         undo: function() { fibEl.innerHTML = '(undo)'; infoEl.innerHTML = '(undo)'; }
                     });
@@ -1374,10 +2237,14 @@ var divideConquerTopic = {
             '<button class="btn btn-primary" id="dc-histo-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
+            '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
             '<div id="dc-bars' + suffix + '" style="display:flex;gap:2px;align-items:flex-end;height:160px;margin-bottom:12px;"></div>' +
+            '<div id="dc-tree' + suffix + '" style="flex:1;min-width:220px;max-height:360px;overflow-y:auto;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--bg3);"></div>' +
+            '</div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var barsEl = container.querySelector('#dc-bars' + suffix);
+        var treeEl = container.querySelector('#dc-tree' + suffix);
         var infoEl = container.querySelector('#dc-info' + suffix);
         var inputEl = container.querySelector('#dc-histo-input');
         var resetBtn = container.querySelector('#dc-histo-reset');
@@ -1388,26 +2255,66 @@ var divideConquerTopic = {
             if (bars.length < 1) bars = [1];
             var maxH = Math.max.apply(null, bars) || 1;
 
-            function renderBars(highlights, rectRange) {
+            var treeNodes = [];
+            var treeNodeId = 0;
+
+            function addTreeNode(lo, hi, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, label: '[' + lo + '..' + hi + ']', depth: depth, status: 'unvisited', parentId: parentId, result: '' });
+                return id;
+            }
+
+            function renderTree(highlightId) {
+                var html = '<div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:8px;">Recursive Division Tree</div>';
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var n = treeNodes[i];
+                    var indent = n.depth * 24;
+                    var borderCol = 'var(--bg3)';
+                    var bgCol = 'var(--bg2)';
+                    var shadow = '';
+                    if (n.status === 'current') {
+                        borderCol = 'var(--yellow)';
+                        shadow = 'box-shadow:0 0 8px var(--yellow);';
+                    } else if (n.status === 'resolved') {
+                        bgCol = 'var(--green)15';
+                        borderCol = 'var(--green)';
+                        shadow = 'box-shadow:0 0 6px var(--green)40;';
+                    } else if (n.status === 'split') {
+                        borderCol = 'var(--accent)';
+                        bgCol = 'var(--accent)10';
+                    } else if (n.status === 'cross') {
+                        borderCol = 'var(--red)';
+                        bgCol = 'var(--red)10';
+                    }
+                    if (highlightId === n.id) shadow = 'box-shadow:0 0 10px var(--yellow);';
+                    var resultTag = n.result ? ' <span style="font-size:0.75rem;color:var(--text2);">' + n.result + '</span>' : '';
+                    html += '<div style="margin-left:' + indent + 'px;padding:6px 12px;margin:4px 0;border-radius:8px;border:2px solid ' + borderCol + ';background:' + bgCol + ';font-size:0.85rem;color:var(--text);transition:all 0.3s;' + shadow + '">' + n.label + resultTag + '</div>';
+                }
+                treeEl.innerHTML = html;
+            }
+
+            function renderBars(highlights, rectRange, rangeHL) {
                 barsEl.innerHTML = bars.map(function(h, i) {
                     var pct = (h / maxH) * 100;
                     var bg = 'var(--accent)';
                     var extra = '';
+                    if (rangeHL && i >= rangeHL.lo && i <= rangeHL.hi) {
+                        bg = rangeHL.color || 'var(--yellow)';
+                        extra = 'box-shadow:0 0 6px var(--yellow)40;';
+                    }
                     if (highlights && highlights[i]) { bg = highlights[i]; }
                     if (rectRange && i >= rectRange.l && i <= rectRange.r) { extra = 'box-shadow:0 0 6px var(--green)40;'; bg = 'var(--green)'; }
                     return '<div style="width:40px;height:' + (pct/100*160) + 'px;background:' + bg + ';border-radius:4px 4px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;font-size:0.8rem;font-weight:600;color:white;' + extra + '">' + h + '</div>';
                 }).join('');
             }
-            renderBars(null, null);
+            renderBars(null, null, null);
             infoEl.innerHTML = '<span style="color:var(--text2);">Split array in half and find max among left, right, and crossing cases.</span>';
 
-            // Find largest rectangle via divide and conquer (+ track where it came from)
             function solve(lo, hi) {
                 if (lo === hi) return { area: bars[lo], l: lo, r: lo };
                 var mid = Math.floor((lo + hi) / 2);
                 var leftRes = solve(lo, mid);
                 var rightRes = solve(mid + 1, hi);
-                // Crossing case
                 var l = mid, r = mid + 1;
                 var h = Math.min(bars[l], bars[r]);
                 var crossMax = h * 2, cl = l, cr = r;
@@ -1422,78 +2329,194 @@ var divideConquerTopic = {
                 return crossRes;
             }
 
-            var n = bars.length;
-            var mid = Math.floor((n - 1) / 2);
-            var leftRes = n > 1 ? solve(0, mid) : { area: bars[0], l: 0, r: 0 };
-            var rightRes = n > 1 ? solve(mid + 1, n - 1) : { area: 0, l: 0, r: 0 };
-            // Crossing case
-            var cl = mid, cr = mid + 1;
-            if (cr >= n) cr = mid;
-            var ch = n > 1 ? Math.min(bars[cl], bars[cr]) : bars[0];
-            var crossMax = n > 1 ? ch * 2 : bars[0];
-            var bestCl = cl, bestCr = cr;
-            if (n > 1) {
-                var tl = cl, tr = cr, th = ch;
-                while (tl > 0 || tr < n - 1) {
-                    if (tl > 0 && (tr >= n - 1 || bars[tl-1] >= bars[tr+1])) { tl--; th = Math.min(th, bars[tl]); }
-                    else { tr++; th = Math.min(th, bars[tr]); }
-                    if (th * (tr - tl + 1) > crossMax) { crossMax = th * (tr - tl + 1); bestCl = tl; bestCr = tr; }
+            function preAddNodes(lo, hi, depth, parentId) {
+                var nodeId = addTreeNode(lo, hi, depth, parentId);
+                if (lo < hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    preAddNodes(lo, mid, depth + 1, nodeId);
+                    preAddNodes(mid + 1, hi, depth + 1, nodeId);
                 }
+                return nodeId;
             }
-            var crossRes = { area: crossMax, l: bestCl, r: bestCr };
-            var best = leftRes;
-            if (rightRes.area > best.area) best = rightRes;
-            if (crossRes.area > best.area) best = crossRes;
+
+            var n = bars.length;
+            preAddNodes(0, n - 1, 0, -1);
 
             var steps = [];
-            // Step 1: Split in half
-            steps.push({
-                description: 'Split [0..' + (n-1) + '] in half: left [0..' + mid + '], right [' + (mid+1) + '..' + (n-1) + ']',
-                action: function() {
-                    var h = {};
-                    for (var i = 0; i <= mid; i++) h[i] = 'var(--accent)';
-                    for (var i = mid+1; i < n; i++) h[i] = '#6c5ce7';
-                    renderBars(h, null);
-                    infoEl.innerHTML = 'Left [0..' + mid + '] (blue), right [' + (mid+1) + '..' + (n-1) + '] (purple)';
-                },
-                undo: function() { renderBars(null, null); infoEl.innerHTML = '<span style="color:var(--text2);">Split array in half and find max among left, right, and crossing cases.</span>'; }
-            });
-            // Step 2: Left max
-            steps.push({
-                description: 'Left [0..' + mid + '] max: bars[' + leftRes.l + '..' + leftRes.r + '], area=' + leftRes.area,
-                action: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = 'Left max: bars[' + leftRes.l + '..' + leftRes.r + '], area = <strong>' + leftRes.area + '</strong>'; },
-                undo: function() { var h = {}; for (var i=0;i<=mid;i++) h[i]='var(--accent)'; for(var i=mid+1;i<n;i++) h[i]='#6c5ce7'; renderBars(h, null); infoEl.innerHTML = 'Left/right split'; }
-            });
-            // Step 3: Right max
-            if (n > 1) {
-                steps.push({
-                    description: 'Right [' + (mid+1) + '..' + (n-1) + '] max: bars[' + rightRes.l + '..' + rightRes.r + '], area=' + rightRes.area,
-                    action: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = 'Right max: bars[' + rightRes.l + '..' + rightRes.r + '], area = <strong>' + rightRes.area + '</strong>'; },
-                    undo: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = 'Left max: <strong>' + leftRes.area + '</strong>'; }
-                });
-            }
-            // Step 4: Crossing case
-            if (n > 1) {
-                steps.push({
-                    description: 'Crossing case: expand from mid=' + mid + ' both ways -> bars[' + bestCl + '..' + bestCr + '], area=' + crossMax,
-                    action: function() {
-                        var h = {};
-                        for (var i = bestCl; i <= bestCr; i++) h[i] = 'var(--red)';
-                        renderBars(h, null);
-                        infoEl.innerHTML = 'Crossing: bars[' + bestCl + '..' + bestCr + '], area = <strong>' + crossMax + '</strong>';
-                    },
-                    undo: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = 'Right max: <strong>' + rightRes.area + '</strong>'; }
-                });
-            }
-            // Step 5: Final result
-            steps.push({
-                description: 'Done! max(left ' + leftRes.area + ', right ' + rightRes.area + ', crossing ' + crossMax + ') = ' + best.area,
-                action: function() { renderBars(null, {l: best.l, r: best.r}); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Largest rectangle area = ' + best.area + ' (bars[' + best.l + '..' + best.r + '])</strong>'; },
-                undo: function() {
-                    if (n > 1) { var h = {}; for (var i=bestCl;i<=bestCr;i++) h[i]='var(--red)'; renderBars(h, null); infoEl.innerHTML = 'Crossing: <strong>' + crossMax + '</strong>'; }
-                    else { renderBars(null, null); infoEl.innerHTML = '(undo)'; }
+            var nodeIdx = 0;
+
+            function buildSteps(lo, hi, depth) {
+                var curNodeIdx = nodeIdx;
+                nodeIdx++;
+                var mid = Math.floor((lo + hi) / 2);
+
+                (function(lo2, hi2, nid) {
+                    steps.push({
+                        description: 'Range [' + lo2 + '..' + hi2 + '] \u2014 we need to find the largest possible rectangle within this range.',
+                        action: function() {
+                            renderBars(null, null, {lo: lo2, hi: hi2, color: 'var(--yellow)'});
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Inspecting range [' + lo2 + '..' + hi2 + '].';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'unvisited';
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(lo, hi, curNodeIdx);
+
+                if (lo === hi) {
+                    (function(idx, nid) {
+                        steps.push({
+                            description: 'Base case! Only one bar, so we cannot split further. bars[' + idx + '] = ' + bars[idx] + ' \u2192 area = ' + bars[idx],
+                            action: function() {
+                                renderBars(null, {l: idx, r: idx}, null);
+                                treeNodes[nid].status = 'resolved';
+                                treeNodes[nid].result = '\u2192 area ' + bars[idx];
+                                renderTree(nid);
+                                infoEl.innerHTML = 'Base case: bars[' + idx + '] = ' + bars[idx] + ' \u2192 <strong>area = ' + bars[idx] + '</strong>';
+                            },
+                            undo: function() {
+                                treeNodes[nid].status = 'current';
+                                treeNodes[nid].result = '';
+                                renderBars(null, null, {lo: idx, hi: idx, color: 'var(--yellow)'});
+                                renderTree(nid);
+                                infoEl.innerHTML = '(undo)';
+                            }
+                        });
+                    })(lo, curNodeIdx);
+                    return;
                 }
+
+                (function(lo2, hi2, m, nid) {
+                    steps.push({
+                        description: 'The largest rectangle can be entirely in the left half, entirely in the right half, or spanning both. First, split in half: [' + lo2 + '..' + m + '], [' + (m+1) + '..' + hi2 + ']',
+                        action: function() {
+                            var h = {};
+                            for (var i = lo2; i <= m; i++) h[i] = 'var(--accent)';
+                            for (var i = m+1; i <= hi2; i++) h[i] = '#6c5ce7';
+                            renderBars(h, null, null);
+                            treeNodes[nid].status = 'split';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Left [' + lo2 + '..' + m + '] (blue), right [' + (m+1) + '..' + hi2 + '] (purple)';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'current';
+                            renderBars(null, null, {lo: lo2, hi: hi2, color: 'var(--yellow)'});
+                            renderTree(nid);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(lo, hi, mid, curNodeIdx);
+
+                buildSteps(lo, mid, depth + 1);
+                buildSteps(mid + 1, hi, depth + 1);
+
+                var leftRes = solve(lo, mid);
+                var rightRes = solve(mid + 1, hi);
+                var cl2 = mid, cr2 = mid + 1;
+                var ch2 = Math.min(bars[cl2], bars[cr2]);
+                var crossMax2 = ch2 * 2, bestCl2 = cl2, bestCr2 = cr2;
+                var tl2 = cl2, tr2 = cr2, th2 = ch2;
+                while (tl2 > lo || tr2 < hi) {
+                    if (tl2 > lo && (tr2 >= hi || bars[tl2-1] >= bars[tr2+1])) { tl2--; th2 = Math.min(th2, bars[tl2]); }
+                    else { tr2++; th2 = Math.min(th2, bars[tr2]); }
+                    if (th2 * (tr2 - tl2 + 1) > crossMax2) { crossMax2 = th2 * (tr2 - tl2 + 1); bestCl2 = tl2; bestCr2 = tr2; }
+                }
+                var totalBest = solve(lo, hi);
+
+                (function(lo2, m, lRes, nid) {
+                    steps.push({
+                        description: 'Left [' + lo2 + '..' + m + '] max area: ' + lRes.area + ' \u2014 first of the 3 candidates.',
+                        action: function() {
+                            renderBars(null, {l: lRes.l, r: lRes.r}, {lo: lo2, hi: m, color: 'var(--accent)40'});
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Left max: bars[' + lRes.l + '..' + lRes.r + '], area = <strong>' + lRes.area + '</strong>';
+                        },
+                        undo: function() {
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(lo, mid, leftRes, curNodeIdx);
+
+                (function(m, hi2, rRes, nid) {
+                    steps.push({
+                        description: 'Right [' + (m+1) + '..' + hi2 + '] max area: ' + rRes.area + ' \u2014 second candidate.',
+                        action: function() {
+                            renderBars(null, {l: rRes.l, r: rRes.r}, {lo: m+1, hi: hi2, color: '#6c5ce740'});
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Right max: bars[' + rRes.l + '..' + rRes.r + '], area = <strong>' + rRes.area + '</strong>';
+                        },
+                        undo: function() {
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(mid, hi, rightRes, curNodeIdx);
+
+                (function(lo2, hi2, m, cMax, bcl, bcr, nid) {
+                    steps.push({
+                        description: 'Crossing (third candidate): expand from mid=' + m + ' both ways, greedily choosing the taller side \u2192 max area = ' + cMax + ' [' + bcl + '..' + bcr + ']',
+                        action: function() {
+                            var h = {};
+                            for (var i = bcl; i <= bcr; i++) h[i] = 'var(--red)';
+                            renderBars(h, null, null);
+                            treeNodes[nid].status = 'cross';
+                            renderTree(nid);
+                            infoEl.innerHTML = 'Crossing: bars[' + bcl + '..' + bcr + '], area = <strong>' + cMax + '</strong>';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'current';
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(lo, hi, mid, crossMax2, bestCl2, bestCr2, curNodeIdx);
+
+                (function(lo2, hi2, lRes, rRes, cMax, best, nid) {
+                    steps.push({
+                        description: '[' + lo2 + '..' + hi2 + '] resolved! Take the max of all 3 candidates (left ' + lRes.area + ', right ' + rRes.area + ', crossing ' + cMax + ') = <strong>' + best.area + '</strong>',
+                        action: function() {
+                            renderBars(null, {l: best.l, r: best.r}, {lo: lo2, hi: hi2, color: 'var(--green)20'});
+                            treeNodes[nid].status = 'resolved';
+                            treeNodes[nid].result = '\u2192 area ' + best.area;
+                            renderTree(nid);
+                            infoEl.innerHTML = '[' + lo2 + '..' + hi2 + ']: max(left ' + lRes.area + ', right ' + rRes.area + ', cross ' + cMax + ') = <strong>' + best.area + '</strong>';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'cross';
+                            treeNodes[nid].result = '';
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(undo)';
+                        }
+                    });
+                })(lo, hi, leftRes, rightRes, crossMax2, totalBest, curNodeIdx);
+            }
+
+            buildSteps(0, n - 1, 0);
+
+            var finalBest = solve(0, n - 1);
+            steps.push({
+                description: 'Done! Largest rectangle area = ' + finalBest.area,
+                action: function() {
+                    renderBars(null, {l: finalBest.l, r: finalBest.r}, null);
+                    for (var i = 0; i < treeNodes.length; i++) treeNodes[i].status = 'resolved';
+                    renderTree(-1);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Largest rectangle area = ' + finalBest.area + ' (bars[' + finalBest.l + '..' + finalBest.r + '])</strong>';
+                },
+                undo: function() { renderBars(null, null, null); renderTree(-1); infoEl.innerHTML = '(undo)'; }
             });
+
+            renderTree(-1);
             self._initStepController(container, steps, suffix);
         }
 

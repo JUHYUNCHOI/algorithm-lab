@@ -58,7 +58,7 @@ var shortestPathTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -490,6 +490,99 @@ var shortestPathTopic = {
                     </div>\
                 </div>\
             </div>\
+            <!-- 섹션 5: 데모 — BFS vs 다익스트라 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">5</span> 데모: BFS vs 다익스트라\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 같은 그래프, 다른 결과</div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">그래프: A→B(1), A→C(4), B→C(2), B→D(6), C→D(1)</div>\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--accent);">BFS 결과 <span style="font-size:0.8rem;color:var(--text3);">(간선 수 기준)</span></div>\
+                                <div id="sp-demo-bfs-result" style="font-size:0.9rem;color:var(--text2);line-height:1.8;"></div>\
+                                <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-top:12px;">\
+                                    <button id="sp-demo-bfs-prev" class="concept-demo-btn">← 이전</button>\
+                                    <span id="sp-demo-bfs-counter" style="font-size:0.85rem;color:var(--text2);">시작 전</span>\
+                                    <button id="sp-demo-bfs-next" class="concept-demo-btn">다음 →</button>\
+                                </div>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--green);">다익스트라 결과 <span style="font-size:0.8rem;color:var(--text3);">(가중치 합 기준)</span></div>\
+                                <div id="sp-demo-dij-result" style="font-size:0.9rem;color:var(--text2);line-height:1.8;"></div>\
+                                <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-top:12px;">\
+                                    <button id="sp-demo-dij-prev" class="concept-demo-btn">← 이전</button>\
+                                    <span id="sp-demo-dij-counter" style="font-size:0.85rem;color:var(--text2);">시작 전</span>\
+                                    <button id="sp-demo-dij-next" class="concept-demo-btn">다음 →</button>\
+                                </div>\
+                            </div>\
+                        </div>\
+                        <div id="sp-demo-compare-log" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-compare-msg">👆 BFS와 다익스트라를 각각 "다음 →"을 눌러 단계별로 비교해보세요!</div>\
+                </div>\
+            </div>\
+\
+            <!-- 섹션 6: 데모 — 다익스트라 스텝 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">6</span> 데모: 다익스트라 단계별 실행\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 거리 테이블이 업데이트되는 과정</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="sp-demo-step-next">▶ 다음 스텝</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-step-reset">↺ 초기화</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">거리 테이블 (출발: A)</div>\
+                        <div id="sp-demo-step-dist" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div id="sp-demo-step-visited" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;"></div>\
+                        <div id="sp-demo-step-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-step-msg">👆 "다음 스텝"을 눌러 다익스트라가 한 단계씩 어떻게 동작하는지 확인하세요!</div>\
+                </div>\
+            </div>\
+\
+            <!-- 섹션 7: 데모 — 그리디 증명 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">7</span> 데모: 왜 그리디가 동작할까?\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 가장 가까운 미방문 정점이 최적인 이유</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="sp-demo-greedy-btn">💡 증명 보기</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-greedy-viz" style="font-size:0.9rem;color:var(--text);line-height:2;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-greedy-msg">👆 버튼을 눌러 다익스트라의 그리디 선택이 왜 최적인지 확인하세요!</div>\
+                </div>\
+            </div>\
+\
+            <!-- 섹션 8: 데모 — 벨만-포드 완화 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">8</span> 데모: 벨만-포드 완화 과정\
+                </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — V-1번 반복하며 간선을 완화</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="sp-demo-bf-next">▶ 다음 완화</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-bf-reset">↺ 초기화</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">거리 테이블 (출발: A) — 간선: A→B(4), A→C(3), B→D(1), C→B(-2), C→D(5)</div>\
+                        <div id="sp-demo-bf-dist" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div id="sp-demo-bf-round" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;"></div>\
+                        <div id="sp-demo-bf-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-bf-msg">👆 "다음 완화"를 눌러 벨만-포드가 모든 간선을 반복 완화하는 과정을 확인하세요! 음수 간선(-2)이 있어도 동작합니다.</div>\
+                </div>\
+            </div>\
         ';
 
         this._initConceptInteractions(container);
@@ -509,6 +602,296 @@ var shortestPathTopic = {
         container.querySelectorAll('pre code').forEach(function(el) {
             if (window.hljs) hljs.highlightElement(el);
         });
+
+        // ====== 데모 1: BFS vs 다익스트라 ======
+        (function() {
+            var adj = { A: [['B', 1], ['C', 4]], B: [['C', 2], ['D', 6]], C: [['D', 1]], D: [] };
+            var bfsResult = container.querySelector('#sp-demo-bfs-result');
+            var dijResult = container.querySelector('#sp-demo-dij-result');
+            var logEl = container.querySelector('#sp-demo-compare-log');
+
+            // --- BFS 스텝 계산 ---
+            var bfsDist = { A: 0, B: Infinity, C: Infinity, D: Infinity };
+            var bfsQueue = ['A'];
+            var bfsVisited = { A: true };
+            var bfsLines = ['A: 거리 0 (시작)'];
+            while (bfsQueue.length) {
+                var u = bfsQueue.shift();
+                adj[u].forEach(function(edge) {
+                    var v = edge[0];
+                    if (!bfsVisited[v]) {
+                        bfsVisited[v] = true;
+                        bfsDist[v] = bfsDist[u] + 1;
+                        bfsQueue.push(v);
+                        bfsLines.push(v + ': 거리 ' + bfsDist[v] + ' (간선 수)');
+                    }
+                });
+            }
+            var bfsLogMsg = 'BFS로 A→D: <strong>' + bfsDist['D'] + '칸</strong> (간선 수). 하지만 가중치를 무시합니다!';
+
+            // --- 다익스트라 스텝 계산 ---
+            var dijDist = { A: 0, B: Infinity, C: Infinity, D: Infinity };
+            var dijVisited = {};
+            var dijLines = ['A: 거리 0 (시작)'];
+            var pq = [[0, 'A']];
+            while (pq.length) {
+                pq.sort(function(a, b) { return a[0] - b[0]; });
+                var cur = pq.shift();
+                var d = cur[0], uu = cur[1];
+                if (dijVisited[uu]) continue;
+                dijVisited[uu] = true;
+                adj[uu].forEach(function(edge) {
+                    var v = edge[0], w = edge[1];
+                    var nd = d + w;
+                    if (nd < dijDist[v]) {
+                        dijDist[v] = nd;
+                        pq.push([nd, v]);
+                        dijLines.push(v + ': 거리 ' + nd + ' (경로: via ' + uu + ', 가중치 ' + w + ')');
+                    }
+                });
+            }
+            var dijLogMsg = '다익스트라로 A→D: <strong>' + dijDist['D'] + '</strong> (가중치 합: A→B(1)→C(2)→D(1)=4). BFS는 간선 2개라 했지만, 실제 최단 비용은 <strong>4</strong>!';
+
+            // --- BFS 수동 컨트롤 ---
+            var bfsCur = -1;
+            var bfsPrev = container.querySelector('#sp-demo-bfs-prev');
+            var bfsNext = container.querySelector('#sp-demo-bfs-next');
+            var bfsCounter = container.querySelector('#sp-demo-bfs-counter');
+
+            function updateBfs() {
+                bfsResult.innerHTML = '';
+                for (var i = 0; i <= bfsCur; i++) {
+                    bfsResult.innerHTML += '<div style="animation:fadeIn 0.3s ease;">' + bfsLines[i] + '</div>';
+                }
+                if (bfsCur < 0) {
+                    bfsCounter.textContent = '시작 전';
+                    logEl.innerHTML = '';
+                } else {
+                    bfsCounter.textContent = (bfsCur + 1) + ' / ' + bfsLines.length;
+                    if (bfsCur === bfsLines.length - 1) {
+                        logEl.innerHTML = bfsLogMsg;
+                    }
+                }
+            }
+
+            bfsNext.addEventListener('click', function() {
+                if (bfsCur < bfsLines.length - 1) { bfsCur++; updateBfs(); }
+            });
+            bfsPrev.addEventListener('click', function() {
+                if (bfsCur >= 0) { bfsCur--; updateBfs(); }
+            });
+
+            // --- 다익스트라 수동 컨트롤 ---
+            var dijCur = -1;
+            var dijPrev = container.querySelector('#sp-demo-dij-prev');
+            var dijNext = container.querySelector('#sp-demo-dij-next');
+            var dijCounter = container.querySelector('#sp-demo-dij-counter');
+
+            function updateDij() {
+                dijResult.innerHTML = '';
+                for (var i = 0; i <= dijCur; i++) {
+                    dijResult.innerHTML += '<div style="animation:fadeIn 0.3s ease;">' + dijLines[i] + '</div>';
+                }
+                if (dijCur < 0) {
+                    dijCounter.textContent = '시작 전';
+                } else {
+                    dijCounter.textContent = (dijCur + 1) + ' / ' + dijLines.length;
+                    if (dijCur === dijLines.length - 1) {
+                        logEl.innerHTML = dijLogMsg;
+                    }
+                }
+            }
+
+            dijNext.addEventListener('click', function() {
+                if (dijCur < dijLines.length - 1) { dijCur++; updateDij(); }
+            });
+            dijPrev.addEventListener('click', function() {
+                if (dijCur >= 0) { dijCur--; updateDij(); }
+            });
+        })();
+
+        // ====== 데모 2: 다익스트라 스텝 ======
+        (function() {
+            var nodes = ['A', 'B', 'C', 'D', 'E'];
+            var adj = { A: [['B', 4], ['C', 2]], B: [['D', 3], ['E', 1]], C: [['B', 1], ['D', 5]], D: [['E', 2]], E: [] };
+            var INF = Infinity;
+            var dist, visited, stepQueue, stepDone;
+
+            var distEl = container.querySelector('#sp-demo-step-dist');
+            var visitedEl = container.querySelector('#sp-demo-step-visited');
+            var logEl = container.querySelector('#sp-demo-step-log');
+            var nextBtn = container.querySelector('#sp-demo-step-next');
+            var resetBtn = container.querySelector('#sp-demo-step-reset');
+
+            function init() {
+                dist = { A: 0, B: INF, C: INF, D: INF, E: INF };
+                visited = {};
+                stepQueue = [[0, 'A']];
+                stepDone = false;
+                renderDist();
+                visitedEl.textContent = '방문 완료: (없음)';
+                logEl.textContent = '"다음 스텝"을 눌러 시작하세요!';
+                nextBtn.disabled = false;
+            }
+
+            function renderDist(highlight) {
+                distEl.innerHTML = '';
+                nodes.forEach(function(n) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.style.cssText = 'min-width:50px;text-align:center;transition:all 0.3s ease;';
+                    var val = dist[n] === INF ? '∞' : dist[n];
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.7rem;font-weight:700;">' + n + '</div><div class="str-char-val" style="font-size:1rem;">' + val + '</div>';
+                    if (visited[n]) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.background = 'rgba(0,184,148,0.1)';
+                    }
+                    if (highlight === n) {
+                        box.style.borderColor = 'var(--yellow)';
+                        box.style.boxShadow = '0 0 8px var(--yellow)';
+                    }
+                    distEl.appendChild(box);
+                });
+            }
+
+            init();
+
+            nextBtn.addEventListener('click', function() {
+                if (stepDone || stepQueue.length === 0) {
+                    logEl.innerHTML = '<strong style="color:var(--green);">완료!</strong> 모든 정점까지의 최단 거리를 찾았습니다.';
+                    nextBtn.disabled = true;
+                    return;
+                }
+                stepQueue.sort(function(a, b) { return a[0] - b[0]; });
+                var cur = stepQueue.shift();
+                var d = cur[0], u = cur[1];
+                if (visited[u]) {
+                    logEl.innerHTML = u + '는 이미 방문했으므로 건너뜁니다 (<code>if d > dist[v]: continue</code>)';
+                    return;
+                }
+                visited[u] = true;
+                renderDist(u);
+                visitedEl.textContent = '방문 완료: {' + Object.keys(visited).join(', ') + '}';
+                var updates = [];
+                adj[u].forEach(function(edge) {
+                    var v = edge[0], w = edge[1];
+                    var nd = d + w;
+                    if (nd < dist[v]) {
+                        dist[v] = nd;
+                        stepQueue.push([nd, v]);
+                        updates.push(v + ': ' + d + '+' + w + '=' + nd + (nd < (dist[v] === nd ? INF : dist[v]) ? ' (갱신!)' : ''));
+                    }
+                });
+                logEl.innerHTML = '<strong style="color:var(--yellow);">' + u + ' 방문</strong> (거리: ' + d + '). ' +
+                    (updates.length ? '이웃 갱신: ' + updates.join(', ') : '갱신할 이웃 없음');
+
+                setTimeout(function() { renderDist(); }, 400);
+
+                if (Object.keys(visited).length === nodes.length) {
+                    stepDone = true;
+                }
+            });
+
+            resetBtn.addEventListener('click', init);
+        })();
+
+        // ====== 데모 3: 그리디 증명 ======
+        (function() {
+            var greedyBtn = container.querySelector('#sp-demo-greedy-btn');
+            var vizEl = container.querySelector('#sp-demo-greedy-viz');
+
+            greedyBtn.addEventListener('click', function() {
+                var steps = [
+                    '<strong>가정:</strong> 현재 미방문 정점 중 거리가 가장 짧은 정점을 u라 하자. dist[u] = d.',
+                    '<strong>의문:</strong> "다른 경로로 u에 더 짧게 도달할 수 있을까?"',
+                    '<strong>생각해보기:</strong> 다른 경로는 반드시 <span style="color:var(--red);">미방문 정점 w</span>를 경유해야 합니다.',
+                    '그런데 dist[w] ≥ dist[u]입니다. <span style="color:var(--accent);">(u가 가장 짧으니까!)</span>',
+                    '가중치가 모두 <strong>양수(≥0)</strong>이므로, w를 경유하면 dist[w] + (양수) ≥ dist[u].',
+                    '따라서 다른 경로는 dist[u]보다 <strong>길거나 같습니다</strong>.',
+                    '<div style="margin-top:8px;padding:10px 14px;background:rgba(0,184,148,0.1);border-radius:8px;border-left:3px solid var(--green);"><strong style="color:var(--green);">결론:</strong> 가장 가까운 미방문 정점의 거리는 이미 최적! 그리디 선택이 항상 맞습니다.</div>',
+                    '<div style="margin-top:6px;padding:8px 14px;background:rgba(225,112,85,0.1);border-radius:8px;border-left:3px solid var(--red);"><strong style="color:var(--red);">주의:</strong> 음수 가중치가 있으면? dist[w] + (음수)가 dist[u]보다 작을 수 있어 그리디가 실패합니다. 그래서 벨만-포드가 필요합니다!</div>'
+                ];
+                vizEl.innerHTML = '';
+                steps.forEach(function(s, i) {
+                    setTimeout(function() {
+                        vizEl.innerHTML += '<div style="animation:fadeIn 0.3s ease;padding:3px 0;">' + s + '</div>';
+                    }, i * 600);
+                });
+            });
+        })();
+
+        // ====== 데모 4: 벨만-포드 완화 ======
+        (function() {
+            var nodes = ['A', 'B', 'C', 'D'];
+            var edges = [['A', 'B', 4], ['A', 'C', 3], ['B', 'D', 1], ['C', 'B', -2], ['C', 'D', 5]];
+            var INF = Infinity;
+            var dist, round, edgeIdx, totalRounds;
+
+            var distEl = container.querySelector('#sp-demo-bf-dist');
+            var roundEl = container.querySelector('#sp-demo-bf-round');
+            var logEl = container.querySelector('#sp-demo-bf-log');
+            var nextBtn = container.querySelector('#sp-demo-bf-next');
+            var resetBtn = container.querySelector('#sp-demo-bf-reset');
+
+            function init() {
+                dist = { A: 0, B: INF, C: INF, D: INF };
+                round = 1;
+                edgeIdx = 0;
+                totalRounds = nodes.length - 1;
+                renderDist();
+                roundEl.textContent = '라운드: 1 / ' + totalRounds + ' | 간선: 0 / ' + edges.length;
+                logEl.textContent = '"다음 완화"를 눌러 시작하세요!';
+                nextBtn.disabled = false;
+            }
+
+            function renderDist(highlight) {
+                distEl.innerHTML = '';
+                nodes.forEach(function(n) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.style.cssText = 'min-width:50px;text-align:center;transition:all 0.3s ease;';
+                    var val = dist[n] === INF ? '∞' : dist[n];
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.7rem;font-weight:700;">' + n + '</div><div class="str-char-val" style="font-size:1rem;">' + val + '</div>';
+                    if (highlight === n) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.boxShadow = '0 0 8px var(--green)';
+                    }
+                    distEl.appendChild(box);
+                });
+            }
+
+            init();
+
+            nextBtn.addEventListener('click', function() {
+                if (round > totalRounds) {
+                    logEl.innerHTML = '<strong style="color:var(--green);">완료!</strong> ' + totalRounds + '라운드 완화 끝. 최종 거리: ' +
+                        nodes.map(function(n) { return n + '=' + (dist[n] === INF ? '∞' : dist[n]); }).join(', ');
+                    nextBtn.disabled = true;
+                    return;
+                }
+                var e = edges[edgeIdx];
+                var u = e[0], v = e[1], w = e[2];
+                var relaxed = false;
+                if (dist[u] !== INF && dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    relaxed = true;
+                    renderDist(v);
+                    logEl.innerHTML = '간선 (' + u + '→' + v + ', 가중치 ' + w + '): dist[' + u + ']+' + w + ' = <strong>' + dist[v] + '</strong> < 기존 → <strong style="color:var(--green);">갱신!</strong>';
+                } else {
+                    renderDist();
+                    var reason = dist[u] === INF ? 'dist[' + u + ']=∞이므로 skip' : dist[u] + '+' + w + '=' + (dist[u] + w) + ' ≥ ' + (dist[v] === INF ? '∞' : dist[v]) + ' → 변화 없음';
+                    logEl.innerHTML = '간선 (' + u + '→' + v + ', 가중치 ' + w + '): ' + reason;
+                }
+                edgeIdx++;
+                if (edgeIdx >= edges.length) {
+                    edgeIdx = 0;
+                    round++;
+                }
+                roundEl.textContent = '라운드: ' + Math.min(round, totalRounds) + ' / ' + totalRounds + ' | 간선: ' + edgeIdx + ' / ' + edges.length;
+            });
+
+            resetBtn.addEventListener('click', init);
+        })();
     },
 
     // ===== 시각화 탭 (concept suffix) =====
@@ -572,7 +955,7 @@ var shortestPathTopic = {
         // Step 0: init
         var snap0 = saveSnapshot();
         steps.push({
-            description: '초기화: dist[A]=0, 나머지=\u221E. 힙에 (0, A)를 넣습니다.',
+            description: '초기화: dist[A]=0, 나머지=\u221E — 시작점 거리를 0으로 놓고, 나머지는 아직 모르므로 무한대. 힙에 (0, A)를 넣어 탐색 시작',
             action: function() { renderDist(simDist, 0); infoEl.innerHTML = 'dist = [0, \u221E, \u221E, \u221E, \u221E], heap = [(0, A)]'; },
             undo: function() { restoreSnapshot(snap0); }
         });
@@ -607,12 +990,12 @@ var shortestPathTopic = {
             (function(v, d, updates) {
                 var snapBefore;
                 steps.push({
-                    description: '힙에서 (' + d + ', ' + NODES[v] + ')을 꺼내 처리합니다. ' +
+                    description: '힙에서 (' + d + ', ' + NODES[v] + ') 꺼냄 — <strong>최단 거리 확정</strong>(그리디: 힙 최솟값은 더 줄어들 수 없음). ' +
                         (updates.length > 0 ?
-                            updates.map(function(u) {
-                                return NODES[v] + '\u2192' + NODES[u.node] + ': dist=' + (u.oldDist === INF ? '\u221E' : u.oldDist) + ' \u2192 ' + u.newDist;
+                            '이웃 갱신: ' + updates.map(function(u) {
+                                return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.oldDist === INF ? '\u221E' : u.oldDist) + ' \u2192 ' + u.newDist + '(경유가 더 짧으므로)';
                             }).join(', ') :
-                            '갱신할 이웃이 없습니다.'),
+                            '이웃 중 더 짧은 경로가 없어 갱신 불필요'),
                     action: function() {
                         snapBefore = saveSnapshot();
                         simVisited.push(v);
@@ -631,7 +1014,7 @@ var shortestPathTopic = {
         // Final
         var snapFinal;
         steps.push({
-            description: '다익스트라 완료! A=0, B=3, C=2, D=6, E=4',
+            description: '✅ 다익스트라 완료! A=0, B=3, C=2, D=6, E=4 — 모든 노드의 최단 거리가 그리디하게 확정됨',
             action: function() {
                 snapFinal = saveSnapshot();
                 infoEl.innerHTML = '<strong style="color:var(--green);">완료! dist = [0, 3, 2, 6, 4]</strong>';
@@ -778,7 +1161,7 @@ var shortestPathTopic = {
             var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
             var s0 = snap();
             steps.push({
-                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E. 힙에 (0, ' + (startIdx + 1) + ')을 넣습니다.',
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E — 시작점만 거리 0, 나머지는 미확정. 힙에 (0, ' + (startIdx + 1) + ')을 넣어 탐색 시작',
                 action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + '], heap=[(0,' + (startIdx + 1) + ')]'; },
                 undo: function() { restore(s0); }
             });
@@ -806,8 +1189,8 @@ var shortestPathTopic = {
                 (function(v, d, updates) {
                     var sb;
                     steps.push({
-                        description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
-                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : '갱신 없음'),
+                        description: '(' + d + ', ' + NODES[v] + ') 꺼냄 — <strong>최단 거리 확정</strong>(힙 최솟값이므로 더 줄어들 수 없음). ' +
+                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + '(경유가 더 짧음)'; }).join(', ') : '이웃 중 더 짧은 경로 없음'),
                         action: function() {
                             sb = snap();
                             updates.forEach(function(u) { simDist[u.node] = u.nw; });
@@ -822,7 +1205,7 @@ var shortestPathTopic = {
             var finalDist = td.map(function(v) { return v === INF ? 'INF' : v; }).join(', ');
             var sf;
             steps.push({
-                description: '완료! dist = [' + finalDist + ']',
+                description: '✅ 완료! dist = [' + finalDist + '] — 모든 노드의 최단 거리가 그리디하게 확정됨',
                 action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! dist=[' + finalDist + ']</strong>'; },
                 undo: function() { restore(sf); }
             });
@@ -926,7 +1309,7 @@ var shortestPathTopic = {
 
             var s0 = snapF();
             steps.push({
-                description: '초기 상태: 직접 간선으로 구한 거리 행렬입니다.',
+                description: '초기 상태: 직접 간선만으로 구한 거리 행렬 — 경유지를 거치지 않은 최초 거리',
                 action: function() { renderGrid(curDp, -1, -1); infoEl.innerHTML = '초기 거리 행렬'; },
                 undo: function() { restoreF(s0); }
             });
@@ -946,13 +1329,13 @@ var shortestPathTopic = {
                         }
                     }
                     var sb;
-                    var desc = '경유지 k=' + (k + 1) + ': ';
+                    var desc = '경유지 k=' + (k + 1) + ' — i→k→j 경유가 직접 경로보다 짧으면 갱신: ';
                     if (updated.length > 0) {
                         desc += updated.map(function(u) {
-                            return 'dp[' + (u.i + 1) + '][' + (u.j + 1) + '] ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw;
+                            return 'dp[' + (u.i + 1) + '][' + (u.j + 1) + '] ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + '(k 경유가 더 짧음)';
                         }).join(', ');
                     } else {
-                        desc += '갱신 없음';
+                        desc += 'k=' + (k + 1) + '을 경유해도 더 짧아지는 경로 없음';
                     }
                     var snapDp = curDp.map(function(r) { return r.slice(); });
                     var lastUpd = updated.length > 0 ? updated[updated.length - 1] : null;
@@ -971,7 +1354,7 @@ var shortestPathTopic = {
 
             var sfF;
             steps.push({
-                description: '플로이드-워셜 완료! 모든 쌍의 최단 거리가 확정되었습니다.',
+                description: '✅ 플로이드-워셜 완료! 모든 노드를 경유지로 시도한 뒤 모든 쌍의 최단 거리가 확정됨',
                 action: function() { sfF = snapF(); infoEl.innerHTML = '<strong style="color:var(--green);">완료!</strong>'; },
                 undo: function() { restoreF(sfF); }
             });
@@ -1069,7 +1452,7 @@ var shortestPathTopic = {
             var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
             var s0 = snap();
             steps.push({
-                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E.',
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E — 시작점만 거리 0으로 확정, 나머지는 아직 미확정',
                 action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + ']'; },
                 undo: function() { restore(s0); }
             });
@@ -1097,8 +1480,8 @@ var shortestPathTopic = {
                 (function(v, d, updates) {
                     var sb;
                     steps.push({
-                        description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
-                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : '갱신 없음'),
+                        description: '(' + d + ', ' + NODES[v] + ') 꺼냄 — <strong>최단 거리 확정</strong>(힙 최솟값이므로 더 줄어들 수 없음). ' +
+                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + '(경유가 더 짧음)'; }).join(', ') : '이웃 중 더 짧은 경로 없음'),
                         action: function() {
                             sb = snap();
                             updates.forEach(function(u) { simDist[u.node] = u.nw; });
@@ -1114,7 +1497,7 @@ var shortestPathTopic = {
             var endDistStr = endDist === INF ? 'INF' : endDist;
             var sf;
             steps.push({
-                description: '완료! dist[' + (endIdx + 1) + '] = ' + endDistStr + ' 가 최소 비용입니다.',
+                description: '✅ 완료! dist[' + (endIdx + 1) + '] = ' + endDistStr + ' — 시작→도착 최단 경로가 다익스트라로 확정됨',
                 action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! ' + (startIdx + 1) + '\u2192' + (endIdx + 1) + ' 최소비용 = ' + endDistStr + '</strong>'; },
                 undo: function() { restore(sf); }
             });
@@ -1215,7 +1598,7 @@ var shortestPathTopic = {
             var initDistStr = simDist.map(function(v) { return v === INF ? '\u221E' : v; }).join(', ');
             var s0 = snap();
             steps.push({
-                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E.',
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E — 시작점만 거리 0으로 확정, 나머지는 아직 미확정',
                 action: function() { renderDist(simDist, startIdx); infoEl.innerHTML = 'dist=[' + initDistStr + ']'; },
                 undo: function() { restore(s0); }
             });
@@ -1243,8 +1626,8 @@ var shortestPathTopic = {
                 (function(v, d, updates) {
                     var sb;
                     steps.push({
-                        description: '(' + d + ', ' + NODES[v] + ') 처리: ' +
-                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ' dist=' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw; }).join(', ') : '갱신 없음'),
+                        description: '(' + d + ', ' + NODES[v] + ') 꺼냄 — <strong>최단 거리 확정</strong>(힙 최솟값이므로 더 줄어들 수 없음). ' +
+                            (updates.length > 0 ? updates.map(function(u) { return NODES[v] + '\u2192' + NODES[u.node] + ': ' + (u.old === INF ? '\u221E' : u.old) + '\u2192' + u.nw + '(경유가 더 짧음)'; }).join(', ') : '이웃 중 더 짧은 경로 없음'),
                         action: function() {
                             sb = snap();
                             updates.forEach(function(u) { simDist[u.node] = u.nw; });
@@ -1267,7 +1650,7 @@ var shortestPathTopic = {
 
             var sf;
             steps.push({
-                description: '완료! ' + (hasUnreachable ? '도달 불가능한 노드가 있으므로 답: -1' : 'max(dist) = ' + maxDist + '. 모든 노드가 신호를 받는 시간 = ' + maxDist + '.'),
+                description: '✅ 완료! ' + (hasUnreachable ? '도달 불가능한 노드가 있으므로 답: -1 — 모든 노드에 도달해야 하지만 불가' : 'max(dist) = ' + maxDist + ' — 가장 먼 노드까지의 최단 거리가 곧 모든 노드에 신호가 도달하는 시간'),
                 action: function() { sf = snap(); infoEl.innerHTML = '<strong style="color:var(--green);">완료! ' + (hasUnreachable ? '답: -1' : 'max(dist)=' + maxDist + ' \u2192 답: ' + maxDist) + '</strong>'; },
                 undo: function() { restore(sf); }
             });

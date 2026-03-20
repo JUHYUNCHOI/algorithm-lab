@@ -58,7 +58,7 @@ const linkedListTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -276,6 +276,17 @@ while (node) {
                     <strong>💡 생각해보기:</strong> 배열 vs 연결 리스트: 배열은 "아파트"(번호로 바로 찾기 O(1)),
                     연결 리스트는 "기차"(한 칸씩 이동 O(n))입니다. 하지만 기차는 칸을 끼워 넣기가 쉽죠!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 연결 리스트 순회</div>
+                    <div class="concept-demo-body">
+                        <div class="demo-ll-chain" id="ll-demo-traverse-chain" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:1rem 0;"></div>
+                    </div>
+                    <div class="concept-demo-btns" style="justify-content:center;">
+                        <button class="concept-demo-btn" id="ll-demo-traverse-next">다음 노드로 →</button>
+                        <button class="concept-demo-btn green" id="ll-demo-traverse-reset" style="display:none;">↺ 처음부터</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ll-demo-traverse-msg">👆 "다음 노드로" 버튼을 눌러 head부터 한 칸씩 순회해보세요! 배열과 달리 i번째로 바로 갈 수 없습니다.</div>
+                </div>
             </div>
 
             <div class="concept-section">
@@ -348,6 +359,22 @@ ListNode* reverseList(ListNode* head) {
                 <div class="think-box">
                     <strong>💡 생각해보기:</strong> 연결 리스트 뒤집기는 코딩 면접의 단골 문제입니다!
                     반복 버전과 재귀 버전 모두 구현할 수 있으면 좋습니다.
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 리스트 뒤집기 시뮬레이션</div>
+                    <div class="concept-demo-body">
+                        <div class="demo-ll-chain" id="ll-demo-reverse-chain" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:1rem 0;"></div>
+                    </div>
+                    <div class="demo-ll-info" id="ll-demo-reverse-info" style="margin-bottom:0.8rem;">
+                        <span><strong>prev:</strong> <span id="ll-demo-reverse-prev-val">None</span></span>
+                        <span><strong>curr:</strong> <span id="ll-demo-reverse-curr-val">-</span></span>
+                        <span><strong>next_node:</strong> <span id="ll-demo-reverse-next-val">-</span></span>
+                    </div>
+                    <div class="concept-demo-btns" style="justify-content:center;">
+                        <button class="concept-demo-btn" id="ll-demo-reverse-step">다음 스텝 →</button>
+                        <button class="concept-demo-btn green" id="ll-demo-reverse-reset" style="display:none;">↺ 처음부터</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ll-demo-reverse-msg">👆 "다음 스텝"을 눌러 prev/curr/next 포인터가 이동하며 화살표가 뒤집히는 과정을 확인하세요!</div>
                 </div>
             </div>
 
@@ -431,9 +458,341 @@ ListNode* middleNode(ListNode* head) {
                     <strong>💡 생각해보기:</strong> 코딩 테스트에서 연결 리스트 문제가 나오면,
                     "뒤집기", "사이클 탐지", "중간 찾기", "병합" 이 4가지 패턴을 떠올리세요!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 토끼와 거북이 (Floyd's Cycle Detection)</div>
+                    <div class="concept-demo-body">
+                        <div id="ll-demo-cycle-chain" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:1rem 0;position:relative;"></div>
+                    </div>
+                    <div class="demo-ll-info" id="ll-demo-cycle-info" style="margin-bottom:0.8rem;">
+                        <span>🐢 <strong>slow:</strong> <span id="ll-demo-cycle-slow-val">node 1</span></span>
+                        <span>🐇 <strong>fast:</strong> <span id="ll-demo-cycle-fast-val">node 1</span></span>
+                        <span id="ll-demo-cycle-step-count" style="color:var(--text3);">스텝: 0</span>
+                    </div>
+                    <div class="concept-demo-btns" style="justify-content:center;">
+                        <button class="concept-demo-btn" id="ll-demo-cycle-step">다음 스텝 →</button>
+                        <button class="concept-demo-btn green" id="ll-demo-cycle-reset" style="display:none;">↺ 처음부터</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ll-demo-cycle-msg">👆 "다음 스텝"을 눌러 slow(1칸)와 fast(2칸)가 이동하는 과정을 확인하세요. 사이클 안에서 만나면 사이클 발견!</div>
+                </div>
             </div>
         `;
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
+
+        // ========== 인라인 데모 인터랙션 ==========
+
+        // ── 공통 헬퍼: 노드 HTML 생성 ──
+        const _llNodeHtml = (val, labels, cls) => {
+            var labelHtml = '';
+            if (labels && labels.length) {
+                labelHtml = labels.map(l => {
+                    var lCls = 'demo-ll-label';
+                    if (l === 'head') lCls += ' lbl-head';
+                    else if (l === 'prev') lCls += ' lbl-prev';
+                    else if (l === 'curr') lCls += ' lbl-curr';
+                    else if (l === 'slow' || l === '🐢slow') lCls += ' lbl-slow';
+                    else if (l === 'fast' || l === '🐇fast') lCls += ' lbl-fast';
+                    return '<span class="' + lCls + '">' + l + '</span>';
+                }).join('');
+            }
+            return '<div class="demo-ll-node">' + labelHtml +
+                '<div class="demo-ll-node-box' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
+        };
+        const _llArrowHtml = (reversed) => {
+            return '<span class="demo-ll-arrow' + (reversed ? ' rev' : '') + '">' + (reversed ? '←' : '→') + '</span>';
+        };
+
+        // --- 1. 순회 데모 ---
+        {
+            const chainEl = container.querySelector('#ll-demo-traverse-chain');
+            const nextBtn = container.querySelector('#ll-demo-traverse-next');
+            const resetBtn = container.querySelector('#ll-demo-traverse-reset');
+            const msgEl = container.querySelector('#ll-demo-traverse-msg');
+            const nodes = [10, 20, 30, 40, 50];
+            let currentIdx = -1;
+
+            const renderChain = () => {
+                let html = '';
+                for (let i = 0; i < nodes.length; i++) {
+                    let labels = [];
+                    let cls = '';
+                    if (i === 0) labels.push('head');
+                    if (i === currentIdx) {
+                        labels.push('curr');
+                        cls = 'current';
+                    } else if (i < currentIdx) {
+                        cls = 'visited';
+                    }
+                    html += _llNodeHtml(nodes[i], labels, cls);
+                    if (i < nodes.length - 1) html += _llArrowHtml(false);
+                }
+                html += '<span class="demo-ll-none">None</span>';
+                chainEl.innerHTML = html;
+            };
+
+            renderChain();
+
+            nextBtn.addEventListener('click', () => {
+                if (currentIdx >= nodes.length - 1) return;
+                currentIdx++;
+                renderChain();
+                if (currentIdx === 0) {
+                    msgEl.textContent = 'curr = head → 노드 ' + nodes[currentIdx] + '에서 시작합니다. 연결 리스트는 항상 head부터 출발해야 합니다!';
+                } else if (currentIdx < nodes.length - 1) {
+                    msgEl.textContent = 'curr = curr.next → 노드 ' + nodes[currentIdx] + '으로 이동했습니다. (' + (currentIdx + 1) + '번째 노드에 도달하려면 ' + currentIdx + '번 이동 필요!)';
+                } else {
+                    msgEl.textContent = '노드 ' + nodes[currentIdx] + '에 도착! curr.next는 None이므로 순회 완료. 총 ' + currentIdx + '번 이동했습니다. 배열이라면 arr[' + currentIdx + ']로 O(1)이었겠죠!';
+                    nextBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                currentIdx = -1;
+                renderChain();
+                msgEl.textContent = '👆 "다음 노드로" 버튼을 눌러 head부터 한 칸씩 순회해보세요! 배열과 달리 i번째로 바로 갈 수 없습니다.';
+                nextBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            });
+        }
+
+        // --- 2. 뒤집기 데모 ---
+        {
+            const chainEl = container.querySelector('#ll-demo-reverse-chain');
+            const stepBtn = container.querySelector('#ll-demo-reverse-step');
+            const resetBtn = container.querySelector('#ll-demo-reverse-reset');
+            const msgEl = container.querySelector('#ll-demo-reverse-msg');
+            const prevValEl = container.querySelector('#ll-demo-reverse-prev-val');
+            const currValEl = container.querySelector('#ll-demo-reverse-curr-val');
+            const nextValEl = container.querySelector('#ll-demo-reverse-next-val');
+            const vals = [1, 2, 3, 4, 5];
+
+            // State: arrows[i] = true means arrow between i and i+1 is reversed
+            // prevIdx, currIdx track pointer positions (-1 = None/null)
+            let arrows, prevIdx, currIdx, stepNum, done;
+
+            // Build steps for the reversal algorithm:
+            // Each iteration: save next, flip arrow, move prev, move curr
+            // We show each sub-step individually
+            const buildSteps = () => {
+                const steps = [];
+                // Initial state: prev = None, curr = 0
+                steps.push({
+                    desc: 'prev = None, curr = head(노드 ' + vals[0] + ') 로 초기화합니다.',
+                    prevI: -1, currI: 0, arrowsState: new Array(vals.length - 1).fill(false), sub: 'init'
+                });
+
+                let arrs = new Array(vals.length - 1).fill(false);
+                let pI = -1, cI = 0;
+
+                while (cI < vals.length) {
+                    const nextI = cI + 1 < vals.length ? cI + 1 : -1;
+                    // Sub-step 1: save next_node
+                    steps.push({
+                        desc: 'next_node = curr.next → ' + (nextI >= 0 ? '노드 ' + vals[nextI] : 'None') + '을 임시 저장합니다. 화살표를 바꾸면 다음 노드를 잃어버리니까요!',
+                        prevI: pI, currI: cI, nextI: nextI, arrowsState: arrs.slice(), sub: 'save_next'
+                    });
+                    // Sub-step 2: flip arrow (curr.next = prev)
+                    const newArrs = arrs.slice();
+                    if (cI > 0) newArrs[cI - 1] = true; // reverse arrow between prev and curr
+                    steps.push({
+                        desc: 'curr.next = prev → 노드 ' + vals[cI] + '의 화살표를 ' + (pI >= 0 ? '노드 ' + vals[pI] : 'None') + ' 방향으로 뒤집습니다!',
+                        prevI: pI, currI: cI, nextI: nextI, arrowsState: newArrs.slice(), sub: 'flip'
+                    });
+                    arrs = newArrs;
+                    // Sub-step 3: move prev and curr
+                    const oldCI = cI;
+                    pI = cI;
+                    cI = nextI >= 0 ? nextI : vals.length; // move past end
+                    if (cI < vals.length) {
+                        steps.push({
+                            desc: 'prev = 노드 ' + vals[pI] + ', curr = 노드 ' + vals[cI] + ' 로 한 칸 전진합니다.',
+                            prevI: pI, currI: cI, arrowsState: arrs.slice(), sub: 'move'
+                        });
+                    } else {
+                        steps.push({
+                            desc: 'curr가 None이 되었으므로 반복 종료! prev(노드 ' + vals[pI] + ')가 새로운 head입니다. 뒤집기 완료!',
+                            prevI: pI, currI: -1, arrowsState: arrs.slice(), sub: 'done'
+                        });
+                    }
+                }
+                return steps;
+            };
+
+            let steps;
+
+            const renderReverseChain = (step) => {
+                let html = '';
+                // For the 'done' state, render reversed order
+                if (step.sub === 'done') {
+                    // Show reversed list
+                    for (let i = vals.length - 1; i >= 0; i--) {
+                        let labels = [];
+                        let cls = 'reversed';
+                        if (i === vals.length - 1) labels.push('head');
+                        if (i === step.prevI) labels.push('prev');
+                        html += _llNodeHtml(vals[i], labels, cls);
+                        if (i > 0) html += _llArrowHtml(false);
+                    }
+                    html += '<span class="demo-ll-none">None</span>';
+                } else {
+                    for (let i = 0; i < vals.length; i++) {
+                        let labels = [];
+                        let cls = '';
+                        if (i === 0 && !step.arrowsState.some((v, idx) => idx < i && v)) labels.push('head');
+                        if (i === step.prevI) { labels.push('prev'); cls = 'visited'; }
+                        if (i === step.currI) { labels.push('curr'); cls = 'current'; }
+                        if (step.nextI !== undefined && i === step.nextI && step.sub === 'save_next') { labels.push('next'); }
+                        // Check if already reversed
+                        if (i < step.prevI && step.prevI >= 0) cls = 'reversed';
+                        html += _llNodeHtml(vals[i], labels, cls);
+                        if (i < vals.length - 1) {
+                            html += _llArrowHtml(step.arrowsState[i]);
+                        }
+                    }
+                    html += '<span class="demo-ll-none">None</span>';
+                }
+                chainEl.innerHTML = html;
+            };
+
+            const resetReverse = () => {
+                steps = buildSteps();
+                stepNum = -1;
+                done = false;
+                // Initial render
+                let html = '';
+                for (let i = 0; i < vals.length; i++) {
+                    let labels = i === 0 ? ['head'] : [];
+                    html += _llNodeHtml(vals[i], labels, '');
+                    if (i < vals.length - 1) html += _llArrowHtml(false);
+                }
+                html += '<span class="demo-ll-none">None</span>';
+                chainEl.innerHTML = html;
+                prevValEl.textContent = 'None';
+                currValEl.textContent = '-';
+                nextValEl.textContent = '-';
+                msgEl.textContent = '👆 "다음 스텝"을 눌러 prev/curr/next 포인터가 이동하며 화살표가 뒤집히는 과정을 확인하세요!';
+                stepBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            };
+
+            resetReverse();
+
+            stepBtn.addEventListener('click', () => {
+                if (done) return;
+                stepNum++;
+                if (stepNum >= steps.length) return;
+                const step = steps[stepNum];
+                renderReverseChain(step);
+                msgEl.textContent = step.desc;
+                prevValEl.textContent = step.prevI >= 0 ? vals[step.prevI] : 'None';
+                currValEl.textContent = step.currI >= 0 ? vals[step.currI] : 'None';
+                nextValEl.textContent = step.nextI !== undefined && step.nextI >= 0 ? vals[step.nextI] : '-';
+                if (step.sub === 'done') {
+                    done = true;
+                    stepBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                resetReverse();
+            });
+        }
+
+        // --- 3. 토끼와 거북이 (Floyd's Cycle) 데모 ---
+        {
+            const chainEl = container.querySelector('#ll-demo-cycle-chain');
+            const stepBtn = container.querySelector('#ll-demo-cycle-step');
+            const resetBtn = container.querySelector('#ll-demo-cycle-reset');
+            const msgEl = container.querySelector('#ll-demo-cycle-msg');
+            const slowValEl = container.querySelector('#ll-demo-cycle-slow-val');
+            const fastValEl = container.querySelector('#ll-demo-cycle-fast-val');
+            const stepCountEl = container.querySelector('#ll-demo-cycle-step-count');
+
+            // Linked list: 1 → 2 → 3 → 4 → 5 → (back to 3) — cycle at node 3
+            const vals = [1, 2, 3, 4, 5];
+            const cycleBackTo = 2; // index 2 (node 3) — node 5's next points back to node 3
+            let slowIdx, fastIdx, stepCount, met;
+
+            const renderCycleChain = () => {
+                let html = '';
+                for (let i = 0; i < vals.length; i++) {
+                    let labels = [];
+                    let cls = '';
+                    if (i === 0) labels.push('head');
+                    if (i === slowIdx && i === fastIdx) {
+                        if (met) {
+                            labels.push('🐢🐇만남!');
+                            cls = 'meet';
+                        } else {
+                            labels.push('🐢slow');
+                            labels.push('🐇fast');
+                            cls = 'current';
+                        }
+                    } else {
+                        if (i === slowIdx) { labels.push('🐢slow'); cls = 'slow'; }
+                        if (i === fastIdx) { labels.push('🐇fast'); cls = 'fast'; }
+                    }
+                    html += _llNodeHtml(vals[i], labels, cls);
+                    if (i < vals.length - 1) {
+                        html += _llArrowHtml(false);
+                    }
+                }
+                // Show cycle arrow back to cycleBackTo
+                html += '<span class="demo-ll-arrow" style="color:var(--red);font-weight:700;" title="cycle: 노드 ' + vals[cycleBackTo] + '로 되돌아감">↩ ' + vals[cycleBackTo] + '</span>';
+                chainEl.innerHTML = html;
+            };
+
+            const resetCycle = () => {
+                slowIdx = 0;
+                fastIdx = 0;
+                stepCount = 0;
+                met = false;
+                renderCycleChain();
+                slowValEl.textContent = '노드 ' + vals[0];
+                fastValEl.textContent = '노드 ' + vals[0];
+                stepCountEl.textContent = '스텝: 0';
+                msgEl.textContent = '👆 "다음 스텝"을 눌러 slow(1칸)와 fast(2칸)가 이동하는 과정을 확인하세요. 사이클 안에서 만나면 사이클 발견!';
+                stepBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            };
+
+            // Move to next index, wrapping at cycle
+            const nextIdx = (idx) => {
+                if (idx === vals.length - 1) return cycleBackTo; // cycle!
+                return idx + 1;
+            };
+
+            resetCycle();
+
+            stepBtn.addEventListener('click', () => {
+                if (met) return;
+                stepCount++;
+                // slow moves 1 step
+                slowIdx = nextIdx(slowIdx);
+                // fast moves 2 steps
+                fastIdx = nextIdx(nextIdx(fastIdx));
+
+                renderCycleChain();
+                slowValEl.textContent = '노드 ' + vals[slowIdx];
+                fastValEl.textContent = '노드 ' + vals[fastIdx];
+                stepCountEl.textContent = '스텝: ' + stepCount;
+
+                if (slowIdx === fastIdx) {
+                    met = true;
+                    renderCycleChain();
+                    msgEl.textContent = '🎉 스텝 ' + stepCount + '에서 slow와 fast가 노드 ' + vals[slowIdx] + '에서 만났습니다! 사이클이 존재합니다! fast가 매 스텝 1칸씩 slow를 따라잡기 때문에 반드시 만나게 됩니다.';
+                    stepBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                } else {
+                    msgEl.textContent = '스텝 ' + stepCount + ': slow → 노드 ' + vals[slowIdx] + ' (1칸), fast → 노드 ' + vals[fastIdx] + ' (2칸). 아직 만나지 않았습니다. fast가 slow를 1칸씩 따라잡는 중!';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                resetCycle();
+            });
+        }
     },
 
     // ===== 시각화 =====
@@ -447,12 +806,17 @@ ListNode* middleNode(ListNode* head) {
 
     renderVisualize(container) { container.innerHTML = ''; },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25B6 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls(suffix) {
         var s = suffix || '';
-        return '<div class="str-step-controls" id="str-step-controls' + s + '" style="position:fixed;bottom:0;left:var(--sidebar-w,280px);right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:100;">' +
-            '<button class="btn" id="str-prev' + s + '">◀ 이전</button>' +
-            '<span id="str-indicator' + s + '" style="font-size:0.9rem;color:var(--text-secondary);min-width:60px;text-align:center;">0 / 0</span>' +
-            '<button class="btn" id="str-next' + s + '">다음 ▶</button>' +
+        return '<div class="viz-step-controls">' +
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 &rarr;</button>' +
             '</div>';
     },
 
@@ -460,21 +824,21 @@ ListNode* middleNode(ListNode* head) {
         var s = suffix || '';
         var current = -1;
         var actionDelay = 350;
-        var indicator = container.querySelector('#str-indicator' + s);
-        var prevBtn = container.querySelector('#str-prev' + s);
-        var nextBtn = container.querySelector('#str-next' + s);
-        if (!indicator || !prevBtn || !nextBtn) return;
+        var counter = container.querySelector('#viz-step-counter' + s);
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        if (!counter || !prevBtn || !nextBtn) return;
         var total = steps.length;
         var self = this;
-        var descEl = container.querySelector('[id$="desc' + s + '"]');
+        var descEl = container.querySelector('#viz-step-desc' + s);
         var updateUI = function() {
             if (current < 0) {
-                indicator.textContent = '시작 전';
-                if (descEl) descEl.innerHTML = '▶ 다음 버튼을 눌러 시뮬레이션을 시작하세요.';
+                counter.textContent = '시작 전';
+                if (descEl) descEl.innerHTML = '\u25B6 다음 버튼을 눌러 시작하세요';
                 prevBtn.disabled = true;
                 nextBtn.disabled = false;
             } else {
-                indicator.textContent = (current + 1) + ' / ' + total;
+                counter.textContent = (current + 1) + ' / ' + total;
                 if (descEl && steps[current].description) descEl.innerHTML = steps[current].description;
                 prevBtn.disabled = current === 0;
                 nextBtn.disabled = current >= total - 1;
@@ -527,12 +891,11 @@ ListNode* middleNode(ListNode* head) {
             '<button class="btn btn-primary" id="ll-rev-reset">🔄</button>' +
             '</div>' +
             '<div id="ll-nodes-rev" style="display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;min-height:80px;padding:20px 0;"></div>' +
-            '<div id="ll-desc-rev" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-rev');
+        container.innerHTML = self._createStepDesc('-rev') + vizHTML + self._createStepControls('-rev');
 
         var nodesEl = container.querySelector('#ll-nodes-rev');
-        var descEl = container.querySelector('#ll-desc-rev');
+        var descEl = container.querySelector('#viz-step-desc-rev');
 
         function renderNodes(nodes, prevIdx, currIdx, newHead) {
             var html = '';
@@ -635,14 +998,13 @@ ListNode* middleNode(ListNode* head) {
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">병합 결과</div>' +
             '<div id="ll-result-merge" style="display:flex;gap:4px;flex-wrap:wrap;min-height:40px;"></div>' +
             '</div></div>' +
-            '<div id="ll-desc-merge" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-merge');
+        container.innerHTML = self._createStepDesc('-merge') + vizHTML + self._createStepControls('-merge');
 
         var list1El = container.querySelector('#ll-list1-merge');
         var list2El = container.querySelector('#ll-list2-merge');
         var resultEl = container.querySelector('#ll-result-merge');
-        var descEl = container.querySelector('#ll-desc-merge');
+        var descEl = container.querySelector('#viz-step-desc-merge');
 
         function buildSteps(list1, list2) {
             var states = [];
@@ -739,15 +1101,14 @@ ListNode* middleNode(ListNode* head) {
             '<div style="padding:8px 16px;background:var(--accent)15;border-radius:8px;font-size:0.9rem;">&#x1F422; slow: <span id="ll-slow-val" style="font-weight:700;color:var(--accent);">-</span></div>' +
             '<div style="padding:8px 16px;background:var(--green)15;border-radius:8px;font-size:0.9rem;">&#x1F407; fast: <span id="ll-fast-val" style="font-weight:700;color:var(--green);">-</span></div>' +
             '</div>' +
-            '<div id="ll-desc-cycle" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-cycle');
+        container.innerHTML = self._createStepDesc('-cycle') + vizHTML + self._createStepControls('-cycle');
 
         var nodesEl = container.querySelector('#ll-nodes-cycle');
         var cycleInfoEl = container.querySelector('#ll-cycle-info');
         var slowVal = container.querySelector('#ll-slow-val');
         var fastVal = container.querySelector('#ll-fast-val');
-        var descEl = container.querySelector('#ll-desc-cycle');
+        var descEl = container.querySelector('#viz-step-desc-cycle');
 
         function renderCycleNodes(nodeVals, cycleStart, slowIdx, fastIdx) {
             var html = '';
@@ -883,14 +1244,13 @@ ListNode* middleNode(ListNode* head) {
             '<div style="display:flex;gap:20px;justify-content:center;margin-top:12px;flex-wrap:wrap;">' +
             '<div style="font-weight:600;color:var(--text-secondary);">제거 순서: <span id="ll-removed-jos" style="color:var(--accent);">-</span></div>' +
             '</div>' +
-            '<div id="ll-desc-jos" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-jos');
+        container.innerHTML = self._createStepDesc('-jos') + vizHTML + self._createStepControls('-jos');
 
         var josTitleEl = container.querySelector('#ll-jos-title');
         var circleEl = container.querySelector('#ll-circle-jos');
         var removedEl = container.querySelector('#ll-removed-jos');
-        var descEl = container.querySelector('#ll-desc-jos');
+        var descEl = container.querySelector('#viz-step-desc-jos');
 
         function buildSteps(N, K) {
             josTitleEl.textContent = '원형 큐 (N=' + N + ', K=' + K + ')';

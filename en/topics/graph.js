@@ -68,7 +68,7 @@ var graphTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -219,6 +219,29 @@ var graphTopic = {
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Building an adjacency list (undirected graph)\nimport sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())  # number of vertices, number of edges\ngraph = [[] for _ in range(N + 1)]\n\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)  # undirected, so add both directions</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Building an adjacency list (undirected graph)\n#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n\nint main() {\n    int N, M;  // number of vertices, number of edges\n    cin &gt;&gt; N &gt;&gt; M;\n    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);\n\n    for (int i = 0; i &lt; M; i++) {\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);  // undirected, so add both directions\n    }\n    return 0;\n}</code></pre></div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Build an Adjacency List</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Enter two vertex numbers and click "Add Edge"! See how the graph and adjacency list change.</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="number" id="graph-demo-adj-u" value="1" min="1" max="6" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <span style="font-weight:600;">—</span>\
+                        <input type="number" id="graph-demo-adj-v" value="2" min="1" max="6" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="graph-demo-adj-add">+ Add Edge</button>\
+                        <button class="concept-demo-btn" id="graph-demo-adj-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body" style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                        <div style="flex:1;min-width:220px;">\
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Graph Visualization</div>\
+                            <svg id="graph-demo-adj-svg" width="280" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                        </div>\
+                        <div style="flex:1;min-width:200px;">\
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Adjacency List</div>\
+                            <div id="graph-demo-adj-list" style="font-family:monospace;font-size:0.9rem;line-height:1.8;color:var(--text);"></div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-adj-msg">Try adding edges between vertices 1~6! Since this is an undirected graph, both sides get updated.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -264,6 +287,30 @@ var graphTopic = {
 \
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># DFS \u2014 Recursive approach\ndef dfs(v):\n    visited[v] = True\n    for u in graph[v]:\n        if not visited[u]:\n            dfs(u)\n\n# DFS \u2014 Stack approach\ndef dfs_stack(start):\n    stack = [start]\n    visited[start] = True\n    while stack:\n        v = stack.pop()\n        for u in graph[v]:\n            if not visited[u]:\n                visited[u] = True\n                stack.append(u)</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// DFS \u2014 Recursive approach\nvoid dfs(int v, vector&lt;vector&lt;int&gt;&gt;&amp; graph, vector&lt;bool&gt;&amp; visited) {\n    visited[v] = true;\n    for (int u : graph[v]) {\n        if (!visited[u]) {\n            dfs(u, graph, visited);\n        }\n    }\n}\n\n// DFS \u2014 Stack approach\nvoid dfs_stack(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph, vector&lt;bool&gt;&amp; visited) {\n    stack&lt;int&gt; stk;\n    stk.push(start);\n    visited[start] = true;\n    while (!stk.empty()) {\n        int v = stk.top(); stk.pop();\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                stk.push(u);\n            }\n        }\n    }\n}</code></pre></div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Follow the DFS</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">DFS starts from vertex 1. Watch how it goes deep in one direction, then backtracks when it hits a dead end!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-dfs-step">Next Step ▶</button>\
+                        <button class="concept-demo-btn" id="graph-demo-dfs-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                        <span id="graph-demo-dfs-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div style="flex:1;min-width:220px;">\
+                                <svg id="graph-demo-dfs-svg" width="300" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                            </div>\
+                            <div style="flex:1;min-width:160px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--text);">Stack</div>\
+                                <div id="graph-demo-dfs-stack" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:40px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></div>\
+                                <div style="font-weight:600;margin:10px 0 6px;color:var(--text);">Visit Order</div>\
+                                <div id="graph-demo-dfs-order" style="display:flex;gap:6px;flex-wrap:wrap;min-height:32px;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-dfs-msg">Graph: 1-2, 1-3, 2-4, 2-5 (visit smaller numbers first). Click "Next Step" to follow the DFS process step by step!</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -311,6 +358,30 @@ var graphTopic = {
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// BFS \u2014 Using a queue\n#include &lt;queue&gt;\n\nvoid bfs(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph,\n         vector&lt;bool&gt;&amp; visited, vector&lt;int&gt;&amp; dist) {\n    queue&lt;int&gt; q;\n    q.push(start);\n    visited[start] = true;\n    dist[start] = 0;\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();  // get front element and remove it\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                dist[u] = dist[v] + 1;\n                q.push(u);\n            }\n        }\n    }\n}</code></pre></div></span>\
                 <div style="margin-top:0.6rem;">\
                     <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: collections.deque ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: queue ↗</a></span>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Follow the BFS</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">BFS starts from vertex 1. Watch how it visits nearby vertices first, layer by layer, along with the queue!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-bfs-step">Next Step ▶</button>\
+                        <button class="concept-demo-btn" id="graph-demo-bfs-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                        <span id="graph-demo-bfs-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div style="flex:1;min-width:220px;">\
+                                <svg id="graph-demo-bfs-svg" width="300" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                            </div>\
+                            <div style="flex:1;min-width:160px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--text);">Queue</div>\
+                                <div id="graph-demo-bfs-queue" style="display:flex;gap:4px;min-height:40px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);flex-wrap:wrap;"></div>\
+                                <div style="font-weight:600;margin:10px 0 6px;color:var(--text);">Visit Order (distance)</div>\
+                                <div id="graph-demo-bfs-order" style="display:flex;gap:6px;flex-wrap:wrap;min-height:32px;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-bfs-msg">Graph: 1-2, 1-3, 2-4, 3-5, 4-6 (visit smaller numbers first). Click "Next Step" to follow the BFS process!</div>\
                 </div>\
 \
                 <div class="think-box">\
@@ -412,6 +483,21 @@ var graphTopic = {
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Grid traversal pattern (BFS)\ndx = [0, 0, 1, -1]  # up, down, right, left\ndy = [1, -1, 0, 0]\n\nfor d in range(4):\n    nx, ny = x + dx[d], y + dy[d]\n    # Bounds check: is it inside the grid?\n    if 0 <= nx < N and 0 <= ny < M:\n        # Not a wall and not visited?\n        if grid[nx][ny] != 0 and not visited[nx][ny]:\n            visited[nx][ny] = True\n            queue.append((nx, ny))</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Grid traversal pattern (BFS)\nint dx[] = {0, 0, 1, -1};  // up, down, right, left\nint dy[] = {1, -1, 0, 0};\n\nfor (int d = 0; d &lt; 4; d++) {\n    int nx = x + dx[d], ny = y + dy[d];\n    // Bounds check: is it inside the grid?\n    if (nx &gt;= 0 &amp;&amp; nx &lt; N &amp;&amp; ny &gt;= 0 &amp;&amp; ny &lt; M) {\n        // Not a wall and not visited?\n        if (grid[nx][ny] != 0 &amp;&amp; !visited[nx][ny]) {\n            visited[nx][ny] = true;\n            q.push({nx, ny});\n        }\n    }\n}</code></pre></div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Grid BFS (Flood Fill)</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Select a starting cell (blue), then click "Start BFS". It explores up/down/left/right like ripples spreading! Black cells are walls (click to toggle).</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-grid-start">Start BFS</button>\
+                        <button class="concept-demo-btn" id="graph-demo-grid-step" style="display:none;">Next Step ▶</button>\
+                        <button class="concept-demo-btn" id="graph-demo-grid-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                        <span id="graph-demo-grid-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="graph-demo-grid-area" style="display:inline-grid;grid-template-columns:repeat(7,36px);gap:3px;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-grid-msg">Click cells to toggle walls (black). The blue cell is the starting point. Numbers show the distance from the start!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -453,6 +539,17 @@ var graphTopic = {
                     </div>\
                 </div>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Type Matching Quiz</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Read the problem description and choose the most appropriate traversal method: DFS / BFS / Both!</p>\
+                    <div id="graph-demo-quiz-area" style="display:flex;flex-direction:column;gap:16px;"></div>\
+                    <div style="margin-top:12px;text-align:center;">\
+                        <button class="concept-demo-btn" id="graph-demo-quiz-check">Check Answers</button>\
+                        <button class="concept-demo-btn" id="graph-demo-quiz-retry" style="display:none;background:var(--bg2);color:var(--text2);">Try Again</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-quiz-msg">Choose the best traversal method for each problem, then click "Check Answers"!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -480,6 +577,505 @@ var graphTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ========== Demo 1: Build an Adjacency List ==========
+        (function() {
+            var NODE_COUNT = 6;
+            var positions = [
+                {x:140,y:30},{x:60,y:90},{x:220,y:90},
+                {x:30,y:180},{x:140,y:180},{x:250,y:180}
+            ];
+            var adj = {};
+            var edgeSet = {};
+            for (var i = 1; i <= NODE_COUNT; i++) adj[i] = [];
+
+            var svgEl = container.querySelector('#graph-demo-adj-svg');
+            var listEl = container.querySelector('#graph-demo-adj-list');
+            var msgEl = container.querySelector('#graph-demo-adj-msg');
+            var addBtn = container.querySelector('#graph-demo-adj-add');
+            var resetBtn = container.querySelector('#graph-demo-adj-reset');
+            var uInput = container.querySelector('#graph-demo-adj-u');
+            var vInput = container.querySelector('#graph-demo-adj-v');
+
+            function render() {
+                var html = '';
+                for (var key in edgeSet) {
+                    var parts = key.split('-');
+                    var a = parseInt(parts[0]) - 1, b = parseInt(parts[1]) - 1;
+                    html += '<line x1="' + positions[a].x + '" y1="' + positions[a].y + '" x2="' + positions[b].x + '" y2="' + positions[b].y + '" stroke="var(--accent)" stroke-width="2.5" opacity="0.6"/>';
+                }
+                for (var i = 0; i < NODE_COUNT; i++) {
+                    html += '<circle cx="' + positions[i].x + '" cy="' + positions[i].y + '" r="18" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"/>';
+                    html += '<text x="' + positions[i].x + '" y="' + (positions[i].y + 5) + '" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">' + (i + 1) + '</text>';
+                }
+                svgEl.innerHTML = html;
+
+                var listHtml = '';
+                for (var i = 1; i <= NODE_COUNT; i++) {
+                    var neighbors = adj[i].slice().sort(function(a,b){return a-b;});
+                    listHtml += '<div style="padding:3px 0;' + (neighbors.length > 0 ? 'color:var(--text);' : 'color:var(--text3);') + '">' +
+                        '<span style="color:var(--accent);font-weight:700;">' + i + '</span>: [' + neighbors.join(', ') + ']</div>';
+                }
+                listEl.innerHTML = listHtml;
+            }
+            render();
+
+            addBtn.addEventListener('click', function() {
+                var u = parseInt(uInput.value), v = parseInt(vInput.value);
+                if (isNaN(u) || isNaN(v) || u < 1 || u > NODE_COUNT || v < 1 || v > NODE_COUNT || u === v) {
+                    msgEl.textContent = 'Please enter different vertex numbers between 1 and ' + NODE_COUNT + '!';
+                    msgEl.style.color = 'var(--red)';
+                    return;
+                }
+                var key = Math.min(u,v) + '-' + Math.max(u,v);
+                if (edgeSet[key]) {
+                    msgEl.textContent = 'Edge ' + u + '-' + v + ' already exists!';
+                    msgEl.style.color = 'var(--yellow)';
+                    return;
+                }
+                edgeSet[key] = true;
+                adj[u].push(v);
+                adj[v].push(u);
+                msgEl.textContent = 'Edge ' + u + ' — ' + v + ' added! Both adjacency lists are updated (undirected).';
+                msgEl.style.color = 'var(--green)';
+                render();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                adj = {}; edgeSet = {};
+                for (var i = 1; i <= NODE_COUNT; i++) adj[i] = [];
+                msgEl.textContent = 'Reset complete! Try adding edges.';
+                msgEl.style.color = 'var(--text2)';
+                render();
+            });
+        })();
+
+        // ========== Demo 2: Follow the DFS ==========
+        (function() {
+            var dfsAdj = {1:[2,3], 2:[1,4,5], 3:[1], 4:[2], 5:[2]};
+            var positions = [{x:150,y:30},{x:70,y:100},{x:230,y:100},{x:40,y:190},{x:130,y:190}];
+            var edges = [[1,2],[1,3],[2,4],[2,5]];
+            var nodeLabels = [1,2,3,4,5];
+
+            var svgEl = container.querySelector('#graph-demo-dfs-svg');
+            var stackEl = container.querySelector('#graph-demo-dfs-stack');
+            var orderEl = container.querySelector('#graph-demo-dfs-order');
+            var stepBtn = container.querySelector('#graph-demo-dfs-step');
+            var resetBtn = container.querySelector('#graph-demo-dfs-reset');
+            var counterEl = container.querySelector('#graph-demo-dfs-counter');
+            var msgEl = container.querySelector('#graph-demo-dfs-msg');
+
+            var visited, stack, visitOrder, dfsSteps, stepIdx;
+
+            function buildDfsSteps() {
+                visited = {}; stack = [1]; visitOrder = []; dfsSteps = []; stepIdx = -1;
+                var vis = {}, stk = [1], ord = [];
+                vis[1] = true;
+                dfsSteps.push({type:'init', node:1, stack:[1], order:[], desc:'Start: push vertex 1 onto the stack and mark as visited.'});
+                while (stk.length > 0) {
+                    var v = stk.pop();
+                    ord.push(v);
+                    var snap = stk.slice();
+                    dfsSteps.push({type:'pop', node:v, stack:snap.slice(), order:ord.slice(), desc:'Pop vertex ' + v + ' from the stack and process it. Visit order: ' + ord.join(' \u2192 ')});
+                    var neighbors = dfsAdj[v].slice().sort(function(a,b){return b-a;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            stk.push(u);
+                            snap = stk.slice();
+                            dfsSteps.push({type:'push', node:u, from:v, stack:snap.slice(), order:ord.slice(), desc:'Push neighbor ' + u + ' of vertex ' + v + ' onto the stack and mark as visited.'});
+                        }
+                    });
+                }
+                dfsSteps.push({type:'done', stack:[], order:ord.slice(), desc:'DFS complete! Visit order: ' + ord.join(' \u2192 ')});
+            }
+
+            function renderDfs(step) {
+                var html = '';
+                edges.forEach(function(e) {
+                    var a = e[0]-1, b = e[1]-1;
+                    html += '<line x1="'+positions[a].x+'" y1="'+positions[a].y+'" x2="'+positions[b].x+'" y2="'+positions[b].y+'" stroke="var(--bg3)" stroke-width="2.5"/>';
+                });
+                for (var i = 0; i < 5; i++) {
+                    var nd = nodeLabels[i];
+                    var fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                    if (step && step.order && step.order.indexOf(nd) >= 0) {
+                        fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white';
+                    }
+                    if (step && step.node === nd && step.type === 'pop') {
+                        fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333';
+                    }
+                    if (step && step.node === nd && step.type === 'push') {
+                        stroke = 'var(--accent)';
+                    }
+                    html += '<circle cx="'+positions[i].x+'" cy="'+positions[i].y+'" r="20" fill="'+fill+'" stroke="'+stroke+'" stroke-width="3"/>';
+                    html += '<text x="'+positions[i].x+'" y="'+(positions[i].y+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="'+txtColor+'">'+nd+'</text>';
+                }
+                svgEl.innerHTML = html;
+
+                stackEl.innerHTML = '';
+                if (step && step.stack) {
+                    step.stack.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:6px 14px;background:var(--accent);color:white;border-radius:6px;font-weight:700;text-align:center;font-size:0.9rem;';
+                        div.textContent = nd;
+                        stackEl.appendChild(div);
+                    });
+                }
+                if (!step || !step.stack || step.stack.length === 0) {
+                    stackEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">Empty</span>';
+                }
+
+                orderEl.innerHTML = '';
+                if (step && step.order) {
+                    step.order.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'width:32px;height:32px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;';
+                        div.textContent = nd;
+                        orderEl.appendChild(div);
+                    });
+                }
+            }
+
+            function reset() {
+                buildDfsSteps();
+                stepIdx = -1;
+                renderDfs(null);
+                counterEl.textContent = '';
+                msgEl.textContent = 'Graph: 1-2, 1-3, 2-4, 2-5 (visit smaller numbers first). Click "Next Step" to follow the DFS process step by step!';
+                stepBtn.disabled = false;
+            }
+
+            stepBtn.addEventListener('click', function() {
+                stepIdx++;
+                if (stepIdx >= dfsSteps.length) { stepBtn.disabled = true; return; }
+                var s = dfsSteps[stepIdx];
+                renderDfs(s);
+                counterEl.textContent = (stepIdx + 1) + ' / ' + dfsSteps.length;
+                msgEl.textContent = s.desc;
+                if (stepIdx >= dfsSteps.length - 1) stepBtn.disabled = true;
+            });
+            resetBtn.addEventListener('click', reset);
+            reset();
+        })();
+
+        // ========== Demo 3: Follow the BFS ==========
+        (function() {
+            var bfsAdj = {1:[2,3], 2:[1,4], 3:[1,5], 4:[2,6], 5:[3], 6:[4]};
+            var positions = [{x:150,y:25},{x:70,y:95},{x:230,y:95},{x:40,y:180},{x:230,y:180},{x:120,y:180}];
+            var edges = [[1,2],[1,3],[2,4],[3,5],[4,6]];
+            var nodeLabels = [1,2,3,4,5,6];
+
+            var svgEl = container.querySelector('#graph-demo-bfs-svg');
+            var queueEl = container.querySelector('#graph-demo-bfs-queue');
+            var orderEl = container.querySelector('#graph-demo-bfs-order');
+            var stepBtn = container.querySelector('#graph-demo-bfs-step');
+            var resetBtn = container.querySelector('#graph-demo-bfs-reset');
+            var counterEl = container.querySelector('#graph-demo-bfs-counter');
+            var msgEl = container.querySelector('#graph-demo-bfs-msg');
+
+            var bfsSteps, stepIdx, dist;
+
+            function buildBfsSteps() {
+                bfsSteps = []; dist = {};
+                var vis = {}, queue = [1], ord = [];
+                vis[1] = true; dist[1] = 0;
+                bfsSteps.push({type:'init', node:1, queue:[1], order:[], dist:{1:0}, desc:'Start: enqueue vertex 1 and mark as visited. Distance=0.'});
+                while (queue.length > 0) {
+                    var v = queue.shift();
+                    ord.push(v);
+                    var snap = queue.slice();
+                    var dSnap = {};
+                    for (var k in dist) dSnap[k] = dist[k];
+                    bfsSteps.push({type:'dequeue', node:v, queue:snap.slice(), order:ord.slice(), dist:Object.assign({},dSnap), desc:'Dequeue vertex ' + v + ' and process it. Distance=' + dist[v] + '. Visit order: ' + ord.join(' \u2192 ')});
+                    var neighbors = bfsAdj[v].slice().sort(function(a,b){return a-b;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            dist[u] = dist[v] + 1;
+                            queue.push(u);
+                            snap = queue.slice();
+                            dSnap = {};
+                            for (var k in dist) dSnap[k] = dist[k];
+                            bfsSteps.push({type:'enqueue', node:u, from:v, queue:snap.slice(), order:ord.slice(), dist:Object.assign({},dSnap), desc:'Enqueue neighbor ' + u + ' of vertex ' + v + '. Distance=' + dist[u] + '.'});
+                        }
+                    });
+                }
+                bfsSteps.push({type:'done', queue:[], order:ord.slice(), dist:Object.assign({},dist), desc:'BFS complete! Visit order: ' + ord.join(' \u2192 ') + '. Shortest distances to all vertices have been calculated.'});
+            }
+
+            function renderBfs(step) {
+                var html = '';
+                edges.forEach(function(e) {
+                    var a = e[0]-1, b = e[1]-1;
+                    html += '<line x1="'+positions[a].x+'" y1="'+positions[a].y+'" x2="'+positions[b].x+'" y2="'+positions[b].y+'" stroke="var(--bg3)" stroke-width="2.5"/>';
+                });
+                for (var i = 0; i < nodeLabels.length; i++) {
+                    var nd = nodeLabels[i];
+                    var fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                    if (step && step.order && step.order.indexOf(nd) >= 0) {
+                        fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white';
+                    }
+                    if (step && step.node === nd && step.type === 'dequeue') {
+                        fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333';
+                    }
+                    if (step && step.node === nd && step.type === 'enqueue') {
+                        stroke = 'var(--accent)'; if (step.order.indexOf(nd) < 0) fill = 'var(--accent)15';
+                    }
+                    html += '<circle cx="'+positions[i].x+'" cy="'+positions[i].y+'" r="20" fill="'+fill+'" stroke="'+stroke+'" stroke-width="3"/>';
+                    html += '<text x="'+positions[i].x+'" y="'+(positions[i].y+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="'+txtColor+'">'+nd+'</text>';
+                    if (step && step.dist && step.dist[nd] !== undefined) {
+                        html += '<text x="'+(positions[i].x+22)+'" y="'+(positions[i].y-14)+'" text-anchor="middle" font-size="10" fill="var(--accent)" font-weight="600">d='+step.dist[nd]+'</text>';
+                    }
+                }
+                svgEl.innerHTML = html;
+
+                queueEl.innerHTML = '';
+                if (step && step.queue && step.queue.length > 0) {
+                    step.queue.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:6px 14px;background:var(--accent);color:white;border-radius:6px;font-weight:700;font-size:0.9rem;';
+                        div.textContent = nd;
+                        queueEl.appendChild(div);
+                    });
+                } else {
+                    queueEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">Empty</span>';
+                }
+
+                orderEl.innerHTML = '';
+                if (step && step.order) {
+                    step.order.forEach(function(nd) {
+                        var d = step.dist && step.dist[nd] !== undefined ? step.dist[nd] : '?';
+                        var div = document.createElement('div');
+                        div.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;';
+                        div.innerHTML = '<div style="width:32px;height:32px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;">'+nd+'</div><span style="font-size:0.7rem;color:var(--text2);">d='+d+'</span>';
+                        orderEl.appendChild(div);
+                    });
+                }
+            }
+
+            function reset() {
+                buildBfsSteps();
+                stepIdx = -1;
+                renderBfs(null);
+                counterEl.textContent = '';
+                msgEl.textContent = 'Graph: 1-2, 1-3, 2-4, 3-5, 4-6 (visit smaller numbers first). Click "Next Step" to follow the BFS process!';
+                stepBtn.disabled = false;
+            }
+
+            stepBtn.addEventListener('click', function() {
+                stepIdx++;
+                if (stepIdx >= bfsSteps.length) { stepBtn.disabled = true; return; }
+                var s = bfsSteps[stepIdx];
+                renderBfs(s);
+                counterEl.textContent = (stepIdx + 1) + ' / ' + bfsSteps.length;
+                msgEl.textContent = s.desc;
+                if (stepIdx >= bfsSteps.length - 1) stepBtn.disabled = true;
+            });
+            resetBtn.addEventListener('click', reset);
+            reset();
+        })();
+
+        // ========== Demo 4: Grid BFS (Flood Fill) ==========
+        (function() {
+            var ROWS = 6, COLS = 7;
+            var grid, dist, startR, startC, bfsQueue, bfsRunning, bfsStepIdx;
+            var areaEl = container.querySelector('#graph-demo-grid-area');
+            var startBtn = container.querySelector('#graph-demo-grid-start');
+            var stepBtn = container.querySelector('#graph-demo-grid-step');
+            var resetBtn = container.querySelector('#graph-demo-grid-reset');
+            var counterEl = container.querySelector('#graph-demo-grid-counter');
+            var msgEl = container.querySelector('#graph-demo-grid-msg');
+            var dx = [-1,1,0,0], dy = [0,0,-1,1];
+
+            function initGrid() {
+                grid = []; dist = [];
+                for (var r = 0; r < ROWS; r++) {
+                    grid[r] = []; dist[r] = [];
+                    for (var c = 0; c < COLS; c++) { grid[r][c] = 0; dist[r][c] = -1; }
+                }
+                [[1,2],[1,3],[2,3],[3,1],[3,4],[4,4]].forEach(function(w) { grid[w[0]][w[1]] = 1; });
+                startR = 0; startC = 0;
+                bfsQueue = []; bfsRunning = false; bfsStepIdx = 0;
+            }
+
+            function renderGrid() {
+                areaEl.innerHTML = '';
+                for (var r = 0; r < ROWS; r++) {
+                    for (var c = 0; c < COLS; c++) {
+                        var cell = document.createElement('div');
+                        cell.dataset.r = r; cell.dataset.c = c;
+                        cell.style.cssText = 'width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;border:2px solid var(--bg3);';
+                        if (grid[r][c] === 1) {
+                            cell.style.background = '#333'; cell.style.color = '#666';
+                        } else if (r === startR && c === startC) {
+                            cell.style.background = 'var(--accent)'; cell.style.color = 'white';
+                            cell.textContent = 'S';
+                        } else if (dist[r][c] >= 0) {
+                            var hue = 120 + dist[r][c] * 30;
+                            cell.style.background = 'hsl(' + (hue % 360) + ', 60%, 55%)';
+                            cell.style.color = 'white';
+                            cell.textContent = dist[r][c];
+                        } else {
+                            cell.style.background = 'var(--card)'; cell.style.color = 'var(--text3)';
+                        }
+                        if (!bfsRunning) {
+                            cell.addEventListener('click', (function(rr,cc) {
+                                return function() {
+                                    if (rr === startR && cc === startC) return;
+                                    grid[rr][cc] = grid[rr][cc] === 1 ? 0 : 1;
+                                    renderGrid();
+                                };
+                            })(r,c));
+                        }
+                        areaEl.appendChild(cell);
+                    }
+                }
+            }
+
+            function reset() {
+                initGrid();
+                renderGrid();
+                startBtn.style.display = '';
+                stepBtn.style.display = 'none';
+                counterEl.textContent = '';
+                msgEl.textContent = 'Click cells to toggle walls (black). The blue cell is the starting point.';
+                msgEl.style.color = 'var(--text2)';
+            }
+
+            startBtn.addEventListener('click', function() {
+                bfsRunning = true;
+                dist = [];
+                for (var r = 0; r < ROWS; r++) { dist[r] = []; for (var c = 0; c < COLS; c++) dist[r][c] = -1; }
+                dist[startR][startC] = 0;
+                bfsQueue = [{r:startR, c:startC}];
+                bfsStepIdx = 0;
+                startBtn.style.display = 'none';
+                stepBtn.style.display = '';
+                renderGrid();
+                msgEl.textContent = 'BFS started! Starting from (' + startR + ',' + startC + '). Click "Next Step" to watch the ripples spread.';
+                msgEl.style.color = 'var(--accent)';
+            });
+
+            stepBtn.addEventListener('click', function() {
+                if (bfsQueue.length === 0) {
+                    msgEl.textContent = 'BFS complete! Shortest distances to all reachable cells are shown.';
+                    msgEl.style.color = 'var(--green)';
+                    stepBtn.disabled = true;
+                    return;
+                }
+                var cur = bfsQueue.shift();
+                bfsStepIdx++;
+                var added = [];
+                for (var d = 0; d < 4; d++) {
+                    var nr = cur.r + dx[d], nc = cur.c + dy[d];
+                    if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && grid[nr][nc] === 0 && dist[nr][nc] < 0) {
+                        dist[nr][nc] = dist[cur.r][cur.c] + 1;
+                        bfsQueue.push({r:nr, c:nc});
+                        added.push('(' + nr + ',' + nc + ')');
+                    }
+                }
+                renderGrid();
+                counterEl.textContent = 'Step ' + bfsStepIdx + ' | Queue: ' + bfsQueue.length;
+                if (added.length > 0) {
+                    msgEl.textContent = 'Processing (' + cur.r + ',' + cur.c + ') (distance ' + dist[cur.r][cur.c] + '). Added neighbors ' + added.join(', ') + ' to queue.';
+                } else {
+                    msgEl.textContent = 'Processing (' + cur.r + ',' + cur.c + ') (distance ' + dist[cur.r][cur.c] + '). No new neighbors to add.';
+                }
+                msgEl.style.color = 'var(--text)';
+            });
+
+            resetBtn.addEventListener('click', function() {
+                bfsRunning = false;
+                stepBtn.disabled = false;
+                reset();
+            });
+            reset();
+        })();
+
+        // ========== Demo 5: Type Matching Quiz ==========
+        (function() {
+            var quizData = [
+                {q:'Find the shortest distance to the exit in a maze', answer:'BFS', why:'BFS explores closest nodes first, so it guarantees the shortest distance.'},
+                {q:'Count the number of connected components in a graph', answer:'Both', why:'Connected components can be found with either DFS or BFS. Both work!'},
+                {q:'Detect if a cycle exists', answer:'DFS', why:'DFS follows one path deeply, making cycle detection natural.'},
+                {q:'Tomatoes ripening from multiple sources simultaneously', answer:'BFS', why:'Multi-source BFS! Put all starting points into the queue at once.'},
+                {q:'Simulating water spreading simultaneously across a grid', answer:'BFS', why:'Simultaneous spreading matches BFS level-by-level traversal exactly.'}
+            ];
+            var choices = ['DFS', 'BFS', 'Both'];
+            var quizArea = container.querySelector('#graph-demo-quiz-area');
+            var checkBtn = container.querySelector('#graph-demo-quiz-check');
+            var retryBtn = container.querySelector('#graph-demo-quiz-retry');
+            var quizMsg = container.querySelector('#graph-demo-quiz-msg');
+            var userAnswers = [];
+
+            function renderQuiz() {
+                quizArea.innerHTML = '';
+                userAnswers = [];
+                quizData.forEach(function(item, idx) {
+                    userAnswers.push(null);
+                    var card = document.createElement('div');
+                    card.style.cssText = 'padding:14px 18px;background:var(--card);border-radius:10px;border:1.5px solid var(--bg3);';
+                    card.id = 'graph-demo-quiz-q' + idx;
+                    var html = '<div style="font-weight:600;color:var(--text);margin-bottom:8px;">' + (idx+1) + '. ' + item.q + '</div>';
+                    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+                    choices.forEach(function(ch) {
+                        html += '<button class="concept-demo-btn graph-demo-quiz-opt" data-idx="' + idx + '" data-val="' + ch + '" style="padding:6px 16px;font-size:0.85rem;background:var(--bg2);color:var(--text);border:1.5px solid var(--bg3);">' + ch + '</button>';
+                    });
+                    html += '</div>';
+                    html += '<div class="graph-demo-quiz-feedback" style="margin-top:8px;font-size:0.85rem;color:var(--text2);display:none;"></div>';
+                    card.innerHTML = html;
+                    quizArea.appendChild(card);
+                });
+                quizArea.querySelectorAll('.graph-demo-quiz-opt').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var idx = parseInt(btn.dataset.idx);
+                        var val = btn.dataset.val;
+                        userAnswers[idx] = val;
+                        var card = container.querySelector('#graph-demo-quiz-q' + idx);
+                        card.querySelectorAll('.graph-demo-quiz-opt').forEach(function(b) {
+                            b.style.background = 'var(--bg2)'; b.style.borderColor = 'var(--bg3)'; b.style.color = 'var(--text)';
+                        });
+                        btn.style.background = 'var(--accent)'; btn.style.color = 'white'; btn.style.borderColor = 'var(--accent)';
+                    });
+                });
+            }
+
+            checkBtn.addEventListener('click', function() {
+                var score = 0;
+                quizData.forEach(function(item, idx) {
+                    var card = container.querySelector('#graph-demo-quiz-q' + idx);
+                    var fb = card.querySelector('.graph-demo-quiz-feedback');
+                    fb.style.display = 'block';
+                    if (userAnswers[idx] === item.answer) {
+                        score++;
+                        fb.innerHTML = '<span style="color:var(--green);font-weight:600;">Correct!</span> ' + item.why;
+                        card.style.borderColor = 'var(--green)';
+                    } else if (userAnswers[idx] === null) {
+                        fb.innerHTML = '<span style="color:var(--text2);">Not answered.</span> Answer: <strong>' + item.answer + '</strong>. ' + item.why;
+                        card.style.borderColor = 'var(--yellow)';
+                    } else {
+                        fb.innerHTML = '<span style="color:var(--red);font-weight:600;">Wrong!</span> Answer: <strong>' + item.answer + '</strong>. ' + item.why;
+                        card.style.borderColor = 'var(--red)';
+                    }
+                    card.querySelectorAll('.graph-demo-quiz-opt').forEach(function(b) { b.disabled = true; });
+                });
+                quizMsg.textContent = score + ' out of ' + quizData.length + ' correct!';
+                quizMsg.style.color = score === quizData.length ? 'var(--green)' : 'var(--accent)';
+                checkBtn.style.display = 'none';
+                retryBtn.style.display = '';
+            });
+
+            retryBtn.addEventListener('click', function() {
+                renderQuiz();
+                quizMsg.textContent = 'Choose the best traversal method for each problem, then click "Check Answers"!';
+                quizMsg.style.color = 'var(--text2)';
+                checkBtn.style.display = '';
+                retryBtn.style.display = 'none';
+            });
+
+            renderQuiz();
+        })();
     },
 
     // ===== Visualization State =====
@@ -583,7 +1179,7 @@ var graphTopic = {
             var adj = buildAdj(n, edges);
             var steps = [], visited = {}, queue = [];
             // BFS from node 1
-            steps.push({ description: 'Enqueue node 1 and mark as visited.',
+            steps.push({ description: '<strong>Node 1</strong> is the infection source — enqueue it to prepare for neighbor exploration. BFS explores <em>nearest neighbors first</em>, so it can find all connected computers without missing any.',
                 action: function() { visited = {1:true}; queue = [1]; renderNodes(n, visited, 1, queue); infoEl.innerHTML = 'visited[1] = True, Queue = [1]'; },
                 undo: function() { visited = {}; queue = []; renderNodes(n, {}, null, []); infoEl.innerHTML = ''; } });
             // simulate BFS to generate steps
@@ -595,7 +1191,7 @@ var graphTopic = {
                     (function(cv, nb) {
                         var addedNodes = nb.slice();
                         steps.push({
-                            description: 'Dequeue ' + cv + ' → enqueue unvisited neighbors ' + nb.join(', '),
+                            description: 'Dequeue <strong>front</strong> node ' + cv + ' — FIFO order ensures we process closer nodes first. Neighbors <strong>' + nb.join(', ') + '</strong> are unvisited, so infect them and add to queue.',
                             action: function() { addedNodes.forEach(function(u) { visited[u] = true; }); queue = simQ.slice(); renderNodes(n, visited, cv, queue); infoEl.innerHTML = 'Unvisited neighbors of ' + cv + ': ' + nb.join(', ') + ' → infected!'; },
                             undo: function() { addedNodes.forEach(function(u) { delete visited[u]; }); renderNodes(n, visited, null, []); infoEl.innerHTML = ''; }
                         });
@@ -604,7 +1200,7 @@ var graphTopic = {
                 } else if (v !== 1) {
                     (function(cv) {
                         steps.push({
-                            description: 'Dequeue ' + cv + ' → no unvisited neighbors',
+                            description: 'Dequeue ' + cv + ' — all neighbors are <em>already visited</em>. The visited check prevents infinite loops and duplicate processing, so there is nothing more to spread from this node.',
                             action: function() { renderNodes(n, visited, cv, simQ.slice()); infoEl.innerHTML = 'All neighbors of ' + cv + ' already visited'; },
                             undo: function() { renderNodes(n, visited, null, []); infoEl.innerHTML = ''; }
                         });
@@ -614,7 +1210,7 @@ var graphTopic = {
             // final step
             var infectedCount = Object.keys(simVis).length - 1;
             var infectedList = Object.keys(simVis).filter(function(k){return k!=='1';}).join(',');
-            steps.push({ description: 'Traversal complete! Infected computers = ' + infectedCount,
+            steps.push({ description: 'BFS queue is empty, so <strong>traversal is complete</strong> — all computers reachable from node 1 have been visited. Infected computers = <strong>' + infectedCount + '</strong>',
                 action: function() { queue = []; renderNodes(n, visited, null, []); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 Infected computers = ' + infectedCount + ' (' + infectedList + ')</strong>'; },
                 undo: function() { renderNodes(n, visited, null, []); infoEl.innerHTML = ''; } });
             return steps;
@@ -679,17 +1275,22 @@ var graphTopic = {
             dfs(start, -1);
             visitLog.forEach(function(entry, idx) {
                 (function(e, i) {
-                    var desc = (e.from === -1 ? 'dfs(' + e.node + ')' : e.from + '→' + e.node) + ': order[' + e.node + ']=' + e.order;
+                    var desc;
+                    if (e.from === -1) {
+                        desc = 'Start DFS from <strong>' + e.node + '</strong> — recursive calls explore <em>as deep as possible</em> before backtracking. order[' + e.node + ']=' + e.order;
+                    } else {
+                        desc = 'From ' + e.from + ', dive into the smallest unvisited neighbor <strong>' + e.node + '</strong> (ascending order) — DFS goes as deep as possible in one direction. order[' + e.node + ']=' + e.order;
+                    }
                     steps.push({
                         description: desc,
-                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = desc; },
+                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = 'order[' + e.node + '] = ' + e.order; },
                         undo: function() { delete order[e.node]; var prev = i > 0 ? visitLog[i-1] : null; renderNodes(n, order, prev ? prev.node : null); infoEl.innerHTML = prev ? 'order[' + prev.node + '] = ' + prev.order : ''; }
                     });
                 })(entry, idx);
             });
             // final
             var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: 'Done! Visit order: ' + result.join(','),
+            steps.push({ description: 'All recursive calls finished — <strong>traversal complete</strong>. Since this is ascending DFS, smaller-numbered neighbors were visited first. Visit order: <strong>' + result.join(',') + '</strong>',
                 action: function() { renderNodes(n, order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 visit order: ' + result.join(',') + '</strong>'; },
                 undo: function() { var last = visitLog[visitLog.length-1]; renderNodes(n, order, last.node); infoEl.innerHTML = 'order[' + last.node + '] = ' + last.order; } });
             return steps;
@@ -752,7 +1353,12 @@ var graphTopic = {
             dfs(start, -1);
             visitLog.forEach(function(entry, idx) {
                 (function(e, i) {
-                    var desc = (e.from === -1 ? 'dfs(' + e.node + ')' : e.from + '\u2192' + e.node) + ': order[' + e.node + ']=' + e.order;
+                    var desc;
+                    if (e.from === -1) {
+                        desc = 'Start DFS from <strong>' + e.node + '</strong> — this time we visit neighbors in <em>descending</em> order. Same graph, but different visit order. order[' + e.node + ']=' + e.order;
+                    } else {
+                        desc = 'From ' + e.from + ', dive into the largest unvisited neighbor <strong>' + e.node + '</strong> (descending order). order[' + e.node + ']=' + e.order;
+                    }
                     steps.push({
                         description: desc,
                         action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = desc; },
@@ -761,7 +1367,7 @@ var graphTopic = {
                 })(entry, idx);
             });
             var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: 'Done! Visit order: ' + result.join(','),
+            steps.push({ description: 'Traversal complete — descending order visited larger-numbered neighbors first. Compare with ascending DFS to see how <em>visit order changes</em>! Result: <strong>' + result.join(',') + '</strong>',
                 action: function() { renderNodes(n, order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 visit order: ' + result.join(',') + '</strong>'; },
                 undo: function() { var last = visitLog[visitLog.length-1]; renderNodes(n, order, last.node); infoEl.innerHTML = 'order[' + last.node + '] = ' + last.order; } });
             return steps;
@@ -830,19 +1436,19 @@ var graphTopic = {
             bfsLog.forEach(function(entry, idx) {
                 (function(e, i) {
                     if (e.type === 'start') {
-                        steps.push({ description: 'Start: enqueue node ' + e.node + ', order[' + e.node + ']=1',
+                        steps.push({ description: 'Start BFS from <strong>' + e.node + '</strong> — enqueue and mark visited. BFS uses a queue (FIFO) to explore <em>nearest nodes first, in order</em>. order[' + e.node + ']=1',
                             action: function() { order[e.node] = 1; renderNodes(n, order, e.node, [e.node]); infoEl.innerHTML = 'order[' + e.node + '] = 1, Queue = [' + e.node + ']'; },
                             undo: function() { order = {}; renderNodes(n, {}, null, []); infoEl.innerHTML = ''; } });
                     } else {
-                        var addedDesc = e.added.length > 0 ? 'Unvisited neighbors: ' + e.added.join(',') + ' enqueued' : 'No unvisited neighbors';
-                        steps.push({ description: 'Dequeue ' + e.node + ' \u2192 ' + addedDesc,
+                        var addedDesc = e.added.length > 0 ? 'Unvisited neighbors <strong>' + e.added.join(', ') + '</strong> added to back of queue — ascending order means smaller numbers first' : 'All neighbors already visited — visited check prevents infinite loops';
+                        steps.push({ description: 'Dequeue front node <strong>' + e.node + '</strong> (FIFO: process nodes that entered first) \u2192 ' + addedDesc,
                             action: function() { e.added.forEach(function(u) { order[u] = simOrder[u]; }); renderNodes(n, order, e.node, e.queue); infoEl.innerHTML = addedDesc + '. Queue = [' + e.queue.join(', ') + ']'; },
                             undo: function() { e.added.forEach(function(u) { delete order[u]; }); renderNodes(n, order, null, []); infoEl.innerHTML = ''; } });
                     }
                 })(entry, idx);
             });
             var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: 'Done! Visit order: ' + result.join(','),
+            steps.push({ description: 'Queue is empty — <strong>traversal complete</strong>. Thanks to FIFO, BFS visited nodes in order of distance: distance-1 nodes first, then distance-2, and so on. Result: <strong>' + result.join(',') + '</strong>',
                 action: function() { renderNodes(n, order, null, []); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 visit order: ' + result.join(',') + '</strong>'; },
                 undo: function() { renderNodes(n, order, null, []); infoEl.innerHTML = ''; } });
             return steps;
@@ -907,19 +1513,19 @@ var graphTopic = {
             bfsLog.forEach(function(entry) {
                 (function(e) {
                     if (e.type==='start') {
-                        steps.push({ description: 'Start: order['+e.node+']=1, Queue=['+e.node+']',
+                        steps.push({ description: 'Start BFS from <strong>'+e.node+'</strong> — this time neighbors are explored in <em>descending</em> order. Changing the enqueue order changes the visit order.',
                             action: function() { order[e.node]=1; renderNodes(n,order,e.node,[e.node]); infoEl.innerHTML='order['+e.node+'] = 1'; },
                             undo: function() { order={}; renderNodes(n,{},null,[]); infoEl.innerHTML=''; } });
                     } else {
-                        var addedDesc = e.added.length>0 ? 'Unvisited: '+e.added.join(',')+' enqueued' : 'No unvisited neighbors';
-                        steps.push({ description: 'Dequeue '+e.node+' \u2192 '+addedDesc,
+                        var addedDesc = e.added.length>0 ? 'Unvisited neighbors <strong>'+e.added.join(', ')+'</strong> added to queue in descending order' : 'All neighbors already visited — nothing more to spread';
+                        steps.push({ description: 'Dequeue front node <strong>'+e.node+'</strong> (FIFO) \u2192 '+addedDesc,
                             action: function() { e.added.forEach(function(u){order[u]=simOrder[u];}); renderNodes(n,order,e.node,e.queue); infoEl.innerHTML=addedDesc; },
                             undo: function() { e.added.forEach(function(u){delete order[u];}); renderNodes(n,order,null,[]); infoEl.innerHTML=''; } });
                     }
                 })(entry);
             });
             var result=[]; for(var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: 'Done! Result: '+result.join(','),
+            steps.push({ description: 'Traversal complete — compare with ascending BFS: the <em>visit order is different</em>. Adjacency list sort order affects BFS results. Result: <strong>'+result.join(',')+'</strong>',
                 action: function() { renderNodes(n,order,null,[]); infoEl.innerHTML='<strong style="color:var(--green);">\u2705 visit order: '+result.join(',')+'</strong>'; },
                 undo: function() { renderNodes(n,order,null,[]); infoEl.innerHTML=''; } });
             return steps;
@@ -977,7 +1583,7 @@ var graphTopic = {
             dfsResult.forEach(function(node, idx) {
                 (function(nd, i) {
                     steps.push({
-                        description: 'DFS: ' + (i===0 ? nd + ' start' : '\u2192 ' + nd),
+                        description: 'DFS: ' + (i===0 ? '<strong>' + nd + '</strong> — start. DFS uses recursion/stack to explore <em>one path as deep as possible</em> before backtracking' : '\u2192 <strong>' + nd + '</strong> — dive deeper. If there is a deeper unvisited node, DFS keeps going'),
                         action: function() { dfsShown = dfsResult.slice(0,i+1); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsShown.join(' \u2192 '); infoEl.innerHTML = 'DFS in progress...'; },
                         undo: function() { dfsShown = dfsResult.slice(0,i); areaEl.innerHTML = i>0 ? '<strong>DFS:</strong> ' + dfsShown.join(' \u2192 ') : ''; infoEl.innerHTML = ''; }
                     });
@@ -987,13 +1593,13 @@ var graphTopic = {
             bfsResult.forEach(function(node, idx) {
                 (function(nd, i) {
                     steps.push({
-                        description: 'BFS: ' + (i===0 ? nd + ' start' : '\u2192 ' + nd),
+                        description: 'BFS: ' + (i===0 ? '<strong>' + nd + '</strong> — start. BFS uses a queue (FIFO) to visit <em>all nodes at the same distance first</em>' : '\u2192 <strong>' + nd + '</strong> — queue order processes closer nodes first, so BFS visits in a different order than DFS'),
                         action: function() { bfsShown = bfsResult.slice(0,i+1); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsShown.join(' \u2192 '); infoEl.innerHTML = 'BFS in progress...'; },
                         undo: function() { bfsShown = bfsResult.slice(0,i); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' \u2192 ') + (i>0?'<br><strong>BFS:</strong> '+bfsShown.join(' \u2192 '):''); infoEl.innerHTML = ''; }
                     });
                 })(node, idx);
             });
-            steps.push({ description: 'Done! DFS: ' + dfsResult.join(' ') + ' / BFS: ' + bfsResult.join(' '),
+            steps.push({ description: '<strong>Comparison complete!</strong> DFS explored depth-first along one path before backtracking, while BFS spread level by level in distance order. Same graph, <em>different traversal orders</em>.',
                 action: function() { areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsResult.join(' '); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 DFS: ' + dfsResult.join(' ') + ' / BFS: ' + bfsResult.join(' ') + '</strong>'; },
                 undo: function() { areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsResult.join(' \u2192 '); infoEl.innerHTML = ''; } });
             return steps;
@@ -1054,7 +1660,7 @@ var graphTopic = {
                     (function(gid, cells) {
                         var cellStr = cells.map(function(p){return '('+p[0]+','+p[1]+')';}).join(',');
                         steps.push({
-                            description: 'Cabbage found at ('+cells[0][0]+','+cells[0][1]+') → cluster #'+gid+': '+cells.length+' cells',
+                            description: 'Found <strong>unvisited cabbage</strong> at ('+cells[0][0]+','+cells[0][1]+') — this means a new connected component. BFS/DFS explores all connected cabbages to form cluster #'+gid+': <strong>'+cells.length+' cells</strong>. One worm covers this entire cluster.',
                             action: function() { cells.forEach(function(p){colors[p[0]][p[1]]=gid;}); renderGrid(grid,colors); infoEl.innerHTML='Cluster #'+gid+': '+cellStr+' → '+cells.length+' cells'; },
                             undo: function() { cells.forEach(function(p){colors[p[0]][p[1]]=0;}); renderGrid(grid,colors); infoEl.innerHTML=''; }
                         });
@@ -1062,7 +1668,7 @@ var graphTopic = {
                 }
             }
             var totalGroups = groupId;
-            steps.push({ description: 'Done! Total '+totalGroups+' clusters → '+totalGroups+' worms needed',
+            steps.push({ description: 'Entire grid scanned — <strong>traversal complete</strong>. One connected component = one worm, so <strong>'+totalGroups+' worms</strong> are needed.',
                 action: function() { renderGrid(grid,colors); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 Worms needed = '+totalGroups+'</strong>'; },
                 undo: function() { renderGrid(grid,colors); infoEl.innerHTML=''; } });
             return steps;
@@ -1118,7 +1724,7 @@ var graphTopic = {
                     sizes.push(comp.length);
                     (function(gid,cells){
                         steps.push({
-                            description:'House found at ('+cells[0][0]+','+cells[0][1]+') → neighborhood #'+gid+': '+cells.length+' cells',
+                            description:'Found <strong>unvisited house</strong> at ('+cells[0][0]+','+cells[0][1]+') — BFS explores all 4-directionally connected houses to form one neighborhood. Neighborhood #'+gid+': <strong>'+cells.length+' cells</strong>',
                             action:function(){cells.forEach(function(p){colors[p[0]][p[1]]=gid;});renderGrid(grid,colors);infoEl.innerHTML='Neighborhood #'+gid+': '+cells.length+' cells';},
                             undo:function(){cells.forEach(function(p){colors[p[0]][p[1]]=0;});renderGrid(grid,colors);infoEl.innerHTML='';}
                         });
@@ -1126,7 +1732,7 @@ var graphTopic = {
                 }
             }
             var sortedSizes=sizes.slice().sort(function(a,b){return a-b;});
-            steps.push({description:'Done! '+groupId+' neighborhoods, ascending: '+sortedSizes.join(', '),
+            steps.push({description:'Grid scan complete — connected component = neighborhood, so <strong>'+groupId+' neighborhoods</strong>. Sizes in ascending order: <strong>'+sortedSizes.join(', ')+'</strong>',
                 action:function(){renderGrid(grid,colors);infoEl.innerHTML='<strong style="color:var(--green);">\u2705 Neighborhoods: '+groupId+' / Sizes (ascending): '+sortedSizes.join(', ')+'</strong>';},
                 undo:function(){renderGrid(grid,colors);infoEl.innerHTML='';}});
             return steps;
@@ -1200,13 +1806,13 @@ var graphTopic = {
                 (function(cells,idx){
                     var cellsStr=cells.map(function(p){return '('+p.r+','+p.c+')='+p.d;}).join(', ');
                     steps.push({
-                        description: idx===0?'BFS start from (0,0). dist=1':'BFS expansion: '+cellsStr,
+                        description: idx===0?'BFS starts from (0,0) — BFS explores <em>closest cells first</em>, so the first time we reach a cell is guaranteed to be the shortest distance. dist=1':'<strong>Level '+idx+'</strong> expansion: '+cellsStr+' — all unvisited path cells one step away from the previous level are discovered.',
                         action:function(){cells.forEach(function(p){dist[p.r][p.c]=p.d;});renderMaze(maze,dist);infoEl.innerHTML=cellsStr;},
                         undo:function(){cells.forEach(function(p){dist[p.r][p.c]=-1;});renderMaze(maze,dist);infoEl.innerHTML='';}
                     });
                 })(levelCells,li);
             });
-            steps.push({description:'Done! (0,0)→('+(R-1)+','+(C-1)+') shortest distance = '+(finalDist>=0?finalDist:'unreachable'),
+            steps.push({description:'BFS complete — <strong>(0,0)\u2192('+(R-1)+','+(C-1)+')</strong> shortest distance = <strong>'+(finalDist>=0?finalDist+' cells':'unreachable')+'</strong>. BFS expands level by level, so the first path to arrive is always the shortest.',
                 action:function(){renderMaze(maze,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 Shortest distance = '+(finalDist>=0?finalDist+' cells':'unreachable')+'</strong>';},
                 undo:function(){renderMaze(maze,dist);infoEl.innerHTML='';}});
             return steps;
@@ -1268,12 +1874,12 @@ var graphTopic = {
             path.forEach(function(node, idx){
                 (function(nd,i){
                     var desc;
-                    if(i===0) desc='Start: position '+nd+', distance 0';
+                    if(i===0) desc='Start at position <strong>'+nd+'</strong> — BFS explores X-1, X+1, 2*X as three edges, guaranteeing the <em>minimum number of moves</em>.';
                     else {
                         var prevNode=path[i-1];
-                        if(nd===prevNode*2) desc=prevNode+'\u00D72='+nd+' teleport ('+i+'s)';
-                        else if(nd===prevNode+1) desc=prevNode+'+1='+nd+' move ('+i+'s)';
-                        else desc=prevNode+'-1='+nd+' move ('+i+'s)';
+                        if(nd===prevNode*2) desc=prevNode+'\u00D72=<strong>'+nd+'</strong> teleport ('+i+'s) — multiplication reaches farther faster, so BFS chose this path.';
+                        else if(nd===prevNode+1) desc=prevNode+'+1=<strong>'+nd+'</strong> step forward ('+i+'s) — at this point, +1 is part of the shortest path.';
+                        else desc=prevNode+'-1=<strong>'+nd+'</strong> step back ('+i+'s) — stepping back before a 2x jump can be faster than walking forward.';
                     }
                     steps.push({
                         description:desc,
@@ -1283,7 +1889,7 @@ var graphTopic = {
                 })(node,idx);
             });
             if(dist[targetK]>=0){
-                steps.push({description:'Arrived! Minimum time = '+dist[targetK]+'s',
+                steps.push({description:'<strong>Target reached!</strong> BFS treats all moves as cost 1, so the first path found is the <em>shortest path</em>. Minimum time = <strong>'+dist[targetK]+'s</strong>',
                     action:function(){areaEl.innerHTML=path.join(' \u2192 ');infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 Minimum time = '+dist[targetK]+'s</strong>';},
                     undo:function(){areaEl.innerHTML=path.map(function(p,j){return j===path.length-1?'<strong>'+p+'</strong>':p;}).join(' \u2192 ');infoEl.innerHTML='';}});
             }
@@ -1354,13 +1960,13 @@ var graphTopic = {
                 (function(levelIdx, cells){
                     var cellsStr = cells.length<=6 ? cells.map(function(p){return '('+p.r+','+p.c+')';}).join(', ') : cells.length+' positions';
                     steps.push({
-                        description: levelIdx===0 ? 'Start at ('+sr+','+sc+'), knight 8-directional moves' : levelIdx+' moves: '+cellsStr,
+                        description: levelIdx===0 ? 'Start at ('+sr+','+sc+') — the knight has 8 L-shaped moves. BFS discovers <em>cells with fewer moves first</em>, guaranteeing the minimum number of moves.' : '<strong>Move '+levelIdx+'</strong>: positions reachable — '+cellsStr+'. These are all unvisited cells reachable by L-shaped jumps from the previous level.',
                         action: function() { areaEl.innerHTML = 'Move '+levelIdx+': '+cellsStr; infoEl.innerHTML = 'dist='+levelIdx+', '+cells.length+' positions'; },
                         undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; }
                     });
                 })(li, levels[li]);
             }
-            steps.push({description: finalDist>=0 ? finalDist+' moves to reach ('+er+','+ec+')!' : 'Cannot reach ('+er+','+ec+')',
+            steps.push({description: finalDist>=0 ? 'BFS complete — <strong>'+finalDist+' moves</strong> to reach ('+er+','+ec+')! This is the minimum guaranteed by BFS.' : '('+er+','+ec+') is <strong>unreachable</strong> — the knight\'s L-shaped moves cannot reach that position.',
                 action: function() { areaEl.innerHTML = '('+sr+','+sc+') \u2192 ('+er+','+ec+')<br><strong>'+finalDist+' moves</strong>'; infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 Minimum moves = '+finalDist+'</strong>'; },
                 undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; }});
             return steps;
@@ -1417,7 +2023,7 @@ var graphTopic = {
                 var nextQ=[],nextLevel=[];
                 q.forEach(function(pos){
                     for(var d=0;d<4;d++){var nr=pos[0]+dx[d],nc=pos[1]+dy[d];
-                        if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===0&&dist[nr][nc]<0){dist[nr][nc]=dist[pos[0]][pos[1]]+1;nextQ.push([nr,nc]);nextLevel.push({r:nr,c:nc,d:dist[nr][nc]});}}
+                        if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===0&&dist[nr][nc]<0){dist[nr][nc]=dist[pos[0]][pos[1]]+1;nextQ.push([nr,nc]);nextLevel.push({r:nr,c:nc,d:dist[nr][nc],pr:pos[0],pc:pos[1]});}}
                 });
                 if(nextLevel.length>0) levels.push(nextLevel);
                 q=nextQ;
@@ -1427,17 +2033,27 @@ var graphTopic = {
             // reset dist for step-by-step
             for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[r][c]=-1;
             var steps=[];
-            levels.forEach(function(levelCells,li){
-                (function(cells,idx){
-                    var desc=idx===0?'Enqueue all ripe tomatoes ('+cells.length+')':'Day '+idx+': '+cells.length+' cells newly ripened';
-                    steps.push({
-                        description:desc,
-                        action:function(){cells.forEach(function(p){dist[p.r][p.c]=p.d!==undefined?p.d:0;});renderTomato(grid,dist);infoEl.innerHTML=desc;},
-                        undo:function(){cells.forEach(function(p){dist[p.r][p.c]=-1;});renderTomato(grid,dist);infoEl.innerHTML='';}
-                    });
-                })(levelCells,li);
+            // level 0: initial ripe tomatoes
+            var initCells=levels[0];
+            steps.push({
+                description:'<strong>Multi-source BFS</strong> — enqueue all <strong>'+initCells.length+'</strong> ripe tomatoes <em>simultaneously</em> as starting points. Even with multiple sources, a single BFS handles it all.',
+                action:function(){initCells.forEach(function(p){dist[p.r][p.c]=0;});renderTomato(grid,dist);infoEl.innerHTML='Starting points: '+initCells.length;},
+                undo:function(){initCells.forEach(function(p){dist[p.r][p.c]=-1;});renderTomato(grid,dist);infoEl.innerHTML='';}
             });
-            steps.push({description:impossible?'Unripe tomatoes remain → -1':'Done! Minimum days to ripen all = '+maxDist,
+            // each subsequent cell individually
+            for(var li=1;li<levels.length;li++){
+                for(var ci=0;ci<levels[li].length;ci++){
+                    (function(cell,levelIdx){
+                        var desc='<strong>Day '+levelIdx+'</strong>: ('+cell.r+','+cell.c+') ripens from adjacent ('+cell.pr+','+cell.pc+') — ripening spreads one cell per day in 4 directions, so BFS level = number of elapsed days.';
+                        steps.push({
+                            description:desc,
+                            action:function(){dist[cell.r][cell.c]=cell.d;renderTomato(grid,dist);infoEl.innerHTML=desc;},
+                            undo:function(){dist[cell.r][cell.c]=-1;renderTomato(grid,dist);infoEl.innerHTML='';}
+                        });
+                    })(levels[li][ci],li);
+                }
+            }
+            steps.push({description:impossible?'BFS finished but <strong>unripe tomatoes remain</strong> — walls (-1) block propagation to some cells, so the answer is <strong>-1</strong>':'BFS complete! The distance of the last tomato to ripen is the answer — minimum days to ripen all = <strong>'+maxDist+'</strong>',
                 action:function(){renderTomato(grid,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(impossible?'Result = -1 (impossible)':'Minimum days = '+maxDist)+'</strong>';},
                 undo:function(){renderTomato(grid,dist);infoEl.innerHTML='';}});
             return steps;
@@ -1504,7 +2120,7 @@ var graphTopic = {
                 q.forEach(function(pos){
                     for(var d=0;d<6;d++){var nh=pos[0]+dh[d],nr=pos[1]+dr[d],nc=pos[2]+dc[d];
                         if(nh>=0&&nh<H&&nr>=0&&nr<R&&nc>=0&&nc<C&&layers[nh][nr][nc]===0&&dist[nh][nr][nc]<0){
-                            dist[nh][nr][nc]=dist[pos[0]][pos[1]][pos[2]]+1;nextQ.push([nh,nr,nc]);nextLevel.push({h:nh,r:nr,c:nc,d:dist[nh][nr][nc]});}}
+                            dist[nh][nr][nc]=dist[pos[0]][pos[1]][pos[2]]+1;nextQ.push([nh,nr,nc]);nextLevel.push({h:nh,r:nr,c:nc,d:dist[nh][nr][nc],ph:pos[0],pr:pos[1],pc:pos[2]});}}
                 });
                 if(nextLevel.length>0) levels.push(nextLevel);
                 q=nextQ;
@@ -1514,16 +2130,27 @@ var graphTopic = {
             // reset for step-by-step
             for(var h=0;h<H;h++) for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[h][r][c]=-1;
             var steps=[];
-            levels.forEach(function(cells,li){
-                (function(cs,idx){
-                    steps.push({
-                        description:idx===0?'Enqueue '+cs.length+' ripe tomatoes':'Day '+idx+': '+cs.length+' cells ripened',
-                        action:function(){cs.forEach(function(p){dist[p.h][p.r][p.c]=p.d!==undefined?p.d:0;});render3D(layers,dist);infoEl.innerHTML=(idx===0?'Starting points: '+cs.length+'':'Day '+idx+': '+cs.length+' cells');},
-                        undo:function(){cs.forEach(function(p){dist[p.h][p.r][p.c]=-1;});render3D(layers,dist);infoEl.innerHTML='';}
-                    });
-                })(cells,li);
+            // level 0: initial ripe tomatoes
+            var initCells3=levels[0];
+            steps.push({
+                description:'<strong>3D Multi-source BFS</strong> — enqueue <strong>'+initCells3.length+'</strong> ripe tomatoes. Same principle as 2D, but propagation includes up/down floors for <em>6 directions</em> total.',
+                action:function(){initCells3.forEach(function(p){dist[p.h][p.r][p.c]=0;});render3D(layers,dist);infoEl.innerHTML='Starting points: '+initCells3.length;},
+                undo:function(){initCells3.forEach(function(p){dist[p.h][p.r][p.c]=-1;});render3D(layers,dist);infoEl.innerHTML='';}
             });
-            steps.push({description:impossible?'Impossible → -1':'Done! 3D BFS minimum days = '+maxDist,
+            // each subsequent cell individually
+            for(var li=1;li<levels.length;li++){
+                for(var ci=0;ci<levels[li].length;ci++){
+                    (function(cell,levelIdx){
+                        var desc='<strong>Day '+levelIdx+'</strong>: floor '+cell.h+'('+cell.r+','+cell.c+') ripens from floor '+cell.ph+'('+cell.pr+','+cell.pc+') — '+(cell.h!==cell.ph?'cross-floor propagation (up/down among the 6 directions)':'same-floor 4-directional spread');
+                        steps.push({
+                            description:desc,
+                            action:function(){dist[cell.h][cell.r][cell.c]=cell.d;render3D(layers,dist);infoEl.innerHTML=desc;},
+                            undo:function(){dist[cell.h][cell.r][cell.c]=-1;render3D(layers,dist);infoEl.innerHTML='';}
+                        });
+                    })(levels[li][ci],li);
+                }
+            }
+            steps.push({description:impossible?'<strong>Unreachable tomatoes exist</strong> — even 6-directional propagation cannot reach some cells, so the answer is <strong>-1</strong>':'3D BFS complete! Maximum distance across 6-directional propagation is the answer — <strong>minimum days = '+maxDist+'</strong>',
                 action:function(){render3D(layers,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(impossible?'Result = -1':'3D BFS minimum days = '+maxDist)+'</strong>';},
                 undo:function(){render3D(layers,dist);infoEl.innerHTML='';}});
             return steps;
@@ -1590,15 +2217,15 @@ var graphTopic = {
             path.forEach(function(node,idx){
                 (function(nd,i){
                     var desc;
-                    if(i===0) desc='Start at square 1';
+                    if(i===0) desc='Start at <strong>square 1</strong> — dice rolls 1~6 become 6 BFS edges. Ladders/snakes are <em>automatic warps</em> with no extra cost, included within the same edge.';
                     else {
                         var prevNode=path[i-1];
                         if(warpUsed[nd]!==null){
                             var wp=warpUsed[nd];
                             var isLadder=ladders.some(function(l){return l[0]===wp;});
-                            desc='Roll '+i+': '+prevNode+' → '+wp+(isLadder?' → \uD83E\uDE9CLadder! → ':' → \uD83D\uDC0DSnake! → ')+nd;
+                            desc='<strong>Roll '+i+'</strong>: '+prevNode+' \u2192 '+wp+(isLadder?' \u2192 \uD83E\uDE9CLadder to <strong>'+nd+'</strong>! Free jump at no extra cost.':' \u2192 \uD83D\uDC0DSnake to <strong>'+nd+'</strong>! BFS accounts for this setback and still finds the optimal path.');
                         } else {
-                            desc='Roll '+i+': '+prevNode+' → '+nd;
+                            desc='<strong>Roll '+i+'</strong>: '+prevNode+' \u2192 <strong>'+nd+'</strong> — dice move along the shortest path found by BFS.';
                         }
                     }
                     steps.push({
@@ -1609,7 +2236,7 @@ var graphTopic = {
                 })(node,idx);
             });
             if(dist[100]>=0){
-                steps.push({description:'Reached 100! Minimum dice rolls = '+dist[100],
+                steps.push({description:'<strong>Reached square 100!</strong> BFS treats each dice roll as cost 1, so accounting for ladders and snakes, the <em>minimum dice rolls</em> = <strong>'+dist[100]+'</strong>',
                     action:function(){areaEl.innerHTML=path.join(' \u2192 ')+' \uD83C\uDFC1';infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 Minimum dice rolls = '+dist[100]+'</strong>';},
                     undo:function(){areaEl.innerHTML=path.join(' \u2192 ');infoEl.innerHTML='';}});
             }
@@ -1682,7 +2309,7 @@ var graphTopic = {
             colorLog.forEach(function(entry,idx){
                 (function(e,i){
                     var colorName=e.color===0?'0(gray)':'1(red)';
-                    var desc=e.from?'Color neighbor '+e.node+' of '+e.from+' with '+colorName:'Color vertex '+e.node+' with '+colorName;
+                    var desc=e.from?'Color neighbor <strong>'+e.node+'</strong> of '+e.from+' with the <em>opposite</em> color '+colorName+' — a bipartite graph requires all adjacent nodes to have different colors.':'Start BFS 2-coloring from <strong>'+e.node+'</strong> with color '+colorName+' — begin coloring from an uncolored node.';
                     steps.push({
                         description:desc,
                         action:function(){colors[e.node]=e.color;renderBip(n,colors);infoEl.innerHTML='color['+e.node+'] = '+e.color+(e.from?' (different from '+e.from+')':'');},
@@ -1690,7 +2317,7 @@ var graphTopic = {
                     });
                 })(entry,idx);
             });
-            steps.push({description:isBipartite?'All adjacent pairs have different colors → Bipartite YES!':'Same-color adjacent pair found → Bipartite NO!',
+            steps.push({description:isBipartite?'All adjacent nodes have <em>different colors</em> \u2192 <strong>Bipartite YES!</strong> The graph can be split into two groups.':'Adjacent nodes with the <em>same color</em> found \u2192 <strong>Bipartite NO!</strong> An odd-length cycle exists in the graph.',
                 action:function(){renderBip(n,colors);infoEl.innerHTML='<strong style="color:'+(isBipartite?'var(--green)':'var(--red)')+';font-size:1.1rem;">'+(isBipartite?'\u2705 Bipartite Graph (YES)':'\u274C Not Bipartite (NO)')+'</strong>';},
                 undo:function(){renderBip(n,colors);infoEl.innerHTML='';}});
             return steps;
@@ -1760,12 +2387,12 @@ var graphTopic = {
                         if(grid[nr][nc]===0&&dist3[nr][nc][cb]<0){
                             dist3[nr][nc][cb]=dist3[cr][cc][cb]+1;
                             nextQ.push([nr,nc,cb]);
-                            nextLevel.push({r:nr,c:nc,b:cb,d:dist3[nr][nc][cb]});
+                            nextLevel.push({r:nr,c:nc,b:cb,d:dist3[nr][nc][cb],pr:cr,pc:cc});
                         }
                         if(grid[nr][nc]===1&&cb===0&&dist3[nr][nc][1]<0){
                             dist3[nr][nc][1]=dist3[cr][cc][cb]+1;
                             nextQ.push([nr,nc,1]);
-                            nextLevel.push({r:nr,c:nc,b:1,d:dist3[nr][nc][1]});
+                            nextLevel.push({r:nr,c:nc,b:1,d:dist3[nr][nc][1],pr:cr,pc:cc});
                         }
                     }
                 });
@@ -1782,16 +2409,28 @@ var graphTopic = {
             for(var r=0;r<R;r++){dist0.push([]);dist1.push([]);for(var c=0;c<C;c++){dist0[r].push(-1);dist1[r].push(-1);}}
 
             var steps=[];
-            levels.forEach(function(cells,li){
-                (function(cs,idx){
-                    steps.push({
-                        description:idx===0?'Start at (0,0), broken=0':'Expansion '+(idx)+': '+cs.length+' cells',
-                        action:function(){cs.forEach(function(p){dist3[p.r][p.c][p.b]=p.d;if(p.b===0) dist0[p.r][p.c]=p.d; else dist1[p.r][p.c]=p.d;});renderWall(grid,dist0,dist1);infoEl.innerHTML=idx===0?'dist[0][0][0] = 1':''+cs.length+' cells expanded';},
-                        undo:function(){cs.forEach(function(p){dist3[p.r][p.c][p.b]=-1;if(p.b===0) dist0[p.r][p.c]=-1; else dist1[p.r][p.c]=-1;});renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
-                    });
-                })(cells,li);
+            // level 0: start at (0,0)
+            var initW=levels[0];
+            steps.push({
+                description:'Start at (0,0) — <strong>State BFS</strong>: visited[r][c][<em>wall broken?</em>]. The same cell with vs. without a broken wall is a <em>different state</em>, requiring a 3D visited array.',
+                action:function(){initW.forEach(function(p){dist3[p.r][p.c][p.b]=p.d;if(p.b===0) dist0[p.r][p.c]=p.d; else dist1[p.r][p.c]=p.d;});renderWall(grid,dist0,dist1);infoEl.innerHTML='dist[0][0][0] = 1';},
+                undo:function(){initW.forEach(function(p){dist3[p.r][p.c][p.b]=-1;if(p.b===0) dist0[p.r][p.c]=-1; else dist1[p.r][p.c]=-1;});renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
             });
-            steps.push({description:ans>=0?'Shortest path = '+ans+' cells':'Unreachable (-1)',
+            // each subsequent cell individually
+            for(var li=1;li<levels.length;li++){
+                for(var ci=0;ci<levels[li].length;ci++){
+                    (function(cell){
+                        var broke=cell.b===1;
+                        var desc=broke?'('+cell.r+','+cell.c+') <strong>broke through wall</strong> \u2190 from ('+cell.pr+','+cell.pc+'). Wall-breaking chance used, so no more walls can be broken afterward. dist='+cell.d:'('+cell.r+','+cell.c+') move along path \u2190 from ('+cell.pr+','+cell.pc+'). Wall-intact state is preserved. dist='+cell.d;
+                        steps.push({
+                            description:desc,
+                            action:function(){dist3[cell.r][cell.c][cell.b]=cell.d;if(cell.b===0) dist0[cell.r][cell.c]=cell.d; else dist1[cell.r][cell.c]=cell.d;renderWall(grid,dist0,dist1);infoEl.innerHTML=desc;},
+                            undo:function(){dist3[cell.r][cell.c][cell.b]=-1;if(cell.b===0) dist0[cell.r][cell.c]=-1; else dist1[cell.r][cell.c]=-1;renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
+                        });
+                    })(levels[li][ci]);
+                }
+            }
+            steps.push({description:ans>=0?'State BFS complete — the <em>shorter</em> of the wall-broken and wall-intact paths is the answer. <strong>Shortest path = '+ans+' cells</strong>':'Both states are <strong>unreachable</strong> — even breaking one wall cannot create a path. Answer: <strong>-1</strong>',
                 action:function(){renderWall(grid,dist0,dist1);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(ans>=0?'Shortest path = '+ans+' cells':'Unreachable (-1)')+'</strong>';},
                 undo:function(){renderWall(grid,dist0,dist1);infoEl.innerHTML='';}});
             return steps;

@@ -60,7 +60,7 @@ var backtrackingTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -241,6 +241,32 @@ var backtrackingTopic = {
                     <span class="lang-py"><a href="https://docs.python.org/3/library/itertools.html#itertools.permutations" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: itertools.permutations ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/algorithm/next_permutation" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: next_permutation ↗</a></span>
                 </div>
 
+                <!-- Demo 2: 3-element follow -->
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 Try It — Follow along building permutations of 3 elements</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-3elem-next">▶ Next Step</button>
+                        <button class="concept-demo-btn green" id="bt-demo-3elem-reset">↺ Start Over</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Follow the Choose/Check/Undo cycle for picking 2 from {1, 2, 3}</p>
+                        <div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+                            <div>
+                                <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-align:center;">Available</div>
+                                <div id="bt-demo-3elem-pool" style="display:flex;gap:6px;justify-content:center;"></div>
+                            </div>
+                            <div style="font-size:1.2rem;color:var(--text3);">→</div>
+                            <div>
+                                <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-align:center;">Current Path</div>
+                                <div id="bt-demo-3elem-path" style="display:flex;gap:6px;justify-content:center;min-width:80px;min-height:38px;border:2px dashed var(--border);border-radius:10px;padding:4px 10px;align-items:center;"></div>
+                            </div>
+                        </div>
+                        <div id="bt-demo-3elem-used" style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;"></div>
+                        <div id="bt-demo-3elem-results" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:28px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-3elem-msg">👆 Click "Next Step" to follow how Choose/Check/Undo work step by step!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -257,12 +283,86 @@ var backtrackingTopic = {
                 </div>
             </div>
 
-            <!-- 3. What is Pruning? -->
+            <!-- 3. How to avoid revisiting the same element? -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> What is Pruning?</div>
+                <div class="concept-section-title"><span class="section-num">3</span> How to Avoid Revisiting the Same Element?</div>
+                <p style="margin-bottom: 1rem;">
+                    When building permutations, <strong>you must not use the same number twice</strong>.
+                    A <code>used[]</code> array remembers which numbers are already chosen.
+                    If <code>used[i] = true</code>, the i-th number is already in the path, so we skip it.
+                </p>
+
+                <!-- Demo 3: Cycle prevention demo -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Preventing duplicates with the used array</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-cycle-toggle1">Select 1</button>
+                        <button class="concept-demo-btn" id="bt-demo-cycle-toggle2">Select 2</button>
+                        <button class="concept-demo-btn" id="bt-demo-cycle-toggle3">Select 3</button>
+                        <button class="concept-demo-btn danger" id="bt-demo-cycle-clear">🗑️ Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Selecting a number updates the used array. What happens if you click an already-selected number?</p>
+                        <div style="display:flex;gap:24px;justify-content:center;align-items:flex-start;flex-wrap:wrap;">
+                            <div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-bottom:6px;text-align:center;">used array</div>
+                                <div id="bt-demo-cycle-used" style="display:flex;gap:4px;justify-content:center;"></div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-bottom:6px;text-align:center;">Current Path</div>
+                                <div id="bt-demo-cycle-path" style="display:flex;gap:4px;justify-content:center;min-height:38px;align-items:center;font-size:1.1rem;font-weight:600;color:var(--accent);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-cycle-msg">👆 Click the number buttons to select them! If you click an already-selected number, the used array will block it.</div>
+                </div>
+
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">Instead of the used array, can't we just check if a number is in the path each time?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>
+                    <div class="think-box-answer">
+                        You can, but the performance is different!<br>
+                        <code>used[i]</code> checks instantly in <strong>O(1)</strong>,
+                        but searching inside the path (<code>i in path</code>) takes <strong>O(path length)</strong>.<br>
+                        The larger N gets, the bigger the difference, so using the used array is more efficient.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. What is Pruning? -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">4</span> What is Pruning?</div>
                 <p style="margin-bottom: 1rem;">The most important technique in backtracking is
                     <strong>pruning</strong>.
                     It means <strong>filtering out invalid choices early</strong> so they are never explored at all.</p>
+
+                <!-- Demo 4: Pruning comparison -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — With vs Without Pruning</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-prune-run">▶ Start Search</button>
+                        <button class="concept-demo-btn green" id="bt-demo-prune-reset">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;">Permutations of 2 from {1,2,3} — left explores all without pruning, right prunes with used[]</p>
+                        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:200px;max-width:280px;">
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;margin-bottom:6px;color:var(--red);">❌ No Pruning</div>
+                                <div id="bt-demo-prune-nop" style="font-size:0.82rem;line-height:1.8;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);min-height:120px;"></div>
+                                <div id="bt-demo-prune-nop-count" style="text-align:center;margin-top:6px;font-size:0.85rem;font-weight:600;color:var(--red);">Explored: 0</div>
+                            </div>
+                            <div style="flex:1;min-width:200px;max-width:280px;">
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;margin-bottom:6px;color:var(--green);">✂️ With Pruning</div>
+                                <div id="bt-demo-prune-yes" style="font-size:0.82rem;line-height:1.8;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);min-height:120px;"></div>
+                                <div id="bt-demo-prune-yes-count" style="text-align:center;margin-top:6px;font-size:0.85rem;font-weight:600;color:var(--green);">Explored: 0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-prune-msg">👆 Click "Start Search" to compare how pruning reduces the search space!</div>
+                </div>
 
                 <div class="execution-flow-compare">
                     <div class="flow-grid">
@@ -309,9 +409,9 @@ var backtrackingTopic = {
                 </div>
             </div>
 
-            <!-- 4. Backtracking vs Brute Force -->
+            <!-- 5. Backtracking vs Brute Force -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">4</span> Backtracking vs Brute Force</div>
+                <div class="concept-section-title"><span class="section-num">5</span> Backtracking vs Brute Force</div>
                 <div class="approach-grid">
                     <div class="approach-card">
                         <h3>🔍 Brute Force</h3>
@@ -362,6 +462,39 @@ for (int i = 1; i &lt;= n; i++) {
                     </div>
                 </div>
 
+                <!-- Demo 5: Execution comparison -->
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 Try It — Compare Execution Counts (Change N)</div>
+                    <div class="concept-demo-btns">
+                        <label style="font-size:0.85rem;color:var(--text2);display:flex;align-items:center;gap:6px;">N =
+                            <input type="number" id="bt-demo-exec-n" value="4" min="2" max="8" style="width:50px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;background:var(--card);color:var(--text);">
+                        </label>
+                        <label style="font-size:0.85rem;color:var(--text2);display:flex;align-items:center;gap:6px;">M =
+                            <input type="number" id="bt-demo-exec-m" value="2" min="1" max="6" style="width:50px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="bt-demo-exec-run">📊 Compare</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;">Picking M from N in order: compare brute force vs backtracking exploration counts</p>
+                        <div style="display:flex;gap:24px;justify-content:center;align-items:flex-end;flex-wrap:wrap;">
+                            <div style="text-align:center;">
+                                <div id="bt-demo-exec-bar-brute" style="width:60px;background:var(--red);border-radius:6px 6px 0 0;transition:height 0.6s;height:0px;margin:0 auto;"></div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-top:6px;color:var(--red);">Brute Force</div>
+                                <div id="bt-demo-exec-val-brute" style="font-size:1.1rem;font-weight:700;color:var(--red);">0</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div id="bt-demo-exec-bar-bt" style="width:60px;background:var(--green);border-radius:6px 6px 0 0;transition:height 0.6s;height:0px;margin:0 auto;"></div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-top:6px;color:var(--green);">Backtracking</div>
+                                <div id="bt-demo-exec-val-bt" style="font-size:1.1rem;font-weight:700;color:var(--green);">0</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div id="bt-demo-exec-saved" style="font-size:0.9rem;color:var(--accent);font-weight:600;min-height:24px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-exec-msg">👆 Change N and M, then click "Compare"! As N grows, the difference becomes dramatic.</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -378,9 +511,50 @@ for (int i = 1; i &lt;= n; i++) {
                 </div>
             </div>
 
-            <!-- 5. 4 Steps to Solve Backtracking Problems -->
+            <!-- 6. 4-Queen Experience -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">5</span> 4 Steps to Solve Backtracking Problems</div>
+                <div class="concept-section-title"><span class="section-num">6</span> 4-Queen Problem</div>
+                <p style="margin-bottom:0.5rem;">Try placing 4 queens on a 4x4 chessboard so that <strong>none of them can attack each other</strong>.
+                    A queen attacks any piece in the same row, column, or diagonal.</p>
+                <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--text2);">
+                    Place them yourself, or click "Auto Solve" to watch how backtracking solves it!</p>
+
+                <!-- Demo 6: 4-Queen -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — 4-Queen Backtracking</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-4q-auto">🤖 Auto Solve</button>
+                        <button class="concept-demo-btn danger" id="bt-demo-4q-clear">🗑️ Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bt-demo-4q-board" style="display:inline-grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 auto;"></div>
+                        <div id="bt-demo-4q-info" style="margin-top:10px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;font-size:0.85rem;">
+                            <span>Queens placed: <strong id="bt-demo-4q-placed">0</strong>/4</span>
+                            <span>Attempts: <strong id="bt-demo-4q-tries">0</strong></span>
+                            <span>Backtracks: <strong id="bt-demo-4q-backs">0</strong></span>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-4q-msg">👆 Click a cell to place a queen! Attack ranges are shown in red. Or click "Auto Solve" to watch the backtracking process.</div>
+                </div>
+
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">How many solutions does 4-Queen have? What about 8-Queen?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>
+                    <div class="think-box-answer">
+                        4-Queen has <strong>2 solutions</strong> (including symmetry).<br>
+                        8-Queen has <strong>92 solutions</strong>!<br><br>
+                        As N grows, the number of cases explodes,
+                        but backtracking + pruning lets us search efficiently.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 4 Steps to Solve Backtracking Problems -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">7</span> 4 Steps to Solve Backtracking Problems</div>
                 <div class="step-cards">
                     <div class="step-card">
                         <span class="step-num">1</span>
@@ -441,6 +615,505 @@ for (int i = 1; i &lt;= n; i++) {
 
         if (treeContainer) {
             this._buildDecisionTree(treeContainer, instructionEl, resultsEl, resetBtn);
+        }
+
+        // ========== Demo 2: 3-element follow ==========
+        {
+            var poolEl = container.querySelector('#bt-demo-3elem-pool');
+            var pathEl = container.querySelector('#bt-demo-3elem-path');
+            var usedEl = container.querySelector('#bt-demo-3elem-used');
+            var resultsEl2 = container.querySelector('#bt-demo-3elem-results');
+            var msgEl = container.querySelector('#bt-demo-3elem-msg');
+            var nextBtn2 = container.querySelector('#bt-demo-3elem-next');
+            var resetBtn2 = container.querySelector('#bt-demo-3elem-reset');
+
+            if (poolEl && nextBtn2) {
+                var nums = [1, 2, 3];
+                var M3 = 2;
+                var allSteps = [];
+                (function buildSteps3() {
+                    var used3 = [false, false, false];
+                    var path3 = [];
+                    function gen(depth) {
+                        for (var i = 0; i < 3; i++) {
+                            if (used3[i]) {
+                                allSteps.push({ type: 'skip', idx: i, path: path3.slice(), used: used3.slice(), reason: nums[i] + ' is already in use (used[' + i + ']=true), skip it — ✅ Check Constraints' });
+                                continue;
+                            }
+                            allSteps.push({ type: 'choose', idx: i, path: path3.slice(), used: used3.slice(), reason: 'Choose ' + nums[i] + ' — ☝️ Choose' });
+                            path3.push(nums[i]);
+                            used3[i] = true;
+                            if (depth + 1 === M3) {
+                                allSteps.push({ type: 'found', idx: i, path: path3.slice(), used: used3.slice(), reason: '[' + path3.join(', ') + '] complete!' });
+                                allSteps.push({ type: 'undo', idx: i, path: path3.slice(), used: used3.slice(), reason: 'Undo ' + nums[i] + ' — ↩️ Backtrack' });
+                                path3.pop();
+                                used3[i] = false;
+                            } else {
+                                gen(depth + 1);
+                                allSteps.push({ type: 'undo', idx: i, path: path3.slice(), used: used3.slice(), reason: 'Undo ' + nums[i] + ' — ↩️ Backtrack' });
+                                path3.pop();
+                                used3[i] = false;
+                            }
+                        }
+                    }
+                    gen(0);
+                    allSteps.push({ type: 'done', idx: -1, path: [], used: [false, false, false], reason: 'All cases explored!' });
+                })();
+
+                var stepIdx3 = -1;
+                var foundResults3 = [];
+
+                function makeBox(val, cls) {
+                    return '<div style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;font-weight:700;font-size:1rem;' +
+                        (cls === 'used' ? 'background:var(--accent);color:white;' :
+                         cls === 'skip' ? 'background:var(--red);color:white;opacity:0.6;' :
+                         cls === 'choose' ? 'background:var(--yellow);color:#333;box-shadow:0 0 8px var(--yellow);' :
+                         cls === 'undo' ? 'background:var(--bg2);color:var(--text3);border:2px dashed var(--red);' :
+                         'background:var(--bg2);color:var(--text);border:1px solid var(--border);') +
+                        '">' + val + '</div>';
+                }
+
+                function render3(step) {
+                    poolEl.innerHTML = '';
+                    for (var i = 0; i < 3; i++) {
+                        var cls = '';
+                        if (step && step.used[i]) cls = 'used';
+                        if (step && step.type === 'skip' && step.idx === i) cls = 'skip';
+                        if (step && step.type === 'choose' && step.idx === i) cls = 'choose';
+                        if (step && step.type === 'undo' && step.idx === i) cls = 'undo';
+                        poolEl.innerHTML += makeBox(nums[i], cls);
+                    }
+                    if (!step || step.path.length === 0) {
+                        pathEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">Empty</span>';
+                    } else {
+                        pathEl.innerHTML = step.path.map(function(v) { return makeBox(v, 'used'); }).join('');
+                    }
+                    if (step) {
+                        usedEl.innerHTML = '<span style="font-size:0.75rem;color:var(--text3);">used = [' +
+                            step.used.map(function(u, i) { return '<span style="color:' + (u ? 'var(--accent);font-weight:700' : 'var(--text3)') + ';">' + (u ? 'T' : 'F') + '</span>'; }).join(', ') + ']</span>';
+                    } else {
+                        usedEl.innerHTML = '<span style="font-size:0.75rem;color:var(--text3);">used = [F, F, F]</span>';
+                    }
+                    resultsEl2.innerHTML = foundResults3.map(function(r) {
+                        return '<span style="display:inline-block;padding:3px 10px;background:var(--green);color:white;border-radius:6px;font-size:0.82rem;font-weight:600;">[' + r.join(', ') + ']</span>';
+                    }).join(' ');
+                    if (step) {
+                        msgEl.textContent = step.reason;
+                        msgEl.style.borderLeftColor = step.type === 'choose' ? 'var(--yellow)' : step.type === 'undo' ? 'var(--red)' : step.type === 'found' ? 'var(--green)' : step.type === 'skip' ? 'var(--red)' : 'var(--accent)';
+                    }
+                }
+
+                render3(null);
+
+                nextBtn2.addEventListener('click', function() {
+                    if (stepIdx3 >= allSteps.length - 1) return;
+                    stepIdx3++;
+                    var step = allSteps[stepIdx3];
+                    if (step.type === 'found') foundResults3.push(step.path.slice());
+                    render3(step);
+                    if (stepIdx3 >= allSteps.length - 1) {
+                        nextBtn2.disabled = true;
+                    }
+                });
+
+                resetBtn2.addEventListener('click', function() {
+                    stepIdx3 = -1;
+                    foundResults3 = [];
+                    nextBtn2.disabled = false;
+                    msgEl.textContent = '👆 Click "Next Step" to follow how Choose/Check/Undo work step by step!';
+                    msgEl.style.borderLeftColor = '';
+                    render3(null);
+                });
+            }
+        }
+
+        // ========== Demo 3: Cycle prevention (used array) ==========
+        {
+            var cycleUsedEl = container.querySelector('#bt-demo-cycle-used');
+            var cyclePathEl = container.querySelector('#bt-demo-cycle-path');
+            var cycleMsgEl = container.querySelector('#bt-demo-cycle-msg');
+            var cycleClearBtn = container.querySelector('#bt-demo-cycle-clear');
+            var cycleBtn1 = container.querySelector('#bt-demo-cycle-toggle1');
+            var cycleBtn2 = container.querySelector('#bt-demo-cycle-toggle2');
+            var cycleBtn3 = container.querySelector('#bt-demo-cycle-toggle3');
+
+            if (cycleUsedEl && cycleBtn1) {
+                var cycleUsed = [false, false, false];
+                var cyclePath = [];
+
+                function renderCycleDemo() {
+                    cycleUsedEl.innerHTML = '';
+                    for (var i = 0; i < 3; i++) {
+                        cycleUsedEl.innerHTML += '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;">' +
+                            '<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:700;font-size:1rem;' +
+                            (cycleUsed[i] ? 'background:var(--accent);color:white;box-shadow:0 0 8px var(--accent);' : 'background:var(--bg2);color:var(--text);border:1px solid var(--border);') +
+                            '">' + (i + 1) + '</div>' +
+                            '<span style="font-size:0.7rem;color:' + (cycleUsed[i] ? 'var(--accent)' : 'var(--text3)') + ';">' + (cycleUsed[i] ? 'true' : 'false') + '</span></div>';
+                    }
+                    cyclePathEl.textContent = cyclePath.length > 0 ? '[ ' + cyclePath.join(', ') + ' ]' : '[ ]';
+                }
+
+                function cycleSelect(idx) {
+                    if (cycleUsed[idx]) {
+                        cycleMsgEl.textContent = '❌ used[' + idx + '] = true → ' + (idx + 1) + ' is already in use! Skip. This is how duplicates are prevented.';
+                        cycleMsgEl.style.borderLeftColor = 'var(--red)';
+                        var boxes = cycleUsedEl.querySelectorAll('div > div');
+                        if (boxes[idx]) {
+                            boxes[idx].style.background = 'var(--red)';
+                            setTimeout(function() { renderCycleDemo(); }, 500);
+                        }
+                        return;
+                    }
+                    cycleUsed[idx] = true;
+                    cyclePath.push(idx + 1);
+                    cycleMsgEl.textContent = '✅ Selected ' + (idx + 1) + '! used[' + idx + '] = true. Path: [' + cyclePath.join(', ') + ']';
+                    cycleMsgEl.style.borderLeftColor = 'var(--green)';
+                    renderCycleDemo();
+                }
+
+                renderCycleDemo();
+
+                cycleBtn1.addEventListener('click', function() { cycleSelect(0); });
+                cycleBtn2.addEventListener('click', function() { cycleSelect(1); });
+                cycleBtn3.addEventListener('click', function() { cycleSelect(2); });
+                cycleClearBtn.addEventListener('click', function() {
+                    cycleUsed = [false, false, false];
+                    cyclePath = [];
+                    cycleMsgEl.textContent = '👆 Click the number buttons to select them! If you click an already-selected number, the used array will block it.';
+                    cycleMsgEl.style.borderLeftColor = '';
+                    renderCycleDemo();
+                });
+            }
+        }
+
+        // ========== Demo 4: Pruning comparison ==========
+        {
+            var pruneNopEl = container.querySelector('#bt-demo-prune-nop');
+            var pruneYesEl = container.querySelector('#bt-demo-prune-yes');
+            var pruneNopCount = container.querySelector('#bt-demo-prune-nop-count');
+            var pruneYesCount = container.querySelector('#bt-demo-prune-yes-count');
+            var pruneRunBtn = container.querySelector('#bt-demo-prune-run');
+            var pruneResetBtn = container.querySelector('#bt-demo-prune-reset');
+            var pruneMsgEl = container.querySelector('#bt-demo-prune-msg');
+
+            if (pruneNopEl && pruneRunBtn) {
+                var pruneAnimating = false;
+
+                pruneRunBtn.addEventListener('click', function() {
+                    if (pruneAnimating) return;
+                    pruneAnimating = true;
+                    pruneRunBtn.disabled = true;
+                    pruneNopEl.innerHTML = '';
+                    pruneYesEl.innerHTML = '';
+
+                    var nopTraces = [];
+                    for (var i = 1; i <= 3; i++) {
+                        for (var j = 1; j <= 3; j++) {
+                            var ok = i !== j;
+                            nopTraces.push({ text: i + ' → ' + j, ok: ok, reason: ok ? '✓ Valid' : '✕ Duplicate' });
+                        }
+                    }
+                    var yesTraces = [];
+                    for (var i = 1; i <= 3; i++) {
+                        for (var j = 1; j <= 3; j++) {
+                            if (i === j) {
+                                yesTraces.push({ text: i + ' → ' + j, ok: false, skip: true, reason: '✂️ Skipped' });
+                            } else {
+                                yesTraces.push({ text: i + ' → ' + j, ok: true, skip: false, reason: '✓ Valid' });
+                            }
+                        }
+                    }
+
+                    var maxLen = Math.max(nopTraces.length, yesTraces.length);
+                    var nopCount = 0, yesCount = 0;
+                    var idx = 0;
+
+                    function animStep() {
+                        if (idx >= maxLen) {
+                            pruneMsgEl.textContent = 'Done! Without pruning: ' + nopCount + ' explorations, with pruning: only ' + yesCount + '. Saved: ' + (nopCount - yesCount) + '!';
+                            pruneMsgEl.style.borderLeftColor = 'var(--green)';
+                            pruneAnimating = false;
+                            return;
+                        }
+                        if (idx < nopTraces.length) {
+                            var t = nopTraces[idx];
+                            nopCount++;
+                            var div = document.createElement('div');
+                            div.textContent = t.text + ' ' + t.reason;
+                            div.style.cssText = 'padding:2px 6px;border-radius:4px;' + (t.ok ? 'color:var(--green);' : 'color:var(--red);');
+                            pruneNopEl.appendChild(div);
+                            pruneNopCount.textContent = 'Explored: ' + nopCount;
+                        }
+                        if (idx < yesTraces.length) {
+                            var t2 = yesTraces[idx];
+                            var div2 = document.createElement('div');
+                            if (t2.skip) {
+                                div2.textContent = t2.text + ' ' + t2.reason;
+                                div2.style.cssText = 'padding:2px 6px;border-radius:4px;color:var(--text3);text-decoration:line-through;opacity:0.5;';
+                            } else {
+                                yesCount++;
+                                div2.textContent = t2.text + ' ' + t2.reason;
+                                div2.style.cssText = 'padding:2px 6px;border-radius:4px;color:var(--green);';
+                            }
+                            pruneYesEl.appendChild(div2);
+                            pruneYesCount.textContent = 'Explored: ' + yesCount;
+                        }
+                        idx++;
+                        setTimeout(animStep, 300);
+                    }
+                    animStep();
+                });
+
+                pruneResetBtn.addEventListener('click', function() {
+                    pruneAnimating = false;
+                    pruneRunBtn.disabled = false;
+                    pruneNopEl.innerHTML = '';
+                    pruneYesEl.innerHTML = '';
+                    pruneNopCount.textContent = 'Explored: 0';
+                    pruneYesCount.textContent = 'Explored: 0';
+                    pruneMsgEl.textContent = '👆 Click "Start Search" to compare how pruning reduces the search space!';
+                    pruneMsgEl.style.borderLeftColor = '';
+                });
+            }
+        }
+
+        // ========== Demo 5: Execution comparison (N,M) ==========
+        {
+            var execRunBtn = container.querySelector('#bt-demo-exec-run');
+            var execNInput = container.querySelector('#bt-demo-exec-n');
+            var execMInput = container.querySelector('#bt-demo-exec-m');
+            var execBarBrute = container.querySelector('#bt-demo-exec-bar-brute');
+            var execBarBt = container.querySelector('#bt-demo-exec-bar-bt');
+            var execValBrute = container.querySelector('#bt-demo-exec-val-brute');
+            var execValBt = container.querySelector('#bt-demo-exec-val-bt');
+            var execSaved = container.querySelector('#bt-demo-exec-saved');
+            var execMsgEl = container.querySelector('#bt-demo-exec-msg');
+
+            if (execRunBtn && execNInput) {
+                execRunBtn.addEventListener('click', function() {
+                    var N = parseInt(execNInput.value) || 4;
+                    var M = parseInt(execMInput.value) || 2;
+                    if (N < 2) N = 2; if (N > 8) N = 8;
+                    if (M < 1) M = 1; if (M > N) M = N; if (M > 6) M = 6;
+                    execNInput.value = N;
+                    execMInput.value = M;
+
+                    var bruteCount = Math.pow(N, M);
+                    var btCount = 1;
+                    for (var i = 0; i < M; i++) btCount *= (N - i);
+
+                    var maxVal = Math.max(bruteCount, btCount);
+                    var maxH = 160;
+
+                    execBarBrute.style.height = Math.max(10, Math.round(bruteCount / maxVal * maxH)) + 'px';
+                    execBarBt.style.height = Math.max(10, Math.round(btCount / maxVal * maxH)) + 'px';
+                    execValBrute.textContent = bruteCount.toLocaleString();
+                    execValBt.textContent = btCount.toLocaleString();
+
+                    var saved = bruteCount - btCount;
+                    var pct = bruteCount > 0 ? Math.round(saved / bruteCount * 100) : 0;
+                    execSaved.textContent = saved > 0 ? (saved.toLocaleString() + ' saved (' + pct + '%)') : 'Same';
+
+                    execMsgEl.textContent = 'N=' + N + ', M=' + M + ' → Brute force: ' + bruteCount.toLocaleString() + ', Backtracking: ' + btCount.toLocaleString() + '. ' + (saved > 0 ? pct + '% saved!' : '');
+                    execMsgEl.style.borderLeftColor = 'var(--accent)';
+                });
+            }
+        }
+
+        // ========== Demo 6: 4-Queen ==========
+        {
+            var boardEl = container.querySelector('#bt-demo-4q-board');
+            var autoBtn = container.querySelector('#bt-demo-4q-auto');
+            var clearBtn4q = container.querySelector('#bt-demo-4q-clear');
+            var placedEl = container.querySelector('#bt-demo-4q-placed');
+            var triesEl = container.querySelector('#bt-demo-4q-tries');
+            var backsEl = container.querySelector('#bt-demo-4q-backs');
+            var msgEl4q = container.querySelector('#bt-demo-4q-msg');
+
+            if (boardEl && autoBtn) {
+                var N4 = 4;
+                var queens = [];
+                var tries4q = 0, backs4q = 0;
+                var autoRunning = false;
+
+                function isSafe(r, c, qs) {
+                    for (var k = 0; k < qs.length; k++) {
+                        var q = qs[k];
+                        if (q.c === c) return false;
+                        if (Math.abs(q.r - r) === Math.abs(q.c - c)) return false;
+                    }
+                    return true;
+                }
+
+                function getAttacked(qs) {
+                    var set = {};
+                    for (var k = 0; k < qs.length; k++) {
+                        var q = qs[k];
+                        for (var i = 0; i < N4; i++) {
+                            for (var j = 0; j < N4; j++) {
+                                if (i === q.r && j === q.c) continue;
+                                if (i === q.r || j === q.c || Math.abs(i - q.r) === Math.abs(j - q.c)) {
+                                    set[i + ',' + j] = true;
+                                }
+                            }
+                        }
+                    }
+                    return set;
+                }
+
+                function renderBoard(highlight) {
+                    boardEl.innerHTML = '';
+                    boardEl.style.cssText = 'display:inline-grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 auto;';
+                    var attacked = getAttacked(queens);
+                    for (var r = 0; r < N4; r++) {
+                        for (var c = 0; c < N4; c++) {
+                            var cell = document.createElement('div');
+                            var isQueen = queens.some(function(q) { return q.r === r && q.c === c; });
+                            var isAttacked = attacked[r + ',' + c];
+                            var isHighlight = highlight && highlight.r === r && highlight.c === c;
+                            cell.style.cssText = 'width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:1.4rem;cursor:pointer;transition:all 0.2s;border:2px solid transparent;' +
+                                ((r + c) % 2 === 0 ? 'background:var(--bg2);' : 'background:var(--bg3,var(--border));') +
+                                (isQueen ? 'background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px var(--accent);' : '') +
+                                (isAttacked && !isQueen ? 'background:rgba(231,76,60,0.15);border-color:rgba(231,76,60,0.3);' : '') +
+                                (isHighlight ? 'background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);' : '');
+                            cell.textContent = isQueen ? '♛' : '';
+                            cell.dataset.r = r;
+                            cell.dataset.c = c;
+                            if (!autoRunning) {
+                                (function(rr, cc) {
+                                    cell.addEventListener('click', function() {
+                                        handleCellClick(rr, cc);
+                                    });
+                                })(r, c);
+                            }
+                            boardEl.appendChild(cell);
+                        }
+                    }
+                    placedEl.textContent = queens.length;
+                    triesEl.textContent = tries4q;
+                    backsEl.textContent = backs4q;
+                }
+
+                function handleCellClick(r, c) {
+                    if (autoRunning) return;
+                    var existIdx = -1;
+                    for (var k = 0; k < queens.length; k++) {
+                        if (queens[k].r === r && queens[k].c === c) { existIdx = k; break; }
+                    }
+                    if (existIdx >= 0) {
+                        queens.splice(existIdx, 1);
+                        msgEl4q.textContent = '♛ Removed queen at (' + r + ',' + c + ').';
+                        renderBoard(null);
+                        return;
+                    }
+                    for (var k = 0; k < queens.length; k++) {
+                        if (queens[k].r === r) {
+                            msgEl4q.textContent = '❌ Row ' + r + ' already has a queen! Only one per row.';
+                            msgEl4q.style.borderLeftColor = 'var(--red)';
+                            return;
+                        }
+                    }
+                    tries4q++;
+                    if (!isSafe(r, c, queens)) {
+                        msgEl4q.textContent = '❌ (' + r + ',' + c + ') is in another queen\'s attack range! Check columns and diagonals.';
+                        msgEl4q.style.borderLeftColor = 'var(--red)';
+                        renderBoard({ r: r, c: c });
+                        setTimeout(function() { renderBoard(null); }, 600);
+                        return;
+                    }
+                    queens.push({ r: r, c: c });
+                    if (queens.length === N4) {
+                        msgEl4q.textContent = '🎉 Success! All 4 queens placed safely!';
+                        msgEl4q.style.borderLeftColor = 'var(--green)';
+                    } else {
+                        msgEl4q.textContent = '✅ Queen placed at (' + r + ',' + c + '). Red areas show attack ranges. (' + queens.length + '/4)';
+                        msgEl4q.style.borderLeftColor = 'var(--accent)';
+                    }
+                    renderBoard(null);
+                }
+
+                autoBtn.addEventListener('click', function() {
+                    if (autoRunning) return;
+                    autoRunning = true;
+                    autoBtn.disabled = true;
+                    queens = [];
+                    tries4q = 0;
+                    backs4q = 0;
+                    renderBoard(null);
+
+                    var solveSteps = [];
+                    function solve4(row, qs) {
+                        if (row === N4) {
+                            solveSteps.push({ type: 'done', queens: qs.slice() });
+                            return true;
+                        }
+                        for (var c = 0; c < N4; c++) {
+                            solveSteps.push({ type: 'try', r: row, c: c, queens: qs.slice() });
+                            if (isSafe(row, c, qs)) {
+                                qs.push({ r: row, c: c });
+                                solveSteps.push({ type: 'place', r: row, c: c, queens: qs.slice() });
+                                if (solve4(row + 1, qs)) return true;
+                                qs.pop();
+                                solveSteps.push({ type: 'back', r: row, c: c, queens: qs.slice() });
+                            } else {
+                                solveSteps.push({ type: 'fail', r: row, c: c, queens: qs.slice() });
+                            }
+                        }
+                        return false;
+                    }
+                    solve4(0, []);
+
+                    var si = 0;
+                    function playStep() {
+                        if (si >= solveSteps.length) {
+                            autoRunning = false;
+                            autoBtn.disabled = false;
+                            return;
+                        }
+                        var s = solveSteps[si];
+                        queens = s.queens.slice();
+                        if (s.type === 'try') {
+                            tries4q++;
+                            msgEl4q.textContent = '🔍 Trying row ' + s.r + ', col ' + s.c + '...';
+                            msgEl4q.style.borderLeftColor = 'var(--yellow)';
+                            renderBoard({ r: s.r, c: s.c });
+                        } else if (s.type === 'place') {
+                            msgEl4q.textContent = '✅ Placed queen at (' + s.r + ',' + s.c + ')! (' + queens.length + '/4)';
+                            msgEl4q.style.borderLeftColor = 'var(--green)';
+                            renderBoard(null);
+                        } else if (s.type === 'fail') {
+                            msgEl4q.textContent = '❌ (' + s.r + ',' + s.c + ') in attack range — skip';
+                            msgEl4q.style.borderLeftColor = 'var(--red)';
+                            renderBoard({ r: s.r, c: s.c });
+                        } else if (s.type === 'back') {
+                            backs4q++;
+                            msgEl4q.textContent = '↩️ Backtrack from (' + s.r + ',' + s.c + ')! Try another column';
+                            msgEl4q.style.borderLeftColor = 'var(--red)';
+                            renderBoard(null);
+                        } else if (s.type === 'done') {
+                            msgEl4q.textContent = '🎉 Solved! ' + tries4q + ' attempts, ' + backs4q + ' backtracks. Backtracking found it efficiently!';
+                            msgEl4q.style.borderLeftColor = 'var(--green)';
+                            renderBoard(null);
+                        }
+                        si++;
+                        setTimeout(playStep, s.type === 'done' ? 0 : (s.type === 'try' ? 250 : 400));
+                    }
+                    playStep();
+                });
+
+                clearBtn4q.addEventListener('click', function() {
+                    autoRunning = false;
+                    autoBtn.disabled = false;
+                    queens = [];
+                    tries4q = 0;
+                    backs4q = 0;
+                    msgEl4q.textContent = '👆 Click a cell to place a queen! Attack ranges are shown in red. Or click "Auto Solve" to watch the backtracking process.';
+                    msgEl4q.style.borderLeftColor = '';
+                    renderBoard(null);
+                });
+
+                renderBoard(null);
+            }
         }
     },
     _buildDecisionTree(treeContainer, instructionEl, resultsEl, resetBtn) {

@@ -58,6 +58,7 @@ const hashTableTopic = {
             container.appendChild(introDiv);
         }
         const contentDiv = document.createElement('div');
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
@@ -220,6 +221,29 @@ int main() {
     return 0;
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 배열 vs 딕셔너리 검색 속도</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-search-input" value="grape" placeholder="검색할 값" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-search-btn">🔍 검색 시작</button>
+                        <button class="concept-demo-btn green" id="ht-demo-search-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">배열 탐색 <span style="color:var(--red);font-size:0.85rem;">O(n)</span></div>
+                                <div id="ht-demo-arr-boxes" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                                <div id="ht-demo-arr-count" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">딕셔너리 검색 <span style="color:var(--green);font-size:0.85rem;">O(1)</span></div>
+                                <div id="ht-demo-dict-boxes" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                                <div id="ht-demo-dict-count" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-search-msg">👆 검색할 값을 입력하고 "검색 시작" 버튼을 눌러보세요! 배열과 딕셔너리의 속도 차이를 느껴보세요.</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">배열에서 원소가 있는지 확인하면 O(n)인데, 집합(set)에서는 O(1)인 이유는?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
@@ -289,6 +313,28 @@ int main() {
                     <strong>왜 빠를까?</strong> 배열에서 <code>"apple"</code>을 찾으려면 처음부터 하나씩 비교해야 합니다 (O(n)).
                     하지만 해시 테이블은 <code>hash("apple") = 0</code>을 계산해서 <strong>0번 칸을 바로 열어봅니다</strong> (O(1)).
                     도서관에서 책을 한 권씩 넘기는 게 아니라, 서가 번호를 계산해서 바로 가는 것과 같습니다! 📚→🎯
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 해시 함수 시각화</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-hash-input" value="apple" placeholder="키 입력" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-hash-btn">⚙️ 해시 계산</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="margin-bottom:12px;">
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">① 글자를 ASCII 숫자로 변환</div>
+                            <div id="ht-demo-hash-chars" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">② 합산 & 나머지</div>
+                            <div id="ht-demo-hash-calc" style="font-size:0.95rem;color:var(--text2);min-height:1.5em;"></div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">③ 버킷 배치 (테이블 크기: 7)</div>
+                            <div id="ht-demo-hash-buckets" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-hash-msg">👆 키를 입력하고 "해시 계산" 버튼을 눌러보세요! 여러 키를 넣어서 어떤 버킷에 배치되는지 확인하세요.</div>
                 </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">테이블이 10칸인데 데이터가 100개면 어떻게 될까요?</span></div>
@@ -392,6 +438,25 @@ int longest_unique(const string&amp; s) {
     return max_len;
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 빈도수 세기</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-freq-input" value="banana" placeholder="문자열 입력" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:160px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-freq-btn">📊 세기 시작</button>
+                        <button class="concept-demo-btn green" id="ht-demo-freq-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="margin-bottom:12px;">
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">문자열</div>
+                            <div id="ht-demo-freq-chars" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">빈도수 딕셔너리</div>
+                            <div id="ht-demo-freq-dict" style="display:flex;gap:8px;flex-wrap:wrap;min-height:50px;align-items:flex-end;"></div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-freq-msg">👆 문자열을 입력하고 "세기 시작"을 눌러보세요! 한 글자씩 빈도수를 세는 과정을 볼 수 있습니다.</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Two Sum을 이중 for문(O(n²))이 아닌 해시맵(O(n))으로 풀 수 있는 이유는?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
@@ -498,6 +563,19 @@ struct HashTable {
                         <p><span class="lang-py">Python 3.7+의 <code>dict</code>는 삽입 순서를 보장합니다!</span><span class="lang-cpp">C++의 <code>unordered_map</code>은 순서를 보장하지 않지만, <code>map</code>은 키 정렬 순서를 유지합니다.</span> 하지만 해시테이블 자체는 정렬된 순서가 아닙니다.</p>
                     </div>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 충돌 & 체이닝</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-chain-input" value="apple" placeholder="키 입력" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-chain-add">➕ 삽입</button>
+                        <button class="concept-demo-btn danger" id="ht-demo-chain-clear">🗑️ 초기화</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">해시 테이블 (크기: 5) — 체이닝 방식</div>
+                        <div id="ht-demo-chain-table" style="display:flex;flex-direction:column;gap:6px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-chain-msg">👆 키를 입력하고 "삽입" 버튼을 반복해서 눌러보세요! 같은 버킷에 여러 키가 들어가면 체이닝이 발생합니다. 추천: apple, melon, plum, fig, kiwi</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">해시 테이블의 최악 시간 복잡도는 O(n)인데, 왜 "O(1)"이라고 할까요?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
@@ -509,6 +587,385 @@ struct HashTable {
         container.querySelectorAll('.think-box-trigger').forEach(btn => {
             btn.addEventListener('click', () => { const box = btn.closest('.think-box'); box.classList.add('revealed'); btn.style.display = 'none'; });
         });
+
+        // ========== 인라인 데모 인터랙션 ==========
+
+        // --- 1. 배열 vs 딕셔너리 검색 속도 데모 ---
+        {
+            const arrData = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew'];
+            const dictData = {};
+            arrData.forEach(function(v) { dictData[v] = true; });
+            const searchBtn = container.querySelector('#ht-demo-search-btn');
+            const resetBtn = container.querySelector('#ht-demo-search-reset');
+            const inputEl = container.querySelector('#ht-demo-search-input');
+            const arrBoxes = container.querySelector('#ht-demo-arr-boxes');
+            const dictBoxes = container.querySelector('#ht-demo-dict-boxes');
+            const arrCount = container.querySelector('#ht-demo-arr-count');
+            const dictCount = container.querySelector('#ht-demo-dict-count');
+            const msgEl = container.querySelector('#ht-demo-search-msg');
+
+            var searchAnimating = false;
+
+            function renderArrBoxes() {
+                arrBoxes.innerHTML = '';
+                arrData.forEach(function(v) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-val">' + v + '</div>';
+                    box.dataset.val = v;
+                    arrBoxes.appendChild(box);
+                });
+            }
+            function renderDictBoxes() {
+                dictBoxes.innerHTML = '';
+                arrData.forEach(function(v) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.65rem;">#' + (function(k) { var h = 0; for (var i = 0; i < k.length; i++) h += k.charCodeAt(i); return h % 10; })(v) + '</div><div class="str-char-val">' + v + '</div>';
+                    box.dataset.val = v;
+                    dictBoxes.appendChild(box);
+                });
+            }
+            renderArrBoxes();
+            renderDictBoxes();
+
+            searchBtn.addEventListener('click', function() {
+                if (searchAnimating) return;
+                searchAnimating = true;
+                var target = inputEl.value.trim().toLowerCase();
+                if (!target) { msgEl.textContent = '검색할 값을 입력해주세요!'; searchAnimating = false; return; }
+                searchBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                renderArrBoxes();
+                renderDictBoxes();
+                arrCount.textContent = '';
+                dictCount.textContent = '';
+
+                // 배열: 한 칸씩 비교 (애니메이션)
+                var arrItems = arrBoxes.querySelectorAll('.str-char-box');
+                var found = false;
+                var step = 0;
+                var comparisons = 0;
+
+                function arrStep() {
+                    if (step >= arrItems.length) {
+                        arrCount.textContent = found ? '찾음! 비교 횟수: ' + comparisons + '회' : '없음! 비교 횟수: ' + comparisons + '회 (전부 확인)';
+                        if (!found) arrCount.style.color = 'var(--red)';
+                        return;
+                    }
+                    // 이전 스텝 하이라이트 제거
+                    if (step > 0) arrItems[step - 1].classList.remove('comparing');
+                    arrItems[step].classList.add('comparing');
+                    comparisons++;
+                    if (arrItems[step].dataset.val === target) {
+                        found = true;
+                        arrItems[step].classList.remove('comparing');
+                        arrItems[step].classList.add('matched');
+                        arrCount.textContent = '찾음! 비교 횟수: ' + comparisons + '회';
+                        arrCount.style.color = 'var(--green)';
+                        msgEl.textContent = '배열은 ' + comparisons + '번 비교해야 찾았지만, 딕셔너리는 해시 함수로 1번에 찾습니다!';
+                        return;
+                    }
+                    step++;
+                    setTimeout(arrStep, 350);
+                }
+
+                // 딕셔너리: 바로 찾기 (약간의 딜레이 후 즉시)
+                setTimeout(function() {
+                    var dictItems = dictBoxes.querySelectorAll('.str-char-box');
+                    var dictFound = false;
+                    dictItems.forEach(function(box) {
+                        if (box.dataset.val === target) {
+                            box.classList.add('matched');
+                            dictFound = true;
+                        }
+                    });
+                    if (dictFound) {
+                        dictCount.textContent = '해시 계산 1번으로 즉시 찾음!';
+                        dictCount.style.color = 'var(--green)';
+                    } else {
+                        dictCount.textContent = '해시 계산 1번 → 없음 확인!';
+                        dictCount.style.color = 'var(--red)';
+                    }
+                    searchAnimating = false;
+                }, 200);
+
+                arrStep();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                searchAnimating = false;
+                searchBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                renderArrBoxes();
+                renderDictBoxes();
+                arrCount.textContent = '';
+                arrCount.style.color = '';
+                dictCount.textContent = '';
+                dictCount.style.color = '';
+                msgEl.textContent = '👆 검색할 값을 입력하고 "검색 시작" 버튼을 눌러보세요! 배열과 딕셔너리의 속도 차이를 느껴보세요.';
+            });
+        }
+
+        // --- 2. 해시 함수 시각화 데모 ---
+        {
+            var HASH_TABLE_SIZE = 7;
+            var hashBucketData = [[], [], [], [], [], [], []];
+            var hashBtn = container.querySelector('#ht-demo-hash-btn');
+            var hashInput = container.querySelector('#ht-demo-hash-input');
+            var hashChars = container.querySelector('#ht-demo-hash-chars');
+            var hashCalc = container.querySelector('#ht-demo-hash-calc');
+            var hashBuckets = container.querySelector('#ht-demo-hash-buckets');
+            var hashMsg = container.querySelector('#ht-demo-hash-msg');
+
+            function renderHashBuckets() {
+                hashBuckets.innerHTML = '';
+                for (var i = 0; i < HASH_TABLE_SIZE; i++) {
+                    var bkt = document.createElement('div');
+                    bkt.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;';
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-size:0.75rem;color:var(--text3);font-weight:600;';
+                    label.textContent = '[' + i + ']';
+                    var slot = document.createElement('div');
+                    slot.className = 'str-char-box';
+                    slot.id = 'ht-demo-hash-bucket-' + i;
+                    slot.style.cssText = 'min-width:55px;min-height:36px;transition:all 0.3s ease;';
+                    var keysInBucket = hashBucketData[i];
+                    if (keysInBucket.length > 0) {
+                        slot.innerHTML = '<div class="str-char-val" style="font-size:0.75rem;">' + keysInBucket.join(', ') + '</div>';
+                    } else {
+                        slot.innerHTML = '<div class="str-char-val" style="font-size:0.75rem;color:var(--text3);">—</div>';
+                    }
+                    bkt.appendChild(label);
+                    bkt.appendChild(slot);
+                    hashBuckets.appendChild(bkt);
+                }
+            }
+            renderHashBuckets();
+
+            hashBtn.addEventListener('click', function() {
+                var key = hashInput.value.trim();
+                if (!key) { hashMsg.textContent = '키를 입력해주세요!'; return; }
+
+                // Step 1: 글자별 ASCII
+                hashChars.innerHTML = '';
+                var total = 0;
+                var parts = [];
+                for (var i = 0; i < key.length; i++) {
+                    var ch = key[i];
+                    var code = key.charCodeAt(i);
+                    total += code;
+                    parts.push(code);
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx">' + ch + '</div><div class="str-char-val">' + code + '</div>';
+                    box.style.animation = 'fadeIn 0.3s ease ' + (i * 0.1) + 's both';
+                    hashChars.appendChild(box);
+                }
+
+                // Step 2: 합산 & 나머지
+                var idx = total % HASH_TABLE_SIZE;
+                hashCalc.innerHTML = parts.join(' + ') + ' = <strong>' + total + '</strong> → ' + total + ' % ' + HASH_TABLE_SIZE + ' = <strong style="color:var(--green);">' + idx + '번 버킷</strong>';
+
+                // Step 3: 버킷에 배치
+                if (hashBucketData[idx].indexOf(key) === -1) {
+                    hashBucketData[idx].push(key);
+                }
+                renderHashBuckets();
+                var targetSlot = container.querySelector('#ht-demo-hash-bucket-' + idx);
+                if (targetSlot) {
+                    targetSlot.classList.add('matched');
+                    setTimeout(function() { targetSlot.classList.remove('matched'); }, 1500);
+                }
+
+                // 충돌 확인
+                if (hashBucketData[idx].length > 1) {
+                    hashMsg.textContent = '충돌 발생! "' + key + '"가 ' + idx + '번 버킷에 들어갔는데, 이미 "' + hashBucketData[idx].filter(function(k) { return k !== key; }).join(', ') + '"이(가) 있습니다!';
+                } else {
+                    hashMsg.textContent = '"' + key + '" → ASCII 합: ' + total + ' → ' + idx + '번 버킷에 배치! 다른 키도 넣어보세요.';
+                }
+                hashInput.value = '';
+                hashInput.focus();
+            });
+        }
+
+        // --- 3. 빈도수 세기 데모 ---
+        {
+            var freqBtn = container.querySelector('#ht-demo-freq-btn');
+            var freqReset = container.querySelector('#ht-demo-freq-reset');
+            var freqInput = container.querySelector('#ht-demo-freq-input');
+            var freqChars = container.querySelector('#ht-demo-freq-chars');
+            var freqDict = container.querySelector('#ht-demo-freq-dict');
+            var freqMsg = container.querySelector('#ht-demo-freq-msg');
+            var freqAnimating = false;
+
+            function renderFreqChars(str) {
+                freqChars.innerHTML = '';
+                for (var i = 0; i < str.length; i++) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + str[i] + '</div>';
+                    freqChars.appendChild(box);
+                }
+            }
+
+            function renderFreqDict(freq, highlightKey) {
+                freqDict.innerHTML = '';
+                var keys = Object.keys(freq);
+                if (keys.length === 0) {
+                    freqDict.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;">(비어있음)</div>';
+                    return;
+                }
+                keys.forEach(function(k) {
+                    var col = document.createElement('div');
+                    col.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;';
+                    // 바 높이를 빈도수에 비례
+                    var barH = freq[k] * 28;
+                    var bar = document.createElement('div');
+                    bar.style.cssText = 'width:36px;height:' + barH + 'px;background:var(--accent);border-radius:6px 6px 0 0;transition:height 0.3s ease;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;color:#fff;font-weight:700;font-size:0.85rem;';
+                    if (k === highlightKey) bar.style.background = 'var(--green)';
+                    bar.textContent = freq[k];
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-size:0.85rem;font-weight:600;color:var(--text);';
+                    label.textContent = '"' + k + '"';
+                    col.appendChild(bar);
+                    col.appendChild(label);
+                    freqDict.appendChild(col);
+                });
+            }
+
+            freqBtn.addEventListener('click', function() {
+                if (freqAnimating) return;
+                var str = freqInput.value.trim();
+                if (!str) { freqMsg.textContent = '문자열을 입력해주세요!'; return; }
+                freqAnimating = true;
+                freqBtn.style.display = 'none';
+                freqReset.style.display = '';
+                renderFreqChars(str);
+                var freq = {};
+                var step = 0;
+                var charBoxes = freqChars.querySelectorAll('.str-char-box');
+
+                function nextStep() {
+                    if (step >= str.length) {
+                        freqMsg.textContent = '완료! 총 ' + Object.keys(freq).length + '종류의 문자가 있습니다. 결과: ' + Object.keys(freq).map(function(k) { return '"' + k + '":' + freq[k]; }).join(', ');
+                        freqAnimating = false;
+                        return;
+                    }
+                    // 이전 스텝 하이라이트 제거
+                    if (step > 0) charBoxes[step - 1].classList.remove('comparing');
+                    charBoxes[step].classList.add('comparing');
+                    var ch = str[step];
+                    if (!freq[ch]) freq[ch] = 0;
+                    freq[ch]++;
+                    renderFreqDict(freq, ch);
+                    freqMsg.textContent = '문자 "' + ch + '" 발견 → freq["' + ch + '"] = ' + freq[ch] + (freq[ch] > 1 ? ' (이미 있으니 +1 증가!)' : ' (처음 등장, 새로 추가!)');
+                    step++;
+                    setTimeout(nextStep, 450);
+                }
+                nextStep();
+            });
+
+            freqReset.addEventListener('click', function() {
+                freqAnimating = false;
+                freqBtn.style.display = '';
+                freqReset.style.display = 'none';
+                renderFreqChars(freqInput.value.trim() || 'banana');
+                freqDict.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;">(비어있음)</div>';
+                freqMsg.textContent = '👆 문자열을 입력하고 "세기 시작"을 눌러보세요! 한 글자씩 빈도수를 세는 과정을 볼 수 있습니다.';
+            });
+            renderFreqDict({});
+        }
+
+        // --- 4. 충돌 & 체이닝 데모 ---
+        {
+            var CHAIN_SIZE = 5;
+            var chainTable = [[], [], [], [], []];
+            var chainAddBtn = container.querySelector('#ht-demo-chain-add');
+            var chainClearBtn = container.querySelector('#ht-demo-chain-clear');
+            var chainInput = container.querySelector('#ht-demo-chain-input');
+            var chainTableEl = container.querySelector('#ht-demo-chain-table');
+            var chainMsg = container.querySelector('#ht-demo-chain-msg');
+
+            function chainHash(key) {
+                var h = 0;
+                for (var i = 0; i < key.length; i++) h += key.charCodeAt(i);
+                return h % CHAIN_SIZE;
+            }
+
+            function renderChainTable(highlightBucket, highlightKey) {
+                chainTableEl.innerHTML = '';
+                for (var i = 0; i < CHAIN_SIZE; i++) {
+                    var row = document.createElement('div');
+                    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-weight:700;font-size:0.85rem;color:var(--text2);min-width:30px;text-align:center;';
+                    label.textContent = '[' + i + ']';
+                    row.appendChild(label);
+
+                    if (chainTable[i].length === 0) {
+                        var empty = document.createElement('div');
+                        empty.style.cssText = 'font-size:0.8rem;color:var(--text3);padding:6px 12px;border:1px dashed var(--border);border-radius:8px;';
+                        empty.textContent = '비어있음';
+                        row.appendChild(empty);
+                    } else {
+                        chainTable[i].forEach(function(key, idx) {
+                            if (idx > 0) {
+                                var arrow = document.createElement('span');
+                                arrow.style.cssText = 'color:var(--accent);font-weight:700;font-size:1.1rem;';
+                                arrow.textContent = '→';
+                                row.appendChild(arrow);
+                            }
+                            var box = document.createElement('div');
+                            box.className = 'str-char-box';
+                            box.innerHTML = '<div class="str-char-val">' + key + '</div>';
+                            box.style.transition = 'all 0.3s ease';
+                            if (i === highlightBucket && key === highlightKey) {
+                                box.classList.add('matched');
+                            }
+                            row.appendChild(box);
+                        });
+                        if (chainTable[i].length > 1) {
+                            var badge = document.createElement('span');
+                            badge.style.cssText = 'font-size:0.7rem;padding:2px 8px;background:var(--red);color:#fff;border-radius:10px;font-weight:600;margin-left:4px;';
+                            badge.textContent = '충돌!';
+                            row.appendChild(badge);
+                        }
+                    }
+                    chainTableEl.appendChild(row);
+                }
+            }
+            renderChainTable(-1, '');
+
+            chainAddBtn.addEventListener('click', function() {
+                var key = chainInput.value.trim();
+                if (!key) { chainMsg.textContent = '키를 입력해주세요!'; return; }
+                var idx = chainHash(key);
+                // 중복 방지
+                if (chainTable[idx].indexOf(key) !== -1) {
+                    chainMsg.textContent = '"' + key + '"은(는) 이미 ' + idx + '번 버킷에 있습니다! 다른 키를 넣어보세요.';
+                    renderChainTable(idx, key);
+                    return;
+                }
+                var hadCollision = chainTable[idx].length > 0;
+                chainTable[idx].push(key);
+                renderChainTable(idx, key);
+                if (hadCollision) {
+                    chainMsg.textContent = '충돌! "' + key + '" → hash = ' + idx + '번 버킷에 이미 "' + chainTable[idx].filter(function(k) { return k !== key; }).join(', ') + '"이(가) 있어서 체이닝으로 연결했습니다!';
+                } else {
+                    chainMsg.textContent = '"' + key + '" → hash = ' + idx + '번 버킷에 저장! (총 ASCII 합: ' + (function(k) { var s = 0; for (var i = 0; i < k.length; i++) s += k.charCodeAt(i); return s; })(key) + ' % ' + CHAIN_SIZE + ' = ' + idx + ')';
+                }
+                chainInput.value = '';
+                chainInput.focus();
+            });
+
+            chainClearBtn.addEventListener('click', function() {
+                chainTable = [[], [], [], [], []];
+                renderChainTable(-1, '');
+                chainMsg.textContent = '초기화 완료! 키를 입력하고 "삽입" 버튼을 눌러보세요.';
+                chainInput.value = '';
+            });
+        }
     },
 
     // ===== 시각화 탭 (개념 탭용 — 스텁) =====
@@ -682,8 +1139,8 @@ struct HashTable {
         const updateUI = () => {
             const idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0); nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { counter.textContent = '시작 전'; desc.textContent = '▶ 다음 버튼을 눌러 시작하세요'; }
-            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = '시작 전'; desc.innerHTML = '▶ 다음 버튼을 눌러 시작하세요'; }
+            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.innerHTML = state.steps[idx].description; }
         };
         var actionDelay = 350;
         nextBtn.addEventListener('click', () => { if (state.currentStep >= state.steps.length - 1) return; state.currentStep++; updateUI(); setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay); });
@@ -930,6 +1387,22 @@ struct HashTable {
             const prefixLastPos = { 0: -1 };
             let prefixSum = 0, count = 0;
 
+            // ──── 스텝 0: 핵심 아이디어 설명 ────
+            steps.push({ description: '<strong>핵심 아이디어</strong>: 0번부터 i번까지의 합을 "누적합"이라 하자. 만약 이전 어떤 지점 j까지의 누적합이 (현재 누적합 − k)이면, <strong>j+1번~i번 구간의 합 = k</strong>가 된다! 해시맵에 각 누적합이 몇 번 나왔는지 기록하면서 찾는다. 합=0은 "시작 전"(아무것도 안 더한 상태)이므로 1로 초기화.',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    sumEl.innerHTML = '—';
+                    lookupEl.innerHTML = '—';
+                    resultEl.innerHTML = '<span style="color:var(--accent);">현재합 − k = 이전합이면 → 그 구간의 합이 k!</span>';
+                    resultEl.style.color = 'var(--accent)';
+                    explainEl.style.borderColor = 'var(--accent)'; explainEl.style.background = 'rgba(108,92,231,0.05)';
+                    pcEl.innerHTML = renderPcTable({0: 1});
+                    cntEl.textContent = '0';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
             arr.forEach((num, i) => {
                 prefixSum += num;
                 const diff = prefixSum - k;
@@ -951,10 +1424,10 @@ struct HashTable {
                 const cSS = subStart, cSE = subEnd;
                 var formula = arr.slice(0, i + 1).join(' + ') + ' = <strong>' + cs + '</strong>';
                 var prevPos = cSS >= 0 ? cSS - 1 : -99;
-                var prevPosLabel = prevPos < 0 ? '시작 전' : prevPos + '번';
+                var prevPosLabel = prevPos < 0 ? '시작 전' : prevPos + '번 인덱스';
 
                 // ──── 스텝 A: 더하기 ────
-                steps.push({ description: 'arr[' + i + '] = ' + num + ' 더하기 → 여기까지 합 = ' + cs,
+                steps.push({ description: '<strong>[' + i + '번]</strong> arr[' + i + '] = ' + num + ' 더하기. 0번~' + i + '번까지 누적합 = ' + formula + '. <em>이 값을 이용해서 합=k인 구간이 있는지 찾을 것이다.</em>',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -975,7 +1448,7 @@ struct HashTable {
                     var lookupMatch = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
                         ' → <span style="color:var(--green);">합=' + cd + '인 지점: ' + prevPosLabel + '!</span>';
 
-                    steps.push({ description: '이전에 합=' + cd + '인 지점이 있나? → 있다! (' + prevPosLabel + ')',
+                    steps.push({ description: '현재 누적합 <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. 해시맵에서 "이전에 누적합=' + cd + '인 지점"을 찾는다. <em>왜? 그 지점 다음~여기까지의 구간합이 ' + cs + '−' + cd + '=' + k + '이 되니까!</em> → <span style="color:var(--green);font-weight:700;">있다! (' + prevPosLabel + ')</span>',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -993,9 +1466,9 @@ struct HashTable {
 
                     // ──── 스텝 C: 발견! ────
                     var subArr = arr.slice(cSS, cSE + 1);
-                    var resultMatch = '→ ' + prevPosLabel + ' 다음(' + cSS + '번) ~ 여기(' + cSE + '번) = <strong>[' + subArr.join(', ') + ']</strong>, 합 = ' + cs + ' − ' + cd + ' = ' + k + ' = k ✅';
+                    var resultMatch = '→ ' + prevPosLabel + ' 다음(' + cSS + '번) ~ 여기(' + cSE + '번) = <strong>[' + subArr.join(', ') + ']</strong>, 구간합 = ' + cs + ' − ' + cd + ' = ' + k + ' = k ✅';
 
-                    steps.push({ description: '[' + subArr.join(', ') + '] 찾았다! 합 = ' + k + ' 🎉',
+                    steps.push({ description: '<span style="color:var(--green);font-weight:700;">발견!</span> ' + prevPosLabel + '까지 누적합=' + cd + ', 여기(' + cSE + '번)까지 누적합=' + cs + '. 그 사이 구간 [' + subArr.join(', ') + ']의 합 = ' + cs + ' − ' + cd + ' = <strong>' + k + '</strong> = k! 그리고 현재 누적합 ' + cs + '도 해시맵에 기록한다.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -1018,7 +1491,7 @@ struct HashTable {
                     var lookupMiss = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
                         ' → <span style="color:var(--text3);">합=' + cd + '인 지점 없음</span>';
 
-                    steps.push({ description: '이전에 합=' + cd + '인 지점이 있나? → 없다. 패스',
+                    steps.push({ description: '현재 누적합 <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. 해시맵에서 "이전에 누적합=' + cd + '인 지점"을 찾는다. <em>왜? 있으면 그 구간의 합이 k니까!</em> → <span style="color:var(--text3);">없다.</span> 여기서 끝나는 합=k 구간은 없다. 현재 누적합 ' + cs + '을 해시맵에 기록하고 넘어간다.',
                         _before: null,
                         action: function() {
                             this._before = saveState();

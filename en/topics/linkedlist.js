@@ -58,7 +58,7 @@ const linkedListTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -276,6 +276,17 @@ while (node) {
                     <strong>💡 Think about it:</strong> Array vs Linked List: An array is like an "apartment building" (find by number instantly O(1)),
                     a linked list is like a "train" (move car by car O(n)). But it's easy to insert a car into a train!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Linked List Traversal</div>
+                    <div class="concept-demo-body">
+                        <div class="demo-ll-chain" id="ll-demo-traverse-chain" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:1rem 0;"></div>
+                    </div>
+                    <div class="concept-demo-btns" style="justify-content:center;">
+                        <button class="concept-demo-btn" id="ll-demo-traverse-next">Next Node →</button>
+                        <button class="concept-demo-btn green" id="ll-demo-traverse-reset" style="display:none;">↺ Start Over</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ll-demo-traverse-msg">👆 Click "Next Node" to traverse one step at a time from head! Unlike arrays, you can't jump directly to the i-th element.</div>
+                </div>
             </div>
 
             <div class="concept-section">
@@ -348,6 +359,22 @@ ListNode* reverseList(ListNode* head) {
                 <div class="think-box">
                     <strong>💡 Think about it:</strong> Reversing a linked list is a classic coding interview question!
                     It's great if you can implement both the iterative and recursive versions.
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — List Reversal Simulation</div>
+                    <div class="concept-demo-body">
+                        <div class="demo-ll-chain" id="ll-demo-reverse-chain" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:1rem 0;"></div>
+                    </div>
+                    <div class="demo-ll-info" id="ll-demo-reverse-info" style="margin-bottom:0.8rem;">
+                        <span><strong>prev:</strong> <span id="ll-demo-reverse-prev-val">None</span></span>
+                        <span><strong>curr:</strong> <span id="ll-demo-reverse-curr-val">-</span></span>
+                        <span><strong>next_node:</strong> <span id="ll-demo-reverse-next-val">-</span></span>
+                    </div>
+                    <div class="concept-demo-btns" style="justify-content:center;">
+                        <button class="concept-demo-btn" id="ll-demo-reverse-step">Next Step →</button>
+                        <button class="concept-demo-btn green" id="ll-demo-reverse-reset" style="display:none;">↺ Start Over</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ll-demo-reverse-msg">👆 Click "Next Step" to watch prev/curr/next pointers move and arrows flip!</div>
                 </div>
             </div>
 
@@ -431,9 +458,323 @@ ListNode* middleNode(ListNode* head) {
                     <strong>💡 Think about it:</strong> When you encounter a linked list problem in coding tests,
                     remember these 4 patterns: "reversal", "cycle detection", "finding the middle", and "merging"!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Tortoise and Hare (Floyd's Cycle Detection)</div>
+                    <div class="concept-demo-body">
+                        <div id="ll-demo-cycle-chain" style="display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:1rem 0;position:relative;"></div>
+                    </div>
+                    <div class="demo-ll-info" id="ll-demo-cycle-info" style="margin-bottom:0.8rem;">
+                        <span>🐢 <strong>slow:</strong> <span id="ll-demo-cycle-slow-val">node 1</span></span>
+                        <span>🐇 <strong>fast:</strong> <span id="ll-demo-cycle-fast-val">node 1</span></span>
+                        <span id="ll-demo-cycle-step-count" style="color:var(--text3);">Step: 0</span>
+                    </div>
+                    <div class="concept-demo-btns" style="justify-content:center;">
+                        <button class="concept-demo-btn" id="ll-demo-cycle-step">Next Step →</button>
+                        <button class="concept-demo-btn green" id="ll-demo-cycle-reset" style="display:none;">↺ Start Over</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ll-demo-cycle-msg">👆 Click "Next Step" to watch slow (1 step) and fast (2 steps) move. If they meet inside the cycle, cycle detected!</div>
+                </div>
             </div>
         `;
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
+
+        // ========== Inline Demo Interactions ==========
+
+        // ── Common helper: node HTML generation ──
+        const _llNodeHtml = (val, labels, cls) => {
+            var labelHtml = '';
+            if (labels && labels.length) {
+                labelHtml = labels.map(l => {
+                    var lCls = 'demo-ll-label';
+                    if (l === 'head') lCls += ' lbl-head';
+                    else if (l === 'prev') lCls += ' lbl-prev';
+                    else if (l === 'curr') lCls += ' lbl-curr';
+                    else if (l === 'slow' || l === '🐢slow') lCls += ' lbl-slow';
+                    else if (l === 'fast' || l === '🐇fast') lCls += ' lbl-fast';
+                    return '<span class="' + lCls + '">' + l + '</span>';
+                }).join('');
+            }
+            return '<div class="demo-ll-node">' + labelHtml +
+                '<div class="demo-ll-node-box' + (cls ? ' ' + cls : '') + '">' + val + '</div></div>';
+        };
+        const _llArrowHtml = (reversed) => {
+            return '<span class="demo-ll-arrow' + (reversed ? ' rev' : '') + '">' + (reversed ? '←' : '→') + '</span>';
+        };
+
+        // --- 1. Traversal Demo ---
+        {
+            const chainEl = container.querySelector('#ll-demo-traverse-chain');
+            const nextBtn = container.querySelector('#ll-demo-traverse-next');
+            const resetBtn = container.querySelector('#ll-demo-traverse-reset');
+            const msgEl = container.querySelector('#ll-demo-traverse-msg');
+            const nodes = [10, 20, 30, 40, 50];
+            let currentIdx = -1;
+
+            const renderChain = () => {
+                let html = '';
+                for (let i = 0; i < nodes.length; i++) {
+                    let labels = [];
+                    let cls = '';
+                    if (i === 0) labels.push('head');
+                    if (i === currentIdx) {
+                        labels.push('curr');
+                        cls = 'current';
+                    } else if (i < currentIdx) {
+                        cls = 'visited';
+                    }
+                    html += _llNodeHtml(nodes[i], labels, cls);
+                    if (i < nodes.length - 1) html += _llArrowHtml(false);
+                }
+                html += '<span class="demo-ll-none">None</span>';
+                chainEl.innerHTML = html;
+            };
+
+            renderChain();
+
+            nextBtn.addEventListener('click', () => {
+                if (currentIdx >= nodes.length - 1) return;
+                currentIdx++;
+                renderChain();
+                if (currentIdx === 0) {
+                    msgEl.textContent = 'curr = head → Starting at node ' + nodes[currentIdx] + '. A linked list always starts from head!';
+                } else if (currentIdx < nodes.length - 1) {
+                    msgEl.textContent = 'curr = curr.next → Moved to node ' + nodes[currentIdx] + '. (Reaching the ' + (currentIdx + 1) + 'th node requires ' + currentIdx + ' moves!)';
+                } else {
+                    msgEl.textContent = 'Arrived at node ' + nodes[currentIdx] + '! curr.next is None, so traversal is complete. Took ' + currentIdx + ' moves total. With an array, arr[' + currentIdx + '] would be O(1)!';
+                    nextBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                currentIdx = -1;
+                renderChain();
+                msgEl.textContent = '👆 Click "Next Node" to traverse one step at a time from head! Unlike arrays, you can\'t jump directly to the i-th element.';
+                nextBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            });
+        }
+
+        // --- 2. Reversal Demo ---
+        {
+            const chainEl = container.querySelector('#ll-demo-reverse-chain');
+            const stepBtn = container.querySelector('#ll-demo-reverse-step');
+            const resetBtn = container.querySelector('#ll-demo-reverse-reset');
+            const msgEl = container.querySelector('#ll-demo-reverse-msg');
+            const prevValEl = container.querySelector('#ll-demo-reverse-prev-val');
+            const currValEl = container.querySelector('#ll-demo-reverse-curr-val');
+            const nextValEl = container.querySelector('#ll-demo-reverse-next-val');
+            const vals = [1, 2, 3, 4, 5];
+
+            let arrows, prevIdx, currIdx, stepNum, done;
+
+            const buildSteps = () => {
+                const steps = [];
+                steps.push({
+                    desc: 'Initialize prev = None, curr = head (node ' + vals[0] + ').',
+                    prevI: -1, currI: 0, arrowsState: new Array(vals.length - 1).fill(false), sub: 'init'
+                });
+
+                let arrs = new Array(vals.length - 1).fill(false);
+                let pI = -1, cI = 0;
+
+                while (cI < vals.length) {
+                    const nextI = cI + 1 < vals.length ? cI + 1 : -1;
+                    steps.push({
+                        desc: 'next_node = curr.next → Save ' + (nextI >= 0 ? 'node ' + vals[nextI] : 'None') + ' temporarily. We\'d lose the next node when flipping the arrow!',
+                        prevI: pI, currI: cI, nextI: nextI, arrowsState: arrs.slice(), sub: 'save_next'
+                    });
+                    const newArrs = arrs.slice();
+                    if (cI > 0) newArrs[cI - 1] = true;
+                    steps.push({
+                        desc: 'curr.next = prev → Flip node ' + vals[cI] + '\'s arrow to point toward ' + (pI >= 0 ? 'node ' + vals[pI] : 'None') + '!',
+                        prevI: pI, currI: cI, nextI: nextI, arrowsState: newArrs.slice(), sub: 'flip'
+                    });
+                    arrs = newArrs;
+                    const oldCI = cI;
+                    pI = cI;
+                    cI = nextI >= 0 ? nextI : vals.length;
+                    if (cI < vals.length) {
+                        steps.push({
+                            desc: 'Advance: prev = node ' + vals[pI] + ', curr = node ' + vals[cI] + '.',
+                            prevI: pI, currI: cI, arrowsState: arrs.slice(), sub: 'move'
+                        });
+                    } else {
+                        steps.push({
+                            desc: 'curr is now None, so the loop ends! prev (node ' + vals[pI] + ') is the new head. Reversal complete!',
+                            prevI: pI, currI: -1, arrowsState: arrs.slice(), sub: 'done'
+                        });
+                    }
+                }
+                return steps;
+            };
+
+            let steps;
+
+            const renderReverseChain = (step) => {
+                let html = '';
+                if (step.sub === 'done') {
+                    for (let i = vals.length - 1; i >= 0; i--) {
+                        let labels = [];
+                        let cls = 'reversed';
+                        if (i === vals.length - 1) labels.push('head');
+                        if (i === step.prevI) labels.push('prev');
+                        html += _llNodeHtml(vals[i], labels, cls);
+                        if (i > 0) html += _llArrowHtml(false);
+                    }
+                    html += '<span class="demo-ll-none">None</span>';
+                } else {
+                    for (let i = 0; i < vals.length; i++) {
+                        let labels = [];
+                        let cls = '';
+                        if (i === 0 && !step.arrowsState.some((v, idx) => idx < i && v)) labels.push('head');
+                        if (i === step.prevI) { labels.push('prev'); cls = 'visited'; }
+                        if (i === step.currI) { labels.push('curr'); cls = 'current'; }
+                        if (step.nextI !== undefined && i === step.nextI && step.sub === 'save_next') { labels.push('next'); }
+                        if (i < step.prevI && step.prevI >= 0) cls = 'reversed';
+                        html += _llNodeHtml(vals[i], labels, cls);
+                        if (i < vals.length - 1) {
+                            html += _llArrowHtml(step.arrowsState[i]);
+                        }
+                    }
+                    html += '<span class="demo-ll-none">None</span>';
+                }
+                chainEl.innerHTML = html;
+            };
+
+            const resetReverse = () => {
+                steps = buildSteps();
+                stepNum = -1;
+                done = false;
+                let html = '';
+                for (let i = 0; i < vals.length; i++) {
+                    let labels = i === 0 ? ['head'] : [];
+                    html += _llNodeHtml(vals[i], labels, '');
+                    if (i < vals.length - 1) html += _llArrowHtml(false);
+                }
+                html += '<span class="demo-ll-none">None</span>';
+                chainEl.innerHTML = html;
+                prevValEl.textContent = 'None';
+                currValEl.textContent = '-';
+                nextValEl.textContent = '-';
+                msgEl.textContent = '👆 Click "Next Step" to watch prev/curr/next pointers move and arrows flip!';
+                stepBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            };
+
+            resetReverse();
+
+            stepBtn.addEventListener('click', () => {
+                if (done) return;
+                stepNum++;
+                if (stepNum >= steps.length) return;
+                const step = steps[stepNum];
+                renderReverseChain(step);
+                msgEl.textContent = step.desc;
+                prevValEl.textContent = step.prevI >= 0 ? vals[step.prevI] : 'None';
+                currValEl.textContent = step.currI >= 0 ? vals[step.currI] : 'None';
+                nextValEl.textContent = step.nextI !== undefined && step.nextI >= 0 ? vals[step.nextI] : '-';
+                if (step.sub === 'done') {
+                    done = true;
+                    stepBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                resetReverse();
+            });
+        }
+
+        // --- 3. Tortoise and Hare (Floyd's Cycle) Demo ---
+        {
+            const chainEl = container.querySelector('#ll-demo-cycle-chain');
+            const stepBtn = container.querySelector('#ll-demo-cycle-step');
+            const resetBtn = container.querySelector('#ll-demo-cycle-reset');
+            const msgEl = container.querySelector('#ll-demo-cycle-msg');
+            const slowValEl = container.querySelector('#ll-demo-cycle-slow-val');
+            const fastValEl = container.querySelector('#ll-demo-cycle-fast-val');
+            const stepCountEl = container.querySelector('#ll-demo-cycle-step-count');
+
+            const vals = [1, 2, 3, 4, 5];
+            const cycleBackTo = 2;
+            let slowIdx, fastIdx, stepCount, met;
+
+            const renderCycleChain = () => {
+                let html = '';
+                for (let i = 0; i < vals.length; i++) {
+                    let labels = [];
+                    let cls = '';
+                    if (i === 0) labels.push('head');
+                    if (i === slowIdx && i === fastIdx) {
+                        if (met) {
+                            labels.push('🐢🐇met!');
+                            cls = 'meet';
+                        } else {
+                            labels.push('🐢slow');
+                            labels.push('🐇fast');
+                            cls = 'current';
+                        }
+                    } else {
+                        if (i === slowIdx) { labels.push('🐢slow'); cls = 'slow'; }
+                        if (i === fastIdx) { labels.push('🐇fast'); cls = 'fast'; }
+                    }
+                    html += _llNodeHtml(vals[i], labels, cls);
+                    if (i < vals.length - 1) {
+                        html += _llArrowHtml(false);
+                    }
+                }
+                html += '<span class="demo-ll-arrow" style="color:var(--red);font-weight:700;" title="cycle: back to node ' + vals[cycleBackTo] + '">↩ ' + vals[cycleBackTo] + '</span>';
+                chainEl.innerHTML = html;
+            };
+
+            const resetCycle = () => {
+                slowIdx = 0;
+                fastIdx = 0;
+                stepCount = 0;
+                met = false;
+                renderCycleChain();
+                slowValEl.textContent = 'node ' + vals[0];
+                fastValEl.textContent = 'node ' + vals[0];
+                stepCountEl.textContent = 'Step: 0';
+                msgEl.textContent = '👆 Click "Next Step" to watch slow (1 step) and fast (2 steps) move. If they meet inside the cycle, cycle detected!';
+                stepBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            };
+
+            const nextIdx = (idx) => {
+                if (idx === vals.length - 1) return cycleBackTo;
+                return idx + 1;
+            };
+
+            resetCycle();
+
+            stepBtn.addEventListener('click', () => {
+                if (met) return;
+                stepCount++;
+                slowIdx = nextIdx(slowIdx);
+                fastIdx = nextIdx(nextIdx(fastIdx));
+
+                renderCycleChain();
+                slowValEl.textContent = 'node ' + vals[slowIdx];
+                fastValEl.textContent = 'node ' + vals[fastIdx];
+                stepCountEl.textContent = 'Step: ' + stepCount;
+
+                if (slowIdx === fastIdx) {
+                    met = true;
+                    renderCycleChain();
+                    msgEl.textContent = '🎉 At step ' + stepCount + ', slow and fast met at node ' + vals[slowIdx] + '! A cycle exists! Since fast catches up by 1 step each turn, they always meet.';
+                    stepBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                } else {
+                    msgEl.textContent = 'Step ' + stepCount + ': slow → node ' + vals[slowIdx] + ' (1 step), fast → node ' + vals[fastIdx] + ' (2 steps). They haven\'t met yet. fast is catching up by 1 step each turn!';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                resetCycle();
+            });
+        }
     },
 
     // ===== Visualization =====
@@ -447,12 +788,17 @@ ListNode* middleNode(ListNode* head) {
 
     renderVisualize(container) { container.innerHTML = ''; },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">▶ Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
         var s = suffix || '';
-        return '<div class="str-step-controls" id="str-step-controls' + s + '" style="position:fixed;bottom:0;left:var(--sidebar-w,280px);right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:100;">' +
-            '<button class="btn" id="str-prev' + s + '">◀ Prev</button>' +
-            '<span id="str-indicator' + s + '" style="font-size:0.9rem;color:var(--text-secondary);min-width:60px;text-align:center;">0 / 0</span>' +
-            '<button class="btn" id="str-next' + s + '">Next ▶</button>' +
+        return '<div class="viz-step-controls">' +
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
             '</div>';
     },
 
@@ -460,21 +806,21 @@ ListNode* middleNode(ListNode* head) {
         var s = suffix || '';
         var current = -1;
         var actionDelay = 350;
-        var indicator = container.querySelector('#str-indicator' + s);
-        var prevBtn = container.querySelector('#str-prev' + s);
-        var nextBtn = container.querySelector('#str-next' + s);
-        if (!indicator || !prevBtn || !nextBtn) return;
+        var counter = container.querySelector('#viz-step-counter' + s);
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        if (!counter || !prevBtn || !nextBtn) return;
         var total = steps.length;
         var self = this;
-        var descEl = container.querySelector('[id$="desc' + s + '"]');
+        var descEl = container.querySelector('#viz-step-desc' + s);
         var updateUI = function() {
             if (current < 0) {
-                indicator.textContent = 'Before Start';
-                if (descEl) descEl.innerHTML = '▶ Press the Next button to start the simulation.';
+                counter.textContent = 'Before start';
+                if (descEl) descEl.innerHTML = '▶ Click Next to start';
                 prevBtn.disabled = true;
                 nextBtn.disabled = false;
             } else {
-                indicator.textContent = (current + 1) + ' / ' + total;
+                counter.textContent = (current + 1) + ' / ' + total;
                 if (descEl && steps[current].description) descEl.innerHTML = steps[current].description;
                 prevBtn.disabled = current === 0;
                 nextBtn.disabled = current >= total - 1;
@@ -527,12 +873,11 @@ ListNode* middleNode(ListNode* head) {
             '<button class="btn btn-primary" id="ll-rev-reset">🔄</button>' +
             '</div>' +
             '<div id="ll-nodes-rev" style="display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;min-height:80px;padding:20px 0;"></div>' +
-            '<div id="ll-desc-rev" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-rev');
+        container.innerHTML = self._createStepDesc('-rev') + vizHTML + self._createStepControls('-rev');
 
         var nodesEl = container.querySelector('#ll-nodes-rev');
-        var descEl = container.querySelector('#ll-desc-rev');
+        var descEl = container.querySelector('#viz-step-desc-rev');
 
         function renderNodes(nodes, prevIdx, currIdx, newHead) {
             var html = '';
@@ -635,14 +980,13 @@ ListNode* middleNode(ListNode* head) {
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Merged Result</div>' +
             '<div id="ll-result-merge" style="display:flex;gap:4px;flex-wrap:wrap;min-height:40px;"></div>' +
             '</div></div>' +
-            '<div id="ll-desc-merge" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-merge');
+        container.innerHTML = self._createStepDesc('-merge') + vizHTML + self._createStepControls('-merge');
 
         var list1El = container.querySelector('#ll-list1-merge');
         var list2El = container.querySelector('#ll-list2-merge');
         var resultEl = container.querySelector('#ll-result-merge');
-        var descEl = container.querySelector('#ll-desc-merge');
+        var descEl = container.querySelector('#viz-step-desc-merge');
 
         function buildSteps(list1, list2) {
             var states = [];
@@ -739,15 +1083,14 @@ ListNode* middleNode(ListNode* head) {
             '<div style="padding:8px 16px;background:var(--accent)15;border-radius:8px;font-size:0.9rem;">&#x1F422; slow: <span id="ll-slow-val" style="font-weight:700;color:var(--accent);">-</span></div>' +
             '<div style="padding:8px 16px;background:var(--green)15;border-radius:8px;font-size:0.9rem;">&#x1F407; fast: <span id="ll-fast-val" style="font-weight:700;color:var(--green);">-</span></div>' +
             '</div>' +
-            '<div id="ll-desc-cycle" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-cycle');
+        container.innerHTML = self._createStepDesc('-cycle') + vizHTML + self._createStepControls('-cycle');
 
         var nodesEl = container.querySelector('#ll-nodes-cycle');
         var cycleInfoEl = container.querySelector('#ll-cycle-info');
         var slowVal = container.querySelector('#ll-slow-val');
         var fastVal = container.querySelector('#ll-fast-val');
-        var descEl = container.querySelector('#ll-desc-cycle');
+        var descEl = container.querySelector('#viz-step-desc-cycle');
 
         function renderCycleNodes(nodeVals, cycleStart, slowIdx, fastIdx) {
             var html = '';
@@ -883,14 +1226,13 @@ ListNode* middleNode(ListNode* head) {
             '<div style="display:flex;gap:20px;justify-content:center;margin-top:12px;flex-wrap:wrap;">' +
             '<div style="font-weight:600;color:var(--text-secondary);">Elimination order: <span id="ll-removed-jos" style="color:var(--accent);">-</span></div>' +
             '</div>' +
-            '<div id="ll-desc-jos" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:16px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>';
-        container.innerHTML = vizHTML + self._createStepControls('-jos');
+        container.innerHTML = self._createStepDesc('-jos') + vizHTML + self._createStepControls('-jos');
 
         var josTitleEl = container.querySelector('#ll-jos-title');
         var circleEl = container.querySelector('#ll-circle-jos');
         var removedEl = container.querySelector('#ll-removed-jos');
-        var descEl = container.querySelector('#ll-desc-jos');
+        var descEl = container.querySelector('#viz-step-desc-jos');
 
         function buildSteps(N, K) {
             josTitleEl.textContent = 'Circular Queue (N=' + N + ', K=' + K + ')';

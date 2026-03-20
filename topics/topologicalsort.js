@@ -57,7 +57,7 @@ var topologicalSortTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -217,6 +217,27 @@ int main() {
     }
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — DAG & 진입 차수</div>
+                    <div class="concept-demo-msg" id="ts-demo-dag-msg">👆 노드를 클릭해서 진입 차수를 확인하세요!</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;">
+                        <svg id="ts-demo-dag-svg" viewBox="0 0 400 220" width="100%" style="max-width:420px;max-height:220px;">
+                            <defs>
+                                <marker id="ts-dag-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                                    <path d="M0,0 L10,5 L0,10 Z" fill="var(--text2)"/>
+                                </marker>
+                                <marker id="ts-dag-arrow-hl" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                                    <path d="M0,0 L10,5 L0,10 Z" fill="var(--yellow)"/>
+                                </marker>
+                            </defs>
+                            <!-- edges drawn by JS -->
+                            <g id="ts-dag-edges"></g>
+                            <g id="ts-dag-nodes"></g>
+                        </svg>
+                        <div id="ts-dag-info" style="margin-top:0.8rem;font-size:0.95rem;color:var(--text2);min-height:1.6em;text-align:center;"></div>
+                    </div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -263,6 +284,29 @@ int main() {
                         <p>빌드 시스템, 작업 스케줄링, 과목 이수 순서 등에 사용됩니다.</p>
                     </div>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 순서 맞추기 퍼즐</div>
+                    <div class="concept-demo-msg" id="ts-demo-order-msg">진입 차수가 0인 노드를 순서대로 클릭하세요! 올바른 위상 정렬을 만들어 보세요.</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="ts-demo-order-reset">🔄 다시 시도</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;">
+                        <svg id="ts-demo-order-svg" viewBox="0 0 400 200" width="100%" style="max-width:420px;max-height:200px;">
+                            <defs>
+                                <marker id="ts-order-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                                    <path d="M0,0 L10,5 L0,10 Z" fill="var(--text2)"/>
+                                </marker>
+                            </defs>
+                            <g id="ts-order-edges"></g>
+                            <g id="ts-order-nodes"></g>
+                        </svg>
+                        <div style="margin-top:0.8rem;">
+                            <span style="font-size:0.85rem;color:var(--text2);">선택한 순서:</span>
+                            <span id="ts-demo-order-result" style="font-size:1rem;font-weight:600;color:var(--accent);margin-left:0.5rem;">[ ]</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -363,6 +407,42 @@ else {
         cout &lt;&lt; result[i] &lt;&lt; (i + 1 &lt; result.size() ? " " : "\n");
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — Kahn's Algorithm 따라가기</div>
+                    <div class="concept-demo-msg" id="ts-demo-kahn-msg">▶ 다음 버튼을 눌러 Kahn's Algorithm을 단계별로 따라가 보세요!</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="ts-demo-kahn-prev" disabled>◀ 이전</button>
+                        <span id="ts-demo-kahn-counter" style="font-size:0.85rem;color:var(--text2);min-width:60px;text-align:center;">시작 전</span>
+                        <button class="concept-demo-btn green" id="ts-demo-kahn-next">다음 ▶</button>
+                        <button class="concept-demo-btn" id="ts-demo-kahn-reset" style="margin-left:0.5rem;">🔄</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:1rem;">
+                        <svg id="ts-demo-kahn-svg" viewBox="0 0 400 180" width="100%" style="max-width:420px;max-height:180px;">
+                            <defs>
+                                <marker id="ts-kahn-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                                    <path d="M0,0 L10,5 L0,10 Z" fill="var(--text2)"/>
+                                </marker>
+                            </defs>
+                            <g id="ts-kahn-edges"></g>
+                            <g id="ts-kahn-nodes"></g>
+                        </svg>
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;width:100%;">
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8rem;color:var(--text2);margin-bottom:4px;">진입 차수</div>
+                                <div id="ts-kahn-indeg" style="display:flex;gap:4px;justify-content:center;"></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8rem;color:var(--text2);margin-bottom:4px;">큐</div>
+                                <div id="ts-kahn-queue" style="display:flex;gap:4px;justify-content:center;min-height:32px;padding:4px 8px;background:var(--bg2);border-radius:8px;min-width:60px;align-items:center;font-size:0.9rem;color:var(--accent);font-weight:600;"></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.8rem;color:var(--text2);margin-bottom:4px;">결과</div>
+                                <div id="ts-kahn-result" style="display:flex;gap:4px;justify-content:center;min-height:32px;padding:4px 8px;background:var(--bg2);border-radius:8px;min-width:60px;align-items:center;font-size:0.9rem;color:var(--green);font-weight:600;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -449,6 +529,49 @@ while (!pq.empty()) {
 for (int i = 0; i &lt; result.size(); i++)
     cout &lt;&lt; result[i] &lt;&lt; (i + 1 &lt; result.size() ? " " : "\n");</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 큐 vs 최소 힙 비교</div>
+                    <div class="concept-demo-msg" id="ts-demo-cmp-msg">아래 버튼을 눌러 같은 그래프에서 큐와 최소 힙의 처리 순서 차이를 확인하세요!</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn green" id="ts-demo-cmp-run">▶ 동시에 실행</button>
+                        <button class="concept-demo-btn" id="ts-demo-cmp-reset">🔄 리셋</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;">
+                        <div style="flex:1;min-width:180px;max-width:280px;">
+                            <div style="text-align:center;font-weight:600;color:var(--accent);margin-bottom:0.5rem;">일반 큐 (FIFO)</div>
+                            <svg id="ts-cmp-queue-svg" viewBox="0 0 280 150" width="100%" style="max-height:150px;">
+                                <defs>
+                                    <marker id="ts-cmp-q-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                                        <path d="M0,0 L10,5 L0,10 Z" fill="var(--text2)"/>
+                                    </marker>
+                                </defs>
+                                <g id="ts-cmp-q-edges"></g>
+                                <g id="ts-cmp-q-nodes"></g>
+                            </svg>
+                            <div style="text-align:center;margin-top:4px;">
+                                <span style="font-size:0.8rem;color:var(--text2);">결과: </span>
+                                <span id="ts-cmp-q-result" style="font-size:0.95rem;font-weight:600;color:var(--accent);">[ ]</span>
+                            </div>
+                        </div>
+                        <div style="flex:1;min-width:180px;max-width:280px;">
+                            <div style="text-align:center;font-weight:600;color:var(--green);margin-bottom:0.5rem;">최소 힙 (Min-Heap)</div>
+                            <svg id="ts-cmp-heap-svg" viewBox="0 0 280 150" width="100%" style="max-height:150px;">
+                                <defs>
+                                    <marker id="ts-cmp-h-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                                        <path d="M0,0 L10,5 L0,10 Z" fill="var(--text2)"/>
+                                    </marker>
+                                </defs>
+                                <g id="ts-cmp-h-edges"></g>
+                                <g id="ts-cmp-h-nodes"></g>
+                            </svg>
+                            <div style="text-align:center;margin-top:4px;">
+                                <span style="font-size:0.8rem;color:var(--text2);">결과: </span>
+                                <span id="ts-cmp-h-result" style="font-size:0.95rem;font-weight:600;color:var(--green);">[ ]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -475,6 +598,587 @@ for (int i = 0; i &lt; result.size(); i++)
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ===== Demo 1: DAG & In-degree =====
+        (function() {
+            var nodes = [
+                { id: 1, x: 60, y: 40 },
+                { id: 2, x: 200, y: 40 },
+                { id: 3, x: 340, y: 40 },
+                { id: 4, x: 130, y: 130 },
+                { id: 5, x: 270, y: 130 },
+                { id: 6, x: 200, y: 195 }
+            ];
+            var edges = [[1,4],[2,4],[2,5],[3,5],[4,6],[5,6]];
+            var R = 22;
+            var nodeMap = {};
+            nodes.forEach(function(n) { nodeMap[n.id] = n; });
+
+            function shorten(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy), rat = r / len;
+                return { x1: x1 + dx*rat, y1: y1 + dy*rat, x2: x2 - dx*rat, y2: y2 - dy*rat };
+            }
+
+            var edgesG = container.querySelector('#ts-dag-edges');
+            var nodesG = container.querySelector('#ts-dag-nodes');
+            var infoEl = container.querySelector('#ts-dag-info');
+            var msgEl = container.querySelector('#ts-demo-dag-msg');
+            if (!edgesG || !nodesG) return;
+
+            // draw edges
+            edges.forEach(function(e) {
+                var a = nodeMap[e[0]], b = nodeMap[e[1]];
+                var s = shorten(a.x, a.y, b.x, b.y, R);
+                var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', s.x1); line.setAttribute('y1', s.y1);
+                line.setAttribute('x2', s.x2); line.setAttribute('y2', s.y2);
+                line.setAttribute('stroke', 'var(--text2)'); line.setAttribute('stroke-width', '2');
+                line.setAttribute('marker-end', 'url(#ts-dag-arrow)');
+                line.setAttribute('data-from', e[0]); line.setAttribute('data-to', e[1]);
+                line.style.transition = 'stroke 0.3s, stroke-width 0.3s';
+                edgesG.appendChild(line);
+            });
+
+            // draw nodes
+            nodes.forEach(function(n) {
+                var circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circ.setAttribute('cx', n.x); circ.setAttribute('cy', n.y); circ.setAttribute('r', R);
+                circ.setAttribute('fill', 'var(--bg2)'); circ.setAttribute('stroke', 'var(--accent)');
+                circ.setAttribute('stroke-width', '2.5'); circ.setAttribute('data-id', n.id);
+                circ.style.cursor = 'pointer'; circ.style.transition = 'fill 0.3s, stroke 0.3s';
+                nodesG.appendChild(circ);
+                var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txt.setAttribute('x', n.x); txt.setAttribute('y', n.y + 5);
+                txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('font-size', '14');
+                txt.setAttribute('font-weight', 'bold'); txt.setAttribute('fill', 'var(--text)');
+                txt.setAttribute('data-id', n.id); txt.style.pointerEvents = 'none';
+                txt.textContent = n.id;
+                nodesG.appendChild(txt);
+            });
+
+            var selectedNode = null;
+
+            function resetHighlight() {
+                edgesG.querySelectorAll('line').forEach(function(l) {
+                    l.setAttribute('stroke', 'var(--text2)'); l.setAttribute('stroke-width', '2');
+                    l.setAttribute('marker-end', 'url(#ts-dag-arrow)');
+                });
+                nodesG.querySelectorAll('circle').forEach(function(c) {
+                    c.setAttribute('fill', 'var(--bg2)'); c.setAttribute('stroke', 'var(--accent)');
+                });
+            }
+
+            function highlightNode(id) {
+                resetHighlight();
+                selectedNode = id;
+                var inDeg = 0;
+                var fromNodes = [];
+                edgesG.querySelectorAll('line').forEach(function(l) {
+                    if (parseInt(l.getAttribute('data-to')) === id) {
+                        l.setAttribute('stroke', 'var(--yellow)'); l.setAttribute('stroke-width', '3');
+                        l.setAttribute('marker-end', 'url(#ts-dag-arrow-hl)');
+                        inDeg++;
+                        fromNodes.push(l.getAttribute('data-from'));
+                    }
+                });
+                nodesG.querySelectorAll('circle[data-id="' + id + '"]').forEach(function(c) {
+                    c.setAttribute('fill', 'var(--yellow)'); c.setAttribute('stroke', 'var(--yellow)');
+                });
+                var label = inDeg === 0
+                    ? '노드 ' + id + '의 진입 차수 = <strong>0</strong> — 바로 시작 가능!'
+                    : '노드 ' + id + '의 진입 차수 = <strong>' + inDeg + '</strong> (노드 ' + fromNodes.join(', ') + '에서 들어옴)';
+                infoEl.innerHTML = label;
+                msgEl.textContent = inDeg === 0
+                    ? '진입 차수가 0이면 선행 조건 없이 바로 처리할 수 있습니다!'
+                    : '노란 화살표가 이 노드로 들어오는 간선입니다. 개수 = 진입 차수!';
+            }
+
+            container.querySelector('#ts-demo-dag-svg').addEventListener('click', function(e) {
+                var tgt = e.target;
+                var id = tgt.getAttribute('data-id');
+                if (id) highlightNode(parseInt(id));
+            });
+        })();
+
+        // ===== Demo 2: Ordering Puzzle =====
+        (function() {
+            var nodes = [
+                { id: 1, x: 60, y: 40 },
+                { id: 2, x: 200, y: 40 },
+                { id: 3, x: 340, y: 40 },
+                { id: 4, x: 130, y: 140 },
+                { id: 5, x: 270, y: 140 }
+            ];
+            var edges = [[1,4],[2,4],[3,5],[4,5]];
+            var R = 22;
+            var nodeMap = {};
+            nodes.forEach(function(n) { nodeMap[n.id] = n; });
+
+            function shorten(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy), rat = r / len;
+                return { x1: x1 + dx*rat, y1: y1 + dy*rat, x2: x2 - dx*rat, y2: y2 - dy*rat };
+            }
+
+            var edgesG = container.querySelector('#ts-order-edges');
+            var nodesG = container.querySelector('#ts-order-nodes');
+            var msgEl = container.querySelector('#ts-demo-order-msg');
+            var resultEl = container.querySelector('#ts-demo-order-result');
+            var resetBtn = container.querySelector('#ts-demo-order-reset');
+            if (!edgesG || !nodesG) return;
+
+            function drawGraph() {
+                edgesG.innerHTML = '';
+                nodesG.innerHTML = '';
+                edges.forEach(function(e) {
+                    var a = nodeMap[e[0]], b = nodeMap[e[1]];
+                    var s = shorten(a.x, a.y, b.x, b.y, R);
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', s.x1); line.setAttribute('y1', s.y1);
+                    line.setAttribute('x2', s.x2); line.setAttribute('y2', s.y2);
+                    line.setAttribute('stroke', 'var(--text2)'); line.setAttribute('stroke-width', '2');
+                    line.setAttribute('marker-end', 'url(#ts-order-arrow)');
+                    line.setAttribute('data-from', e[0]); line.setAttribute('data-to', e[1]);
+                    line.style.transition = 'opacity 0.3s';
+                    edgesG.appendChild(line);
+                });
+                nodes.forEach(function(n) {
+                    var circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circ.setAttribute('cx', n.x); circ.setAttribute('cy', n.y); circ.setAttribute('r', R);
+                    circ.setAttribute('fill', 'var(--bg2)'); circ.setAttribute('stroke', 'var(--accent)');
+                    circ.setAttribute('stroke-width', '2.5'); circ.setAttribute('data-id', n.id);
+                    circ.style.cursor = 'pointer'; circ.style.transition = 'fill 0.3s, stroke 0.3s, opacity 0.3s';
+                    nodesG.appendChild(circ);
+                    var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    txt.setAttribute('x', n.x); txt.setAttribute('y', n.y + 5);
+                    txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('font-size', '14');
+                    txt.setAttribute('font-weight', 'bold'); txt.setAttribute('fill', 'var(--text)');
+                    txt.setAttribute('data-id', n.id); txt.style.pointerEvents = 'none';
+                    txt.textContent = n.id;
+                    nodesG.appendChild(txt);
+                });
+            }
+
+            var chosen = [];
+            var inDeg = {};
+
+            function initState() {
+                chosen = [];
+                inDeg = {};
+                nodes.forEach(function(n) { inDeg[n.id] = 0; });
+                edges.forEach(function(e) { inDeg[e[1]]++; });
+                drawGraph();
+                resultEl.textContent = '[ ]';
+                msgEl.textContent = '진입 차수가 0인 노드를 순서대로 클릭하세요! 올바른 위상 정렬을 만들어 보세요.';
+                msgEl.style.color = '';
+            }
+
+            function handleNodeClick(id) {
+                if (chosen.indexOf(id) !== -1) return;
+                if (chosen.length >= nodes.length) return;
+
+                if (inDeg[id] !== 0) {
+                    // invalid choice - flash red
+                    var circ = nodesG.querySelector('circle[data-id="' + id + '"]');
+                    circ.setAttribute('fill', 'var(--red)');
+                    setTimeout(function() { circ.setAttribute('fill', 'var(--bg2)'); }, 400);
+                    msgEl.textContent = '노드 ' + id + '은(는) 아직 진입 차수가 ' + inDeg[id] + '입니다! 선행 노드를 먼저 처리하세요.';
+                    msgEl.style.color = 'var(--red)';
+                    return;
+                }
+
+                // valid choice
+                chosen.push(id);
+                var circ = nodesG.querySelector('circle[data-id="' + id + '"]');
+                circ.setAttribute('fill', 'var(--green)'); circ.setAttribute('stroke', 'var(--green)');
+                circ.style.cursor = 'default';
+
+                // reduce in-degrees
+                edges.forEach(function(e) {
+                    if (e[0] === id) {
+                        inDeg[e[1]]--;
+                        edgesG.querySelectorAll('line[data-from="' + id + '"]').forEach(function(l) {
+                            l.style.opacity = '0.3';
+                        });
+                    }
+                });
+
+                resultEl.textContent = '[ ' + chosen.join(', ') + ' ]';
+
+                if (chosen.length === nodes.length) {
+                    msgEl.textContent = '완벽합니다! [ ' + chosen.join(', ') + ' ]은(는) 올바른 위상 정렬입니다!';
+                    msgEl.style.color = 'var(--green)';
+                } else {
+                    // highlight available nodes
+                    var available = [];
+                    nodes.forEach(function(n) {
+                        if (chosen.indexOf(n.id) === -1 && inDeg[n.id] === 0) available.push(n.id);
+                    });
+                    msgEl.textContent = '좋아요! 다음으로 선택 가능한 노드: ' + available.join(', ');
+                    msgEl.style.color = 'var(--accent)';
+                }
+            }
+
+            container.querySelector('#ts-demo-order-svg').addEventListener('click', function(e) {
+                var tgt = e.target;
+                var id = tgt.getAttribute('data-id');
+                if (id) handleNodeClick(parseInt(id));
+            });
+
+            resetBtn.addEventListener('click', function() { initState(); });
+            initState();
+        })();
+
+        // ===== Demo 3: Kahn's Algorithm Step-by-Step =====
+        (function() {
+            var nodes = [
+                { id: 1, x: 60, y: 40 },
+                { id: 2, x: 200, y: 40 },
+                { id: 3, x: 340, y: 40 },
+                { id: 4, x: 130, y: 120 },
+                { id: 5, x: 270, y: 120 }
+            ];
+            var edges = [[1,4],[2,4],[2,5],[3,5],[4,5]];
+            var R = 20;
+            var nodeMap = {};
+            nodes.forEach(function(n) { nodeMap[n.id] = n; });
+
+            function shorten(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy), rat = r / len;
+                return { x1: x1 + dx*rat, y1: y1 + dy*rat, x2: x2 - dx*rat, y2: y2 - dy*rat };
+            }
+
+            var svgEl = container.querySelector('#ts-demo-kahn-svg');
+            var edgesG = container.querySelector('#ts-kahn-edges');
+            var nodesG = container.querySelector('#ts-kahn-nodes');
+            var indegEl = container.querySelector('#ts-kahn-indeg');
+            var queueEl = container.querySelector('#ts-kahn-queue');
+            var resultEl = container.querySelector('#ts-kahn-result');
+            var msgEl = container.querySelector('#ts-demo-kahn-msg');
+            var counterEl = container.querySelector('#ts-demo-kahn-counter');
+            var prevBtn = container.querySelector('#ts-demo-kahn-prev');
+            var nextBtn = container.querySelector('#ts-demo-kahn-next');
+            var resetBtnK = container.querySelector('#ts-demo-kahn-reset');
+            if (!svgEl || !edgesG || !nodesG) return;
+
+            // Build steps for Kahn's algorithm
+            // Graph: 1->4, 2->4, 2->5, 3->5, 4->5
+            // In-degrees: 1:0, 2:0, 3:0, 4:2, 5:3
+            // Queue starts with [1,2,3]
+            // Process 1: remove 1->4, indeg[4]=1. Queue [2,3]
+            // Process 2: remove 2->4, indeg[4]=0 (add 4); remove 2->5, indeg[5]=2. Queue [3,4]
+            // Process 3: remove 3->5, indeg[5]=1. Queue [4]
+            // Process 4: remove 4->5, indeg[5]=0 (add 5). Queue [5]
+            // Process 5: done. Result [1,2,3,4,5]
+
+            var snapshots = [
+                // step 0: init - find in-degree 0 nodes
+                { desc: '초기 상태: 진입 차수가 0인 노드(1, 2, 3)를 큐에 넣습니다. 선행 조건이 없으니 바로 시작 가능!',
+                  indeg: {1:0,2:0,3:0,4:2,5:3}, queue: [1,2,3], result: [],
+                  processing: null, removedEdges: [], doneNodes: [], highlightNodes: [1,2,3] },
+                // step 1: dequeue 1
+                { desc: '큐에서 1을 꺼냅니다. 1의 이웃 4의 진입 차수를 1 줄입니다 (2→1). 아직 0이 아니므로 큐에 넣지 않습니다.',
+                  indeg: {1:0,2:0,3:0,4:1,5:3}, queue: [2,3], result: [1],
+                  processing: 1, removedEdges: [[1,4]], doneNodes: [1], highlightNodes: [4] },
+                // step 2: dequeue 2
+                { desc: '큐에서 2를 꺼냅니다. 2의 이웃: 4(진입차수 1→0, 큐에 추가!), 5(진입차수 3→2).',
+                  indeg: {1:0,2:0,3:0,4:0,5:2}, queue: [3,4], result: [1,2],
+                  processing: 2, removedEdges: [[1,4],[2,4],[2,5]], doneNodes: [1,2], highlightNodes: [4,5] },
+                // step 3: dequeue 3
+                { desc: '큐에서 3을 꺼냅니다. 3의 이웃 5의 진입 차수를 1 줄입니다 (2→1). 아직 0이 아닙니다.',
+                  indeg: {1:0,2:0,3:0,4:0,5:1}, queue: [4], result: [1,2,3],
+                  processing: 3, removedEdges: [[1,4],[2,4],[2,5],[3,5]], doneNodes: [1,2,3], highlightNodes: [5] },
+                // step 4: dequeue 4
+                { desc: '큐에서 4를 꺼냅니다. 4의 이웃 5의 진입 차수를 1 줄입니다 (1→0). 0이 되었으니 큐에 추가!',
+                  indeg: {1:0,2:0,3:0,4:0,5:0}, queue: [5], result: [1,2,3,4],
+                  processing: 4, removedEdges: [[1,4],[2,4],[2,5],[3,5],[4,5]], doneNodes: [1,2,3,4], highlightNodes: [5] },
+                // step 5: dequeue 5
+                { desc: '큐에서 5를 꺼냅니다. 이웃이 없으므로 바로 결과에 추가. 큐가 비었으니 완료! 결과: [1, 2, 3, 4, 5]',
+                  indeg: {1:0,2:0,3:0,4:0,5:0}, queue: [], result: [1,2,3,4,5],
+                  processing: 5, removedEdges: [[1,4],[2,4],[2,5],[3,5],[4,5]], doneNodes: [1,2,3,4,5], highlightNodes: [] }
+            ];
+
+            var kahnStep = -1;
+
+            function drawKahnGraph() {
+                edgesG.innerHTML = '';
+                nodesG.innerHTML = '';
+                edges.forEach(function(e) {
+                    var a = nodeMap[e[0]], b = nodeMap[e[1]];
+                    var s = shorten(a.x, a.y, b.x, b.y, R);
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', s.x1); line.setAttribute('y1', s.y1);
+                    line.setAttribute('x2', s.x2); line.setAttribute('y2', s.y2);
+                    line.setAttribute('stroke', 'var(--text2)'); line.setAttribute('stroke-width', '2');
+                    line.setAttribute('marker-end', 'url(#ts-kahn-arrow)');
+                    line.setAttribute('data-from', e[0]); line.setAttribute('data-to', e[1]);
+                    line.style.transition = 'opacity 0.3s, stroke 0.3s';
+                    edgesG.appendChild(line);
+                });
+                nodes.forEach(function(n) {
+                    var circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circ.setAttribute('cx', n.x); circ.setAttribute('cy', n.y); circ.setAttribute('r', R);
+                    circ.setAttribute('fill', 'var(--bg2)'); circ.setAttribute('stroke', 'var(--accent)');
+                    circ.setAttribute('stroke-width', '2.5'); circ.setAttribute('data-id', n.id);
+                    circ.style.transition = 'fill 0.3s, stroke 0.3s, opacity 0.3s';
+                    nodesG.appendChild(circ);
+                    var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    txt.setAttribute('x', n.x); txt.setAttribute('y', n.y + 5);
+                    txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('font-size', '13');
+                    txt.setAttribute('font-weight', 'bold'); txt.setAttribute('fill', 'var(--text)');
+                    txt.style.pointerEvents = 'none'; txt.textContent = n.id;
+                    nodesG.appendChild(txt);
+                });
+            }
+
+            function renderKahnState(snap) {
+                // update edges
+                edgesG.querySelectorAll('line').forEach(function(l) {
+                    var from = parseInt(l.getAttribute('data-from'));
+                    var to = parseInt(l.getAttribute('data-to'));
+                    var removed = snap.removedEdges.some(function(re) { return re[0] === from && re[1] === to; });
+                    l.style.opacity = removed ? '0.15' : '1';
+                    l.setAttribute('stroke', removed ? 'var(--text2)' : 'var(--text2)');
+                });
+
+                // update nodes
+                nodesG.querySelectorAll('circle').forEach(function(c) {
+                    var id = parseInt(c.getAttribute('data-id'));
+                    if (snap.doneNodes.indexOf(id) !== -1) {
+                        c.setAttribute('fill', 'var(--green)'); c.setAttribute('stroke', 'var(--green)');
+                        c.style.opacity = id === snap.processing ? '1' : '0.5';
+                    } else if (snap.highlightNodes.indexOf(id) !== -1) {
+                        c.setAttribute('fill', 'var(--yellow)'); c.setAttribute('stroke', 'var(--yellow)');
+                        c.style.opacity = '1';
+                    } else {
+                        c.setAttribute('fill', 'var(--bg2)'); c.setAttribute('stroke', 'var(--accent)');
+                        c.style.opacity = '1';
+                    }
+                });
+
+                // update in-degree display
+                var indegHTML = '';
+                nodes.forEach(function(n) {
+                    var val = snap.indeg[n.id];
+                    var isDone = snap.doneNodes.indexOf(n.id) !== -1;
+                    var isZero = val === 0 && !isDone;
+                    var bg = isDone ? 'var(--green)' : isZero ? 'var(--yellow)' : 'var(--bg3, #e0e0e0)';
+                    var clr = isDone || isZero ? '#fff' : 'var(--text)';
+                    indegHTML += '<span style="display:inline-flex;flex-direction:column;align-items:center;min-width:28px;">' +
+                        '<span style="font-size:0.7rem;color:var(--text2);">' + n.id + '</span>' +
+                        '<span style="background:' + bg + ';color:' + clr + ';border-radius:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:600;">' +
+                        (isDone ? '✓' : val) + '</span></span>';
+                });
+                indegEl.innerHTML = indegHTML;
+
+                // update queue display
+                queueEl.textContent = snap.queue.length > 0 ? snap.queue.join(' → ') : '(비어 있음)';
+
+                // update result display
+                resultEl.textContent = snap.result.length > 0 ? '[ ' + snap.result.join(', ') + ' ]' : '[ ]';
+            }
+
+            function updateKahnUI() {
+                prevBtn.disabled = (kahnStep < 0);
+                nextBtn.disabled = (kahnStep >= snapshots.length - 1);
+                if (kahnStep < 0) {
+                    counterEl.textContent = '시작 전';
+                    msgEl.textContent = '▶ 다음 버튼을 눌러 Kahn\'s Algorithm을 단계별로 따라가 보세요!';
+                    // show initial blank state
+                    drawKahnGraph();
+                    indegEl.innerHTML = '';
+                    queueEl.textContent = '';
+                    resultEl.textContent = '[ ]';
+                } else {
+                    counterEl.textContent = (kahnStep + 1) + ' / ' + snapshots.length;
+                    msgEl.textContent = snapshots[kahnStep].desc;
+                    renderKahnState(snapshots[kahnStep]);
+                }
+            }
+
+            nextBtn.addEventListener('click', function() {
+                if (kahnStep >= snapshots.length - 1) return;
+                kahnStep++;
+                updateKahnUI();
+            });
+            prevBtn.addEventListener('click', function() {
+                if (kahnStep < 0) return;
+                kahnStep--;
+                updateKahnUI();
+            });
+            resetBtnK.addEventListener('click', function() {
+                kahnStep = -1;
+                drawKahnGraph();
+                updateKahnUI();
+            });
+
+            drawKahnGraph();
+            updateKahnUI();
+        })();
+
+        // ===== Demo 4: Queue vs Min-Heap Comparison =====
+        (function() {
+            // Graph: edges cause different orderings with queue vs heap
+            // Nodes: 5,3,1,4,2 — edges: 5->4, 3->4, 1->2, 4->2
+            // In-degrees: 5:0, 3:0, 1:0, 4:2, 2:2
+            // Queue (insertion order 5,3,1): process 5 -> 3 -> 1 -> 4 -> 2  (result: [5,3,1,4,2])
+            // Heap (always min): process 1 -> 3 -> 5 -> 4 -> 2  (result: [1,3,5,4,2])
+            var nodes = [
+                { id: 5, x: 50, y: 40 },
+                { id: 3, x: 140, y: 40 },
+                { id: 1, x: 230, y: 40 },
+                { id: 4, x: 95, y: 110 },
+                { id: 2, x: 185, y: 110 }
+            ];
+            var edges = [[5,4],[3,4],[1,2],[4,2]];
+            var R = 18;
+            var nodeMap = {};
+            nodes.forEach(function(n) { nodeMap[n.id] = n; });
+
+            function shorten(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx*dx + dy*dy), rat = r / len;
+                return { x1: x1 + dx*rat, y1: y1 + dy*rat, x2: x2 - dx*rat, y2: y2 - dy*rat };
+            }
+
+            var qEdgesG = container.querySelector('#ts-cmp-q-edges');
+            var qNodesG = container.querySelector('#ts-cmp-q-nodes');
+            var hEdgesG = container.querySelector('#ts-cmp-h-edges');
+            var hNodesG = container.querySelector('#ts-cmp-h-nodes');
+            var qResultEl = container.querySelector('#ts-cmp-q-result');
+            var hResultEl = container.querySelector('#ts-cmp-h-result');
+            var runBtn = container.querySelector('#ts-demo-cmp-run');
+            var resetBtnC = container.querySelector('#ts-demo-cmp-reset');
+            var msgElC = container.querySelector('#ts-demo-cmp-msg');
+            if (!qEdgesG || !qNodesG || !hEdgesG || !hNodesG) return;
+
+            function drawCmpGraph(eG, nG, arrowId) {
+                eG.innerHTML = '';
+                nG.innerHTML = '';
+                edges.forEach(function(e) {
+                    var a = nodeMap[e[0]], b = nodeMap[e[1]];
+                    var s = shorten(a.x, a.y, b.x, b.y, R);
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', s.x1); line.setAttribute('y1', s.y1);
+                    line.setAttribute('x2', s.x2); line.setAttribute('y2', s.y2);
+                    line.setAttribute('stroke', 'var(--text2)'); line.setAttribute('stroke-width', '1.5');
+                    line.setAttribute('marker-end', 'url(#' + arrowId + ')');
+                    line.setAttribute('data-from', e[0]); line.setAttribute('data-to', e[1]);
+                    line.style.transition = 'opacity 0.3s';
+                    eG.appendChild(line);
+                });
+                nodes.forEach(function(n) {
+                    var circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circ.setAttribute('cx', n.x); circ.setAttribute('cy', n.y); circ.setAttribute('r', R);
+                    circ.setAttribute('fill', 'var(--bg2)'); circ.setAttribute('stroke', 'var(--accent)');
+                    circ.setAttribute('stroke-width', '2'); circ.setAttribute('data-id', n.id);
+                    circ.style.transition = 'fill 0.3s, stroke 0.3s, opacity 0.3s';
+                    nG.appendChild(circ);
+                    var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    txt.setAttribute('x', n.x); txt.setAttribute('y', n.y + 5);
+                    txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('font-size', '12');
+                    txt.setAttribute('font-weight', 'bold'); txt.setAttribute('fill', 'var(--text)');
+                    txt.style.pointerEvents = 'none'; txt.textContent = n.id;
+                    nG.appendChild(txt);
+                });
+            }
+
+            function runKahn(order, eG, nG, resultEl, color, callback) {
+                // order: 'fifo' or 'heap'
+                var indeg = {};
+                nodes.forEach(function(n) { indeg[n.id] = 0; });
+                edges.forEach(function(e) { indeg[e[1]]++; });
+
+                var adj = {};
+                nodes.forEach(function(n) { adj[n.id] = []; });
+                edges.forEach(function(e) { adj[e[0]].push(e[1]); });
+
+                // find initial zero in-degree nodes
+                var initial = [];
+                nodes.forEach(function(n) { if (indeg[n.id] === 0) initial.push(n.id); });
+
+                // queue: FIFO keeps insertion order (5,3,1 as they appear in nodes array)
+                // heap: always picks smallest
+                var queue = order === 'heap' ? initial.slice().sort(function(a,b){return a-b;}) : initial.slice();
+                var result = [];
+                var stepDelay = 600;
+                var removedEdges = [];
+
+                function processNext(i) {
+                    if (queue.length === 0) {
+                        resultEl.textContent = '[ ' + result.join(', ') + ' ]';
+                        if (callback) callback();
+                        return;
+                    }
+                    var v = queue.shift();
+                    result.push(v);
+
+                    // highlight processing node
+                    nG.querySelectorAll('circle[data-id="' + v + '"]').forEach(function(c) {
+                        c.setAttribute('fill', color); c.setAttribute('stroke', color);
+                    });
+
+                    // fade edges
+                    adj[v].forEach(function(u) {
+                        indeg[u]--;
+                        eG.querySelectorAll('line[data-from="' + v + '"]').forEach(function(l) {
+                            l.style.opacity = '0.15';
+                        });
+                        if (indeg[u] === 0) {
+                            if (order === 'heap') {
+                                queue.push(u);
+                                queue.sort(function(a,b){return a-b;});
+                            } else {
+                                queue.push(u);
+                            }
+                        }
+                    });
+
+                    resultEl.textContent = '[ ' + result.join(', ') + ' ]';
+
+                    setTimeout(function() {
+                        nG.querySelectorAll('circle[data-id="' + v + '"]').forEach(function(c) {
+                            c.style.opacity = '0.4';
+                        });
+                        processNext(i + 1);
+                    }, stepDelay);
+                }
+
+                processNext(0);
+            }
+
+            var running = false;
+
+            function resetCmp() {
+                running = false;
+                drawCmpGraph(qEdgesG, qNodesG, 'ts-cmp-q-arrow');
+                drawCmpGraph(hEdgesG, hNodesG, 'ts-cmp-h-arrow');
+                qResultEl.textContent = '[ ]';
+                hResultEl.textContent = '[ ]';
+                runBtn.disabled = false;
+                msgElC.textContent = '아래 버튼을 눌러 같은 그래프에서 큐와 최소 힙의 처리 순서 차이를 확인하세요!';
+                msgElC.style.color = '';
+            }
+
+            runBtn.addEventListener('click', function() {
+                if (running) return;
+                running = true;
+                runBtn.disabled = true;
+                msgElC.textContent = '실행 중... 같은 그래프에서 처리 순서가 어떻게 달라지는지 관찰하세요!';
+                msgElC.style.color = 'var(--accent)';
+                var done = 0;
+                function checkDone() {
+                    done++;
+                    if (done === 2) {
+                        msgElC.innerHTML = '큐는 먼저 들어온 순서(FIFO)로, 힙은 <strong>항상 가장 작은 번호</strong>부터 처리합니다. 결과 순서가 다르죠!';
+                        msgElC.style.color = 'var(--green)';
+                    }
+                }
+                runKahn('fifo', qEdgesG, qNodesG, qResultEl, 'var(--accent)', checkDone);
+                runKahn('heap', hEdgesG, hNodesG, hResultEl, 'var(--green)', checkDone);
+            });
+
+            resetBtnC.addEventListener('click', function() { resetCmp(); });
+            resetCmp();
+        })();
     },
 
     // ===== 시각화 상태 =====
@@ -716,7 +1420,7 @@ for (int i = 0; i &lt; result.size(); i++)
         // Step 0: init
         var s0 = saveState();
         steps.push({
-            description: '초기화: 진입 차수가 0인 노드 1, 2, 3을 큐에 넣습니다.',
+            description: '초기화: 진입 차수가 0인 노드 1, 2, 3을 큐에 넣습니다. — <em>선행 작업이 없으므로 바로 처리 가능한 노드들</em>',
             action: function() {
                 setNode(1, 'queued'); setNode(2, 'queued'); setNode(3, 'queued');
                 setQueue([1, 2, 3]);
@@ -733,7 +1437,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var curResult = simResult.slice();
 
             steps.push({
-                description: '큐에서 ' + v + '을(를) 꺼내 결과에 추가합니다.',
+                description: '큐에서 ' + v + '을(를) 꺼내 결과에 추가합니다. — <em>in-degree가 0 = 모든 선행 작업 완료 → 지금 바로 처리 가능</em>',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -758,9 +1462,9 @@ for (int i = 0; i &lt; result.size(); i++)
                 var neighborIndeg = {};
                 neighbors.forEach(function(u) { neighborIndeg[u] = simIndeg[u]; });
 
-                var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 진입 차수를 줄입니다.';
+                var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 진입 차수를 줄입니다 — <em>' + v + '이(가) 완료되었으므로 이웃의 선행 조건 하나가 충족됨</em>.';
                 if (newQueued.length > 0) {
-                    desc2 += ' → ' + newQueued.join(', ') + '의 진입 차수가 0이 되어 큐에 추가합니다.';
+                    desc2 += ' → ' + newQueued.join(', ') + '의 진입 차수가 0이 되어 큐에 추가! <em>모든 선행 작업이 끝났으므로 처리 가능</em>';
                 }
 
                 (function(v2, neighbors2, neighborIndeg2, newQueued2, afterQueue2, desc3) {
@@ -784,7 +1488,7 @@ for (int i = 0; i &lt; result.size(); i++)
             } else {
                 (function(v2) {
                     steps.push({
-                        description: v2 + '에는 이웃이 없습니다. 처리 완료!',
+                        description: v2 + '에는 이웃이 없습니다. 처리 완료! — <em>후속 작업이 없으므로 다른 노드의 진입 차수에 영향 없음</em>',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -909,7 +1613,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var zeroNodes = simQueue.slice();
             if (zeroNodes.length === 0) {
                 steps.push({
-                    description: '진입 차수가 0인 노드가 없습니다! 사이클이 있을 수 있습니다.',
+                    description: '진입 차수가 0인 노드가 없습니다! — <em>모든 노드에 선행 조건이 있어 시작할 수 없음 → 사이클 존재 가능</em>',
                     action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">진입 차수가 0인 노드가 없습니다!</strong>'; },
                     undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Kahn\'s Algorithm으로 위상 정렬을 시작합니다.</span>'; }
                 });
@@ -922,7 +1626,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 steps.push({
-                    description: '초기화: in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 큐에 넣습니다.',
+                    description: '초기화: in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 큐에 넣습니다. — <em>선행 조건이 없으므로 바로 처리 가능한 노드들</em>',
                     action: function() { renderNodes(queuedNodes, n); renderQueue(zn.slice()); renderResult([]); infoEl.innerHTML = '진입 차수 0: <strong>' + zn.join(', ') + '</strong> → 큐에 추가'; },
                     undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Kahn\'s Algorithm으로 위상 정렬을 시작합니다.</span>'; }
                 });
@@ -948,7 +1652,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 // Dequeue step
                 (function(vv, pns, cq, cr) {
                     steps.push({
-                        description: vv + '을(를) 큐에서 꺼내 결과에 추가합니다.',
+                        description: vv + '을(를) 큐에서 꺼내 결과에 추가합니다. — <em>in-degree 0 = 모든 선행 작업 완료 → 바로 처리 가능</em>',
                         action: function() { renderNodes(pns, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> 처리 중...'; },
                         undo: function() {
                             var prev = steps[steps.length - 1];
@@ -982,9 +1686,9 @@ for (int i = 0; i &lt; result.size(); i++)
                     for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
                     var afterQueue = simQueue.slice();
 
-                    var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 진입 차수를 줄입니다.';
+                    var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 진입 차수를 줄입니다 — <em>' + v + ' 처리 완료로 이웃의 선행 조건 하나 충족</em>.';
                     if (newQueued.length > 0) {
-                        desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 큐에 추가!';
+                        desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 큐에 추가! <em>모든 선행 작업 완료 → 처리 가능</em>';
                     }
 
                     (function(vv2, ans, aind, aq, desc3, pns2, pind, pcq, pcr) {
@@ -1012,7 +1716,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     }
                     (function(vv3, dns, pns3, pind2, pcq2, pcr2) {
                         steps.push({
-                            description: vv3 + '에는 이웃이 없습니다. 처리 완료!',
+                            description: vv3 + '에는 이웃이 없습니다. 처리 완료! — <em>후속 작업이 없으므로 다른 노드에 영향 없음</em>',
                             action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' 처리 완료 (이웃 없음)'; },
                             undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderQueue(pcq2); renderResult(pcr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> 처리 중...'; }
                         });
@@ -1199,7 +1903,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var zeroNodes = simHeap.slice().sort(function(a, b) { return a - b; });
             if (zeroNodes.length === 0) {
                 steps.push({
-                    description: '진입 차수가 0인 노드가 없습니다! 사이클이 있을 수 있습니다.',
+                    description: '진입 차수가 0인 노드가 없습니다! — <em>모든 노드에 선행 조건이 있어 시작 불가 → 사이클 존재 가능</em>',
                     action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">진입 차수가 0인 노드가 없습니다!</strong>'; },
                     undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">최소 힙을 사용한 위상 정렬을 시작합니다.</span>'; }
                 });
@@ -1213,7 +1917,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 var heapDisplay = simHeap.slice();
                 steps.push({
-                    description: '초기화: in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 힙에 넣습니다. 최소 힙이므로 ' + zn[0] + '이(가) 먼저!',
+                    description: '초기화: in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 힙에 넣습니다. 최소 힙이므로 ' + zn[0] + '이(가) 먼저! — <em>선행 조건 없는 노드 중 번호가 작은 것부터 처리하여 사전순 보장</em>',
                     action: function() { renderNodes(queuedNodes, n); renderHeap(heapDisplay); renderResult([]); infoEl.innerHTML = '진입 차수 0: <strong>' + zn.join(', ') + '</strong> → 최소 힙에 추가. 최솟값: ' + zn[0]; },
                     undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">최소 힙을 사용한 위상 정렬을 시작합니다.</span>'; }
                 });
@@ -1239,7 +1943,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 // Pop step
                 (function(vv, pns, chd, cr) {
                     steps.push({
-                        description: '힙에서 최솟값 ' + vv + '을(를) 꺼내 결과에 추가합니다.',
+                        description: '힙에서 최솟값 ' + vv + '을(를) 꺼내 결과에 추가합니다. — <em>in-degree 0인 노드 중 가장 작은 번호를 선택하여 사전순 최소 결과 보장</em>',
                         action: function() { renderNodes(pns, n); renderHeap(chd); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> 처리 중... (힙에서 최솟값)'; },
                         undo: function() {}
                     });
@@ -1267,9 +1971,9 @@ for (int i = 0; i &lt; result.size(); i++)
                     for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
                     var afterHeap = simHeap.slice();
 
-                    var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 진입 차수를 줄입니다.';
+                    var desc2 = v + '의 이웃 [' + neighbors.join(', ') + ']의 진입 차수를 줄입니다 — <em>' + v + ' 처리 완료로 이웃의 선행 조건 하나 충족</em>.';
                     if (newQueued.length > 0) {
-                        desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 힙에 추가!';
+                        desc2 += ' → ' + newQueued.join(', ') + '의 in-degree가 0이 되어 힙에 추가! <em>모든 선행 작업 완료 → 처리 가능</em>';
                     }
 
                     (function(vv2, ans, aind, ah, desc3, pns2, pind, phd, pr) {
@@ -1289,7 +1993,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     }
                     (function(vv3, dns, pns3, pind2, phd2, pr2) {
                         steps.push({
-                            description: vv3 + '에는 이웃이 없습니다. 처리 완료!',
+                            description: vv3 + '에는 이웃이 없습니다. 처리 완료! — <em>후속 작업이 없으므로 다른 노드에 영향 없음</em>',
                             action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' 처리 완료 (이웃 없음)'; },
                             undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderHeap(phd2); renderResult(pr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> 처리 중...'; }
                         });
@@ -1443,7 +2147,7 @@ for (int i = 0; i &lt; result.size(); i++)
 
             (function(ae, ins, ids) {
                 steps.push({
-                    description: '작년 순위 [' + lastRank.join(',') + ']에서 모든 쌍의 간선 생성: ' + edgeStr,
+                    description: '작년 순위 [' + lastRank.join(',') + ']에서 모든 쌍의 간선 생성: ' + edgeStr + ' — <em>순위가 높은 팀 → 낮은 팀으로 간선을 만들어 선후관계를 표현</em>',
                     action: function() { renderGraph(ae, ins, n); infoEl.innerHTML = '간선 생성 완료. in-degree: ' + ids; },
                     undo: function() { renderGraph([], ins, n); infoEl.innerHTML = '<span style="color:var(--text2);">작년 순위로부터 간선을 생성한 뒤 위상 정렬합니다.</span>'; }
                 });
@@ -1478,7 +2182,7 @@ for (int i = 0; i &lt; result.size(); i++)
 
                 (function(ae2, ins2, sids, swpDesc) {
                     steps.push({
-                        description: '바뀐 쌍을 적용하여 간선을 반전합니다. 현재 간선: ' + swapEdgeStr,
+                        description: '바뀐 쌍을 적용하여 간선을 반전합니다. 현재 간선: ' + swapEdgeStr + ' — <em>올해 상대 순위가 바뀐 쌍은 간선 방향을 뒤집어 새 관계 반영</em>',
                         action: function() { renderGraph(ae2, ins2, n); infoEl.innerHTML = '간선 반전 완료. in-degree: ' + sids; },
                         undo: function() {}
                     });
@@ -1497,7 +2201,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var zeroNodes = simQueue.slice();
             if (zeroNodes.length === 0) {
                 steps.push({
-                    description: '진입 차수가 0인 노드가 없습니다! 사이클이 있을 수 있습니다.',
+                    description: '진입 차수가 0인 노드가 없습니다! — <em>간선 반전으로 사이클이 생겨 순위 결정 불가</em>',
                     action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">IMPOSSIBLE — 사이클 존재!</strong>'; },
                     undo: function() {}
                 });
@@ -1510,7 +2214,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 steps.push({
-                    description: 'in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 큐에 넣습니다.',
+                    description: 'in-degree가 0인 노드 ' + zn.join(', ') + '을(를) 큐에 넣습니다. — <em>앞에 올 팀이 없으므로 1등 후보</em>',
                     action: function() { renderGraph(ae3, queuedNodes, n); renderQueue(zn.slice()); infoEl.innerHTML = '진입 차수 0: <strong>' + zn.join(', ') + '</strong> → 큐에 추가'; },
                     undo: function() {}
                 });
@@ -1554,9 +2258,9 @@ for (int i = 0; i &lt; result.size(); i++)
                     else afterNodeStates[an] = 'default';
                 }
 
-                var desc = v + '을(를) 꺼내 결과에 추가.';
+                var desc = v + '을(를) 꺼내 결과에 추가 — <em>선행 조건 모두 충족, 순위 확정</em>.';
                 if (neighbors.length > 0) {
-                    desc += ' 이웃 [' + neighbors.join(', ') + ']의 in-degree 줄임.';
+                    desc += ' 이웃 [' + neighbors.join(', ') + ']의 in-degree 줄임 (<em>' + v + ' 완료로 선행 조건 하나 충족</em>).';
                     if (newQueued.length > 0) {
                         desc += ' ' + newQueued.join(', ') + '의 in-degree가 0이 되어 큐에 추가!';
                     }
@@ -1593,7 +2297,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     });
                 } else if (amb) {
                     steps.push({
-                        description: '순위를 확정할 수 없습니다 (?). 큐에 2개 이상이 동시에 있었습니다.',
+                        description: '순위를 확정할 수 없습니다 (?). 큐에 2개 이상이 동시에 있었습니다. — <em>in-degree 0인 노드가 여럿이면 순서를 특정할 수 없음</em>',
                         action: function() {
                             var fs2 = {};
                             for (var f2 = 1; f2 <= n; f2++) fs2[f2] = 'done';

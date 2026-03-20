@@ -60,7 +60,7 @@ var backtrackingTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -241,6 +241,32 @@ var backtrackingTopic = {
                     <span class="lang-py"><a href="https://docs.python.org/3/library/itertools.html#itertools.permutations" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: itertools.permutations ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/algorithm/next_permutation" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: next_permutation ↗</a></span>
                 </div>
 
+                <!-- Demo 2: 3요소따라가기 -->
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 3요소를 따라가며 순열 만들기</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-3elem-next">▶ 다음 단계</button>
+                        <button class="concept-demo-btn green" id="bt-demo-3elem-reset">↺ 처음부터</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">{1, 2, 3}에서 2개를 뽑는 순열을 선택/확인/되돌리기 3요소로 따라갑니다</p>
+                        <div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+                            <div>
+                                <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-align:center;">선택 가능</div>
+                                <div id="bt-demo-3elem-pool" style="display:flex;gap:6px;justify-content:center;"></div>
+                            </div>
+                            <div style="font-size:1.2rem;color:var(--text3);">→</div>
+                            <div>
+                                <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-align:center;">현재 경로 (path)</div>
+                                <div id="bt-demo-3elem-path" style="display:flex;gap:6px;justify-content:center;min-width:80px;min-height:38px;border:2px dashed var(--border);border-radius:10px;padding:4px 10px;align-items:center;"></div>
+                            </div>
+                        </div>
+                        <div id="bt-demo-3elem-used" style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;"></div>
+                        <div id="bt-demo-3elem-results" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:28px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-3elem-msg">👆 "다음 단계"를 눌러 선택/확인/되돌리기가 어떻게 동작하는지 한 단계씩 따라가 보세요!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -257,46 +283,85 @@ var backtrackingTopic = {
                 </div>
             </div>
 
-            <!-- ③ 가지치기란? -->
+            <!-- ③ 사이클 방지 — used 배열의 역할 -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> 가지치기란? (Pruning)</div>
+                <div class="concept-section-title"><span class="section-num">3</span> 같은 요소를 다시 방문하지 않으려면?</div>
+                <p style="margin-bottom: 1rem;">
+                    순열을 만들 때 <strong>같은 숫자를 두 번 쓰면 안 됩니다</strong>.
+                    이미 선택한 숫자를 기억하는 <code>used[]</code> 배열이 이 역할을 합니다.
+                    <code>used[i] = true</code>이면 i번째 숫자는 이미 경로에 있으니 건너뜁니다.
+                </p>
+
+                <!-- Demo 3: 사이클 데모 -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — used 배열로 중복 방지</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-cycle-toggle1">1 선택</button>
+                        <button class="concept-demo-btn" id="bt-demo-cycle-toggle2">2 선택</button>
+                        <button class="concept-demo-btn" id="bt-demo-cycle-toggle3">3 선택</button>
+                        <button class="concept-demo-btn danger" id="bt-demo-cycle-clear">🗑️ 초기화</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">숫자를 선택하면 used 배열이 갱신됩니다. 이미 선택한 숫자를 다시 누르면 어떻게 될까요?</p>
+                        <div style="display:flex;gap:24px;justify-content:center;align-items:flex-start;flex-wrap:wrap;">
+                            <div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-bottom:6px;text-align:center;">used 배열</div>
+                                <div id="bt-demo-cycle-used" style="display:flex;gap:4px;justify-content:center;"></div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-bottom:6px;text-align:center;">현재 경로</div>
+                                <div id="bt-demo-cycle-path" style="display:flex;gap:4px;justify-content:center;min-height:38px;align-items:center;font-size:1.1rem;font-weight:600;color:var(--accent);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-cycle-msg">👆 숫자 버튼을 눌러 선택해 보세요! 이미 선택된 숫자를 다시 누르면 used 배열이 막아줍니다.</div>
+                </div>
+
+                <div class="think-box">
+                    <div class="think-box-question">
+                        <span class="think-box-question-icon">Q</span>
+                        <span class="think-box-question-text">used 배열 대신 path 안에 있는지 매번 확인하면 안 됩니까?</span>
+                    </div>
+                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
+                    <div class="think-box-answer">
+                        할 수는 있지만 성능이 다릅니다!<br>
+                        <code>used[i]</code>는 <strong>O(1)</strong>로 즉시 확인 가능하지만,
+                        path 안에서 찾기(<code>i in path</code>)는 <strong>O(경로 길이)</strong>가 걸립니다.<br>
+                        N이 클수록 차이가 커지므로, used 배열을 쓰는 게 효율적입니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ④ 가지치기란? -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">4</span> 가지치기란? (Pruning)</div>
                 <p style="margin-bottom: 1rem;">백트래킹에서 가장 중요한 기술은
                     <strong>가지치기(Pruning)</strong>입니다.
                     조건에 맞지 않는 선택을 <strong>일찍 걸러내어</strong> 아예 탐색하지 않는 것입니다.</p>
 
-                <div class="execution-flow-compare">
-                    <div class="flow-grid">
-                        <div class="flow-card topdown-flow">
-                            <div class="flow-label">❌ 가지치기 없이 (모든 경우 탐색)</div>
-                            <div class="flow-trace">
-                                <div>1→1 (같은 숫자! 중복)</div>
-                                <div>1→2 ✓</div>
-                                <div>1→3 ✓</div>
-                                <div>2→1 ✓</div>
-                                <div>2→2 (같은 숫자! 중복)</div>
-                                <div>2→3 ✓</div>
-                                <div>3→1 ✓</div>
-                                <div>3→2 ✓</div>
-                                <div>3→3 (같은 숫자! 중복)</div>
-                                <div style="margin-top:6px;font-weight:700;">→ 총 9가지를 모두 확인</div>
+                <!-- Demo 4: 가지치기 비교 -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 가지치기 있음 vs 없음</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-prune-run">▶ 탐색 시작</button>
+                        <button class="concept-demo-btn green" id="bt-demo-prune-reset">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;">{1,2,3}에서 2개 순열 — 왼쪽은 가지치기 없이 모두 탐색, 오른쪽은 used[]로 가지치기</p>
+                        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:200px;max-width:280px;">
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;margin-bottom:6px;color:var(--red);">❌ 가지치기 없음</div>
+                                <div id="bt-demo-prune-nop" style="font-size:0.82rem;line-height:1.8;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);min-height:120px;"></div>
+                                <div id="bt-demo-prune-nop-count" style="text-align:center;margin-top:6px;font-size:0.85rem;font-weight:600;color:var(--red);">탐색: 0회</div>
                             </div>
-                        </div>
-                        <div class="flow-card bottomup-flow">
-                            <div class="flow-label">✂️ 가지치기 적용 (조건에 안 맞으면 건너뜀)</div>
-                            <div class="flow-trace">
-                                <div>1→1 ✕ 이미 사용! <strong>건너뜀</strong></div>
-                                <div>1→2 ✓</div>
-                                <div>1→3 ✓</div>
-                                <div>2→1 ✓</div>
-                                <div>2→2 ✕ 이미 사용! <strong>건너뜀</strong></div>
-                                <div>2→3 ✓</div>
-                                <div>3→1 ✓</div>
-                                <div>3→2 ✓</div>
-                                <div>3→3 ✕ 이미 사용! <strong>건너뜀</strong></div>
-                                <div style="margin-top:6px;font-weight:700;">→ 6가지만 확인하면 충분</div>
+                            <div style="flex:1;min-width:200px;max-width:280px;">
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;margin-bottom:6px;color:var(--green);">✂️ 가지치기 적용</div>
+                                <div id="bt-demo-prune-yes" style="font-size:0.82rem;line-height:1.8;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--border);min-height:120px;"></div>
+                                <div id="bt-demo-prune-yes-count" style="text-align:center;margin-top:6px;font-size:0.85rem;font-weight:600;color:var(--green);">탐색: 0회</div>
                             </div>
                         </div>
                     </div>
+                    <div class="concept-demo-msg" id="bt-demo-prune-msg">👆 "탐색 시작"을 눌러 가지치기 유무에 따른 탐색 차이를 비교해 보세요!</div>
                 </div>
 
                 <div class="key-difference-box">
@@ -309,9 +374,9 @@ var backtrackingTopic = {
                 </div>
             </div>
 
-            <!-- ④ 백트래킹 vs 완전탐색 -->
+            <!-- ⑤ 백트래킹 vs 완전탐색 -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">4</span> 백트래킹 vs 완전탐색</div>
+                <div class="concept-section-title"><span class="section-num">5</span> 백트래킹 vs 완전탐색</div>
                 <div class="approach-grid">
                     <div class="approach-card">
                         <h3>🔍 완전탐색 (Brute Force)</h3>
@@ -362,6 +427,39 @@ for (int i = 1; i &lt;= n; i++) {
                     </div>
                 </div>
 
+                <!-- Demo 5: 실행 비교 -->
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 실행 횟수 비교 (N 바꿔보기)</div>
+                    <div class="concept-demo-btns">
+                        <label style="font-size:0.85rem;color:var(--text2);display:flex;align-items:center;gap:6px;">N =
+                            <input type="number" id="bt-demo-exec-n" value="4" min="2" max="8" style="width:50px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;background:var(--card);color:var(--text);">
+                        </label>
+                        <label style="font-size:0.85rem;color:var(--text2);display:flex;align-items:center;gap:6px;">M =
+                            <input type="number" id="bt-demo-exec-m" value="2" min="1" max="6" style="width:50px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="bt-demo-exec-run">📊 비교 실행</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;">N개에서 M개를 순서대로 고를 때, 완전탐색과 백트래킹의 탐색 횟수를 비교합니다</p>
+                        <div style="display:flex;gap:24px;justify-content:center;align-items:flex-end;flex-wrap:wrap;">
+                            <div style="text-align:center;">
+                                <div id="bt-demo-exec-bar-brute" style="width:60px;background:var(--red);border-radius:6px 6px 0 0;transition:height 0.6s;height:0px;margin:0 auto;"></div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-top:6px;color:var(--red);">완전탐색</div>
+                                <div id="bt-demo-exec-val-brute" style="font-size:1.1rem;font-weight:700;color:var(--red);">0</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div id="bt-demo-exec-bar-bt" style="width:60px;background:var(--green);border-radius:6px 6px 0 0;transition:height 0.6s;height:0px;margin:0 auto;"></div>
+                                <div style="font-size:0.8rem;font-weight:600;margin-top:6px;color:var(--green);">백트래킹</div>
+                                <div id="bt-demo-exec-val-bt" style="font-size:1.1rem;font-weight:700;color:var(--green);">0</div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div id="bt-demo-exec-saved" style="font-size:0.9rem;color:var(--accent);font-weight:600;min-height:24px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-exec-msg">👆 N과 M을 바꿔가며 "비교 실행"을 눌러보세요! N이 커질수록 차이가 극적으로 벌어집니다.</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -378,44 +476,43 @@ for (int i = 1; i &lt;= n; i++) {
                 </div>
             </div>
 
-            <!-- ⑤ 백트래킹 문제 푸는 4단계 -->
+            <!-- ⑥ 4-Queen 체험 -->
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">5</span> 백트래킹 문제 푸는 4단계</div>
-                <div class="step-cards">
-                    <div class="step-card">
-                        <span class="step-num">1</span>
-                        <h4>선택지 정하기</h4>
-                        <p>각 단계에서 어떤 것을 고를 수 있는지 파악합니다</p>
+                <div class="concept-section-title"><span class="section-num">6</span> 4-Queen 문제 체험</div>
+                <p style="margin-bottom:0.5rem;">4x4 체스판에 퀸 4개를 <strong>서로 공격할 수 없도록</strong> 놓아 보세요.
+                    퀸은 같은 행, 같은 열, 대각선에 있는 말을 공격합니다.</p>
+                <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--text2);">
+                    직접 놓아 보거나, "자동 풀기"를 눌러 백트래킹이 어떻게 해결하는지 관찰하세요!</p>
+
+                <!-- Demo 6: 4Queen -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 4-Queen 백트래킹</div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bt-demo-4q-auto">🤖 자동 풀기</button>
+                        <button class="concept-demo-btn danger" id="bt-demo-4q-clear">🗑️ 초기화</button>
                     </div>
-                    <div class="step-card">
-                        <span class="step-num">2</span>
-                        <h4>조건 만들기</h4>
-                        <p>유효한 선택인지 확인하는 조건을 만듭니다 (가지치기 기준)</p>
+                    <div class="concept-demo-body">
+                        <div id="bt-demo-4q-board" style="display:inline-grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 auto;"></div>
+                        <div id="bt-demo-4q-info" style="margin-top:10px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;font-size:0.85rem;">
+                            <span>놓은 퀸: <strong id="bt-demo-4q-placed">0</strong>/4</span>
+                            <span>시도: <strong id="bt-demo-4q-tries">0</strong>회</span>
+                            <span>되돌리기: <strong id="bt-demo-4q-backs">0</strong>회</span>
+                        </div>
                     </div>
-                    <div class="step-card">
-                        <span class="step-num">3</span>
-                        <h4>재귀로 다음 단계</h4>
-                        <p>선택을 확정한 뒤, 재귀 호출로 다음 단계를 진행합니다</p>
-                    </div>
-                    <div class="step-card">
-                        <span class="step-num">4</span>
-                        <h4>되돌리기</h4>
-                        <p>재귀가 끝나면 선택을 취소하고, 다른 선택을 시도합니다</p>
-                    </div>
+                    <div class="concept-demo-msg" id="bt-demo-4q-msg">👆 칸을 클릭해서 퀸을 놓아 보세요! 공격 범위는 빨간색으로 표시됩니다. 또는 "자동 풀기"로 백트래킹 과정을 관찰하세요.</div>
                 </div>
 
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
-                        <span class="think-box-question-text">N-Queen 문제를 위 4단계로 정리해 보세요. (N×N 체스판에 퀸 N개를 서로 공격 못 하게 놓기)</span>
+                        <span class="think-box-question-text">4-Queen의 답은 몇 가지입니까? 8-Queen은요?</span>
                     </div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
                     <div class="think-box-answer">
-                        <strong>1. 선택지:</strong> 각 행에서 퀸을 놓을 열 번호 (0 ~ N-1)<br>
-                        <strong>2. 조건:</strong> 같은 열에 퀸이 없고, 대각선에도 퀸이 없어야 합니다<br>
-                        <strong>3. 재귀:</strong> 현재 행에 퀸을 놓고, 다음 행으로 넘어갑니다<br>
-                        <strong>4. 되돌리기:</strong> 다음 행에서 실패하면, 현재 행의 퀸을 다른 열로 옮깁니다<br><br>
-                        이 패턴을 잘 기억하세요! 시각화 탭에서 직접 확인할 수 있습니다.
+                        4-Queen의 답은 <strong>2가지</strong>입니다 (대칭 포함).<br>
+                        8-Queen의 답은 <strong>92가지</strong>입니다!<br><br>
+                        N이 커질수록 경우의 수가 폭발적으로 늘어나지만,
+                        백트래킹 + 가지치기 덕분에 효율적으로 탐색할 수 있습니다.
                     </div>
                 </div>
             </div>
@@ -441,6 +538,524 @@ for (int i = 1; i &lt;= n; i++) {
 
         if (treeContainer) {
             this._buildDecisionTree(treeContainer, instructionEl, resultsEl, resetBtn);
+        }
+
+        // ========== Demo 2: 3요소따라가기 ==========
+        {
+            var poolEl = container.querySelector('#bt-demo-3elem-pool');
+            var pathEl = container.querySelector('#bt-demo-3elem-path');
+            var usedEl = container.querySelector('#bt-demo-3elem-used');
+            var resultsEl2 = container.querySelector('#bt-demo-3elem-results');
+            var msgEl = container.querySelector('#bt-demo-3elem-msg');
+            var nextBtn2 = container.querySelector('#bt-demo-3elem-next');
+            var resetBtn2 = container.querySelector('#bt-demo-3elem-reset');
+
+            if (poolEl && nextBtn2) {
+                var nums = [1, 2, 3];
+                var M3 = 2;
+                // Pre-build all steps
+                var allSteps = [];
+                (function buildSteps3() {
+                    var used3 = [false, false, false];
+                    var path3 = [];
+                    function gen(depth) {
+                        for (var i = 0; i < 3; i++) {
+                            // Step: try choosing nums[i]
+                            if (used3[i]) {
+                                allSteps.push({ type: 'skip', idx: i, path: path3.slice(), used: used3.slice(), reason: nums[i] + '은 이미 사용 중(used[' + i + ']=true)이라 건너뜁니다 — ✅ 조건 확인' });
+                                continue;
+                            }
+                            allSteps.push({ type: 'choose', idx: i, path: path3.slice(), used: used3.slice(), reason: nums[i] + '을(를) 선택합니다 — ☝️ 선택하기' });
+                            path3.push(nums[i]);
+                            used3[i] = true;
+                            if (depth + 1 === M3) {
+                                allSteps.push({ type: 'found', idx: i, path: path3.slice(), used: used3.slice(), reason: '[' + path3.join(', ') + '] 완성!' });
+                                // Undo
+                                allSteps.push({ type: 'undo', idx: i, path: path3.slice(), used: used3.slice(), reason: nums[i] + '을(를) 되돌립니다 — ↩️ 되돌아가기' });
+                                path3.pop();
+                                used3[i] = false;
+                            } else {
+                                gen(depth + 1);
+                                allSteps.push({ type: 'undo', idx: i, path: path3.slice(), used: used3.slice(), reason: nums[i] + '을(를) 되돌립니다 — ↩️ 되돌아가기' });
+                                path3.pop();
+                                used3[i] = false;
+                            }
+                        }
+                    }
+                    gen(0);
+                    allSteps.push({ type: 'done', idx: -1, path: [], used: [false, false, false], reason: '모든 경우를 탐색했습니다!' });
+                })();
+
+                var stepIdx3 = -1;
+                var foundResults3 = [];
+
+                function makeBox(val, cls) {
+                    return '<div style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;font-weight:700;font-size:1rem;' +
+                        (cls === 'used' ? 'background:var(--accent);color:white;' :
+                         cls === 'skip' ? 'background:var(--red);color:white;opacity:0.6;' :
+                         cls === 'choose' ? 'background:var(--yellow);color:#333;box-shadow:0 0 8px var(--yellow);' :
+                         cls === 'undo' ? 'background:var(--bg2);color:var(--text3);border:2px dashed var(--red);' :
+                         'background:var(--bg2);color:var(--text);border:1px solid var(--border);') +
+                        '">' + val + '</div>';
+                }
+
+                function render3(step) {
+                    // Pool
+                    poolEl.innerHTML = '';
+                    for (var i = 0; i < 3; i++) {
+                        var cls = '';
+                        if (step && step.used[i]) cls = 'used';
+                        if (step && step.type === 'skip' && step.idx === i) cls = 'skip';
+                        if (step && step.type === 'choose' && step.idx === i) cls = 'choose';
+                        if (step && step.type === 'undo' && step.idx === i) cls = 'undo';
+                        poolEl.innerHTML += makeBox(nums[i], cls);
+                    }
+                    // Path
+                    if (!step || step.path.length === 0) {
+                        pathEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">비어 있음</span>';
+                    } else {
+                        pathEl.innerHTML = step.path.map(function(v) { return makeBox(v, 'used'); }).join('');
+                    }
+                    // Used
+                    if (step) {
+                        usedEl.innerHTML = '<span style="font-size:0.75rem;color:var(--text3);">used = [' +
+                            step.used.map(function(u, i) { return '<span style="color:' + (u ? 'var(--accent);font-weight:700' : 'var(--text3)') + ';">' + (u ? 'T' : 'F') + '</span>'; }).join(', ') + ']</span>';
+                    } else {
+                        usedEl.innerHTML = '<span style="font-size:0.75rem;color:var(--text3);">used = [F, F, F]</span>';
+                    }
+                    // Results
+                    resultsEl2.innerHTML = foundResults3.map(function(r) {
+                        return '<span style="display:inline-block;padding:3px 10px;background:var(--green);color:white;border-radius:6px;font-size:0.82rem;font-weight:600;">[' + r.join(', ') + ']</span>';
+                    }).join(' ');
+                    // Msg
+                    if (step) {
+                        msgEl.textContent = step.reason;
+                        msgEl.style.borderLeftColor = step.type === 'choose' ? 'var(--yellow)' : step.type === 'undo' ? 'var(--red)' : step.type === 'found' ? 'var(--green)' : step.type === 'skip' ? 'var(--red)' : 'var(--accent)';
+                    }
+                }
+
+                render3(null);
+
+                nextBtn2.addEventListener('click', function() {
+                    if (stepIdx3 >= allSteps.length - 1) return;
+                    stepIdx3++;
+                    var step = allSteps[stepIdx3];
+                    if (step.type === 'found') foundResults3.push(step.path.slice());
+                    render3(step);
+                    if (stepIdx3 >= allSteps.length - 1) {
+                        nextBtn2.disabled = true;
+                    }
+                });
+
+                resetBtn2.addEventListener('click', function() {
+                    stepIdx3 = -1;
+                    foundResults3 = [];
+                    nextBtn2.disabled = false;
+                    msgEl.textContent = '👆 "다음 단계"를 눌러 선택/확인/되돌리기가 어떻게 동작하는지 한 단계씩 따라가 보세요!';
+                    msgEl.style.borderLeftColor = '';
+                    render3(null);
+                });
+            }
+        }
+
+        // ========== Demo 3: 사이클(중복방지) 데모 ==========
+        {
+            var cycleUsedEl = container.querySelector('#bt-demo-cycle-used');
+            var cyclePathEl = container.querySelector('#bt-demo-cycle-path');
+            var cycleMsgEl = container.querySelector('#bt-demo-cycle-msg');
+            var cycleClearBtn = container.querySelector('#bt-demo-cycle-clear');
+            var cycleBtn1 = container.querySelector('#bt-demo-cycle-toggle1');
+            var cycleBtn2 = container.querySelector('#bt-demo-cycle-toggle2');
+            var cycleBtn3 = container.querySelector('#bt-demo-cycle-toggle3');
+
+            if (cycleUsedEl && cycleBtn1) {
+                var cycleUsed = [false, false, false];
+                var cyclePath = [];
+
+                function renderCycleDemo() {
+                    cycleUsedEl.innerHTML = '';
+                    for (var i = 0; i < 3; i++) {
+                        cycleUsedEl.innerHTML += '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;">' +
+                            '<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:700;font-size:1rem;' +
+                            (cycleUsed[i] ? 'background:var(--accent);color:white;box-shadow:0 0 8px var(--accent);' : 'background:var(--bg2);color:var(--text);border:1px solid var(--border);') +
+                            '">' + (i + 1) + '</div>' +
+                            '<span style="font-size:0.7rem;color:' + (cycleUsed[i] ? 'var(--accent)' : 'var(--text3)') + ';">' + (cycleUsed[i] ? 'true' : 'false') + '</span></div>';
+                    }
+                    cyclePathEl.textContent = cyclePath.length > 0 ? '[ ' + cyclePath.join(', ') + ' ]' : '[ ]';
+                }
+
+                function cycleSelect(idx) {
+                    if (cycleUsed[idx]) {
+                        cycleMsgEl.textContent = '❌ used[' + idx + '] = true → ' + (idx + 1) + '은(는) 이미 사용 중! 건너뜁니다. 이것이 중복을 막는 원리입니다.';
+                        cycleMsgEl.style.borderLeftColor = 'var(--red)';
+                        // Flash the box red briefly
+                        var boxes = cycleUsedEl.querySelectorAll('div > div');
+                        if (boxes[idx]) {
+                            boxes[idx].style.background = 'var(--red)';
+                            setTimeout(function() { renderCycleDemo(); }, 500);
+                        }
+                        return;
+                    }
+                    cycleUsed[idx] = true;
+                    cyclePath.push(idx + 1);
+                    cycleMsgEl.textContent = '✅ ' + (idx + 1) + '을(를) 선택! used[' + idx + '] = true로 설정. 경로: [' + cyclePath.join(', ') + ']';
+                    cycleMsgEl.style.borderLeftColor = 'var(--green)';
+                    renderCycleDemo();
+                }
+
+                renderCycleDemo();
+
+                cycleBtn1.addEventListener('click', function() { cycleSelect(0); });
+                cycleBtn2.addEventListener('click', function() { cycleSelect(1); });
+                cycleBtn3.addEventListener('click', function() { cycleSelect(2); });
+                cycleClearBtn.addEventListener('click', function() {
+                    cycleUsed = [false, false, false];
+                    cyclePath = [];
+                    cycleMsgEl.textContent = '👆 숫자 버튼을 눌러 선택해 보세요! 이미 선택된 숫자를 다시 누르면 used 배열이 막아줍니다.';
+                    cycleMsgEl.style.borderLeftColor = '';
+                    renderCycleDemo();
+                });
+            }
+        }
+
+        // ========== Demo 4: 가지치기 비교 ==========
+        {
+            var pruneNopEl = container.querySelector('#bt-demo-prune-nop');
+            var pruneYesEl = container.querySelector('#bt-demo-prune-yes');
+            var pruneNopCount = container.querySelector('#bt-demo-prune-nop-count');
+            var pruneYesCount = container.querySelector('#bt-demo-prune-yes-count');
+            var pruneRunBtn = container.querySelector('#bt-demo-prune-run');
+            var pruneResetBtn = container.querySelector('#bt-demo-prune-reset');
+            var pruneMsgEl = container.querySelector('#bt-demo-prune-msg');
+
+            if (pruneNopEl && pruneRunBtn) {
+                var pruneAnimating = false;
+
+                pruneRunBtn.addEventListener('click', function() {
+                    if (pruneAnimating) return;
+                    pruneAnimating = true;
+                    pruneRunBtn.disabled = true;
+                    pruneNopEl.innerHTML = '';
+                    pruneYesEl.innerHTML = '';
+
+                    // Build all traces without pruning
+                    var nopTraces = [];
+                    for (var i = 1; i <= 3; i++) {
+                        for (var j = 1; j <= 3; j++) {
+                            var ok = i !== j;
+                            nopTraces.push({ text: i + ' → ' + j, ok: ok, reason: ok ? '✓ 유효' : '✕ 중복' });
+                        }
+                    }
+                    // Build all traces with pruning
+                    var yesTraces = [];
+                    for (var i = 1; i <= 3; i++) {
+                        for (var j = 1; j <= 3; j++) {
+                            if (i === j) {
+                                yesTraces.push({ text: i + ' → ' + j, ok: false, skip: true, reason: '✂️ 건너뜀' });
+                            } else {
+                                yesTraces.push({ text: i + ' → ' + j, ok: true, skip: false, reason: '✓ 유효' });
+                            }
+                        }
+                    }
+
+                    var maxLen = Math.max(nopTraces.length, yesTraces.length);
+                    var nopCount = 0, yesCount = 0;
+                    var idx = 0;
+
+                    function animStep() {
+                        if (idx >= maxLen) {
+                            pruneMsgEl.textContent = '완료! 가지치기 없으면 ' + nopCount + '회, 가지치기 적용하면 ' + yesCount + '회만 탐색합니다. 차이: ' + (nopCount - yesCount) + '회 절약!';
+                            pruneMsgEl.style.borderLeftColor = 'var(--green)';
+                            pruneAnimating = false;
+                            return;
+                        }
+                        if (idx < nopTraces.length) {
+                            var t = nopTraces[idx];
+                            nopCount++;
+                            var div = document.createElement('div');
+                            div.textContent = t.text + ' ' + t.reason;
+                            div.style.cssText = 'padding:2px 6px;border-radius:4px;' + (t.ok ? 'color:var(--green);' : 'color:var(--red);');
+                            pruneNopEl.appendChild(div);
+                            pruneNopCount.textContent = '탐색: ' + nopCount + '회';
+                        }
+                        if (idx < yesTraces.length) {
+                            var t2 = yesTraces[idx];
+                            var div2 = document.createElement('div');
+                            if (t2.skip) {
+                                div2.textContent = t2.text + ' ' + t2.reason;
+                                div2.style.cssText = 'padding:2px 6px;border-radius:4px;color:var(--text3);text-decoration:line-through;opacity:0.5;';
+                            } else {
+                                yesCount++;
+                                div2.textContent = t2.text + ' ' + t2.reason;
+                                div2.style.cssText = 'padding:2px 6px;border-radius:4px;color:var(--green);';
+                            }
+                            pruneYesEl.appendChild(div2);
+                            pruneYesCount.textContent = '탐색: ' + yesCount + '회';
+                        }
+                        idx++;
+                        setTimeout(animStep, 300);
+                    }
+                    animStep();
+                });
+
+                pruneResetBtn.addEventListener('click', function() {
+                    pruneAnimating = false;
+                    pruneRunBtn.disabled = false;
+                    pruneNopEl.innerHTML = '';
+                    pruneYesEl.innerHTML = '';
+                    pruneNopCount.textContent = '탐색: 0회';
+                    pruneYesCount.textContent = '탐색: 0회';
+                    pruneMsgEl.textContent = '👆 "탐색 시작"을 눌러 가지치기 유무에 따른 탐색 차이를 비교해 보세요!';
+                    pruneMsgEl.style.borderLeftColor = '';
+                });
+            }
+        }
+
+        // ========== Demo 5: 실행비교 (N,M 바꾸기) ==========
+        {
+            var execRunBtn = container.querySelector('#bt-demo-exec-run');
+            var execNInput = container.querySelector('#bt-demo-exec-n');
+            var execMInput = container.querySelector('#bt-demo-exec-m');
+            var execBarBrute = container.querySelector('#bt-demo-exec-bar-brute');
+            var execBarBt = container.querySelector('#bt-demo-exec-bar-bt');
+            var execValBrute = container.querySelector('#bt-demo-exec-val-brute');
+            var execValBt = container.querySelector('#bt-demo-exec-val-bt');
+            var execSaved = container.querySelector('#bt-demo-exec-saved');
+            var execMsgEl = container.querySelector('#bt-demo-exec-msg');
+
+            if (execRunBtn && execNInput) {
+                execRunBtn.addEventListener('click', function() {
+                    var N = parseInt(execNInput.value) || 4;
+                    var M = parseInt(execMInput.value) || 2;
+                    if (N < 2) N = 2; if (N > 8) N = 8;
+                    if (M < 1) M = 1; if (M > N) M = N; if (M > 6) M = 6;
+                    execNInput.value = N;
+                    execMInput.value = M;
+
+                    // Brute force: N^M (all combinations including duplicates)
+                    var bruteCount = Math.pow(N, M);
+
+                    // Backtracking: P(N, M) = N! / (N-M)! (permutations without repetition)
+                    var btCount = 1;
+                    for (var i = 0; i < M; i++) btCount *= (N - i);
+
+                    var maxVal = Math.max(bruteCount, btCount);
+                    var maxH = 160;
+
+                    // Animate bars
+                    execBarBrute.style.height = Math.max(10, Math.round(bruteCount / maxVal * maxH)) + 'px';
+                    execBarBt.style.height = Math.max(10, Math.round(btCount / maxVal * maxH)) + 'px';
+                    execValBrute.textContent = bruteCount.toLocaleString();
+                    execValBt.textContent = btCount.toLocaleString();
+
+                    var saved = bruteCount - btCount;
+                    var pct = bruteCount > 0 ? Math.round(saved / bruteCount * 100) : 0;
+                    execSaved.textContent = saved > 0 ? (saved.toLocaleString() + '회 절약 (' + pct + '%)') : '동일';
+
+                    execMsgEl.textContent = 'N=' + N + ', M=' + M + ' → 완전탐색: ' + bruteCount.toLocaleString() + '회, 백트래킹: ' + btCount.toLocaleString() + '회. ' + (saved > 0 ? pct + '%를 절약합니다!' : '');
+                    execMsgEl.style.borderLeftColor = 'var(--accent)';
+                });
+            }
+        }
+
+        // ========== Demo 6: 4-Queen ==========
+        {
+            var boardEl = container.querySelector('#bt-demo-4q-board');
+            var autoBtn = container.querySelector('#bt-demo-4q-auto');
+            var clearBtn4q = container.querySelector('#bt-demo-4q-clear');
+            var placedEl = container.querySelector('#bt-demo-4q-placed');
+            var triesEl = container.querySelector('#bt-demo-4q-tries');
+            var backsEl = container.querySelector('#bt-demo-4q-backs');
+            var msgEl4q = container.querySelector('#bt-demo-4q-msg');
+
+            if (boardEl && autoBtn) {
+                var N4 = 4;
+                var queens = []; // [{r,c}]
+                var tries4q = 0, backs4q = 0;
+                var autoRunning = false;
+
+                function isSafe(r, c, qs) {
+                    for (var k = 0; k < qs.length; k++) {
+                        var q = qs[k];
+                        if (q.c === c) return false;
+                        if (Math.abs(q.r - r) === Math.abs(q.c - c)) return false;
+                    }
+                    return true;
+                }
+
+                function getAttacked(qs) {
+                    var set = {};
+                    for (var k = 0; k < qs.length; k++) {
+                        var q = qs[k];
+                        for (var i = 0; i < N4; i++) {
+                            for (var j = 0; j < N4; j++) {
+                                if (i === q.r && j === q.c) continue;
+                                if (i === q.r || j === q.c || Math.abs(i - q.r) === Math.abs(j - q.c)) {
+                                    set[i + ',' + j] = true;
+                                }
+                            }
+                        }
+                    }
+                    return set;
+                }
+
+                function renderBoard(highlight) {
+                    boardEl.innerHTML = '';
+                    boardEl.style.cssText = 'display:inline-grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 auto;';
+                    var attacked = getAttacked(queens);
+                    for (var r = 0; r < N4; r++) {
+                        for (var c = 0; c < N4; c++) {
+                            var cell = document.createElement('div');
+                            var isQueen = queens.some(function(q) { return q.r === r && q.c === c; });
+                            var isAttacked = attacked[r + ',' + c];
+                            var isHighlight = highlight && highlight.r === r && highlight.c === c;
+                            cell.style.cssText = 'width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:1.4rem;cursor:pointer;transition:all 0.2s;border:2px solid transparent;' +
+                                ((r + c) % 2 === 0 ? 'background:var(--bg2);' : 'background:var(--bg3,var(--border));') +
+                                (isQueen ? 'background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px var(--accent);' : '') +
+                                (isAttacked && !isQueen ? 'background:rgba(231,76,60,0.15);border-color:rgba(231,76,60,0.3);' : '') +
+                                (isHighlight ? 'background:var(--yellow);border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);' : '');
+                            cell.textContent = isQueen ? '♛' : '';
+                            cell.dataset.r = r;
+                            cell.dataset.c = c;
+                            if (!autoRunning) {
+                                (function(rr, cc) {
+                                    cell.addEventListener('click', function() {
+                                        handleCellClick(rr, cc);
+                                    });
+                                })(r, c);
+                            }
+                            boardEl.appendChild(cell);
+                        }
+                    }
+                    placedEl.textContent = queens.length;
+                    triesEl.textContent = tries4q;
+                    backsEl.textContent = backs4q;
+                }
+
+                function handleCellClick(r, c) {
+                    if (autoRunning) return;
+                    // If queen already there, remove it
+                    var existIdx = -1;
+                    for (var k = 0; k < queens.length; k++) {
+                        if (queens[k].r === r && queens[k].c === c) { existIdx = k; break; }
+                    }
+                    if (existIdx >= 0) {
+                        queens.splice(existIdx, 1);
+                        msgEl4q.textContent = '♛ (' + r + ',' + c + ') 퀸을 제거했습니다.';
+                        renderBoard(null);
+                        return;
+                    }
+                    // Check row already has queen
+                    for (var k = 0; k < queens.length; k++) {
+                        if (queens[k].r === r) {
+                            msgEl4q.textContent = '❌ 행 ' + r + '에 이미 퀸이 있습니다! 같은 행에는 하나만 놓을 수 있어요.';
+                            msgEl4q.style.borderLeftColor = 'var(--red)';
+                            return;
+                        }
+                    }
+                    tries4q++;
+                    if (!isSafe(r, c, queens)) {
+                        msgEl4q.textContent = '❌ (' + r + ',' + c + ')은 다른 퀸의 공격 범위입니다! 같은 열이나 대각선을 확인하세요.';
+                        msgEl4q.style.borderLeftColor = 'var(--red)';
+                        renderBoard({ r: r, c: c });
+                        setTimeout(function() { renderBoard(null); }, 600);
+                        return;
+                    }
+                    queens.push({ r: r, c: c });
+                    if (queens.length === N4) {
+                        msgEl4q.textContent = '🎉 성공! 4개의 퀸을 모두 안전하게 놓았습니다!';
+                        msgEl4q.style.borderLeftColor = 'var(--green)';
+                    } else {
+                        msgEl4q.textContent = '✅ (' + r + ',' + c + ')에 퀸을 놓았습니다. 빨간 영역은 공격 범위입니다. (' + queens.length + '/4)';
+                        msgEl4q.style.borderLeftColor = 'var(--accent)';
+                    }
+                    renderBoard(null);
+                }
+
+                // Auto-solve with backtracking animation
+                autoBtn.addEventListener('click', function() {
+                    if (autoRunning) return;
+                    autoRunning = true;
+                    autoBtn.disabled = true;
+                    queens = [];
+                    tries4q = 0;
+                    backs4q = 0;
+                    renderBoard(null);
+
+                    // Build solution steps
+                    var solveSteps = [];
+                    function solve4(row, qs) {
+                        if (row === N4) {
+                            solveSteps.push({ type: 'done', queens: qs.slice() });
+                            return true;
+                        }
+                        for (var c = 0; c < N4; c++) {
+                            solveSteps.push({ type: 'try', r: row, c: c, queens: qs.slice() });
+                            if (isSafe(row, c, qs)) {
+                                qs.push({ r: row, c: c });
+                                solveSteps.push({ type: 'place', r: row, c: c, queens: qs.slice() });
+                                if (solve4(row + 1, qs)) return true;
+                                qs.pop();
+                                solveSteps.push({ type: 'back', r: row, c: c, queens: qs.slice() });
+                            } else {
+                                solveSteps.push({ type: 'fail', r: row, c: c, queens: qs.slice() });
+                            }
+                        }
+                        return false;
+                    }
+                    solve4(0, []);
+
+                    var si = 0;
+                    function playStep() {
+                        if (si >= solveSteps.length) {
+                            autoRunning = false;
+                            autoBtn.disabled = false;
+                            return;
+                        }
+                        var s = solveSteps[si];
+                        queens = s.queens.slice();
+                        if (s.type === 'try') {
+                            tries4q++;
+                            msgEl4q.textContent = '🔍 행 ' + s.r + ', 열 ' + s.c + ' 시도 중...';
+                            msgEl4q.style.borderLeftColor = 'var(--yellow)';
+                            renderBoard({ r: s.r, c: s.c });
+                        } else if (s.type === 'place') {
+                            msgEl4q.textContent = '✅ (' + s.r + ',' + s.c + ')에 퀸 배치! (' + queens.length + '/4)';
+                            msgEl4q.style.borderLeftColor = 'var(--green)';
+                            renderBoard(null);
+                        } else if (s.type === 'fail') {
+                            msgEl4q.textContent = '❌ (' + s.r + ',' + s.c + ') 공격 범위 — 건너뜁니다';
+                            msgEl4q.style.borderLeftColor = 'var(--red)';
+                            renderBoard({ r: s.r, c: s.c });
+                        } else if (s.type === 'back') {
+                            backs4q++;
+                            msgEl4q.textContent = '↩️ (' + s.r + ',' + s.c + ') 되돌리기! 다른 열을 시도합니다';
+                            msgEl4q.style.borderLeftColor = 'var(--red)';
+                            renderBoard(null);
+                        } else if (s.type === 'done') {
+                            msgEl4q.textContent = '🎉 해결! 시도 ' + tries4q + '회, 되돌리기 ' + backs4q + '회. 백트래킹 덕분에 효율적으로 찾았습니다!';
+                            msgEl4q.style.borderLeftColor = 'var(--green)';
+                            renderBoard(null);
+                        }
+                        si++;
+                        setTimeout(playStep, s.type === 'done' ? 0 : (s.type === 'try' ? 250 : 400));
+                    }
+                    playStep();
+                });
+
+                clearBtn4q.addEventListener('click', function() {
+                    autoRunning = false;
+                    autoBtn.disabled = false;
+                    queens = [];
+                    tries4q = 0;
+                    backs4q = 0;
+                    msgEl4q.textContent = '👆 칸을 클릭해서 퀸을 놓아 보세요! 공격 범위는 빨간색으로 표시됩니다. 또는 "자동 풀기"로 백트래킹 과정을 관찰하세요.';
+                    msgEl4q.style.borderLeftColor = '';
+                    renderBoard(null);
+                });
+
+                renderBoard(null);
+            }
         }
     },
     _buildDecisionTree(treeContainer, instructionEl, resultsEl, resetBtn) {

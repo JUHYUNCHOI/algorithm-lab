@@ -3676,7 +3676,7 @@ button.problem-card:hover {
 
 .viz-step-desc {
     margin-top: 1.2rem;
-    margin-bottom: 0;
+    margin-bottom: 1.2rem;
     padding: 1.2rem 1.5rem;
     background: var(--warm-bg);
     border: 1px solid var(--bg3);
@@ -6142,6 +6142,28 @@ button.problem-card:hover {
     justify-content: center;
 }
 
+.sim-tab-content {
+    background: var(--bg2);
+    border: 1px solid var(--bg3);
+    border-radius: var(--radius);
+    padding: 2rem 2.5rem 4.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.sim-tab-content > .viz-step-desc {
+    margin-left: -2.5rem;
+    margin-right: -2.5rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
+.sim-tab-content > .viz-step-controls {
+    margin-left: -2.5rem;
+    margin-right: -2.5rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
 .viz-step-controls {
     display: flex;
     align-items: center;
@@ -6150,13 +6172,14 @@ button.problem-card:hover {
     position: sticky;
     bottom: 12px;
     z-index: 100;
-    padding: 0.5rem 0.8rem;
-    margin-top: 1rem;
-    background: var(--bg2);
+    padding: 0.6rem 1rem;
+    margin-top: 1.5rem;
+    background: var(--bg);
     border-radius: var(--radius);
     border: 1px solid var(--bg3);
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
 }
+
 
 .viz-step-controls.viz-inline {
     position: static;
@@ -6663,6 +6686,9 @@ mark.code-line-new {
 @media (max-width: 768px) {
     main { padding: 1rem; }
     .sim-card { padding: 1.5rem 1rem; }
+    .sim-tab-content { padding: 1.5rem 1rem 4rem; }
+    .sim-tab-content > .viz-step-desc,
+    .sim-tab-content > .viz-step-controls { margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem; }
     .problem-description { padding: 1.2rem; }
     .concept-card { padding: 1.5rem; }
     .concept-demo { padding: 1rem; }

@@ -58,7 +58,7 @@ var prefixSumTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -186,6 +186,23 @@ vector&lt;int&gt; prefix = {0, 3, 4, 8, 9, 14};\n\
                         실제로 4 + 1 + 5 = 10 맞습니다!\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 누적합 배열 만들기</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="ps-demo-build-input" value="3,1,4,1,5,9" placeholder="쉼표로 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="ps-demo-build-btn">누적합 만들기</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-build-reset" style="display:none;">다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="margin-bottom:8px;font-weight:600;">원래 배열 (arr)</div>\
+                        <div id="ps-demo-build-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div style="margin-bottom:8px;font-weight:600;">누적합 배열 (prefix)</div>\
+                        <div id="ps-demo-build-prefix" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="ps-demo-build-info" style="padding:8px 12px;background:var(--bg);border-radius:8px;text-align:center;min-height:1.5em;font-size:0.9rem;color:var(--text2);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-build-msg">원래 배열에서 누적합 배열을 한 칸씩 만들어 봅니다. 값을 바꿔도 됩니다!</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -253,6 +270,20 @@ for (int i = 1; i &lt;= N; i++) {\n\
                         0이 없으면 1번째부터 시작하는 구간에서 예외 처리가 필요합니다.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 쌓기 과정 시각화</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="ps-demo-stack-input" value="2,5,3,7,1,4" placeholder="쉼표로 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="ps-demo-stack-btn">쌓기 시작</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-stack-reset" style="display:none;">다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="ps-demo-stack-bars" style="display:flex;gap:8px;align-items:flex-end;height:180px;padding:12px 8px;border-bottom:2px solid var(--border);margin-bottom:12px;"></div>\
+                        <div id="ps-demo-stack-formula" style="padding:8px 12px;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;font-size:0.9rem;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-stack-msg">각 prefix[i]가 어떻게 이전 값 + 현재 값으로 쌓이는지 막대그래프로 봅니다.</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -302,6 +333,35 @@ int total = prefix[R] - prefix[L - 1];\n\
                         누적합: <strong>100,000 + 100,000 = 200,000번</strong> (한순간!)<br><br>\
                         이 차이가 바로 누적합을 쓰는 이유입니다.\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 반복문 vs 누적합 비교</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <label style="font-size:0.85rem;color:var(--text2);">배열:</label>\
+                        <input type="text" id="ps-demo-cmp-arr" value="3,1,4,1,5,9,2,6" placeholder="쉼표로 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.85rem;color:var(--text2);">L:</label>\
+                        <input type="number" id="ps-demo-cmp-l" value="2" min="1" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:50px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.85rem;color:var(--text2);">R:</label>\
+                        <input type="number" id="ps-demo-cmp-r" value="5" min="1" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:50px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="ps-demo-cmp-btn">비교 시작</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-cmp-reset" style="display:none;">다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:220px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">반복문 방식 <span style="color:var(--red);font-size:0.85rem;">O(N)</span></div>\
+                                <div id="ps-demo-cmp-loop-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                                <div id="ps-demo-cmp-loop-info" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:220px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">누적합 방식 <span style="color:var(--green);font-size:0.85rem;">O(1)</span></div>\
+                                <div id="ps-demo-cmp-ps-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                                <div id="ps-demo-cmp-ps-info" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-cmp-msg">L부터 R까지의 합을 반복문과 누적합 두 가지로 구합니다. 속도 차이를 눈으로 확인하세요!</div>\
                 </div>\
             </div>\
 \
@@ -388,6 +448,27 @@ int query(int r1, int c1, int r2, int c2) {\n\
                         이것을 <strong>포함-배제 원리</strong>라고 합니다.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 2D 포함-배제 시각화</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="ps-demo-2d-btn">포함-배제 보기</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-2d-reset" style="display:none;">다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div>\
+                                <div style="font-weight:600;margin-bottom:8px;">원래 격자 (4x4)</div>\
+                                <div id="ps-demo-2d-grid" style="display:inline-grid;grid-template-columns:repeat(4,42px);gap:2px;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">포함-배제 단계</div>\
+                                <div id="ps-demo-2d-steps" style="min-height:120px;padding:12px;background:var(--bg);border-radius:8px;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-2d-msg">4x4 격자에서 (2,2)~(3,3) 영역의 합을 포함-배제 원리로 구하는 과정을 봅니다.</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -420,10 +501,18 @@ int query(int r1, int c1, int r2, int c2) {\n\
                         특히 "여러 번 물어본다"는 말이 있으면 반복문으로는 느리고, 누적합이 필수입니다.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">유형 맞추기 퀴즈</div>\
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">각 문제가 어떤 누적합 패턴인지 맞춰보세요!</p>\
+                    <div id="ps-demo-quiz" style="display:flex;flex-direction:column;gap:12px;"></div>\
+                    <div id="ps-demo-quiz-score" style="margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:8px;text-align:center;min-height:1.5em;font-size:0.9rem;"></div>\
+                </div>\
             </div>\
         ';
 
         this._initConceptInteractions(container);
+        this._initConceptDemos(container);
     },
 
     _initConceptInteractions: function(container) {
@@ -435,6 +524,402 @@ int query(int r1, int c1, int r2, int c2) {\n\
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+    },
+
+    _initConceptDemos: function(container) {
+        // ===== Demo 1: 누적합 만들기 =====
+        {
+            var buildBtn = container.querySelector('#ps-demo-build-btn');
+            var buildReset = container.querySelector('#ps-demo-build-reset');
+            var buildInput = container.querySelector('#ps-demo-build-input');
+            var buildArrEl = container.querySelector('#ps-demo-build-arr');
+            var buildPrefEl = container.querySelector('#ps-demo-build-prefix');
+            var buildInfo = container.querySelector('#ps-demo-build-info');
+            var buildMsg = container.querySelector('#ps-demo-build-msg');
+            var buildAnimating = false;
+
+            function parseArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function renderBuildInit(arr) {
+                buildArrEl.innerHTML = arr.map(function(v, i) {
+                    return '<div class="str-char-box" style="min-width:38px;text-align:center;"><div class="str-char-idx" style="font-size:0.65rem;">' + i + '</div><div class="str-char-val">' + v + '</div></div>';
+                }).join('');
+                var prefLen = arr.length + 1;
+                buildPrefEl.innerHTML = '';
+                for (var i = 0; i < prefLen; i++) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.style.cssText = 'min-width:38px;text-align:center;transition:all 0.3s ease;';
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.65rem;">' + i + '</div><div class="str-char-val">?</div>';
+                    buildPrefEl.appendChild(box);
+                }
+                buildInfo.textContent = '';
+            }
+
+            if (buildBtn) {
+                var arr0 = parseArr(buildInput.value);
+                renderBuildInit(arr0);
+
+                buildBtn.addEventListener('click', function() {
+                    if (buildAnimating) return;
+                    buildAnimating = true;
+                    buildBtn.style.display = 'none';
+                    buildReset.style.display = '';
+                    var arr = parseArr(buildInput.value);
+                    if (arr.length === 0) { buildMsg.textContent = '배열을 입력해주세요!'; buildAnimating = false; buildBtn.style.display = ''; buildReset.style.display = 'none'; return; }
+                    renderBuildInit(arr);
+                    var prefix = [0];
+                    for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                    var prefBoxes = buildPrefEl.querySelectorAll('.str-char-box');
+                    var step = 0;
+                    function nextStep() {
+                        if (step > arr.length) { buildInfo.innerHTML = '<strong style="color:var(--green);">누적합 완성!</strong>'; buildMsg.textContent = 'prefix 배열이 완성되었습니다. 각 칸이 이전까지의 합입니다!'; buildAnimating = false; return; }
+                        if (step === 0) {
+                            prefBoxes[0].querySelector('.str-char-val').textContent = '0';
+                            prefBoxes[0].style.background = 'var(--accent)15';
+                            prefBoxes[0].style.boxShadow = '0 0 8px var(--accent)40';
+                            buildInfo.innerHTML = 'prefix[0] = <strong>0</strong> (시작값)';
+                        } else {
+                            if (step > 1) { prefBoxes[step - 1].style.boxShadow = 'none'; }
+                            prefBoxes[step].querySelector('.str-char-val').textContent = prefix[step];
+                            prefBoxes[step].style.background = 'var(--green)15';
+                            prefBoxes[step].style.boxShadow = '0 0 8px var(--green)40';
+                            buildInfo.innerHTML = 'prefix[' + step + '] = prefix[' + (step - 1) + '] + arr[' + (step - 1) + '] = ' + prefix[step - 1] + ' + ' + arr[step - 1] + ' = <strong>' + prefix[step] + '</strong>';
+                        }
+                        step++;
+                        setTimeout(nextStep, 600);
+                    }
+                    nextStep();
+                });
+
+                buildReset.addEventListener('click', function() {
+                    buildAnimating = false;
+                    buildBtn.style.display = '';
+                    buildReset.style.display = 'none';
+                    var arr = parseArr(buildInput.value);
+                    renderBuildInit(arr);
+                    buildMsg.textContent = '원래 배열에서 누적합 배열을 한 칸씩 만들어 봅니다. 값을 바꿔도 됩니다!';
+                });
+            }
+        }
+
+        // ===== Demo 2: 쌓기 과정 =====
+        {
+            var stackBtn = container.querySelector('#ps-demo-stack-btn');
+            var stackReset = container.querySelector('#ps-demo-stack-reset');
+            var stackInput = container.querySelector('#ps-demo-stack-input');
+            var stackBars = container.querySelector('#ps-demo-stack-bars');
+            var stackFormula = container.querySelector('#ps-demo-stack-formula');
+            var stackMsg = container.querySelector('#ps-demo-stack-msg');
+            var stackAnimating = false;
+
+            function parseStackArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+
+            function renderStackInit(arr) {
+                var prefix = [0];
+                for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                var maxVal = Math.max.apply(null, prefix.concat([1]));
+                stackBars.innerHTML = '';
+                for (var j = 0; j <= arr.length; j++) {
+                    var barWrap = document.createElement('div');
+                    barWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:30px;';
+                    var bar = document.createElement('div');
+                    bar.className = 'ps-stack-bar';
+                    bar.style.cssText = 'width:100%;max-width:48px;background:var(--bg2);border-radius:6px 6px 0 0;transition:height 0.5s ease,background 0.5s ease;height:0px;display:flex;align-items:flex-end;justify-content:center;';
+                    bar.dataset.target = Math.max(4, Math.round((prefix[j] / maxVal) * 140));
+                    bar.dataset.val = prefix[j];
+                    bar.innerHTML = '<span style="font-size:0.75rem;font-weight:600;color:var(--text);padding:2px;"></span>';
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-size:0.7rem;color:var(--text3);';
+                    label.textContent = 'p[' + j + ']';
+                    barWrap.appendChild(bar);
+                    barWrap.appendChild(label);
+                    stackBars.appendChild(barWrap);
+                }
+                stackFormula.innerHTML = '쌓기 시작 버튼을 눌러보세요';
+                return { prefix: prefix, maxVal: maxVal };
+            }
+
+            if (stackBtn) {
+                var initData = renderStackInit(parseStackArr(stackInput.value));
+
+                stackBtn.addEventListener('click', function() {
+                    if (stackAnimating) return;
+                    stackAnimating = true;
+                    stackBtn.style.display = 'none';
+                    stackReset.style.display = '';
+                    var arr = parseStackArr(stackInput.value);
+                    if (arr.length === 0) { stackMsg.textContent = '배열을 입력해주세요!'; stackAnimating = false; stackBtn.style.display = ''; stackReset.style.display = 'none'; return; }
+                    var data = renderStackInit(arr);
+                    var bars = stackBars.querySelectorAll('.ps-stack-bar');
+                    var step = 0;
+                    function nextBar() {
+                        if (step > arr.length) { stackFormula.innerHTML = '<strong style="color:var(--green);">쌓기 완성!</strong> 각 막대가 누적합입니다.'; stackAnimating = false; return; }
+                        if (step > 0) bars[step - 1].style.boxShadow = 'none';
+                        var bar = bars[step];
+                        bar.style.height = bar.dataset.target + 'px';
+                        bar.style.background = step === 0 ? 'var(--accent)' : 'var(--green)';
+                        bar.style.boxShadow = '0 0 10px ' + (step === 0 ? 'var(--accent)' : 'var(--green)') + '60';
+                        bar.querySelector('span').textContent = bar.dataset.val;
+                        if (step === 0) {
+                            stackFormula.innerHTML = 'prefix[0] = <strong>0</strong>';
+                        } else {
+                            stackFormula.innerHTML = 'prefix[' + step + '] = prefix[' + (step - 1) + '] + arr[' + (step - 1) + '] = <strong>' + data.prefix[step - 1] + '</strong> + <strong>' + arr[step - 1] + '</strong> = <strong style="color:var(--green);">' + data.prefix[step] + '</strong>';
+                        }
+                        step++;
+                        setTimeout(nextBar, 700);
+                    }
+                    nextBar();
+                });
+
+                stackReset.addEventListener('click', function() {
+                    stackAnimating = false;
+                    stackBtn.style.display = '';
+                    stackReset.style.display = 'none';
+                    renderStackInit(parseStackArr(stackInput.value));
+                    stackMsg.textContent = '각 prefix[i]가 어떻게 이전 값 + 현재 값으로 쌓이는지 막대그래프로 봅니다.';
+                });
+            }
+        }
+
+        // ===== Demo 3: 반복문 vs 누적합 =====
+        {
+            var cmpBtn = container.querySelector('#ps-demo-cmp-btn');
+            var cmpReset = container.querySelector('#ps-demo-cmp-reset');
+            var cmpArrInput = container.querySelector('#ps-demo-cmp-arr');
+            var cmpLInput = container.querySelector('#ps-demo-cmp-l');
+            var cmpRInput = container.querySelector('#ps-demo-cmp-r');
+            var cmpLoopArr = container.querySelector('#ps-demo-cmp-loop-arr');
+            var cmpPsArr = container.querySelector('#ps-demo-cmp-ps-arr');
+            var cmpLoopInfo = container.querySelector('#ps-demo-cmp-loop-info');
+            var cmpPsInfo = container.querySelector('#ps-demo-cmp-ps-info');
+            var cmpMsg = container.querySelector('#ps-demo-cmp-msg');
+            var cmpAnimating = false;
+
+            function parseCmpArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function renderCmpArr(el, arr, label) {
+                el.innerHTML = arr.map(function(v, i) {
+                    return '<div class="str-char-box" style="min-width:36px;text-align:center;transition:all 0.3s ease;"><div class="str-char-idx" style="font-size:0.6rem;">' + (label ? label + '[' + i + ']' : i) + '</div><div class="str-char-val">' + v + '</div></div>';
+                }).join('');
+            }
+
+            if (cmpBtn) {
+                var arr1 = parseCmpArr(cmpArrInput.value);
+                renderCmpArr(cmpLoopArr, arr1, '');
+                var pref1 = [0]; for (var k = 0; k < arr1.length; k++) pref1.push(pref1[k] + arr1[k]);
+                renderCmpArr(cmpPsArr, pref1, 'p');
+
+                cmpBtn.addEventListener('click', function() {
+                    if (cmpAnimating) return;
+                    cmpAnimating = true;
+                    cmpBtn.style.display = 'none';
+                    cmpReset.style.display = '';
+                    var arr = parseCmpArr(cmpArrInput.value);
+                    var L = parseInt(cmpLInput.value) || 1;
+                    var R = parseInt(cmpRInput.value) || arr.length;
+                    L = Math.max(1, Math.min(L, arr.length));
+                    R = Math.max(L, Math.min(R, arr.length));
+                    renderCmpArr(cmpLoopArr, arr, '');
+                    var prefix = [0]; for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                    renderCmpArr(cmpPsArr, prefix, 'p');
+                    cmpLoopInfo.textContent = '';
+                    cmpPsInfo.textContent = '';
+
+                    // Loop side: animate one by one
+                    var loopBoxes = cmpLoopArr.querySelectorAll('.str-char-box');
+                    var step = L - 1;
+                    var loopSum = 0;
+                    var loopOps = 0;
+                    function loopStep() {
+                        if (step >= R) {
+                            cmpLoopInfo.innerHTML = '합 = <strong>' + loopSum + '</strong>, 덧셈 <strong style="color:var(--red);">' + loopOps + '번</strong>';
+                            cmpAnimating = false;
+                            return;
+                        }
+                        if (step > L - 1) loopBoxes[step - 1].style.boxShadow = 'none';
+                        loopBoxes[step].style.background = 'var(--yellow)20';
+                        loopBoxes[step].style.boxShadow = '0 0 8px var(--yellow)60';
+                        loopSum += arr[step];
+                        loopOps++;
+                        cmpLoopInfo.textContent = '더하는 중... 합 = ' + loopSum + ' (' + loopOps + '번째 덧셈)';
+                        step++;
+                        setTimeout(loopStep, 400);
+                    }
+
+                    // Prefix side: instant (after brief delay)
+                    setTimeout(function() {
+                        var psBoxes = cmpPsArr.querySelectorAll('.str-char-box');
+                        psBoxes[R].style.background = 'var(--green)20';
+                        psBoxes[R].style.boxShadow = '0 0 8px var(--green)60';
+                        psBoxes[L - 1].style.background = 'var(--red)15';
+                        psBoxes[L - 1].style.boxShadow = '0 0 8px var(--red)40';
+                        var result = prefix[R] - prefix[L - 1];
+                        cmpPsInfo.innerHTML = 'prefix[' + R + '] - prefix[' + (L - 1) + '] = ' + prefix[R] + ' - ' + prefix[L - 1] + ' = <strong style="color:var(--green);">' + result + '</strong> (뺄셈 <strong>1번</strong>!)';
+                        cmpMsg.textContent = '누적합은 뺄셈 1번이면 끝! 반복문은 ' + (R - L + 1) + '번 더해야 합니다.';
+                    }, 300);
+                    loopStep();
+                });
+
+                cmpReset.addEventListener('click', function() {
+                    cmpAnimating = false;
+                    cmpBtn.style.display = '';
+                    cmpReset.style.display = 'none';
+                    var arr = parseCmpArr(cmpArrInput.value);
+                    renderCmpArr(cmpLoopArr, arr, '');
+                    var prefix = [0]; for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                    renderCmpArr(cmpPsArr, prefix, 'p');
+                    cmpLoopInfo.textContent = '';
+                    cmpPsInfo.textContent = '';
+                    cmpMsg.textContent = 'L부터 R까지의 합을 반복문과 누적합 두 가지로 구합니다. 속도 차이를 눈으로 확인하세요!';
+                });
+            }
+        }
+
+        // ===== Demo 4: 2D 포함-배제 =====
+        {
+            var d2Btn = container.querySelector('#ps-demo-2d-btn');
+            var d2Reset = container.querySelector('#ps-demo-2d-reset');
+            var d2Grid = container.querySelector('#ps-demo-2d-grid');
+            var d2Steps = container.querySelector('#ps-demo-2d-steps');
+            var d2Msg = container.querySelector('#ps-demo-2d-msg');
+            var d2Animating = false;
+            var grid2d = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]];
+            // Query: (2,2)~(3,3) (1-indexed)
+            var qr1 = 2, qc1 = 2, qr2 = 3, qc2 = 3;
+
+            function renderGrid(highlights) {
+                d2Grid.innerHTML = '';
+                for (var r = 0; r < 4; r++) {
+                    for (var c = 0; c < 4; c++) {
+                        var cell = document.createElement('div');
+                        cell.style.cssText = 'width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;font-size:0.85rem;transition:all 0.3s ease;';
+                        var hl = highlights ? highlights[r + ',' + c] : null;
+                        if (hl) {
+                            cell.style.background = hl.bg;
+                            cell.style.color = hl.color || 'var(--text)';
+                            if (hl.shadow) cell.style.boxShadow = hl.shadow;
+                        } else {
+                            cell.style.background = 'var(--bg2)';
+                            cell.style.color = 'var(--text)';
+                        }
+                        cell.textContent = grid2d[r][c];
+                        d2Grid.appendChild(cell);
+                    }
+                }
+            }
+
+            if (d2Btn) {
+                renderGrid(null);
+                d2Steps.innerHTML = '<span style="color:var(--text3);">버튼을 눌러 포함-배제 과정을 확인하세요</span>';
+
+                // Build prefix2d
+                var p2d = [];
+                for (var r = 0; r <= 4; r++) { p2d[r] = []; for (var c = 0; c <= 4; c++) p2d[r][c] = 0; }
+                for (var r = 1; r <= 4; r++) for (var c = 1; c <= 4; c++) p2d[r][c] = grid2d[r-1][c-1] + p2d[r-1][c] + p2d[r][c-1] - p2d[r-1][c-1];
+                var expected = p2d[qr2][qc2] - p2d[qr1-1][qc2] - p2d[qr2][qc1-1] + p2d[qr1-1][qc1-1];
+
+                d2Btn.addEventListener('click', function() {
+                    if (d2Animating) return;
+                    d2Animating = true;
+                    d2Btn.style.display = 'none';
+                    d2Reset.style.display = '';
+
+                    var stepsData = [
+                        { desc: '<strong>목표:</strong> (2,2)~(3,3) 영역의 합을 구합니다', highlights: function() { var h = {}; for (var r = qr1-1; r < qr2; r++) for (var c = qc1-1; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20', shadow: '0 0 6px var(--accent)40' }; return h; } },
+                        { desc: '<strong>1단계 전체:</strong> prefix[' + qr2 + '][' + qc2 + '] = <strong style="color:var(--accent);">' + p2d[qr2][qc2] + '</strong>', highlights: function() { var h = {}; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20' }; return h; } },
+                        { desc: '<strong>2단계 위 빼기:</strong> - prefix[' + (qr1-1) + '][' + qc2 + '] = <strong style="color:var(--red);">-' + p2d[qr1-1][qc2] + '</strong>', highlights: function() { var h = {}; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20' }; for (var r = 0; r < qr1-1; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--red)20', color: 'var(--red)' }; return h; } },
+                        { desc: '<strong>3단계 왼쪽 빼기:</strong> - prefix[' + qr2 + '][' + (qc1-1) + '] = <strong style="color:var(--red);">-' + p2d[qr2][qc1-1] + '</strong>', highlights: function() { var h = {}; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20' }; for (var r = 0; r < qr1-1; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--red)20', color: 'var(--red)' }; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc1-1; c++) h[r+','+c] = { bg: 'var(--red)20', color: 'var(--red)' }; return h; } },
+                        { desc: '<strong>4단계 겹침 더하기:</strong> + prefix[' + (qr1-1) + '][' + (qc1-1) + '] = <strong style="color:var(--yellow);">+' + p2d[qr1-1][qc1-1] + '</strong> (두 번 빠진 곳)', highlights: function() { var h = {}; for (var r = qr1-1; r < qr2; r++) for (var c = qc1-1; c < qc2; c++) h[r+','+c] = { bg: 'var(--green)20', shadow: '0 0 6px var(--green)40' }; for (var r = 0; r < qr1-1; r++) for (var c = 0; c < qc1-1; c++) h[r+','+c] = { bg: 'var(--yellow)25', color: 'var(--yellow)' }; return h; } },
+                        { desc: '<strong>결과:</strong> ' + p2d[qr2][qc2] + ' - ' + p2d[qr1-1][qc2] + ' - ' + p2d[qr2][qc1-1] + ' + ' + p2d[qr1-1][qc1-1] + ' = <strong style="color:var(--green);">' + expected + '</strong>', highlights: function() { var h = {}; for (var r = qr1-1; r < qr2; r++) for (var c = qc1-1; c < qc2; c++) h[r+','+c] = { bg: 'var(--green)25', shadow: '0 0 8px var(--green)60', color: 'var(--green)' }; return h; } }
+                    ];
+                    var si = 0;
+                    function nextD2Step() {
+                        if (si >= stepsData.length) { d2Animating = false; return; }
+                        var s = stepsData[si];
+                        renderGrid(s.highlights());
+                        d2Steps.innerHTML = '<div style="font-size:0.9rem;line-height:1.7;">' + s.desc + '</div>';
+                        si++;
+                        setTimeout(nextD2Step, 1500);
+                    }
+                    nextD2Step();
+                });
+
+                d2Reset.addEventListener('click', function() {
+                    d2Animating = false;
+                    d2Btn.style.display = '';
+                    d2Reset.style.display = 'none';
+                    renderGrid(null);
+                    d2Steps.innerHTML = '<span style="color:var(--text3);">버튼을 눌러 포함-배제 과정을 확인하세요</span>';
+                    d2Msg.textContent = '4x4 격자에서 (2,2)~(3,3) 영역의 합을 포함-배제 원리로 구하는 과정을 봅니다.';
+                });
+            }
+        }
+
+        // ===== Demo 5: 유형 맞추기 퀴즈 =====
+        {
+            var quizEl = container.querySelector('#ps-demo-quiz');
+            var quizScore = container.querySelector('#ps-demo-quiz-score');
+            if (quizEl) {
+                var quizData = [
+                    { q: '"배열에서 i번째부터 j번째까지 합을 Q번 구하라"', a: '1D 누적합', choices: ['1D 누적합', '2D 누적합', '차분 배열', '슬라이딩 윈도우'] },
+                    { q: '"길이 K인 연속 부분 배열의 합 중 최댓값을 구하라"', a: '1D 누적합', choices: ['투 포인터', '1D 누적합', '이분 탐색', '정렬'] },
+                    { q: '"격자에서 직사각형 영역의 합을 여러 번 구하라"', a: '2D 누적합', choices: ['1D 누적합', 'DFS', '2D 누적합', '그리디'] },
+                    { q: '"합이 K의 배수인 구간의 개수를 구하라"', a: '나머지 누적합', choices: ['완전 탐색', '나머지 누적합', '투 포인터', 'DP'] },
+                    { q: '"합이 정확히 K인 부분 배열 개수를 구하라"', a: '누적합 + 해시맵', choices: ['누적합 + 해시맵', '정렬', '이분 탐색', 'BFS'] }
+                ];
+                var correct = 0;
+                var answered = 0;
+
+                quizData.forEach(function(item, idx) {
+                    var qDiv = document.createElement('div');
+                    qDiv.style.cssText = 'padding:12px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);';
+                    var qText = document.createElement('div');
+                    qText.style.cssText = 'font-weight:600;margin-bottom:8px;font-size:0.9rem;';
+                    qText.textContent = (idx + 1) + '. ' + item.q;
+                    qDiv.appendChild(qText);
+                    var btnsDiv = document.createElement('div');
+                    btnsDiv.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+                    item.choices.forEach(function(ch) {
+                        var btn = document.createElement('button');
+                        btn.className = 'concept-demo-btn';
+                        btn.style.cssText = 'font-size:0.8rem;padding:4px 12px;';
+                        btn.textContent = ch;
+                        btn.addEventListener('click', function() {
+                            if (qDiv.dataset.done) return;
+                            qDiv.dataset.done = '1';
+                            answered++;
+                            var isCorrect = (ch === item.a);
+                            if (isCorrect) {
+                                correct++;
+                                btn.style.background = 'var(--green)';
+                                btn.style.color = '#fff';
+                                btn.style.boxShadow = '0 0 8px var(--green)60';
+                            } else {
+                                btn.style.background = 'var(--red)';
+                                btn.style.color = '#fff';
+                                btnsDiv.querySelectorAll('button').forEach(function(b) {
+                                    if (b.textContent === item.a) { b.style.background = 'var(--green)'; b.style.color = '#fff'; }
+                                });
+                            }
+                            if (answered === quizData.length) {
+                                quizScore.innerHTML = '<strong>' + correct + '/' + quizData.length + '</strong> 정답! ' + (correct === quizData.length ? '완벽합니다!' : '틀린 문제를 다시 확인해보세요.');
+                                quizScore.style.color = correct === quizData.length ? 'var(--green)' : 'var(--text)';
+                            } else {
+                                quizScore.textContent = correct + '/' + answered + ' 정답 (' + (quizData.length - answered) + '문제 남음)';
+                            }
+                        });
+                        btnsDiv.appendChild(btn);
+                    });
+                    qDiv.appendChild(btnsDiv);
+                    quizEl.appendChild(qDiv);
+                });
+            }
+        }
     },
 
     // ===== 시각화 (concept suffix) =====
@@ -482,16 +967,16 @@ int query(int r1, int c1, int r2, int c2) {\n\
         prefEl.innerHTML = '<span style="width:60px;font-weight:600;line-height:40px;">prefix:</span>' + prefix.map(function(v, idx) { return '<div class="ps-cell" style="width:40px;text-align:center;padding:6px 2px;border-radius:6px;background:var(--bg2);">?</div>'; }).join('');
         var steps = [];
         var prefCells = function() { return prefEl.querySelectorAll('.ps-cell'); };
-        steps.push({ description: 'prefix[0] = 0 (시작값)', action: function() { prefCells()[0].textContent = '0'; prefCells()[0].style.background = 'var(--accent)15'; infoEl.innerHTML = 'prefix[0] = 0'; }, undo: function() { prefCells()[0].textContent = '?'; prefCells()[0].style.background = 'var(--bg2)'; infoEl.innerHTML = ''; } });
+        steps.push({ description: 'prefix[0] = 0 — "아무 원소도 안 더한 상태"의 합. 이 값이 있어야 prefix[i] - prefix[0]으로 첫 원소부터의 구간 합을 구할 수 있습니다.', action: function() { prefCells()[0].textContent = '0'; prefCells()[0].style.background = 'var(--accent)15'; infoEl.innerHTML = 'prefix[0] = 0'; }, undo: function() { prefCells()[0].textContent = '?'; prefCells()[0].style.background = 'var(--bg2)'; infoEl.innerHTML = ''; } });
         for (i = 0; i < arr.length; i++) {
             (function(idx) {
-                steps.push({ description: 'prefix[' + (idx+1) + '] = prefix[' + idx + '] + arr[' + (idx+1) + '] = ' + prefix[idx] + ' + ' + arr[idx] + ' = ' + prefix[idx+1],
+                steps.push({ description: 'prefix[' + (idx+1) + '] = 이전 누적합(' + prefix[idx] + ') + 현재 원소(' + arr[idx] + ') = ' + prefix[idx+1] + ' — arr[1]~arr[' + (idx+1) + ']의 합입니다.',
                     action: function() { prefCells()[idx+1].textContent = prefix[idx+1]; prefCells()[idx+1].style.background = 'var(--green)20'; infoEl.innerHTML = 'prefix[' + (idx+1) + '] = ' + prefix[idx] + ' + ' + arr[idx] + ' = <strong>' + prefix[idx+1] + '</strong>'; },
                     undo: function() { prefCells()[idx+1].textContent = '?'; prefCells()[idx+1].style.background = 'var(--bg2)'; infoEl.innerHTML = idx > 0 ? 'prefix[' + idx + '] = ' + prefix[idx] : 'prefix[0] = 0'; }
                 });
             })(i);
         }
-        steps.push({ description: '누적합 완성! 구간 합 예시: arr[2]~arr[5] = prefix[5] - prefix[1] = ' + prefix[5] + ' - ' + prefix[1] + ' = ' + (prefix[5]-prefix[1]),
+        steps.push({ description: '누적합 완성! 구간 합은 <strong>뺄셈 한 번</strong>으로 O(1). 예: arr[2]~arr[5] = prefix[5] - prefix[1] = ' + prefix[5] + ' - ' + prefix[1] + ' = ' + (prefix[5]-prefix[1]) + ' (전체 합에서 앞부분 합을 빼는 원리)',
             action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">arr[2]~arr[5] = prefix[5] - prefix[1] = ' + prefix[5] + ' - ' + prefix[1] + ' = ' + (prefix[5]-prefix[1]) + '</strong>'; },
             undo: function() { infoEl.innerHTML = 'prefix[' + arr.length + '] = ' + prefix[arr.length]; }
         });
@@ -511,14 +996,14 @@ int query(int r1, int c1, int r2, int c2) {\n\
         var r, c;
         for (r = 1; r <= 3; r++) for (c = 1; c <= 3; c++) prefix[r][c] = grid[r-1][c-1] + prefix[r-1][c] + prefix[r][c-1] - prefix[r-1][c-1];
         var steps = [];
-        steps.push({ description: '3x3 격자의 2차원 누적합을 구합니다.', action: function() { infoEl.innerHTML = '격자: [[1,2,3],[4,5,6],[7,8,9]]'; }, undo: function() { infoEl.innerHTML = ''; } });
-        steps.push({ description: '0번 행/열 = 0으로 초기화', action: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; }, undo: function() { infoEl.innerHTML = '격자: [[1,2,3],[4,5,6],[7,8,9]]'; } });
-        steps.push({ description: 'prefix[1][1] = 1+0+0-0 = 1', action: function() { infoEl.innerHTML = 'prefix[1][1] = grid[1][1] + prefix[0][1] + prefix[1][0] - prefix[0][0] = <strong>1</strong>'; }, undo: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; } });
-        steps.push({ description: '영역 (1,1)~(2,2) 합 = prefix[2][2] - prefix[0][2] - prefix[2][0] + prefix[0][0] = ' + prefix[2][2] + ' - 0 - 0 + 0 = ' + prefix[2][2],
+        steps.push({ description: '3x3 격자에서 2차원 누적합을 구합니다. 1차원에서 "앞부분을 빼는" 원리를 2차원으로 확장한 것입니다.', action: function() { infoEl.innerHTML = '격자: [[1,2,3],[4,5,6],[7,8,9]]'; }, undo: function() { infoEl.innerHTML = ''; } });
+        steps.push({ description: '0번 행/열 = 0으로 초기화 — 1차원의 prefix[0]=0과 같은 역할. 경계 조건을 깔끔하게 처리합니다.', action: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; }, undo: function() { infoEl.innerHTML = '격자: [[1,2,3],[4,5,6],[7,8,9]]'; } });
+        steps.push({ description: '<strong>포함-배제</strong>: prefix[1][1] = grid값(1) + 위(0) + 왼쪽(0) - 대각(0) = 1. 위+왼쪽을 더하면 대각 영역이 <em>두 번</em> 세어지므로 한 번 빼줍니다.', action: function() { infoEl.innerHTML = 'prefix[1][1] = grid[1][1] + prefix[0][1] + prefix[1][0] - prefix[0][0] = <strong>1</strong>'; }, undo: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; } });
+        steps.push({ description: '영역 합도 <strong>포함-배제</strong>: 전체(prefix[2][2])에서 위를 빼고 왼쪽을 빼면 좌상단이 두 번 빠지므로 다시 더합니다. = ' + prefix[2][2],
             action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">(1,1)~(2,2) 합 = ' + prefix[2][2] + ' (= 1+2+4+5 = 12)</strong>'; },
             undo: function() { infoEl.innerHTML = 'prefix[1][1] = <strong>1</strong>'; }
         });
-        steps.push({ description: '영역 (2,2)~(3,3) 합 = prefix[3][3] - prefix[1][3] - prefix[3][1] + prefix[1][1] = ' + prefix[3][3] + ' - ' + prefix[1][3] + ' - ' + prefix[3][1] + ' + ' + prefix[1][1] + ' = ' + (prefix[3][3]-prefix[1][3]-prefix[3][1]+prefix[1][1]),
+        steps.push({ description: '(2,2)~(3,3): prefix[3][3](' + prefix[3][3] + ')에서 위(' + prefix[1][3] + ')와 왼쪽(' + prefix[3][1] + ')을 빼고, 두 번 빠진 좌상단(' + prefix[1][1] + ')을 더합니다 = ' + (prefix[3][3]-prefix[1][3]-prefix[3][1]+prefix[1][1]),
             action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">(2,2)~(3,3) 합 = ' + (prefix[3][3]-prefix[1][3]-prefix[3][1]+prefix[1][1]) + ' (= 5+6+8+9 = 28)</strong>'; },
             undo: function() { infoEl.innerHTML = '<strong style="color:var(--green)">(1,1)~(2,2) 합 = ' + prefix[2][2] + '</strong>'; }
         });
@@ -618,18 +1103,18 @@ int query(int r1, int c1, int r2, int c2) {\n\
             renderCells(prefEl, 'prefix:', prefix);
             infoEl.innerHTML = '<span style="color:var(--text2)">누적합으로 구간 합을 O(1)에 구합니다.</span>';
             var steps = [];
-            steps.push({ description: '누적합 배열: prefix = [' + prefix.join(', ') + ']', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = '<span style="color:var(--text2)">누적합으로 구간 합을 O(1)에 구합니다.</span>'; } });
+            steps.push({ description: '누적합 배열 완성: prefix[i] = arr[1]~arr[i]의 합. 이 배열만 있으면 어떤 구간이든 <em>뺄셈 한 번</em>으로 합을 구할 수 있습니다.', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = '<span style="color:var(--text2)">누적합으로 구간 합을 O(1)에 구합니다.</span>'; } });
             queries.forEach(function(q) {
                 var L = q[0], R = q[1];
                 if (L < 1 || R > arr.length || L > R) return;
                 var ans = prefix[R] - prefix[L-1];
-                steps.push({ description: 'arr[' + L + ']~arr[' + R + '] = prefix[' + R + '] - prefix[' + (L-1) + '] = ' + prefix[R] + ' - ' + prefix[L-1] + ' = ' + ans,
+                steps.push({ description: 'arr[' + L + ']~arr[' + R + ']: "1~' + R + '까지의 합"에서 "1~' + (L-1) + '까지의 합"을 빼면 구간 합 = ' + prefix[R] + ' - ' + prefix[L-1] + ' = ' + ans,
                     action: function() { infoEl.innerHTML = 'arr[' + L + ']~arr[' + R + '] = prefix[' + R + '] - prefix[' + (L-1) + '] = ' + prefix[R] + ' - ' + prefix[L-1] + ' = <strong>' + ans + '</strong>'; },
                     undo: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }
                 });
             });
             var results = queries.map(function(q) { return (q[0] >= 1 && q[1] <= arr.length && q[0] <= q[1]) ? (prefix[q[1]] - prefix[q[0]-1]) : '?'; });
-            steps.push({ description: '모든 쿼리를 O(1)로 처리 완료!', action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">✅ 결과: ' + results.join(', ') + '</strong>'; }, undo: function() { if (queries.length > 0) { var q = queries[queries.length-1]; infoEl.innerHTML = 'arr[' + q[0] + ']~arr[' + q[1] + '] = ' + (prefix[q[1]] - prefix[q[0]-1]); } else { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; } } });
+            steps.push({ description: '모든 쿼리를 O(1)로 처리 완료! 반복문으로 매번 더하면 O(N)인 것을 누적합 전처리 O(N) + 쿼리당 O(1)로 해결했습니다.', action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">✅ 결과: ' + results.join(', ') + '</strong>'; }, undo: function() { if (queries.length > 0) { var q = queries[queries.length-1]; infoEl.innerHTML = 'arr[' + q[0] + ']~arr[' + q[1] + '] = ' + (prefix[q[1]] - prefix[q[0]-1]); } else { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; } } });
             return steps;
         }
 
@@ -682,13 +1167,13 @@ int query(int r1, int c1, int r2, int c2) {\n\
             infoEl.innerHTML = '';
             var steps = [];
             var maxVal = -Infinity, maxPos = -1;
-            steps.push({ description: '누적합 배열을 만들고 길이 ' + K + '인 모든 구간의 합을 구합니다.', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: '누적합 배열을 먼저 만듭니다. 이렇게 하면 길이 ' + K + '인 각 구간 합을 O(1)에 구할 수 있어, 전체 O(N)으로 최대값을 찾을 수 있습니다.', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
             for (i = 1; i <= arr.length - K + 1; i++) {
                 (function(idx) {
                     var sum = prefix[idx + K - 1] - prefix[idx - 1];
                     if (sum > maxVal) { maxVal = sum; maxPos = idx; }
                     var curMax = maxVal, curPos = maxPos;
-                    steps.push({ description: 'i=' + idx + ': prefix[' + (idx+K-1) + '] - prefix[' + (idx-1) + '] = ' + prefix[idx+K-1] + ' - ' + prefix[idx-1] + ' = ' + sum,
+                    steps.push({ description: 'i=' + idx + ': arr[' + idx + ']~arr[' + (idx+K-1) + ']의 합 = prefix[' + (idx+K-1) + '] - prefix[' + (idx-1) + '] = ' + sum + ' (뺄셈 한 번으로 K개 원소의 합!)',
                         action: function() { infoEl.innerHTML = 'arr[' + idx + ']~arr[' + (idx+K-1) + '] 합 = <strong>' + sum + '</strong>' + (sum === curMax && idx === curPos ? ' ← 현재 최대!' : ''); },
                         undo: function() { infoEl.innerHTML = idx > 1 ? 'arr[' + (idx-1) + ']~arr[' + (idx+K-2) + '] 합 = ' + (prefix[idx+K-2] - prefix[idx-2]) : 'prefix = [' + prefix.join(', ') + ']'; }
                     });
@@ -750,14 +1235,14 @@ int query(int r1, int c1, int r2, int c2) {\n\
             var c;
             for (c = 0; c < 26; c++) { count[c] = [0]; for (var j = 0; j < S.length; j++) { count[c].push(count[c][j] + (S.charCodeAt(j) - 97 === c ? 1 : 0)); } }
             var steps = [];
-            steps.push({ description: '26개 알파벳 각각에 대해 누적합 배열을 만듭니다.', action: function() { infoEl.innerHTML = '각 알파벳별로 누적합 배열을 구축합니다.'; }, undo: function() { infoEl.innerHTML = ''; } });
-            steps.push({ description: '예: "a"의 누적합 = [' + count[0].join(',') + ']', action: function() { infoEl.innerHTML = 'count["a"] = [' + count[0].join(', ') + ']'; }, undo: function() { infoEl.innerHTML = '각 알파벳별로 누적합 배열을 구축합니다.'; } });
+            steps.push({ description: '각 알파벳별로 누적합 배열을 만듭니다. 이렇게 하면 "구간 [l,r]에 특정 문자가 몇 개?"를 O(1)에 답할 수 있습니다.', action: function() { infoEl.innerHTML = '각 알파벳별로 누적합 배열을 구축합니다.'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: '예: "a"의 누적합 = [' + count[0].join(',') + '] — count["a"][i]는 S[0]~S[i-1]에서 "a"의 개수입니다.', action: function() { infoEl.innerHTML = 'count["a"] = [' + count[0].join(', ') + ']'; }, undo: function() { infoEl.innerHTML = '각 알파벳별로 누적합 배열을 구축합니다.'; } });
             queries.forEach(function(q, qi) {
                 var ch = q[0], l = q[1], r = q[2];
                 var ci = ch.charCodeAt(0) - 97;
                 if (ci < 0 || ci >= 26 || l < 0 || r >= S.length || l > r) return;
                 var ans = count[ci][r+1] - count[ci][l];
-                steps.push({ description: '"' + ch + '" in [' + l + ',' + r + '] = count["' + ch + '"][' + (r+1) + '] - count["' + ch + '"][' + l + '] = ' + count[ci][r+1] + ' - ' + count[ci][l] + ' = ' + ans,
+                steps.push({ description: '"' + ch + '" in [' + l + ',' + r + ']: 0~' + r + '까지의 개수에서 0~' + (l-1) + '까지를 빼면 구간 내 개수 = ' + count[ci][r+1] + ' - ' + count[ci][l] + ' = ' + ans,
                     action: function() { infoEl.innerHTML = '"' + ch + '" in S[' + l + '..' + r + '] = <strong>' + ans + '</strong>'; },
                     undo: function() { if (qi === 0) infoEl.innerHTML = 'count["a"] = [' + count[0].join(', ') + ']'; else { var pq = queries[qi-1]; var pci = pq[0].charCodeAt(0)-97; infoEl.innerHTML = '"' + pq[0] + '" in S[' + pq[1] + '..' + pq[2] + '] = ' + (count[pci][pq[2]+1] - count[pci][pq[1]]); } }
                 });
@@ -816,15 +1301,15 @@ int query(int r1, int c1, int r2, int c2) {\n\
             cnt[0] = 1;
             for (i = 0; i < arr.length; i++) { prefMod.push(((prefMod[i] + arr[i]) % M + M) % M); cnt[prefMod[i+1]]++; }
             var steps = [];
-            steps.push({ description: 'prefix_mod 배열을 만듭니다 (각 누적합을 M=' + M + '으로 나눈 나머지).', action: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: '각 누적합을 M=' + M + '으로 나눈 나머지를 구합니다. 구간합 = prefix[j]-prefix[i]이므로, <em>두 나머지가 같으면</em> 그 구간합은 M의 배수입니다.', action: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
             var cntStr = [];
             for (r = 0; r < M; r++) cntStr.push('cnt[' + r + ']=' + cnt[r]);
-            steps.push({ description: '나머지별 개수: ' + cntStr.join(', '), action: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + '] (나머지 0~' + (M-1) + '의 개수)'; }, undo: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; } });
+            steps.push({ description: '같은 나머지끼리 묶습니다: ' + cntStr.join(', ') + '. 같은 그룹에서 2개를 고르면 구간합이 M의 배수!', action: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + '] (나머지 0~' + (M-1) + '의 개수)'; }, undo: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; } });
             var combParts = []; var ans = 0;
             for (r = 0; r < M; r++) { var c = cnt[r]*(cnt[r]-1)/2; combParts.push(cnt[r] + 'C2'); ans += c; }
             var combVals = [];
             for (r = 0; r < M; r++) combVals.push(cnt[r]*(cnt[r]-1)/2);
-            steps.push({ description: '나머지가 같은 쌍 = nC2: ' + combParts.join(' + '), action: function() { infoEl.innerHTML = combParts.join(' + ') + ' = ' + combVals.join(' + ') + ' = <strong>' + ans + '</strong>'; }, undo: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + ']'; } });
+            steps.push({ description: '각 그룹에서 2개를 고르는 조합(nC2)의 합 = ' + combParts.join(' + ') + '. 모든 쌍이 M의 배수 구간을 만듭니다.', action: function() { infoEl.innerHTML = combParts.join(' + ') + ' = ' + combVals.join(' + ') + ' = <strong>' + ans + '</strong>'; }, undo: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + ']'; } });
             steps.push({ description: '답: ' + ans, action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">✅ 합이 ' + M + '의 배수인 구간 = ' + ans + '개</strong>'; }, undo: function() { infoEl.innerHTML = '답 = ' + ans; } });
             return steps;
         }
@@ -878,13 +1363,13 @@ int query(int r1, int c1, int r2, int c2) {\n\
             infoEl.innerHTML = '';
             var gridStr = grid.map(function(row) { return '[' + row.join(',') + ']'; }).join(',');
             var steps = [];
-            steps.push({ description: N + 'x' + M2 + ' 격자에서 2차원 누적합을 구축합니다.', action: function() { infoEl.innerHTML = '격자: [' + gridStr + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
-            steps.push({ description: '2차원 누적합 배열 완성', action: function() { infoEl.innerHTML = '포함-배제 공식으로 각 칸의 누적합을 구했습니다.'; }, undo: function() { infoEl.innerHTML = '격자: [' + gridStr + ']'; } });
+            steps.push({ description: N + 'x' + M2 + ' 격자에서 2차원 누적합을 구축합니다. prefix[i][j] = (1,1)~(i,j) 직사각형 영역의 합입니다.', action: function() { infoEl.innerHTML = '격자: [' + gridStr + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: '2차원 누적합 완성! <strong>포함-배제</strong>: 위+왼쪽을 더하면 좌상단이 두 번 세어지므로 한 번 빼줍니다.', action: function() { infoEl.innerHTML = '포함-배제 공식으로 각 칸의 누적합을 구했습니다.'; }, undo: function() { infoEl.innerHTML = '격자: [' + gridStr + ']'; } });
             queries.forEach(function(q, qi) {
                 var x1 = q[0], y1 = q[1], x2 = q[2], y2 = q[3];
                 if (x1 < 1 || y1 < 1 || x2 > N || y2 > M2 || x1 > x2 || y1 > y2) return;
                 var ans = prefix[x2][y2] - prefix[x1-1][y2] - prefix[x2][y1-1] + prefix[x1-1][y1-1];
-                steps.push({ description: '(' + x1 + ',' + y1 + ')~(' + x2 + ',' + y2 + '): prefix[' + x2 + '][' + y2 + '] - prefix[' + (x1-1) + '][' + y2 + '] - prefix[' + x2 + '][' + (y1-1) + '] + prefix[' + (x1-1) + '][' + (y1-1) + '] = ' + ans,
+                steps.push({ description: '(' + x1 + ',' + y1 + ')~(' + x2 + ',' + y2 + '): <strong>포함-배제</strong> — 전체에서 위·왼쪽 영역을 빼고, 두 번 빠진 좌상단을 더합니다 = ' + ans,
                     action: function() { infoEl.innerHTML = '(' + x1 + ',' + y1 + ')~(' + x2 + ',' + y2 + ') = ' + prefix[x2][y2] + ' - ' + prefix[x1-1][y2] + ' - ' + prefix[x2][y1-1] + ' + ' + prefix[x1-1][y1-1] + ' = <strong>' + ans + '</strong>'; },
                     undo: function() { if (qi === 0) infoEl.innerHTML = '포함-배제 공식으로 각 칸의 누적합을 구했습니다.'; else { var pq = queries[qi-1]; var pa = prefix[pq[2]][pq[3]] - prefix[pq[0]-1][pq[3]] - prefix[pq[2]][pq[1]-1] + prefix[pq[0]-1][pq[1]-1]; infoEl.innerHTML = '(' + pq[0] + ',' + pq[1] + ')~(' + pq[2] + ',' + pq[3] + ') = ' + pa; } }
                 });
@@ -946,8 +1431,8 @@ int query(int r1, int c1, int r2, int c2) {\n\
             for (i = 1; i <= N; i++) for (j = 1; j <= M2; j++) { var exp = (i+j) % 2 === 0 ? 'B' : 'W'; diff[i][j] = board[i-1][j-1] !== exp ? 1 : 0; }
             for (i = 1; i <= N; i++) for (j = 1; j <= M2; j++) prefix[i][j] = diff[i][j] + prefix[i-1][j] + prefix[i][j-1] - prefix[i-1][j-1];
             var steps = [];
-            steps.push({ description: '(i+j) 짝수=B 패턴 기준으로 "다른 칸" 배열(diff)을 만듭니다.', action: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
-            steps.push({ description: 'diff 배열의 2차원 누적합을 구합니다.', action: function() { infoEl.innerHTML = '2차원 누적합 배열 완성'; }, undo: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; } });
+            steps.push({ description: '체스판 패턴1((i+j) 짝수=B)과 다른 칸을 1로 표시합니다. 이 diff 배열의 영역 합 = 패턴1로 만들 때 칠해야 할 칸 수입니다.', action: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: 'diff의 2차원 누적합을 구합니다. 이 전처리로 어떤 K×K 영역이든 "칠해야 할 칸 수"를 O(1)에 구할 수 있습니다.', action: function() { infoEl.innerHTML = '2차원 누적합 배열 완성'; }, undo: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; } });
             // 모든 K×K 영역 스캔
             var bestCost = N * M2;
             var results = [];
@@ -961,12 +1446,12 @@ int query(int r1, int c1, int r2, int c2) {\n\
                 }
             }
             results.forEach(function(r, ri) {
-                steps.push({ description: '영역 (' + r.i + ',' + r.j + ')~(' + (r.i+K-1) + ',' + (r.j+K-1) + '): 패턴1=' + r.cost1 + ', 패턴2=' + r.cost2 + ', min=' + r.best,
+                steps.push({ description: '영역 (' + r.i + ',' + r.j + ')~(' + (r.i+K-1) + ',' + (r.j+K-1) + '): 패턴1 기준 ' + r.cost1 + '칸, 반전 패턴2는 K²-' + r.cost1 + '=' + r.cost2 + '칸. 둘 중 적은 쪽 = ' + r.best,
                     action: function() { infoEl.innerHTML = '(' + r.i + ',' + r.j + ')~(' + (r.i+K-1) + ',' + (r.j+K-1) + '): 패턴1=' + r.cost1 + ', 패턴2=' + r.cost2 + ' → <strong>' + r.best + '</strong>'; },
                     undo: function() { if (ri === 0) infoEl.innerHTML = '2차원 누적합 배열 완성'; else { var p = results[ri-1]; infoEl.innerHTML = '(' + p.i + ',' + p.j + ')~(' + (p.i+K-1) + ',' + (p.j+K-1) + '): min=' + p.best; } }
                 });
             });
-            steps.push({ description: '최소 비용 = ' + bestCost, action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">✅ 최소 다시 칠할 칸 = ' + bestCost + '</strong>'; }, undo: function() { if (results.length > 0) { var last = results[results.length-1]; infoEl.innerHTML = '(' + last.i + ',' + last.j + '): min=' + last.best; } else { infoEl.innerHTML = '2차원 누적합 배열 완성'; } } });
+            steps.push({ description: '모든 K×K 영역을 O(1)씩 검사 완료. 최소 비용 = ' + bestCost + ' (2D 누적합 덕분에 전체 O(N²))', action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">✅ 최소 다시 칠할 칸 = ' + bestCost + '</strong>'; }, undo: function() { if (results.length > 0) { var last = results[results.length-1]; infoEl.innerHTML = '(' + last.i + ',' + last.j + '): min=' + last.best; } else { infoEl.innerHTML = '2차원 누적합 배열 완성'; } } });
             return steps;
         }
 

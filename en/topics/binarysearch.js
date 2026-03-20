@@ -59,7 +59,7 @@ const binarySearchTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -210,6 +210,24 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         <p>If target > mid → <strong>lo = mid+1</strong><br>If target < mid → <strong>hi = mid-1</strong></p>
                     </div>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Search Failure Experience — What happens when the value isn't there?</div>
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">
+                        What happens when you search for a value that <strong>doesn't exist</strong> in the array? As lo and hi narrow down, eventually <strong>lo &gt; hi</strong>, and we determine "not found!"
+                        Try changing the target to see the failure process yourself.
+                    </p>
+                    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+                        <label style="font-weight:600;font-size:0.9rem;">Sorted array: <span style="color:var(--accent);font-weight:700;">[1, 3, 5, 7, 9, 11, 13]</span></label>
+                        <label style="font-weight:600;font-size:0.9rem;">target:
+                            <input type="number" id="bs-demo-fail-target" value="6" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;">
+                        </label>
+                        <button class="concept-demo-btn" id="bs-demo-fail-run">🔍 Start Search</button>
+                    </div>
+                    <div id="bs-demo-fail-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                    <div id="bs-demo-fail-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
+                    <div id="bs-demo-fail-log" style="padding:12px;background:var(--bg);border-radius:8px;font-size:0.88rem;line-height:1.7;min-height:40px;max-height:220px;overflow-y:auto;"></div>
+                    <div class="concept-demo-msg" id="bs-demo-fail-msg">👆 Enter a value not in the array (e.g., 6, 4, 0) as the target and search!</div>
+                </div>
             </div>
 
             <div class="concept-section">
@@ -239,6 +257,35 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         2<sup>20</sup> = 1,048,576 → <strong>20 steps covers 1 million</strong> elements<br>
                         2<sup>30</sup> = 1,073,741,824 → <strong>30 steps covers 1 billion</strong> elements!
                     </div>
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Size Comparison — Change N and feel the difference</div>
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">
+                        As data grows, the gap between linear search and binary search <strong>explodes</strong>.
+                        Move the slider to see how the number of comparisons changes as N increases.
+                    </p>
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+                        <label style="font-weight:600;font-size:0.9rem;">Data size N:</label>
+                        <input type="range" id="bs-demo-speed-slider" min="1" max="30" value="10" style="flex:1;min-width:150px;">
+                        <span id="bs-demo-speed-n" style="font-weight:700;color:var(--accent);font-size:1rem;min-width:100px;">1,024</span>
+                    </div>
+                    <div style="display:flex;gap:20px;align-items:flex-end;margin-bottom:12px;min-height:180px;" id="bs-demo-speed-chart">
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div id="bs-demo-speed-linear-count" style="font-weight:700;font-size:0.85rem;color:var(--red);"></div>
+                            <div style="width:100%;background:var(--bg2);border-radius:8px;position:relative;height:160px;overflow:hidden;">
+                                <div id="bs-demo-speed-linear-bar" style="position:absolute;bottom:0;width:100%;background:var(--red);border-radius:8px;transition:height 0.4s;"></div>
+                            </div>
+                            <div style="font-size:0.8rem;font-weight:600;color:var(--text2);">Linear Search<br>O(N)</div>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                            <div id="bs-demo-speed-binary-count" style="font-weight:700;font-size:0.85rem;color:var(--green);"></div>
+                            <div style="width:100%;background:var(--bg2);border-radius:8px;position:relative;height:160px;overflow:hidden;">
+                                <div id="bs-demo-speed-binary-bar" style="position:absolute;bottom:0;width:100%;background:var(--green);border-radius:8px;transition:height 0.4s;"></div>
+                            </div>
+                            <div style="font-size:0.8rem;font-weight:600;color:var(--text2);">Binary Search<br>O(log N)</div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="bs-demo-speed-msg">Move the slider to change N!</div>
                 </div>
                 <div class="concept-grid">
                     <span class="lang-py"><div class="concept-card">
@@ -276,6 +323,26 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         <p>The optimal value lies at the <strong>boundary</strong> between YES and NO.<br>We find this boundary quickly using binary search!</p>
                     </div>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Finding the boundary where conditions change</div>
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">
+                        Can you fit items into a backpack? As weight increases, at some point it becomes "impossible (NO)".<br>
+                        <strong>Finding the boundary where NO→YES or YES→NO changes</strong> using binary search is parametric search.
+                        Follow along step by step below to see how binary search finds the boundary.
+                    </p>
+                    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+                        <label style="font-weight:600;font-size:0.9rem;">Backpack capacity:
+                            <input type="number" id="bs-demo-param-capacity" value="15" min="1" max="50" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;"> kg
+                        </label>
+                        <span style="font-size:0.85rem;color:var(--text3);">Item weights: [2, 4, 5, 7, 8, 10, 12, 15, 18, 20] kg</span>
+                        <button class="concept-demo-btn" id="bs-demo-param-run">🔍 Find Boundary</button>
+                    </div>
+                    <div style="margin-bottom:6px;font-size:0.85rem;color:var(--text2);" id="bs-demo-param-question"></div>
+                    <div id="bs-demo-param-arr" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px;"></div>
+                    <div id="bs-demo-param-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
+                    <div id="bs-demo-param-log" style="padding:12px;background:var(--bg);border-radius:8px;font-size:0.88rem;line-height:1.7;min-height:40px;max-height:220px;overflow-y:auto;"></div>
+                    <div class="concept-demo-msg" id="bs-demo-param-msg">👆 Set the backpack capacity and click "Find Boundary"!</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -303,6 +370,253 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ── Demo 1: Search Failure Experience ──
+        (function() {
+            var FAIL_ARR = [1, 3, 5, 7, 9, 11, 13];
+            var failTargetInput = container.querySelector('#bs-demo-fail-target');
+            var failRunBtn = container.querySelector('#bs-demo-fail-run');
+            var failArrEl = container.querySelector('#bs-demo-fail-arr');
+            var failPointers = container.querySelector('#bs-demo-fail-pointers');
+            var failLog = container.querySelector('#bs-demo-fail-log');
+            var failMsg = container.querySelector('#bs-demo-fail-msg');
+            if (!failRunBtn) return;
+
+            function failCell(v, i, style) {
+                return '<div style="width:44px;text-align:center;padding:7px 3px;border-radius:8px;font-weight:600;font-size:0.88rem;transition:all 0.3s;' + style + '"><div>' + v + '</div><div style="font-size:0.65rem;color:var(--text3);">[' + i + ']</div></div>';
+            }
+
+            function renderFailArr(lo, hi, mid, dimAll) {
+                failArrEl.innerHTML = FAIL_ARR.map(function(v, i) {
+                    if (dimAll) return failCell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.7;');
+                    if (i === mid) return failCell(v, i, 'background:var(--yellow);color:#333;box-shadow:0 0 8px var(--yellow);');
+                    if (i >= lo && i <= hi) return failCell(v, i, 'background:var(--accent)15;border:2px solid var(--accent);');
+                    return failCell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.75;');
+                }).join('');
+            }
+
+            function runFailSearch() {
+                var target = parseInt(failTargetInput.value);
+                if (isNaN(target)) { failMsg.textContent = 'Please enter a number for target!'; return; }
+                var found = FAIL_ARR.indexOf(target) !== -1;
+                failLog.innerHTML = '';
+                failPointers.innerHTML = '';
+                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
+
+                var lo = 0, hi = FAIL_ARR.length - 1;
+                var logLines = [];
+                var stepsData = [];
+
+                var round = 0;
+                while (lo <= hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    round++;
+                    if (FAIL_ARR[mid] === target) {
+                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
+                        break;
+                    } else if (FAIL_ARR[mid] < target) {
+                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'right', round: round, newLo: mid + 1, newHi: hi });
+                        lo = mid + 1;
+                    } else {
+                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'left', round: round, newLo: lo, newHi: mid - 1 });
+                        hi = mid - 1;
+                    }
+                }
+                if (!found) {
+                    stepsData.push({ failed: true, round: round + 1 });
+                }
+
+                var stepIdx = 0;
+                function showNextStep() {
+                    if (stepIdx >= stepsData.length) return;
+                    var s = stepsData[stepIdx];
+                    if (s.failed) {
+                        failPointers.innerHTML = '<strong style="color:var(--red);">lo > hi \u2192 Search range is gone!</strong>';
+                        renderFailArr(0, 0, -1, true);
+                        logLines.push('<span style="color:var(--red);font-weight:700;">\u274c ' + target + ' is not in the array! \u2192 return -1</span>');
+                        failLog.innerHTML = logLines.join('<br>');
+                        failMsg.innerHTML = '<strong style="color:var(--red);">When lo > hi, we determine "not found".</strong> This is why binary search returns -1.';
+                    } else if (s.found) {
+                        renderFailArr(s.lo, s.hi, s.mid, false);
+                        failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                        logLines.push('<span style="color:var(--green);font-weight:700;">Round ' + s.round + ': arr[' + s.mid + ']=' + FAIL_ARR[s.mid] + ' == ' + target + ' \u2705 Found!</span>');
+                        failLog.innerHTML = logLines.join('<br>');
+                        failMsg.innerHTML = '<strong style="color:var(--green);">Found it!</strong> The value exists in the array. Try entering a value that\'s not in the array!';
+                    } else {
+                        renderFailArr(s.lo, s.hi, s.mid, false);
+                        failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                        var cmp = FAIL_ARR[s.mid] < target ? (FAIL_ARR[s.mid] + ' < ' + target + ' \u2192 go right!') : (FAIL_ARR[s.mid] + ' > ' + target + ' \u2192 go left!');
+                        logLines.push('Round ' + s.round + ': arr[' + s.mid + ']=' + cmp + ' (lo=' + s.newLo + ', hi=' + s.newHi + ')');
+                        failLog.innerHTML = logLines.join('<br>');
+                        if (s.newLo > s.newHi) {
+                            failMsg.innerHTML = 'lo=' + s.newLo + ' > hi=' + s.newHi + ' \u2192 <strong>Range is about to disappear!</strong>';
+                        } else {
+                            failMsg.textContent = 'Range narrowed to [' + s.newLo + '~' + s.newHi + ']. Continuing...';
+                        }
+                    }
+                    failLog.scrollTop = failLog.scrollHeight;
+                    stepIdx++;
+                    if (stepIdx < stepsData.length) {
+                        setTimeout(showNextStep, 700);
+                    }
+                }
+                showNextStep();
+            }
+
+            renderFailArr(0, FAIL_ARR.length - 1, -1, false);
+            failRunBtn.addEventListener('click', runFailSearch);
+            failTargetInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') runFailSearch(); });
+        })();
+
+        // ── Demo 2: Speed Comparison (slider) ──
+        (function() {
+            var slider = container.querySelector('#bs-demo-speed-slider');
+            var nLabel = container.querySelector('#bs-demo-speed-n');
+            var linearBar = container.querySelector('#bs-demo-speed-linear-bar');
+            var binaryBar = container.querySelector('#bs-demo-speed-binary-bar');
+            var linearCount = container.querySelector('#bs-demo-speed-linear-count');
+            var binaryCount = container.querySelector('#bs-demo-speed-binary-count');
+            var speedMsg = container.querySelector('#bs-demo-speed-msg');
+            if (!slider) return;
+
+            function formatNum(n) {
+                if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+                if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+                if (n >= 1e3) return n.toLocaleString();
+                return '' + n;
+            }
+
+            function updateSpeedChart() {
+                var exp = parseInt(slider.value);
+                var N = Math.pow(2, exp);
+                var logN = exp;
+                nLabel.textContent = formatNum(N) + ' (2^' + exp + ')';
+
+                linearBar.style.height = '100%';
+                var binaryPct = Math.max((logN / N) * 100, 0.5);
+                binaryBar.style.height = binaryPct + '%';
+
+                linearCount.textContent = formatNum(N) + ' times';
+                binaryCount.textContent = logN + ' times';
+
+                var ratio = Math.floor(N / logN);
+                if (exp <= 3) {
+                    speedMsg.textContent = 'At N=' + N + ', the difference is small. Move the slider further right!';
+                } else if (exp <= 15) {
+                    speedMsg.innerHTML = 'Linear search: <strong>' + formatNum(N) + ' times</strong>, Binary search: <strong>' + logN + ' times</strong>. About <strong>' + formatNum(ratio) + 'x</strong> difference!';
+                } else {
+                    speedMsg.innerHTML = '<strong style="color:var(--red);">' + formatNum(N) + ' times</strong> vs <strong style="color:var(--green);">' + logN + ' times</strong> \u2014 a whopping <strong>' + formatNum(ratio) + 'x</strong> difference! This is the power of O(log N).';
+                }
+            }
+
+            slider.addEventListener('input', updateSpeedChart);
+            updateSpeedChart();
+        })();
+
+        // ── Demo 3: Parametric Search (boundary finding) ──
+        (function() {
+            var WEIGHTS = [2, 4, 5, 7, 8, 10, 12, 15, 18, 20];
+            var capacityInput = container.querySelector('#bs-demo-param-capacity');
+            var paramRunBtn = container.querySelector('#bs-demo-param-run');
+            var paramArrEl = container.querySelector('#bs-demo-param-arr');
+            var paramPointers = container.querySelector('#bs-demo-param-pointers');
+            var paramLog = container.querySelector('#bs-demo-param-log');
+            var paramMsg = container.querySelector('#bs-demo-param-msg');
+            var paramQuestion = container.querySelector('#bs-demo-param-question');
+            if (!paramRunBtn) return;
+
+            function paramCell(v, i, canCarry, style) {
+                var label = canCarry ? '<span style="color:var(--green);font-weight:700;">YES</span>' : '<span style="color:var(--red);font-weight:700;">NO</span>';
+                return '<div style="width:52px;text-align:center;padding:6px 3px;border-radius:8px;font-size:0.82rem;transition:all 0.3s;' + style + '"><div style="font-weight:600;">' + v + 'kg</div><div>' + label + '</div><div style="font-size:0.6rem;color:var(--text3);">[' + i + ']</div></div>';
+            }
+
+            function renderParamArr(capacity, lo, hi, mid, boundaryIdx) {
+                paramArrEl.innerHTML = WEIGHTS.map(function(w, i) {
+                    var canCarry = w <= capacity;
+                    if (boundaryIdx !== -1 && i === boundaryIdx) return paramCell(w, i, canCarry, 'background:var(--green);color:white;box-shadow:0 0 10px var(--green);');
+                    if (i === mid) return paramCell(w, i, canCarry, 'background:var(--yellow);color:#333;box-shadow:0 0 8px var(--yellow);');
+                    if (lo !== -1 && i >= lo && i <= hi) return paramCell(w, i, canCarry, 'background:var(--accent)15;border:2px solid var(--accent);');
+                    return paramCell(w, i, canCarry, 'background:var(--bg2);');
+                }).join('');
+            }
+
+            function showInitialArr(capacity) {
+                paramArrEl.innerHTML = WEIGHTS.map(function(w, i) {
+                    var canCarry = w <= capacity;
+                    var bg = canCarry ? 'background:var(--green)18;border:1.5px solid var(--green);' : 'background:var(--red)18;border:1.5px solid var(--red);';
+                    return paramCell(w, i, canCarry, bg);
+                }).join('');
+            }
+
+            function runParamSearch() {
+                var capacity = parseInt(capacityInput.value);
+                if (isNaN(capacity) || capacity < 1) { paramMsg.textContent = 'Please enter a positive number for backpack capacity!'; return; }
+                paramQuestion.innerHTML = '<strong>"Can we fit item weighing X kg into the backpack (capacity ' + capacity + 'kg)?"</strong> \u2192 Find the <strong>heaviest X</strong> where the answer is YES.';
+                paramLog.innerHTML = '';
+                paramPointers.innerHTML = '';
+                showInitialArr(capacity);
+
+                var lo = 0, hi = WEIGHTS.length - 1;
+                var stepsData = [];
+                var answer = -1;
+                var round = 0;
+
+                while (lo <= hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    round++;
+                    if (WEIGHTS[mid] <= capacity) {
+                        answer = mid;
+                        stepsData.push({ lo: lo, hi: hi, mid: mid, canCarry: true, round: round, newLo: mid + 1, newHi: hi });
+                        lo = mid + 1;
+                    } else {
+                        stepsData.push({ lo: lo, hi: hi, mid: mid, canCarry: false, round: round, newLo: lo, newHi: mid - 1 });
+                        hi = mid - 1;
+                    }
+                }
+                stepsData.push({ done: true, answer: answer });
+
+                var stepIdx = 0;
+                var logLines = [];
+                function showNextParamStep() {
+                    if (stepIdx >= stepsData.length) return;
+                    var s = stepsData[stepIdx];
+                    if (s.done) {
+                        if (s.answer === -1) {
+                            renderParamArr(capacity, -1, -1, -1, -1);
+                            logLines.push('<span style="color:var(--red);font-weight:700;">No item can fit!</span>');
+                            paramMsg.innerHTML = '<strong style="color:var(--red);">Backpack capacity is too small to fit anything.</strong>';
+                        } else {
+                            renderParamArr(capacity, -1, -1, -1, s.answer);
+                            logLines.push('<span style="color:var(--green);font-weight:700;">Boundary found! Heaviest item that fits: ' + WEIGHTS[s.answer] + 'kg (index ' + s.answer + ')</span>');
+                            paramMsg.innerHTML = '<strong style="color:var(--green);">Found the YES\u2192NO boundary!</strong> ' + WEIGHTS[s.answer] + 'kg fits, ' + (s.answer + 1 < WEIGHTS.length ? WEIGHTS[s.answer + 1] + 'kg doesn\'t' : 'all items fit') + '. This is parametric search!';
+                        }
+                        paramPointers.innerHTML = '';
+                    } else {
+                        renderParamArr(capacity, s.lo, s.hi, s.mid, -1);
+                        paramPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                        if (s.canCarry) {
+                            logLines.push('Round ' + s.round + ': ' + WEIGHTS[s.mid] + 'kg <= ' + capacity + 'kg \u2192 <span style="color:var(--green);font-weight:600;">YES!</span> Search heavier side (lo=' + s.newLo + ')');
+                            paramMsg.textContent = WEIGHTS[s.mid] + 'kg fits! Can something heavier fit too?';
+                        } else {
+                            logLines.push('Round ' + s.round + ': ' + WEIGHTS[s.mid] + 'kg > ' + capacity + 'kg \u2192 <span style="color:var(--red);font-weight:600;">NO!</span> Search lighter side (hi=' + s.newHi + ')');
+                            paramMsg.textContent = WEIGHTS[s.mid] + 'kg doesn\'t fit! Moving to lighter items.';
+                        }
+                    }
+                    paramLog.innerHTML = logLines.join('<br>');
+                    paramLog.scrollTop = paramLog.scrollHeight;
+                    stepIdx++;
+                    if (stepIdx < stepsData.length) {
+                        setTimeout(showNextParamStep, 800);
+                    }
+                }
+                showNextParamStep();
+            }
+
+            showInitialArr(15);
+            paramQuestion.innerHTML = '<strong>"Can we fit item weighing X kg into the backpack (capacity 15kg)?"</strong> \u2192 Find the <strong>heaviest X</strong> where the answer is YES.';
+            paramRunBtn.addEventListener('click', runParamSearch);
+            capacityInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') runParamSearch(); });
+        })();
     },
 
     // ===== Visualization State =====
@@ -341,8 +655,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             var idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0);
             nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { counter.textContent = 'Before start'; desc.textContent = '\u25b6 Click Next to start'; }
-            else { counter.textContent = (idx + 1) + ' / ' + total; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = 'Before start'; desc.innerHTML = '▶ Click Next to start'; }
+            else { counter.textContent = (idx + 1) + ' / ' + total; desc.innerHTML = state.steps[idx].description; }
         }
         var actionDelay = 350;
         nextBtn.addEventListener('click', function() {
@@ -380,11 +694,9 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             '</div>' +
             self._createStepDesc(suffix) +
             '<div id="bs-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
-            '<div id="bs-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
-            '<div id="bs-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            '<div id="bs-arr' + suffix + '" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             self._createStepControls(suffix);
         var arrEl = container.querySelector('#bs-arr' + suffix);
-        var infoEl = container.querySelector('#bs-info' + suffix);
         var descEl = container.querySelector('#bs-desc' + suffix);
         function cell(v, i, cls) { return '<div style="width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;font-size:0.9rem;transition:all 0.3s;' + cls + '"><div>' + v + '</div><div style="font-size:0.7rem;color:var(--text3);">[' + i + ']</div></div>'; }
         function rebuild() {
@@ -399,11 +711,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                     if (foundIdx === i) return cell(v, i, 'background:var(--green);color:white;');
                     if (i === mid) return cell(v, i, 'background:var(--accent);color:white;');
                     if (i >= lo && i <= hi) return cell(v, i, 'background:var(--accent)15;border:2px solid var(--accent);');
-                    return cell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.5;');
+                    return cell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.75;');
                 }).join('');
             }
             renderArr(0, arr.length - 1, -1, -1);
-            infoEl.innerHTML = '<span style="color:var(--text2)">Searching for <strong>' + target + '</strong> in the array.</span>';
             var steps = [];
             var lo = 0, hi = arr.length - 1, round = 0, found = false;
             while (lo <= hi) {
@@ -411,26 +722,26 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 round++;
                 if (arr[mid] === target) {
                     (function(cLo, cHi, mid, round, a, t) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + a[mid] + ' == ' + t + ' → Found it! ✅',
-                            action: function() { renderArr(cLo, cHi, -1, mid); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">✅ Found! arr[' + mid + '] = ' + t + '</strong>'; },
-                            undo: function() { renderArr(cLo, cHi, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">Searching for <strong>' + t + '</strong> in the array.</span>'; }
+                        steps.push({ description: round + 'Round: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + a[mid] + ' == ' + t + ' → <strong style="color:var(--green);">Found it!</strong> ✅',
+                            action: function() { renderArr(cLo, cHi, -1, mid); },
+                            undo: function() { renderArr(cLo, cHi, -1, -1); }
                         });
                     })(cLo, cHi, mid, round, arr, target);
                     found = true;
                     break;
                 } else if (arr[mid] < target) {
                     (function(cLo, cHi, mid, newLo, round, a, t) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + a[mid] + ' &lt; ' + t + ' → Go right! (lo=' + newLo + ')',
-                            action: function() { renderArr(newLo, cHi, mid, -1); infoEl.innerHTML = 'arr[' + mid + ']=' + a[mid] + ' &lt; ' + t + ' → <strong>Discard left half!</strong>'; },
-                            undo: function() { renderArr(cLo, cHi, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">Searching for <strong>' + t + '</strong> in the array.</span>'; }
+                        steps.push({ description: round + 'Round: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + a[mid] + ' &lt; ' + t + ' → <strong>Discard left half!</strong> (lo=' + newLo + ')',
+                            action: function() { renderArr(newLo, cHi, mid, -1); },
+                            undo: function() { renderArr(cLo, cHi, -1, -1); }
                         });
                     })(cLo, cHi, mid, mid + 1, round, arr, target);
                     lo = mid + 1;
                 } else {
                     (function(cLo, cHi, mid, newHi, round, a, t) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + a[mid] + ' &gt; ' + t + ' → Go left! (hi=' + newHi + ')',
-                            action: function() { renderArr(cLo, newHi, mid, -1); infoEl.innerHTML = 'arr[' + mid + ']=' + a[mid] + ' &gt; ' + t + ' → <strong>Discard right half!</strong>'; },
-                            undo: function() { renderArr(cLo, cHi, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">Searching for <strong>' + t + '</strong> in the array.</span>'; }
+                        steps.push({ description: round + 'Round: lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → arr[' + mid + ']=' + a[mid] + ' &gt; ' + t + ' → <strong>Discard right half!</strong> (hi=' + newHi + ')',
+                            action: function() { renderArr(cLo, newHi, mid, -1); },
+                            undo: function() { renderArr(cLo, cHi, -1, -1); }
                         });
                     })(cLo, cHi, mid, mid - 1, round, arr, target);
                     hi = mid - 1;
@@ -438,9 +749,9 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             }
             if (!found) {
                 (function(t) {
-                    steps.push({ description: 'Search complete: lo &gt; hi → ' + t + ' is not in the array. ❌',
-                        action: function() { arrEl.innerHTML = arr.map(function(v, i) { return cell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.5;'); }).join(''); infoEl.innerHTML = '<strong style="color:var(--red);font-size:1.1rem;">❌ ' + t + ' is not in the array.</strong>'; },
-                        undo: function() { renderArr(0, arr.length - 1, -1, -1); infoEl.innerHTML = '<span style="color:var(--text2)">Searching for <strong>' + t + '</strong> in the array.</span>'; }
+                    steps.push({ description: 'Search complete: lo &gt; hi → <strong style="color:var(--red);">' + t + ' is not in the array.</strong> ❌',
+                        action: function() { arrEl.innerHTML = arr.map(function(v, i) { return cell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.75;'); }).join(''); },
+                        undo: function() { renderArr(0, arr.length - 1, -1, -1); }
                     });
                 })(target);
             }
@@ -466,11 +777,9 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             '</div>' +
             self._createStepDesc(suffix) +
             '<div id="bd-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
-            '<div id="bd-arr' + suffix + '" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
-            '<div id="bd-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            '<div id="bd-arr' + suffix + '" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
             self._createStepControls(suffix);
         var arrEl = container.querySelector('#bd-arr' + suffix);
-        var infoEl = container.querySelector('#bd-info' + suffix);
         var descEl = container.querySelector('#bd-desc' + suffix);
         function rebuild() {
             var rawArr = container.querySelector('#bs-bound-arr').value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
@@ -488,7 +797,6 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }).join('');
             }
             renderArr(null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Count occurrences of ' + target + ' using bisect_left and bisect_right.</span>';
             // compute bisect_left
             var leftIdx = 0;
             { var blo = 0, bhi = arr.length; while (blo < bhi) { var bm = Math.floor((blo + bhi) / 2); if (arr[bm] < target) blo = bm + 1; else bhi = bm; } leftIdx = blo; }
@@ -497,17 +805,17 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             { var blo = 0, bhi = arr.length; while (blo < bhi) { var bm = Math.floor((blo + bhi) / 2); if (arr[bm] <= target) blo = bm + 1; else bhi = bm; } rightIdx = blo; }
             var count = rightIdx - leftIdx;
             var steps = [
-                { description: 'bisect_left(' + target + '): ' + target + ' — find first position >= ' + target + '.',
-                  action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (arr[i] >= target) h[i] = 'background:var(--accent)20;border:2px solid var(--accent);'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } if (leftIdx < arr.length) h[leftIdx] = 'background:var(--accent);color:white;'; renderArr(h); infoEl.innerHTML = 'bisect_left = <strong>' + leftIdx + '</strong>' + (leftIdx < arr.length ? ' (arr[' + leftIdx + ']=' + arr[leftIdx] + ' is the first value >= ' + target + ')' : ' (end of array)'); },
-                  undo: function() { renderArr(null); infoEl.innerHTML = '<span style="color:var(--text2);">Count occurrences of ' + target + ' using bisect_left and bisect_right.</span>'; }
+                { description: 'bisect_left(' + target + '): first position >= ' + target + ' → bisect_left = <strong>' + leftIdx + '</strong>' + (leftIdx < arr.length ? ' (arr[' + leftIdx + ']=' + arr[leftIdx] + ')' : ' (end of array)'),
+                  action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (arr[i] >= target) h[i] = 'background:var(--accent)20;border:2px solid var(--accent);'; else h[i] = 'background:var(--bg2);opacity:0.75;'; } if (leftIdx < arr.length) h[leftIdx] = 'background:var(--accent);color:white;'; renderArr(h); },
+                  undo: function() { renderArr(null); }
                 },
-                { description: 'bisect_right(' + target + '): ' + target + ' — find first position > ' + target + '.',
-                  action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } renderArr(h); infoEl.innerHTML = 'bisect_right = <strong>' + rightIdx + '</strong>' + (rightIdx >= arr.length ? ' (past end of array)' : '') + '. Range: [' + leftIdx + ', ' + rightIdx + ')'; },
-                  undo: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (arr[i] >= target) h[i] = 'background:var(--accent)20;border:2px solid var(--accent);'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } if (leftIdx < arr.length) h[leftIdx] = 'background:var(--accent);color:white;'; renderArr(h); infoEl.innerHTML = 'bisect_left = <strong>' + leftIdx + '</strong>'; }
+                { description: 'bisect_right(' + target + '): first position > ' + target + ' → bisect_right = <strong>' + rightIdx + '</strong>' + (rightIdx >= arr.length ? ' (past end of array)' : '') + '. Range: [' + leftIdx + ', ' + rightIdx + ')',
+                  action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;'; else h[i] = 'background:var(--bg2);opacity:0.75;'; } renderArr(h); },
+                  undo: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (arr[i] >= target) h[i] = 'background:var(--accent)20;border:2px solid var(--accent);'; else h[i] = 'background:var(--bg2);opacity:0.75;'; } if (leftIdx < arr.length) h[leftIdx] = 'background:var(--accent);color:white;'; renderArr(h); }
                 },
-                { description: 'Count = bisect_right - bisect_left = ' + rightIdx + ' - ' + leftIdx + ' = ' + count,
-                  action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;box-shadow:0 0 8px var(--green)40;'; else h[i] = 'background:var(--bg2);opacity:0.4;'; } renderArr(h); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ ' + target + ' count = ' + rightIdx + ' - ' + leftIdx + ' = ' + count + '</strong>'; },
-                  undo: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;'; else h[i] = 'background:var(--bg2);opacity:0.5;'; } renderArr(h); infoEl.innerHTML = 'bisect_right = <strong>' + rightIdx + '</strong>'; }
+                { description: '<strong style="color:var(--green);">✅ ' + target + ' count = ' + rightIdx + ' - ' + leftIdx + ' = ' + count + '</strong>',
+                  action: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;box-shadow:0 0 8px var(--green)40;'; else h[i] = 'background:var(--bg2);opacity:0.7;'; } renderArr(h); },
+                  undo: function() { var h = {}; for (var i = 0; i < arr.length; i++) { if (i >= leftIdx && i < rightIdx) h[i] = 'background:var(--green);color:white;'; else h[i] = 'background:var(--bg2);opacity:0.75;'; } renderArr(h); }
                 }
             ];
             self._initStepController(container, steps, suffix);
@@ -532,10 +840,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             self._createStepDesc(suffix) +
             '<div id="cb-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="cb-bars' + suffix + '" style="margin-bottom:12px;"></div>' +
-            '<div id="cb-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var barsEl = container.querySelector('#cb-bars' + suffix);
-        var infoEl = container.querySelector('#cb-info' + suffix);
         var descEl = container.querySelector('#cb-desc' + suffix);
         function rebuild() {
             var cables = container.querySelector('#bs-cable-arr').value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n) && n > 0; });
@@ -561,33 +867,59 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }).join('');
             }
             renderBars(0);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Finding the optimal length using binary search.</span>';
             var steps = [], lo = 1, hi = maxC, answer = 0, round = 0;
+            // Step 0: initial search range explanation
+            steps.push({
+                description: 'Setting the search range for cut length x. From minimum <strong>1cm</strong> to the longest cable <strong>' + maxC + 'cm</strong> → <strong>lo=1, hi=' + maxC + '</strong>',
+                action: function() { renderBars(0); },
+                undo: function() { renderBars(0); }
+            });
             while (lo <= hi) {
                 var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
                 var count = cables.reduce(function(s, c) { return s + Math.floor(c / mid); }, 0);
+                var piecesDetail = cables.map(function(c) { return c + '÷' + mid + '=' + Math.floor(c / mid); }).join(', ');
+                var piecesSum = cables.map(function(c) { return Math.floor(c / mid); }).join('+');
                 round++;
+                // Step A: mid calculation
+                (function(cLo, cHi, mid, round) {
+                    steps.push({
+                        description: '<strong>Round ' + round + '</strong> — lo=' + cLo + ', hi=' + cHi + ' → mid = ⌊(' + cLo + '+' + cHi + ')/2⌋ = <strong>' + mid + '</strong>. Try cutting at length ' + mid + 'cm.',
+                        action: function() { renderBars(0); },
+                        undo: function() { renderBars(0); }
+                    });
+                })(cLo, cHi, mid, round);
+                // Step B: cut each cable
+                (function(mid, piecesDetail, piecesSum, count) {
+                    steps.push({
+                        description: 'Cut each cable at ' + mid + 'cm: ' + piecesDetail + ' → Total <strong>' + piecesSum + ' = ' + count + ' pieces</strong>',
+                        action: function() { renderBars(mid); },
+                        undo: function() { renderBars(0); }
+                    });
+                })(mid, piecesDetail, piecesSum, count);
+                // Step C: decision
                 if (count >= N) {
                     answer = mid; lo = mid + 1;
-                    (function(cLo, cHi, mid, count, round) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + count + ' pcs ≥ ' + N + ' → YES! (lo=' + (mid + 1) + ')',
-                            action: function() { renderBars(mid); infoEl.innerHTML = 'x=' + mid + 'cm → <strong>' + count + ' pcs</strong> ≥ ' + N + ' → <span style="color:var(--green);">YES</span> (candidate answer)'; },
-                            undo: function() { renderBars(0); infoEl.innerHTML = '<span style="color:var(--text2);">Finding the optimal length using binary search.</span>'; }
+                    (function(mid, count, round, newLo) {
+                        steps.push({
+                            description: '<strong>' + count + ' pieces</strong> ≥ ' + N + '(needed) → <span style="color:var(--green);">Enough!</span> ' + mid + 'cm is a candidate answer. Could an even longer length work? ' + mid + ' is already checked, so start from the next one → lo = mid+1 = ' + mid + '+1 = <strong>' + newLo + '</strong>',
+                            action: function() { renderBars(mid); },
+                            undo: function() { renderBars(mid); }
                         });
-                    })(cLo, cHi, mid, count, round);
+                    })(mid, count, round, lo);
                 } else {
                     hi = mid - 1;
-                    (function(cLo, cHi, mid, count, round) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + count + ' pcs &lt; ' + N + ' → NO! (hi=' + (mid - 1) + ')',
-                            action: function() { renderBars(mid); infoEl.innerHTML = 'x=' + mid + 'cm → <strong>' + count + ' pcs</strong> &lt; ' + N + ' → <span style="color:var(--red);">NO</span>'; },
-                            undo: function() { renderBars(0); infoEl.innerHTML = '<span style="color:var(--text2);">Finding the optimal length using binary search.</span>'; }
+                    (function(mid, count, round, newHi) {
+                        steps.push({
+                            description: '<strong>' + count + ' pieces</strong> &lt; ' + N + '(needed) → <span style="color:var(--red);">Not enough!</span> ' + mid + 'cm is too long to be the answer. Exclude ' + mid + ' and search below → hi = mid−1 = ' + mid + '−1 = <strong>' + newHi + '</strong>',
+                            action: function() { renderBars(mid); },
+                            undo: function() { renderBars(mid); }
                         });
-                    })(cLo, cHi, mid, count, round);
+                    })(mid, count, round, hi);
                 }
             }
             var fa = answer, fc = cables.reduce(function(s, c) { return s + Math.floor(c / fa); }, 0);
-            steps.push({ description: 'Done! Max length =' + fa + 'cm (' + fc + ' pieces)',
-                action: function() { renderBars(fa); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Answer: x = ' + fa + 'cm (' + fc + ' pieces ≥ ' + N + ')</strong>'; },
+            steps.push({ description: 'lo &gt; hi → Search complete! <strong style="color:var(--green);">✅ Answer: x = ' + fa + 'cm (' + fc + ' pieces ≥ ' + N + ')</strong>',
+                action: function() { renderBars(fa); },
                 undo: function() { renderBars(0); }
             });
             self._initStepController(container, steps, suffix);
@@ -612,10 +944,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             self._createStepDesc(suffix) +
             '<div id="tr-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="tr-chart' + suffix + '" style="display:flex;gap:16px;justify-content:center;align-items:flex-end;height:160px;margin-bottom:12px;position:relative;"></div>' +
-            '<div id="tr-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var chartEl = container.querySelector('#tr-chart' + suffix);
-        var infoEl = container.querySelector('#tr-info' + suffix);
         var descEl = container.querySelector('#tr-desc' + suffix);
         function rebuild() {
             var trees = container.querySelector('#bs-tree-arr').value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n) && n > 0; });
@@ -640,33 +970,59 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }
             }
             renderTrees(-1);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Binary search for height H to get at least ' + M + 'm.</span>';
             var steps = [], lo = 0, hi = maxH, answer = 0, round = 0;
+            // Step 0: initial search range explanation
+            steps.push({
+                description: 'Setting the search range for cutter height H. From <strong>0m</strong> (cut everything) to the tallest tree <strong>' + maxH + 'm</strong> → <strong>lo=0, hi=' + maxH + '</strong>',
+                action: function() { renderTrees(-1); },
+                undo: function() { renderTrees(-1); }
+            });
             while (lo <= hi) {
                 var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
                 var gained = trees.reduce(function(s, h) { return s + Math.max(0, h - mid); }, 0);
+                var gainsDetail = trees.map(function(h) { return h > mid ? h + '-' + mid + '=' + (h - mid) + 'm' : h + '-' + mid + '=0'; }).join(', ');
+                var gainsSum = trees.map(function(h) { return Math.max(0, h - mid); }).join('+');
                 round++;
+                // Step A: mid calculation
+                (function(cLo, cHi, mid, round) {
+                    steps.push({
+                        description: '<strong>Round ' + round + '</strong> — lo=' + cLo + ', hi=' + cHi + ' → mid = ⌊(' + cLo + '+' + cHi + ')/2⌋ = <strong>' + mid + '</strong>. Try cutting at height ' + mid + 'm.',
+                        action: function() { renderTrees(-1); },
+                        undo: function() { renderTrees(-1); }
+                    });
+                })(cLo, cHi, mid, round);
+                // Step B: cut each tree
+                (function(mid, gainsDetail, gainsSum, gained) {
+                    steps.push({
+                        description: 'Cut each tree at ' + mid + 'm height: ' + gainsDetail + ' → Total <strong>' + gainsSum + ' = ' + gained + 'm</strong>',
+                        action: function() { renderTrees(mid); },
+                        undo: function() { renderTrees(-1); }
+                    });
+                })(mid, gainsDetail, gainsSum, gained);
+                // Step C: decision
                 if (gained >= M) {
                     answer = mid; lo = mid + 1;
-                    (function(mid, gained, cLo, cHi, round) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + gained + 'm ≥ ' + M + ' → YES (lo=' + (mid + 1) + ')',
-                            action: function() { renderTrees(mid); infoEl.innerHTML = 'H=' + mid + ' → cut amount =<strong>' + gained + 'm</strong> ≥ ' + M + ' → <span style="color:var(--green);">YES</span>'; },
-                            undo: function() { renderTrees(-1); infoEl.innerHTML = '<span style="color:var(--text2);">Binary searching for height H.</span>'; }
+                    (function(mid, gained, round, newLo) {
+                        steps.push({
+                            description: '<strong>' + gained + 'm</strong> ≥ ' + M + '(required) → <span style="color:var(--green);">Enough!</span> ' + mid + 'm is a candidate answer. Could we cut even higher? ' + mid + ' is already checked, so start above it → lo = mid+1 = ' + mid + '+1 = <strong>' + newLo + '</strong>',
+                            action: function() { renderTrees(mid); },
+                            undo: function() { renderTrees(mid); }
                         });
-                    })(mid, gained, cLo, cHi, round);
+                    })(mid, gained, round, lo);
                 } else {
                     hi = mid - 1;
-                    (function(mid, gained, cLo, cHi, round) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + gained + 'm &lt; ' + M + ' → NO (hi=' + (mid - 1) + ')',
-                            action: function() { renderTrees(mid); infoEl.innerHTML = 'H=' + mid + ' → cut amount =<strong>' + gained + 'm</strong> &lt; ' + M + ' → <span style="color:var(--red);">NO</span>'; },
-                            undo: function() { renderTrees(-1); infoEl.innerHTML = '<span style="color:var(--text2);">Binary searching for height H.</span>'; }
+                    (function(mid, gained, round, newHi) {
+                        steps.push({
+                            description: '<strong>' + gained + 'm</strong> &lt; ' + M + '(required) → <span style="color:var(--red);">Not enough!</span> ' + mid + 'm is too high to be the answer. Exclude ' + mid + ' and search below → hi = mid−1 = ' + mid + '−1 = <strong>' + newHi + '</strong>',
+                            action: function() { renderTrees(mid); },
+                            undo: function() { renderTrees(mid); }
                         });
-                    })(mid, gained, cLo, cHi, round);
+                    })(mid, gained, round, hi);
                 }
             }
             var fa = answer, fg = trees.reduce(function(s, h) { return s + Math.max(0, h - fa); }, 0);
-            steps.push({ description: 'Done! H = ' + fa + 'm (cut amount: ' + fg + 'm)',
-                action: function() { renderTrees(fa); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Answer: H = ' + fa + 'm (cut: ' + fg + 'm ≥ ' + M + ')</strong>'; },
+            steps.push({ description: 'lo &gt; hi → Search complete! <strong style="color:var(--green);">✅ Answer: H = ' + fa + 'm (cut: ' + fg + 'm ≥ ' + M + ')</strong>',
+                action: function() { renderTrees(fa); },
                 undo: function() { renderTrees(-1); }
             });
             self._initStepController(container, steps, suffix);
@@ -691,10 +1047,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             self._createStepDesc(suffix) +
             '<div id="rt-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="rt-line' + suffix + '" style="position:relative;height:80px;margin:16px 0;"></div>' +
-            '<div id="rt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var lineEl = container.querySelector('#rt-line' + suffix);
-        var infoEl = container.querySelector('#rt-info' + suffix);
         var descEl = container.querySelector('#rt-desc' + suffix);
         function rebuild() {
             var houses = container.querySelector('#bs-router-arr').value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
@@ -720,7 +1074,6 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 lineEl.innerHTML = html;
             }
             renderLine(0, []);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Binary searching for minimum distance d.</span>';
             function tryPlace(d) {
                 var placed = [houses[0]], last = houses[0];
                 for (var i = 1; i < houses.length; i++) {
@@ -729,31 +1082,56 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 return placed;
             }
             var steps = [], lo = 1, hi = maxPos - houses[0], answer = 0, round = 0;
+            // Step 0: initial search range explanation
+            steps.push({
+                description: 'Setting the search range for minimum distance d. From <strong>1</strong> to the difference between the farthest houses <strong>' + maxPos + '−' + houses[0] + ' = ' + (maxPos - houses[0]) + '</strong> → <strong>lo=1, hi=' + (maxPos - houses[0]) + '</strong>',
+                action: function() { renderLine(0, []); },
+                undo: function() { renderLine(0, []); }
+            });
             while (lo <= hi) {
                 var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
                 var placed = tryPlace(mid);
                 round++;
+                // Step A: mid calculation
+                (function(cLo, cHi, mid, round) {
+                    steps.push({
+                        description: '<strong>Round ' + round + '</strong> — lo=' + cLo + ', hi=' + cHi + ' → mid = ⌊(' + cLo + '+' + cHi + ')/2⌋ = <strong>' + mid + '</strong>. Try installing with min distance ' + mid + '.',
+                        action: function() { renderLine(0, []); },
+                        undo: function() { renderLine(0, []); }
+                    });
+                })(cLo, cHi, mid, round);
+                // Step B: placement simulation
+                (function(mid, placed) {
+                    steps.push({
+                        description: 'Place with gap ≥ ' + mid + ': [' + placed.join(', ') + '] → Total <strong>' + placed.length + '</strong> installed',
+                        action: function() { renderLine(mid, placed); },
+                        undo: function() { renderLine(0, []); }
+                    });
+                })(mid, placed);
+                // Step C: decision
                 if (placed.length >= C) {
                     answer = mid; lo = mid + 1;
-                    (function(mid, placed, cLo, cHi, round) {
-                        steps.push({ description: round + 'Round d=' + mid + ' → ' + placed.length + ' installed [' + placed.join(',') + '] ≥ ' + C + ' → YES',
-                            action: function() { renderLine(mid, placed); infoEl.innerHTML = 'd=' + mid + ' → <strong>' + placed.length + ' installed</strong> → <span style="color:var(--green);">YES</span> (lo=' + (mid + 1) + ')'; },
-                            undo: function() { renderLine(0, []); infoEl.innerHTML = '<span style="color:var(--text2);">Binary searching for minimum distance d.</span>'; }
+                    (function(mid, placed, round, newLo) {
+                        steps.push({
+                            description: '<strong>' + placed.length + '</strong> ≥ ' + C + '(needed) → <span style="color:var(--green);">Enough!</span> Distance ' + mid + ' is a candidate answer. Could an even wider gap work? ' + mid + ' is already checked, so start above it → lo = mid+1 = ' + mid + '+1 = <strong>' + newLo + '</strong>',
+                            action: function() { renderLine(mid, placed); },
+                            undo: function() { renderLine(mid, placed); }
                         });
-                    })(mid, placed, cLo, cHi, round);
+                    })(mid, placed, round, lo);
                 } else {
                     hi = mid - 1;
-                    (function(mid, placed, cLo, cHi, round) {
-                        steps.push({ description: round + 'Round d=' + mid + ' → ' + placed.length + ' installed &lt; ' + C + ' → NO',
-                            action: function() { renderLine(mid, placed); infoEl.innerHTML = 'd=' + mid + ' → <strong>' + placed.length + ' installed</strong> → <span style="color:var(--red);">NO</span> (hi=' + (mid - 1) + ')'; },
-                            undo: function() { renderLine(0, []); infoEl.innerHTML = '<span style="color:var(--text2);">Binary searching for minimum distance d.</span>'; }
+                    (function(mid, placed, round, newHi) {
+                        steps.push({
+                            description: '<strong>' + placed.length + '</strong> &lt; ' + C + '(needed) → <span style="color:var(--red);">Not enough!</span> Distance ' + mid + ' is too large to be the answer. Exclude ' + mid + ' and search below → hi = mid−1 = ' + mid + '−1 = <strong>' + newHi + '</strong>',
+                            action: function() { renderLine(mid, placed); },
+                            undo: function() { renderLine(mid, placed); }
                         });
-                    })(mid, placed, cLo, cHi, round);
+                    })(mid, placed, round, hi);
                 }
             }
             var fp = tryPlace(answer);
-            steps.push({ description: 'Done! Maximum minimum distance d = ' + answer,
-                action: function() { renderLine(answer, fp); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Answer: d = ' + answer + ' (placed: [' + fp.join(', ') + '])</strong>'; },
+            steps.push({ description: 'lo &gt; hi → Search complete! <strong style="color:var(--green);">✅ Answer: d = ' + answer + ' (placed: [' + fp.join(', ') + '])</strong>',
+                action: function() { renderLine(answer, fp); },
                 undo: function() { renderLine(0, []); }
             });
             self._initStepController(container, steps, suffix);
@@ -778,10 +1156,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             self._createStepDesc(suffix) +
             '<div id="kt-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
             '<div id="kt-table' + suffix + '" style="margin-bottom:12px;"></div>' +
-            '<div id="kt-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var tableEl = container.querySelector('#kt-table' + suffix);
-        var infoEl = container.querySelector('#kt-info' + suffix);
         var descEl = container.querySelector('#kt-desc' + suffix);
         function rebuild() {
             var N = parseInt(container.querySelector('#bs-kth-n').value);
@@ -814,33 +1190,64 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 tableEl.innerHTML = html;
             }
             renderTable(-1);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Find smallest x where numbers <= x total at least ' + k + '.</span>';
             var steps = [], lo = 1, hi = k, round = 0;
+            // Step 0: initial search range explanation
+            steps.push({
+                description: 'Setting the search range for answer x. From minimum <strong>1</strong> to at most <strong>' + k + '</strong> (since it\'s the K-th) → <strong>lo=1, hi=' + k + '</strong>',
+                action: function() { renderTable(-1); },
+                undo: function() { renderTable(-1); }
+            });
             while (lo < hi) {
                 var cLo = lo, cHi = hi, mid = Math.floor((lo + hi) / 2);
                 var cnt = 0;
-                for (var i = 1; i <= N; i++) cnt += Math.min(Math.floor(mid / i), N);
+                var cntDetail = [];
+                for (var i = 1; i <= N; i++) {
+                    var rowCnt = Math.min(Math.floor(mid / i), N);
+                    cntDetail.push('min(⌊' + mid + '÷' + i + '⌋,' + N + ')=' + rowCnt);
+                    cnt += rowCnt;
+                }
+                var cntSum = [];
+                for (var i = 1; i <= N; i++) cntSum.push(Math.min(Math.floor(mid / i), N));
                 round++;
+                // Step A: mid calculation
+                (function(cLo, cHi, mid, round) {
+                    steps.push({
+                        description: '<strong>Round ' + round + '</strong> — lo=' + cLo + ', hi=' + cHi + ' → mid = ⌊(' + cLo + '+' + cHi + ')/2⌋ = <strong>' + mid + '</strong>.',
+                        action: function() { renderTable(-1); },
+                        undo: function() { renderTable(-1); }
+                    });
+                })(cLo, cHi, mid, round);
+                // Step B: count numbers <= mid
+                (function(mid, cntDetail, cntSum, cnt) {
+                    steps.push({
+                        description: 'Count numbers ≤ ' + mid + ': ' + cntDetail.join(', ') + ' → Total <strong>' + cntSum.join('+') + ' = ' + cnt + '</strong>',
+                        action: function() { renderTable(mid); },
+                        undo: function() { renderTable(-1); }
+                    });
+                })(mid, cntDetail, cntSum, cnt);
+                // Step C: decision
                 if (cnt >= k) {
                     hi = mid;
-                    (function(mid, cnt, cLo, cHi, round) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + cnt + ' pcs ≥ ' + k + ' → hi=' + mid,
-                            action: function() { renderTable(mid); infoEl.innerHTML = 'x=' + mid + ' → <strong>' + cnt + ' pcs</strong> ≥ ' + k + ' → <span style="color:var(--green);">hi=' + mid + '</span>'; },
-                            undo: function() { renderTable(-1); infoEl.innerHTML = '<span style="color:var(--text2);">Find smallest x where numbers <= x total at least ' + k + '.</span>'; }
+                    (function(mid, cnt, round) {
+                        steps.push({
+                            description: '<strong>' + cnt + '</strong> ≥ ' + k + '(K) → <span style="color:var(--green);">Enough!</span> The answer is ≤ ' + mid + '. ' + mid + ' could still be the answer, so include it → hi = mid = <strong>' + mid + '</strong>',
+                            action: function() { renderTable(mid); },
+                            undo: function() { renderTable(mid); }
                         });
-                    })(mid, cnt, cLo, cHi, round);
+                    })(mid, cnt, round);
                 } else {
                     lo = mid + 1;
-                    (function(mid, cnt, cLo, cHi, round) {
-                        steps.push({ description: round + 'Round lo=' + cLo + ', hi=' + cHi + ', mid=' + mid + ' → ' + cnt + ' pcs &lt; ' + k + ' → lo=' + (mid + 1),
-                            action: function() { renderTable(mid); infoEl.innerHTML = 'x=' + mid + ' → <strong>' + cnt + ' pcs</strong> &lt; ' + k + ' → <span style="color:var(--red);">lo=' + (mid + 1) + '</span>'; },
-                            undo: function() { renderTable(-1); infoEl.innerHTML = '<span style="color:var(--text2);">Find smallest x where numbers <= x total at least ' + k + '.</span>'; }
+                    (function(mid, cnt, round, newLo) {
+                        steps.push({
+                            description: '<strong>' + cnt + '</strong> &lt; ' + k + '(K) → <span style="color:var(--red);">Not enough!</span> The answer is > ' + mid + '. ' + mid + ' can\'t be the answer, so start above it → lo = mid+1 = ' + mid + '+1 = <strong>' + newLo + '</strong>',
+                            action: function() { renderTable(mid); },
+                            undo: function() { renderTable(mid); }
                         });
-                    })(mid, cnt, cLo, cHi, round);
+                    })(mid, cnt, round, lo);
                 }
             }
-            steps.push({ description: 'Done! k=' + k + '-th number = ' + lo,
-                action: function() { renderTable(lo); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Answer: ' + k + '-th number = ' + lo + '</strong>'; },
+            steps.push({ description: 'lo ≥ hi → Search complete! <strong style="color:var(--green);">✅ Answer: ' + k + '-th number = ' + lo + '</strong>',
+                action: function() { renderTable(lo); },
                 undo: function() { renderTable(-1); }
             });
             self._initStepController(container, steps, suffix);
@@ -855,6 +1262,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
     _renderVizLIS(container) {
         var self = this, suffix = '-lis';
         var DEFAULT_A = [10, 20, 10, 30, 20, 50];
+        var BOX_W = 52, BOX_GAP = 6;
         container.innerHTML =
             '<h3 style="margin-bottom:8px;">LIS + Binary Search</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
@@ -863,42 +1271,81 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             '</div>' +
             self._createStepDesc(suffix) +
             '<div id="lis-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></div>' +
-            '<div style="margin-bottom:8px;"><strong>Original Sequence</strong></div>' +
-            '<div id="lis-arr' + suffix + '" style="display:flex;gap:4px;margin-bottom:16px;"></div>' +
-            '<div style="margin-bottom:8px;"><strong>tails array</strong></div>' +
-            '<div id="lis-tails' + suffix + '" style="display:flex;gap:4px;margin-bottom:12px;min-height:48px;"></div>' +
-            '<div id="lis-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            '<div style="position:relative;">' +
+                '<div style="margin-bottom:8px;"><strong>Original Sequence</strong></div>' +
+                '<div id="lis-arr' + suffix + '" style="display:flex;gap:' + BOX_GAP + 'px;margin-bottom:24px;position:relative;"></div>' +
+                '<div style="margin-bottom:8px;"><strong>tails array</strong></div>' +
+                '<div id="lis-tails' + suffix + '" style="display:flex;gap:' + BOX_GAP + 'px;margin-bottom:12px;min-height:48px;position:relative;"></div>' +
+                '<div id="lis-flying' + suffix + '" style="position:absolute;top:0;left:0;pointer-events:none;z-index:10;"></div>' +
+            '</div>' +
             self._createStepControls(suffix);
         var arrEl = container.querySelector('#lis-arr' + suffix);
         var tailsEl = container.querySelector('#lis-tails' + suffix);
-        var infoEl = container.querySelector('#lis-info' + suffix);
+        var flyEl = container.querySelector('#lis-flying' + suffix);
         var descEl = container.querySelector('#lis-desc' + suffix);
-        function box(v, hl) { return '<div style="width:48px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:600;' + (hl || 'background:var(--bg2);') + '">' + v + '</div>'; }
+        var wrapEl = flyEl.parentElement;
+        function boxHtml(v, hl, id) {
+            return '<div' + (id ? ' id="' + id + '"' : '') + ' style="width:' + BOX_W + 'px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:600;transition:opacity 0.3s,background 0.3s,transform 0.3s;' + (hl || 'background:var(--bg2);') + '">' + v + '</div>';
+        }
         function rebuild() {
             var A = container.querySelector('#bs-lis-arr').value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
             if (A.length === 0) A = DEFAULT_A.slice();
             descEl.innerHTML = 'Sequence: [' + A.join(', ') + ']. Building the tails array with binary search.';
             function renderArr(curIdx) {
                 arrEl.innerHTML = A.map(function(v, i) {
-                    if (i === curIdx) return box(v, 'background:var(--accent);color:white;');
-                    if (i < curIdx) return box(v, 'background:var(--bg2);opacity:0.5;');
-                    return box(v, 'background:var(--bg2);');
+                    if (i === curIdx) return boxHtml(v, 'background:var(--accent);color:white;', 'lis-a-' + i);
+                    if (curIdx >= 0 && i < curIdx) return boxHtml(v, 'background:var(--bg2);opacity:0.7;', 'lis-a-' + i);
+                    return boxHtml(v, 'background:var(--bg2);', 'lis-a-' + i);
                 }).join('');
             }
             function renderTails(tails, hlIdx) {
                 if (tails.length === 0) { tailsEl.innerHTML = '<div style="color:var(--text3);padding:10px;">Empty</div>'; return; }
                 tailsEl.innerHTML = tails.map(function(v, i) {
-                    if (i === hlIdx) return box(v, 'background:var(--green);color:white;');
-                    return box(v, 'background:var(--green)20;border:2px solid var(--green);');
+                    if (i === hlIdx) return boxHtml(v, 'background:var(--green);color:white;', 'lis-t-' + i);
+                    return boxHtml(v, 'background:var(--green)20;border:2px solid var(--green);', 'lis-t-' + i);
                 }).join('');
+            }
+            function animateMove(value, srcId, destId, color, onDone) {
+                var srcEl = container.querySelector('#' + srcId);
+                var wrapRect = wrapEl.getBoundingClientRect();
+                if (!srcEl) { if (onDone) onDone(); return; }
+                var srcRect = srcEl.getBoundingClientRect();
+                var ghost = document.createElement('div');
+                ghost.textContent = value;
+                ghost.style.cssText = 'position:absolute;width:' + BOX_W + 'px;text-align:center;padding:10px 4px;border-radius:8px;font-weight:700;font-size:inherit;z-index:20;' +
+                    'background:' + color + ';color:white;box-shadow:0 4px 20px ' + color + '60;' +
+                    'left:' + (srcRect.left - wrapRect.left) + 'px;top:' + (srcRect.top - wrapRect.top) + 'px;' +
+                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s;transform:scale(1.15);';
+                flyEl.appendChild(ghost);
+                requestAnimationFrame(function() {
+                    var destEl = container.querySelector('#' + destId);
+                    var destLeft, destTop;
+                    if (destEl) {
+                        var destRect = destEl.getBoundingClientRect();
+                        destLeft = destRect.left - wrapRect.left;
+                        destTop = destRect.top - wrapRect.top;
+                    } else {
+                        var tailsRect = tailsEl.getBoundingClientRect();
+                        var tailsChildren = tailsEl.children.length;
+                        destLeft = tailsRect.left - wrapRect.left + tailsChildren * (BOX_W + BOX_GAP);
+                        destTop = tailsRect.top - wrapRect.top;
+                    }
+                    requestAnimationFrame(function() {
+                        ghost.style.left = destLeft + 'px';
+                        ghost.style.top = destTop + 'px';
+                        ghost.style.transform = 'scale(1)';
+                    });
+                    setTimeout(function() {
+                        if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                        if (onDone) onDone();
+                    }, 550);
+                });
             }
             renderArr(-1);
             renderTails([], -1);
-            infoEl.innerHTML = '<span style="color:var(--text2);">Iterating through each element to build the tails array.</span>';
             var steps = [], tails = [];
             A.forEach(function(x, idx) {
                 var prevTails = tails.slice();
-                // bisect_left
                 var pos = 0, lo2 = 0, hi2 = tails.length;
                 while (lo2 < hi2) { var m = Math.floor((lo2 + hi2) / 2); if (tails[m] < x) lo2 = m + 1; else hi2 = m; }
                 pos = lo2;
@@ -906,26 +1353,50 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                     tails.push(x);
                     var newTails = tails.slice();
                     (function(idx, x, pos, prevTails, newTails) {
-                        steps.push({ description: 'A[' + idx + ']=' + x + ': greater than tails end → append. tails=[' + newTails.join(',') + '] (length ' + newTails.length + ')',
-                            action: function() { renderArr(idx); renderTails(newTails, pos); infoEl.innerHTML = x + ' &gt; tails end → <strong>append</strong>. LIS length = ' + newTails.length; },
-                            undo: function() { renderArr(-1); renderTails(prevTails, -1); infoEl.innerHTML = '<span style="color:var(--text2);">Iterating through each element to build the tails array.</span>'; }
+                        steps.push({
+                            description: 'A[' + idx + ']=' + x + ': ' + x + ' &gt; tails end → <strong>append!</strong> tails=[' + newTails.join(',') + '] (length ' + newTails.length + ')',
+                            action: function(dir) {
+                                flyEl.innerHTML = '';
+                                renderArr(idx);
+                                if (dir === 'forward') {
+                                    renderTails(prevTails, -1);
+                                    animateMove(x, 'lis-a-' + idx, 'lis-t-' + pos, 'var(--green)', function() {
+                                        renderTails(newTails, pos);
+                                    });
+                                } else {
+                                    renderTails(newTails, pos);
+                                }
+                            },
+                            undo: function() { flyEl.innerHTML = ''; renderArr(-1); renderTails(prevTails, -1); }
                         });
                     })(idx, x, pos, prevTails, newTails);
                 } else {
                     tails[pos] = x;
                     var newTails = tails.slice();
                     (function(idx, x, pos, prevTails, newTails) {
-                        steps.push({ description: 'A[' + idx + ']=' + x + ': bisect_left → pos=' + pos + ', tails[' + pos + ']=' + x + ' replaced. tails=[' + newTails.join(',') + ']',
-                            action: function() { renderArr(idx); renderTails(newTails, pos); infoEl.innerHTML = x + ' → tails[' + pos + '] <strong>replaced</strong>. LIS length = ' + newTails.length; },
-                            undo: function() { renderArr(-1); renderTails(prevTails, -1); infoEl.innerHTML = '<span style="color:var(--text2);">Iterating through each element to build the tails array.</span>'; }
+                        steps.push({
+                            description: 'A[' + idx + ']=' + x + ': bisect_left → pos=' + pos + ', tails[' + pos + '] <strong>replaced</strong> with ' + x + '. tails=[' + newTails.join(',') + ']',
+                            action: function(dir) {
+                                flyEl.innerHTML = '';
+                                renderArr(idx);
+                                if (dir === 'forward') {
+                                    renderTails(prevTails, pos);
+                                    animateMove(x, 'lis-a-' + idx, 'lis-t-' + pos, 'var(--accent)', function() {
+                                        renderTails(newTails, pos);
+                                    });
+                                } else {
+                                    renderTails(newTails, pos);
+                                }
+                            },
+                            undo: function() { flyEl.innerHTML = ''; renderArr(-1); renderTails(prevTails, -1); }
                         });
                     })(idx, x, pos, prevTails, newTails);
                 }
             });
             var ft = tails.slice();
-            steps.push({ description: 'Done! LIS length = ' + ft.length,
-                action: function() { renderArr(A.length); renderTails(ft, -1); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ LIS length = ' + ft.length + ' (tails=[' + ft.join(',') + '])</strong>'; },
-                undo: function() { renderArr(-1); renderTails(ft, -1); }
+            steps.push({ description: '<strong style="color:var(--green);">✅ LIS length = ' + ft.length + ' (tails=[' + ft.join(',') + '])</strong>',
+                action: function() { flyEl.innerHTML = ''; renderArr(A.length); renderTails(ft, -1); },
+                undo: function() { flyEl.innerHTML = ''; renderArr(-1); renderTails(ft, -1); }
             });
             self._initStepController(container, steps, suffix);
         }

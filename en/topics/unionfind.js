@@ -58,7 +58,7 @@ var unionFindTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -418,6 +418,76 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                     </div>
                 </div>
             </div>
+
+            <!-- Section 4: Demo — Union & Find Experience -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">4</span> Demo: Union & Find Experience
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Click nodes to Union & Find</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <span style="font-size:0.85rem;color:var(--text2);">Click 2 nodes → Union | Click 1 node → Find</span>
+                        <button class="concept-demo-btn green" id="uf-demo-uf-reset">↺ Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="uf-demo-uf-nodes" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="uf-demo-uf-parent" style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;font-family:monospace;"></div>
+                        <div id="uf-demo-uf-groups" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                        <div id="uf-demo-uf-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-demo-uf-msg">👆 Click the nodes! Click 2 to Union (merge), or double-click 1 to Find (find representative).</div>
+                </div>
+            </div>
+
+            <!-- Section 5: Demo — Path Compression -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">5</span> Demo: Path Compression Visualization
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Watch a long chain get compressed</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="uf-demo-pc-build">🔗 Build Chain (1→2→3→4→5)</button>
+                        <button class="concept-demo-btn" id="uf-demo-pc-find" style="display:none;">🔍 Run find(5)</button>
+                        <button class="concept-demo-btn green" id="uf-demo-pc-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Tree Structure</div>
+                                <div id="uf-demo-pc-tree" style="font-family:monospace;font-size:0.9rem;line-height:1.8;color:var(--text);"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">parent Array</div>
+                                <div id="uf-demo-pc-arr" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                            </div>
+                        </div>
+                        <div id="uf-demo-pc-log" style="margin-top:10px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-demo-pc-msg">👆 Click "Build Chain" to create a long chain, then click "Run find(5)" to see path compression in action!</div>
+                </div>
+            </div>
+
+            <!-- Section 6: Demo — Cycle Detection -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">6</span> Demo: Cycle Detection
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Add edges and detect cycles</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="uf-demo-cycle-step">➕ Add Next Edge</button>
+                        <button class="concept-demo-btn green" id="uf-demo-cycle-reset">↺ Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="uf-demo-cycle-edges" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="uf-demo-cycle-nodes" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="uf-demo-cycle-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-demo-cycle-msg">👆 Click "Add Next Edge"! It detects the moment a cycle is formed.</div>
+                </div>
+            </div>
         `;
 
         this._initConceptInteractions(container);
@@ -432,6 +502,294 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== Demo 1: Union & Find Experience ======
+        (function() {
+            var N = 6;
+            var parent = [];
+            var selected = [];
+            var groupColors = ['#6c5ce7', '#00b894', '#e17055', '#fdcb6e', '#0984e3', '#d63031'];
+            var nodesEl = container.querySelector('#uf-demo-uf-nodes');
+            var parentEl = container.querySelector('#uf-demo-uf-parent');
+            var groupsEl = container.querySelector('#uf-demo-uf-groups');
+            var logEl = container.querySelector('#uf-demo-uf-log');
+            var resetBtn = container.querySelector('#uf-demo-uf-reset');
+
+            function init() {
+                parent = [];
+                selected = [];
+                for (var i = 0; i < N; i++) parent.push(i);
+                render();
+                logEl.textContent = 'Click a node!';
+            }
+
+            function find(x) {
+                if (parent[x] !== x) parent[x] = find(parent[x]);
+                return parent[x];
+            }
+
+            function union(a, b) {
+                a = find(a); b = find(b);
+                if (a !== b) { parent[b] = a; return true; }
+                return false;
+            }
+
+            function render() {
+                nodesEl.innerHTML = '';
+                var groups = {};
+                for (var i = 0; i < N; i++) {
+                    var root = find(i);
+                    if (!groups[root]) groups[root] = [];
+                    groups[root].push(i);
+                }
+
+                for (var i = 0; i < N; i++) {
+                    var root = find(i);
+                    var colorIdx = Object.keys(groups).indexOf(String(root));
+                    var color = groupColors[colorIdx % groupColors.length];
+                    var node = document.createElement('div');
+                    node.style.cssText = 'width:48px;height:48px;border-radius:50%;border:2.5px solid ' + color + ';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;cursor:pointer;transition:all 0.2s ease;color:' + color + ';background:var(--card);user-select:none;';
+                    if (selected.indexOf(i) >= 0) {
+                        node.style.boxShadow = '0 0 10px ' + color;
+                        node.style.transform = 'scale(1.1)';
+                    }
+                    node.textContent = i;
+                    node.dataset.idx = i;
+                    node.addEventListener('click', function() {
+                        var idx = parseInt(this.dataset.idx);
+                        if (selected.indexOf(idx) >= 0) {
+                            selected = selected.filter(function(s) { return s !== idx; });
+                        } else {
+                            selected.push(idx);
+                        }
+                        if (selected.length === 1) {
+                            var root = find(selected[0]);
+                            logEl.innerHTML = '<strong>find(' + selected[0] + ')</strong> = <strong style="color:var(--green);">' + root + '</strong> (representative). Click a 2nd node to Union.';
+                            render();
+                        } else if (selected.length >= 2) {
+                            var a = selected[0], b = selected[1];
+                            var merged = union(a, b);
+                            if (merged) {
+                                logEl.innerHTML = '<strong>union(' + a + ', ' + b + ')</strong> → <strong style="color:var(--green);">Merged!</strong> ' + b + '\'s representative changed to ' + find(a);
+                            } else {
+                                logEl.innerHTML = '<strong>union(' + a + ', ' + b + ')</strong> → Already in the same group! (representative: ' + find(a) + ')';
+                            }
+                            selected = [];
+                            render();
+                        } else {
+                            render();
+                        }
+                    });
+                    nodesEl.appendChild(node);
+                }
+
+                parentEl.textContent = 'parent = [' + parent.join(', ') + ']';
+
+                groupsEl.innerHTML = '';
+                var rootKeys = Object.keys(groups);
+                rootKeys.forEach(function(root, idx) {
+                    var badge = document.createElement('span');
+                    badge.style.cssText = 'padding:4px 10px;border-radius:12px;font-size:0.8rem;font-weight:600;color:#fff;background:' + groupColors[idx % groupColors.length] + ';';
+                    badge.textContent = 'Group ' + root + ': {' + groups[root].join(', ') + '}';
+                    groupsEl.appendChild(badge);
+                });
+            }
+
+            init();
+            resetBtn.addEventListener('click', init);
+        })();
+
+        // ====== Demo 2: Path Compression ======
+        (function() {
+            var parent = [0, 0, 1, 2, 3, 4];
+            var treeEl = container.querySelector('#uf-demo-pc-tree');
+            var arrEl = container.querySelector('#uf-demo-pc-arr');
+            var logEl = container.querySelector('#uf-demo-pc-log');
+            var buildBtn = container.querySelector('#uf-demo-pc-build');
+            var findBtn = container.querySelector('#uf-demo-pc-find');
+            var resetBtn = container.querySelector('#uf-demo-pc-reset');
+
+            function renderTree(highlight) {
+                treeEl.innerHTML = '';
+                var lines = [];
+                function buildLines(node, prefix, isLast) {
+                    var children = [];
+                    for (var i = 0; i < parent.length; i++) {
+                        if (i !== node && parent[i] === node) children.push(i);
+                    }
+                    var nodeStr = '<span style="' + (highlight && highlight.indexOf(node) >= 0 ? 'color:var(--green);font-weight:700;' : 'color:var(--text);') + '">' + node + '</span>';
+                    if (parent[node] === node) nodeStr += ' <span style="font-size:0.75rem;color:var(--accent);">(root)</span>';
+                    lines.push(prefix + nodeStr);
+                    children.forEach(function(c, i) {
+                        var last = i === children.length - 1;
+                        var connector = last ? '└─ ' : '├─ ';
+                        var nextPrefix = prefix + (last ? '&nbsp;&nbsp;&nbsp;' : '│&nbsp;&nbsp;');
+                        buildLines(c, prefix + connector, last);
+                    });
+                }
+                var root = 0;
+                for (var i = 0; i < parent.length; i++) {
+                    if (parent[i] === i) { root = i; break; }
+                }
+                buildLines(root, '', true);
+                treeEl.innerHTML = lines.map(function(l) { return '<div>' + l + '</div>'; }).join('');
+            }
+
+            function renderArr(highlight) {
+                arrEl.innerHTML = '';
+                for (var i = 0; i < parent.length; i++) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.65rem;">' + i + '</div><div class="str-char-val">' + parent[i] + '</div>';
+                    if (highlight && highlight.indexOf(i) >= 0) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.boxShadow = '0 0 6px var(--green)';
+                    }
+                    arrEl.appendChild(box);
+                }
+            }
+
+            function resetState() {
+                parent = [0, 0, 0, 0, 0, 0];
+                buildBtn.style.display = '';
+                findBtn.style.display = 'none';
+                resetBtn.style.display = 'none';
+                treeEl.innerHTML = '';
+                arrEl.innerHTML = '';
+                logEl.textContent = 'Click "Build Chain" to get started!';
+            }
+            resetState();
+
+            buildBtn.addEventListener('click', function() {
+                parent = [0, 0, 1, 2, 3, 4];
+                renderTree();
+                renderArr();
+                logEl.innerHTML = 'Chain created: 5→4→3→2→1→<strong>0 (root)</strong>. Running find(5) requires traversing 5 hops!';
+                buildBtn.style.display = 'none';
+                findBtn.style.display = '';
+                resetBtn.style.display = '';
+            });
+
+            findBtn.addEventListener('click', function() {
+                var path = [5, 4, 3, 2, 1, 0];
+                var step = 0;
+                function animate() {
+                    if (step < path.length) {
+                        renderTree(path.slice(0, step + 1));
+                        renderArr(path.slice(0, step + 1));
+                        logEl.innerHTML = 'find(5): ' + path.slice(0, step + 1).join(' → ') + (step < path.length - 1 ? ' → ...' : ' → <strong style="color:var(--green);">Root found!</strong>');
+                        step++;
+                        setTimeout(animate, 500);
+                    } else {
+                        setTimeout(function() {
+                            parent = [0, 0, 0, 0, 0, 0];
+                            for (var i = 1; i <= 5; i++) parent[i] = 0;
+                            renderTree([1, 2, 3, 4, 5]);
+                            renderArr([1, 2, 3, 4, 5]);
+                            logEl.innerHTML = '<strong style="color:var(--green);">Path compression complete!</strong> All nodes now point directly to root (0). The next find takes just <strong>1 hop</strong>!';
+                        }, 600);
+                    }
+                }
+                findBtn.style.display = 'none';
+                animate();
+            });
+
+            resetBtn.addEventListener('click', resetState);
+        })();
+
+        // ====== Demo 3: Cycle Detection ======
+        (function() {
+            var edges = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 1]];
+            var parent = [0, 1, 2, 3, 4];
+            var addedEdges = [];
+            var stepIdx = 0;
+            var cycleFound = false;
+            var edgesEl = container.querySelector('#uf-demo-cycle-edges');
+            var nodesEl = container.querySelector('#uf-demo-cycle-nodes');
+            var logEl = container.querySelector('#uf-demo-cycle-log');
+            var stepBtn = container.querySelector('#uf-demo-cycle-step');
+            var resetBtn = container.querySelector('#uf-demo-cycle-reset');
+
+            function find(x) {
+                if (parent[x] !== x) parent[x] = find(parent[x]);
+                return parent[x];
+            }
+
+            function render() {
+                edgesEl.innerHTML = '';
+                edges.forEach(function(e, i) {
+                    var badge = document.createElement('span');
+                    var added = i < addedEdges.length;
+                    var isCycle = added && addedEdges[i] === 'cycle';
+                    badge.style.cssText = 'padding:4px 10px;border-radius:12px;font-size:0.8rem;font-weight:600;transition:all 0.3s ease;';
+                    if (isCycle) {
+                        badge.style.background = 'rgba(225,112,85,0.2)';
+                        badge.style.color = 'var(--red)';
+                        badge.style.border = '1.5px solid var(--red)';
+                        badge.textContent = e[0] + '-' + e[1] + ' (cycle!)';
+                    } else if (added) {
+                        badge.style.background = 'rgba(0,184,148,0.15)';
+                        badge.style.color = 'var(--green)';
+                        badge.style.border = '1.5px solid var(--green)';
+                        badge.textContent = e[0] + '-' + e[1] + ' ✓';
+                    } else {
+                        badge.style.background = 'var(--bg)';
+                        badge.style.color = 'var(--text3)';
+                        badge.style.border = '1.5px solid var(--border)';
+                        badge.textContent = e[0] + '-' + e[1];
+                    }
+                    edgesEl.appendChild(badge);
+                });
+
+                nodesEl.innerHTML = '';
+                var groups = {};
+                for (var i = 0; i < 5; i++) {
+                    var root = find(i);
+                    if (!groups[root]) groups[root] = [];
+                    groups[root].push(i);
+                }
+                var gColors = ['#6c5ce7', '#00b894', '#e17055', '#fdcb6e', '#0984e3'];
+                for (var i = 0; i < 5; i++) {
+                    var root = find(i);
+                    var cidx = Object.keys(groups).indexOf(String(root));
+                    var node = document.createElement('div');
+                    node.style.cssText = 'width:40px;height:40px;border-radius:50%;border:2.5px solid ' + gColors[cidx % gColors.length] + ';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:' + gColors[cidx % gColors.length] + ';background:var(--card);';
+                    node.textContent = i;
+                    nodesEl.appendChild(node);
+                }
+            }
+
+            function init() {
+                parent = [0, 1, 2, 3, 4];
+                addedEdges = [];
+                stepIdx = 0;
+                cycleFound = false;
+                stepBtn.disabled = false;
+                render();
+                logEl.textContent = 'Click "Add Next Edge"!';
+            }
+            init();
+
+            stepBtn.addEventListener('click', function() {
+                if (stepIdx >= edges.length || cycleFound) return;
+                var e = edges[stepIdx];
+                var ra = find(e[0]), rb = find(e[1]);
+                if (ra === rb) {
+                    addedEdges.push('cycle');
+                    cycleFound = true;
+                    logEl.innerHTML = '<strong style="color:var(--red);">Cycle detected!</strong> Edge (' + e[0] + '-' + e[1] + '): find(' + e[0] + ')=' + ra + ', find(' + e[1] + ')=' + rb + ' → Same group, so it\'s a cycle!';
+                    stepBtn.disabled = true;
+                } else {
+                    parent[rb] = ra;
+                    addedEdges.push('ok');
+                    logEl.innerHTML = 'Edge (' + e[0] + '-' + e[1] + ') added: find(' + e[0] + ')=' + ra + ', find(' + e[1] + ')=' + rb + ' → <strong style="color:var(--green);">Different groups, merged!</strong>';
+                }
+                stepIdx++;
+                render();
+            });
+
+            resetBtn.addEventListener('click', init);
+        })();
     },
 
     // ===== Visualization State =====
@@ -585,7 +943,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 1: union(1, 2)
         steps.push({
-            description: 'union(1, 2): Merge nodes 1 and 2. parent[2] = 1',
+            description: 'union(1, 2): Merge nodes 1 and 2. parent[2] = 1 — <em>link 2\'s parent to 1 to mark them as the same set</em>',
             action: function() {
                 var par = [0, 1, 1, 3, 4, 5, 6];
                 renderParent(par, {1: 'active', 2: 'changed'});
@@ -602,7 +960,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 2: union(3, 4)
         steps.push({
-            description: 'union(3, 4): Merge nodes 3 and 4. parent[4] = 3',
+            description: 'union(3, 4): Merge nodes 3 and 4. parent[4] = 3 — <em>link parent to group the two nodes into one set</em>',
             action: function() {
                 var par = [0, 1, 1, 3, 3, 5, 6];
                 renderParent(par, {3: 'active', 4: 'changed'});
@@ -619,7 +977,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 3: union(5, 6)
         steps.push({
-            description: 'union(5, 6): Merge nodes 5 and 6. parent[6] = 5',
+            description: 'union(5, 6): Merge nodes 5 and 6. parent[6] = 5 — <em>link parent to group the two nodes into one set</em>',
             action: function() {
                 var par = [0, 1, 1, 3, 3, 5, 5];
                 renderParent(par, {5: 'active', 6: 'changed'});
@@ -636,7 +994,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 4: union(1, 3)
         steps.push({
-            description: 'union(1, 3): Merge {1,2} and {3,4}. parent[3] = 1',
+            description: 'union(1, 3): Merge {1,2} and {3,4}. parent[3] = 1 — <em>connecting the roots merges the entire two sets at once</em>',
             action: function() {
                 var par = [0, 1, 1, 1, 3, 5, 5];
                 renderParent(par, {1: 'active', 3: 'changed'});
@@ -653,7 +1011,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 5: find(4) with path compression
         steps.push({
-            description: 'find(4): Follow path 4->3->1 to find root 1. Path compression sets parent[4] = 1',
+            description: 'find(4): Follow path 4->3->1 to find root 1. <strong>Path compression</strong>: set parent[4]=1 directly — <em>so the next find(4) is O(1) instead of following the chain again</em>',
             action: function() {
                 var par = [0, 1, 1, 1, 1, 5, 5];
                 renderParent(par, {4: 'changed', 1: 'active'});
@@ -670,7 +1028,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 6: union(1, 5)
         steps.push({
-            description: 'union(1, 5): Merge {1,2,3,4} and {5,6}. parent[5] = 1',
+            description: 'union(1, 5): Merge {1,2,3,4} and {5,6}. parent[5] = 1 — <em>all nodes now share the same root, forming a single unified set</em>',
             action: function() {
                 var par = [0, 1, 1, 1, 1, 1, 5];
                 renderParent(par, {1: 'active', 5: 'changed'});
@@ -687,7 +1045,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
         // Step 7: final
         steps.push({
-            description: 'Done! All nodes are merged into one set under root 1.',
+            description: 'Done! All nodes are merged into one set under root 1. — <em>comparing any two nodes via find() returns the same root, so same-set check is O(1)</em>',
             action: function() {
                 var par = [0, 1, 1, 1, 1, 1, 5];
                 renderParent(par);
@@ -788,8 +1146,8 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                         if (!sameSet) highlights[rb] = 'changed';
 
                         var descText = sameSet
-                            ? 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' -> already same set!'
-                            : 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' -> parent[' + rb + ']=' + ra;
+                            ? 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' -> already same set! — <em>same root means they are already connected</em>'
+                            : 'union(' + op.a + ', ' + op.b + '): find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' -> parent[' + rb + ']=' + ra + ' — <em>linking roots merges the entire two sets</em>';
                         var infoText = sameSet
                             ? 'union(' + op.a + ',' + op.b + '): Already in the same set, no change.'
                             : 'union(' + op.a + ',' + op.b + '): parent[' + rb + ']=' + ra + '. {' + op.a + ',' + op.b + '} same set.';
@@ -817,7 +1175,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                         highlights[op.a] = 'active';
                         highlights[op.b] = 'active';
 
-                        var descText = 'find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → ' + (same ? 'YES ✅' : 'NO ❌');
+                        var descText = 'find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' → ' + (same ? 'YES ✅ — <em>same root means same set</em>' : 'NO ❌ — <em>different roots means different sets</em>');
                         var infoText = same
                             ? '<strong style="color:var(--green);font-size:1.05rem;">find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' -> same set! YES</strong>'
                             : '<strong style="color:var(--red, #e17055);font-size:1.05rem;">find(' + op.a + ')=' + ra + ', find(' + op.b + ')=' + rb + ' -> different sets! NO</strong>';
@@ -934,8 +1292,8 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                     if (!already) highlights[rb] = 'changed';
 
                     var descText = already
-                        ? 'Route ' + edge.a + '-' + edge.b + ': already same set (find=' + ra + ')'
-                        : 'Route ' + edge.a + '-' + edge.b + ' -> union: parent[' + rb + ']=' + ra;
+                        ? 'Route ' + edge.a + '-' + edge.b + ': already same set (find=' + ra + ') — <em>already connected, no action needed</em>'
+                        : 'Route ' + edge.a + '-' + edge.b + ' -> union: parent[' + rb + ']=' + ra + ' — <em>connecting the cities so they belong to the same group</em>';
                     var infoText = already
                         ? 'Cities ' + edge.a + ' and ' + edge.b + ' are already connected.'
                         : 'union(' + edge.a + ',' + edge.b + '): parent[' + rb + ']=' + ra + '. Cities ' + edge.a + ' and ' + edge.b + ' are now connected.';
@@ -965,13 +1323,13 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                     var rootList = plan.map(function(c) { return 'find(' + c + ')=' + ufFind(checkPar, c); }).join(', ');
 
                     steps.push({
-                        description: 'Check travel plan: ' + rootList,
+                        description: 'Check travel plan: ' + rootList + ' — <em>all cities must share the same root to be reachable</em>',
                         action: function() { renderPar(checkPar, N, highlights); infoEl.innerHTML = 'Travel city representatives: ' + rootList; },
                         undo: function() { renderPar(checkPar, N); infoEl.innerHTML = ''; }
                     });
 
                     steps.push({
-                        description: allSame ? 'Result: All cities in the same set -> YES' : 'Result: Different sets found -> NO',
+                        description: allSame ? 'Result: All cities share the same root -> travel is possible → YES ✅' : 'Result: Different roots found -> cities are disconnected → NO ❌',
                         action: function() {
                             renderPar(checkPar, N, highlights);
                             infoEl.innerHTML = allSame
@@ -1082,7 +1440,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
 
             // Step 1: show initial state with parent array
             steps.push({
-                description: 'Initial: ' + totalOnes + ' \'1\' cells. Each is an independent island. count=' + totalOnes,
+                description: 'Initial: ' + totalOnes + ' \'1\' cells, each starts as an independent island. count=' + totalOnes + ' — <em>union adjacent cells to reduce count and discover connected islands</em>',
                 action: function() { renderGrid(grid, R, C, initPar.slice()); infoEl.innerHTML = 'Each \'1\' cell is an independent island. <strong>count = ' + totalOnes + '</strong>'; },
                 undo: function() { renderGrid(grid, R, C, null); infoEl.innerHTML = '<span style="color:var(--text2);">Number of \'1\' cells = ' + totalOnes + ' -> initial island count = ' + totalOnes + '</span>'; }
             });
@@ -1111,8 +1469,8 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                             highlights[i2] = true;
 
                             var descText = merged
-                                ? 'union(' + i1 + ',' + i2 + '): (' + rr + ',' + cc + ')~(' + nrr + ',' + ncc + ') merged. count=' + newCount
-                                : '(' + rr + ',' + cc + ')~(' + nrr + ',' + ncc + '): already same set. count=' + newCount;
+                                ? 'union(' + i1 + ',' + i2 + '): (' + rr + ',' + cc + ')~(' + nrr + ',' + ncc + ') merged. count=' + newCount + ' — <em>adjacent land cells belong to the same island</em>'
+                                : '(' + rr + ',' + cc + ')~(' + nrr + ',' + ncc + '): already same set. count=' + newCount + ' — <em>already connected, no count change</em>';
                             var infoText = merged
                                 ? '(' + rr + ',' + cc + ')~(' + nrr + ',' + ncc + ') union! <strong>count = ' + newCount + '</strong>'
                                 : '(' + rr + ',' + cc + ')~(' + nrr + ',' + ncc + ') already same set. count = ' + newCount;
@@ -1133,7 +1491,7 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             var finalPar = curPar.slice();
             var finalCount = count;
             steps.push({
-                description: 'Done! ' + finalCount + ' island(s)',
+                description: 'Done! After unioning all adjacent \'1\' cells → ' + finalCount + ' island(s)',
                 action: function() { renderGrid(grid, R, C, finalPar); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.05rem;">Answer: ' + finalCount + ' island(s)</strong>'; },
                 undo: function() { renderGrid(grid, R, C, finalPar); infoEl.innerHTML = ''; }
             });
@@ -1267,8 +1625,8 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                         if (curMap[keys[ki]] === rB) findBName = keys[ki];
                     }
                     var descText = merged
-                        ? nameA + '-' + nameB + ': find(' + nameB + ')=' + findBName + ' -> union -> size = ' + networkSize
-                        : nameA + '-' + nameB + ': already same network. size = ' + networkSize;
+                        ? nameA + '-' + nameB + ': find(' + nameB + ')=' + findBName + ' -> union -> size = ' + networkSize + ' — <em>merge networks and update size by adding both groups</em>'
+                        : nameA + '-' + nameB + ': already same network. size = ' + networkSize + ' — <em>already friends, just report current network size</em>';
                     var infoText = merged
                         ? nameA + '-' + nameB + ': union! Network size = <strong>' + networkSize + '</strong>'
                         : nameA + '-' + nameB + ': already same network. Size = <strong>' + networkSize + '</strong>';

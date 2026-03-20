@@ -58,7 +58,7 @@ var priorityQueueTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -172,6 +172,30 @@ var priorityQueueTopic = {
                         The opposite, where smaller numbers come out first, is a <strong>min priority queue</strong>.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Regular Queue vs Priority Queue</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="pq-demo-qcmp-input" value="3,7,1,5,2" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:150px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="pq-demo-qcmp-btn">Insert & Remove</button>\
+                        <button class="concept-demo-btn green" id="pq-demo-qcmp-reset" style="display:none;">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Regular Queue (FIFO)</div>\
+                                <div id="pq-demo-qcmp-fifo" style="display:flex;gap:4px;flex-wrap:wrap;min-height:44px;"></div>\
+                                <div id="pq-demo-qcmp-fifo-out" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Priority Queue (Min-Heap)</div>\
+                                <div id="pq-demo-qcmp-pq" style="display:flex;gap:4px;flex-wrap:wrap;min-height:44px;"></div>\
+                                <div id="pq-demo-qcmp-pq-out" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-demo-qcmp-msg">Insert the same values and remove one by one: the queue follows insertion order, while the priority queue removes smallest first!</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -213,6 +237,18 @@ var priorityQueueTopic = {
                         Right child = 2 \u00D7 2 + 1 = <strong>index 5 \u2192 value 7</strong>\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Array Index and Tree Position</div>\
+                    <p style="color:var(--text2);font-size:0.85rem;margin-bottom:10px;">Click a cell in the array to see its position in the tree and its parent/child relationships.</p>\
+                    <div class="concept-demo-body">\
+                        <div style="margin-bottom:8px;font-weight:600;">Array (1-indexed)</div>\
+                        <div id="pq-demo-a2t-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>\
+                        <div style="margin-bottom:8px;font-weight:600;">Tree Structure</div>\
+                        <div id="pq-demo-a2t-tree" style="position:relative;width:100%;height:150px;margin-bottom:8px;"></div>\
+                        <div id="pq-demo-a2t-info" style="padding:8px 12px;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;min-height:1.5em;"></div>\
+                    </div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -242,6 +278,24 @@ var priorityQueueTopic = {
                         \u2462 Parent (index 1) = 1, since 2 > 1, done!<br>\
                         Result: [-, 1, 2, 5, 7, 3]\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Sift-Up Insertion Animation</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <label style="font-size:0.85rem;color:var(--text2);">Current heap:</label>\
+                        <input type="text" id="pq-demo-sift-heap" value="1,3,5,7,9" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.85rem;color:var(--text2);">Insert value:</label>\
+                        <input type="number" id="pq-demo-sift-val" value="2" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="pq-demo-sift-btn">Insert!</button>\
+                        <button class="concept-demo-btn green" id="pq-demo-sift-reset" style="display:none;">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;">Heap Array</div>\
+                        <div id="pq-demo-sift-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;min-height:44px;"></div>\
+                        <div id="pq-demo-sift-info" style="padding:8px 12px;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-demo-sift-msg">After inserting at the end, watch the value bubble up by comparing with its parent (Sift-Up).</div>\
                 </div>\
             </div>\
 \
@@ -295,6 +349,33 @@ var priorityQueueTopic = {
             </div></span>\
 \
             <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">4.5</span> Heap Simulator</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Push / Pop Simulator</div>\
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="number" id="pq-demo-sim-val" value="4" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="pq-demo-sim-push">Push</button>\
+                        <button class="concept-demo-btn" id="pq-demo-sim-pop" style="background:var(--red);color:#fff;">Pop</button>\
+                        <button class="concept-demo-btn green" id="pq-demo-sim-clear">Clear</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Tree View</div>\
+                                <div id="pq-demo-sim-tree" style="position:relative;width:100%;min-height:140px;margin-bottom:8px;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:150px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Array View</div>\
+                                <div id="pq-demo-sim-arr" style="display:flex;gap:4px;flex-wrap:wrap;min-height:44px;margin-bottom:8px;"></div>\
+                            </div>\
+                        </div>\
+                        <div id="pq-demo-sim-log" style="padding:8px 12px;background:var(--bg);border-radius:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;max-height:100px;overflow-y:auto;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-demo-sim-msg">Push values in and Pop the minimum out. The tree and array update simultaneously!</div>\
+                </div>\
+            </div>\
+\
+            <div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">5</span> Tips for Solving Priority Queue Problems</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <span class="lang-py"><div class="concept-card"><h3>\u2460 Basic Heap Ops</h3><p>Use heappush/heappop to implement<br>max\u00B7min\u00B7absolute value heaps.</p></div></span>\
@@ -315,9 +396,17 @@ var priorityQueueTopic = {
                         once a jewel is added to the heap, it never needs to be removed!\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Type Matching Quiz</div>\
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">Pick the best heap/priority queue pattern for each problem!</p>\
+                    <div id="pq-demo-quiz" style="display:flex;flex-direction:column;gap:12px;"></div>\
+                    <div id="pq-demo-quiz-score" style="margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:8px;text-align:center;min-height:1.5em;font-size:0.9rem;"></div>\
+                </div>\
             </div>\
         ';
         this._initConceptInteractions(container);
+        this._initConceptDemos(container);
     },
 
     _initConceptInteractions: function(container) {
@@ -329,6 +418,411 @@ var priorityQueueTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+    },
+
+    _initConceptDemos: function(container) {
+        // Helper: render tree from array (1-indexed)
+        function renderTree(treeEl, heap, highlightIdx) {
+            treeEl.innerHTML = '';
+            if (heap.length <= 1) { treeEl.innerHTML = '<span style="color:var(--text3);">Empty</span>'; return; }
+            var levels = Math.ceil(Math.log2(heap.length));
+            var nodeW = 40, nodeH = 40;
+            var totalW = treeEl.offsetWidth || 300;
+            // Draw edges first, then nodes
+            for (var i = 1; i < heap.length; i++) {
+                var level = Math.floor(Math.log2(i));
+                var posInLevel = i - Math.pow(2, level);
+                var totalInLevel = Math.pow(2, level);
+                var x = totalW * (posInLevel + 0.5) / totalInLevel;
+                var y = level * 45 + 10;
+                // Edge to parent
+                if (i > 1) {
+                    var pi = Math.floor(i / 2);
+                    var pLevel = Math.floor(Math.log2(pi));
+                    var pPos = pi - Math.pow(2, pLevel);
+                    var pTotal = Math.pow(2, pLevel);
+                    var px = totalW * (pPos + 0.5) / pTotal;
+                    var py = pLevel * 45 + 10;
+                    var line = document.createElement('div');
+                    line.style.cssText = 'position:absolute;height:2px;background:var(--border);transform-origin:0 0;';
+                    var dx = x - px, dy = y - py;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    line.style.width = dist + 'px';
+                    line.style.left = px + 'px';
+                    line.style.top = (py + nodeH / 2) + 'px';
+                    line.style.transform = 'rotate(' + angle + 'deg)';
+                    treeEl.appendChild(line);
+                }
+            }
+            for (var i = 1; i < heap.length; i++) {
+                var level = Math.floor(Math.log2(i));
+                var posInLevel = i - Math.pow(2, level);
+                var totalInLevel = Math.pow(2, level);
+                var x = totalW * (posInLevel + 0.5) / totalInLevel;
+                var y = level * 45 + 10;
+                var node = document.createElement('div');
+                node.style.cssText = 'position:absolute;width:' + nodeW + 'px;height:' + nodeH + 'px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;transition:all 0.3s ease;';
+                node.style.left = (x - nodeW / 2) + 'px';
+                node.style.top = y + 'px';
+                if (highlightIdx === i) {
+                    node.style.background = 'var(--yellow)';
+                    node.style.color = '#333';
+                    node.style.boxShadow = '0 0 10px var(--yellow)80';
+                } else {
+                    node.style.background = 'var(--accent)';
+                    node.style.color = '#fff';
+                }
+                node.textContent = heap[i];
+                treeEl.appendChild(node);
+            }
+            treeEl.style.height = (levels * 45 + 20) + 'px';
+        }
+
+        function renderArrBoxes(arrEl, heap, highlightIdx) {
+            arrEl.innerHTML = '';
+            for (var i = 1; i < heap.length; i++) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.style.cssText = 'min-width:36px;text-align:center;transition:all 0.3s ease;';
+                if (highlightIdx === i) {
+                    box.style.background = 'var(--yellow)20';
+                    box.style.boxShadow = '0 0 6px var(--yellow)60';
+                }
+                box.innerHTML = '<div class="str-char-idx" style="font-size:0.6rem;">' + i + '</div><div class="str-char-val">' + heap[i] + '</div>';
+                arrEl.appendChild(box);
+            }
+            if (heap.length <= 1) arrEl.innerHTML = '<span style="color:var(--text3);">Empty</span>';
+        }
+
+        // ===== Demo 1: Queue vs Priority Queue =====
+        {
+            var qcmpBtn = container.querySelector('#pq-demo-qcmp-btn');
+            var qcmpReset = container.querySelector('#pq-demo-qcmp-reset');
+            var qcmpInput = container.querySelector('#pq-demo-qcmp-input');
+            var fifoEl = container.querySelector('#pq-demo-qcmp-fifo');
+            var pqEl = container.querySelector('#pq-demo-qcmp-pq');
+            var fifoOut = container.querySelector('#pq-demo-qcmp-fifo-out');
+            var pqOut = container.querySelector('#pq-demo-qcmp-pq-out');
+            var qcmpMsg = container.querySelector('#pq-demo-qcmp-msg');
+            var qcmpAnimating = false;
+
+            function parseQArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function makeBox(val, bg) {
+                return '<div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:' + bg + ';color:#fff;font-weight:700;font-size:0.9rem;transition:all 0.3s ease;">' + val + '</div>';
+            }
+
+            if (qcmpBtn) {
+                qcmpBtn.addEventListener('click', function() {
+                    if (qcmpAnimating) return;
+                    qcmpAnimating = true;
+                    qcmpBtn.style.display = 'none';
+                    qcmpReset.style.display = '';
+                    var vals = parseQArr(qcmpInput.value);
+                    if (vals.length === 0) { qcmpMsg.textContent = 'Please enter values!'; qcmpAnimating = false; qcmpBtn.style.display = ''; qcmpReset.style.display = 'none'; return; }
+
+                    // Phase 1: Insert all
+                    fifoEl.innerHTML = '';
+                    pqEl.innerHTML = '';
+                    fifoOut.textContent = '';
+                    pqOut.textContent = '';
+                    var fifoQueue = [];
+                    var pqArr = [];
+                    var insertStep = 0;
+
+                    function insertNext() {
+                        if (insertStep >= vals.length) {
+                            fifoOut.textContent = 'All inserted! Now removing one by one...';
+                            pqOut.textContent = 'All inserted! Now removing one by one...';
+                            setTimeout(popNext, 800);
+                            return;
+                        }
+                        var v = vals[insertStep];
+                        fifoQueue.push(v);
+                        pqArr.push(v);
+                        pqArr.sort(function(a, b) { return a - b; });
+                        fifoEl.innerHTML = fifoQueue.map(function(x) { return makeBox(x, 'var(--accent)'); }).join('');
+                        pqEl.innerHTML = pqArr.map(function(x) { return makeBox(x, 'var(--green)'); }).join('');
+                        insertStep++;
+                        setTimeout(insertNext, 500);
+                    }
+
+                    // Phase 2: Pop all
+                    var fifoPopped = [];
+                    var pqPopped = [];
+                    function popNext() {
+                        if (fifoQueue.length === 0) {
+                            fifoOut.innerHTML = 'Output order: <strong>' + fifoPopped.join(' \u2192 ') + '</strong>';
+                            pqOut.innerHTML = 'Output order: <strong style="color:var(--green);">' + pqPopped.join(' \u2192 ') + '</strong>';
+                            qcmpMsg.textContent = 'The queue outputs in insertion order, while the priority queue outputs smallest first!';
+                            qcmpAnimating = false;
+                            return;
+                        }
+                        var fv = fifoQueue.shift();
+                        fifoPopped.push(fv);
+                        var pv = pqArr.shift();
+                        pqPopped.push(pv);
+                        fifoEl.innerHTML = fifoQueue.map(function(x) { return makeBox(x, 'var(--accent)'); }).join('');
+                        pqEl.innerHTML = pqArr.map(function(x) { return makeBox(x, 'var(--green)'); }).join('');
+                        if (fifoQueue.length === 0) { fifoEl.innerHTML = '<span style="color:var(--text3);">Empty</span>'; pqEl.innerHTML = '<span style="color:var(--text3);">Empty</span>'; }
+                        fifoOut.innerHTML = 'Removed: ' + fifoPopped.join(' \u2192 ');
+                        pqOut.innerHTML = 'Removed: ' + pqPopped.join(' \u2192 ');
+                        setTimeout(popNext, 600);
+                    }
+
+                    insertNext();
+                });
+
+                qcmpReset.addEventListener('click', function() {
+                    qcmpAnimating = false;
+                    qcmpBtn.style.display = '';
+                    qcmpReset.style.display = 'none';
+                    fifoEl.innerHTML = '';
+                    pqEl.innerHTML = '';
+                    fifoOut.textContent = '';
+                    pqOut.textContent = '';
+                    qcmpMsg.textContent = 'Insert the same values and remove one by one: the queue follows insertion order, while the priority queue removes smallest first!';
+                });
+            }
+        }
+
+        // ===== Demo 2: Array <-> Tree Conversion =====
+        {
+            var a2tArr = container.querySelector('#pq-demo-a2t-arr');
+            var a2tTree = container.querySelector('#pq-demo-a2t-tree');
+            var a2tInfo = container.querySelector('#pq-demo-a2t-info');
+            var heapVals = [null, 1, 3, 5, 7, 9, 8]; // 1-indexed
+
+            if (a2tArr) {
+                function renderA2T(highlightIdx) {
+                    a2tArr.innerHTML = '';
+                    for (var i = 1; i < heapVals.length; i++) {
+                        var box = document.createElement('div');
+                        box.className = 'str-char-box';
+                        box.style.cssText = 'min-width:38px;text-align:center;cursor:pointer;transition:all 0.3s ease;';
+                        box.dataset.idx = i;
+                        if (highlightIdx === i) {
+                            box.style.background = 'var(--yellow)20';
+                            box.style.boxShadow = '0 0 8px var(--yellow)60';
+                        }
+                        box.innerHTML = '<div class="str-char-idx" style="font-size:0.6rem;">i=' + i + '</div><div class="str-char-val">' + heapVals[i] + '</div>';
+                        box.addEventListener('click', function() {
+                            var idx = parseInt(this.dataset.idx);
+                            renderA2T(idx);
+                            var parent = Math.floor(idx / 2);
+                            var left = idx * 2;
+                            var right = idx * 2 + 1;
+                            var info = '<strong>Index ' + idx + '</strong> (value: ' + heapVals[idx] + ')<br>';
+                            info += 'Parent: ' + (parent >= 1 ? 'i/' + 2 + ' = index ' + parent + ' (value: ' + heapVals[parent] + ')' : 'None (root)') + '<br>';
+                            info += 'Left child: ' + (left < heapVals.length ? '2*i = index ' + left + ' (value: ' + heapVals[left] + ')' : 'None') + '<br>';
+                            info += 'Right child: ' + (right < heapVals.length ? '2*i+1 = index ' + right + ' (value: ' + heapVals[right] + ')' : 'None');
+                            a2tInfo.innerHTML = info;
+                        });
+                        a2tArr.appendChild(box);
+                    }
+                    renderTree(a2tTree, heapVals, highlightIdx);
+                }
+                renderA2T(null);
+                a2tInfo.innerHTML = 'Click a cell in the array!';
+            }
+        }
+
+        // ===== Demo 3: Sift-Up Insertion =====
+        {
+            var siftBtn = container.querySelector('#pq-demo-sift-btn');
+            var siftReset = container.querySelector('#pq-demo-sift-reset');
+            var siftHeapInput = container.querySelector('#pq-demo-sift-heap');
+            var siftValInput = container.querySelector('#pq-demo-sift-val');
+            var siftArrEl = container.querySelector('#pq-demo-sift-arr');
+            var siftInfo = container.querySelector('#pq-demo-sift-info');
+            var siftMsg = container.querySelector('#pq-demo-sift-msg');
+            var siftAnimating = false;
+
+            function parseSiftArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function renderSiftArr(heap, highlightIdx) {
+                renderArrBoxes(siftArrEl, heap, highlightIdx);
+            }
+
+            if (siftBtn) {
+                var initHeap = parseSiftArr(siftHeapInput.value);
+                var h0 = [null].concat(initHeap);
+                renderSiftArr(h0, null);
+                siftInfo.innerHTML = 'Click Insert to see Sift-Up in action';
+
+                siftBtn.addEventListener('click', function() {
+                    if (siftAnimating) return;
+                    siftAnimating = true;
+                    siftBtn.style.display = 'none';
+                    siftReset.style.display = '';
+                    var heapArr = parseSiftArr(siftHeapInput.value);
+                    var val = parseInt(siftValInput.value);
+                    if (isNaN(val)) { siftMsg.textContent = 'Please enter a value to insert!'; siftAnimating = false; siftBtn.style.display = ''; siftReset.style.display = 'none'; return; }
+                    var heap = [null].concat(heapArr);
+                    heap.push(val);
+                    var idx = heap.length - 1;
+                    renderSiftArr(heap, idx);
+                    siftInfo.innerHTML = 'Added <strong>' + val + '</strong> at the end (index ' + idx + ')';
+
+                    function siftStep() {
+                        if (idx <= 1) { siftInfo.innerHTML = '<strong style="color:var(--green);">Reached root! Sift-Up complete.</strong> Result: [' + heap.slice(1).join(', ') + ']'; siftAnimating = false; return; }
+                        var parent = Math.floor(idx / 2);
+                        if (heap[idx] < heap[parent]) {
+                            siftInfo.innerHTML = heap[idx] + ' < ' + heap[parent] + ' (parent) \u2192 <strong>Swap!</strong>';
+                            var tmp = heap[idx]; heap[idx] = heap[parent]; heap[parent] = tmp;
+                            idx = parent;
+                            renderSiftArr(heap, idx);
+                            setTimeout(siftStep, 800);
+                        } else {
+                            siftInfo.innerHTML = heap[idx] + ' \u2265 ' + heap[parent] + ' (parent) \u2192 <strong style="color:var(--green);">Sift-Up complete!</strong> Result: [' + heap.slice(1).join(', ') + ']';
+                            renderSiftArr(heap, null);
+                            siftAnimating = false;
+                        }
+                    }
+                    setTimeout(siftStep, 800);
+                });
+
+                siftReset.addEventListener('click', function() {
+                    siftAnimating = false;
+                    siftBtn.style.display = '';
+                    siftReset.style.display = 'none';
+                    var h = [null].concat(parseSiftArr(siftHeapInput.value));
+                    renderSiftArr(h, null);
+                    siftInfo.innerHTML = 'Click Insert to see Sift-Up in action';
+                    siftMsg.textContent = 'After inserting at the end, watch the value bubble up by comparing with its parent (Sift-Up).';
+                });
+            }
+        }
+
+        // ===== Demo 4: Push/Pop Simulator =====
+        {
+            var simPush = container.querySelector('#pq-demo-sim-push');
+            var simPop = container.querySelector('#pq-demo-sim-pop');
+            var simClear = container.querySelector('#pq-demo-sim-clear');
+            var simValInput = container.querySelector('#pq-demo-sim-val');
+            var simTreeEl = container.querySelector('#pq-demo-sim-tree');
+            var simArrEl = container.querySelector('#pq-demo-sim-arr');
+            var simLog = container.querySelector('#pq-demo-sim-log');
+            var simHeap = [null]; // 1-indexed
+
+            function siftUp(heap, idx) {
+                while (idx > 1) {
+                    var parent = Math.floor(idx / 2);
+                    if (heap[idx] < heap[parent]) {
+                        var tmp = heap[idx]; heap[idx] = heap[parent]; heap[parent] = tmp;
+                        idx = parent;
+                    } else break;
+                }
+            }
+            function siftDown(heap, idx) {
+                while (idx * 2 < heap.length) {
+                    var child = idx * 2;
+                    if (child + 1 < heap.length && heap[child + 1] < heap[child]) child++;
+                    if (heap[idx] > heap[child]) {
+                        var tmp = heap[idx]; heap[idx] = heap[child]; heap[child] = tmp;
+                        idx = child;
+                    } else break;
+                }
+            }
+            function renderSim(hl) {
+                renderTree(simTreeEl, simHeap, hl);
+                renderArrBoxes(simArrEl, simHeap, hl);
+            }
+
+            if (simPush) {
+                renderSim(null);
+                simLog.textContent = 'Use Push/Pop buttons to manipulate the heap.';
+
+                simPush.addEventListener('click', function() {
+                    var val = parseInt(simValInput.value);
+                    if (isNaN(val)) return;
+                    simHeap.push(val);
+                    siftUp(simHeap, simHeap.length - 1);
+                    renderSim(simHeap.length - 1);
+                    simLog.innerHTML = 'Push(' + val + ') \u2192 Array: [' + simHeap.slice(1).join(', ') + ']<br>' + simLog.innerHTML;
+                });
+
+                simPop.addEventListener('click', function() {
+                    if (simHeap.length <= 1) { simLog.innerHTML = 'Heap is empty!<br>' + simLog.innerHTML; return; }
+                    var popped = simHeap[1];
+                    simHeap[1] = simHeap[simHeap.length - 1];
+                    simHeap.pop();
+                    if (simHeap.length > 1) siftDown(simHeap, 1);
+                    renderSim(1);
+                    simLog.innerHTML = 'Pop() \u2192 Removed <strong>' + popped + '</strong>! Remaining: [' + simHeap.slice(1).join(', ') + ']<br>' + simLog.innerHTML;
+                });
+
+                simClear.addEventListener('click', function() {
+                    simHeap = [null];
+                    renderSim(null);
+                    simLog.textContent = 'Heap cleared.';
+                });
+            }
+        }
+
+        // ===== Demo 5: Type Matching Quiz =====
+        {
+            var quizEl = container.querySelector('#pq-demo-quiz');
+            var quizScore = container.querySelector('#pq-demo-quiz-score');
+            if (quizEl) {
+                var quizData = [
+                    { q: '"Numbers keep arriving, output the largest each time"', a: 'Max Heap', choices: ['Max Heap', 'Min Heap', 'Sorting', 'Stack'] },
+                    { q: '"Find the Kth largest number among N numbers"', a: 'Size-Limited Heap', choices: ['Brute Force', 'Size-Limited Heap', 'Binary Search', 'Sorting'] },
+                    { q: '"Numbers keep arriving, output the median each time"', a: 'Two Heaps', choices: ['Sorting', 'Min Heap', 'Two Heaps', 'Binary Search'] },
+                    { q: '"Pick the most expensive jewel that fits in the bag"', a: 'Greedy + Heap', choices: ['DP', 'Greedy + Heap', 'BFS', 'Two Pointers'] },
+                    { q: '"Process edges with smallest weight first in a graph"', a: 'Min Heap', choices: ['Stack', 'DFS', 'Min Heap', 'Queue'] }
+                ];
+                var correct = 0;
+                var answered = 0;
+
+                quizData.forEach(function(item, idx) {
+                    var qDiv = document.createElement('div');
+                    qDiv.style.cssText = 'padding:12px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);';
+                    var qText = document.createElement('div');
+                    qText.style.cssText = 'font-weight:600;margin-bottom:8px;font-size:0.9rem;';
+                    qText.textContent = (idx + 1) + '. ' + item.q;
+                    qDiv.appendChild(qText);
+                    var btnsDiv = document.createElement('div');
+                    btnsDiv.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+                    item.choices.forEach(function(ch) {
+                        var btn = document.createElement('button');
+                        btn.className = 'concept-demo-btn';
+                        btn.style.cssText = 'font-size:0.8rem;padding:4px 12px;';
+                        btn.textContent = ch;
+                        btn.addEventListener('click', function() {
+                            if (qDiv.dataset.done) return;
+                            qDiv.dataset.done = '1';
+                            answered++;
+                            var isCorrect = (ch === item.a);
+                            if (isCorrect) {
+                                correct++;
+                                btn.style.background = 'var(--green)';
+                                btn.style.color = '#fff';
+                                btn.style.boxShadow = '0 0 8px var(--green)60';
+                            } else {
+                                btn.style.background = 'var(--red)';
+                                btn.style.color = '#fff';
+                                btnsDiv.querySelectorAll('button').forEach(function(b) {
+                                    if (b.textContent === item.a) { b.style.background = 'var(--green)'; b.style.color = '#fff'; }
+                                });
+                            }
+                            if (answered === quizData.length) {
+                                quizScore.innerHTML = '<strong>' + correct + '/' + quizData.length + '</strong> correct! ' + (correct === quizData.length ? 'Perfect!' : 'Review the ones you missed.');
+                                quizScore.style.color = correct === quizData.length ? 'var(--green)' : 'var(--text)';
+                            } else {
+                                quizScore.textContent = correct + '/' + answered + ' correct (' + (quizData.length - answered) + ' remaining)';
+                            }
+                        });
+                        btnsDiv.appendChild(btn);
+                    });
+                    qDiv.appendChild(btnsDiv);
+                    quizEl.appendChild(qDiv);
+                });
+            }
+        }
     },
 
     // ===== Visualization State =====
@@ -424,13 +918,13 @@ var priorityQueueTopic = {
             ops.forEach(function(op) {
                 if (op.type === 'push') {
                     heap.push(op.val); heap.sort(function(a, b) { return b - a; });
-                    states.push({ h: heap.slice(), msg: 'Inserted ' + op.val + '! Heap: [' + heap.join(', ') + ']' });
+                    states.push({ h: heap.slice(), msg: 'Inserted ' + op.val + ', sorted order maintained! Heap: [' + heap.join(', ') + '] \u2014 max heap always keeps the largest value at the front' });
                 } else {
                     if (heap.length === 0) {
-                        states.push({ h: [], msg: 'Heap is empty, output 0' });
+                        states.push({ h: [], msg: 'Heap is empty, output 0 \u2014 nothing to delete' });
                     } else {
                         var popped = heap.shift();
-                        states.push({ h: heap.slice(), msg: 'Popped max ' + popped + '! Heap: [' + (heap.length ? heap.join(', ') : 'Empty') + ']' });
+                        states.push({ h: heap.slice(), msg: 'Popped max ' + popped + '! \u2014 the root of a max heap is always the maximum, so removal takes O(log N)' });
                     }
                 }
             });
@@ -493,13 +987,13 @@ var priorityQueueTopic = {
             ops.forEach(function(op) {
                 if (op.type === 'push') {
                     heap.push(op.val); heap.sort(function(a, b) { return a - b; });
-                    states.push({ h: heap.slice(), msg: 'Inserted ' + op.val + '! Heap: [' + heap.join(', ') + ']' });
+                    states.push({ h: heap.slice(), msg: 'Inserted ' + op.val + ', sorted order maintained! Heap: [' + heap.join(', ') + '] \u2014 min heap always keeps the smallest value at the front' });
                 } else {
                     if (heap.length === 0) {
-                        states.push({ h: [], msg: 'Heap is empty, output 0' });
+                        states.push({ h: [], msg: 'Heap is empty, output 0 \u2014 nothing to delete' });
                     } else {
                         var popped = heap.shift();
-                        states.push({ h: heap.slice(), msg: 'Popped min ' + popped + '! Heap: [' + (heap.length ? heap.join(', ') : 'Empty') + ']' });
+                        states.push({ h: heap.slice(), msg: 'Popped min ' + popped + '! \u2014 the root of a min heap is always the minimum, so removal takes O(log N)' });
                     }
                 }
             });
@@ -555,17 +1049,17 @@ var priorityQueueTopic = {
             return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
         }
         function buildSteps(seq) {
-            var heap = [], states = [{ h: [], msg: 'Starting absolute value heap simulation.' }];
+            var heap = [], states = [{ h: [], msg: 'Starting absolute value heap simulation. Sorted by |value|, then by actual value for ties.' }];
             seq.forEach(function(x) {
                 if (x !== 0) {
                     heap.push(x); heap.sort(absSort);
-                    states.push({ h: heap.slice(), msg: 'Inserted ' + x + '! Heap: [' + heap.join(', ') + ']' });
+                    states.push({ h: heap.slice(), msg: 'Inserted ' + x + '! Heap: [' + heap.join(', ') + '] \u2014 sorted by absolute value so the smallest |value| stays at front' });
                 } else {
                     if (heap.length === 0) {
-                        states.push({ h: [], msg: 'Heap is empty, output 0' });
+                        states.push({ h: [], msg: 'Heap is empty, output 0 \u2014 nothing to delete' });
                     } else {
                         var popped = heap.shift();
-                        states.push({ h: heap.slice(), msg: 'Popped abs-min ' + popped + '! Heap: [' + (heap.length ? heap.join(', ') : 'Empty') + ']' });
+                        states.push({ h: heap.slice(), msg: 'Popped abs-min ' + popped + ' (|' + popped + '|=' + Math.abs(popped) + ')! \u2014 the element with smallest absolute value is always at the root' });
                     }
                 }
             });
@@ -620,17 +1114,17 @@ var priorityQueueTopic = {
             }).filter(function(row) { return row.length > 0; });
         }
         function buildSteps(N, rows) {
-            var heap = [], states = [{ h: [], msg: 'Maintain a min heap of size ' + N + ' while processing.' }];
+            var heap = [], states = [{ h: [], msg: 'Maintain a min heap of size ' + N + ' \u2014 the root will always be the Nth largest value.' }];
             rows.forEach(function(row) {
                 row.forEach(function(x) {
                     if (heap.length < N) {
                         heap.push(x); heap.sort(function(a, b) { return a - b; });
-                        states.push({ h: heap.slice(), msg: 'Insert ' + x + ' (heap size &lt; ' + N + '). Heap: [' + heap.join(', ') + ']' });
+                        states.push({ h: heap.slice(), msg: 'Insert ' + x + ' (heap size &lt; ' + N + ', so we must fill it first). Heap: [' + heap.join(', ') + ']' });
                     } else if (x > heap[0]) {
                         var old = heap[0]; heap[0] = x; heap.sort(function(a, b) { return a - b; });
-                        states.push({ h: heap.slice(), msg: x + ' &gt; root(' + old + '). Replace! Heap: [' + heap.join(', ') + ']' });
+                        states.push({ h: heap.slice(), msg: x + ' &gt; root(' + old + ') \u2014 ' + x + ' could be among the top ' + N + ', so replace the smallest. Heap: [' + heap.join(', ') + ']' });
                     } else {
-                        states.push({ h: heap.slice(), msg: x + ' \u2264 root(' + heap[0] + '). Skip!' });
+                        states.push({ h: heap.slice(), msg: x + ' \u2264 root(' + heap[0] + ') \u2014 too small to be in the top ' + N + ', skip!' });
                     }
                 });
             });
@@ -696,7 +1190,7 @@ var priorityQueueTopic = {
         }
         function buildSteps(nums) {
             var maxH = [], minH = [], medians = [];
-            var states = [{ mx: [], mn: [], med: null, msg: 'Insert numbers one by one and find the median.' }];
+            var states = [{ mx: [], mn: [], med: null, msg: 'Insert numbers one by one. Max heap holds the smaller half, min heap holds the larger half \u2014 the median is always the max heap root.' }];
             nums.forEach(function(x, idx) {
                 if (maxH.length === 0 || x <= Math.max.apply(null, maxH)) { maxH.push(x); } else { minH.push(x); }
                 if (maxH.length > minH.length + 1) { var mv = Math.max.apply(null, maxH); maxH.splice(maxH.indexOf(mv), 1); minH.push(mv); }
@@ -704,7 +1198,7 @@ var priorityQueueTopic = {
                 var med = Math.max.apply(null, maxH);
                 var isOdd = (idx + 1) % 2 === 1;
                 if (isOdd) medians.push(med);
-                states.push({ mx: maxH.slice(), mn: minH.slice(), med: med, msg: 'Inserted ' + x + '. ' + (isOdd ? 'Median = ' + med : 'Not an odd position yet') });
+                states.push({ mx: maxH.slice(), mn: minH.slice(), med: med, msg: 'Inserted ' + x + '. ' + (isOdd ? 'Odd position \u2192 Median = ' + med + ' (max heap root is always the middle value)' : 'Even position \u2014 no median output yet') });
             });
             states.push({ mx: maxH.slice(), mn: minH.slice(), med: Math.max.apply(null, maxH), msg: '<strong style="color:var(--green);">\u2705 Done! Medians output: ' + medians.join(', ') + '</strong>' });
             var steps = [];
@@ -770,15 +1264,15 @@ var priorityQueueTopic = {
             sortedB.forEach(function(bag) {
                 while (j2 < sortedJ.length && sortedJ[j2][0] <= bag) {
                     heap2.push(sortedJ[j2][1]); heap2.sort(function(a, b) { return b - a; });
-                    states.push({ h: heap2.slice(), msg: 'Bag capacity ' + bag + ': jewel(weight ' + sortedJ[j2][0] + ', price ' + sortedJ[j2][1] + ') added to heap. Heap: [' + heap2.join(', ') + ']' });
+                    states.push({ h: heap2.slice(), msg: 'Bag capacity ' + bag + ': jewel(weight ' + sortedJ[j2][0] + ', price ' + sortedJ[j2][1] + ') fits \u2014 add price to max heap as a candidate. Heap: [' + heap2.join(', ') + ']' });
                     j2++;
                 }
                 if (heap2.length > 0) {
                     var picked = heap2.shift();
                     answer += picked;
-                    states.push({ h: heap2.slice(), msg: 'Bag capacity ' + bag + ': picked most valuable jewel ' + picked + '! Total: ' + answer });
+                    states.push({ h: heap2.slice(), msg: 'Bag capacity ' + bag + ': greedily pick the most expensive jewel (' + picked + ') from the heap \u2014 maximizes total value. Running total: ' + answer });
                 } else {
-                    states.push({ h: heap2.slice(), msg: 'Bag capacity ' + bag + ': no jewels to put in' });
+                    states.push({ h: heap2.slice(), msg: 'Bag capacity ' + bag + ': no jewels light enough to fit in this bag' });
                 }
             });
             states.push({ h: [], msg: '<strong style="color:var(--green);">\u2705 Maximum total price = ' + answer + '</strong>' });
@@ -863,12 +1357,12 @@ var priorityQueueTopic = {
             var swaps = [], idx = h.length - 1;
             while (idx > 1) { var p = Math.floor(idx / 2); if (h[idx] < h[p]) { swaps.push({ ci: idx, pi: p, cv: h[idx], pv: h[p] }); var t = h[idx]; h[idx] = h[p]; h[p] = t; idx = p; } else break; }
             var steps = [], afterAdd = heap.slice(); afterAdd.push(val);
-            steps.push({ description: 'Append ' + val + ' to end of array', action: function() { renderAll(afterAdd, val + ' added! Comparing with parent.'); }, undo: function() { renderAll(heap, 'Before insert'); } });
+            steps.push({ description: 'Append ' + val + ' to end of array \u2014 heaps are complete binary trees, so we always insert at the last position', action: function() { renderAll(afterAdd, val + ' added! Now compare with parent to maintain heap property.'); }, undo: function() { renderAll(heap, 'Before insert'); } });
             var sim = afterAdd.slice(), ci = afterAdd.length - 1;
             swaps.forEach(function(sw) { var pi = Math.floor(ci / 2); var cv = sim[ci], pv = sim[pi]; var t2 = sim[ci]; sim[ci] = sim[pi]; sim[pi] = t2; var after = sim.slice(); var next = pi;
-                steps.push({ description: cv + ' < ' + pv + ', swap!', action: function() { renderAll(after, 'Swapped ' + cv + ' and ' + pv + '!'); }, undo: function() { renderAll(afterAdd, 'Before swap'); } }); ci = next; });
+                steps.push({ description: cv + ' < ' + pv + ' \u2192 swap! In a min heap, the parent must be smaller than its children, so we sift up', action: function() { renderAll(after, cv + ' < ' + pv + ' \u2192 heap property violated! Swap to move the smaller value up.'); }, undo: function() { renderAll(afterAdd, 'Before swap'); } }); ci = next; });
             var fin = sim.slice();
-            steps.push({ description: 'Insert complete!', action: function() { heap = fin.slice(); renderAll(heap, '\u2705 Insert complete! Heap: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim, 'Before completion'); } });
+            steps.push({ description: 'Insert complete! Parent \u2264 child condition is now satisfied \u2014 heap property restored', action: function() { heap = fin.slice(); renderAll(heap, '\u2705 Insert complete! Heap: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim, 'Before completion'); } });
             self._initStepController(container, steps, suffix);
         });
         container.querySelector('#pq-delete-btn-' + suffix).addEventListener('click', function() {
@@ -879,14 +1373,14 @@ var priorityQueueTopic = {
             var swaps2 = [], idx2 = 1, hc = h2.slice();
             while (idx2 * 2 < hc.length) { var c = idx2 * 2; if (c + 1 < hc.length && hc[c + 1] < hc[c]) c++; if (hc[idx2] > hc[c]) { swaps2.push({ pi: idx2, ci: c }); var t3 = hc[idx2]; hc[idx2] = hc[c]; hc[c] = t3; idx2 = c; } else break; }
             var steps2 = [];
-            steps2.push({ description: 'Remove root(' + rootVal + ')', action: function() { renderAll(orig, 'Removing ' + rootVal + '!'); }, undo: function() { renderAll(orig, 'Before delete'); } });
+            steps2.push({ description: 'Remove root(' + rootVal + ') \u2014 in a min heap the root is always the minimum, so we can access it in O(1)', action: function() { renderAll(orig, 'Removing ' + rootVal + '! The root is always the minimum in a min heap.'); }, undo: function() { renderAll(orig, 'Before delete'); } });
             var afterMove = orig.slice(); afterMove[1] = afterMove[afterMove.length - 1]; afterMove.pop();
-            steps2.push({ description: 'Move ' + lastVal + ' to root', action: function() { renderAll(afterMove, lastVal + ' moved to root! Comparing with children.'); }, undo: function() { renderAll(orig, 'Removing ' + rootVal + '!'); } });
+            steps2.push({ description: 'Move ' + lastVal + ' to root \u2014 to keep the complete binary tree shape, move the last element to the root position', action: function() { renderAll(afterMove, lastVal + ' moved to root! Now compare with children to restore heap property.'); }, undo: function() { renderAll(orig, 'Removing ' + rootVal + '!'); } });
             var sim2 = afterMove.slice(), ci2 = 1;
             swaps2.forEach(function() { var c2 = ci2 * 2; if (c2 + 1 < sim2.length && sim2[c2 + 1] < sim2[c2]) c2++; var pv2 = sim2[ci2], cv2 = sim2[c2]; var t4 = sim2[ci2]; sim2[ci2] = sim2[c2]; sim2[c2] = t4; var af = sim2.slice();
-                steps2.push({ description: pv2 + ' > ' + cv2 + ', swap!', action: function() { renderAll(af, 'Swapped ' + pv2 + ' and ' + cv2 + '!'); }, undo: function() { renderAll(afterMove, 'Before swap'); } }); ci2 = c2; });
+                steps2.push({ description: pv2 + ' > ' + cv2 + ' \u2192 swap! Parent is larger than child, violating min heap property \u2014 sift down by swapping with the smaller child', action: function() { renderAll(af, pv2 + ' > ' + cv2 + ' \u2192 heap property violated! Swap with the smaller child.'); }, undo: function() { renderAll(afterMove, 'Before swap'); } }); ci2 = c2; });
             var fin2 = sim2.slice();
-            steps2.push({ description: 'Delete complete! Popped: ' + rootVal, action: function() { heap = fin2.slice(); renderAll(heap, '\u2705 Delete complete! Popped: ' + rootVal + '. Heap: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim2, 'Before completion'); } });
+            steps2.push({ description: 'Delete complete! Popped minimum: ' + rootVal + ' \u2014 sift-down restored the heap property', action: function() { heap = fin2.slice(); renderAll(heap, '\u2705 Delete complete! Popped: ' + rootVal + '. Heap: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim2, 'Before completion'); } });
             self._initStepController(container, steps2, suffix);
         });
         container.querySelector('#pq-reset-btn-' + suffix).addEventListener('click', function() {
@@ -933,12 +1427,12 @@ var priorityQueueTopic = {
             if (nums.length === 0) return;
             var mxH = [], mnH = [], allSteps = [];
             nums.forEach(function(val) {
-                if (mxH.length === 0 || val <= Math.max.apply(null, mxH)) { mxH.push(val); allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Insert ' + val + ' into max heap.' }); }
-                else { mnH.push(val); allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Insert ' + val + ' into min heap.' }); }
+                if (mxH.length === 0 || val <= Math.max.apply(null, mxH)) { mxH.push(val); allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Insert ' + val + ' into max heap \u2014 it belongs in the smaller half because ' + (mxH.length === 1 ? 'the heap is empty' : val + ' \u2264 max heap root') }); }
+                else { mnH.push(val); allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Insert ' + val + ' into min heap \u2014 it belongs in the larger half because ' + val + ' > max heap root' }); }
                 if (mxH.length > mnH.length + 1) { var mv = Math.max.apply(null, mxH); mxH.splice(mxH.indexOf(mv), 1); mnH.push(mv);
-                    allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Move ' + mv + ' from max heap \u2192 min heap' }); }
+                    allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Move ' + mv + ' from max heap \u2192 min heap \u2014 rebalancing so the two heaps stay equal in size' }); }
                 else if (mnH.length > mxH.length) { var mv2 = Math.min.apply(null, mnH); mnH.splice(mnH.indexOf(mv2), 1); mxH.push(mv2);
-                    allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Move ' + mv2 + ' from min heap \u2192 max heap' }); }
+                    allSteps.push({ mx: mxH.slice(), mn: mnH.slice(), med: null, desc: 'Move ' + mv2 + ' from min heap \u2192 max heap \u2014 rebalancing so max heap has \u2265 min heap elements' }); }
                 var med = Math.max.apply(null, mxH);
                 allSteps[allSteps.length - 1].med = med;
                 allSteps[allSteps.length - 1].desc += ' \u2192 Median = ' + med;

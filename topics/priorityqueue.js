@@ -58,7 +58,7 @@ var priorityQueueTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -172,6 +172,30 @@ var priorityQueueTopic = {
                         반대로 숫자가 작을수록 먼저 나오는 것은 <strong>최소 우선순위 큐</strong>입니다.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 일반 큐 vs 우선순위 큐</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="pq-demo-qcmp-input" value="3,7,1,5,2" placeholder="쉼표로 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:150px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="pq-demo-qcmp-btn">넣고 빼기</button>\
+                        <button class="concept-demo-btn green" id="pq-demo-qcmp-reset" style="display:none;">다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">일반 큐 (FIFO)</div>\
+                                <div id="pq-demo-qcmp-fifo" style="display:flex;gap:4px;flex-wrap:wrap;min-height:44px;"></div>\
+                                <div id="pq-demo-qcmp-fifo-out" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">우선순위 큐 (Min-Heap)</div>\
+                                <div id="pq-demo-qcmp-pq" style="display:flex;gap:4px;flex-wrap:wrap;min-height:44px;"></div>\
+                                <div id="pq-demo-qcmp-pq-out" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-demo-qcmp-msg">같은 값들을 넣고 하나씩 빼면, 큐는 넣은 순서대로, 우선순위 큐는 작은 순서대로 나옵니다!</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -213,6 +237,18 @@ var priorityQueueTopic = {
                         오른쪽 자식 = 2 \u00D7 2 + 1 = <strong>인덱스 5 \u2192 값 7</strong>\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 배열 인덱스와 트리 위치</div>\
+                    <p style="color:var(--text2);font-size:0.85rem;margin-bottom:10px;">배열의 칸을 클릭하면 트리에서의 위치와 부모/자식 관계를 보여줍니다.</p>\
+                    <div class="concept-demo-body">\
+                        <div style="margin-bottom:8px;font-weight:600;">배열 (1-indexed)</div>\
+                        <div id="pq-demo-a2t-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;"></div>\
+                        <div style="margin-bottom:8px;font-weight:600;">트리 구조</div>\
+                        <div id="pq-demo-a2t-tree" style="position:relative;width:100%;height:150px;margin-bottom:8px;"></div>\
+                        <div id="pq-demo-a2t-info" style="padding:8px 12px;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;min-height:1.5em;"></div>\
+                    </div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -242,6 +278,24 @@ var priorityQueueTopic = {
                         \u2462 부모(인덱스 1) = 1, 2 > 1이므로 끝!<br>\
                         결과: [-, 1, 2, 5, 7, 3]\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — Sift-Up 삽입 애니메이션</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <label style="font-size:0.85rem;color:var(--text2);">현재 힙:</label>\
+                        <input type="text" id="pq-demo-sift-heap" value="1,3,5,7,9" placeholder="쉼표로 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.85rem;color:var(--text2);">삽입할 값:</label>\
+                        <input type="number" id="pq-demo-sift-val" value="2" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="pq-demo-sift-btn">삽입!</button>\
+                        <button class="concept-demo-btn green" id="pq-demo-sift-reset" style="display:none;">다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;">힙 배열</div>\
+                        <div id="pq-demo-sift-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;min-height:44px;"></div>\
+                        <div id="pq-demo-sift-info" style="padding:8px 12px;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-demo-sift-msg">값을 넣으면 맨 끝에 추가한 뒤, 부모와 비교하며 위로 올라가는 Sift-Up 과정을 봅니다.</div>\
                 </div>\
             </div>\
 \
@@ -295,6 +349,33 @@ var priorityQueueTopic = {
             </div></span>\
 \
             <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">4.5</span> 힙 시뮬레이터</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — Push / Pop 시뮬레이터</div>\
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="number" id="pq-demo-sim-val" value="4" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="pq-demo-sim-push">Push</button>\
+                        <button class="concept-demo-btn" id="pq-demo-sim-pop" style="background:var(--red);color:#fff;">Pop</button>\
+                        <button class="concept-demo-btn green" id="pq-demo-sim-clear">Clear</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">트리 뷰</div>\
+                                <div id="pq-demo-sim-tree" style="position:relative;width:100%;min-height:140px;margin-bottom:8px;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:150px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">배열 뷰</div>\
+                                <div id="pq-demo-sim-arr" style="display:flex;gap:4px;flex-wrap:wrap;min-height:44px;margin-bottom:8px;"></div>\
+                            </div>\
+                        </div>\
+                        <div id="pq-demo-sim-log" style="padding:8px 12px;background:var(--bg);border-radius:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;max-height:100px;overflow-y:auto;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-demo-sim-msg">Push로 값을 넣고, Pop으로 최솟값을 꺼내 봅니다. 트리와 배열이 동시에 변합니다!</div>\
+                </div>\
+            </div>\
+\
+            <div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">5</span> 우선순위 큐 문제 푸는 팁</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <span class="lang-py"><div class="concept-card"><h3>\u2460 기본 힙 연산</h3><p>heappush/heappop으로<br>최대\u00B7최소\u00B7절댓값 힙을 구현합니다.</p></div></span>\
@@ -315,9 +396,17 @@ var priorityQueueTopic = {
                         한 번 힙에 넣은 보석은 다시 빼지 않아도 됩니다!\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">유형 맞추기 퀴즈</div>\
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">각 문제에 가장 적합한 힙/우선순위 큐 패턴을 골라보세요!</p>\
+                    <div id="pq-demo-quiz" style="display:flex;flex-direction:column;gap:12px;"></div>\
+                    <div id="pq-demo-quiz-score" style="margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:8px;text-align:center;min-height:1.5em;font-size:0.9rem;"></div>\
+                </div>\
             </div>\
         ';
         this._initConceptInteractions(container);
+        this._initConceptDemos(container);
     },
 
     _initConceptInteractions: function(container) {
@@ -329,6 +418,411 @@ var priorityQueueTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+    },
+
+    _initConceptDemos: function(container) {
+        // Helper: render tree from array (1-indexed)
+        function renderTree(treeEl, heap, highlightIdx) {
+            treeEl.innerHTML = '';
+            if (heap.length <= 1) { treeEl.innerHTML = '<span style="color:var(--text3);">비어있음</span>'; return; }
+            var levels = Math.ceil(Math.log2(heap.length));
+            var nodeW = 40, nodeH = 40;
+            var totalW = treeEl.offsetWidth || 300;
+            // Draw edges first, then nodes
+            for (var i = 1; i < heap.length; i++) {
+                var level = Math.floor(Math.log2(i));
+                var posInLevel = i - Math.pow(2, level);
+                var totalInLevel = Math.pow(2, level);
+                var x = totalW * (posInLevel + 0.5) / totalInLevel;
+                var y = level * 45 + 10;
+                // Edge to parent
+                if (i > 1) {
+                    var pi = Math.floor(i / 2);
+                    var pLevel = Math.floor(Math.log2(pi));
+                    var pPos = pi - Math.pow(2, pLevel);
+                    var pTotal = Math.pow(2, pLevel);
+                    var px = totalW * (pPos + 0.5) / pTotal;
+                    var py = pLevel * 45 + 10;
+                    var line = document.createElement('div');
+                    line.style.cssText = 'position:absolute;height:2px;background:var(--border);transform-origin:0 0;';
+                    var dx = x - px, dy = y - py;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    line.style.width = dist + 'px';
+                    line.style.left = px + 'px';
+                    line.style.top = (py + nodeH / 2) + 'px';
+                    line.style.transform = 'rotate(' + angle + 'deg)';
+                    treeEl.appendChild(line);
+                }
+            }
+            for (var i = 1; i < heap.length; i++) {
+                var level = Math.floor(Math.log2(i));
+                var posInLevel = i - Math.pow(2, level);
+                var totalInLevel = Math.pow(2, level);
+                var x = totalW * (posInLevel + 0.5) / totalInLevel;
+                var y = level * 45 + 10;
+                var node = document.createElement('div');
+                node.style.cssText = 'position:absolute;width:' + nodeW + 'px;height:' + nodeH + 'px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;transition:all 0.3s ease;';
+                node.style.left = (x - nodeW / 2) + 'px';
+                node.style.top = y + 'px';
+                if (highlightIdx === i) {
+                    node.style.background = 'var(--yellow)';
+                    node.style.color = '#333';
+                    node.style.boxShadow = '0 0 10px var(--yellow)80';
+                } else {
+                    node.style.background = 'var(--accent)';
+                    node.style.color = '#fff';
+                }
+                node.textContent = heap[i];
+                treeEl.appendChild(node);
+            }
+            treeEl.style.height = (levels * 45 + 20) + 'px';
+        }
+
+        function renderArrBoxes(arrEl, heap, highlightIdx) {
+            arrEl.innerHTML = '';
+            for (var i = 1; i < heap.length; i++) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.style.cssText = 'min-width:36px;text-align:center;transition:all 0.3s ease;';
+                if (highlightIdx === i) {
+                    box.style.background = 'var(--yellow)20';
+                    box.style.boxShadow = '0 0 6px var(--yellow)60';
+                }
+                box.innerHTML = '<div class="str-char-idx" style="font-size:0.6rem;">' + i + '</div><div class="str-char-val">' + heap[i] + '</div>';
+                arrEl.appendChild(box);
+            }
+            if (heap.length <= 1) arrEl.innerHTML = '<span style="color:var(--text3);">비어있음</span>';
+        }
+
+        // ===== Demo 1: 큐 vs 우선순위 큐 =====
+        {
+            var qcmpBtn = container.querySelector('#pq-demo-qcmp-btn');
+            var qcmpReset = container.querySelector('#pq-demo-qcmp-reset');
+            var qcmpInput = container.querySelector('#pq-demo-qcmp-input');
+            var fifoEl = container.querySelector('#pq-demo-qcmp-fifo');
+            var pqEl = container.querySelector('#pq-demo-qcmp-pq');
+            var fifoOut = container.querySelector('#pq-demo-qcmp-fifo-out');
+            var pqOut = container.querySelector('#pq-demo-qcmp-pq-out');
+            var qcmpMsg = container.querySelector('#pq-demo-qcmp-msg');
+            var qcmpAnimating = false;
+
+            function parseQArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function makeBox(val, bg) {
+                return '<div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:' + bg + ';color:#fff;font-weight:700;font-size:0.9rem;transition:all 0.3s ease;">' + val + '</div>';
+            }
+
+            if (qcmpBtn) {
+                qcmpBtn.addEventListener('click', function() {
+                    if (qcmpAnimating) return;
+                    qcmpAnimating = true;
+                    qcmpBtn.style.display = 'none';
+                    qcmpReset.style.display = '';
+                    var vals = parseQArr(qcmpInput.value);
+                    if (vals.length === 0) { qcmpMsg.textContent = '값을 입력해주세요!'; qcmpAnimating = false; qcmpBtn.style.display = ''; qcmpReset.style.display = 'none'; return; }
+
+                    // Phase 1: Insert all
+                    fifoEl.innerHTML = '';
+                    pqEl.innerHTML = '';
+                    fifoOut.textContent = '';
+                    pqOut.textContent = '';
+                    var fifoQueue = [];
+                    var pqArr = [];
+                    var insertStep = 0;
+
+                    function insertNext() {
+                        if (insertStep >= vals.length) {
+                            fifoOut.textContent = '모두 넣었습니다! 이제 하나씩 뺍니다...';
+                            pqOut.textContent = '모두 넣었습니다! 이제 하나씩 뺍니다...';
+                            setTimeout(popNext, 800);
+                            return;
+                        }
+                        var v = vals[insertStep];
+                        fifoQueue.push(v);
+                        pqArr.push(v);
+                        pqArr.sort(function(a, b) { return a - b; });
+                        fifoEl.innerHTML = fifoQueue.map(function(x) { return makeBox(x, 'var(--accent)'); }).join('');
+                        pqEl.innerHTML = pqArr.map(function(x) { return makeBox(x, 'var(--green)'); }).join('');
+                        insertStep++;
+                        setTimeout(insertNext, 500);
+                    }
+
+                    // Phase 2: Pop all
+                    var fifoPopped = [];
+                    var pqPopped = [];
+                    function popNext() {
+                        if (fifoQueue.length === 0) {
+                            fifoOut.innerHTML = '나온 순서: <strong>' + fifoPopped.join(' \u2192 ') + '</strong>';
+                            pqOut.innerHTML = '나온 순서: <strong style="color:var(--green);">' + pqPopped.join(' \u2192 ') + '</strong>';
+                            qcmpMsg.textContent = '큐는 넣은 순서 그대로, 우선순위 큐는 작은 값부터 나옵니다!';
+                            qcmpAnimating = false;
+                            return;
+                        }
+                        var fv = fifoQueue.shift();
+                        fifoPopped.push(fv);
+                        var pv = pqArr.shift();
+                        pqPopped.push(pv);
+                        fifoEl.innerHTML = fifoQueue.map(function(x) { return makeBox(x, 'var(--accent)'); }).join('');
+                        pqEl.innerHTML = pqArr.map(function(x) { return makeBox(x, 'var(--green)'); }).join('');
+                        if (fifoQueue.length === 0) { fifoEl.innerHTML = '<span style="color:var(--text3);">비어있음</span>'; pqEl.innerHTML = '<span style="color:var(--text3);">비어있음</span>'; }
+                        fifoOut.innerHTML = '나온 값: ' + fifoPopped.join(' \u2192 ');
+                        pqOut.innerHTML = '나온 값: ' + pqPopped.join(' \u2192 ');
+                        setTimeout(popNext, 600);
+                    }
+
+                    insertNext();
+                });
+
+                qcmpReset.addEventListener('click', function() {
+                    qcmpAnimating = false;
+                    qcmpBtn.style.display = '';
+                    qcmpReset.style.display = 'none';
+                    fifoEl.innerHTML = '';
+                    pqEl.innerHTML = '';
+                    fifoOut.textContent = '';
+                    pqOut.textContent = '';
+                    qcmpMsg.textContent = '같은 값들을 넣고 하나씩 빼면, 큐는 넣은 순서대로, 우선순위 큐는 작은 순서대로 나옵니다!';
+                });
+            }
+        }
+
+        // ===== Demo 2: 배열 <-> 트리 변환 =====
+        {
+            var a2tArr = container.querySelector('#pq-demo-a2t-arr');
+            var a2tTree = container.querySelector('#pq-demo-a2t-tree');
+            var a2tInfo = container.querySelector('#pq-demo-a2t-info');
+            var heapVals = [null, 1, 3, 5, 7, 9, 8]; // 1-indexed
+
+            if (a2tArr) {
+                function renderA2T(highlightIdx) {
+                    a2tArr.innerHTML = '';
+                    for (var i = 1; i < heapVals.length; i++) {
+                        var box = document.createElement('div');
+                        box.className = 'str-char-box';
+                        box.style.cssText = 'min-width:38px;text-align:center;cursor:pointer;transition:all 0.3s ease;';
+                        box.dataset.idx = i;
+                        if (highlightIdx === i) {
+                            box.style.background = 'var(--yellow)20';
+                            box.style.boxShadow = '0 0 8px var(--yellow)60';
+                        }
+                        box.innerHTML = '<div class="str-char-idx" style="font-size:0.6rem;">i=' + i + '</div><div class="str-char-val">' + heapVals[i] + '</div>';
+                        box.addEventListener('click', function() {
+                            var idx = parseInt(this.dataset.idx);
+                            renderA2T(idx);
+                            var parent = Math.floor(idx / 2);
+                            var left = idx * 2;
+                            var right = idx * 2 + 1;
+                            var info = '<strong>인덱스 ' + idx + '</strong> (값: ' + heapVals[idx] + ')<br>';
+                            info += '부모: ' + (parent >= 1 ? 'i/' + 2 + ' = 인덱스 ' + parent + ' (값: ' + heapVals[parent] + ')' : '없음 (루트)') + '<br>';
+                            info += '왼쪽 자식: ' + (left < heapVals.length ? '2*i = 인덱스 ' + left + ' (값: ' + heapVals[left] + ')' : '없음') + '<br>';
+                            info += '오른쪽 자식: ' + (right < heapVals.length ? '2*i+1 = 인덱스 ' + right + ' (값: ' + heapVals[right] + ')' : '없음');
+                            a2tInfo.innerHTML = info;
+                        });
+                        a2tArr.appendChild(box);
+                    }
+                    renderTree(a2tTree, heapVals, highlightIdx);
+                }
+                renderA2T(null);
+                a2tInfo.innerHTML = '배열의 칸을 클릭해보세요!';
+            }
+        }
+
+        // ===== Demo 3: Sift-Up 삽입 =====
+        {
+            var siftBtn = container.querySelector('#pq-demo-sift-btn');
+            var siftReset = container.querySelector('#pq-demo-sift-reset');
+            var siftHeapInput = container.querySelector('#pq-demo-sift-heap');
+            var siftValInput = container.querySelector('#pq-demo-sift-val');
+            var siftArrEl = container.querySelector('#pq-demo-sift-arr');
+            var siftInfo = container.querySelector('#pq-demo-sift-info');
+            var siftMsg = container.querySelector('#pq-demo-sift-msg');
+            var siftAnimating = false;
+
+            function parseSiftArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function renderSiftArr(heap, highlightIdx) {
+                renderArrBoxes(siftArrEl, heap, highlightIdx);
+            }
+
+            if (siftBtn) {
+                var initHeap = parseSiftArr(siftHeapInput.value);
+                var h0 = [null].concat(initHeap);
+                renderSiftArr(h0, null);
+                siftInfo.innerHTML = '삽입 버튼을 눌러 Sift-Up을 확인하세요';
+
+                siftBtn.addEventListener('click', function() {
+                    if (siftAnimating) return;
+                    siftAnimating = true;
+                    siftBtn.style.display = 'none';
+                    siftReset.style.display = '';
+                    var heapArr = parseSiftArr(siftHeapInput.value);
+                    var val = parseInt(siftValInput.value);
+                    if (isNaN(val)) { siftMsg.textContent = '삽입할 값을 입력하세요!'; siftAnimating = false; siftBtn.style.display = ''; siftReset.style.display = 'none'; return; }
+                    var heap = [null].concat(heapArr);
+                    heap.push(val);
+                    var idx = heap.length - 1;
+                    renderSiftArr(heap, idx);
+                    siftInfo.innerHTML = '<strong>' + val + '</strong>을 맨 끝(인덱스 ' + idx + ')에 추가했습니다';
+
+                    function siftStep() {
+                        if (idx <= 1) { siftInfo.innerHTML = '<strong style="color:var(--green);">루트에 도달! Sift-Up 완료.</strong> 결과: [' + heap.slice(1).join(', ') + ']'; siftAnimating = false; return; }
+                        var parent = Math.floor(idx / 2);
+                        if (heap[idx] < heap[parent]) {
+                            siftInfo.innerHTML = heap[idx] + ' < ' + heap[parent] + ' (부모) \u2192 <strong>교환!</strong>';
+                            var tmp = heap[idx]; heap[idx] = heap[parent]; heap[parent] = tmp;
+                            idx = parent;
+                            renderSiftArr(heap, idx);
+                            setTimeout(siftStep, 800);
+                        } else {
+                            siftInfo.innerHTML = heap[idx] + ' \u2265 ' + heap[parent] + ' (부모) \u2192 <strong style="color:var(--green);">Sift-Up 완료!</strong> 결과: [' + heap.slice(1).join(', ') + ']';
+                            renderSiftArr(heap, null);
+                            siftAnimating = false;
+                        }
+                    }
+                    setTimeout(siftStep, 800);
+                });
+
+                siftReset.addEventListener('click', function() {
+                    siftAnimating = false;
+                    siftBtn.style.display = '';
+                    siftReset.style.display = 'none';
+                    var h = [null].concat(parseSiftArr(siftHeapInput.value));
+                    renderSiftArr(h, null);
+                    siftInfo.innerHTML = '삽입 버튼을 눌러 Sift-Up을 확인하세요';
+                    siftMsg.textContent = '값을 넣으면 맨 끝에 추가한 뒤, 부모와 비교하며 위로 올라가는 Sift-Up 과정을 봅니다.';
+                });
+            }
+        }
+
+        // ===== Demo 4: Push/Pop 시뮬레이터 =====
+        {
+            var simPush = container.querySelector('#pq-demo-sim-push');
+            var simPop = container.querySelector('#pq-demo-sim-pop');
+            var simClear = container.querySelector('#pq-demo-sim-clear');
+            var simValInput = container.querySelector('#pq-demo-sim-val');
+            var simTreeEl = container.querySelector('#pq-demo-sim-tree');
+            var simArrEl = container.querySelector('#pq-demo-sim-arr');
+            var simLog = container.querySelector('#pq-demo-sim-log');
+            var simHeap = [null]; // 1-indexed
+
+            function siftUp(heap, idx) {
+                while (idx > 1) {
+                    var parent = Math.floor(idx / 2);
+                    if (heap[idx] < heap[parent]) {
+                        var tmp = heap[idx]; heap[idx] = heap[parent]; heap[parent] = tmp;
+                        idx = parent;
+                    } else break;
+                }
+            }
+            function siftDown(heap, idx) {
+                while (idx * 2 < heap.length) {
+                    var child = idx * 2;
+                    if (child + 1 < heap.length && heap[child + 1] < heap[child]) child++;
+                    if (heap[idx] > heap[child]) {
+                        var tmp = heap[idx]; heap[idx] = heap[child]; heap[child] = tmp;
+                        idx = child;
+                    } else break;
+                }
+            }
+            function renderSim(hl) {
+                renderTree(simTreeEl, simHeap, hl);
+                renderArrBoxes(simArrEl, simHeap, hl);
+            }
+
+            if (simPush) {
+                renderSim(null);
+                simLog.textContent = 'Push/Pop 버튼으로 힙을 조작해보세요.';
+
+                simPush.addEventListener('click', function() {
+                    var val = parseInt(simValInput.value);
+                    if (isNaN(val)) return;
+                    simHeap.push(val);
+                    siftUp(simHeap, simHeap.length - 1);
+                    renderSim(simHeap.length - 1);
+                    simLog.innerHTML = 'Push(' + val + ') \u2192 배열: [' + simHeap.slice(1).join(', ') + ']<br>' + simLog.innerHTML;
+                });
+
+                simPop.addEventListener('click', function() {
+                    if (simHeap.length <= 1) { simLog.innerHTML = '힙이 비어있습니다!<br>' + simLog.innerHTML; return; }
+                    var popped = simHeap[1];
+                    simHeap[1] = simHeap[simHeap.length - 1];
+                    simHeap.pop();
+                    if (simHeap.length > 1) siftDown(simHeap, 1);
+                    renderSim(1);
+                    simLog.innerHTML = 'Pop() \u2192 <strong>' + popped + '</strong> 꺼냄! 남은 배열: [' + simHeap.slice(1).join(', ') + ']<br>' + simLog.innerHTML;
+                });
+
+                simClear.addEventListener('click', function() {
+                    simHeap = [null];
+                    renderSim(null);
+                    simLog.textContent = '힙을 초기화했습니다.';
+                });
+            }
+        }
+
+        // ===== Demo 5: 유형 맞추기 퀴즈 =====
+        {
+            var quizEl = container.querySelector('#pq-demo-quiz');
+            var quizScore = container.querySelector('#pq-demo-quiz-score');
+            if (quizEl) {
+                var quizData = [
+                    { q: '"계속 숫자가 들어오는데, 매번 가장 큰 수를 출력하라"', a: '최대 힙', choices: ['최대 힙', '최소 힙', '정렬', '스택'] },
+                    { q: '"N개 중 K번째로 큰 수를 구하라"', a: '크기 제한 힙', choices: ['완전 탐색', '크기 제한 힙', '이분 탐색', '정렬'] },
+                    { q: '"계속 숫자가 들어오고, 매번 중앙값을 출력하라"', a: '두 개의 힙', choices: ['정렬', '최소 힙', '두 개의 힙', '이분 탐색'] },
+                    { q: '"가방에 넣을 수 있는 보석 중 가장 비싼 것을 선택하라"', a: '그리디 + 힙', choices: ['DP', '그리디 + 힙', 'BFS', '투 포인터'] },
+                    { q: '"그래프에서 가중치가 가장 작은 간선부터 처리하라"', a: '최소 힙', choices: ['스택', 'DFS', '최소 힙', '큐'] }
+                ];
+                var correct = 0;
+                var answered = 0;
+
+                quizData.forEach(function(item, idx) {
+                    var qDiv = document.createElement('div');
+                    qDiv.style.cssText = 'padding:12px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);';
+                    var qText = document.createElement('div');
+                    qText.style.cssText = 'font-weight:600;margin-bottom:8px;font-size:0.9rem;';
+                    qText.textContent = (idx + 1) + '. ' + item.q;
+                    qDiv.appendChild(qText);
+                    var btnsDiv = document.createElement('div');
+                    btnsDiv.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+                    item.choices.forEach(function(ch) {
+                        var btn = document.createElement('button');
+                        btn.className = 'concept-demo-btn';
+                        btn.style.cssText = 'font-size:0.8rem;padding:4px 12px;';
+                        btn.textContent = ch;
+                        btn.addEventListener('click', function() {
+                            if (qDiv.dataset.done) return;
+                            qDiv.dataset.done = '1';
+                            answered++;
+                            var isCorrect = (ch === item.a);
+                            if (isCorrect) {
+                                correct++;
+                                btn.style.background = 'var(--green)';
+                                btn.style.color = '#fff';
+                                btn.style.boxShadow = '0 0 8px var(--green)60';
+                            } else {
+                                btn.style.background = 'var(--red)';
+                                btn.style.color = '#fff';
+                                btnsDiv.querySelectorAll('button').forEach(function(b) {
+                                    if (b.textContent === item.a) { b.style.background = 'var(--green)'; b.style.color = '#fff'; }
+                                });
+                            }
+                            if (answered === quizData.length) {
+                                quizScore.innerHTML = '<strong>' + correct + '/' + quizData.length + '</strong> 정답! ' + (correct === quizData.length ? '완벽합니다!' : '틀린 문제를 다시 확인해보세요.');
+                                quizScore.style.color = correct === quizData.length ? 'var(--green)' : 'var(--text)';
+                            } else {
+                                quizScore.textContent = correct + '/' + answered + ' 정답 (' + (quizData.length - answered) + '문제 남음)';
+                            }
+                        });
+                        btnsDiv.appendChild(btn);
+                    });
+                    qDiv.appendChild(btnsDiv);
+                    quizEl.appendChild(qDiv);
+                });
+            }
+        }
     },
 
     // ===== 시각화 상태 =====
@@ -424,13 +918,13 @@ var priorityQueueTopic = {
             ops.forEach(function(op) {
                 if (op.type === 'push') {
                     heap.push(op.val); heap.sort(function(a, b) { return b - a; });
-                    states.push({ h: heap.slice(), msg: op.val + '을(를) 삽입! 힙: [' + heap.join(', ') + ']' });
+                    states.push({ h: heap.slice(), msg: op.val + ' 삽입 후 정렬 유지! 힙: [' + heap.join(', ') + '] — 최대 힙이므로 가장 큰 값이 항상 맨 앞' });
                 } else {
                     if (heap.length === 0) {
-                        states.push({ h: [], msg: '힙이 비어있어 0 출력' });
+                        states.push({ h: [], msg: '힙이 비어있어 0 출력 — 삭제할 원소가 없는 경우' });
                     } else {
                         var popped = heap.shift();
-                        states.push({ h: heap.slice(), msg: '최댓값 ' + popped + '을(를) 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
+                        states.push({ h: heap.slice(), msg: '최댓값 ' + popped + ' 꺼냄! — 최대 힙의 루트가 항상 최댓값이므로 O(log N)에 제거' });
                     }
                 }
             });
@@ -493,13 +987,13 @@ var priorityQueueTopic = {
             ops.forEach(function(op) {
                 if (op.type === 'push') {
                     heap.push(op.val); heap.sort(function(a, b) { return a - b; });
-                    states.push({ h: heap.slice(), msg: op.val + ' 삽입! 힙: [' + heap.join(', ') + ']' });
+                    states.push({ h: heap.slice(), msg: op.val + ' 삽입 후 정렬 유지! 힙: [' + heap.join(', ') + '] — 최소 힙이므로 가장 작은 값이 항상 맨 앞' });
                 } else {
                     if (heap.length === 0) {
-                        states.push({ h: [], msg: '힙이 비어있어 0 출력' });
+                        states.push({ h: [], msg: '힙이 비어있어 0 출력 — 삭제할 원소가 없는 경우' });
                     } else {
                         var popped = heap.shift();
-                        states.push({ h: heap.slice(), msg: '최솟값 ' + popped + ' 꺼냄! 힙: [' + (heap.length ? heap.join(', ') : '비어있음') + ']' });
+                        states.push({ h: heap.slice(), msg: '최솟값 ' + popped + ' 꺼냄! — 최소 힙의 루트가 항상 최솟값이므로 O(log N)에 제거' });
                     }
                 }
             });
@@ -863,12 +1357,12 @@ var priorityQueueTopic = {
             var swaps = [], idx = h.length - 1;
             while (idx > 1) { var p = Math.floor(idx / 2); if (h[idx] < h[p]) { swaps.push({ ci: idx, pi: p, cv: h[idx], pv: h[p] }); var t = h[idx]; h[idx] = h[p]; h[p] = t; idx = p; } else break; }
             var steps = [], afterAdd = heap.slice(); afterAdd.push(val);
-            steps.push({ description: val + '을(를) 배열 끝에 추가', action: function() { renderAll(afterAdd, val + ' 추가! 부모와 비교합니다.'); }, undo: function() { renderAll(heap, '삽입 전 상태'); } });
+            steps.push({ description: val + '을(를) 배열 끝에 추가 — 힙은 완전이진트리이므로 항상 마지막 위치에 삽입', action: function() { renderAll(afterAdd, val + ' 추가! 힙 성질 유지를 위해 부모와 비교합니다.'); }, undo: function() { renderAll(heap, '삽입 전 상태'); } });
             var sim = afterAdd.slice(), ci = afterAdd.length - 1;
             swaps.forEach(function(sw) { var pi = Math.floor(ci / 2); var cv = sim[ci], pv = sim[pi]; var t2 = sim[ci]; sim[ci] = sim[pi]; sim[pi] = t2; var after = sim.slice(); var next = pi;
-                steps.push({ description: cv + ' < ' + pv + ' 교환!', action: function() { renderAll(after, cv + '과 ' + pv + '을 교환!'); }, undo: function() { renderAll(afterAdd, '교환 전'); } }); ci = next; });
+                steps.push({ description: cv + ' < ' + pv + ' → 교환! 최소 힙에서는 부모가 자식보다 작아야 하므로 위로 올림(sift-up)', action: function() { renderAll(after, cv + ' < ' + pv + ' → 힙 성질 위반! 교환하여 위로 올립니다.'); }, undo: function() { renderAll(afterAdd, '교환 전'); } }); ci = next; });
             var fin = sim.slice();
-            steps.push({ description: '삽입 완료!', action: function() { heap = fin.slice(); renderAll(heap, '\u2705 삽입 완료! 힙: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim, '삽입 완료 전'); } });
+            steps.push({ description: '삽입 완료! 부모≤자식 조건이 만족되어 힙 성질 복원됨', action: function() { heap = fin.slice(); renderAll(heap, '\u2705 삽입 완료! 힙: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim, '삽입 완료 전'); } });
             self._initStepController(container, steps, suffix);
         });
         container.querySelector('#pq-delete-btn-' + suffix).addEventListener('click', function() {
@@ -879,14 +1373,14 @@ var priorityQueueTopic = {
             var swaps2 = [], idx2 = 1, hc = h2.slice();
             while (idx2 * 2 < hc.length) { var c = idx2 * 2; if (c + 1 < hc.length && hc[c + 1] < hc[c]) c++; if (hc[idx2] > hc[c]) { swaps2.push({ pi: idx2, ci: c }); var t3 = hc[idx2]; hc[idx2] = hc[c]; hc[c] = t3; idx2 = c; } else break; }
             var steps2 = [];
-            steps2.push({ description: '루트(' + rootVal + ')를 꺼냄', action: function() { renderAll(orig, rootVal + '을(를) 꺼냅니다!'); }, undo: function() { renderAll(orig, '삭제 전'); } });
+            steps2.push({ description: '루트(' + rootVal + ')를 꺼냄 — 최소 힙에서 루트가 항상 최솟값이므로 O(1)에 최솟값 접근', action: function() { renderAll(orig, rootVal + '을(를) 꺼냅니다! 루트가 최솟값이라서 바로 꺼낼 수 있습니다.'); }, undo: function() { renderAll(orig, '삭제 전'); } });
             var afterMove = orig.slice(); afterMove[1] = afterMove[afterMove.length - 1]; afterMove.pop();
-            steps2.push({ description: lastVal + '을(를) 루트로 이동', action: function() { renderAll(afterMove, lastVal + '을(를) 루트로! 자식과 비교합니다.'); }, undo: function() { renderAll(orig, rootVal + '을(를) 꺼냅니다!'); } });
+            steps2.push({ description: lastVal + '을(를) 루트로 이동 — 완전이진트리 모양을 유지하기 위해 마지막 원소를 루트로 올림', action: function() { renderAll(afterMove, lastVal + '을(를) 루트로! 힙 성질 복원을 위해 자식과 비교합니다.'); }, undo: function() { renderAll(orig, rootVal + '을(를) 꺼냅니다!'); } });
             var sim2 = afterMove.slice(), ci2 = 1;
             swaps2.forEach(function() { var c2 = ci2 * 2; if (c2 + 1 < sim2.length && sim2[c2 + 1] < sim2[c2]) c2++; var pv2 = sim2[ci2], cv2 = sim2[c2]; var t4 = sim2[ci2]; sim2[ci2] = sim2[c2]; sim2[c2] = t4; var af = sim2.slice();
-                steps2.push({ description: pv2 + ' > ' + cv2 + ' 교환!', action: function() { renderAll(af, pv2 + '과 ' + cv2 + '을 교환!'); }, undo: function() { renderAll(afterMove, '교환 전'); } }); ci2 = c2; });
+                steps2.push({ description: pv2 + ' > ' + cv2 + ' → 교환! 부모가 자식보다 크면 힙 성질 위반이므로 아래로 내림(sift-down)', action: function() { renderAll(af, pv2 + ' > ' + cv2 + ' → 힙 성질 위반! 더 작은 자식과 교환합니다.'); }, undo: function() { renderAll(afterMove, '교환 전'); } }); ci2 = c2; });
             var fin2 = sim2.slice();
-            steps2.push({ description: '삭제 완료! 꺼낸 값: ' + rootVal, action: function() { heap = fin2.slice(); renderAll(heap, '\u2705 삭제 완료! 꺼낸 값: ' + rootVal + '. 힙: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim2, '삭제 완료 전'); } });
+            steps2.push({ description: '삭제 완료! 꺼낸 최솟값: ' + rootVal + ' — sift-down으로 힙 성질 복원됨', action: function() { heap = fin2.slice(); renderAll(heap, '\u2705 삭제 완료! 꺼낸 값: ' + rootVal + '. 힙: [' + heap.slice(1).join(', ') + ']'); }, undo: function() { renderAll(sim2, '삭제 완료 전'); } });
             self._initStepController(container, steps2, suffix);
         });
         container.querySelector('#pq-reset-btn-' + suffix).addEventListener('click', function() {

@@ -58,7 +58,7 @@ var trieTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -192,6 +192,23 @@ var trieTopic = {
                 <span class="lang-cpp"><div class="code-block">\
                     <pre><code class="language-cpp">// Trie vs other methods\n// N strings, average length L\n\n// 1) Search in vector: O(N * L) -- compare one by one\n// 2) Search in unordered_set: O(L) average -- uses hashing\n// 3) Search in trie: O(L) worst case -- always fast!\n\n// The real strength of a trie: prefix search!\n// Find all words starting with "app"\n// -> vector/set: O(N * L) must check all\n// -> trie: O(prefix length) + O(result count) very fast!</code></pre>\
                 </div></span>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Build a Trie</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Enter a word and click "Insert" to see each character being added to the trie one by one!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="trie-demo-build-input" value="cat" placeholder="Enter a word" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="trie-demo-build-insert">+ Insert</button>\
+                        <button class="concept-demo-btn" id="trie-demo-build-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Trie Structure</div>\
+                        <svg id="trie-demo-build-svg" width="400" height="260" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);display:block;margin:0 auto;"></svg>\
+                        <div style="margin-top:10px;font-weight:600;color:var(--text);">Inserted Words</div>\
+                        <div id="trie-demo-build-words" style="display:flex;gap:8px;flex-wrap:wrap;min-height:30px;margin-top:4px;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-demo-build-msg">Try inserting "cat", "car", "card"! Watch how they share the same prefix path.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -249,6 +266,21 @@ var trieTopic = {
                 <span class="lang-cpp"><div class="code-block">\
                     <pre><code class="language-cpp">// C++ Trie Implementation\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;unordered_map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    unordered_map&lt;char, TrieNode*&gt; children;\n    bool is_end = false;\n};\n\nclass Trie {\n    TrieNode* root;\npublic:\n    Trie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new TrieNode();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};\n\n// Usage example\nint main() {\n    Trie trie;\n    trie.insert("apple");\n    trie.insert("app");\n    cout &lt;&lt; trie.search("apple") &lt;&lt; endl;      // 1 (true)\n    cout &lt;&lt; trie.search("app") &lt;&lt; endl;        // 1 (true)\n    cout &lt;&lt; trie.search("ap") &lt;&lt; endl;         // 0 (false, is_end is false!)\n    cout &lt;&lt; trie.startsWith("app") &lt;&lt; endl;    // 1 (true)\n    cout &lt;&lt; trie.startsWith("b") &lt;&lt; endl;      // 0 (false)\n}</code></pre>\
                 </div></span>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Search in a Trie</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">The trie contains "apple", "app", "apt", "bat". Enter a word to search and follow the path character by character!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="trie-demo-search-input" value="app" placeholder="Word to search" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="trie-demo-search-step">Next Character ▶</button>\
+                        <button class="concept-demo-btn" id="trie-demo-search-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                        <span id="trie-demo-search-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <svg id="trie-demo-search-svg" width="400" height="260" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);display:block;margin:0 auto;"></svg>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-demo-search-msg">Try searching "apple", "app", "bat"! If the path is missing, it fails. If is_end is true at the end, it succeeds!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -310,6 +342,21 @@ var trieTopic = {
                 <span class="lang-cpp"><div class="code-block">\
                     <pre><code class="language-cpp">// Trie application: autocomplete\n#include &lt;iostream&gt;\n#include &lt;string&gt;\n#include &lt;vector&gt;\n#include &lt;map&gt;\nusing namespace std;\n\nstruct TrieNode {\n    map&lt;char, TrieNode*&gt; children;  // Maintain sorted order\n    bool is_end = false;\n};\n\nclass AutocompleteTrie {\n    TrieNode* root;\n\n    // Collect all words from the current node\n    void collect(TrieNode* node, string& prefix, vector&lt;string&gt;& results) {\n        if (node-&gt;is_end)\n            results.push_back(prefix);\n        for (auto& [ch, child] : node-&gt;children) {\n            prefix.push_back(ch);\n            collect(child, prefix, results);\n            prefix.pop_back();\n        }\n    }\n\npublic:\n    AutocompleteTrie() { root = new TrieNode(); }\n\n    void insert(const string& word) {\n        TrieNode* node = root;\n        for (char ch : word) {\n            if (!node-&gt;children.count(ch))\n                node-&gt;children[ch] = new TrieNode();\n            node = node-&gt;children[ch];\n        }\n        node-&gt;is_end = true;\n    }\n\n    vector&lt;string&gt; autocomplete(const string& prefix) {\n        TrieNode* node = root;\n        for (char ch : prefix) {\n            if (!node-&gt;children.count(ch))\n                return {};  // Empty vector if the prefix does not exist\n            node = node-&gt;children[ch];\n        }\n        vector&lt;string&gt; results;\n        string p = prefix;\n        collect(node, p, results);\n        return results;\n    }\n};\n\n// Usage example\nint main() {\n    AutocompleteTrie trie;\n    for (auto& w : {"apple", "app", "application", "apt", "bat"})\n        trie.insert(w);\n\n    for (auto& s : trie.autocomplete("app"))\n        cout &lt;&lt; s &lt;&lt; " ";  // app apple application\n    cout &lt;&lt; endl;\n    for (auto& s : trie.autocomplete("b"))\n        cout &lt;&lt; s &lt;&lt; " ";  // bat\n}</code></pre>\
                 </div></span>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Autocomplete</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Type a prefix and the trie will instantly suggest all words starting with that prefix!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="trie-demo-auto-input" value="" placeholder="Type a prefix (e.g. ap)" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:160px;background:var(--card);color:var(--text);">\
+                        <span style="font-size:0.85rem;color:var(--text2);">Word list:</span>\
+                        <input type="text" id="trie-demo-auto-words" value="apple,app,application,apt,bat,ball,banana" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:260px;background:var(--card);color:var(--text);">\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Suggestions</div>\
+                        <div id="trie-demo-auto-results" style="display:flex;gap:8px;flex-wrap:wrap;min-height:36px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-demo-auto-msg">Type a prefix character by character! Watch the suggestions update in real time. "ap" → apple, app, application, apt</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -334,10 +381,375 @@ var trieTopic = {
             btn.addEventListener('click', function() {
                 var ans = btn.nextElementSibling;
                 ans.classList.toggle('show');
-                btn.textContent = ans.classList.contains('show') ? '🔼 Collapse' : '🤔 Think first, then click!';
+                btn.textContent = ans.classList.contains('show') ? '\uD83D\uDD3C Collapse' : '\uD83E\uDD14 Think first, then click!';
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ===== Trie data structure shared across demos =====
+        function TrieNode() { this.children = {}; this.isEnd = false; }
+        function TrieDS() { this.root = new TrieNode(); }
+        TrieDS.prototype.insert = function(word) {
+            var node = this.root;
+            for (var i = 0; i < word.length; i++) {
+                var ch = word[i];
+                if (!node.children[ch]) node.children[ch] = new TrieNode();
+                node = node.children[ch];
+            }
+            node.isEnd = true;
+        };
+        TrieDS.prototype.search = function(word) {
+            var node = this.root;
+            for (var i = 0; i < word.length; i++) {
+                if (!node.children[word[i]]) return null;
+                node = node.children[word[i]];
+            }
+            return node;
+        };
+        TrieDS.prototype.collect = function(node, prefix) {
+            var results = [];
+            if (node.isEnd) results.push(prefix);
+            var keys = Object.keys(node.children).sort();
+            for (var i = 0; i < keys.length; i++) {
+                results = results.concat(this.collect(node.children[keys[i]], prefix + keys[i]));
+            }
+            return results;
+        };
+        TrieDS.prototype.autocomplete = function(prefix) {
+            var node = this.search(prefix);
+            if (!node) return [];
+            return this.collect(node, prefix);
+        };
+
+        // ===== Shared trie rendering helper =====
+        function layoutTrie(root) {
+            var levels = [];
+            var queue = [{node:root, ch:'root', depth:0, parent:null, idx:0}];
+            var allNodes = [];
+            while (queue.length > 0) {
+                var cur = queue.shift();
+                if (!levels[cur.depth]) levels[cur.depth] = [];
+                cur.levelIdx = levels[cur.depth].length;
+                levels[cur.depth].push(cur);
+                allNodes.push(cur);
+                var keys = Object.keys(cur.node.children).sort();
+                for (var i = 0; i < keys.length; i++) {
+                    queue.push({node:cur.node.children[keys[i]], ch:keys[i], depth:cur.depth+1, parent:cur, idx:i});
+                }
+            }
+            var svgW = 400, yGap = 50, startY = 30;
+            allNodes.forEach(function(n) {
+                n.y = startY + n.depth * yGap;
+            });
+            for (var d = levels.length - 1; d >= 0; d--) {
+                var lvl = levels[d];
+                for (var i = 0; i < lvl.length; i++) {
+                    var n = lvl[i];
+                    var childKeys = Object.keys(n.node.children).sort();
+                    if (childKeys.length === 0) {
+                        n.x = null;
+                    } else {
+                        var childNodes = allNodes.filter(function(c) { return c.parent === n; });
+                        var sumX = 0, cnt = 0;
+                        childNodes.forEach(function(c) { if (c.x !== null && c.x !== undefined) { sumX += c.x; cnt++; } });
+                        if (cnt > 0) n.x = sumX / cnt;
+                    }
+                }
+            }
+            var leafCounter = 0;
+            var leaves = allNodes.filter(function(n) { return Object.keys(n.node.children).length === 0; });
+            var spacing = Math.min(50, (svgW - 40) / Math.max(leaves.length, 1));
+            var startX = (svgW - spacing * (leaves.length - 1)) / 2;
+            leaves.forEach(function(n) { n.x = startX + leafCounter * spacing; leafCounter++; });
+            for (var d = levels.length - 1; d >= 0; d--) {
+                levels[d].forEach(function(n) {
+                    var childNodes = allNodes.filter(function(c) { return c.parent === n; });
+                    if (childNodes.length > 0) {
+                        var sumX = 0;
+                        childNodes.forEach(function(c) { sumX += c.x; });
+                        n.x = sumX / childNodes.length;
+                    }
+                });
+            }
+            allNodes.forEach(function(n) { n.x = Math.max(20, Math.min(svgW - 20, n.x || svgW/2)); });
+            return allNodes;
+        }
+
+        function renderTrieSvg(svgEl, allNodes, highlightPath, highlightResult) {
+            var html = '';
+            allNodes.forEach(function(n) {
+                if (n.parent) {
+                    var edgeColor = 'var(--bg3)';
+                    if (highlightPath && highlightPath.indexOf(n) >= 0 && highlightPath.indexOf(n.parent) >= 0) {
+                        edgeColor = highlightResult === 'searching' ? 'var(--yellow)' : (highlightResult === 'found' ? 'var(--green)' : (highlightResult === 'fail' ? 'var(--red)' : 'var(--accent)'));
+                    }
+                    html += '<line x1="'+n.parent.x+'" y1="'+n.parent.y+'" x2="'+n.x+'" y2="'+n.y+'" stroke="'+edgeColor+'" stroke-width="2.5"/>';
+                }
+            });
+            allNodes.forEach(function(n) {
+                var r = 16, fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                if (n.node.isEnd) { stroke = 'var(--green)'; }
+                if (highlightPath && highlightPath.indexOf(n) >= 0) {
+                    if (highlightResult === 'searching') { fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333'; }
+                    else if (highlightResult === 'found') { fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white'; }
+                    else if (highlightResult === 'fail') { fill = 'var(--red)'; stroke = 'var(--red)'; txtColor = 'white'; }
+                    else { fill = 'var(--accent)'; stroke = 'var(--accent)'; txtColor = 'white'; }
+                }
+                html += '<circle cx="'+n.x+'" cy="'+n.y+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2.5"/>';
+                html += '<text x="'+n.x+'" y="'+(n.y+5)+'" text-anchor="middle" font-size="13" font-weight="700" fill="'+txtColor+'">'+n.ch+'</text>';
+                if (n.node.isEnd) {
+                    html += '<circle cx="'+(n.x+12)+'" cy="'+(n.y-12)+'" r="5" fill="var(--green)"/>';
+                }
+            });
+            svgEl.innerHTML = html;
+        }
+
+        // ========== Demo 1: Build a Trie ==========
+        (function() {
+            var trie = new TrieDS();
+            var insertedWords = [];
+            var svgEl = container.querySelector('#trie-demo-build-svg');
+            var wordsEl = container.querySelector('#trie-demo-build-words');
+            var inputEl = container.querySelector('#trie-demo-build-input');
+            var insertBtn = container.querySelector('#trie-demo-build-insert');
+            var resetBtn = container.querySelector('#trie-demo-build-reset');
+            var msgEl = container.querySelector('#trie-demo-build-msg');
+
+            function renderBuild() {
+                var allNodes = layoutTrie(trie.root);
+                renderTrieSvg(svgEl, allNodes, null, null);
+                wordsEl.innerHTML = '';
+                insertedWords.forEach(function(w) {
+                    var span = document.createElement('span');
+                    span.style.cssText = 'padding:4px 12px;background:var(--green)15;color:var(--green);border-radius:8px;font-weight:600;font-size:0.85rem;border:1px solid var(--green)30;';
+                    span.textContent = w;
+                    wordsEl.appendChild(span);
+                });
+                if (insertedWords.length === 0) {
+                    wordsEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">No words inserted yet</span>';
+                }
+            }
+
+            function animateInsert(word) {
+                var node = trie.root;
+                var allNodes = layoutTrie(trie.root);
+                var path = [allNodes[0]];
+                var i = 0;
+                insertBtn.disabled = true;
+                function step() {
+                    if (i >= word.length) {
+                        node.isEnd = true;
+                        insertedWords.push(word);
+                        allNodes = layoutTrie(trie.root);
+                        var hp = [allNodes[0]];
+                        var cur = trie.root;
+                        for (var j = 0; j < word.length; j++) {
+                            cur = cur.children[word[j]];
+                            var found = allNodes.filter(function(n) { return n.node === cur; });
+                            if (found.length > 0) hp.push(found[0]);
+                        }
+                        renderTrieSvg(svgEl, allNodes, hp, 'found');
+                        renderBuildWords();
+                        msgEl.textContent = '"' + word + '" inserted! Check the is_end marker (green dot).';
+                        msgEl.style.color = 'var(--green)';
+                        insertBtn.disabled = false;
+                        return;
+                    }
+                    var ch = word[i];
+                    if (!node.children[ch]) {
+                        node.children[ch] = new TrieNode();
+                        msgEl.textContent = 'Node "' + ch + '" does not exist, creating a new one! (depth ' + (i+1) + ')';
+                        msgEl.style.color = 'var(--accent)';
+                    } else {
+                        msgEl.textContent = 'Node "' + ch + '" already exists, following it. (shared!)';
+                        msgEl.style.color = 'var(--yellow)';
+                    }
+                    node = node.children[ch];
+                    allNodes = layoutTrie(trie.root);
+                    var hp = [allNodes[0]];
+                    var cur = trie.root;
+                    for (var j = 0; j <= i; j++) {
+                        cur = cur.children[word[j]];
+                        var found = allNodes.filter(function(n) { return n.node === cur; });
+                        if (found.length > 0) hp.push(found[0]);
+                    }
+                    renderTrieSvg(svgEl, allNodes, hp, 'searching');
+                    i++;
+                    setTimeout(step, 500);
+                }
+                step();
+            }
+
+            function renderBuildWords() {
+                wordsEl.innerHTML = '';
+                insertedWords.forEach(function(w) {
+                    var span = document.createElement('span');
+                    span.style.cssText = 'padding:4px 12px;background:var(--green)15;color:var(--green);border-radius:8px;font-weight:600;font-size:0.85rem;border:1px solid var(--green)30;';
+                    span.textContent = w;
+                    wordsEl.appendChild(span);
+                });
+            }
+
+            insertBtn.addEventListener('click', function() {
+                var word = inputEl.value.trim().toLowerCase();
+                if (!word || !/^[a-z]+$/.test(word)) {
+                    msgEl.textContent = 'Please enter a lowercase English word!';
+                    msgEl.style.color = 'var(--red)';
+                    return;
+                }
+                if (insertedWords.indexOf(word) >= 0) {
+                    msgEl.textContent = '"' + word + '" has already been inserted!';
+                    msgEl.style.color = 'var(--yellow)';
+                    return;
+                }
+                animateInsert(word);
+            });
+
+            resetBtn.addEventListener('click', function() {
+                trie = new TrieDS();
+                insertedWords = [];
+                renderBuild();
+                msgEl.textContent = 'Try inserting "cat", "car", "card"! Watch how they share the same prefix path.';
+                msgEl.style.color = 'var(--text2)';
+            });
+
+            renderBuild();
+        })();
+
+        // ========== Demo 2: Search in a Trie ==========
+        (function() {
+            var trie2 = new TrieDS();
+            ['apple','app','apt','bat'].forEach(function(w) { trie2.insert(w); });
+
+            var svgEl = container.querySelector('#trie-demo-search-svg');
+            var inputEl = container.querySelector('#trie-demo-search-input');
+            var stepBtn = container.querySelector('#trie-demo-search-step');
+            var resetBtn = container.querySelector('#trie-demo-search-reset');
+            var counterEl = container.querySelector('#trie-demo-search-counter');
+            var msgEl = container.querySelector('#trie-demo-search-msg');
+
+            var searchWord, searchIdx, searchNode, searchPath, allNodes2, searching;
+
+            function resetSearch() {
+                searchWord = ''; searchIdx = -1; searchNode = null; searchPath = []; searching = false;
+                allNodes2 = layoutTrie(trie2.root);
+                renderTrieSvg(svgEl, allNodes2, null, null);
+                counterEl.textContent = '';
+                stepBtn.disabled = false;
+                msgEl.textContent = 'Try searching "apple", "app", "bat"! If the path is missing, it fails. If is_end is true at the end, it succeeds!';
+                msgEl.style.color = 'var(--text2)';
+            }
+
+            stepBtn.addEventListener('click', function() {
+                if (!searching) {
+                    searchWord = inputEl.value.trim().toLowerCase();
+                    if (!searchWord || !/^[a-z]+$/.test(searchWord)) {
+                        msgEl.textContent = 'Please enter a lowercase English word!';
+                        msgEl.style.color = 'var(--red)';
+                        return;
+                    }
+                    searching = true;
+                    searchIdx = 0;
+                    searchNode = trie2.root;
+                    allNodes2 = layoutTrie(trie2.root);
+                    searchPath = [allNodes2[0]];
+                    renderTrieSvg(svgEl, allNodes2, searchPath, 'searching');
+                    msgEl.textContent = 'Searching for "' + searchWord + '"! Starting from the root.';
+                    msgEl.style.color = 'var(--accent)';
+                    counterEl.textContent = '0 / ' + searchWord.length;
+                    return;
+                }
+
+                if (searchIdx >= searchWord.length) {
+                    if (searchNode.isEnd) {
+                        renderTrieSvg(svgEl, allNodes2, searchPath, 'found');
+                        msgEl.textContent = 'Search for "' + searchWord + '" succeeded! is_end = true, so this word exists in the trie.';
+                        msgEl.style.color = 'var(--green)';
+                    } else {
+                        renderTrieSvg(svgEl, allNodes2, searchPath, 'fail');
+                        msgEl.textContent = 'Search for "' + searchWord + '" failed! The path exists but is_end = false, so this word was not stored.';
+                        msgEl.style.color = 'var(--red)';
+                    }
+                    stepBtn.disabled = true;
+                    searching = false;
+                    return;
+                }
+
+                var ch = searchWord[searchIdx];
+                if (!searchNode.children[ch]) {
+                    renderTrieSvg(svgEl, allNodes2, searchPath, 'fail');
+                    msgEl.textContent = 'No child node "' + ch + '"! Search for "' + searchWord + '" failed.';
+                    msgEl.style.color = 'var(--red)';
+                    stepBtn.disabled = true;
+                    searching = false;
+                    return;
+                }
+
+                searchNode = searchNode.children[ch];
+                var found = allNodes2.filter(function(n) { return n.node === searchNode; });
+                if (found.length > 0) searchPath.push(found[0]);
+                searchIdx++;
+                counterEl.textContent = searchIdx + ' / ' + searchWord.length;
+                renderTrieSvg(svgEl, allNodes2, searchPath, 'searching');
+                msgEl.textContent = 'Found node "' + ch + '"! Following it. (' + searchIdx + '/' + searchWord.length + ' characters)';
+                msgEl.style.color = 'var(--yellow)';
+
+                if (searchIdx >= searchWord.length) {
+                    msgEl.textContent += ' All characters traversed. Next step will check is_end!';
+                }
+            });
+
+            resetBtn.addEventListener('click', resetSearch);
+            resetSearch();
+        })();
+
+        // ========== Demo 3: Autocomplete ==========
+        (function() {
+            var autoInput = container.querySelector('#trie-demo-auto-input');
+            var wordsInput = container.querySelector('#trie-demo-auto-words');
+            var resultsEl = container.querySelector('#trie-demo-auto-results');
+            var msgEl = container.querySelector('#trie-demo-auto-msg');
+
+            function buildTrieFromWords(words) {
+                var t = new TrieDS();
+                words.forEach(function(w) { var ww = w.trim().toLowerCase(); if (ww) t.insert(ww); });
+                return t;
+            }
+
+            function update() {
+                var words = wordsInput.value.split(',').map(function(w) { return w.trim(); }).filter(function(w) { return w.length > 0; });
+                var t = buildTrieFromWords(words);
+                var prefix = autoInput.value.trim().toLowerCase();
+                resultsEl.innerHTML = '';
+
+                if (!prefix) {
+                    resultsEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">Type a prefix to see suggestions</span>';
+                    msgEl.textContent = 'Type a prefix character by character! Watch the suggestions update in real time.';
+                    msgEl.style.color = 'var(--text2)';
+                    return;
+                }
+
+                var results = t.autocomplete(prefix);
+                if (results.length === 0) {
+                    resultsEl.innerHTML = '<span style="color:var(--red);font-size:0.85rem;">No words starting with "' + prefix + '"</span>';
+                    msgEl.textContent = 'No words in the trie start with this prefix. Try a different prefix or add more words!';
+                    msgEl.style.color = 'var(--red)';
+                } else {
+                    results.forEach(function(w) {
+                        var span = document.createElement('span');
+                        span.style.cssText = 'padding:6px 14px;background:var(--accent)12;color:var(--accent);border-radius:8px;font-weight:600;font-size:0.9rem;border:1.5px solid var(--accent)30;';
+                        span.innerHTML = '<strong>' + w.substring(0, prefix.length) + '</strong>' + w.substring(prefix.length);
+                        resultsEl.appendChild(span);
+                    });
+                    msgEl.textContent = results.length + ' word(s) found starting with "' + prefix + '"! The trie follows the prefix path, then collects all words below.';
+                    msgEl.style.color = 'var(--green)';
+                }
+            }
+
+            autoInput.addEventListener('input', update);
+            wordsInput.addEventListener('change', update);
+            update();
+        })();
     },
 
     // ===== Visualization State =====

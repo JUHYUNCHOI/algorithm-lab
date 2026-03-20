@@ -243,6 +243,64 @@ window._setAlgoLang = function(lang) {
         topicTitle.textContent = `${topic.icon} ${topic.title}`;
         renderTabs();
         renderContent();
+        updateHash();
+    }
+
+    // ===== Hash update (browser URL sync) =====
+    function updateHash() {
+        if (!currentTopic) return;
+        var hash = '#/' + currentTopic.id;
+        if (currentProblemId) {
+            hash += '/' + currentProblemId;
+            if (currentTab && currentTab !== 'problem') hash += '/' + currentTab;
+        } else if (currentTab && currentTab !== 'landing') {
+            hash += '/' + currentTab;
+        }
+        if (window.location.hash !== hash) {
+            history.replaceState(null, '', hash);
+        }
+    }
+
+    // ===== Restore state from hash =====
+    function restoreFromHash() {
+        var hash = window.location.hash;
+        if (!hash || hash === '#' || hash === '#/') return false;
+        var parts = hash.replace(/^#\/?/, '').split('/');
+        var topicId = parts[0];
+        var topics = window.AlgoTopics || {};
+        var topic = topics[topicId];
+        if (!topic) return false;
+
+        currentTopic = topic;
+
+        if (parts[1]) {
+            var prob = topic.problems ? topic.problems.find(function(p) { return p.id === parts[1]; }) : null;
+            if (prob) {
+                currentProblemId = parts[1];
+                currentTab = parts[2] || 'problem';
+            } else {
+                currentProblemId = null;
+                currentTab = parts[1];
+            }
+        } else {
+            currentProblemId = null;
+            currentTab = 'landing';
+        }
+
+        if (topic.problems && topic.problems.length > 0) {
+            if (expandedTopicId && expandedTopicId !== topicId) collapseSubList(expandedTopicId);
+            expandSubList(topicId);
+            expandedTopicId = topicId;
+        }
+
+        updateSidebarActiveStates();
+        var titleText = currentProblemId && topic.problems ?
+            (function() { var p = topic.problems.find(function(p) { return p.id === currentProblemId; }); return p ? topic.icon + ' ' + p.title : topic.icon + ' ' + topic.title; })() :
+            topic.icon + ' ' + topic.title;
+        topicTitle.textContent = titleText;
+        renderTabs();
+        renderContent();
+        return true;
     }
 
     // ===== Problem selection =====
@@ -268,6 +326,7 @@ window._setAlgoLang = function(lang) {
 
         renderTabs();
         renderContent();
+        updateHash();
 
         sidebar.classList.remove('open');
         const overlay = document.querySelector('.sidebar-overlay');
@@ -293,6 +352,7 @@ window._setAlgoLang = function(lang) {
         topicTitle.textContent = `${topic.icon} ${topic.title}`;
         renderTabs();
         renderContent();
+        updateHash();
 
         sidebar.classList.remove('open');
         const overlay = document.querySelector('.sidebar-overlay');
@@ -307,6 +367,7 @@ window._setAlgoLang = function(lang) {
         topicTitle.textContent = `${currentTopic.icon} ${currentTopic.title}`;
         renderTabs();
         renderContent();
+        updateHash();
     }
 
     // ===== Tab data + main tab bar build =====
@@ -371,6 +432,7 @@ window._setAlgoLang = function(lang) {
                 currentTab = tab.id;
                 renderTabs();
                 renderContent();
+                updateHash();
                 setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
             });
             navRow.appendChild(btn);
@@ -412,6 +474,7 @@ window._setAlgoLang = function(lang) {
         currentTab = tabId;
         renderTabs();
         renderContent();
+        updateHash();
         setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     };
 
@@ -926,14 +989,17 @@ window._setAlgoLang = function(lang) {
     // ===== Initialization =====
     renderSidebar();
 
-    const topics = window.AlgoTopics || {};
-    const firstTopicId = Object.keys(topics)[0];
-    if (firstTopicId) {
-        const firstTopic = topics[firstTopicId];
-        if (firstTopic && firstTopic.problems && firstTopic.problems.length > 0) {
-            toggleTopicExpand(firstTopicId);
-        } else {
-            selectTopic(firstTopicId);
+    // Restore from hash first, fallback to first topic
+    if (!restoreFromHash()) {
+        const topics = window.AlgoTopics || {};
+        const firstTopicId = Object.keys(topics)[0];
+        if (firstTopicId) {
+            const firstTopic = topics[firstTopicId];
+            if (firstTopic && firstTopic.problems && firstTopic.problems.length > 0) {
+                toggleTopicExpand(firstTopicId);
+            } else {
+                selectTopic(firstTopicId);
+            }
         }
     }
 
@@ -961,6 +1027,13 @@ window._setAlgoLang = function(lang) {
             var a = _anims.get(el);
             if (a && a.timer) clearInterval(a.timer);
             if (!text || text.length < 2) return;
+
+            // Skip typewriter for HTML content (tags would break)
+            var html = el.innerHTML || '';
+            if (html !== text && (html.indexOf('<') !== -1 || html.indexOf('&') !== -1)) {
+                _anims.set(el, { timer: null, fullText: text });
+                return;
+            }
 
             var chars = Array.from(text);
             var len = chars.length;

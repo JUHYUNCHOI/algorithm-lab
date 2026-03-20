@@ -82,6 +82,7 @@ const arrayTopic = {
         }
 
         const contentDiv = document.createElement('div');
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
 
         // Approach-based tabs or legacy tabs
@@ -560,6 +561,26 @@ const arrayTopic = {
                     Locker 0, Locker 1... lined up in order, and if you know the number, you can open it instantly (O(1)).
                     However, inserting a locker in the middle means shifting everything after it (O(n)).
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Index O(1) Access vs Value Search O(n)</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-index-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">Index:
+                                <input type="number" id="arr-demo-index-input" min="0" max="7" value="0" style="width:56px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                            </label>
+                            <button class="concept-demo-btn" id="arr-demo-index-go">⚡ O(1) Direct Access</button>
+                            <button class="concept-demo-btn" id="arr-demo-index-search" style="background:var(--yellow);color:#333;">🔍 Start O(n) Search</button>
+                        </div>
+                        <div id="arr-demo-search-controls" style="display:none;gap:12px;justify-content:center;align-items:center;margin-top:4px;">
+                            <button id="arr-demo-search-prev" class="concept-demo-btn">← Prev</button>
+                            <span id="arr-demo-search-counter" style="font-size:0.85rem;color:var(--text2);">Before Start</span>
+                            <button id="arr-demo-search-next" class="concept-demo-btn">Next →</button>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-index-msg">👆 Enter an index and click a button! Feel the difference between "direct access" and "value search."</div>
+                </div>
+
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -633,6 +654,25 @@ int main() {
                 <div style="margin-top:0.5rem;">
                     <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#list" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: list ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: vector ↗</a></span>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Insert/Delete Cost</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-insert-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;min-height:60px;align-items:flex-end;"></div>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <button class="concept-demo-btn" id="arr-demo-insert-mid">📥 Insert in Middle (O(n))</button>
+                            <button class="concept-demo-btn green" id="arr-demo-insert-end">📥 Append to End (O(1))</button>
+                            <button class="concept-demo-btn danger" id="arr-demo-insert-reset">🔄 Reset</button>
+                        </div>
+                        <div id="arr-demo-insert-controls" style="display:none;gap:12px;justify-content:center;align-items:center;margin-top:4px;">
+                            <button id="arr-demo-insert-prev" class="concept-demo-btn">← Prev</button>
+                            <span id="arr-demo-insert-counter" style="font-size:0.85rem;color:var(--text2);">Before Start</span>
+                            <button id="arr-demo-insert-next" class="concept-demo-btn">Next →</button>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-insert-msg">👆 Click "Insert in Middle" to see how elements shift one by one!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -656,6 +696,22 @@ int main() {
                     When finding two numbers that sum to a target in a sorted array, if the sum is too large, move the right pointer left; if too small, move the left pointer right.
                     Instead of a double for loop (O(n²)), you can solve it in <strong>O(n)</strong>!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Find a Sum with Two Pointers</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">Target sum:
+                                <input type="number" id="arr-demo-tp-target" value="10" style="width:60px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                            </label>
+                            <button class="concept-demo-btn" id="arr-demo-tp-step">▶ Next Step</button>
+                            <button class="concept-demo-btn danger" id="arr-demo-tp-reset">🔄 Reset</button>
+                        </div>
+                        <div id="arr-demo-tp-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div id="arr-demo-tp-pointers" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;font-size:0.75rem;font-weight:700;min-height:20px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-tp-msg">👆 Click "Next Step" to see how the L and R pointers move!</div>
+                </div>
+
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -912,6 +968,453 @@ int main() {
                 btn.style.display = 'none';
             });
         });
+
+        // --- helper: create array box ---
+        var _mkBox = function(val, idx) {
+            var d = document.createElement('div');
+            d.className = 'str-char-box';
+            d.innerHTML = '<span class="str-char-idx">' + idx + '</span><span class="str-char-val">' + val + '</span>';
+            return d;
+        };
+
+        // --- 1. Index O(1) Access Demo ---
+        {
+            var idxArr = [10, 25, 8, 42, 17, 33, 5, 61];
+            var boxesEl = container.querySelector('#arr-demo-index-boxes');
+            var inputEl = container.querySelector('#arr-demo-index-input');
+            var goBtn = container.querySelector('#arr-demo-index-go');
+            var searchBtn = container.querySelector('#arr-demo-index-search');
+            var msgEl = container.querySelector('#arr-demo-index-msg');
+            var animating = false;
+
+            var renderBoxes = function() {
+                boxesEl.innerHTML = '';
+                for (var i = 0; i < idxArr.length; i++) {
+                    boxesEl.appendChild(_mkBox(idxArr[i], i));
+                }
+            };
+            renderBoxes();
+
+            var clearHighlights = function() {
+                boxesEl.querySelectorAll('.str-char-box').forEach(function(b) {
+                    b.classList.remove('comparing', 'matched');
+                    b.style.borderColor = '';
+                    b.style.background = '';
+                    b.style.transform = '';
+                    b.style.boxShadow = '';
+                });
+            };
+
+            goBtn.addEventListener('click', function() {
+                if (animating) return;
+                clearHighlights();
+                var idx = parseInt(inputEl.value);
+                if (isNaN(idx) || idx < 0 || idx >= idxArr.length) {
+                    msgEl.textContent = 'Index must be between 0 and ' + (idxArr.length - 1) + '!';
+                    return;
+                }
+                var boxes = boxesEl.querySelectorAll('.str-char-box');
+                boxes[idx].classList.add('matched');
+                msgEl.textContent = 'arr[' + idx + '] = ' + idxArr[idx] + ' → Direct access! 0 comparisons, O(1). Just knowing the index is enough.';
+            });
+
+            // --- Linear search: manual step controls ---
+            var searchControlsEl = container.querySelector('#arr-demo-search-controls');
+            var searchPrevBtn = container.querySelector('#arr-demo-search-prev');
+            var searchNextBtn = container.querySelector('#arr-demo-search-next');
+            var searchCounterEl = container.querySelector('#arr-demo-search-counter');
+            var searchSteps = [];
+            var searchStep = -1;
+            var searchActive = false;
+
+            var buildSearchSteps = function(targetIdx) {
+                var targetVal = idxArr[targetIdx];
+                var steps = [];
+                for (var i = 0; i <= targetIdx; i++) {
+                    (function(si) {
+                        if (si < targetIdx) {
+                            steps.push({
+                                desc: 'arr[' + si + '] = ' + idxArr[si] + ' → Not ' + targetVal + '. Next!',
+                                action: function() {
+                                    var boxes = boxesEl.querySelectorAll('.str-char-box');
+                                    boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                                    for (var j = 0; j < si; j++) { boxes[j].style.opacity = '0.5'; }
+                                    boxes[si].style.opacity = '';
+                                    boxes[si].classList.add('comparing');
+                                    for (var j = si + 1; j < boxes.length; j++) { boxes[j].style.opacity = ''; }
+                                }
+                            });
+                        } else {
+                            steps.push({
+                                desc: 'Found value ' + targetVal + '! ' + (si + 1) + ' comparisons made. O(n) — worst case requires ' + idxArr.length + ' comparisons!',
+                                action: function() {
+                                    var boxes = boxesEl.querySelectorAll('.str-char-box');
+                                    boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                                    for (var j = 0; j < si; j++) { boxes[j].style.opacity = '0.5'; }
+                                    boxes[si].style.opacity = '';
+                                    boxes[si].classList.add('matched');
+                                    for (var j = si + 1; j < boxes.length; j++) { boxes[j].style.opacity = ''; }
+                                }
+                            });
+                        }
+                    })(i);
+                }
+                return steps;
+            };
+
+            var updateSearchUI = function() {
+                if (searchStep < 0) {
+                    searchCounterEl.textContent = 'Before Start';
+                    searchPrevBtn.disabled = true;
+                    searchNextBtn.disabled = false;
+                } else if (searchStep >= searchSteps.length - 1) {
+                    searchCounterEl.textContent = (searchStep + 1) + ' / ' + searchSteps.length;
+                    searchPrevBtn.disabled = false;
+                    searchNextBtn.disabled = true;
+                } else {
+                    searchCounterEl.textContent = (searchStep + 1) + ' / ' + searchSteps.length;
+                    searchPrevBtn.disabled = false;
+                    searchNextBtn.disabled = false;
+                }
+                if (searchStep >= 0 && searchStep < searchSteps.length) {
+                    msgEl.textContent = searchSteps[searchStep].desc;
+                    searchSteps[searchStep].action();
+                } else {
+                    clearHighlights();
+                    boxesEl.querySelectorAll('.str-char-box').forEach(function(b) { b.style.opacity = ''; });
+                }
+            };
+
+            var resetSearch = function() {
+                searchActive = false;
+                searchStep = -1;
+                searchSteps = [];
+                searchControlsEl.style.display = 'none';
+                goBtn.disabled = false;
+                searchBtn.disabled = false;
+                searchBtn.textContent = '🔍 Start O(n) Search';
+                inputEl.disabled = false;
+                clearHighlights();
+                boxesEl.querySelectorAll('.str-char-box').forEach(function(b) { b.style.opacity = ''; });
+                msgEl.textContent = '👆 Enter an index and click a button! Feel the difference between "direct access" and "value search."';
+            };
+
+            searchBtn.addEventListener('click', function() {
+                if (searchActive) {
+                    resetSearch();
+                    return;
+                }
+                clearHighlights();
+                var idx = parseInt(inputEl.value);
+                if (isNaN(idx) || idx < 0 || idx >= idxArr.length) {
+                    msgEl.textContent = 'Index must be between 0 and ' + (idxArr.length - 1) + '!';
+                    return;
+                }
+                searchSteps = buildSearchSteps(idx);
+                searchStep = -1;
+                searchActive = true;
+                goBtn.disabled = true;
+                inputEl.disabled = true;
+                searchBtn.textContent = '🔄 Reset Search';
+                searchControlsEl.style.display = 'flex';
+                msgEl.textContent = 'Searching for value ' + idxArr[idx] + ' by checking one by one from the start. Click "Next →"!';
+                updateSearchUI();
+            });
+
+            searchNextBtn.addEventListener('click', function() {
+                if (searchStep < searchSteps.length - 1) {
+                    searchStep++;
+                    updateSearchUI();
+                }
+            });
+
+            searchPrevBtn.addEventListener('click', function() {
+                if (searchStep > -1) {
+                    searchStep--;
+                    updateSearchUI();
+                    if (searchStep < 0) {
+                        msgEl.textContent = 'Checking values one by one from the start to find it. Click "Next →"!';
+                    }
+                }
+            });
+        }
+
+        // --- 2. Insert/Delete Cost Demo ---
+        {
+            var insertArr = [3, 7, 1, 9, 4, 6];
+            var insertBoxesEl = container.querySelector('#arr-demo-insert-boxes');
+            var insertMidBtn = container.querySelector('#arr-demo-insert-mid');
+            var insertEndBtn = container.querySelector('#arr-demo-insert-end');
+            var insertResetBtn = container.querySelector('#arr-demo-insert-reset');
+            var insertMsgEl = container.querySelector('#arr-demo-insert-msg');
+            var insertControlsEl = container.querySelector('#arr-demo-insert-controls');
+            var insertPrevBtn = container.querySelector('#arr-demo-insert-prev');
+            var insertNextBtn = container.querySelector('#arr-demo-insert-next');
+            var insertCounterEl = container.querySelector('#arr-demo-insert-counter');
+            var insertCount = 0;
+            var insertSteps = [];
+            var insertStep = -1;
+            var insertActive = false;
+
+            var renderInsertBoxes = function() {
+                insertBoxesEl.innerHTML = '';
+                for (var i = 0; i < insertArr.length; i++) {
+                    insertBoxesEl.appendChild(_mkBox(insertArr[i], i));
+                }
+            };
+            renderInsertBoxes();
+
+            var buildInsertSteps = function(arr, midIdx, newVal) {
+                var steps = [];
+                var arrCopy = arr.slice();
+                // Step for each element shifting (from right to left)
+                for (var si = arrCopy.length - 1; si >= midIdx; si--) {
+                    (function(shiftI, totalShifts) {
+                        steps.push({
+                            desc: 'Shifting arr[' + shiftI + '] = ' + arrCopy[shiftI] + ' one position to the right... (' + (arrCopy.length - shiftI) + '/' + totalShifts + ')',
+                            action: function() {
+                                var boxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                                boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                                if (boxes[shiftI]) {
+                                    boxes[shiftI].classList.add('comparing');
+                                }
+                            }
+                        });
+                    })(si, arrCopy.length - midIdx);
+                }
+                // Final step: insert the element
+                steps.push({
+                    desc: 'Inserted ' + newVal + ' at index ' + midIdx + '! Shifted ' + (arrCopy.length - midIdx) + ' elements → O(n)',
+                    action: function() {
+                        insertArr.splice(midIdx, 0, newVal);
+                        renderInsertBoxes();
+                        var newBoxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                        newBoxes[midIdx].classList.add('matched');
+                    },
+                    isFinal: true
+                });
+                return steps;
+            };
+
+            var updateInsertUI = function() {
+                if (insertStep < 0) {
+                    insertCounterEl.textContent = 'Before Start';
+                    insertPrevBtn.disabled = true;
+                    insertNextBtn.disabled = false;
+                } else if (insertStep >= insertSteps.length - 1) {
+                    insertCounterEl.textContent = (insertStep + 1) + ' / ' + insertSteps.length;
+                    insertPrevBtn.disabled = false;
+                    insertNextBtn.disabled = true;
+                } else {
+                    insertCounterEl.textContent = (insertStep + 1) + ' / ' + insertSteps.length;
+                    insertPrevBtn.disabled = false;
+                    insertNextBtn.disabled = false;
+                }
+                if (insertStep >= 0 && insertStep < insertSteps.length) {
+                    insertMsgEl.textContent = insertSteps[insertStep].desc;
+                    insertSteps[insertStep].action();
+                }
+            };
+
+            var resetInsertDemo = function() {
+                insertActive = false;
+                insertStep = -1;
+                insertSteps = [];
+                insertControlsEl.style.display = 'none';
+                insertMidBtn.disabled = insertArr.length >= 10;
+                insertEndBtn.disabled = insertArr.length >= 10;
+                insertMidBtn.textContent = '📥 Insert in Middle (O(n))';
+                var boxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                insertMsgEl.textContent = '👆 Click "Insert in Middle" to see how elements shift one by one!';
+            };
+
+            insertMidBtn.addEventListener('click', function() {
+                if (insertArr.length >= 10) return;
+                if (insertActive) {
+                    resetInsertDemo();
+                    return;
+                }
+                var midIdx = Math.floor(insertArr.length / 2);
+                var newVal = [0, 8, 2, 5, 11, 15][insertCount % 6];
+                insertSteps = buildInsertSteps(insertArr, midIdx, newVal);
+                insertStep = -1;
+                insertActive = true;
+                insertEndBtn.disabled = true;
+                insertMidBtn.textContent = '🔄 Reset Insert';
+                insertControlsEl.style.display = 'flex';
+                insertMsgEl.textContent = 'Inserting ' + newVal + ' at index ' + midIdx + '. First, we need to shift the elements after it! Click "Next →"!';
+                updateInsertUI();
+            });
+
+            insertNextBtn.addEventListener('click', function() {
+                if (insertStep < insertSteps.length - 1) {
+                    insertStep++;
+                    updateInsertUI();
+                    // If final step reached, finish the insertion
+                    if (insertSteps[insertStep] && insertSteps[insertStep].isFinal) {
+                        insertCount++;
+                        // Auto-finish after a moment
+                        setTimeout(function() {
+                            insertActive = false;
+                            insertSteps = [];
+                            insertStep = -1;
+                            insertControlsEl.style.display = 'none';
+                            insertMidBtn.textContent = '📥 Insert in Middle (O(n))';
+                            insertMidBtn.disabled = insertArr.length >= 10;
+                            insertEndBtn.disabled = insertArr.length >= 10;
+                        }, 1200);
+                    }
+                }
+            });
+
+            insertPrevBtn.addEventListener('click', function() {
+                if (insertStep > -1) {
+                    // If we were on the final step, undo the splice
+                    if (insertSteps[insertStep] && insertSteps[insertStep].isFinal) {
+                        var midIdx = Math.floor((insertArr.length - 1) / 2);
+                        insertArr.splice(midIdx, 1);
+                        renderInsertBoxes();
+                        insertCount--;
+                    }
+                    insertStep--;
+                    if (insertStep >= 0) {
+                        updateInsertUI();
+                    } else {
+                        insertCounterEl.textContent = 'Before Start';
+                        insertPrevBtn.disabled = true;
+                        insertNextBtn.disabled = false;
+                        var boxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                        boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                        insertMsgEl.textContent = 'Inserting value at index. Click "Next →"!';
+                    }
+                }
+            });
+
+            insertEndBtn.addEventListener('click', function() {
+                if (insertActive || insertArr.length >= 10) return;
+                var newVal = [0, 8, 2, 5, 11, 15][insertCount % 6];
+                insertArr.push(newVal);
+                renderInsertBoxes();
+                var newBoxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                newBoxes[newBoxes.length - 1].classList.add('matched');
+                insertMsgEl.textContent = 'Appended ' + newVal + ' to the end! Nothing to shift → O(1). Just add it at the back!';
+                insertMidBtn.disabled = insertArr.length >= 10;
+                insertEndBtn.disabled = insertArr.length >= 10;
+                insertCount++;
+            });
+
+            insertResetBtn.addEventListener('click', function() {
+                if (insertActive) {
+                    resetInsertDemo();
+                }
+                insertArr = [3, 7, 1, 9, 4, 6];
+                insertCount = 0;
+                renderInsertBoxes();
+                resetInsertDemo();
+            });
+        }
+
+        // --- 3. Two Pointers Demo ---
+        {
+            var tpArr = [1, 2, 4, 6, 8, 10, 13, 15];
+            var tpBoxesEl = container.querySelector('#arr-demo-tp-boxes');
+            var tpPointersEl = container.querySelector('#arr-demo-tp-pointers');
+            var tpStepBtn = container.querySelector('#arr-demo-tp-step');
+            var tpResetBtn = container.querySelector('#arr-demo-tp-reset');
+            var tpTargetEl = container.querySelector('#arr-demo-tp-target');
+            var tpMsgEl = container.querySelector('#arr-demo-tp-msg');
+            var tpL, tpR, tpDone;
+
+            var renderTpBoxes = function() {
+                tpBoxesEl.innerHTML = '';
+                tpPointersEl.innerHTML = '';
+                for (var i = 0; i < tpArr.length; i++) {
+                    tpBoxesEl.appendChild(_mkBox(tpArr[i], i));
+                    var ptr = document.createElement('span');
+                    ptr.style.cssText = 'display:inline-block;width:44px;text-align:center;';
+                    ptr.id = 'arr-demo-tp-ptr-' + i;
+                    tpPointersEl.appendChild(ptr);
+                }
+            };
+
+            var updateTpPointers = function() {
+                for (var i = 0; i < tpArr.length; i++) {
+                    var ptr = container.querySelector('#arr-demo-tp-ptr-' + i);
+                    if (ptr) {
+                        var labels = [];
+                        if (i === tpL) labels.push('L');
+                        if (i === tpR) labels.push('R');
+                        ptr.textContent = labels.join(' ');
+                        ptr.style.color = i === tpL ? 'var(--green)' : i === tpR ? 'var(--accent)' : '';
+                    }
+                }
+                var boxes = tpBoxesEl.querySelectorAll('.str-char-box');
+                boxes.forEach(function(b, idx) {
+                    b.classList.remove('comparing', 'matched');
+                    b.style.borderColor = '';
+                    b.style.boxShadow = '';
+                    if (idx === tpL) {
+                        b.style.borderColor = 'var(--green)';
+                        b.style.boxShadow = '0 0 8px rgba(0,184,148,0.4)';
+                    }
+                    if (idx === tpR) {
+                        b.style.borderColor = 'var(--accent)';
+                        b.style.boxShadow = '0 0 8px rgba(108,92,231,0.4)';
+                    }
+                });
+            };
+
+            var tpInit = function() {
+                tpL = 0;
+                tpR = tpArr.length - 1;
+                tpDone = false;
+                renderTpBoxes();
+                updateTpPointers();
+                tpStepBtn.disabled = false;
+                tpMsgEl.textContent = '👆 Click "Next Step" to see how the L and R pointers move!';
+            };
+            tpInit();
+
+            tpStepBtn.addEventListener('click', function() {
+                if (tpDone || tpL >= tpR) {
+                    tpMsgEl.textContent = 'Search is complete! Click 🔄 Reset to try again.';
+                    tpStepBtn.disabled = true;
+                    return;
+                }
+                var target = parseInt(tpTargetEl.value) || 10;
+                var sum = tpArr[tpL] + tpArr[tpR];
+                var boxes = tpBoxesEl.querySelectorAll('.str-char-box');
+
+                if (sum === target) {
+                    boxes[tpL].classList.add('matched');
+                    boxes[tpR].classList.add('matched');
+                    tpMsgEl.textContent = 'arr[' + tpL + '] + arr[' + tpR + '] = ' + tpArr[tpL] + ' + ' + tpArr[tpR] + ' = ' + sum + ' ✓ Found the answer!';
+                    tpDone = true;
+                    tpStepBtn.disabled = true;
+                } else if (sum < target) {
+                    boxes[tpL].classList.add('comparing');
+                    boxes[tpR].classList.add('comparing');
+                    tpMsgEl.textContent = 'arr[' + tpL + '] + arr[' + tpR + '] = ' + tpArr[tpL] + ' + ' + tpArr[tpR] + ' = ' + sum + ' < ' + target + ' → Sum too small, move L right!';
+                    setTimeout(function() {
+                        tpL++;
+                        updateTpPointers();
+                    }, 500);
+                } else {
+                    boxes[tpL].classList.add('comparing');
+                    boxes[tpR].classList.add('comparing');
+                    tpMsgEl.textContent = 'arr[' + tpL + '] + arr[' + tpR + '] = ' + tpArr[tpL] + ' + ' + tpArr[tpR] + ' = ' + sum + ' > ' + target + ' → Sum too large, move R left!';
+                    setTimeout(function() {
+                        tpR--;
+                        updateTpPointers();
+                    }, 500);
+                }
+            });
+
+            tpResetBtn.addEventListener('click', function() {
+                tpInit();
+            });
+        }
     },
 
     // ===== Visualization Tab =====
@@ -934,7 +1437,8 @@ int main() {
             </div>
 
             ${self._createStepDesc()}
-            <div id="arr-sim-box" class="sim-card" style="overflow:hidden;padding:0;">
+            <div id="arr-sim-box" class="sim-card" style="overflow:visible;padding:0;position:relative;">
+                <div id="arr-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>
                 <div style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;">
                     <div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">
                         <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> Checking</span>
@@ -967,6 +1471,8 @@ int main() {
         const ptrEl = container.querySelector('#arr-pointer-info');
         const seenEl = container.querySelector('#sw-seen');
         const statusEl = container.querySelector('#arr-status');
+        const flyEl = container.querySelector('#arr-fly');
+        const wrapEl = container.querySelector('#arr-sim-box');
 
         function renderBoxes(arr) {
             boxes.innerHTML = '';
@@ -1047,6 +1553,7 @@ int main() {
                     _before: null,
                     action: function() {
                         this._before = saveState();
+                        flyEl.innerHTML = '';
                         for (let j = 0; j < nums.length; j++) setBoxState(j, '');
                         setBoxState(i, 'current');
                         ptrEl.innerHTML = `Looking for complement <strong>${comp}</strong> of <strong>${num}</strong>…`;
@@ -1058,7 +1565,7 @@ int main() {
                             statusEl.innerHTML = `<span style="color:var(--text3);">${comp} not found → save and move on</span>`;
                         }
                     },
-                    undo: function() { restoreState(this._before); }
+                    undo: function() { flyEl.innerHTML = ''; restoreState(this._before); }
                 });
 
                 if (found) {
@@ -1066,6 +1573,7 @@ int main() {
                         _before: null,
                         action: function() {
                             this._before = saveState();
+                            flyEl.innerHTML = '';
                             for (let j = 0; j < nums.length; j++) setBoxState(j, '');
                             setBoxState(foundIdx, 'matched');
                             setBoxState(i, 'matched');
@@ -1073,7 +1581,7 @@ int main() {
                             ptrEl.innerHTML = `<span style="color:var(--green);">${nums[foundIdx]} + ${num} = ${target} ✅</span>`;
                             statusEl.innerHTML = `<span style="color:var(--green);font-size:1.1rem;">Found! [${foundIdx}, ${i}]</span>`;
                         },
-                        undo: function() { restoreState(this._before); }
+                        undo: function() { flyEl.innerHTML = ''; restoreState(this._before); }
                     });
                     break;
                 } else {
@@ -1083,12 +1591,47 @@ int main() {
                         _before: null,
                         action: function() {
                             this._before = saveState();
+                            flyEl.innerHTML = '';
+                            var srcBox = boxes.querySelector('[data-idx="' + i + '"]');
+                            var srcRect = srcBox ? srcBox.getBoundingClientRect() : null;
                             clearSeenHighlight();
                             setBoxState(i, '');
                             renderSeen(seenSnap);
                             statusEl.innerHTML = `Saved ${num} to seen ✓`;
+                            // Flying ghost: array box → hashmap entry
+                            var dstKey = seenEl.querySelector('#seen-key-' + num);
+                            if (srcRect && dstKey && wrapEl) {
+                                var wr = wrapEl.getBoundingClientRect();
+                                var dr = dstKey.getBoundingClientRect();
+                                dstKey.style.opacity = '0';
+                                var ghost = document.createElement('div');
+                                ghost.textContent = num;
+                                ghost.style.cssText = 'position:absolute;z-index:20;padding:4px 10px;' +
+                                    'left:' + (srcRect.left - wr.left) + 'px;top:' + (srcRect.top - wr.top) + 'px;' +
+                                    'font-weight:700;font-size:0.9rem;background:var(--accent);color:white;border-radius:8px;' +
+                                    'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+                                flyEl.appendChild(ghost);
+                                requestAnimationFrame(function() { requestAnimationFrame(function() {
+                                    ghost.style.left = (dr.left - wr.left) + 'px';
+                                    ghost.style.top = (dr.top - wr.top) + 'px';
+                                }); });
+                                setTimeout(function() {
+                                    if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                                    if (dstKey) {
+                                        dstKey.style.opacity = '1';
+                                        dstKey.style.background = 'rgba(108,92,231,0.3)';
+                                        dstKey.style.transform = 'scale(1.15)';
+                                        dstKey.style.display = 'inline-block';
+                                        setTimeout(function() {
+                                            dstKey.style.background = 'rgba(0,0,0,0.05)';
+                                            dstKey.style.transform = '';
+                                        }, 400);
+                                    }
+                                }, 550);
+                            }
                         },
-                        undo: function() { restoreState(this._before); }
+                        undo: function() { flyEl.innerHTML = ''; restoreState(this._before); }
                     });
                     seen[num] = i;
                 }
@@ -1099,6 +1642,7 @@ int main() {
         function resetAll() {
             state.steps = [];
             state.currentStep = -1;
+            flyEl.innerHTML = '';
             renderBoxes(DEFAULT_ARR);
             ptrEl.textContent = ''; seenEl.innerHTML = '{ }'; statusEl.textContent = '—';
             stepCounter.textContent = 'Before Start';

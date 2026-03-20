@@ -56,7 +56,7 @@ var treeTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -184,6 +184,15 @@ var treeTopic = {
                         This is because every node except the root is connected to exactly one parent.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Tree Terminology Check</div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-terms-info" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">👆 Click a node to check its terminology!</div>\
+                        <svg id="tree-demo-terms-svg" viewBox="0 0 440 260" width="100%" style="max-width:440px;display:block;margin:0 auto;cursor:pointer;"></svg>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-terms-msg">Click a node to see its parent, children, depth, height, and whether it is a leaf. Try clicking all 7 nodes!</div>\
+                </div>\
             </div>\
 \
             <!-- 2. Binary Tree -->\
@@ -256,6 +265,23 @@ struct TreeNode {\n\
                         Number of nodes in a perfect binary tree of height h = 2^(h+1) - 1 = 2^4 - 1 = <strong>15</strong><br>\
                         Level 0: 1, Level 1: 2, Level 2: 4, Level 3: 8 -> Total: 15.\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — BST Node Insertion</div>\
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0.5rem 0;">\
+                        <input type="number" id="tree-demo-bst-input" value="6" min="1" max="99" style="width:70px;padding:6px 10px;border:1.5px solid var(--bg3);border-radius:8px;font-size:0.95rem;background:var(--bg);color:var(--text);text-align:center;">\
+                        <button class="concept-demo-btn" id="tree-demo-bst-insert">➕ Start Insert</button>\
+                        <button class="concept-demo-btn green" id="tree-demo-bst-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-bst-desc" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">Enter a value and click "Start Insert"!</div>\
+                        <svg id="tree-demo-bst-svg" viewBox="0 0 500 280" width="100%" style="max-width:500px;display:block;margin:0 auto;"></svg>\
+                    </div>\
+                    <div class="concept-demo-btns" style="justify-content:center;display:none;" id="tree-demo-bst-step-btns">\
+                        <button class="concept-demo-btn" id="tree-demo-bst-next">Next Comparison →</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-bst-msg">In a BST (Binary Search Tree), when inserting a value: if it is smaller than the current node, go left; if larger, go right. Follow the comparison path step by step!</div>\
                 </div>\
             </div>\
 \
@@ -424,6 +450,20 @@ void level_order(TreeNode* root) {\n\
                         Preorder: 1 2 4 5 3 6 7 | Postorder: 4 5 2 6 7 3 1\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — Preorder Traversal Step by Step</div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-preorder-desc" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">▶ Click "Next Visit" to follow the preorder traversal!</div>\
+                        <svg id="tree-demo-preorder-svg" viewBox="0 0 440 240" width="100%" style="max-width:440px;display:block;margin:0 auto;"></svg>\
+                        <div id="tree-demo-preorder-result" style="text-align:center;margin-top:0.8rem;font-size:0.95rem;font-weight:600;color:var(--text2);min-height:1.5em;">Visit order: <span id="tree-demo-preorder-order" style="color:var(--accent);"></span></div>\
+                    </div>\
+                    <div class="concept-demo-btns" style="justify-content:center;">\
+                        <button class="concept-demo-btn" id="tree-demo-preorder-next">Next Visit →</button>\
+                        <button class="concept-demo-btn green" id="tree-demo-preorder-reset" style="display:none;">↺ Start Over</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-preorder-msg">Preorder traversal follows <strong>Root → Left → Right</strong> order. At each node, record it first, then go to the left child. Once the left is done, go right!</div>\
+                </div>\
             </div>\
 \
             <!-- 4. Tree Usage Patterns -->\
@@ -523,6 +563,29 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                         Since one is found in each subtree of node 2, node 2 is the LCA.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Try It — DFS Depth Search (Stack Visualization)</div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-dfs-desc" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">▶ Click "Next Step" to see how DFS works with a stack!</div>\
+                        <div style="display:flex;gap:2rem;align-items:flex-start;justify-content:center;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:240px;max-width:320px;">\
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;">Tree</div>\
+                                <svg id="tree-demo-dfs-svg" viewBox="0 0 320 220" width="100%" style="display:block;margin:0 auto;"></svg>\
+                            </div>\
+                            <div style="min-width:120px;max-width:160px;">\
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;">Stack</div>\
+                                <div id="tree-demo-dfs-stack" style="border:2px solid var(--bg3);border-radius:10px;min-height:180px;padding:0.5rem;display:flex;flex-direction:column-reverse;gap:4px;align-items:center;background:var(--bg2);"></div>\
+                            </div>\
+                        </div>\
+                        <div id="tree-demo-dfs-visited" style="text-align:center;margin-top:0.8rem;font-size:0.95rem;font-weight:600;color:var(--text2);min-height:1.5em;">Visited: <span id="tree-demo-dfs-visited-list" style="color:var(--green);"></span></div>\
+                    </div>\
+                    <div class="concept-demo-btns" style="justify-content:center;">\
+                        <button class="concept-demo-btn" id="tree-demo-dfs-next">Next Step →</button>\
+                        <button class="concept-demo-btn green" id="tree-demo-dfs-reset" style="display:none;">↺ Start Over</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-dfs-msg">DFS uses a <strong>stack</strong>. It pops a node from the stack and pushes its children. Recursive calls use the call stack internally, so the same principle applies!</div>\
+                </div>\
             </div>\
         ';
 
@@ -538,6 +601,603 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ============================
+        // Common SVG Tree Drawing Helper
+        // ============================
+        var _svgNS = 'http://www.w3.org/2000/svg';
+        function _drawTreeSVG(svg, nodes, opts) {
+            var o = opts || {};
+            var r = o.r || 22;
+            var fontSize = o.fontSize || '14';
+            svg.innerHTML = '';
+            if (o.edgePairs) {
+                o.edgePairs.forEach(function(ep) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', ep.x1); line.setAttribute('y1', ep.y1);
+                    line.setAttribute('x2', ep.x2); line.setAttribute('y2', ep.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    line.id = ep.id || '';
+                    svg.appendChild(line);
+                });
+            }
+            nodes.forEach(function(n) {
+                var g = document.createElementNS(_svgNS, 'g');
+                g.id = n.id || '';
+                g.style.cursor = o.clickable ? 'pointer' : 'default';
+                var circle = document.createElementNS(_svgNS, 'circle');
+                circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                circle.setAttribute('r', r);
+                circle.setAttribute('fill', o.nodeColor || 'var(--bg2)');
+                circle.setAttribute('stroke', o.strokeColor || 'var(--accent)');
+                circle.setAttribute('stroke-width', '2.5');
+                circle.setAttribute('class', 'tree-demo-node-circle');
+                g.appendChild(circle);
+                var text = document.createElementNS(_svgNS, 'text');
+                text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', fontSize); text.setAttribute('font-weight', '700');
+                text.setAttribute('fill', o.textColor || 'var(--text)');
+                text.setAttribute('pointer-events', 'none');
+                text.textContent = n.val;
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+        }
+
+        // ============================
+        // Demo 1: Tree Terminology Check
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-terms-svg');
+            var infoEl = container.querySelector('#tree-demo-terms-info');
+            if (!svg || !infoEl) return;
+
+            var treeData = [
+                { val: 1, x: 220, y: 40, depth: 0, height: 2, parent: null, children: [2,3], isLeaf: false },
+                { val: 2, x: 120, y: 120, depth: 1, height: 1, parent: 1, children: [4,5], isLeaf: false },
+                { val: 3, x: 320, y: 120, depth: 1, height: 1, parent: 1, children: [6,7], isLeaf: false },
+                { val: 4, x: 70,  y: 200, depth: 2, height: 0, parent: 2, children: [], isLeaf: true },
+                { val: 5, x: 170, y: 200, depth: 2, height: 0, parent: 2, children: [], isLeaf: true },
+                { val: 6, x: 270, y: 200, depth: 2, height: 0, parent: 3, children: [], isLeaf: true },
+                { val: 7, x: 370, y: 200, depth: 2, height: 0, parent: 3, children: [], isLeaf: true }
+            ];
+            var edges = [
+                { x1:220, y1:40, x2:120, y2:120, id:'tree-demo-terms-e01' },
+                { x1:220, y1:40, x2:320, y2:120, id:'tree-demo-terms-e02' },
+                { x1:120, y1:120, x2:70,  y2:200, id:'tree-demo-terms-e12' },
+                { x1:120, y1:120, x2:170, y2:200, id:'tree-demo-terms-e13' },
+                { x1:320, y1:120, x2:270, y2:200, id:'tree-demo-terms-e14' },
+                { x1:320, y1:120, x2:370, y2:200, id:'tree-demo-terms-e15' }
+            ];
+            var svgNodes = treeData.map(function(n) {
+                return { val: n.val, x: n.x, y: n.y, id: 'tree-demo-terms-n' + n.val };
+            });
+            _drawTreeSVG(svg, svgNodes, { edgePairs: edges, clickable: true, r: 24 });
+
+            for (var d = 0; d <= 2; d++) {
+                var label = document.createElementNS(_svgNS, 'text');
+                label.setAttribute('x', 430); label.setAttribute('y', 40 + d * 80 + 5);
+                label.setAttribute('text-anchor', 'end'); label.setAttribute('font-size', '11');
+                label.setAttribute('fill', 'var(--text3)'); label.setAttribute('font-weight', '600');
+                label.textContent = 'depth ' + d;
+                svg.appendChild(label);
+            }
+
+            var clickedSet = {};
+            svg.addEventListener('click', function(e) {
+                var g = e.target.closest('g');
+                if (!g || !g.id || !g.id.startsWith('tree-demo-terms-n')) return;
+                var val = parseInt(g.id.replace('tree-demo-terms-n', ''));
+                var nd = treeData.find(function(n) { return n.val === val; });
+                if (!nd) return;
+                clickedSet[val] = true;
+
+                treeData.forEach(function(n) {
+                    var el = svg.querySelector('#tree-demo-terms-n' + n.val + ' circle');
+                    if (el) { el.setAttribute('fill', 'var(--bg2)'); el.setAttribute('stroke', 'var(--accent)'); el.style.filter = ''; }
+                });
+                var clickedCircle = svg.querySelector('#tree-demo-terms-n' + val + ' circle');
+                if (clickedCircle) {
+                    clickedCircle.setAttribute('fill', 'var(--yellow)');
+                    clickedCircle.setAttribute('stroke', 'var(--yellow)');
+                    clickedCircle.style.filter = 'drop-shadow(0 0 6px var(--yellow))';
+                }
+                nd.children.forEach(function(cv) {
+                    var cc = svg.querySelector('#tree-demo-terms-n' + cv + ' circle');
+                    if (cc) { cc.setAttribute('fill', 'var(--green)'); cc.setAttribute('stroke', 'var(--green)'); cc.style.filter = 'drop-shadow(0 0 4px var(--green))'; }
+                });
+                if (nd.parent !== null) {
+                    var pc = svg.querySelector('#tree-demo-terms-n' + nd.parent + ' circle');
+                    if (pc) { pc.setAttribute('fill', 'var(--accent)'); pc.setAttribute('stroke', 'var(--accent)'); pc.style.filter = 'drop-shadow(0 0 4px var(--accent))'; }
+                }
+
+                var parentStr = nd.parent !== null ? '<span style="color:var(--accent);font-weight:700;">' + nd.parent + '</span>' : 'None (root)';
+                var childStr = nd.children.length > 0 ? nd.children.map(function(c) { return '<span style="color:var(--green);font-weight:700;">' + c + '</span>'; }).join(', ') : 'None (leaf)';
+                infoEl.innerHTML =
+                    '<strong style="color:var(--yellow);">Node ' + val + '</strong> — ' +
+                    'Parent: ' + parentStr + ' | ' +
+                    'Children: ' + childStr + ' | ' +
+                    'depth: <strong>' + nd.depth + '</strong> | ' +
+                    'height: <strong>' + nd.height + '</strong> | ' +
+                    (nd.isLeaf ? '<span style="color:var(--green);">Leaf node</span>' : (nd.parent === null ? '<span style="color:var(--red);">Root node</span>' : 'Internal node'));
+
+                var count = Object.keys(clickedSet).length;
+                var msgEl = container.querySelector('#tree-demo-terms-msg');
+                if (msgEl) {
+                    if (count >= 7) msgEl.textContent = 'You have checked all nodes! Do you understand the depth, height, and parent/child relationships?';
+                    else msgEl.textContent = count + '/7 nodes checked. Click the remaining nodes too!';
+                }
+            });
+        })();
+
+        // ============================
+        // Demo 2: BST Node Insertion
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-bst-svg');
+            var inputEl = container.querySelector('#tree-demo-bst-input');
+            var insertBtn = container.querySelector('#tree-demo-bst-insert');
+            var resetBtn = container.querySelector('#tree-demo-bst-reset');
+            var descEl = container.querySelector('#tree-demo-bst-desc');
+            var stepBtns = container.querySelector('#tree-demo-bst-step-btns');
+            var nextBtn = container.querySelector('#tree-demo-bst-next');
+            if (!svg || !insertBtn) return;
+
+            var bstNodes = [];
+            var bstEdges = [];
+            var insertSteps = [];
+            var insertIdx = 0;
+            var inserting = false;
+
+            var initVals = [8, 3, 10, 1, 5, 14];
+
+            function bstLayout() {
+                if (bstNodes.length === 0) return;
+                var root = bstNodes[0];
+                var q = [{ node: root, x: 250, y: 40, span: 120 }];
+                bstEdges = [];
+                while (q.length > 0) {
+                    var cur = q.shift();
+                    cur.node.x = cur.x;
+                    cur.node.y = cur.y;
+                    if (cur.node.left !== null) {
+                        var leftNode = bstNodes.find(function(n) { return n.val === cur.node.left; });
+                        if (leftNode) {
+                            bstEdges.push({ x1: cur.x, y1: cur.y, x2: cur.x - cur.span, y2: cur.y + 70 });
+                            q.push({ node: leftNode, x: cur.x - cur.span, y: cur.y + 70, span: cur.span * 0.55 });
+                        }
+                    }
+                    if (cur.node.right !== null) {
+                        var rightNode = bstNodes.find(function(n) { return n.val === cur.node.right; });
+                        if (rightNode) {
+                            bstEdges.push({ x1: cur.x, y1: cur.y, x2: cur.x + cur.span, y2: cur.y + 70 });
+                            q.push({ node: rightNode, x: cur.x + cur.span, y: cur.y + 70, span: cur.span * 0.55 });
+                        }
+                    }
+                }
+            }
+
+            function bstInsert(val) {
+                var newNode = { val: val, left: null, right: null, x: 0, y: 0 };
+                if (bstNodes.length === 0) {
+                    bstNodes.push(newNode);
+                    return [];
+                }
+                var steps = [];
+                var current = bstNodes[0];
+                while (true) {
+                    if (val < current.val) {
+                        steps.push({ node: current.val, dir: 'left', desc: val + ' < ' + current.val + ' → go left (smaller values go left!)' });
+                        if (current.left === null) {
+                            current.left = val;
+                            bstNodes.push(newNode);
+                            steps.push({ node: val, dir: 'placed', desc: val + ' inserted as ' + current.val + '\'s left child!' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.left; });
+                    } else {
+                        steps.push({ node: current.val, dir: 'right', desc: val + ' >= ' + current.val + ' → go right (larger or equal values go right!)' });
+                        if (current.right === null) {
+                            current.right = val;
+                            bstNodes.push(newNode);
+                            steps.push({ node: val, dir: 'placed', desc: val + ' inserted as ' + current.val + '\'s right child!' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.right; });
+                    }
+                }
+                return steps;
+            }
+
+            function drawBST(highlightVal, highlightColor) {
+                bstLayout();
+                svg.innerHTML = '';
+                bstEdges.forEach(function(e) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', e.x1); line.setAttribute('y1', e.y1);
+                    line.setAttribute('x2', e.x2); line.setAttribute('y2', e.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+                bstNodes.forEach(function(n) {
+                    var g = document.createElementNS(_svgNS, 'g');
+                    var circle = document.createElementNS(_svgNS, 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                    circle.setAttribute('r', '20');
+                    var isHL = highlightVal === n.val;
+                    circle.setAttribute('fill', isHL ? (highlightColor || 'var(--yellow)') : 'var(--bg2)');
+                    circle.setAttribute('stroke', isHL ? (highlightColor || 'var(--yellow)') : 'var(--accent)');
+                    circle.setAttribute('stroke-width', '2.5');
+                    if (isHL) circle.style.filter = 'drop-shadow(0 0 8px ' + (highlightColor || 'var(--yellow)') + ')';
+                    g.appendChild(circle);
+                    var text = document.createElementNS(_svgNS, 'text');
+                    text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '13'); text.setAttribute('font-weight', '700');
+                    text.setAttribute('fill', isHL ? 'white' : 'var(--text)');
+                    text.setAttribute('pointer-events', 'none');
+                    text.textContent = n.val;
+                    g.appendChild(text);
+                    svg.appendChild(g);
+                });
+            }
+
+            function initBST() {
+                bstNodes = []; bstEdges = [];
+                initVals.forEach(function(v) { bstInsert(v); });
+                drawBST();
+                insertSteps = []; insertIdx = 0; inserting = false;
+                stepBtns.style.display = 'none';
+                descEl.textContent = 'Enter a value and click "Start Insert"!';
+            }
+
+            initBST();
+
+            insertBtn.addEventListener('click', function() {
+                var val = parseInt(inputEl.value);
+                if (isNaN(val) || val < 1 || val > 99) { descEl.textContent = 'Please enter a number between 1 and 99!'; return; }
+                if (bstNodes.find(function(n) { return n.val === val; })) { descEl.textContent = val + ' is already in the tree. Try a different value!'; return; }
+
+                var stepsPreview = [];
+                var current = bstNodes[0];
+                while (true) {
+                    if (val < current.val) {
+                        stepsPreview.push({ node: current.val, dir: 'left', desc: val + ' < ' + current.val + ' → go left (smaller values go left!)' });
+                        if (current.left === null) {
+                            stepsPreview.push({ node: current.val, dir: 'place-left', desc: current.val + '\'s left is empty! Inserting ' + val + ' here.' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.left; });
+                    } else {
+                        stepsPreview.push({ node: current.val, dir: 'right', desc: val + ' >= ' + current.val + ' → go right (larger or equal values go right!)' });
+                        if (current.right === null) {
+                            stepsPreview.push({ node: current.val, dir: 'place-right', desc: current.val + '\'s right is empty! Inserting ' + val + ' here.' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.right; });
+                    }
+                }
+                insertSteps = stepsPreview;
+                insertIdx = 0; inserting = true;
+                stepBtns.style.display = 'flex';
+                nextBtn.style.display = '';
+                descEl.textContent = 'Starting insertion of ' + val + '! Click "Next Comparison".';
+                drawBST();
+            });
+
+            nextBtn.addEventListener('click', function() {
+                if (!inserting || insertIdx >= insertSteps.length) return;
+                var step = insertSteps[insertIdx];
+                descEl.textContent = step.desc;
+                if (step.dir === 'place-left' || step.dir === 'place-right') {
+                    var val = parseInt(inputEl.value);
+                    bstInsert(val);
+                    drawBST(val, 'var(--green)');
+                    inserting = false;
+                    nextBtn.style.display = 'none';
+                    descEl.textContent = step.desc;
+                } else {
+                    drawBST(step.node, 'var(--yellow)');
+                }
+                insertIdx++;
+            });
+
+            resetBtn.addEventListener('click', function() {
+                initBST();
+                inputEl.value = '6';
+            });
+        })();
+
+        // ============================
+        // Demo 3: Preorder Traversal
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-preorder-svg');
+            var descEl = container.querySelector('#tree-demo-preorder-desc');
+            var nextBtn = container.querySelector('#tree-demo-preorder-next');
+            var resetBtn = container.querySelector('#tree-demo-preorder-reset');
+            var orderEl = container.querySelector('#tree-demo-preorder-order');
+            if (!svg || !nextBtn) return;
+
+            var treeLayout = [
+                { val: 1, x: 220, y: 35 },
+                { val: 2, x: 120, y: 105 },
+                { val: 3, x: 320, y: 105 },
+                { val: 4, x: 70,  y: 180 },
+                { val: 5, x: 170, y: 180 },
+                { val: 6, x: 270, y: 180 },
+                { val: 7, x: 370, y: 180 }
+            ];
+            var treeEdges = [
+                { x1:220, y1:35, x2:120, y2:105 },
+                { x1:220, y1:35, x2:320, y2:105 },
+                { x1:120, y1:105, x2:70,  y2:180 },
+                { x1:120, y1:105, x2:170, y2:180 },
+                { x1:320, y1:105, x2:270, y2:180 },
+                { x1:320, y1:105, x2:370, y2:180 }
+            ];
+
+            var preorderSteps = [
+                { visit: 1, desc: 'Visit root node 1. Preorder records the current node first!' },
+                { visit: 2, desc: 'Go down to left child 2. Record 2 first.' },
+                { visit: 4, desc: 'Go down to 2\'s left child 4. Record 4. Node 4 is a leaf!' },
+                { visit: 5, desc: '4 is done, so go to 2\'s right child 5. Record 5. Node 5 is also a leaf!' },
+                { visit: 3, desc: '2\'s subtree is done. Now go to root\'s right child 3. Record 3.' },
+                { visit: 6, desc: 'Go down to 3\'s left child 6. Record 6. Node 6 is a leaf!' },
+                { visit: 7, desc: 'Go to 3\'s right child 7. Record 7. Traversal complete!' }
+            ];
+
+            var visitedList = [];
+            var currentStepIdx = -1;
+
+            function drawTree() {
+                svg.innerHTML = '';
+                treeEdges.forEach(function(e) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', e.x1); line.setAttribute('y1', e.y1);
+                    line.setAttribute('x2', e.x2); line.setAttribute('y2', e.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+                treeLayout.forEach(function(n) {
+                    var g = document.createElementNS(_svgNS, 'g');
+                    var circle = document.createElementNS(_svgNS, 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                    circle.setAttribute('r', '22');
+                    var isVisited = visitedList.indexOf(n.val) !== -1;
+                    var isCurrent = currentStepIdx >= 0 && preorderSteps[currentStepIdx].visit === n.val;
+                    if (isCurrent) {
+                        circle.setAttribute('fill', 'var(--yellow)');
+                        circle.setAttribute('stroke', 'var(--yellow)');
+                        circle.style.filter = 'drop-shadow(0 0 8px var(--yellow))';
+                    } else if (isVisited) {
+                        circle.setAttribute('fill', 'var(--green)');
+                        circle.setAttribute('stroke', 'var(--green)');
+                        circle.style.filter = 'drop-shadow(0 0 4px var(--green))';
+                    } else {
+                        circle.setAttribute('fill', 'var(--bg2)');
+                        circle.setAttribute('stroke', 'var(--accent)');
+                    }
+                    circle.setAttribute('stroke-width', '2.5');
+                    g.appendChild(circle);
+                    var text = document.createElementNS(_svgNS, 'text');
+                    text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '14'); text.setAttribute('font-weight', '700');
+                    text.setAttribute('fill', (isCurrent || isVisited) ? 'white' : 'var(--text)');
+                    text.setAttribute('pointer-events', 'none');
+                    text.textContent = n.val;
+                    g.appendChild(text);
+                    var visitIdx = visitedList.indexOf(n.val);
+                    if (visitIdx !== -1) {
+                        var badge = document.createElementNS(_svgNS, 'text');
+                        badge.setAttribute('x', parseFloat(n.x) + 18); badge.setAttribute('y', parseFloat(n.y) - 16);
+                        badge.setAttribute('text-anchor', 'middle');
+                        badge.setAttribute('font-size', '10'); badge.setAttribute('font-weight', '700');
+                        badge.setAttribute('fill', 'var(--accent)');
+                        badge.textContent = '#' + (visitIdx + 1);
+                        g.appendChild(badge);
+                    }
+                    svg.appendChild(g);
+                });
+            }
+
+            function reset() {
+                visitedList = [];
+                currentStepIdx = -1;
+                drawTree();
+                orderEl.textContent = '';
+                descEl.textContent = '▶ Click "Next Visit" to follow the preorder traversal!';
+                nextBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            }
+
+            reset();
+
+            nextBtn.addEventListener('click', function() {
+                if (currentStepIdx >= preorderSteps.length - 1) return;
+                currentStepIdx++;
+                var step = preorderSteps[currentStepIdx];
+                visitedList.push(step.visit);
+                descEl.textContent = step.desc;
+                orderEl.textContent = visitedList.join(' → ');
+                drawTree();
+
+                if (currentStepIdx >= preorderSteps.length - 1) {
+                    nextBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                    descEl.textContent = 'Preorder traversal complete! Result: 1 → 2 → 4 → 5 → 3 → 6 → 7. We followed the "Root → Left → Right" order.';
+                }
+            });
+
+            resetBtn.addEventListener('click', function() { reset(); });
+        })();
+
+        // ============================
+        // Demo 4: DFS Depth Search (Stack)
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-dfs-svg');
+            var stackEl = container.querySelector('#tree-demo-dfs-stack');
+            var descEl = container.querySelector('#tree-demo-dfs-desc');
+            var nextBtn = container.querySelector('#tree-demo-dfs-next');
+            var resetBtn = container.querySelector('#tree-demo-dfs-reset');
+            var visitedListEl = container.querySelector('#tree-demo-dfs-visited-list');
+            if (!svg || !nextBtn) return;
+
+            var treeLayout = [
+                { val: 1, x: 160, y: 35 },
+                { val: 2, x: 80,  y: 100 },
+                { val: 3, x: 240, y: 100 },
+                { val: 4, x: 40,  y: 170 },
+                { val: 5, x: 120, y: 170 },
+                { val: 6, x: 200, y: 170 },
+                { val: 7, x: 280, y: 170 }
+            ];
+            var treeEdges = [
+                { x1:160, y1:35, x2:80,  y2:100 },
+                { x1:160, y1:35, x2:240, y2:100 },
+                { x1:80,  y1:100, x2:40,  y2:170 },
+                { x1:80,  y1:100, x2:120, y2:170 },
+                { x1:240, y1:100, x2:200, y2:170 },
+                { x1:240, y1:100, x2:280, y2:170 }
+            ];
+            var childrenMap = { 1: [2,3], 2: [4,5], 3: [6,7], 4: [], 5: [], 6: [], 7: [] };
+
+            var dfsSteps = [
+                { type: 'push', val: 1, stack: [1], visited: [], current: null,
+                  desc: 'Push root node 1 onto the stack. DFS explores by popping from the stack.' },
+                { type: 'pop', val: 1, stack: [], visited: [1], current: 1,
+                  desc: 'Pop 1 from the stack. Node 1 visited! Push its children onto the stack.' },
+                { type: 'push-children', val: 1, stack: [3, 2], visited: [1], current: 1,
+                  desc: 'Push 1\'s children: right 3 first, then left 2. Why? Stack is LIFO, so left (2) comes out first!' },
+                { type: 'pop', val: 2, stack: [3], visited: [1, 2], current: 2,
+                  desc: 'Stack top is 2 → pop and visit! Push 2\'s children.' },
+                { type: 'push-children', val: 2, stack: [3, 5, 4], visited: [1, 2], current: 2,
+                  desc: 'Push 2\'s children: right 5, then left 4. Stack top is 4 → next we visit 4.' },
+                { type: 'pop', val: 4, stack: [3, 5], visited: [1, 2, 4], current: 4,
+                  desc: 'Stack top is 4 → pop and visit! Node 4 is a leaf, no children to push.' },
+                { type: 'pop', val: 5, stack: [3], visited: [1, 2, 4, 5], current: 5,
+                  desc: 'Stack top is 5 → pop and visit! Node 5 is also a leaf. 2\'s subtree is done!' },
+                { type: 'pop', val: 3, stack: [], visited: [1, 2, 4, 5, 3], current: 3,
+                  desc: 'Stack top is 3 → pop and visit! Push 3\'s children.' },
+                { type: 'push-children', val: 3, stack: [7, 6], visited: [1, 2, 4, 5, 3], current: 3,
+                  desc: 'Push 3\'s children: right 7, then left 6. Stack top is 6 → next we visit 6.' },
+                { type: 'pop', val: 6, stack: [7], visited: [1, 2, 4, 5, 3, 6], current: 6,
+                  desc: 'Stack top is 6 → pop and visit! Node 6 is a leaf.' },
+                { type: 'pop', val: 7, stack: [], visited: [1, 2, 4, 5, 3, 6, 7], current: 7,
+                  desc: 'Stack top is 7 → pop and visit! Stack is empty. DFS traversal complete!' }
+            ];
+
+            var currentStepIdx = -1;
+
+            function drawDFS(step) {
+                var visited = step ? step.visited : [];
+                var current = step ? step.current : null;
+                var stackArr = step ? step.stack : [];
+
+                svg.innerHTML = '';
+                treeEdges.forEach(function(e) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', e.x1); line.setAttribute('y1', e.y1);
+                    line.setAttribute('x2', e.x2); line.setAttribute('y2', e.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+                treeLayout.forEach(function(n) {
+                    var g = document.createElementNS(_svgNS, 'g');
+                    var circle = document.createElementNS(_svgNS, 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                    circle.setAttribute('r', '20');
+                    var isCurrent = current === n.val;
+                    var isVisited = visited.indexOf(n.val) !== -1;
+                    var inStack = stackArr.indexOf(n.val) !== -1;
+                    if (isCurrent) {
+                        circle.setAttribute('fill', 'var(--yellow)');
+                        circle.setAttribute('stroke', 'var(--yellow)');
+                        circle.style.filter = 'drop-shadow(0 0 8px var(--yellow))';
+                    } else if (isVisited) {
+                        circle.setAttribute('fill', 'var(--green)');
+                        circle.setAttribute('stroke', 'var(--green)');
+                        circle.style.filter = 'drop-shadow(0 0 4px var(--green))';
+                    } else if (inStack) {
+                        circle.setAttribute('fill', 'var(--accent)');
+                        circle.setAttribute('stroke', 'var(--accent)');
+                        circle.style.filter = 'drop-shadow(0 0 4px var(--accent))';
+                    } else {
+                        circle.setAttribute('fill', 'var(--bg2)');
+                        circle.setAttribute('stroke', 'var(--text3)');
+                    }
+                    circle.setAttribute('stroke-width', '2.5');
+                    g.appendChild(circle);
+                    var text = document.createElementNS(_svgNS, 'text');
+                    text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '13'); text.setAttribute('font-weight', '700');
+                    text.setAttribute('fill', (isCurrent || isVisited || inStack) ? 'white' : 'var(--text)');
+                    text.setAttribute('pointer-events', 'none');
+                    text.textContent = n.val;
+                    g.appendChild(text);
+                    var depthMap = { 1: 0, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 2 };
+                    if (isVisited || isCurrent) {
+                        var dl = document.createElementNS(_svgNS, 'text');
+                        dl.setAttribute('x', parseFloat(n.x)); dl.setAttribute('y', parseFloat(n.y) + 35);
+                        dl.setAttribute('text-anchor', 'middle');
+                        dl.setAttribute('font-size', '10'); dl.setAttribute('fill', 'var(--text3)'); dl.setAttribute('font-weight', '600');
+                        dl.textContent = 'd=' + depthMap[n.val];
+                        g.appendChild(dl);
+                    }
+                    svg.appendChild(g);
+                });
+
+                stackEl.innerHTML = '';
+                if (stackArr.length === 0) {
+                    stackEl.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;padding:1rem 0;">Empty</div>';
+                } else {
+                    stackArr.forEach(function(v, i) {
+                        var item = document.createElement('div');
+                        item.style.cssText = 'padding:6px 18px;background:var(--accent);color:white;border-radius:6px;font-weight:700;font-size:0.9rem;text-align:center;min-width:40px;transition:all 0.3s;';
+                        if (i === stackArr.length - 1) {
+                            item.style.background = 'var(--yellow)';
+                            item.style.boxShadow = '0 0 8px var(--yellow)';
+                            item.textContent = v + ' ← top';
+                        } else {
+                            item.textContent = '' + v;
+                        }
+                        stackEl.appendChild(item);
+                    });
+                }
+
+                visitedListEl.textContent = visited.join(' → ');
+            }
+
+            function reset() {
+                currentStepIdx = -1;
+                drawDFS(null);
+                descEl.textContent = '▶ Click "Next Step" to see how DFS works with a stack!';
+                visitedListEl.textContent = '';
+                nextBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            }
+
+            reset();
+
+            nextBtn.addEventListener('click', function() {
+                if (currentStepIdx >= dfsSteps.length - 1) return;
+                currentStepIdx++;
+                var step = dfsSteps[currentStepIdx];
+                descEl.textContent = step.desc;
+                drawDFS(step);
+
+                if (currentStepIdx >= dfsSteps.length - 1) {
+                    nextBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', function() { reset(); });
+        })();
     },
 
     // ===== Visualization State =====
@@ -755,11 +1415,11 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                     var snapHL = JSON.parse(JSON.stringify(currentHL));
                     var snapDepth = JSON.parse(JSON.stringify(depthMap));
                     var desc = isL
-                        ? 'Visit node ' + v + ' (leaf node)'
-                        : 'Visit node ' + v + cDesc;
+                        ? 'Visit node ' + v + ' — leaf node, so depth=1 (counting only itself)'
+                        : 'Visit node ' + v + ' — recurse into children to find subtree depth' + cDesc;
                     var info = isL
-                        ? 'Visit node <strong>' + v + '</strong> — leaf node (no children)'
-                        : 'Visit node <strong>' + v + '</strong>' + cDesc;
+                        ? 'Visit node <strong>' + v + '</strong> — leaf node: no children, so depth=1'
+                        : 'Visit node <strong>' + v + '</strong> — recurse left/right subtrees to find depth' + cDesc;
                     steps.push({
                         description: desc,
                         action: function() { svgEl.innerHTML = renderSvg(snapHL, snapDepth); infoEl.innerHTML = info; },
@@ -779,8 +1439,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                     depthMap[k] = 'd=' + d;
                     var snapHL = JSON.parse(JSON.stringify(currentHL));
                     var snapDepth = JSON.parse(JSON.stringify(depthMap));
-                    var desc = 'Node ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = depth ' + d;
-                    var info = 'Node ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = <strong>depth ' + d + '</strong>';
+                    var desc = 'Node ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = depth ' + d + ' — take the deeper subtree and add 1 for this node';
+                    var info = 'Node ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = <strong>depth ' + d + '</strong> — deeper side + 1';
                     steps.push({
                         description: desc,
                         action: function() { svgEl.innerHTML = renderSvg(snapHL, snapDepth); infoEl.innerHTML = info; },
@@ -799,7 +1459,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             var finalDepth = JSON.parse(JSON.stringify(depthMap));
             var prevHL2 = steps.length > 0 ? null : {};
             steps.push({
-                description: 'Done! Maximum depth = ' + totalDepth,
+                description: 'Done! Maximum depth = ' + totalDepth + ' — the length of the path from root to the deepest leaf',
                 action: function() {
                     svgEl.innerHTML = renderSvg(finalHL, finalDepth);
                     infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Maximum depth = ' + totalDepth + '</strong>';
@@ -929,7 +1589,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                         highlightState[k] = 'done';
                         var snapHL = JSON.parse(JSON.stringify(highlightState));
                         steps.push({
-                            description: 'Node ' + v + ': leaf node (no children to swap)',
+                            description: 'Node ' + v + ': leaf node — no children to swap, so skip',
                             hl: snapHL, prevHL: prevHL,
                             swapNode: null,
                             info: 'Node ' + v + ': leaf node (no swap needed)'
@@ -944,7 +1604,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                         highlightState[k] = 'swap';
                         var snapHL = JSON.parse(JSON.stringify(highlightState));
                         steps.push({
-                            description: 'Node ' + v + ': swap left(' + lv + ') and right(' + rv + ')!',
+                            description: 'Node ' + v + ': swap left(' + lv + ') ↔ right(' + rv + ')! — <em>mirror-flip by swapping left/right children at every node</em>',
                             hl: snapHL, prevHL: prevHL,
                             swapNode: k,
                             info: 'Node ' + v + ': <strong>' + lv + ' ↔ ' + rv + '</strong> swap complete!'
@@ -1039,7 +1699,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             })(finalRoot);
 
             actualSteps.push({
-                description: 'Done! The tree has been inverted: [' + invertedStr + ']',
+                description: 'Done! All nodes have had their left/right children swapped — the tree is now mirror-inverted: [' + invertedStr + ']',
                 action: function() {
                     svgEl.innerHTML = self._makeTreeSvg(finalLayout, allDone, svgW, svgH, 22);
                     infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Invert complete! [' + invertedStr + ']</strong>';
@@ -1135,7 +1795,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             // Step 0: Init — put root in queue
             var rootKey = String(root.val) + '_' + root.idx;
             steps.push({
-                description: 'Initialize: add root(' + root.val + ') to the queue.',
+                description: 'Initialize: add root(' + root.val + ') to the queue. — <em>BFS uses a queue to visit nodes level by level, closest first</em>',
                 action: function() {
                     var hl = {}; hl[rootKey] = 'current';
                     svgEl.innerHTML = renderSvg(hl);
@@ -1201,7 +1861,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
 
                 (function(hl, sResult, sNextVals, desc, lvlN, lvlVals) {
                     steps.push({
-                        description: 'Level ' + lvlN + ': process nodes ' + lvlVals.join(', ') + '.',
+                        description: 'Level ' + lvlN + ': process nodes ' + lvlVals.join(', ') + '. — <em>dequeue all nodes at the same depth to group them by level</em>',
                         action: function() {
                             svgEl.innerHTML = renderSvg(hl);
                             showQueue(sNextVals);
@@ -1222,7 +1882,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             var finalResult = result.map(function(a) { return a.slice(); });
             var resultStr = '[' + finalResult.map(function(a) { return '[' + a.join(', ') + ']'; }).join(', ') + ']';
             steps.push({
-                description: 'Done! Queue is empty, BFS complete. Result: ' + resultStr,
+                description: 'Done! Queue is empty, all levels traversed. Result: ' + resultStr,
                 action: function() {
                     svgEl.innerHTML = renderSvg(allDone);
                     showQueue([]);
@@ -1353,8 +2013,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                 var isFirst = (pi === 0);
                 var isLast = (pi === preOrder.length - 1);
                 var desc = isFirst
-                    ? 'Preorder: visit root ' + item.val + ' (print -> left -> right)'
-                    : 'Preorder: visit ' + item.val;
+                    ? 'Preorder: visit root ' + item.val + ' — print itself first, then recurse left -> right'
+                    : 'Preorder: visit ' + item.val + ' — print current node, then descend to children';
                 if (isLast) {
                     // Mark all done
                     for (var j = 0; j < preOrder.length; j++) hl[preOrder[j].key] = 'done';
@@ -1388,8 +2048,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                 var isFirst = (ii === 0);
                 var isLast = (ii === inOrder.length - 1);
                 var desc = isFirst
-                    ? 'Inorder: visit leftmost ' + item.val + ' first (left -> print -> right)'
-                    : 'Inorder: visit ' + item.val;
+                    ? 'Inorder: visit leftmost ' + item.val + ' first — process entire left subtree before printing itself'
+                    : 'Inorder: visit ' + item.val + ' — left done, print, then go right';
                 if (isLast) {
                     for (var j = 0; j < inOrder.length; j++) hl[inOrder[j].key] = 'done';
                     desc = 'Inorder traversal complete!';
@@ -1422,11 +2082,11 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                 var isFirst = (pti === 0);
                 var isLast = (pti === postOrder.length - 1);
                 var desc = isFirst
-                    ? 'Postorder: visit deepest left ' + item.val + ' first (left -> right -> print)'
-                    : 'Postorder: visit ' + item.val;
+                    ? 'Postorder: visit deepest left ' + item.val + ' first — process all children before printing itself'
+                    : 'Postorder: visit ' + item.val + ' — both children done, now print';
                 if (isLast) {
                     for (var j = 0; j < postOrder.length; j++) hl[postOrder[j].key] = 'done';
-                    desc = 'Postorder: print root ' + item.val + ' last — postorder traversal complete!';
+                    desc = 'Postorder: print root ' + item.val + ' last — root is always the final output in postorder!';
                 }
                 (function(snapPost, hl, desc) {
                     steps.push({

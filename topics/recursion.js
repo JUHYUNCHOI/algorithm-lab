@@ -150,6 +150,32 @@ const recursionTopic = {
                     </div>
                 </div>
 
+                <!-- 데모 2: 멈추는 조건 비교 -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 멈추는 조건이 있을 때 vs 없을 때</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="rec-demo-basecase-run">▶ 실행</button>
+                        <button class="concept-demo-btn green" id="rec-demo-basecase-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--green);">✅ 멈추는 조건 있음</div>
+                                <div style="font-size:0.82rem;color:var(--text2);margin-bottom:6px;font-family:monospace;">if n &lt;= 1: return 1</div>
+                                <div id="rec-demo-bc-good" style="display:flex;flex-direction:column;gap:4px;min-height:200px;"></div>
+                                <div id="rec-demo-bc-good-msg" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--red);">❌ 멈추는 조건 없음</div>
+                                <div style="font-size:0.82rem;color:var(--text2);margin-bottom:6px;font-family:monospace;">return n * factorial(n-1)</div>
+                                <div id="rec-demo-bc-bad" style="display:flex;flex-direction:column;gap:4px;min-height:200px;"></div>
+                                <div id="rec-demo-bc-bad-msg" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="rec-demo-basecase-msg">👆 "실행" 버튼을 눌러 factorial(5)를 두 가지 방식으로 비교해보세요!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -170,28 +196,28 @@ const recursionTopic = {
                 <div class="concept-section-title"><span class="section-num">3</span> 재귀는 어떻게 동작할까?</div>
                 <p style="margin-bottom: 1rem;">함수가 자기를 부를 때마다 <strong>접시처럼 쌓입니다</strong>. 멈추는 조건에 도달하면 위에서부터 하나씩 꺼내며 답을 돌려줍니다.</p>
 
-                <div class="execution-flow-compare">
-                    <div class="flow-grid">
-                        <div class="flow-card topdown-flow">
-                            <div class="flow-label">📥 부르는 단계 (접시 쌓기)</div>
-                            <div class="flow-trace">
-                                <div>factorial(4) 호출</div>
-                                <div>&nbsp;&nbsp;→ factorial(3) 호출</div>
-                                <div>&nbsp;&nbsp;&nbsp;&nbsp;→ factorial(2) 호출</div>
-                                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ factorial(1) 호출</div>
-                                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ return 1 (멈춤!)</div>
+                <!-- 데모 3: 콜 스택 시각화 -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 콜 스택 쌓고 꺼내기</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-size:0.85rem;color:var(--text2);">n =</label>
+                        <input type="number" id="rec-demo-cs-input" value="4" min="2" max="7" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="rec-demo-cs-step">▶ 다음 단계</button>
+                        <button class="concept-demo-btn green" id="rec-demo-cs-reset">↺ 처음부터</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+                            <div style="flex:0 0 180px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">콜 스택</div>
+                                <div id="rec-demo-cs-stack" style="display:flex;flex-direction:column;gap:4px;min-height:220px;border:2px dashed var(--border);border-radius:10px;padding:12px;justify-content:flex-end;transition:border-color 0.3s;"></div>
                             </div>
-                        </div>
-                        <div class="flow-card bottomup-flow">
-                            <div class="flow-label">📤 돌려주는 단계 (접시 꺼내기)</div>
-                            <div class="flow-trace">
-                                <div>factorial(1) = 1</div>
-                                <div>factorial(2) = 2 × 1 = 2</div>
-                                <div>factorial(3) = 3 × 2 = 6</div>
-                                <div>factorial(4) = 4 × 6 = <strong>24</strong></div>
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">실행 과정</div>
+                                <div id="rec-demo-cs-log" style="font-family:monospace;font-size:0.85rem;line-height:1.8;color:var(--text2);min-height:220px;"></div>
                             </div>
                         </div>
                     </div>
+                    <div class="concept-demo-msg" id="rec-demo-cs-msg">👆 "다음 단계" 버튼을 눌러 factorial(4)의 콜 스택이 쌓이고 꺼내지는 과정을 관찰하세요!</div>
                 </div>
 
                 <div class="key-difference-box">
@@ -236,6 +262,33 @@ const recursionTopic = {
                     </div>
                 </div>
 
+                <!-- 데모 4: 재귀 vs 반복문 실행 비교 -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 재귀 vs 반복문 실행 과정 비교</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-size:0.85rem;color:var(--text2);">n =</label>
+                        <input type="number" id="rec-demo-vs-input" value="5" min="2" max="8" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="rec-demo-vs-run">▶ 동시 실행</button>
+                        <button class="concept-demo-btn green" id="rec-demo-vs-reset" style="display:none;">↺ 다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--accent);">🔄 재귀</div>
+                                <div id="rec-demo-vs-rec" style="font-family:monospace;font-size:0.82rem;line-height:1.8;min-height:180px;"></div>
+                                <div id="rec-demo-vs-rec-result" style="margin-top:8px;font-size:0.9rem;font-weight:600;color:var(--accent);min-height:1.5em;"></div>
+                            </div>
+                            <div style="width:1px;background:var(--border);"></div>
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--green);">🔁 반복문</div>
+                                <div id="rec-demo-vs-iter" style="font-family:monospace;font-size:0.82rem;line-height:1.8;min-height:180px;"></div>
+                                <div id="rec-demo-vs-iter-result" style="margin-top:8px;font-size:0.9rem;font-weight:600;color:var(--green);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="rec-demo-vs-msg">👆 "동시 실행"을 눌러 같은 계산을 재귀와 반복문이 어떻게 다르게 처리하는지 비교해보세요!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -274,6 +327,33 @@ const recursionTopic = {
                     </div>
                 </div>
 
+                <!-- 데모 5: 3단계 피보나치 트리 -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 피보나치 호출 트리 펼치기</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-size:0.85rem;color:var(--text2);">fib(</label>
+                        <input type="number" id="rec-demo-fib-input" value="5" min="2" max="7" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        <label style="font-size:0.85rem;color:var(--text2);">)</label>
+                        <button class="concept-demo-btn" id="rec-demo-fib-step">▶ 다음 단계</button>
+                        <button class="concept-demo-btn green" id="rec-demo-fib-reset">↺ 처음부터</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+                            <div style="flex:1;min-width:280px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">호출 트리</div>
+                                <div id="rec-demo-fib-tree" style="overflow-x:auto;padding:12px 0;min-height:180px;"></div>
+                            </div>
+                            <div style="flex:0 0 200px;min-width:160px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">호출 횟수</div>
+                                <div id="rec-demo-fib-counts" style="display:flex;flex-direction:column;gap:6px;"></div>
+                                <div id="rec-demo-fib-total" style="margin-top:12px;font-size:0.9rem;font-weight:600;color:var(--accent);"></div>
+                                <div id="rec-demo-fib-dup" style="margin-top:6px;font-size:0.85rem;color:var(--red);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="rec-demo-fib-msg">👆 "다음 단계"를 눌러 fib(5)가 어떻게 쪼개지고, 같은 계산이 반복되는지 확인하세요! 이 중복이 DP로 해결됩니다.</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -303,7 +383,9 @@ const recursionTopic = {
             });
         });
 
-        // 마트료시카 인형 인터랙션
+        // ============================
+        // 데모 1: 마트료시카 인형 인터랙션
+        // ============================
         const dollContainer = container.querySelector('#matryoshka-dolls');
         const instructionEl = container.querySelector('#matryoshka-instruction');
         const resetBtn = container.querySelector('#matryoshka-reset');
@@ -369,6 +451,567 @@ const recursionTopic = {
                 resetBtn.classList.add('hidden');
             });
         }
+
+        // ============================
+        // 데모 2: 멈추는 조건 비교
+        // ============================
+        (function() {
+            var bcRunBtn = container.querySelector('#rec-demo-basecase-run');
+            var bcResetBtn = container.querySelector('#rec-demo-basecase-reset');
+            var bcGoodEl = container.querySelector('#rec-demo-bc-good');
+            var bcBadEl = container.querySelector('#rec-demo-bc-bad');
+            var bcGoodMsg = container.querySelector('#rec-demo-bc-good-msg');
+            var bcBadMsg = container.querySelector('#rec-demo-bc-bad-msg');
+            var bcMsg = container.querySelector('#rec-demo-basecase-msg');
+            if (!bcRunBtn) return;
+
+            var bcTimers = [];
+
+            function bcReset() {
+                bcTimers.forEach(function(t) { clearTimeout(t); });
+                bcTimers = [];
+                bcGoodEl.innerHTML = '';
+                bcBadEl.innerHTML = '';
+                bcGoodMsg.textContent = '';
+                bcBadMsg.textContent = '';
+                bcRunBtn.style.display = '';
+                bcResetBtn.style.display = 'none';
+                bcMsg.textContent = '👆 "실행" 버튼을 눌러 factorial(5)를 두 가지 방식으로 비교해보세요!';
+            }
+
+            function makeFrame(text, color, glow) {
+                var el = document.createElement('div');
+                el.style.cssText = 'padding:6px 12px;border-radius:8px;font-family:monospace;font-size:0.82rem;' +
+                    'border:2px solid ' + color + ';background:' + color + '15;color:var(--text);' +
+                    'opacity:0;transform:translateX(-10px);transition:all 0.3s ease;';
+                el.textContent = text;
+                if (glow) el.style.boxShadow = '0 0 8px ' + color + '40';
+                setTimeout(function() { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; }, 30);
+                return el;
+            }
+
+            bcRunBtn.addEventListener('click', function() {
+                bcRunBtn.style.display = 'none';
+                bcResetBtn.style.display = '';
+                bcMsg.textContent = '두 방식을 비교해보세요...';
+
+                // 좋은 쪽: 멈추는 조건 있음 — factorial(5)→...→factorial(1) 멈춤
+                var goodCalls = [
+                    { text: 'factorial(5) 호출', delay: 0 },
+                    { text: '  → factorial(4) 호출', delay: 400 },
+                    { text: '    → factorial(3) 호출', delay: 800 },
+                    { text: '      → factorial(2) 호출', delay: 1200 },
+                    { text: '        → factorial(1) 호출', delay: 1600 },
+                    { text: '        ✅ n<=1! return 1', delay: 2000, color: 'var(--green)', glow: true },
+                    { text: '      ← return 2 × 1 = 2', delay: 2400, color: 'var(--green)' },
+                    { text: '    ← return 3 × 2 = 6', delay: 2800, color: 'var(--green)' },
+                    { text: '  ← return 4 × 6 = 24', delay: 3200, color: 'var(--green)' },
+                    { text: '← return 5 × 24 = 120', delay: 3600, color: 'var(--green)', glow: true }
+                ];
+
+                goodCalls.forEach(function(c) {
+                    var t = setTimeout(function() {
+                        bcGoodEl.appendChild(makeFrame(c.text, c.color || 'var(--accent)', c.glow));
+                        if (c.text.indexOf('120') !== -1) {
+                            bcGoodMsg.textContent = '결과: 120 (정상 종료!)';
+                            bcGoodMsg.style.color = 'var(--green)';
+                        }
+                    }, c.delay);
+                    bcTimers.push(t);
+                });
+
+                // 나쁜 쪽: 멈추는 조건 없음 — 끝없이 호출
+                var badCalls = [
+                    { text: 'factorial(5) 호출', delay: 0 },
+                    { text: '  → factorial(4) 호출', delay: 400 },
+                    { text: '    → factorial(3) 호출', delay: 800 },
+                    { text: '      → factorial(2) 호출', delay: 1200 },
+                    { text: '        → factorial(1) 호출', delay: 1600 },
+                    { text: '          → factorial(0) 호출', delay: 2000 },
+                    { text: '            → factorial(-1) 호출', delay: 2400 },
+                    { text: '              → factorial(-2) 호출', delay: 2800 },
+                    { text: '                → factorial(-3)...', delay: 3200 },
+                    { text: '💥 RecursionError! 스택 터짐!', delay: 3600, color: 'var(--red)', glow: true }
+                ];
+
+                badCalls.forEach(function(c) {
+                    var t = setTimeout(function() {
+                        bcBadEl.appendChild(makeFrame(c.text, c.color || 'var(--red)', c.glow));
+                        if (c.text.indexOf('RecursionError') !== -1) {
+                            bcBadMsg.textContent = '💥 멈추지 않아서 스택 오버플로!';
+                            bcBadMsg.style.color = 'var(--red)';
+                            bcMsg.textContent = '왼쪽은 멈추는 조건(n<=1)에서 깔끔하게 끝나지만, 오른쪽은 끝없이 호출하다가 터집니다!';
+                        }
+                    }, c.delay);
+                    bcTimers.push(t);
+                });
+            });
+
+            bcResetBtn.addEventListener('click', bcReset);
+        })();
+
+        // ============================
+        // 데모 3: 콜 스택 시각화
+        // ============================
+        (function() {
+            var csStepBtn = container.querySelector('#rec-demo-cs-step');
+            var csResetBtn = container.querySelector('#rec-demo-cs-reset');
+            var csInput = container.querySelector('#rec-demo-cs-input');
+            var csStack = container.querySelector('#rec-demo-cs-stack');
+            var csLog = container.querySelector('#rec-demo-cs-log');
+            var csMsg = container.querySelector('#rec-demo-cs-msg');
+            if (!csStepBtn) return;
+
+            var csState = { steps: [], idx: -1 };
+
+            function csBuild(n) {
+                csStack.innerHTML = '';
+                csLog.innerHTML = '';
+                csState.idx = -1;
+
+                var fact = [1];
+                for (var i = 1; i <= n; i++) fact[i] = fact[i - 1] * i;
+
+                var steps = [];
+                // 쌓는 단계: factorial(n)→...→factorial(1)
+                for (var k = n; k >= 1; k--) {
+                    (function(ci, fv) {
+                        steps.push({
+                            phase: 'push',
+                            desc: ci === 1
+                                ? 'factorial(1) 호출 — 멈추는 조건! return 1'
+                                : 'factorial(' + ci + ') 호출 — ' + ci + ' × factorial(' + (ci - 1) + ')이 필요하니 더 들어감',
+                            run: function() {
+                                var frame = document.createElement('div');
+                                frame.style.cssText = 'padding:8px 14px;border-radius:8px;font-family:monospace;font-size:0.82rem;' +
+                                    'border:2px solid ' + (ci === 1 ? 'var(--green)' : 'var(--accent)') + ';' +
+                                    'background:' + (ci === 1 ? 'var(--green)' : 'var(--accent)') + '12;color:var(--text);' +
+                                    'text-align:center;animation:fadeSlideUp 0.3s ease;';
+                                frame.textContent = ci === 1 ? 'factorial(1) = 1 ✓' : 'factorial(' + ci + ') = ' + ci + ' × ?';
+                                frame.dataset.ci = ci;
+                                csStack.prepend(frame);
+                                var line = document.createElement('div');
+                                line.style.cssText = 'color:var(--accent);';
+                                line.textContent = '\u00A0\u00A0'.repeat(n - ci) + '→ factorial(' + ci + ') 호출';
+                                csLog.appendChild(line);
+                            }
+                        });
+                    })(k, fact);
+                }
+                // 꺼내는 단계: factorial(1)→...→factorial(n)
+                for (var k = 1; k <= n; k++) {
+                    (function(ci, fv) {
+                        steps.push({
+                            phase: 'pop',
+                            desc: ci === 1
+                                ? 'factorial(1) = 1 반환 (멈추는 조건)'
+                                : 'factorial(' + ci + ') = ' + ci + ' × ' + fv[ci - 1] + ' = ' + fv[ci] + ' 반환 — 접시 꺼냄!',
+                            run: function() {
+                                var top = csStack.firstChild;
+                                if (top) {
+                                    top.textContent = 'factorial(' + ci + ') = ' + fv[ci] + ' ✓';
+                                    top.style.borderColor = 'var(--green)';
+                                    top.style.background = 'var(--green)15';
+                                    top.style.boxShadow = '0 0 8px var(--green)40';
+                                    setTimeout(function() {
+                                        top.style.opacity = '0';
+                                        top.style.transform = 'translateX(20px)';
+                                        top.style.transition = 'all 0.3s ease';
+                                        setTimeout(function() { top.remove(); }, 300);
+                                    }, 500);
+                                }
+                                var line = document.createElement('div');
+                                line.style.cssText = 'color:var(--green);';
+                                line.textContent = '\u00A0\u00A0'.repeat(n - ci) + '← factorial(' + ci + ') = ' + fv[ci];
+                                csLog.appendChild(line);
+                            }
+                        });
+                    })(k, fact);
+                }
+                // 완료
+                steps.push({
+                    phase: 'done',
+                    desc: '완료! factorial(' + n + ') = ' + fact[n],
+                    run: function() {}
+                });
+
+                csState.steps = steps;
+                csMsg.textContent = '👆 "다음 단계" 버튼을 눌러 factorial(' + n + ')의 콜 스택을 관찰하세요!';
+            }
+
+            csStepBtn.addEventListener('click', function() {
+                if (csState.idx >= csState.steps.length - 1) return;
+                csState.idx++;
+                var s = csState.steps[csState.idx];
+                csMsg.textContent = s.desc;
+                setTimeout(function() { s.run(); }, 200);
+                if (csState.idx >= csState.steps.length - 1) {
+                    csStepBtn.disabled = true;
+                }
+            });
+
+            csResetBtn.addEventListener('click', function() {
+                csStepBtn.disabled = false;
+                var n = parseInt(csInput.value) || 4;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                csBuild(n);
+            });
+
+            csInput.addEventListener('change', function() {
+                csStepBtn.disabled = false;
+                var n = parseInt(csInput.value) || 4;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                csBuild(n);
+            });
+
+            csBuild(4);
+        })();
+
+        // ============================
+        // 데모 4: 재귀 vs 반복문
+        // ============================
+        (function() {
+            var vsRunBtn = container.querySelector('#rec-demo-vs-run');
+            var vsResetBtn = container.querySelector('#rec-demo-vs-reset');
+            var vsInput = container.querySelector('#rec-demo-vs-input');
+            var vsRecEl = container.querySelector('#rec-demo-vs-rec');
+            var vsIterEl = container.querySelector('#rec-demo-vs-iter');
+            var vsRecResult = container.querySelector('#rec-demo-vs-rec-result');
+            var vsIterResult = container.querySelector('#rec-demo-vs-iter-result');
+            var vsMsg = container.querySelector('#rec-demo-vs-msg');
+            if (!vsRunBtn) return;
+
+            var vsTimers = [];
+
+            function vsReset() {
+                vsTimers.forEach(function(t) { clearTimeout(t); });
+                vsTimers = [];
+                vsRecEl.innerHTML = '';
+                vsIterEl.innerHTML = '';
+                vsRecResult.textContent = '';
+                vsIterResult.textContent = '';
+                vsRunBtn.style.display = '';
+                vsResetBtn.style.display = 'none';
+                vsMsg.textContent = '👆 "동시 실행"을 눌러 같은 계산을 재귀와 반복문이 어떻게 다르게 처리하는지 비교해보세요!';
+            }
+
+            function addLine(parent, text, color, delay) {
+                var t = setTimeout(function() {
+                    var el = document.createElement('div');
+                    el.style.cssText = 'opacity:0;transform:translateX(-8px);transition:all 0.25s ease;color:' + (color || 'var(--text2)') + ';';
+                    el.textContent = text;
+                    parent.appendChild(el);
+                    setTimeout(function() { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; }, 30);
+                }, delay);
+                vsTimers.push(t);
+            }
+
+            vsRunBtn.addEventListener('click', function() {
+                var n = parseInt(vsInput.value) || 5;
+                if (n < 2) n = 2;
+                if (n > 8) n = 8;
+                vsRunBtn.style.display = 'none';
+                vsResetBtn.style.display = '';
+                vsMsg.textContent = '실행 중... 두 방식을 비교해보세요!';
+
+                // 재귀 쪽: 호출 스택 깊이로 들어갔다가 돌아옴
+                var fact = [1];
+                for (var i = 1; i <= n; i++) fact[i] = fact[i - 1] * i;
+                var delay = 0;
+                var step = 350;
+                // 호출 단계
+                for (var i = n; i >= 1; i--) {
+                    var indent = '\u00A0\u00A0'.repeat(n - i);
+                    if (i === 1) {
+                        addLine(vsRecEl, indent + '→ factorial(1) → 멈춤! return 1', 'var(--green)', delay);
+                    } else {
+                        addLine(vsRecEl, indent + '→ factorial(' + i + ') 호출', 'var(--accent)', delay);
+                    }
+                    delay += step;
+                }
+                // 반환 단계
+                for (var i = 1; i <= n; i++) {
+                    var indent = '\u00A0\u00A0'.repeat(n - i);
+                    addLine(vsRecEl, indent + '← factorial(' + i + ') = ' + fact[i], 'var(--green)', delay);
+                    delay += step;
+                }
+                var recDone = delay;
+                var t1 = setTimeout(function() {
+                    vsRecResult.textContent = '결과: ' + fact[n] + ' (스택 깊이: ' + n + ')';
+                }, recDone);
+                vsTimers.push(t1);
+
+                // 반복문 쪽: 단순 곱셈 반복
+                var iterDelay = 0;
+                addLine(vsIterEl, 'result = 1', 'var(--text2)', iterDelay);
+                iterDelay += step;
+                var result = 1;
+                for (var i = 2; i <= n; i++) {
+                    result *= i;
+                    addLine(vsIterEl, 'i=' + i + ': result = result × ' + i + ' = ' + result, 'var(--green)', iterDelay);
+                    iterDelay += step;
+                }
+                var iterDone = iterDelay;
+                var t2 = setTimeout(function() {
+                    vsIterResult.textContent = '결과: ' + result + ' (스택 깊이: 0)';
+                }, iterDone);
+                vsTimers.push(t2);
+
+                var maxDone = Math.max(recDone, iterDone) + 200;
+                var t3 = setTimeout(function() {
+                    vsMsg.textContent = '재귀는 스택을 ' + n + '단 쌓지만, 반복문은 스택 없이 변수 하나로 계산합니다. 팩토리얼처럼 단순한 문제는 반복문이 효율적!';
+                }, maxDone);
+                vsTimers.push(t3);
+            });
+
+            vsResetBtn.addEventListener('click', vsReset);
+        })();
+
+        // ============================
+        // 데모 5: 3단계 피보나치 트리
+        // ============================
+        (function() {
+            var fibStepBtn = container.querySelector('#rec-demo-fib-step');
+            var fibResetBtn = container.querySelector('#rec-demo-fib-reset');
+            var fibInput = container.querySelector('#rec-demo-fib-input');
+            var fibTree = container.querySelector('#rec-demo-fib-tree');
+            var fibCounts = container.querySelector('#rec-demo-fib-counts');
+            var fibTotal = container.querySelector('#rec-demo-fib-total');
+            var fibDup = container.querySelector('#rec-demo-fib-dup');
+            var fibMsg = container.querySelector('#rec-demo-fib-msg');
+            if (!fibStepBtn) return;
+
+            var fibState = { steps: [], idx: -1, nodeEls: {}, countEls: {}, counts: {}, totalCount: 0 };
+
+            function fibBuild(n) {
+                fibTree.innerHTML = '';
+                fibCounts.innerHTML = '';
+                fibTotal.textContent = '';
+                fibDup.textContent = '';
+                fibState.idx = -1;
+                fibState.nodeEls = {};
+                fibState.countEls = {};
+                fibState.counts = {};
+                fibState.totalCount = 0;
+
+                // 호출 카운터 UI
+                for (var i = 0; i <= n; i++) {
+                    fibState.counts[i] = 0;
+                    var row = document.createElement('div');
+                    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+                    row.innerHTML = '<span style="font-family:monospace;font-size:0.82rem;min-width:50px;">fib(' + i + ')</span>' +
+                        '<div style="flex:1;height:16px;background:var(--bg2);border-radius:4px;overflow:hidden;">' +
+                        '<div id="rec-demo-fib-bar-' + i + '" style="height:100%;width:0%;background:var(--accent);border-radius:4px;transition:width 0.3s;"></div></div>' +
+                        '<span id="rec-demo-fib-cnt-' + i + '" style="font-family:monospace;font-size:0.82rem;min-width:20px;text-align:right;">0</span>';
+                    fibCounts.appendChild(row);
+                    fibState.countEls[i] = {
+                        bar: row.querySelector('#rec-demo-fib-bar-' + i),
+                        cnt: row.querySelector('#rec-demo-fib-cnt-' + i)
+                    };
+                }
+
+                // 트리를 SVG로 생성 — 노드 위치를 먼저 계산
+                var nodes = [];
+                var edges = [];
+                var nodeId = 0;
+
+                function layoutTree(val, depth, xCenter, xSpan) {
+                    var id = nodeId++;
+                    nodes.push({ id: id, val: val, x: xCenter, y: depth * 60 + 30, depth: depth });
+                    if (val <= 1) return id;
+                    var leftId = layoutTree(val - 1, depth + 1, xCenter - xSpan / 2, xSpan / 2);
+                    edges.push({ from: id, to: leftId });
+                    var rightId = layoutTree(val - 2, depth + 1, xCenter + xSpan / 2, xSpan / 2);
+                    edges.push({ from: id, to: rightId });
+                    return id;
+                }
+
+                var totalWidth = Math.max(400, Math.pow(2, n) * 40);
+                var totalHeight = (n + 1) * 60 + 20;
+                layoutTree(n, 0, totalWidth / 2, totalWidth / 3);
+
+                var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', totalWidth);
+                svg.setAttribute('height', totalHeight);
+                svg.style.cssText = 'display:block;margin:0 auto;';
+
+                // 엣지 그리기 (처음에는 숨김)
+                edges.forEach(function(e) {
+                    var fromNode = nodes[e.from];
+                    var toNode = nodes[e.to];
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', fromNode.x);
+                    line.setAttribute('y1', fromNode.y + 14);
+                    line.setAttribute('x2', toNode.x);
+                    line.setAttribute('y2', toNode.y - 14);
+                    line.setAttribute('stroke', 'var(--border)');
+                    line.setAttribute('stroke-width', '2');
+                    line.style.opacity = '0';
+                    line.dataset.from = e.from;
+                    line.dataset.to = e.to;
+                    svg.appendChild(line);
+                });
+
+                // 노드 그리기 (처음에는 숨김)
+                nodes.forEach(function(nd) {
+                    var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    g.style.opacity = '0';
+                    g.style.transition = 'opacity 0.3s ease';
+
+                    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', nd.x);
+                    circle.setAttribute('cy', nd.y);
+                    circle.setAttribute('r', 16);
+                    circle.setAttribute('fill', 'var(--bg2)');
+                    circle.setAttribute('stroke', 'var(--border)');
+                    circle.setAttribute('stroke-width', '2');
+                    g.appendChild(circle);
+
+                    var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', nd.x);
+                    text.setAttribute('y', nd.y + 4);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '11');
+                    text.setAttribute('font-family', 'monospace');
+                    text.setAttribute('fill', 'var(--text)');
+                    text.textContent = 'f(' + nd.val + ')';
+                    g.appendChild(text);
+
+                    svg.appendChild(g);
+                    fibState.nodeEls[nd.id] = { g: g, circle: circle, text: text };
+                });
+
+                fibTree.appendChild(svg);
+
+                // 스텝 생성: DFS 순서로 노드를 보여줌
+                var steps = [];
+                function buildSteps(nodeIdx) {
+                    var nd = nodes[nodeIdx];
+                    // 노드 표시
+                    steps.push({
+                        desc: nd.val <= 1
+                            ? 'fib(' + nd.val + ') — 멈추는 조건! 바로 ' + nd.val + ' 반환'
+                            : 'fib(' + nd.val + ') 호출 — fib(' + (nd.val - 1) + ') + fib(' + (nd.val - 2) + ')으로 쪼갬',
+                        nodeId: nodeIdx,
+                        val: nd.val,
+                        isBase: nd.val <= 1
+                    });
+                    if (nd.val > 1) {
+                        // 자식 엣지 + 재귀
+                        var childEdges = edges.filter(function(e) { return e.from === nodeIdx; });
+                        childEdges.forEach(function(ce) {
+                            buildSteps(ce.to);
+                        });
+                        // 결과 합산 스텝
+                        var fibVal = [0, 1];
+                        for (var i = 2; i <= n; i++) fibVal[i] = fibVal[i - 1] + fibVal[i - 2];
+                        steps.push({
+                            desc: 'fib(' + nd.val + ') = fib(' + (nd.val - 1) + ') + fib(' + (nd.val - 2) + ') = ' + fibVal[nd.val - 1] + ' + ' + fibVal[nd.val - 2] + ' = ' + fibVal[nd.val] + ' 반환',
+                            nodeId: nodeIdx,
+                            val: nd.val,
+                            isReturn: true,
+                            result: fibVal[nd.val]
+                        });
+                    }
+                }
+                buildSteps(0);
+
+                fibState.steps = steps;
+                fibMsg.textContent = '👆 "다음 단계"를 눌러 fib(' + n + ')의 호출 트리가 펼쳐지는 과정을 관찰하세요!';
+                fibStepBtn.disabled = false;
+
+                // 엣지 lookup
+                fibState.edges = edges;
+                fibState.svg = svg;
+                fibState.nodes = nodes;
+            }
+
+            fibStepBtn.addEventListener('click', function() {
+                if (fibState.idx >= fibState.steps.length - 1) return;
+                fibState.idx++;
+                var s = fibState.steps[fibState.idx];
+                fibMsg.textContent = s.desc;
+
+                setTimeout(function() {
+                    var nodeEl = fibState.nodeEls[s.nodeId];
+                    if (!nodeEl) return;
+
+                    if (s.isReturn) {
+                        // 반환: 노드를 초록으로
+                        nodeEl.circle.setAttribute('stroke', 'var(--green)');
+                        nodeEl.circle.setAttribute('fill', 'var(--green)15');
+                        nodeEl.circle.setAttribute('stroke-width', '3');
+                    } else {
+                        // 노드 표시
+                        nodeEl.g.style.opacity = '1';
+                        // 연결 엣지도 표시
+                        var parentEdge = fibState.edges.filter(function(e) { return e.to === s.nodeId; });
+                        parentEdge.forEach(function(pe) {
+                            fibState.svg.querySelectorAll('line').forEach(function(line) {
+                                if (parseInt(line.dataset.from) === pe.from && parseInt(line.dataset.to) === pe.to) {
+                                    line.style.opacity = '1';
+                                    line.style.transition = 'opacity 0.3s ease';
+                                }
+                            });
+                        });
+                        // 호출 카운트 업데이트
+                        fibState.counts[s.val]++;
+                        fibState.totalCount++;
+                        var ce = fibState.countEls[s.val];
+                        if (ce) {
+                            ce.cnt.textContent = fibState.counts[s.val];
+                            // 최대 호출 수로 비율 계산 (최대 8로 제한)
+                            var maxCalls = 8;
+                            ce.bar.style.width = Math.min(100, (fibState.counts[s.val] / maxCalls) * 100) + '%';
+                            if (fibState.counts[s.val] > 1) {
+                                ce.bar.style.background = 'var(--red)';
+                                nodeEl.circle.setAttribute('stroke', 'var(--yellow)');
+                                nodeEl.circle.setAttribute('fill', 'var(--yellow)20');
+                            }
+                        }
+                        fibTotal.textContent = '총 호출: ' + fibState.totalCount + '번';
+                        // 중복 체크
+                        var dups = [];
+                        for (var k in fibState.counts) {
+                            if (fibState.counts[k] > 1) dups.push('fib(' + k + ')=' + fibState.counts[k] + '번');
+                        }
+                        fibDup.textContent = dups.length > 0 ? '중복: ' + dups.join(', ') : '';
+
+                        if (s.isBase) {
+                            nodeEl.circle.setAttribute('stroke', 'var(--green)');
+                            nodeEl.circle.setAttribute('fill', 'var(--green)15');
+                        } else {
+                            nodeEl.circle.setAttribute('stroke', fibState.counts[s.val] > 1 ? 'var(--yellow)' : 'var(--accent)');
+                        }
+                    }
+                }, 200);
+
+                if (fibState.idx >= fibState.steps.length - 1) {
+                    fibStepBtn.disabled = true;
+                    setTimeout(function() {
+                        fibMsg.textContent = '완료! 같은 fib 값이 여러 번 계산되었죠? 이 중복을 없애는 것이 바로 DP(메모이제이션)입니다!';
+                    }, 400);
+                }
+            });
+
+            fibResetBtn.addEventListener('click', function() {
+                var n = parseInt(fibInput.value) || 5;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                fibBuild(n);
+            });
+
+            fibInput.addEventListener('change', function() {
+                var n = parseInt(fibInput.value) || 5;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                fibBuild(n);
+            });
+
+            fibBuild(5);
+        })();
     },
 
     // ===== 시각화 상태 =====
@@ -509,8 +1152,8 @@ const recursionTopic = {
                 const ci = i;
                 steps.push({
                     description: ci === 1
-                        ? `factorial(1) 호출 → 멈추는 조건! return 1`
-                        : `factorial(${ci}) 호출 → ${ci} × factorial(${ci - 1})이 필요, 더 파고듦`,
+                        ? `factorial(1) 호출 → <strong>기저 조건</strong>: n=1이면 더 쪼갤 수 없으므로 재귀 없이 바로 1 반환`
+                        : `factorial(${ci}) 호출 → ${ci} × factorial(${ci - 1})이 필요하므로, 작은 문제를 먼저 풀기 위해 재귀 호출`,
                     action() {
                         const frame = document.createElement('div');
                         frame.className = 'stack-frame' + (ci === 1 ? ' base' : '');
@@ -537,8 +1180,8 @@ const recursionTopic = {
                 const ci = i;
                 steps.push({
                     description: ci === 1
-                        ? `factorial(1) = 1 반환 (멈추는 조건)`
-                        : `factorial(${ci}) = ${ci} × ${fact[ci - 1]} = ${fact[ci]} 반환`,
+                        ? `factorial(1) = 1 반환 — 기저 조건이므로 재귀 없이 즉시 값을 돌려줌`
+                        : `factorial(${ci}) = ${ci} × ${fact[ci - 1]} = ${fact[ci]} 반환 — 아래 호출 결과를 받아 곱한 뒤 위로 전달`,
                     action() {
                         const topFrame = stackEl.firstChild;
                         if (topFrame) {
@@ -565,7 +1208,7 @@ const recursionTopic = {
             }
 
             steps.push({
-                description: `✅ 완료! factorial(${n}) = ${fact[n]}`,
+                description: `✅ 완료! factorial(${n}) = ${fact[n]} — 기저→반환이 연쇄적으로 올라오며 최종 결과 완성`,
                 action() {},
                 undo() {}
             });
@@ -655,7 +1298,7 @@ const recursionTopic = {
                 if (s.type === 'call') {
                     const ck = s.k;
                     steps.push({
-                        description: `fib(${ck}) 호출 (깊이 ${s.depth})`,
+                        description: `fib(${ck}) 호출 (깊이 ${s.depth}) — fib(${ck-1}) + fib(${ck-2})를 알아야 하므로 재귀로 내려감`,
                         action() {
                             callCounts[ck]++;
                             totalCalls++;
@@ -681,7 +1324,7 @@ const recursionTopic = {
                     });
                 } else if (s.type === 'base') {
                     steps.push({
-                        description: `fib(${s.k}) = ${s.value} (멈추는 조건) 반환`,
+                        description: `fib(${s.k}) = ${s.value} 반환 — <strong>기저 조건</strong>: n≤2이면 더 쪼갤 수 없어 재귀 없이 바로 반환`,
                         action() {
                             countCells[s.k].classList.add('base');
                             const line = document.createElement('div');
@@ -699,7 +1342,7 @@ const recursionTopic = {
                     });
                 } else if (s.type === 'return') {
                     steps.push({
-                        description: `fib(${s.k}) = fib(${s.k-1}) + fib(${s.k-2}) = ${s.v1} + ${s.v2} = ${s.result} 반환`,
+                        description: `fib(${s.k}) = fib(${s.k-1}) + fib(${s.k-2}) = ${s.v1} + ${s.v2} = ${s.result} 반환 — 두 하위 결과를 합쳐 상위 호출에 전달`,
                         action() {
                             countCells[s.k].classList.add('filled');
                             const line = document.createElement('div');
@@ -794,7 +1437,7 @@ const recursionTopic = {
 
             const steps = moves.map((m, idx) => {
                 return {
-                    description: `원판 ${m.disk}을 ${m.from}번 기둥 → ${m.to}번 기둥으로 이동`,
+                    description: `원판 ${m.disk}을 ${m.from}번 → ${m.to}번 기둥으로 이동 — 위의 작은 원판들을 먼저 치워야 큰 원판을 옮길 수 있으므로`,
                     action() {
                         const fromEl = el.querySelector(`#peg-${m.from}`);
                         const toEl = el.querySelector(`#peg-${m.to}`);
@@ -881,7 +1524,7 @@ const recursionTopic = {
         }
 
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem':
                 self._renderProblemTab(contentDiv, prob);
@@ -1035,8 +1678,8 @@ const recursionTopic = {
                 (function(ci) {
                     steps.push({
                         description: ci === 1
-                            ? 'factorial(1) 호출 → 멈추는 조건! return 1'
-                            : 'factorial(' + ci + ') 호출 → ' + ci + ' × factorial(' + (ci-1) + ') 필요',
+                            ? 'factorial(1) 호출 → <strong>기저 조건</strong>: n=1이면 더 쪼갤 수 없으므로 재귀 없이 바로 1 반환'
+                            : 'factorial(' + ci + ') 호출 → ' + ci + ' × factorial(' + (ci-1) + ')이 필요하므로, 작은 문제를 먼저 풀기 위해 재귀 호출',
                         action: function() {
                             var fr = document.createElement('div');
                             fr.className = 'stack-frame' + (ci === 1 ? ' base' : '');
@@ -1057,8 +1700,8 @@ const recursionTopic = {
                 (function(ci) {
                     steps.push({
                         description: ci === 1
-                            ? 'factorial(1) = 1 반환'
-                            : 'factorial(' + ci + ') = ' + ci + ' × ' + factVals[ci-1] + ' = ' + factVals[ci] + ' 반환',
+                            ? 'factorial(1) = 1 반환 — 기저 조건이므로 재귀 없이 즉시 값을 돌려줌'
+                            : 'factorial(' + ci + ') = ' + ci + ' × ' + factVals[ci-1] + ' = ' + factVals[ci] + ' 반환 — 아래 호출 결과를 받아 곱한 뒤 위로 전달',
                         action: function() {
                             var top = stackEl.firstChild;
                             if (top) {
@@ -1138,7 +1781,7 @@ const recursionTopic = {
                 if (s.type === 'call') {
                     (function(sk, sd) {
                         steps.push({
-                            description: 'fib(' + sk + ') 호출 (깊이 ' + sd + ')',
+                            description: 'fib(' + sk + ') 호출 (깊이 ' + sd + ') — fib(' + (sk-1) + ') + fib(' + (sk-2) + ')를 알아야 하므로 재귀로 내려감',
                             action: function() {
                                 callCount++;
                                 cntEl.textContent = callCount;
@@ -1160,7 +1803,7 @@ const recursionTopic = {
                 } else if (s.type === 'base') {
                     (function(sk, sv) {
                         steps.push({
-                            description: 'fib(' + sk + ') = ' + sv + ' (멈추는 조건)',
+                            description: 'fib(' + sk + ') = ' + sv + ' — <strong>기저 조건</strong>: n≤2이면 더 쪼갤 수 없어 바로 반환',
                             action: function() {
                                 var line = document.createElement('div');
                                 line.className = 'log-line base-case';
@@ -1178,7 +1821,7 @@ const recursionTopic = {
                 } else if (s.type === 'return') {
                     (function(sk, sr) {
                         steps.push({
-                            description: 'fib(' + sk + ') = ' + sr + ' 반환',
+                            description: 'fib(' + sk + ') = ' + sr + ' 반환 — 두 하위 결과를 합쳐 상위 호출에 전달',
                             action: function() {
                                 var line = document.createElement('div');
                                 line.className = 'log-line return-val';
@@ -1268,11 +1911,11 @@ const recursionTopic = {
                 var match = str[pl] === str[pr];
                 var desc;
                 if (pl >= pr) {
-                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → l>=r, 회문!';
+                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → l≥r이므로 <strong>기저 조건</strong>: 가운데까지 모두 일치했으니 회문!';
                 } else if (!match) {
-                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → s[' + pl + ']=' + str[pl] + ' vs s[' + pr + ']=' + str[pr] + ' → 다름! 회문 아님';
+                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → s[' + pl + ']=' + str[pl] + ' vs s[' + pr + ']=' + str[pr] + ' → 양끝이 다르므로 회문 아님 (즉시 종료)';
                 } else {
-                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → s[' + pl + ']=' + str[pl] + ' vs s[' + pr + ']=' + str[pr] + ' → 같음! 계속';
+                    desc = 'recursion("' + str + '", ' + pl + ', ' + pr + ') → s[' + pl + ']=' + str[pl] + ' vs s[' + pr + ']=' + str[pr] + ' → 양끝이 같으므로 안쪽을 더 확인해야 함';
                 }
                 steps.push({
                     description: desc,
@@ -1882,7 +2525,7 @@ const recursionTopic = {
             var steps = [];
             moves.forEach(function(m) {
                 steps.push({
-                    description: '원판 ' + m.disk + '을 ' + m.from + '번 → ' + m.to + '번 기둥으로 이동',
+                    description: '원판 ' + m.disk + '을 ' + m.from + '번 → ' + m.to + '번 기둥으로 이동 — 위의 작은 원판들을 먼저 치워야 큰 원판을 옮길 수 있으므로',
                     action: function() {
                         var fromEl = container.querySelector('#sim-peg-' + m.from);
                         var toEl = container.querySelector('#sim-peg-' + m.to);

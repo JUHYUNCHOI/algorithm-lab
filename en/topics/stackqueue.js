@@ -58,6 +58,7 @@ const stackQueueTopic = {
             container.appendChild(introDiv);
         }
         const contentDiv = document.createElement('div');
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
@@ -1054,6 +1055,8 @@ bool isValid(string s) {
             '</div>';
 
         var vizHTML = '<div class="sim-card">' +
+            '<div style="position:relative;">' +
+            '<div id="sq-zero-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;max-width:320px;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Input Sequence</div>' +
@@ -1065,51 +1068,128 @@ bool isValid(string s) {
             '</div>' +
             '<div style="flex:0 0 auto;">' +
             '<div style="font-weight:600;color:var(--text-secondary);">sum = <span id="sq-sum-zero">0</span></div>' +
-            '</div></div></div>';
+            '</div></div></div></div>';
         container.innerHTML = inputFieldHTML + self._createStepDesc('-zero') + vizHTML + self._createStepControls('-zero');
 
         var inputEl = container.querySelector('#sq-input-zero');
         var stackEl = container.querySelector('#sq-stack-zero');
         var sumEl = container.querySelector('#sq-sum-zero');
+        var flyEl = container.querySelector('#sq-zero-fly');
+        var wrapEl = flyEl.parentElement;
 
         function parseZeroInput() {
             var raw = container.querySelector('#sq-zero-input').value;
             return raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
         }
 
+        function renderInput(nums, highlightIdx, allDone) {
+            inputEl.innerHTML = nums.map(function(n, i) {
+                var cls = 'str-char-box';
+                if (i === highlightIdx) cls += ' comparing';
+                else if (i < highlightIdx || allDone) cls += ' matched';
+                return '<div class="' + cls + '" id="sq-zero-inp-' + i + '" style="width:32px;text-align:center;">' + n + '</div>';
+            }).join('');
+        }
+
+        function renderStack(arr, hideIdx) {
+            if (arr.length === 0) {
+                stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
+            } else {
+                stackEl.innerHTML = arr.map(function(v, i) {
+                    var hide = (i === hideIdx) ? 'opacity:0;' : '';
+                    return '<div class="str-char-box' + (i === arr.length - 1 ? ' comparing' : '') + '" id="sq-zero-stk-' + i + '" style="text-align:center;font-weight:600;' + hide + '">' + v + (i === arr.length - 1 ? ' \u2190top' : '') + '</div>';
+                }).join('');
+            }
+        }
+
+        function animatePush(inputIdx, value, afterArr, onDone) {
+            renderStack(afterArr, afterArr.length - 1);
+            var srcEl = inputEl.querySelector('#sq-zero-inp-' + inputIdx);
+            var dstEl = stackEl.querySelector('#sq-zero-stk-' + (afterArr.length - 1));
+            if (!srcEl || !dstEl) { renderStack(afterArr); if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = srcEl.getBoundingClientRect();
+            var dr = dstEl.getBoundingClientRect();
+            var ghost = document.createElement('div');
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--accent);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.left = (dr.left - wr.left) + 'px';
+                ghost.style.top = (dr.top - wr.top) + 'px';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                renderStack(afterArr);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function animatePop(beforeArr, onDone) {
+            renderStack(beforeArr);
+            var topEl = stackEl.querySelector('#sq-zero-stk-' + (beforeArr.length - 1));
+            if (!topEl) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = topEl.getBoundingClientRect();
+            topEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = beforeArr[beforeArr.length - 1];
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--red,#e17055);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.5s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (sr.top - wr.top - 60) + 'px';
+                ghost.style.opacity = '0';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 550);
+        }
+
         function buildZeroSteps(nums) {
-            var states = [];
+            var stepData = [];
             var stack = [];
-            states.push({ stack: [], highlight: -1, desc: 'We manage numbers with a stack. When 0 is entered, pop the most recent number.' });
+            stepData.push({ arr: [], beforeArr: null, highlight: -1, desc: 'We manage numbers with a stack. When 0 is entered, pop the most recent number.', pushInfo: null, popInfo: null });
 
             nums.forEach(function(n, i) {
                 if (n === 0) {
                     var popped = stack[stack.length - 1];
+                    var before = [].concat(stack);
                     stack = stack.slice(0, -1);
-                    states.push({ stack: [].concat(stack), highlight: i, desc: 'Input: 0 → pop() → removed ' + popped + '! Stack: [' + stack.join(', ') + ']' });
+                    stepData.push({ arr: [].concat(stack), beforeArr: before, highlight: i, desc: 'Input: 0 \u2192 pop() \u2192 removed ' + popped + '! Stack: [' + stack.join(', ') + ']', pushInfo: null, popInfo: { value: popped, inputIdx: i } });
                 } else {
+                    var before = [].concat(stack);
                     stack = [].concat(stack, [n]);
-                    states.push({ stack: [].concat(stack), highlight: i, desc: 'push(' + n + ') → Stack: [' + stack.join(', ') + ']' });
+                    stepData.push({ arr: [].concat(stack), beforeArr: before, highlight: i, desc: 'push(' + n + ') \u2192 Stack: [' + stack.join(', ') + ']', pushInfo: { value: n, inputIdx: i }, popInfo: null });
                 }
             });
             var finalSum = stack.reduce(function(a, b) { return a + b; }, 0);
-            states.push({ stack: [].concat(stack), highlight: -1, desc: 'Done! Sum of remaining numbers = ' + finalSum });
+            stepData.push({ arr: [].concat(stack), beforeArr: null, highlight: -1, desc: 'Done! Sum of remaining numbers = ' + finalSum, pushInfo: null, popInfo: null });
 
-            return states.map(function(st, idx) {
+            return stepData.map(function(st, idx) {
                 return {
                     description: st.desc,
-                    action: function() {
-                        inputEl.innerHTML = nums.map(function(n, i) {
-                            return '<div class="str-char-box' + (i === st.highlight ? ' comparing' : (i < st.highlight || (st.highlight === -1 && idx === states.length - 1) ? ' matched' : '')) + '" style="width:32px;text-align:center;">' + n + '</div>';
-                        }).join('');
-                        if (st.stack.length === 0) {
-                            stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        renderInput(nums, st.highlight, st.highlight === -1 && idx === stepData.length - 1);
+                        sumEl.textContent = st.arr.reduce(function(a, b) { return a + b; }, 0);
+                        if (dir === 'forward' && st.pushInfo) {
+                            animatePush(st.pushInfo.inputIdx, st.pushInfo.value, st.arr, null);
+                        } else if (dir === 'forward' && st.popInfo) {
+                            animatePop(st.beforeArr, function() { renderStack(st.arr); });
                         } else {
-                            stackEl.innerHTML = st.stack.map(function(v, i) {
-                                return '<div class="str-char-box' + (i === st.stack.length - 1 ? ' comparing' : '') + '" style="text-align:center;font-weight:600;">' + v + (i === st.stack.length - 1 ? ' ←top' : '') + '</div>';
-                            }).join('');
+                            renderStack(st.arr);
                         }
-                        sumEl.textContent = st.stack.reduce(function(a, b) { return a + b; }, 0);
                     }
                 };
             });
@@ -1118,6 +1198,7 @@ bool isValid(string s) {
         function resetZeroViz() {
             var nums = parseZeroInput();
             if (nums.length === 0) return;
+            flyEl.innerHTML = '';
             inputEl.innerHTML = '';
             stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
             sumEl.textContent = '0';
@@ -1140,6 +1221,8 @@ bool isValid(string s) {
             '</div>';
 
         var vizHTML = '<div class="sim-card">' +
+            '<div style="position:relative;">' +
+            '<div id="sq-paren-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Input String</div>' +
@@ -1148,66 +1231,141 @@ bool isValid(string s) {
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Stack</div>' +
             '<div id="sq-stack-paren" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:80px;width:80px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
-            '</div></div></div>';
+            '</div></div></div></div>';
         container.innerHTML = inputFieldHTML + self._createStepDesc('-paren') + vizHTML + self._createStepControls('-paren');
 
         var inputEl = container.querySelector('#sq-input-paren');
         var stackEl = container.querySelector('#sq-stack-paren');
+        var flyEl = container.querySelector('#sq-paren-fly');
+        var wrapEl = flyEl.parentElement;
 
         function parseParenInput() {
             var raw = container.querySelector('#sq-paren-input').value;
-            // Extract only bracket characters
             return raw.replace(/[^()\[\]{}]/g, '').split('');
+        }
+
+        function renderInput(chars, highlightIdx, matchedPairs) {
+            inputEl.innerHTML = chars.map(function(c, i) {
+                var cls = 'str-char-box';
+                if (i === highlightIdx) cls += ' comparing';
+                else if (matchedPairs.indexOf(i) >= 0) cls += ' matched';
+                return '<div class="' + cls + '" id="sq-paren-inp-' + i + '" style="width:32px;text-align:center;font-size:1.2rem;">' + c + '</div>';
+            }).join('');
+        }
+
+        function renderStack(arr, hideIdx) {
+            if (arr.length === 0) {
+                stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
+            } else {
+                stackEl.innerHTML = arr.map(function(v, i) {
+                    var hide = (i === hideIdx) ? 'opacity:0;' : '';
+                    return '<div class="str-char-box' + (i === arr.length - 1 ? ' comparing' : '') + '" id="sq-paren-stk-' + i + '" style="text-align:center;font-weight:600;font-size:1.2rem;' + hide + '">' + v + '</div>';
+                }).join('');
+            }
+        }
+
+        function animatePush(charIdx, value, afterStack, onDone) {
+            renderStack(afterStack, afterStack.length - 1);
+            var srcEl = inputEl.querySelector('#sq-paren-inp-' + charIdx);
+            var dstEl = stackEl.querySelector('#sq-paren-stk-' + (afterStack.length - 1));
+            if (!srcEl || !dstEl) { renderStack(afterStack); if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = srcEl.getBoundingClientRect();
+            var dr = dstEl.getBoundingClientRect();
+            var ghost = document.createElement('div');
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;' +
+                'background:var(--accent);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.left = (dr.left - wr.left) + 'px';
+                ghost.style.top = (dr.top - wr.top) + 'px';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                renderStack(afterStack);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function animatePop(beforeStack, onDone) {
+            renderStack(beforeStack);
+            var topEl = stackEl.querySelector('#sq-paren-stk-' + (beforeStack.length - 1));
+            if (!topEl) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = topEl.getBoundingClientRect();
+            topEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = beforeStack[beforeStack.length - 1];
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;' +
+                'background:var(--green);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.5s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (sr.top - wr.top - 60) + 'px';
+                ghost.style.opacity = '0';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 550);
         }
 
         function buildParenSteps(chars) {
             var pairs = { ')': '(', ']': '[', '}': '{' };
-            var states = [];
+            var stepData = [];
             var stack = [];
             var matchedPairs = [];
             var failed = false;
-            states.push({ stack: [], charIdx: -1, desc: 'Check each character of the string in order.', matchedPairs: [] });
+            stepData.push({ arr: [], beforeArr: null, charIdx: -1, desc: 'Check each character of the string in order.', matchedPairs: [], pushInfo: null, popInfo: null });
 
             for (var i = 0; i < chars.length; i++) {
                 var c = chars[i];
                 if ('([{'.indexOf(c) >= 0) {
+                    var before = [].concat(stack);
                     stack = [].concat(stack, [c]);
-                    states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → Opening bracket! Push onto the stack.', matchedPairs: [].concat(matchedPairs) });
+                    stepData.push({ arr: [].concat(stack), beforeArr: before, charIdx: i, desc: '"' + c + '" \u2192 Opening bracket! Push onto the stack.', matchedPairs: [].concat(matchedPairs), pushInfo: { value: c, charIdx: i }, popInfo: null });
                 } else if (')]}'.indexOf(c) >= 0) {
                     if (stack.length === 0 || stack[stack.length - 1] !== pairs[c]) {
-                        // Mismatch case
                         var topVal = stack.length > 0 ? stack[stack.length - 1] : 'none';
-                        states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → Closing bracket! Stack top "' + topVal + '" → Mismatch ✗ → false', matchedPairs: [].concat(matchedPairs) });
+                        stepData.push({ arr: [].concat(stack), beforeArr: [].concat(stack), charIdx: i, desc: '"' + c + '" \u2192 Closing bracket! Stack top "' + topVal + '" \u2192 Mismatch \u2717 \u2192 false', matchedPairs: [].concat(matchedPairs), pushInfo: null, popInfo: null });
                         failed = true;
                         break;
                     }
                     var top = stack[stack.length - 1];
+                    var before = [].concat(stack);
                     stack = stack.slice(0, -1);
                     matchedPairs = [].concat(matchedPairs, [i]);
-                    states.push({ stack: [].concat(stack), charIdx: i, desc: '"' + c + '" → Closing bracket! pop "' + top + '" → Match found ✓', matchedPairs: [].concat(matchedPairs) });
+                    stepData.push({ arr: [].concat(stack), beforeArr: before, charIdx: i, desc: '"' + c + '" \u2192 Closing bracket! pop "' + top + '" \u2192 Match found \u2713', matchedPairs: [].concat(matchedPairs), pushInfo: null, popInfo: { value: top, charIdx: i } });
                 }
             }
             if (!failed) {
                 if (stack.length === 0) {
-                    states.push({ stack: [].concat(stack), charIdx: -1, desc: 'Stack is empty, so brackets are valid! → true ✓', matchedPairs: [].concat(matchedPairs) });
+                    stepData.push({ arr: [], beforeArr: null, charIdx: -1, desc: 'Stack is empty, so brackets are valid! \u2192 true \u2713', matchedPairs: [].concat(matchedPairs), pushInfo: null, popInfo: null });
                 } else {
-                    states.push({ stack: [].concat(stack), charIdx: -1, desc: 'Brackets remain in the stack, so it is invalid! → false ✗', matchedPairs: [].concat(matchedPairs) });
+                    stepData.push({ arr: [].concat(stack), beforeArr: null, charIdx: -1, desc: 'Brackets remain in the stack, so it is invalid! \u2192 false \u2717', matchedPairs: [].concat(matchedPairs), pushInfo: null, popInfo: null });
                 }
             }
 
-            return states.map(function(st) {
+            return stepData.map(function(st) {
                 return {
                     description: st.desc,
-                    action: function() {
-                        inputEl.innerHTML = chars.map(function(c, i) {
-                            return '<div class="str-char-box' + (i === st.charIdx ? ' comparing' : (st.matchedPairs.indexOf(i) >= 0 ? ' matched' : '')) + '" style="width:32px;text-align:center;font-size:1.2rem;">' + c + '</div>';
-                        }).join('');
-                        if (st.stack.length === 0) {
-                            stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        renderInput(chars, st.charIdx, st.matchedPairs);
+                        if (dir === 'forward' && st.pushInfo) {
+                            animatePush(st.pushInfo.charIdx, st.pushInfo.value, st.arr, null);
+                        } else if (dir === 'forward' && st.popInfo) {
+                            animatePop(st.beforeArr, function() { renderStack(st.arr); });
                         } else {
-                            stackEl.innerHTML = st.stack.map(function(v, i) {
-                                return '<div class="str-char-box' + (i === st.stack.length - 1 ? ' comparing' : '') + '" style="text-align:center;font-weight:600;font-size:1.2rem;">' + v + '</div>';
-                            }).join('');
+                            renderStack(st.arr);
                         }
                     }
                 };
@@ -1217,6 +1375,7 @@ bool isValid(string s) {
         function resetParenViz() {
             var chars = parseParenInput();
             if (chars.length === 0) return;
+            flyEl.innerHTML = '';
             inputEl.innerHTML = '';
             stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
             var steps = buildParenSteps(chars);
@@ -1238,17 +1397,21 @@ bool isValid(string s) {
             '</div>';
 
         var vizHTML = '<div class="sim-card">' +
+            '<div style="position:relative;">' +
+            '<div id="sq-card-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>' +
             '<div style="display:flex;flex-direction:column;align-items:center;gap:20px;">' +
             '<div>' +
-            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">Queue (front ← → back)</div>' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">Queue (front \u2190 \u2192 back)</div>' +
             '<div id="sq-queue-card" style="display:flex;gap:4px;justify-content:center;min-height:44px;align-items:center;flex-wrap:wrap;"></div>' +
             '</div>' +
             '<div>Discarded Cards: <span id="sq-discarded-card" style="color:var(--red,#e17055);font-weight:600;"></span></div>' +
-            '</div></div>';
+            '</div></div></div>';
         container.innerHTML = inputFieldHTML + self._createStepDesc('-card') + vizHTML + self._createStepControls('-card');
 
         var queueEl = container.querySelector('#sq-queue-card');
         var discardedEl = container.querySelector('#sq-discarded-card');
+        var flyEl = container.querySelector('#sq-card-fly');
+        var wrapEl = flyEl.parentElement;
 
         function parseCardInput() {
             var val = parseInt(container.querySelector('#sq-card-input').value, 10);
@@ -1257,44 +1420,118 @@ bool isValid(string s) {
             return val;
         }
 
+        function renderQueue(arr, highlightFront, highlightBack) {
+            if (arr.length === 0) {
+                queueEl.innerHTML = '<div style="color:var(--text-secondary);">(Empty)</div>';
+            } else {
+                queueEl.innerHTML = arr.map(function(v, i) {
+                    var cls = 'str-char-box';
+                    if (highlightFront && i === 0) cls += ' comparing';
+                    if (highlightBack && i === arr.length - 1) cls += ' matched';
+                    if (arr.length === 1 && !highlightFront && !highlightBack) cls += ' matched';
+                    return '<div class="' + cls + '" id="sq-card-q-' + i + '" style="width:40px;text-align:center;font-weight:600;">' + v +
+                        (i === 0 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">front</div>' : '') +
+                        (i === arr.length - 1 && arr.length > 1 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">back</div>' : '') +
+                        '</div>';
+                }).join('');
+            }
+        }
+
+        function animateDiscard(beforeQueue, onDone) {
+            renderQueue(beforeQueue, true, false);
+            var frontEl = queueEl.querySelector('#sq-card-q-0');
+            if (!frontEl) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = frontEl.getBoundingClientRect();
+            frontEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = beforeQueue[0];
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--red,#e17055);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.5s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (sr.top - wr.top - 60) + 'px';
+                ghost.style.opacity = '0';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function animateMove(beforeQueue, afterQueue, onDone) {
+            renderQueue(beforeQueue, true, false);
+            var frontEl = queueEl.querySelector('#sq-card-q-0');
+            if (!frontEl) { if (onDone) onDone(); return; }
+            renderQueue(afterQueue, false, true);
+            var backEl = queueEl.querySelector('#sq-card-q-' + (afterQueue.length - 1));
+            if (!backEl) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var dr = backEl.getBoundingClientRect();
+            renderQueue(beforeQueue, true, false);
+            frontEl = queueEl.querySelector('#sq-card-q-0');
+            var sr = frontEl.getBoundingClientRect();
+            frontEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = beforeQueue[0];
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--accent);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.left = (dr.left - wr.left) + 'px';
+                ghost.style.top = (dr.top - wr.top) + 'px';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                renderQueue(afterQueue, false, true);
+                if (onDone) onDone();
+            }, 550);
+        }
+
         function buildCardSteps(N) {
-            var states = [];
+            var stepData = [];
             var q = [];
             for (var i = 1; i <= N; i++) q.push(i);
             var discarded = [];
-            states.push({ queue: [].concat(q), discarded: [], desc: 'Cards 1 through ' + N + ' are placed in order from top to bottom.', highlightFront: false, highlightBack: false });
+            stepData.push({ queue: [].concat(q), discarded: [], desc: 'Cards 1 through ' + N + ' are placed in order from top to bottom.', beforeQueue: null, animType: null });
 
             while (q.length > 1) {
+                var beforeQ = [].concat(q);
                 var removed = q.shift();
                 discarded = [].concat(discarded, [removed]);
-                states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'Discard the top card ' + removed + '.', highlightFront: true, highlightBack: false });
+                stepData.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'Discard the top card ' + removed + '.', beforeQueue: beforeQ, animType: 'discard' });
                 if (q.length > 1) {
+                    var beforeQ2 = [].concat(q);
                     var moved = q.shift();
                     q.push(moved);
-                    states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'Move the next card ' + moved + ' to the bottom.', highlightFront: false, highlightBack: true });
+                    stepData.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'Move the next card ' + moved + ' to the bottom.', beforeQueue: beforeQ2, animType: 'move' });
                 }
             }
-            states.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'The last remaining card is ' + q[0] + '! 🎉', highlightFront: false, highlightBack: false });
+            stepData.push({ queue: [].concat(q), discarded: [].concat(discarded), desc: 'The last remaining card is ' + q[0] + '!', beforeQueue: null, animType: null });
 
-            return states.map(function(st) {
+            return stepData.map(function(st) {
                 return {
                     description: st.desc,
-                    action: function() {
-                        if (st.queue.length === 0) {
-                            queueEl.innerHTML = '<div style="color:var(--text-secondary);">(Empty)</div>';
-                        } else {
-                            queueEl.innerHTML = st.queue.map(function(v, i) {
-                                return '<div class="str-char-box' +
-                                    ((st.highlightFront && i === 0) ? ' comparing' : '') +
-                                    ((st.highlightBack && i === st.queue.length - 1) ? ' matched' : '') +
-                                    (st.queue.length === 1 ? ' matched' : '') +
-                                    '" style="width:40px;text-align:center;font-weight:600;">' + v +
-                                    (i === 0 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">front</div>' : '') +
-                                    (i === st.queue.length - 1 && st.queue.length > 1 ? '<div style="font-size:0.65rem;color:var(--text-secondary);">back</div>' : '') +
-                                    '</div>';
-                            }).join('');
-                        }
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
                         discardedEl.textContent = st.discarded.join(', ');
+                        if (dir === 'forward' && st.animType === 'discard') {
+                            animateDiscard(st.beforeQueue, function() { renderQueue(st.queue, false, false); });
+                        } else if (dir === 'forward' && st.animType === 'move') {
+                            animateMove(st.beforeQueue, st.queue, null);
+                        } else {
+                            var hf = st.animType === 'discard';
+                            var hb = st.animType === 'move';
+                            renderQueue(st.queue, hf, hb);
+                        }
                     }
                 };
             });
@@ -1302,6 +1539,7 @@ bool isValid(string s) {
 
         function resetCardViz() {
             var N = parseCardInput();
+            flyEl.innerHTML = '';
             queueEl.innerHTML = '';
             discardedEl.textContent = '';
             var steps = buildCardSteps(N);
@@ -1324,6 +1562,8 @@ bool isValid(string s) {
             '<div style="font-size:0.8rem;color:var(--text3);margin-bottom:12px;margin-top:-12px;">Format: push value, pop, top, getMin (comma separated)</div>';
 
         var vizHTML = '<div class="sim-card">' +
+            '<div style="position:relative;">' +
+            '<div id="sq-ms-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>' +
             '<div style="display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="display:flex;flex-direction:column;align-items:center;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Main Stack</div>' +
@@ -1335,12 +1575,14 @@ bool isValid(string s) {
             '</div>' +
             '<div style="flex:0 0 auto;">' +
             '<div id="sq-result-ms" style="padding:10px;background:rgba(108,92,231,0.06);border-radius:8px;font-weight:600;color:var(--accent);min-height:30px;"></div>' +
-            '</div></div></div>';
+            '</div></div></div></div>';
         container.innerHTML = inputFieldHTML + self._createStepDesc('-ms') + vizHTML + self._createStepControls('-ms');
 
         var mainEl = container.querySelector('#sq-main-ms');
         var minEl = container.querySelector('#sq-min-ms');
         var resultEl = container.querySelector('#sq-result-ms');
+        var flyEl = container.querySelector('#sq-ms-fly');
+        var wrapEl = flyEl.parentElement;
 
         function parseMsInput() {
             var raw = container.querySelector('#sq-minstack-input').value;
@@ -1364,63 +1606,160 @@ bool isValid(string s) {
             return ops;
         }
 
-        function renderMsStack(el, arr) {
+        function renderMsStack(el, arr, prefix, hideIdx) {
             if (arr.length === 0) {
                 el.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(empty)</div>';
             } else {
                 el.innerHTML = arr.map(function(v, i) {
-                    return '<div class="str-char-box' + (i === arr.length - 1 ? ' comparing' : '') + '" style="text-align:center;font-weight:600;">' + v + '</div>';
+                    var hide = (i === hideIdx) ? 'opacity:0;' : '';
+                    return '<div class="str-char-box' + (i === arr.length - 1 ? ' comparing' : '') + '" id="sq-ms-' + prefix + '-' + i + '" style="text-align:center;font-weight:600;' + hide + '">' + v + '</div>';
                 }).join('');
             }
         }
 
+        function animateMsPush(mainArr, minArr, value, minValue, onDone) {
+            renderMsStack(mainEl, mainArr, 'main', mainArr.length - 1);
+            renderMsStack(minEl, minArr, 'min', minArr.length - 1);
+            var mainDst = mainEl.querySelector('#sq-ms-main-' + (mainArr.length - 1));
+            var minDst = minEl.querySelector('#sq-ms-min-' + (minArr.length - 1));
+            if (!mainDst || !minDst) {
+                renderMsStack(mainEl, mainArr, 'main', -1);
+                renderMsStack(minEl, minArr, 'min', -1);
+                if (onDone) onDone(); return;
+            }
+            var wr = wrapEl.getBoundingClientRect();
+            var mdr = mainDst.getBoundingClientRect();
+            var ndr = minDst.getBoundingClientRect();
+            function mkGhost(val, dstRect, color, startX) {
+                var g = document.createElement('div');
+                g.textContent = val;
+                g.style.cssText = 'position:absolute;z-index:20;min-width:' + dstRect.width + 'px;height:' + dstRect.height + 'px;' +
+                    'left:' + startX + 'px;top:' + (dstRect.top - wr.top - 60) + 'px;' +
+                    'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                    'background:' + color + ';color:white;border-radius:8px;padding:0 6px;opacity:0.3;' +
+                    'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.3s ease;';
+                return g;
+            }
+            var gMain = mkGhost(value, mdr, 'var(--accent)', mdr.left - wr.left);
+            var gMin = mkGhost(minValue, ndr, 'var(--green)', ndr.left - wr.left);
+            flyEl.appendChild(gMain);
+            flyEl.appendChild(gMin);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                gMain.style.top = (mdr.top - wr.top) + 'px';
+                gMain.style.opacity = '1';
+                gMin.style.top = (ndr.top - wr.top) + 'px';
+                gMin.style.opacity = '1';
+            }); });
+            setTimeout(function() {
+                if (gMain.parentNode) gMain.parentNode.removeChild(gMain);
+                if (gMin.parentNode) gMin.parentNode.removeChild(gMin);
+                renderMsStack(mainEl, mainArr, 'main', -1);
+                renderMsStack(minEl, minArr, 'min', -1);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function animateMsPop(beforeMain, beforeMin, onDone) {
+            renderMsStack(mainEl, beforeMain, 'main', -1);
+            renderMsStack(minEl, beforeMin, 'min', -1);
+            var mainTop = mainEl.querySelector('#sq-ms-main-' + (beforeMain.length - 1));
+            var minTop = minEl.querySelector('#sq-ms-min-' + (beforeMin.length - 1));
+            if (!mainTop || !minTop) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var mr = mainTop.getBoundingClientRect();
+            var nr = minTop.getBoundingClientRect();
+            mainTop.style.opacity = '0.15';
+            minTop.style.opacity = '0.15';
+            function mkGhost(val, rect, color) {
+                var g = document.createElement('div');
+                g.textContent = val;
+                g.style.cssText = 'position:absolute;z-index:20;min-width:' + rect.width + 'px;height:' + rect.height + 'px;' +
+                    'left:' + (rect.left - wr.left) + 'px;top:' + (rect.top - wr.top) + 'px;' +
+                    'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                    'background:' + color + ';color:white;border-radius:8px;padding:0 6px;' +
+                    'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                    'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.5s ease;';
+                return g;
+            }
+            var gMain = mkGhost(beforeMain[beforeMain.length - 1], mr, 'var(--red,#e17055)');
+            var gMin = mkGhost(beforeMin[beforeMin.length - 1], nr, 'var(--red,#e17055)');
+            flyEl.appendChild(gMain);
+            flyEl.appendChild(gMin);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                gMain.style.top = (mr.top - wr.top - 60) + 'px';
+                gMain.style.opacity = '0';
+                gMin.style.top = (nr.top - wr.top - 60) + 'px';
+                gMin.style.opacity = '0';
+            }); });
+            setTimeout(function() {
+                if (gMain.parentNode) gMain.parentNode.removeChild(gMain);
+                if (gMin.parentNode) gMin.parentNode.removeChild(gMin);
+                if (onDone) onDone();
+            }, 550);
+        }
+
         function buildMsSteps(ops) {
-            var states = [];
+            var stepData = [];
             var mainStack = [];
             var minStack = [];
-            states.push({ main: [], min: [], desc: 'Prepare two stacks: a main stack and a min-tracking stack.', result: '' });
+            stepData.push({ main: [], min: [], beforeMain: null, beforeMin: null, desc: 'Prepare two stacks: a main stack and a min-tracking stack.', result: '', animType: null });
 
             for (var i = 0; i < ops.length; i++) {
                 var o = ops[i];
                 if (o.op === 'push') {
+                    var bm = [].concat(mainStack);
+                    var bn = [].concat(minStack);
                     mainStack = [].concat(mainStack, [o.val]);
                     var curMin = minStack.length === 0 ? o.val : Math.min(o.val, minStack[minStack.length - 1]);
                     minStack = [].concat(minStack, [curMin]);
-                    states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'push(' + o.val + ') → main gets ' + o.val + ', min stack gets min(' + o.val + ', ' + (minStack.length > 1 ? minStack[minStack.length - 2] : '∅') + ') = ' + curMin, result: '' });
+                    stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: bm, beforeMin: bn, desc: 'push(' + o.val + ') \u2192 main gets ' + o.val + ', min stack gets min(' + o.val + ', ' + (minStack.length > 1 ? minStack[minStack.length - 2] : '\u2205') + ') = ' + curMin, result: '', animType: 'push', pushVal: o.val, pushMin: curMin });
                 } else if (o.op === 'pop') {
                     if (mainStack.length === 0) {
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'pop() → Stack is empty, cannot execute!', result: '' });
+                        stepData.push({ main: [], min: [], beforeMain: null, beforeMin: null, desc: 'pop() \u2192 Stack is empty, cannot execute!', result: '', animType: null });
                     } else {
+                        var bm = [].concat(mainStack);
+                        var bn = [].concat(minStack);
                         var popped = mainStack[mainStack.length - 1];
                         mainStack = mainStack.slice(0, -1);
                         minStack = minStack.slice(0, -1);
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'pop() → removed ' + popped + '. Pop from both stacks!', result: '' });
+                        stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: bm, beforeMin: bn, desc: 'pop() \u2192 removed ' + popped + '. Pop from both stacks!', result: '', animType: 'pop' });
                     }
                 } else if (o.op === 'top') {
                     if (mainStack.length === 0) {
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'top() → Stack is empty, cannot execute!', result: '' });
+                        stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: null, beforeMin: null, desc: 'top() \u2192 Stack is empty, cannot execute!', result: '', animType: null });
                     } else {
                         var topVal = mainStack[mainStack.length - 1];
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'top() → Check the top value of the main stack', result: 'top() = ' + topVal });
+                        stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: null, beforeMin: null, desc: 'top() \u2192 Check the top value of the main stack', result: 'top() = ' + topVal, animType: 'highlight' });
                     }
                 } else if (o.op === 'getMin') {
                     if (minStack.length === 0) {
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'getMin() → Stack is empty, cannot execute!', result: '' });
+                        stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: null, beforeMin: null, desc: 'getMin() \u2192 Stack is empty, cannot execute!', result: '', animType: null });
                     } else {
                         var minVal = minStack[minStack.length - 1];
-                        states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'getMin() → Top of the min stack = current minimum!', result: 'getMin() = ' + minVal });
+                        stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: null, beforeMin: null, desc: 'getMin() \u2192 Top of the min stack = current minimum!', result: 'getMin() = ' + minVal, animType: 'highlight' });
                     }
                 }
             }
-            states.push({ main: [].concat(mainStack), min: [].concat(minStack), desc: 'Thanks to the auxiliary stack, getMin() is always O(1)!', result: '' });
+            stepData.push({ main: [].concat(mainStack), min: [].concat(minStack), beforeMain: null, beforeMin: null, desc: 'Thanks to the auxiliary stack, getMin() is always O(1)!', result: '', animType: null });
 
-            return states.map(function(st) {
+            return stepData.map(function(st) {
                 return {
                     description: st.desc,
-                    action: function() {
-                        renderMsStack(mainEl, st.main);
-                        renderMsStack(minEl, st.min);
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
                         resultEl.textContent = st.result;
+                        if (dir === 'forward' && st.animType === 'push') {
+                            animateMsPush(st.main, st.min, st.pushVal, st.pushMin, null);
+                        } else if (dir === 'forward' && st.animType === 'pop') {
+                            animateMsPop(st.beforeMain, st.beforeMin, function() {
+                                renderMsStack(mainEl, st.main, 'main', -1);
+                                renderMsStack(minEl, st.min, 'min', -1);
+                            });
+                        } else {
+                            renderMsStack(mainEl, st.main, 'main', -1);
+                            renderMsStack(minEl, st.min, 'min', -1);
+                        }
                     }
                 };
             });
@@ -1429,6 +1768,7 @@ bool isValid(string s) {
         function resetMsViz() {
             var ops = parseMsInput();
             if (ops.length === 0) return;
+            flyEl.innerHTML = '';
             mainEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(empty)</div>';
             minEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.8rem;text-align:center;padding:20px 0;">(empty)</div>';
             resultEl.textContent = '';

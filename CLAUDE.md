@@ -43,10 +43,20 @@
 - **설명 먼저 → 동작은 나중에**: "다음" 클릭 시 설명 텍스트를 먼저 표시하고, 짧은 딜레이(~350ms) 후 시각화를 업데이트한다. 설명과 동작이 동시에 일어나면 읽기 어렵다.
 - **모든 애니메이션/데모는 세부 동작까지 자세히 보여준다:**
   - 중간 과정을 건너뛰지 않는다. 알고리즘의 **매 비교, 매 이동, 매 판단**을 한 스텝으로 보여준다.
+  - **"한꺼번에 결과만 보여주기" 절대 금지** — 과정이 핵심이다.
   - 예: 선택 정렬 — "최솟값을 찾습니다 → 찾았습니다" ✗ (과정 생략)
     - 올바른 방식: "64와 비교 → 25가 더 작으니 최솟값 갱신 → 12와 비교 → ..." 각 비교를 한 스텝씩 보여준다 ✓
   - 예: 이분 탐색 — "mid를 계산 → 비교 → 범위 조정"을 매 반복마다 보여준다.
+  - 예: 병합정렬 — "왼쪽 2 vs 오른쪽 1 비교 → 1이 더 작으니 결과에 추가 → 다음 비교..." 한 번에 합치지 않는다.
+  - 예: DFS/BFS — "노드 A 방문 → 인접 노드 확인 → B로 이동 → ..." 탐색 경로를 한 노드씩 보여준다.
+  - 예: DP — "dp[3] = dp[2] + dp[1] = 2 + 1 = 3" 각 칸의 계산 과정을 보여준다.
+  - **스텝 수가 많아지는 것을 두려워하지 않는다.** 20~30 스텝이어도 괜찮다. 과정을 생략하는 것보다 낫다.
   - **개념 페이지의 인라인 데모에도 동일하게 적용한다.** 개념 데모라고 과정을 압축하지 않는다.
+- **비교와 이동은 별도 스텝으로 분리한다:**
+  - "비교 후 교환"을 한 스텝에 넣지 않는다.
+  - 스텝 1: "A[i]와 A[j]를 비교한다 → A[i] > A[j]이므로 교환이 필요하다" (비교 하이라이트)
+  - 스텝 2: "A[i]와 A[j]를 교환한다" (이동 애니메이션 실행)
+  - 이렇게 해야 학생이 "왜 교환하는지" 이해한 후 "교환 결과"를 본다.
 
 ## 6. 개념 페이지 — 충분한 깊이 + 단계적 설명
 
@@ -208,7 +218,73 @@
 
 ---
 
-## 11. 하이라이트 & 강조
+## 11. 이동 애니메이션 (Flying Ghost)
+
+- **값이 한 위치에서 다른 위치로 이동하는 동작은 반드시 애니메이션으로 보여준다.**
+  - 즉시 상태 변경 X → 원본 위치에서 목적지까지 날아가는 시각적 이동 필수.
+  - 예: 정렬(swap), LIS(tails 배열에 삽입/교체), 병합정렬(합치기), 스택/큐(push/pop)
+- **"그냥 바뀌는" 것은 안 된다** — 학생이 "어디서 어디로 갔는지" 눈으로 따라갈 수 있어야 한다.
+
+### FLIP 애니메이션 구현 패턴
+
+```js
+function animateMove(value, srcId, destId, color, onDone) {
+    var srcEl = container.querySelector('#' + srcId);
+    var wrapRect = wrapEl.getBoundingClientRect();  // position:relative 래퍼
+    if (!srcEl) { if (onDone) onDone(); return; }
+    var srcRect = srcEl.getBoundingClientRect();
+
+    // 1. 고스트 생성 — 원본 위치에 absolute로 배치
+    var ghost = document.createElement('div');
+    ghost.textContent = value;
+    ghost.style.cssText = 'position:absolute;z-index:20;' +
+        'left:' + (srcRect.left - wrapRect.left) + 'px;' +
+        'top:' + (srcRect.top - wrapRect.top) + 'px;' +
+        'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);' +
+        'background:' + color + ';color:white;transform:scale(1.15);';
+    flyEl.appendChild(ghost);  // position:absolute 오버레이 컨테이너
+
+    // 2. 목적지 좌표 계산 → CSS transition으로 이동
+    requestAnimationFrame(function() {
+        var destEl = container.querySelector('#' + destId);
+        var destRect = destEl.getBoundingClientRect();
+        requestAnimationFrame(function() {
+            ghost.style.left = (destRect.left - wrapRect.left) + 'px';
+            ghost.style.top = (destRect.top - wrapRect.top) + 'px';
+            ghost.style.transform = 'scale(1)';
+        });
+        // 3. 애니메이션 완료 후 고스트 제거 + 실제 DOM 업데이트
+        setTimeout(function() {
+            if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+            if (onDone) onDone();
+        }, 550);
+    });
+}
+```
+
+### 핵심 규칙
+
+- **래퍼**: 시각화 영역에 `position: relative` 래퍼 + `position: absolute` 오버레이(`flyEl`) 필수
+- **좌표 계산**: `getBoundingClientRect()`로 source/dest 위치를 구하고 래퍼 기준으로 변환
+- **방향 분기**: `action(dir)` — `dir === 'forward'`일 때만 애니메이션, 아니면 즉시 반영 (뒤로가기 시)
+- **타이밍**: CSS `transition` 0.5s + `setTimeout` 550ms 후 정리
+- **참조 구현**: `binarysearch.js` — `_renderVizLIS`의 `animateMove()` 함수
+
+### 적용 대상
+
+| 유형 | 이동 애니메이션 |
+|------|----------------|
+| 정렬 (swap) | 두 요소가 서로 교차하며 날아감 |
+| LIS/tails | 원본 배열 → tails 배열로 값이 날아감 |
+| 병합정렬 | 분할된 조각 → 병합 결과로 이동 |
+| 스택/큐 push | 새 요소가 날아와서 삽입 |
+| 스택/큐 pop | 요소가 날아가며 제거 |
+| 트리 삽입 | 새 노드가 부모에서 자식 위치로 이동 |
+| 그래프 BFS/DFS | 현재 노드에서 다음 노드로 탐색 이동 |
+
+---
+
+## 12. 하이라이트 & 강조
 
 - **시뮬 현재 처리 중**: `box-shadow` + `border-color` 변경 + 약간의 `scale`
 - **코드 새로 추가된 줄**: 배경 하이라이트 + 왼쪽 보더
@@ -216,7 +292,7 @@
 - **실패/제거**: 빨강 글로우 + opacity 감소
 - 강조가 안 보이면 의미가 없다 → 글로우 강도, 색 대비를 넉넉히.
 
-## 12. 모든 처리에는 이유를
+## 13. 모든 처리에는 이유를
 
 - 코드의 WHY-comment: `# deque: 양쪽 O(1) 삽입/삭제라서 선택`
 - 시뮬 스텝 설명: "왜 이 값을 비교하는가", "왜 이 자료구조를 쓰는가"
@@ -319,7 +395,7 @@ resetBtn.addEventListener('click', () => {
 
 ---
 
-## 13. 참조 구현 (Quality Bar)
+## 14. 참조 구현 (Quality Bar)
 
 모든 토픽의 개념 페이지는 아래 수준을 **최소 기준**으로 삼는다. 미달 토픽은 미완성으로 간주하고 보강한다.
 

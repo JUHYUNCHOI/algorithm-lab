@@ -58,7 +58,7 @@ var bitManipulationTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -540,6 +540,91 @@ int main() {
                     </div>
                 </div>
             </div>
+
+            <!-- Section 5: Demo — Binary Conversion -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">5</span> Demo: Decimal → Binary Conversion
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Division by 2 animation</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="number" id="bit-demo-conv-input" value="42" min="0" max="255" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:80px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="bit-demo-conv-btn">⚙️ Start Conversion</button>
+                        <button class="concept-demo-btn green" id="bit-demo-conv-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bit-demo-conv-steps" style="font-family:monospace;font-size:0.9rem;color:var(--text);line-height:2;"></div>
+                        <div id="bit-demo-conv-result" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-conv-msg">👆 Enter a number and click "Start Conversion"! Watch how repeatedly dividing by 2 and collecting remainders builds the binary representation.</div>
+                </div>
+            </div>
+
+            <!-- Section 6: Demo — Bitwise Operation Visualization -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">6</span> Demo: Bitwise Operation Visualization
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — AND, OR, XOR, NOT, Shift</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="number" id="bit-demo-op-a" value="10" min="0" max="255" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:70px;background:var(--card);color:var(--text);">
+                        <select id="bit-demo-op-sel" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">
+                            <option value="and">AND (&)</option>
+                            <option value="or">OR (|)</option>
+                            <option value="xor">XOR (^)</option>
+                            <option value="not">NOT (~)</option>
+                            <option value="shl">Left Shift (<<)</option>
+                            <option value="shr">Right Shift (>>)</option>
+                        </select>
+                        <input type="number" id="bit-demo-op-b" value="12" min="0" max="255" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:70px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="bit-demo-op-btn">⚡ Calculate</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bit-demo-op-viz" style="font-family:monospace;font-size:0.95rem;line-height:2;color:var(--text);"></div>
+                        <div id="bit-demo-op-result" style="margin-top:8px;font-size:0.9rem;color:var(--text2);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-op-msg">👆 Choose two numbers and an operation, then click "Calculate"! See how it works bit by bit.</div>
+                </div>
+            </div>
+
+            <!-- Section 7: Demo — Bitmask Set -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">7</span> Demo: Bitmask = Set
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Toggle bits to add/remove elements</div>
+                    <div style="margin-bottom:12px;">
+                        <div id="bit-demo-mask-bits" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;"></div>
+                        <div id="bit-demo-mask-info" style="font-size:0.9rem;color:var(--text2);margin-bottom:8px;font-family:monospace;"></div>
+                        <div id="bit-demo-mask-set" style="font-size:0.9rem;color:var(--text);padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-mask-msg">👆 Click bits to toggle them on and off! The position of each ON bit represents an element in the set.</div>
+                </div>
+            </div>
+
+            <!-- Section 8: Demo — XOR Unpaired Number -->
+            <div class="concept-section">
+                <div class="concept-section-title">
+                    <span class="section-num">8</span> Demo: Find the Unpaired Number with XOR
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — XOR all numbers and the unpaired one remains</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="bit-demo-xor-input" value="4,1,2,1,2" placeholder="Comma-separated numbers" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="bit-demo-xor-btn">⚡ Run XOR</button>
+                        <button class="concept-demo-btn green" id="bit-demo-xor-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="bit-demo-xor-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="bit-demo-xor-steps" style="font-family:monospace;font-size:0.9rem;color:var(--text);line-height:2;"></div>
+                        <div id="bit-demo-xor-result" style="margin-top:8px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-demo-xor-msg">👆 Change the numbers and click "Run XOR"! Paired numbers cancel out and only the unpaired one remains.</div>
+                </div>
+            </div>
         `;
         this._initConceptInteractions(container);
     },
@@ -553,6 +638,261 @@ int main() {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== Demo 1: Binary Conversion ======
+        (function() {
+            var convBtn = container.querySelector('#bit-demo-conv-btn');
+            var resetBtn = container.querySelector('#bit-demo-conv-reset');
+            var inputEl = container.querySelector('#bit-demo-conv-input');
+            var stepsEl = container.querySelector('#bit-demo-conv-steps');
+            var resultEl = container.querySelector('#bit-demo-conv-result');
+            var animating = false;
+
+            convBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                convBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var num = parseInt(inputEl.value) || 0;
+                if (num < 0) num = 0;
+                if (num > 255) num = 255;
+                stepsEl.innerHTML = '';
+                resultEl.textContent = '';
+
+                if (num === 0) {
+                    stepsEl.innerHTML = '<div>0 in binary is also <strong>0</strong>!</div>';
+                    resultEl.innerHTML = '<strong>Result:</strong> 0 → <strong style="color:var(--green);">0</strong>';
+                    animating = false;
+                    return;
+                }
+
+                var steps = [];
+                var n = num;
+                while (n > 0) {
+                    var remainder = n % 2;
+                    var quotient = Math.floor(n / 2);
+                    steps.push({ n: n, q: quotient, r: remainder });
+                    n = quotient;
+                }
+
+                var idx = 0;
+                function showStep() {
+                    if (idx >= steps.length) {
+                        var binary = steps.map(function(s) { return s.r; }).reverse().join('');
+                        resultEl.innerHTML = '<strong>Result:</strong> ' + num + ' → <strong style="color:var(--green);">' + binary + '</strong> (read the remainders from bottom to top!)';
+                        animating = false;
+                        return;
+                    }
+                    var s = steps[idx];
+                    var line = document.createElement('div');
+                    line.style.animation = 'fadeIn 0.3s ease';
+                    line.innerHTML = s.n + ' \u00F7 2 = ' + s.q + ' ... <strong style="color:var(--accent);">remainder ' + s.r + '</strong>';
+                    stepsEl.appendChild(line);
+                    idx++;
+                    setTimeout(showStep, 400);
+                }
+                showStep();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                convBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                stepsEl.innerHTML = '';
+                resultEl.textContent = '';
+            });
+        })();
+
+        // ====== Demo 2: Bitwise Operation Visualization ======
+        (function() {
+            var opBtn = container.querySelector('#bit-demo-op-btn');
+            var aInput = container.querySelector('#bit-demo-op-a');
+            var bInput = container.querySelector('#bit-demo-op-b');
+            var selEl = container.querySelector('#bit-demo-op-sel');
+            var vizEl = container.querySelector('#bit-demo-op-viz');
+            var resultEl = container.querySelector('#bit-demo-op-result');
+
+            function toBin(n, bits) {
+                var s = (n >>> 0).toString(2);
+                while (s.length < bits) s = '0' + s;
+                return s.slice(-bits);
+            }
+
+            function colorBits(binStr, highlights) {
+                return binStr.split('').map(function(b, i) {
+                    var color = highlights && highlights[i] ? highlights[i] : 'var(--text)';
+                    return '<span style="color:' + color + ';font-weight:700;">' + b + '</span>';
+                }).join('');
+            }
+
+            opBtn.addEventListener('click', function() {
+                var a = parseInt(aInput.value) || 0;
+                var b = parseInt(bInput.value) || 0;
+                var op = selEl.value;
+                var bits = 8;
+                var result, opSymbol, bitsA = toBin(a, bits), bitsB = toBin(b, bits);
+                var lines = [];
+                var showB = true;
+
+                switch (op) {
+                    case 'and': result = a & b; opSymbol = '&'; break;
+                    case 'or': result = a | b; opSymbol = '|'; break;
+                    case 'xor': result = a ^ b; opSymbol = '^'; break;
+                    case 'not': result = (~a) & 0xFF; opSymbol = '~'; showB = false; break;
+                    case 'shl': result = (a << b) & 0xFF; opSymbol = '<<'; break;
+                    case 'shr': result = a >> b; opSymbol = '>>'; break;
+                }
+
+                var bitsR = toBin(result, bits);
+
+                var hA = {}, hB = {}, hR = {};
+                for (var i = 0; i < bits; i++) {
+                    if (op === 'and') {
+                        if (bitsA[i] === '1' && bitsB[i] === '1') { hR[i] = 'var(--green)'; }
+                    } else if (op === 'or') {
+                        if (bitsA[i] === '1' || bitsB[i] === '1') { hR[i] = 'var(--green)'; }
+                    } else if (op === 'xor') {
+                        if (bitsA[i] !== bitsB[i]) { hR[i] = 'var(--yellow)'; }
+                    } else if (op === 'not') {
+                        hR[i] = bitsR[i] === '1' ? 'var(--green)' : 'var(--red)';
+                    }
+                }
+
+                lines.push('&nbsp;&nbsp;' + colorBits(bitsA, hA) + '  \u2190 ' + a);
+                if (showB && (op !== 'shl' && op !== 'shr')) {
+                    lines.push(opSymbol + ' ' + colorBits(bitsB, hB) + '  \u2190 ' + b);
+                } else if (op === 'shl' || op === 'shr') {
+                    lines.push(opSymbol + ' ' + b + ' positions');
+                } else {
+                    lines.push(opSymbol);
+                }
+                lines.push('\u2500'.repeat(bits + 2));
+                lines.push('= ' + colorBits(bitsR, hR) + '  \u2190 <strong>' + result + '</strong>');
+
+                vizEl.innerHTML = lines.map(function(l) { return '<div>' + l + '</div>'; }).join('');
+
+                var explanations = {
+                    and: 'Only positions where both are 1 become 1.',
+                    or: 'If at least one is 1, the result is 1.',
+                    xor: 'Only positions where they differ become 1.',
+                    not: '0s and 1s are flipped. (8-bit basis)',
+                    shl: 'Bits shifted left by ' + b + ' position(s), effectively \u00D72' + (b > 1 ? '^' + b : '') + '.',
+                    shr: 'Bits shifted right by ' + b + ' position(s), effectively \u00F72' + (b > 1 ? '^' + b : '') + '.'
+                };
+                resultEl.textContent = explanations[op];
+            });
+        })();
+
+        // ====== Demo 3: Bitmask Set ======
+        (function() {
+            var BITS = 6;
+            var mask = 0;
+            var bitsEl = container.querySelector('#bit-demo-mask-bits');
+            var infoEl = container.querySelector('#bit-demo-mask-info');
+            var setEl = container.querySelector('#bit-demo-mask-set');
+
+            function render() {
+                bitsEl.innerHTML = '';
+                for (var i = BITS - 1; i >= 0; i--) {
+                    var isOn = (mask >> i) & 1;
+                    var bit = document.createElement('div');
+                    bit.style.cssText = 'width:44px;height:44px;border-radius:8px;border:2px solid ' + (isOn ? 'var(--green)' : 'var(--border)') +
+                        ';display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s ease;' +
+                        'background:' + (isOn ? 'rgba(0,184,148,0.15)' : 'var(--card)') + ';user-select:none;';
+                    if (isOn) bit.style.boxShadow = '0 0 6px var(--green)';
+                    bit.innerHTML = '<div style="font-size:0.6rem;color:var(--text3);">' + i + '</div><div style="font-size:1.1rem;font-weight:700;color:' + (isOn ? 'var(--green)' : 'var(--text3)') + ';">' + isOn + '</div>';
+                    bit.dataset.idx = i;
+                    bit.addEventListener('click', function() {
+                        var idx = parseInt(this.dataset.idx);
+                        mask ^= (1 << idx);
+                        render();
+                    });
+                    bitsEl.appendChild(bit);
+                }
+
+                infoEl.textContent = 'Binary: ' + (mask >>> 0).toString(2).padStart(BITS, '0') + ' | Decimal: ' + mask;
+
+                var elements = [];
+                for (var i = 0; i < BITS; i++) {
+                    if ((mask >> i) & 1) elements.push(i);
+                }
+                setEl.innerHTML = 'Set: <strong>{' + (elements.length ? elements.join(', ') : 'empty') + '}</strong>' +
+                    ' | Size: ' + elements.length;
+            }
+            render();
+        })();
+
+        // ====== Demo 4: XOR Unpaired Number ======
+        (function() {
+            var xorBtn = container.querySelector('#bit-demo-xor-btn');
+            var resetBtn = container.querySelector('#bit-demo-xor-reset');
+            var inputEl = container.querySelector('#bit-demo-xor-input');
+            var arrEl = container.querySelector('#bit-demo-xor-arr');
+            var stepsEl = container.querySelector('#bit-demo-xor-steps');
+            var resultEl = container.querySelector('#bit-demo-xor-result');
+            var animating = false;
+
+            xorBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                xorBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var nums = inputEl.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+                if (nums.length < 2) { resultEl.textContent = 'Please enter at least 2 numbers!'; animating = false; return; }
+
+                arrEl.innerHTML = '';
+                nums.forEach(function(n) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-val">' + n + '</div>';
+                    arrEl.appendChild(box);
+                });
+
+                stepsEl.innerHTML = '';
+                var xorVal = 0;
+                var idx = 0;
+                function step() {
+                    if (idx >= nums.length) {
+                        resultEl.innerHTML = '<strong style="color:var(--green);">Unpaired number: ' + xorVal + '</strong> — Paired numbers cancel out via XOR, leaving only the unique one!';
+                        var boxes = arrEl.querySelectorAll('.str-char-box');
+                        boxes.forEach(function(box) {
+                            if (box.textContent.trim() == String(xorVal)) {
+                                box.style.borderColor = 'var(--green)';
+                                box.style.boxShadow = '0 0 8px var(--green)';
+                            }
+                        });
+                        animating = false;
+                        return;
+                    }
+                    var prev = xorVal;
+                    xorVal ^= nums[idx];
+                    var line = document.createElement('div');
+                    line.style.animation = 'fadeIn 0.3s ease';
+                    line.innerHTML = prev + ' ^ ' + nums[idx] + ' = <strong style="color:var(--accent);">' + xorVal + '</strong>';
+                    stepsEl.appendChild(line);
+
+                    var boxes = arrEl.querySelectorAll('.str-char-box');
+                    boxes.forEach(function(b) { b.style.borderColor = ''; b.style.boxShadow = ''; });
+                    if (boxes[idx]) {
+                        boxes[idx].style.borderColor = 'var(--yellow)';
+                        boxes[idx].style.boxShadow = '0 0 6px var(--yellow)';
+                    }
+
+                    idx++;
+                    setTimeout(step, 500);
+                }
+                step();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                xorBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                arrEl.innerHTML = '';
+                stepsEl.innerHTML = '';
+                resultEl.textContent = '';
+            });
+        })();
     },
 
     // ===== Visualization Tab =====
@@ -670,7 +1010,7 @@ int main() {
             var runningXor = 0;
 
             steps.push({
-                description: 'Start with result = 0.',
+                description: 'Start with result = 0. Since <em>0 is the identity element of XOR</em> (a ^ 0 = a), XORing with any number returns that number itself.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -695,7 +1035,7 @@ int main() {
 
                 (function(idx, num, prevXor, newXor, prevBin, numBin, newBin, changedBits) {
                     steps.push({
-                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor + ' (binary: ' + prevBin + ' ^ ' + numBin + ' = ' + newBin + ')',
+                        description: 'result ^= ' + num + ': XOR yields 0 for matching bits, 1 for differing bits. ' + prevXor + ' ^ ' + num + ' = <strong>' + newXor + '</strong> — paired numbers cancel out (a ^ a = 0), leaving only the unpaired one.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -722,7 +1062,7 @@ int main() {
 
             var finalResult = runningXor;
             steps.push({
-                description: 'Done! XOR of all elements: ' + finalResult + ' — this is the unpaired number!',
+                description: 'Done! Paired numbers cancelled out via a ^ a = 0, leaving only the unpaired number <strong>' + finalResult + '</strong>.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -857,7 +1197,7 @@ int main() {
                 }
                 (function(prev, next, count, removedBit, prevBin, prevMinusBin, nextBin, numBits) {
                     steps.push({
-                        description: 'count=' + count + ': n=' + prev + ' (' + prevBin + ') & (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ') = ' + next + ' (' + nextBin + ')',
+                        description: '<strong>n & (n-1)</strong> clears the lowest set bit. n=' + prev + ' (' + prevBin + ') AND (n-1)=' + (prev - 1) + ' (' + prevMinusBin + ') turns off the rightmost 1-bit, giving ' + next + ' (' + nextBin + '). → count=' + count,
                         action: function() { renderBits(next, removedBit, numBits); infoEl.innerHTML = 'n = ' + prev + ' & ' + (prev - 1) + ' = <strong>' + next + '</strong> — count = <strong>' + count + '</strong>'; },
                         undo: function() { renderBits(prev, -1, numBits); infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + prev + ', count = ' + (count - 1) + '</span>'; }
                     });
@@ -866,7 +1206,7 @@ int main() {
             }
             var finalCount = count;
             steps.push({
-                description: 'Done! n = 0, so we stop. Number of 1-bits = ' + finalCount,
+                description: 'Done! n is 0, meaning there are no more 1-bits to clear. The number of times we applied <strong>n & (n-1)</strong> = <strong>' + finalCount + '</strong> is the 1-bit count.',
                 action: function() { renderBits(0, -1, numBits); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Number of 1-bits = ' + finalCount + '</strong>'; },
                 undo: function() { renderBits(0, -1, numBits); infoEl.innerHTML = 'n = 0, count = ' + finalCount; }
             });
@@ -874,7 +1214,7 @@ int main() {
         }
 
         function initSim(n) {
-            descEl.textContent = 'Counting the number of 1-bits in n = ' + n + ' (binary: ' + (n >>> 0).toString(2) + ').';
+            descEl.innerHTML = 'Counting the number of 1-bits in n = ' + n + ' (binary: ' + (n >>> 0).toString(2) + '). <em>n & (n-1)</em> removes one 1-bit each time, so the iteration count equals the 1-bit count.';
             var numBits = Math.max(8, (n >>> 0).toString(2).length);
             renderBits(n, -1, numBits);
             infoEl.innerHTML = '<span style="color:var(--text2);">n = ' + n + ', count = 0 — repeatedly applying n & (n-1).</span>';
@@ -973,7 +1313,7 @@ int main() {
             var runXor = 0;
 
             steps.push({
-                description: 'Start with result = 0.',
+                description: 'Start with result = 0. Since <em>0 is the identity element of XOR</em> (a ^ 0 = a), XORing with any number returns that number itself.',
                 _before: null,
                 action: function() { this._before = saveState(); xorEl.innerHTML = renderBitRow('result = 0', 0, null); infoEl.innerHTML = 'Initialized result to 0.'; },
                 undo: function() { restoreState(this._before); }
@@ -990,7 +1330,7 @@ int main() {
 
                 (function(idx, num, prevXor, newXor, prevBin, newBin, changed, numsRef) {
                     steps.push({
-                        description: 'result ^= ' + num + ' → ' + prevXor + ' ^ ' + num + ' = ' + newXor,
+                        description: 'result ^= ' + num + ': XOR yields 0 for matching bits, 1 for differing bits. ' + prevXor + ' ^ ' + num + ' = <strong>' + newXor + '</strong> — paired numbers cancel out, leaving only the unpaired one.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -1017,7 +1357,7 @@ int main() {
             var finalResult = runXor;
             var numsLen = nums.length;
             steps.push({
-                description: 'Done! The unpaired number is ' + finalResult + '!',
+                description: 'Done! All paired numbers cancelled out via a ^ a = 0, leaving only the unpaired number <strong>' + finalResult + '</strong>.',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -1136,33 +1476,33 @@ int main() {
 
                 if (op.cmd === 'add') {
                     newS = S | (1 << op.x);
-                    desc = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    desc = 'add ' + op.x + ': OR turns on a specific bit. <code>1 &lt;&lt; ' + op.x + '</code> creates a mask with only bit ' + op.x + ' set, so OR <strong>preserves all other bits</strong> while setting bit ' + op.x + ' to 1. → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — set bit ' + op.x + ' to 1';
+                    infoText = 'add ' + op.x + ': S |= (1 &lt;&lt; ' + op.x + ') — OR: 0|1=1, so only bit ' + op.x + ' turns on';
                 } else if (op.cmd === 'remove') {
                     newS = S & ~(1 << op.x);
-                    desc = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    desc = 'remove ' + op.x + ': NOT flips the mask, then AND clears the bit. <code>~(1 &lt;&lt; ' + op.x + ')</code> is 0 only at bit ' + op.x + ' and 1 everywhere else, so AND <strong>clears only bit ' + op.x + '</strong> while preserving the rest. → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — clear bit ' + op.x + ' to 0';
+                    infoText = 'remove ' + op.x + ': S &= ~(1 &lt;&lt; ' + op.x + ') — AND: 1&0=0, so only bit ' + op.x + ' cleared';
                 } else if (op.cmd === 'toggle') {
                     newS = S ^ (1 << op.x);
-                    desc = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') → S = ' + newS;
+                    desc = 'toggle ' + op.x + ': XOR yields 0 for matching bits and 1 for differing bits, so it <strong>flips</strong> the current value. If bit ' + op.x + ' was 1, it becomes 0; if 0, it becomes 1. → S = ' + newS;
                     hlBit = op.x;
-                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — flip bit ' + op.x + '';
+                    infoText = 'toggle ' + op.x + ': S ^= (1 &lt;&lt; ' + op.x + ') — XOR: 1^1=0, 0^1=1, so bit flips';
                 } else if (op.cmd === 'check') {
                     var result = (S >> op.x) & 1;
                     newS = S;
-                    desc = 'check ' + op.x + ': (S &gt;&gt; ' + op.x + ') & 1 = ' + result;
+                    desc = 'check ' + op.x + ': Right-shift by ' + op.x + ' moves bit ' + op.x + ' to the lowest position, then <code>& 1</code> extracts just that bit. → ' + result + ' (' + (result ? 'present in set' : 'absent from set') + ')';
                     hlBit = op.x < showBits ? op.x : -1;
-                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> (' + (result ? 'present' : 'absent') + ')';
+                    infoText = 'check ' + op.x + ' → <strong>' + result + '</strong> — shift then AND 1 to extract a specific bit (' + (result ? 'present' : 'absent') + ')';
                 } else if (op.cmd === 'all') {
                     newS = (1 << showBits) - 1;
-                    desc = 'all: S = (1 &lt;&lt; ' + showBits + ') - 1 → S = ' + newS;
-                    infoText = 'all: set all bits to 1 → S = ' + newS;
+                    desc = 'all: <code>(1 &lt;&lt; ' + showBits + ') - 1</code> produces a number with all lower ' + showBits + ' bits set to 1. This means elements 0 through ' + (showBits-1) + ' are all included in the set. → S = ' + newS;
+                    infoText = 'all: 2<sup>' + showBits + '</sup>-1 = ' + newS + ' → all bits are 1 (full set)';
                 } else if (op.cmd === 'empty') {
                     newS = 0;
-                    desc = 'empty: S = 0';
-                    infoText = 'empty: clear all bits to 0 → S = 0';
+                    desc = 'empty: Setting S to 0 clears all bits, representing the <strong>empty set</strong>. In bitmask representation, 0 means no elements are included.';
+                    infoText = 'empty: S = 0 → all bits cleared (empty set)';
                 }
 
                 (function(prevS, newS, desc, hlBit, infoText, showBits) {
@@ -1272,7 +1612,7 @@ int main() {
 
                 (function(mask, subset, maskBin, snapSubsets, nums, n) {
                     steps.push({
-                        description: 'mask = ' + mask + ' (' + maskBin + ') → Subset: [' + subset.join(', ') + ']',
+                        description: 'mask = ' + mask + ' (' + maskBin + '): Each bit decides whether to <strong>include (1) or exclude (0)</strong> the element at that position. → Subset: [' + subset.join(', ') + ']',
                         action: function() {
                             renderMask(mask, n);
                             renderArr(mask, nums);
@@ -1302,7 +1642,7 @@ int main() {
 
             var total = (1 << n);
             steps.push({
-                description: 'Done! Enumerated all ' + total + ' subsets.',
+                description: 'Done! An array of n elements has 2<sup>n</sup> = <strong>' + total + '</strong> subsets. Each integer from 0 to 2<sup>n</sup>-1 maps to exactly one subset, so bitmasks enumerate them all without missing any.',
                 action: function() {
                     collectedSubsets = [];
                     for (var m = 0; m < (1 << n); m++) {

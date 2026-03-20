@@ -58,7 +58,7 @@ const sortingTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -262,6 +262,88 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                     <div style="margin-top:1rem;padding:10px 14px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:6px;font-size:0.88rem;line-height:1.7;">
                         <strong>Key Difference:</strong> Only Insertion Sort can achieve best-case O(n)! On already-sorted data, it only compares without moving elements. That's why practical sorting algorithms (TimSort, IntroSort) use Insertion Sort for small subarrays. Selection Sort has the fewest swaps at O(n), making it advantageous when swap cost is high.
                     </div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Selection Sort Mini Demo</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        Each round, find the <strong>minimum among remaining elements</strong> and swap it to the front.<br>
+                        Click "Step" to follow along <em>one comparison at a time</em> — see how the minimum gets updated!
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-sel-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-sel-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-sel-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-sel-msg">▶ Click Step to start Selection Sort!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Insertion Sort Mini Demo</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        Expand the <strong>sorted portion</strong> from the left. Pick a new element and find its correct position by <em>inserting</em> it!<br>
+                        Watch larger elements shift right, one step at a time.
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-ins-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-ins-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-ins-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-ins-msg">▶ Click Step to start Insertion Sort!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Bubble Sort Mini Demo</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        Compare two adjacent elements — if the left one is larger, <strong>swap</strong> them. After one pass, the largest element "bubbles up" to the end.<br>
+                        Follow along one comparison at a time!
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-bub-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-bub-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-bub-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-bub-msg">▶ Click Step to start Bubble Sort!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Speed Race: Selection vs Insertion vs Bubble</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        Sort the same array with all three algorithms simultaneously. See how the <strong>number of comparisons</strong> and <strong>number of swaps</strong> differ!<br>
+                        All are O(n²), but the actual operation counts vary.
+                    </p>
+                    <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:8px;">
+                        <button class="concept-demo-btn" id="sort-demo-race-prev">&larr; Prev</button>
+                        <span id="sort-demo-race-counter" style="font-size:0.85rem;color:var(--text2);min-width:80px;text-align:center;">Before Start</span>
+                        <button class="concept-demo-btn" id="sort-demo-race-next">Next &rarr;</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-race-reset" style="margin-left:8px;">🔄</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;">
+                            <div style="text-align:center;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--accent);">Selection Sort</div>
+                                <div id="sort-demo-race-sel" style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:44px;"></div>
+                                <div style="margin-top:6px;font-size:0.82rem;">Comparisons: <span id="sort-demo-race-sel-cmp" style="font-weight:700;color:var(--accent);">0</span> · Swaps: <span id="sort-demo-race-sel-swp" style="font-weight:700;color:var(--red);">0</span></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--green);">Insertion Sort</div>
+                                <div id="sort-demo-race-ins" style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:44px;"></div>
+                                <div style="margin-top:6px;font-size:0.82rem;">Comparisons: <span id="sort-demo-race-ins-cmp" style="font-weight:700;color:var(--accent);">0</span> · Shifts: <span id="sort-demo-race-ins-swp" style="font-weight:700;color:var(--red);">0</span></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--yellow);">Bubble Sort</div>
+                                <div id="sort-demo-race-bub" style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:44px;"></div>
+                                <div style="margin-top:6px;font-size:0.82rem;">Comparisons: <span id="sort-demo-race-bub-cmp" style="font-weight:700;color:var(--accent);">0</span> · Swaps: <span id="sort-demo-race-bub-swp" style="font-weight:700;color:var(--red);">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-race-msg">▶ Click "Next →" to compare all three sorts!</div>
                 </div>
             </div>
 
@@ -572,6 +654,367 @@ sort(words.begin(), words.end(),
             </div>
         `;
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
+
+        // ── Selection Sort Mini Demo ──
+        {
+            var selArr = [64, 25, 12, 22, 11];
+            var selState = { arr: selArr.slice(), i: 0, j: 0, minIdx: 0, phase: 'start', done: false };
+            var selArrEl = container.querySelector('#sort-demo-sel-arr');
+            var selMsg = container.querySelector('#sort-demo-sel-msg');
+
+            function renderSelArr() {
+                selArrEl.innerHTML = selState.arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = '';
+                    if (selState.done || idx < selState.i) {
+                        cls += ' matched';
+                    } else if (idx === selState.minIdx && selState.phase === 'compare') {
+                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    }
+                    if (idx === selState.j && selState.phase === 'compare' && idx !== selState.minIdx) {
+                        extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
+                    }
+                    var label = '';
+                    if (idx === selState.minIdx && selState.phase === 'compare') label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">min</div>';
+                    if (idx === selState.j && selState.phase === 'compare') label += '<div style="font-size:0.65rem;color:var(--red);margin-top:2px;">j</div>';
+                    return '<div style="display:flex;flex-direction:column;align-items:center;">' +
+                        '<div class="' + cls + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                }).join('');
+            }
+
+            function selStep() {
+                if (selState.done) return;
+                if (selState.phase === 'start') {
+                    selState.i = 0; selState.minIdx = 0; selState.j = 1;
+                    selState.phase = 'compare';
+                    selMsg.textContent = 'Round 0: Set ' + selState.arr[0] + ' as tentative min. Compare with j=1 (' + selState.arr[1] + ').';
+                    renderSelArr();
+                    return;
+                }
+                if (selState.phase === 'compare') {
+                    if (selState.j < selState.arr.length) {
+                        if (selState.arr[selState.j] < selState.arr[selState.minIdx]) {
+                            selState.minIdx = selState.j;
+                            selMsg.textContent = selState.arr[selState.j] + ' < current min → Update min to ' + selState.arr[selState.j] + ' (index ' + selState.j + ')!';
+                        } else {
+                            selMsg.textContent = selState.arr[selState.j] + ' >= current min ' + selState.arr[selState.minIdx] + ' → No change.';
+                        }
+                        selState.j++;
+                        if (selState.j >= selState.arr.length) {
+                            selState.phase = 'swap';
+                        }
+                        renderSelArr();
+                        return;
+                    }
+                    selState.phase = 'swap';
+                }
+                if (selState.phase === 'swap') {
+                    var a = selState.i, b = selState.minIdx;
+                    if (a !== b) {
+                        selMsg.textContent = 'Swap! arr[' + a + ']=' + selState.arr[a] + ' ↔ arr[' + b + ']=' + selState.arr[b] + '. Position ' + a + ' finalized!';
+                        var tmp = selState.arr[a]; selState.arr[a] = selState.arr[b]; selState.arr[b] = tmp;
+                    } else {
+                        selMsg.textContent = 'Min is already in place! Position ' + a + ' finalized.';
+                    }
+                    selState.i++;
+                    if (selState.i >= selState.arr.length - 1) {
+                        selState.done = true;
+                        selMsg.textContent = 'Sort complete! [' + selState.arr.join(', ') + '] — Total comparisons: n(n-1)/2';
+                    } else {
+                        selState.minIdx = selState.i;
+                        selState.j = selState.i + 1;
+                        selState.phase = 'compare';
+                    }
+                    renderSelArr();
+                }
+            }
+
+            function selReset() {
+                selState = { arr: [64, 25, 12, 22, 11], i: 0, j: 0, minIdx: 0, phase: 'start', done: false };
+                selMsg.textContent = '▶ Click Step to start Selection Sort!';
+                renderSelArr();
+            }
+
+            container.querySelector('#sort-demo-sel-step').addEventListener('click', selStep);
+            container.querySelector('#sort-demo-sel-reset').addEventListener('click', selReset);
+            renderSelArr();
+        }
+
+        // ── Insertion Sort Mini Demo ──
+        {
+            var insInitArr = [64, 25, 12, 22, 11];
+            var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+            var insArrEl = container.querySelector('#sort-demo-ins-arr');
+            var insMsg = container.querySelector('#sort-demo-ins-msg');
+
+            function renderInsArr() {
+                insArrEl.innerHTML = insState.arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = '';
+                    if (insState.done) {
+                        cls += ' matched';
+                    } else if (idx < insState.i && insState.phase === 'pick') {
+                        cls += ' matched';
+                    }
+                    if (idx === insState.i && insState.phase === 'pick' && !insState.done) {
+                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    }
+                    if (idx === insState.j && insState.phase === 'shift') {
+                        extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
+                    }
+                    var label = '';
+                    if (v === insState.key && insState.phase === 'shift' && idx === insState.j + 1) {
+                        label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">key</div>';
+                    }
+                    return '<div style="display:flex;flex-direction:column;align-items:center;">' +
+                        '<div class="' + cls + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                }).join('');
+            }
+
+            function insStep() {
+                if (insState.done) return;
+                if (insState.phase === 'pick') {
+                    if (insState.i >= insState.arr.length) {
+                        insState.done = true;
+                        insMsg.textContent = 'Sort complete! [' + insState.arr.join(', ') + '] — Much faster on nearly sorted data!';
+                        renderInsArr();
+                        return;
+                    }
+                    insState.key = insState.arr[insState.i];
+                    insState.j = insState.i - 1;
+                    insMsg.textContent = 'Pick key = ' + insState.key + ' (index ' + insState.i + '). Find its correct position in the sorted portion.';
+                    insState.phase = 'shift';
+                    renderInsArr();
+                    return;
+                }
+                if (insState.phase === 'shift') {
+                    if (insState.j >= 0 && insState.arr[insState.j] > insState.key) {
+                        insMsg.textContent = insState.arr[insState.j] + ' > key(' + insState.key + ') → Shift right by one!';
+                        insState.arr[insState.j + 1] = insState.arr[insState.j];
+                        insState.j--;
+                        renderInsArr();
+                        return;
+                    }
+                    insState.arr[insState.j + 1] = insState.key;
+                    insMsg.textContent = 'Insert key=' + insState.key + ' at index ' + (insState.j + 1) + '! → [' + insState.arr.join(', ') + ']';
+                    insState.i++;
+                    insState.phase = 'pick';
+                    renderInsArr();
+                }
+            }
+
+            function insReset() {
+                insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+                insMsg.textContent = '▶ Click Step to start Insertion Sort!';
+                renderInsArr();
+            }
+
+            container.querySelector('#sort-demo-ins-step').addEventListener('click', insStep);
+            container.querySelector('#sort-demo-ins-reset').addEventListener('click', insReset);
+            renderInsArr();
+        }
+
+        // ── Bubble Sort Mini Demo ──
+        {
+            var bubInitArr = [64, 25, 12, 22, 11];
+            var bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, done: false };
+            var bubArrEl = container.querySelector('#sort-demo-bub-arr');
+            var bubMsg = container.querySelector('#sort-demo-bub-msg');
+
+            function renderBubArr() {
+                var n = bubState.arr.length;
+                bubArrEl.innerHTML = bubState.arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = '';
+                    if (bubState.done || idx >= n - bubState.pass) {
+                        cls += ' matched';
+                    }
+                    if (!bubState.done && (idx === bubState.j || idx === bubState.j + 1) && idx < n - bubState.pass) {
+                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    }
+                    return '<div class="' + cls + '" style="' + extra + '">' + v + '</div>';
+                }).join('');
+            }
+
+            function bubStep() {
+                if (bubState.done) return;
+                var n = bubState.arr.length;
+                if (bubState.pass >= n - 1) {
+                    bubState.done = true;
+                    bubMsg.textContent = 'Sort complete! [' + bubState.arr.join(', ') + ']';
+                    renderBubArr();
+                    return;
+                }
+                var a = bubState.j, b = bubState.j + 1;
+                if (bubState.arr[a] > bubState.arr[b]) {
+                    bubMsg.textContent = bubState.arr[a] + ' > ' + bubState.arr[b] + ' → Swap! Pass ' + (bubState.pass + 1) + ', comparison ' + (bubState.j + 1);
+                    var tmp = bubState.arr[a]; bubState.arr[a] = bubState.arr[b]; bubState.arr[b] = tmp;
+                } else {
+                    bubMsg.textContent = bubState.arr[a] + ' <= ' + bubState.arr[b] + ' → No swap. Pass ' + (bubState.pass + 1) + ', comparison ' + (bubState.j + 1);
+                }
+                bubState.j++;
+                if (bubState.j >= n - 1 - bubState.pass) {
+                    bubState.pass++;
+                    bubState.j = 0;
+                    if (bubState.pass >= n - 1) {
+                        bubState.done = true;
+                        bubMsg.textContent = 'Sort complete! [' + bubState.arr.join(', ') + '] — Took ' + bubState.pass + ' passes total.';
+                    }
+                }
+                renderBubArr();
+            }
+
+            function bubReset() {
+                bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, done: false };
+                bubMsg.textContent = '▶ Click Step to start Bubble Sort!';
+                renderBubArr();
+            }
+
+            container.querySelector('#sort-demo-bub-step').addEventListener('click', bubStep);
+            container.querySelector('#sort-demo-bub-reset').addEventListener('click', bubReset);
+            renderBubArr();
+        }
+
+        // ── Speed Race Demo ──
+        {
+            var raceInitArr = [64, 34, 25, 12, 22, 11, 90];
+
+            function renderRaceArr(elId, arr, highlights) {
+                var el = container.querySelector('#' + elId);
+                if (!el) return;
+                el.innerHTML = arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = 'font-size:0.78rem;min-width:28px;padding:4px 6px;';
+                    if (highlights && highlights.sorted && idx < highlights.sorted) cls += ' matched';
+                    if (highlights && highlights.active && highlights.active.indexOf(idx) >= 0) extra += 'border-color:var(--yellow);box-shadow:0 0 6px var(--yellow);';
+                    return '<div class="' + cls + '" style="' + extra + '">' + v + '</div>';
+                }).join('');
+            }
+
+            // Pre-compute all race steps once
+            var raceSelSteps = [], raceInsSteps = [], raceBubSteps = [];
+            var raceAllSteps = []; // unified steps array (one per tick)
+
+            function raceBuildSteps() {
+                raceSelSteps = []; raceInsSteps = []; raceBubSteps = [];
+
+                // Selection sort steps
+                (function() {
+                    var a = raceInitArr.slice(), sw = 0;
+                    for (var i = 0; i < a.length - 1; i++) {
+                        var mi = i;
+                        for (var j = i + 1; j < a.length; j++) {
+                            raceSelSteps.push({ arr: a.slice(), cmp: raceSelSteps.length + 1, swp: sw, sorted: i, active: [mi, j] });
+                            if (a[j] < a[mi]) mi = j;
+                        }
+                        if (mi !== i) { var t = a[i]; a[i] = a[mi]; a[mi] = t; sw++; }
+                        raceSelSteps.push({ arr: a.slice(), cmp: raceSelSteps.length + 1, swp: sw, sorted: i + 1, active: [] });
+                    }
+                    raceSelSteps.push({ arr: a.slice(), cmp: raceSelSteps.length, swp: sw, sorted: a.length, active: [] });
+                })();
+
+                // Insertion sort steps
+                (function() {
+                    var a = raceInitArr.slice(), sw = 0;
+                    for (var i = 1; i < a.length; i++) {
+                        var key = a[i], j = i - 1;
+                        while (j >= 0 && a[j] > key) {
+                            raceInsSteps.push({ arr: a.slice(), cmp: raceInsSteps.length + 1, swp: sw, sorted: i, active: [j, j + 1] });
+                            a[j + 1] = a[j]; j--; sw++;
+                        }
+                        raceInsSteps.push({ arr: a.slice(), cmp: raceInsSteps.length + 1, swp: sw, sorted: i, active: [j + 1] });
+                        a[j + 1] = key;
+                    }
+                    raceInsSteps.push({ arr: a.slice(), cmp: raceInsSteps.length, swp: sw, sorted: a.length, active: [] });
+                })();
+
+                // Bubble sort steps
+                (function() {
+                    var a = raceInitArr.slice(), sw = 0;
+                    for (var i = 0; i < a.length - 1; i++) {
+                        for (var j = 0; j < a.length - 1 - i; j++) {
+                            raceBubSteps.push({ arr: a.slice(), cmp: raceBubSteps.length + 1, swp: sw, sorted: a.length - i, active: [j, j + 1] });
+                            if (a[j] > a[j + 1]) { var t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; sw++; }
+                        }
+                    }
+                    raceBubSteps.push({ arr: a.slice(), cmp: raceBubSteps.length, swp: sw, sorted: 0, active: [] });
+                })();
+
+                var maxLen = Math.max(raceSelSteps.length, raceInsSteps.length, raceBubSteps.length);
+                raceAllSteps = [];
+                for (var t = 0; t < maxLen; t++) {
+                    raceAllSteps.push(t);
+                }
+            }
+
+            var raceStep = -1;
+
+            function raceRenderStep(idx) {
+                var maxLen = raceAllSteps.length;
+                var si = Math.min(idx, raceSelSteps.length - 1);
+                var ii = Math.min(idx, raceInsSteps.length - 1);
+                var bi = Math.min(idx, raceBubSteps.length - 1);
+                var ss = raceSelSteps[si], is2 = raceInsSteps[ii], bs = raceBubSteps[bi];
+                renderRaceArr('sort-demo-race-sel', ss.arr, { sorted: ss.sorted, active: ss.active });
+                container.querySelector('#sort-demo-race-sel-cmp').textContent = ss.cmp;
+                container.querySelector('#sort-demo-race-sel-swp').textContent = ss.swp;
+                renderRaceArr('sort-demo-race-ins', is2.arr, { sorted: is2.sorted, active: is2.active });
+                container.querySelector('#sort-demo-race-ins-cmp').textContent = is2.cmp;
+                container.querySelector('#sort-demo-race-ins-swp').textContent = is2.swp;
+                renderRaceArr('sort-demo-race-bub', bs.arr, { sorted: bs.sorted, active: bs.active });
+                container.querySelector('#sort-demo-race-bub-cmp').textContent = bs.cmp;
+                container.querySelector('#sort-demo-race-bub-swp').textContent = bs.swp;
+            }
+
+            function raceUpdateUI() {
+                var counterEl = container.querySelector('#sort-demo-race-counter');
+                var msgEl = container.querySelector('#sort-demo-race-msg');
+                var prevBtn = container.querySelector('#sort-demo-race-prev');
+                var nextBtn = container.querySelector('#sort-demo-race-next');
+                var maxLen = raceAllSteps.length;
+
+                if (raceStep < 0) {
+                    counterEl.textContent = 'Before Start';
+                    msgEl.textContent = '\u25B6 Click "Next \u2192" to compare all three sorts!';
+                    renderRaceArr('sort-demo-race-sel', raceInitArr, {});
+                    renderRaceArr('sort-demo-race-ins', raceInitArr, {});
+                    renderRaceArr('sort-demo-race-bub', raceInitArr, {});
+                    container.querySelector('#sort-demo-race-sel-cmp').textContent = '0';
+                    container.querySelector('#sort-demo-race-sel-swp').textContent = '0';
+                    container.querySelector('#sort-demo-race-ins-cmp').textContent = '0';
+                    container.querySelector('#sort-demo-race-ins-swp').textContent = '0';
+                    container.querySelector('#sort-demo-race-bub-cmp').textContent = '0';
+                    container.querySelector('#sort-demo-race-bub-swp').textContent = '0';
+                } else {
+                    counterEl.textContent = (raceStep + 1) + ' / ' + maxLen;
+                    raceRenderStep(raceStep);
+                    if (raceStep >= maxLen - 1) {
+                        var selF = raceSelSteps[raceSelSteps.length - 1], insF = raceInsSteps[raceInsSteps.length - 1], bubF = raceBubSteps[raceBubSteps.length - 1];
+                        msgEl.textContent = 'Done! Selection: cmp ' + selF.cmp + ' \u00b7 swaps ' + selF.swp + ' | Insertion: cmp ' + insF.cmp + ' \u00b7 shifts ' + insF.swp + ' | Bubble: cmp ' + bubF.cmp + ' \u00b7 swaps ' + bubF.swp;
+                    } else {
+                        msgEl.textContent = 'Race in progress... all three sorts advance one step at a time.';
+                    }
+                }
+                prevBtn.disabled = raceStep < 0;
+                nextBtn.disabled = raceStep >= maxLen - 1;
+            }
+
+            function raceReset() {
+                raceStep = -1;
+                raceUpdateUI();
+            }
+
+            raceBuildSteps();
+
+            container.querySelector('#sort-demo-race-next').addEventListener('click', function() {
+                if (raceStep < raceAllSteps.length - 1) { raceStep++; raceUpdateUI(); }
+            });
+            container.querySelector('#sort-demo-race-prev').addEventListener('click', function() {
+                if (raceStep >= 0) { raceStep--; raceUpdateUI(); }
+            });
+            container.querySelector('#sort-demo-race-reset').addEventListener('click', raceReset);
+            raceReset();
+        }
     },
 
     // ===== Visualization =====
@@ -585,12 +1028,17 @@ sort(words.begin(), words.end(),
 
     renderVisualize(container) { container.innerHTML = ''; },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25B6 Click Next to start</div>';
+    },
+
     _createStepControls(suffix) {
         var s = suffix || '';
-        return '<div class="str-step-controls" id="str-step-controls' + s + '" style="position:fixed;bottom:0;left:var(--sidebar-w,280px);right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:100;">' +
-            '<button class="btn" id="str-prev' + s + '">◀ Prev</button>' +
-            '<span id="str-indicator' + s + '" style="font-size:0.9rem;color:var(--text-secondary);min-width:60px;text-align:center;">0 / 0</span>' +
-            '<button class="btn" id="str-next' + s + '">Next ▶</button>' +
+        return '<div class="viz-step-controls">' +
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; Prev</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">Before start</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">Next &rarr;</button>' +
             '</div>';
     },
 
@@ -598,21 +1046,21 @@ sort(words.begin(), words.end(),
         var s = suffix || '';
         var current = -1;
         var actionDelay = 350;
-        var indicator = container.querySelector('#str-indicator' + s);
-        var prevBtn = container.querySelector('#str-prev' + s);
-        var nextBtn = container.querySelector('#str-next' + s);
-        if (!indicator || !prevBtn || !nextBtn) return;
+        var counter = container.querySelector('#viz-step-counter' + s);
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        if (!counter || !prevBtn || !nextBtn) return;
         var total = steps.length;
         var self = this;
-        var descEl = container.querySelector('[id$="desc' + s + '"]');
+        var descEl = container.querySelector('#viz-step-desc' + s);
         var updateUI = function() {
             if (current < 0) {
-                indicator.textContent = 'Before Start';
-                if (descEl) descEl.innerHTML = '▶ Press Next to start the simulation.';
+                counter.textContent = 'Before start';
+                if (descEl) descEl.innerHTML = '\u25B6 Click Next to start';
                 prevBtn.disabled = true;
                 nextBtn.disabled = false;
             } else {
-                indicator.textContent = (current + 1) + ' / ' + total;
+                counter.textContent = (current + 1) + ' / ' + total;
                 if (descEl && steps[current].description) descEl.innerHTML = steps[current].description;
                 prevBtn.disabled = current === 0;
                 nextBtn.disabled = current >= total - 1;
@@ -670,39 +1118,135 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">Array: <input type="text" id="sort-sel-input" value="' + DEFAULT_SEL_ARR.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
                 '<button class="btn btn-primary" id="sort-sel-reset">🔄</button>' +
             '</div>' +
-            '<div class="viz-area">' +
-                '<div id="sort-bars-sel" style="display:flex;gap:6px;align-items:flex-end;justify-content:center;min-height:200px;padding:20px 0;"></div>' +
-                '<div id="sort-desc-sel" style="padding:14px;background:var(--bg-secondary);border-radius:8px;font-size:0.95rem;min-height:40px;"></div>' +
+            self._createStepDesc('-sel') +
+            '<div class="viz-area" style="position:relative;">' +
+                '<div id="sort-bars-sel" style="display:flex;gap:6px;align-items:flex-end;justify-content:center;min-height:220px;padding:20px 0;"></div>' +
+                '<div id="sort-fly-sel" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
             '</div>' +
             self._createStepControls('-sel');
 
         var barsEl = container.querySelector('#sort-bars-sel');
-        var descEl = container.querySelector('#sort-desc-sel');
+        var flyEl = container.querySelector('#sort-fly-sel');
+        var wrapEl = container.querySelector('.viz-area');
+
+        function renderBars(arr, sortedUpTo, comparing, minIdx) {
+            var maxVal = Math.max.apply(null, arr);
+            barsEl.innerHTML = arr.map(function(v, i) {
+                var bg = 'var(--accent)';
+                var glow = '';
+                if (i <= sortedUpTo) bg = 'var(--green)';
+                else if (i === minIdx) { bg = 'var(--yellow)'; glow = 'box-shadow:0 0 12px var(--yellow);'; }
+                else if (comparing.indexOf(i) >= 0) { bg = '#e17055'; glow = 'box-shadow:0 0 12px #e1705580;'; }
+                var h = Math.max(20, (v / maxVal) * 160);
+                var lbl = (i === minIdx && minIdx >= 0) ? '<span style="font-size:0.6rem;color:var(--yellow);font-weight:700;">min</span>'
+                    : '<span style="font-size:0.65rem;color:var(--text2);">[' + i + ']</span>';
+                return '<div id="sort-bar-sel-' + i + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity 0.2s;">' +
+                    '<span style="font-size:0.8rem;font-weight:600;">' + v + '</span>' +
+                    '<div style="width:36px;height:' + h + 'px;background:' + bg + ';border-radius:4px 4px 0 0;transition:background 0.3s;' + glow + '"></div>' +
+                    lbl + '</div>';
+            }).join('');
+        }
+
+        function animateSwap(beforeArr, idxA, idxB, onDone) {
+            var elA = container.querySelector('#sort-bar-sel-' + idxA);
+            var elB = container.querySelector('#sort-bar-sel-' + idxB);
+            if (!elA || !elB) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var rectA = elA.getBoundingClientRect();
+            var rectB = elB.getBoundingClientRect();
+            elA.style.opacity = '0.15';
+            elB.style.opacity = '0.15';
+            function mkGhost(val, rect, color) {
+                var g = document.createElement('div');
+                g.textContent = val;
+                g.style.cssText = 'position:absolute;z-index:20;width:' + rect.width + 'px;height:' + rect.height + 'px;' +
+                    'left:' + (rect.left - wrapRect.left) + 'px;top:' + (rect.top - wrapRect.top) + 'px;' +
+                    'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                    'background:' + color + ';color:white;border-radius:8px;' +
+                    'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+                return g;
+            }
+            var gA = mkGhost(beforeArr[idxA], rectA, '#e17055');
+            var gB = mkGhost(beforeArr[idxB], rectB, 'var(--yellow)');
+            flyEl.appendChild(gA);
+            flyEl.appendChild(gB);
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    gA.style.left = (rectB.left - wrapRect.left) + 'px';
+                    gB.style.left = (rectA.left - wrapRect.left) + 'px';
+                });
+            });
+            setTimeout(function() {
+                if (gA.parentNode) gA.parentNode.removeChild(gA);
+                if (gB.parentNode) gB.parentNode.removeChild(gB);
+                if (onDone) onDone();
+            }, 550);
+        }
 
         function buildSelectionSteps(original) {
-            var states = [];
-            var simArr = original.slice();
-            states.push({ arr: simArr.slice(), sortedUpTo: -1, minIdx: -1, desc: 'Initial array: [' + original.join(', ') + ']. Starting Selection Sort!' });
+            var stepData = [];
+            var arr = original.slice();
+            var n = arr.length;
 
-            for (var i = 0; i < simArr.length - 1; i++) {
+            stepData.push({ arr: arr.slice(), sortedUpTo: -1, comparing: [], minIdx: -1,
+                desc: 'Initial array: [' + arr.join(', ') + ']. Starting Selection Sort!', swapInfo: null });
+
+            for (var i = 0; i < n - 1; i++) {
                 var minIdx = i;
-                for (var j = i + 1; j < simArr.length; j++) {
-                    if (simArr[j] < simArr[minIdx]) minIdx = j;
-                }
-                states.push({ arr: simArr.slice(), sortedUpTo: i - 1, minIdx: minIdx,
-                    desc: 'Position ' + i + ': Found minimum ' + simArr[minIdx] + '! (index ' + minIdx + ')' });
-                var tmp = simArr[i]; simArr[i] = simArr[minIdx]; simArr[minIdx] = tmp;
-                states.push({ arr: simArr.slice(), sortedUpTo: i, minIdx: -1,
-                    desc: 'Swap complete → [' + simArr.join(', ') + ']. Position ' + i + ' finalized!' });
-            }
-            states.push({ arr: simArr.slice(), sortedUpTo: simArr.length - 1, minIdx: -1,
-                desc: 'Sort complete! [' + simArr.join(', ') + ']. Selection Sort always has O(n²) time complexity.' });
+                stepData.push({ arr: arr.slice(), sortedUpTo: i - 1, comparing: [], minIdx: i,
+                    desc: 'Position ' + i + ': Finding minimum in remaining elements. Current candidate A[' + i + ']=' + arr[i], swapInfo: null });
 
-            return states.map(function(st) {
-                return { description: st.desc, action: function() {
-                    self._renderBars(barsEl, st.arr, st.sortedUpTo, [], st.minIdx);
-                    descEl.innerHTML = st.desc;
-                }};
+                for (var j = i + 1; j < n; j++) {
+                    var isSmaller = arr[j] < arr[minIdx];
+                    var prevMin = minIdx;
+                    if (isSmaller) minIdx = j;
+                    stepData.push({
+                        arr: arr.slice(), sortedUpTo: i - 1, comparing: [j, prevMin], minIdx: minIdx,
+                        desc: isSmaller
+                            ? 'A[' + j + ']=' + arr[j] + ' < current min A[' + prevMin + ']=' + arr[prevMin] + ' → New minimum! min=A[' + j + ']'
+                            : 'A[' + j + ']=' + arr[j] + ' ≥ current min A[' + minIdx + ']=' + arr[minIdx] + ' → No change',
+                        swapInfo: null
+                    });
+                }
+
+                var beforeArr = arr.slice();
+                if (i !== minIdx) {
+                    var tmp = arr[i]; arr[i] = arr[minIdx]; arr[minIdx] = tmp;
+                    stepData.push({
+                        arr: arr.slice(), sortedUpTo: i, comparing: [], minIdx: -1,
+                        desc: 'Swap! A[' + i + ']=' + beforeArr[i] + ' ↔ A[' + minIdx + ']=' + beforeArr[minIdx] + ' → Position ' + i + ' finalized: ' + arr[i],
+                        swapInfo: { a: i, b: minIdx, beforeArr: beforeArr }
+                    });
+                } else {
+                    stepData.push({
+                        arr: arr.slice(), sortedUpTo: i, comparing: [], minIdx: -1,
+                        desc: 'A[' + i + ']=' + arr[i] + ' is already the minimum! No swap needed. Position ' + i + ' finalized.',
+                        swapInfo: null
+                    });
+                }
+            }
+
+            stepData.push({ arr: arr.slice(), sortedUpTo: n - 1, comparing: [], minIdx: -1,
+                desc: 'Sort complete! [' + arr.join(', ') + ']. Selection Sort always has O(n²) time complexity.', swapInfo: null });
+
+            return stepData.map(function(st) {
+                return {
+                    description: st.desc,
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        if (st.swapInfo && dir === 'forward') {
+                            renderBars(st.swapInfo.beforeArr, st.sortedUpTo - 1, [st.swapInfo.a, st.swapInfo.b], -1);
+                            requestAnimationFrame(function() {
+                                animateSwap(st.swapInfo.beforeArr, st.swapInfo.a, st.swapInfo.b, function() {
+                                    renderBars(st.arr, st.sortedUpTo, [], -1);
+                                });
+                            });
+                        } else {
+                            renderBars(st.arr, st.sortedUpTo, st.comparing, st.minIdx);
+                        }
+                    }
+                };
             });
         }
 
@@ -711,7 +1255,7 @@ sort(words.begin(), words.end(),
             var parsed = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
             if (parsed.length < 2) parsed = DEFAULT_SEL_ARR.slice();
             barsEl.innerHTML = '';
-            descEl.innerHTML = '';
+            flyEl.innerHTML = '';
             var steps = buildSelectionSteps(parsed);
             self._initStepController(container, steps, '-sel');
         }
@@ -730,58 +1274,113 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">Coordinates (x y pairs): <input type="text" id="sort-coord-input" value="' + DEFAULT_COORDS.map(function(c) { return c[0] + ' ' + c[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="sort-coord-reset">🔄</button>' +
             '</div>' +
-            '<div class="viz-area">' +
+            self._createStepDesc('-coord') +
+            '<div class="viz-area" style="position:relative;">' +
                 '<div style="font-weight:600;margin-bottom:8px;">Coordinate Array</div>' +
                 '<div id="sort-coords" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:50px;padding:12px 0;"></div>' +
-                '<div id="sort-desc-coord" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
+                '<div id="sort-fly-coord" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
             '</div>' +
             self._createStepControls('-coord');
 
         var coordsEl = container.querySelector('#sort-coords');
-        var descEl = container.querySelector('#sort-desc-coord');
+        var flyEl = container.querySelector('#sort-fly-coord');
+        var wrapEl = container.querySelector('.viz-area');
 
-        function renderCoords(arr, sortedUpTo, comparingIdx) {
+        function renderCoords(arr, sortedUpTo, comparingIdx, shiftIdx) {
             coordsEl.innerHTML = arr.map(function(c, i) {
                 var cls = 'str-char-box';
                 if (i <= sortedUpTo) cls += ' matched';
                 else if (i === comparingIdx) cls += ' comparing';
-                return '<div class="' + cls + '" style="min-width:60px;text-align:center;font-size:0.9rem;">(' + c[0] + ', ' + c[1] + ')</div>';
+                if (i === shiftIdx) cls += ' comparing';
+                return '<div id="sort-coord-' + i + '" class="' + cls + '" style="min-width:60px;text-align:center;font-size:0.9rem;">(' + c[0] + ', ' + c[1] + ')</div>';
             }).join('');
         }
 
+        function coordStr(c) { return '(' + c[0] + ',' + c[1] + ')'; }
+        function coordGt(a, b) { return a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]); }
+
+        function animateMove(srcIdx, destIdx, value, onDone) {
+            var srcEl = container.querySelector('#sort-coord-' + srcIdx);
+            var destEl = container.querySelector('#sort-coord-' + destIdx);
+            if (!srcEl || !destEl) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var srcRect = srcEl.getBoundingClientRect();
+            var destRect = destEl.getBoundingClientRect();
+            srcEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = value;
+            ghost.className = 'str-char-box comparing';
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:60px;text-align:center;font-size:0.9rem;' +
+                'left:' + (srcRect.left - wrapRect.left) + 'px;top:' + (srcRect.top - wrapRect.top) + 'px;' +
+                'transition:left 0.4s cubic-bezier(.4,0,.2,1),top 0.4s cubic-bezier(.4,0,.2,1);';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    ghost.style.left = (destRect.left - wrapRect.left) + 'px';
+                    ghost.style.top = (destRect.top - wrapRect.top) + 'px';
+                });
+            });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 450);
+        }
+
         function buildCoordSteps(coords) {
-            var states = [];
+            var stepData = [];
             var simArr = coords.map(function(c) { return c.slice(); });
-            states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: -1, comp: -1,
-                desc: 'Initial coordinates: ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + '. Starting tuple sort!' });
+            var snap = function() { return simArr.map(function(c) { return c.slice(); }); };
+
+            stepData.push({ arr: snap(), sortedUpTo: -1, comp: -1, shift: -1,
+                desc: 'Initial coordinates: ' + simArr.map(coordStr).join(', ') + '. Starting Insertion Sort!', moveInfo: null });
 
             for (var i = 1; i < simArr.length; i++) {
                 var key = simArr[i].slice();
+                // Announce element to insert
+                stepData.push({ arr: snap(), sortedUpTo: i - 1, comp: i, shift: -1,
+                    desc: 'Insert ' + coordStr(key) + ' into the sorted portion.', moveInfo: null });
+
                 var j = i - 1;
-                states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: i - 1, comp: i,
-                    desc: 'Inserting (' + key[0] + ', ' + key[1] + ') into the correct position.' });
-                while (j >= 0 && (simArr[j][0] > key[0] || (simArr[j][0] === key[0] && simArr[j][1] > key[1]))) {
+                while (j >= 0 && coordGt(simArr[j], key)) {
+                    // Comparison step
+                    stepData.push({ arr: snap(), sortedUpTo: i - 1, comp: i, shift: j,
+                        desc: coordStr(simArr[j]) + ' > ' + coordStr(key) + ' → shift ' + coordStr(simArr[j]) + ' right',
+                        moveInfo: { from: j, to: j + 1, label: coordStr(simArr[j]) } });
                     simArr[j + 1] = simArr[j];
                     j--;
                 }
                 simArr[j + 1] = key;
-                states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: i, comp: -1,
-                    desc: 'Insertion complete: ' + simArr.slice(0, i + 1).map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') });
+                // Insertion complete step
+                stepData.push({ arr: snap(), sortedUpTo: i, comp: -1, shift: -1,
+                    desc: 'Inserted ' + coordStr(key) + ' at [' + (j + 1) + ']! → ' + simArr.slice(0, i + 1).map(coordStr).join(', '),
+                    moveInfo: null });
             }
-            states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: simArr.length - 1, comp: -1,
-                desc: 'Sort complete! ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + ' ✓' });
+            stepData.push({ arr: snap(), sortedUpTo: simArr.length - 1, comp: -1, shift: -1,
+                desc: 'Sort complete! ' + simArr.map(coordStr).join(', ') + ' ✓', moveInfo: null });
 
-            return states.map(function(st) {
-                return { description: st.desc, action: function() {
-                    renderCoords(st.arr, st.sortedUpTo, st.comp);
-                    descEl.innerHTML = st.desc;
-                }};
+            return stepData.map(function(st) {
+                return {
+                    description: st.desc,
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        if (st.moveInfo && dir === 'forward') {
+                            var mi = st.moveInfo;
+                            renderCoords(st.arr, st.sortedUpTo, st.comp, mi.from);
+                            requestAnimationFrame(function() {
+                                animateMove(mi.from, mi.to, mi.label, function() {
+                                    renderCoords(st.arr, st.sortedUpTo, st.comp, -1);
+                                });
+                            });
+                        } else {
+                            renderCoords(st.arr, st.sortedUpTo, st.comp, -1);
+                        }
+                    }
+                };
             });
         }
 
         function resetCoord() {
             var raw = container.querySelector('#sort-coord-input').value;
-            // Parse "x y, x y, ..." format
             var parsed = raw.split(',').map(function(pair) {
                 var parts = pair.trim().split(/\s+/);
                 if (parts.length >= 2) return [parseInt(parts[0], 10), parseInt(parts[1], 10)];
@@ -789,7 +1388,7 @@ sort(words.begin(), words.end(),
             }).filter(function(c) { return c !== null && !isNaN(c[0]) && !isNaN(c[1]); });
             if (parsed.length < 2) parsed = DEFAULT_COORDS.map(function(c) { return c.slice(); });
             coordsEl.innerHTML = '';
-            descEl.innerHTML = '';
+            flyEl.innerHTML = '';
             var steps = buildCoordSteps(parsed);
             self._initStepController(container, steps, '-coord');
         }
@@ -808,18 +1407,18 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">Intervals (start end pairs): <input type="text" id="sort-merge-input" value="' + DEFAULT_INTERVALS.map(function(iv) { return iv[0] + ' ' + iv[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="sort-merge-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc('-intv') +
             '<div class="viz-area">' +
                 '<div style="font-weight:600;margin-bottom:8px;">Interval Array (sorted by start)</div>' +
                 '<div id="sort-intervals" style="position:relative;min-height:60px;padding:20px 0;"></div>' +
                 '<div style="font-weight:600;margin-top:12px;margin-bottom:8px;">Merge Result</div>' +
                 '<div id="sort-merged" style="position:relative;min-height:60px;padding:8px 0;"></div>' +
-                '<div id="sort-desc-intv" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
             self._createStepControls('-intv');
 
         var intervalsEl = container.querySelector('#sort-intervals');
         var mergedEl = container.querySelector('#sort-merged');
-        var descEl = container.querySelector('#sort-desc-intv');
+        var descEl = container.querySelector('#viz-step-desc-intv');
 
         function renderIntervalBar(el, intArr, highlightIdx) {
             var maxVal = 0;
@@ -902,15 +1501,15 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">Age Name list: <input type="text" id="sort-stable-input" value="' + DEFAULT_STABLE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:360px;"></label>' +
                 '<button class="btn btn-primary" id="sort-stable-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc('-stable') +
             '<div class="viz-area">' +
                 '<div style="font-weight:600;margin-bottom:8px;">Member List (input order)</div>' +
                 '<div id="sort-members" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:12px 0;"></div>' +
-                '<div id="sort-desc-stable" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
             self._createStepControls('-stable');
 
         var membersEl = container.querySelector('#sort-members');
-        var descEl = container.querySelector('#sort-desc-stable');
+        var descEl = container.querySelector('#viz-step-desc-stable');
 
         function renderMembers(arr, sortedUpTo) {
             membersEl.innerHTML = arr.map(function(m, i) {
@@ -923,24 +1522,35 @@ sort(words.begin(), words.end(),
         }
 
         function buildStableSteps(members) {
-            var states = [];
+            var stepData = [];
             var simArr = members.map(function(m) { return { age: m.age, name: m.name, order: m.order }; });
-            states.push({ arr: simArr.slice(), sortedUpTo: -1,
+            var snap = function() { return simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }); };
+
+            stepData.push({ arr: snap(), sortedUpTo: -1,
                 desc: 'Initial input: ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '. Starting stable sort by age!' });
 
-            // Insertion sort by age only (stable)
+            // Insertion sort by age only (stable) — individual comparison steps
             for (var i = 1; i < simArr.length; i++) {
-                var key = simArr[i];
+                var key = { age: simArr[i].age, name: simArr[i].name, order: simArr[i].order };
+                stepData.push({ arr: snap(), sortedUpTo: i - 1,
+                    desc: 'Insert ' + key.age + ' ' + key.name + ' into the sorted portion.' });
+
                 var j = i - 1;
                 while (j >= 0 && simArr[j].age > key.age) {
+                    stepData.push({ arr: snap(), sortedUpTo: i - 1,
+                        desc: simArr[j].age + ' ' + simArr[j].name + ' (age ' + simArr[j].age + ') > ' + key.name + ' (age ' + key.age + ') → shift right' });
                     simArr[j + 1] = simArr[j];
                     j--;
                 }
+                if (j >= 0 && simArr[j].age === key.age) {
+                    stepData.push({ arr: snap(), sortedUpTo: i - 1,
+                        desc: simArr[j].age + ' ' + simArr[j].name + ' (age ' + simArr[j].age + ') = ' + key.age + ' → Same age! Stop here to preserve input order (stable sort)' });
+                }
                 simArr[j + 1] = key;
-                states.push({ arr: simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }), sortedUpTo: i,
-                    desc: 'Insert ' + key.age + ' ' + key.name + ' \u2192 When ages are equal, input order is preserved! (stable sort)' });
+                stepData.push({ arr: snap(), sortedUpTo: i,
+                    desc: key.age + ' ' + key.name + ' inserted at [' + (j + 1) + ']. Insertion complete!' });
             }
-            // Find same-age groups for final description
+
             var ageGroups = {};
             simArr.forEach(function(m) {
                 if (!ageGroups[m.age]) ageGroups[m.age] = [];
@@ -949,16 +1559,15 @@ sort(words.begin(), words.end(),
             var stableNote = '';
             Object.keys(ageGroups).forEach(function(age) {
                 if (ageGroups[age].length > 1) {
-                    stableNote += ' Age ' + age + ': ' + ageGroups[age].join(', ') + ' — input order preserved.';
+                    stableNote += ' Age ' + age + ': ' + ageGroups[age].join(', ') + ' — input order is preserved.';
                 }
             });
-            states.push({ arr: simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }), sortedUpTo: simArr.length - 1,
+            stepData.push({ arr: snap(), sortedUpTo: simArr.length - 1,
                 desc: 'Sort complete! ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '.' + (stableNote || '') + ' \u2713' });
 
-            return states.map(function(st) {
+            return stepData.map(function(st) {
                 return { description: st.desc, action: function() {
                     renderMembers(st.arr, st.sortedUpTo);
-                    descEl.innerHTML = st.desc;
                 }};
             });
         }

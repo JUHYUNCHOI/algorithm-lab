@@ -527,6 +527,7 @@ const stringTopic = {
 
         // 탭별 콘텐츠
         const contentDiv = document.createElement('div');
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem':

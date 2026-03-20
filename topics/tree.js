@@ -56,7 +56,7 @@ var treeTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -184,6 +184,15 @@ var treeTopic = {
                         루트를 제외한 모든 노드는 정확히 하나의 부모와 연결되기 때문입니다.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 트리 용어 확인</div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-terms-info" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">👆 노드를 클릭해서 용어를 확인하세요!</div>\
+                        <svg id="tree-demo-terms-svg" viewBox="0 0 440 260" width="100%" style="max-width:440px;display:block;margin:0 auto;cursor:pointer;"></svg>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-terms-msg">노드를 클릭하면 부모, 자식, 깊이(depth), 높이(height), 리프 여부를 알려줍니다. 모든 7개 노드를 클릭해보세요!</div>\
+                </div>\
             </div>\
 \
             <!-- ② 이진 트리 -->\
@@ -256,6 +265,23 @@ struct TreeNode {\n\
                         높이 h인 포화 이진 트리의 노드 수 = 2^(h+1) - 1 = 2^4 - 1 = <strong>15</strong><br>\
                         레벨 0: 1개, 레벨 1: 2개, 레벨 2: 4개, 레벨 3: 8개 → 합계 15개입니다.\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — BST 노드 추가</div>\
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0.5rem 0;">\
+                        <input type="number" id="tree-demo-bst-input" value="6" min="1" max="99" style="width:70px;padding:6px 10px;border:1.5px solid var(--bg3);border-radius:8px;font-size:0.95rem;background:var(--bg);color:var(--text);text-align:center;">\
+                        <button class="concept-demo-btn" id="tree-demo-bst-insert">➕ 삽입 시작</button>\
+                        <button class="concept-demo-btn green" id="tree-demo-bst-reset">↺ 초기화</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-bst-desc" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">값을 입력하고 "삽입 시작"을 눌러보세요!</div>\
+                        <svg id="tree-demo-bst-svg" viewBox="0 0 500 280" width="100%" style="max-width:500px;display:block;margin:0 auto;"></svg>\
+                    </div>\
+                    <div class="concept-demo-btns" style="justify-content:center;display:none;" id="tree-demo-bst-step-btns">\
+                        <button class="concept-demo-btn" id="tree-demo-bst-next">다음 비교 →</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-bst-msg">BST(이진 탐색 트리)에 값을 넣으면, 현재 노드보다 작으면 왼쪽, 크면 오른쪽으로 내려갑니다. 비교 경로를 한 단계씩 따라가 보세요!</div>\
                 </div>\
             </div>\
 \
@@ -424,6 +450,20 @@ void level_order(TreeNode* root) {\n\
                         전위 순회: 1 2 4 5 3 6 7 | 후위 순회: 4 5 2 6 7 3 1\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 전위 순회 (Preorder) 따라가기</div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-preorder-desc" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">▶ "다음 방문" 버튼을 눌러 전위 순회를 따라가 보세요!</div>\
+                        <svg id="tree-demo-preorder-svg" viewBox="0 0 440 240" width="100%" style="max-width:440px;display:block;margin:0 auto;"></svg>\
+                        <div id="tree-demo-preorder-result" style="text-align:center;margin-top:0.8rem;font-size:0.95rem;font-weight:600;color:var(--text2);min-height:1.5em;">방문 순서: <span id="tree-demo-preorder-order" style="color:var(--accent);"></span></div>\
+                    </div>\
+                    <div class="concept-demo-btns" style="justify-content:center;">\
+                        <button class="concept-demo-btn" id="tree-demo-preorder-next">다음 방문 →</button>\
+                        <button class="concept-demo-btn green" id="tree-demo-preorder-reset" style="display:none;">↺ 처음부터</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-preorder-msg">전위 순회는 <strong>루트 → 왼쪽 → 오른쪽</strong> 순서입니다. 각 노드에서 먼저 방문(기록)하고, 왼쪽 자식으로 내려갑니다. 왼쪽이 끝나면 오른쪽으로!</div>\
+                </div>\
             </div>\
 \
             <!-- ④ 트리 활용 패턴 -->\
@@ -523,6 +563,29 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                         노드 2에서 양쪽 서브트리에서 각각 하나씩 발견되므로, 2가 LCA입니다.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — DFS 깊이 탐색 (스택 시각화)</div>\
+                    <div class="concept-demo-body">\
+                        <div id="tree-demo-dfs-desc" style="text-align:center;padding:0.6rem 1rem;margin-bottom:0.8rem;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:8px;font-size:0.9rem;line-height:1.7;min-height:2.4em;">▶ "다음 스텝"을 눌러 DFS가 스택으로 어떻게 동작하는지 확인하세요!</div>\
+                        <div style="display:flex;gap:2rem;align-items:flex-start;justify-content:center;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:240px;max-width:320px;">\
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;">트리</div>\
+                                <svg id="tree-demo-dfs-svg" viewBox="0 0 320 220" width="100%" style="display:block;margin:0 auto;"></svg>\
+                            </div>\
+                            <div style="min-width:120px;max-width:160px;">\
+                                <div style="text-align:center;font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:0.5rem;">스택 (Stack)</div>\
+                                <div id="tree-demo-dfs-stack" style="border:2px solid var(--bg3);border-radius:10px;min-height:180px;padding:0.5rem;display:flex;flex-direction:column-reverse;gap:4px;align-items:center;background:var(--bg2);"></div>\
+                            </div>\
+                        </div>\
+                        <div id="tree-demo-dfs-visited" style="text-align:center;margin-top:0.8rem;font-size:0.95rem;font-weight:600;color:var(--text2);min-height:1.5em;">방문 완료: <span id="tree-demo-dfs-visited-list" style="color:var(--green);"></span></div>\
+                    </div>\
+                    <div class="concept-demo-btns" style="justify-content:center;">\
+                        <button class="concept-demo-btn" id="tree-demo-dfs-next">다음 스텝 →</button>\
+                        <button class="concept-demo-btn green" id="tree-demo-dfs-reset" style="display:none;">↺ 처음부터</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="tree-demo-dfs-msg">DFS는 <strong>스택</strong>을 사용합니다. 스택에서 노드를 꺼내고(pop), 자식 노드를 넣는(push) 과정을 반복합니다. 재귀 호출도 내부적으로 콜스택을 사용하므로 동일한 원리입니다!</div>\
+                </div>\
             </div>\
         ';
 
@@ -538,6 +601,641 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ============================
+        // 공통 SVG 트리 그리기 헬퍼
+        // ============================
+        var _svgNS = 'http://www.w3.org/2000/svg';
+        function _drawTreeSVG(svg, nodes, opts) {
+            // nodes: [{val, x, y, id}], edges: auto from tree structure
+            // opts: { r, fontSize, nodeColor, textColor, edgePairs }
+            var o = opts || {};
+            var r = o.r || 22;
+            var fontSize = o.fontSize || '14';
+            svg.innerHTML = '';
+            if (o.edgePairs) {
+                o.edgePairs.forEach(function(ep) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', ep.x1); line.setAttribute('y1', ep.y1);
+                    line.setAttribute('x2', ep.x2); line.setAttribute('y2', ep.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    line.id = ep.id || '';
+                    svg.appendChild(line);
+                });
+            }
+            nodes.forEach(function(n) {
+                var g = document.createElementNS(_svgNS, 'g');
+                g.id = n.id || '';
+                g.style.cursor = o.clickable ? 'pointer' : 'default';
+                var circle = document.createElementNS(_svgNS, 'circle');
+                circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                circle.setAttribute('r', r);
+                circle.setAttribute('fill', o.nodeColor || 'var(--bg2)');
+                circle.setAttribute('stroke', o.strokeColor || 'var(--accent)');
+                circle.setAttribute('stroke-width', '2.5');
+                circle.setAttribute('class', 'tree-demo-node-circle');
+                g.appendChild(circle);
+                var text = document.createElementNS(_svgNS, 'text');
+                text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', fontSize); text.setAttribute('font-weight', '700');
+                text.setAttribute('fill', o.textColor || 'var(--text)');
+                text.setAttribute('pointer-events', 'none');
+                text.textContent = n.val;
+                g.appendChild(text);
+                svg.appendChild(g);
+            });
+        }
+
+        // ============================
+        // Demo 1: 트리 용어 확인
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-terms-svg');
+            var infoEl = container.querySelector('#tree-demo-terms-info');
+            if (!svg || !infoEl) return;
+
+            // Tree: 1 at root, 2/3 children, 4/5 under 2, 6/7 under 3
+            var treeData = [
+                { val: 1, x: 220, y: 40, depth: 0, height: 2, parent: null, children: [2,3], isLeaf: false },
+                { val: 2, x: 120, y: 120, depth: 1, height: 1, parent: 1, children: [4,5], isLeaf: false },
+                { val: 3, x: 320, y: 120, depth: 1, height: 1, parent: 1, children: [6,7], isLeaf: false },
+                { val: 4, x: 70,  y: 200, depth: 2, height: 0, parent: 2, children: [], isLeaf: true },
+                { val: 5, x: 170, y: 200, depth: 2, height: 0, parent: 2, children: [], isLeaf: true },
+                { val: 6, x: 270, y: 200, depth: 2, height: 0, parent: 3, children: [], isLeaf: true },
+                { val: 7, x: 370, y: 200, depth: 2, height: 0, parent: 3, children: [], isLeaf: true }
+            ];
+            var edges = [
+                { x1:220, y1:40, x2:120, y2:120, id:'tree-demo-terms-e01' },
+                { x1:220, y1:40, x2:320, y2:120, id:'tree-demo-terms-e02' },
+                { x1:120, y1:120, x2:70,  y2:200, id:'tree-demo-terms-e12' },
+                { x1:120, y1:120, x2:170, y2:200, id:'tree-demo-terms-e13' },
+                { x1:320, y1:120, x2:270, y2:200, id:'tree-demo-terms-e14' },
+                { x1:320, y1:120, x2:370, y2:200, id:'tree-demo-terms-e15' }
+            ];
+            var svgNodes = treeData.map(function(n) {
+                return { val: n.val, x: n.x, y: n.y, id: 'tree-demo-terms-n' + n.val };
+            });
+            _drawTreeSVG(svg, svgNodes, { edgePairs: edges, clickable: true, r: 24 });
+
+            // Depth labels on right side
+            for (var d = 0; d <= 2; d++) {
+                var label = document.createElementNS(_svgNS, 'text');
+                label.setAttribute('x', 430); label.setAttribute('y', 40 + d * 80 + 5);
+                label.setAttribute('text-anchor', 'end'); label.setAttribute('font-size', '11');
+                label.setAttribute('fill', 'var(--text3)'); label.setAttribute('font-weight', '600');
+                label.textContent = 'depth ' + d;
+                svg.appendChild(label);
+            }
+
+            var clickedSet = {};
+            svg.addEventListener('click', function(e) {
+                var g = e.target.closest('g');
+                if (!g || !g.id || !g.id.startsWith('tree-demo-terms-n')) return;
+                var val = parseInt(g.id.replace('tree-demo-terms-n', ''));
+                var nd = treeData.find(function(n) { return n.val === val; });
+                if (!nd) return;
+                clickedSet[val] = true;
+
+                // Reset all node colors
+                treeData.forEach(function(n) {
+                    var el = svg.querySelector('#tree-demo-terms-n' + n.val + ' circle');
+                    if (el) { el.setAttribute('fill', 'var(--bg2)'); el.setAttribute('stroke', 'var(--accent)'); el.style.filter = ''; }
+                });
+                // Highlight clicked node
+                var clickedCircle = svg.querySelector('#tree-demo-terms-n' + val + ' circle');
+                if (clickedCircle) {
+                    clickedCircle.setAttribute('fill', 'var(--yellow)');
+                    clickedCircle.setAttribute('stroke', 'var(--yellow)');
+                    clickedCircle.style.filter = 'drop-shadow(0 0 6px var(--yellow))';
+                }
+                // Highlight children
+                nd.children.forEach(function(cv) {
+                    var cc = svg.querySelector('#tree-demo-terms-n' + cv + ' circle');
+                    if (cc) { cc.setAttribute('fill', 'var(--green)'); cc.setAttribute('stroke', 'var(--green)'); cc.style.filter = 'drop-shadow(0 0 4px var(--green))'; }
+                });
+                // Highlight parent
+                if (nd.parent !== null) {
+                    var pc = svg.querySelector('#tree-demo-terms-n' + nd.parent + ' circle');
+                    if (pc) { pc.setAttribute('fill', 'var(--accent)'); pc.setAttribute('stroke', 'var(--accent)'); pc.style.filter = 'drop-shadow(0 0 4px var(--accent))'; }
+                }
+
+                var parentStr = nd.parent !== null ? '<span style="color:var(--accent);font-weight:700;">' + nd.parent + '</span>' : '없음 (루트)';
+                var childStr = nd.children.length > 0 ? nd.children.map(function(c) { return '<span style="color:var(--green);font-weight:700;">' + c + '</span>'; }).join(', ') : '없음 (리프)';
+                infoEl.innerHTML =
+                    '<strong style="color:var(--yellow);">노드 ' + val + '</strong> — ' +
+                    '부모: ' + parentStr + ' | ' +
+                    '자식: ' + childStr + ' | ' +
+                    'depth: <strong>' + nd.depth + '</strong> | ' +
+                    'height: <strong>' + nd.height + '</strong> | ' +
+                    (nd.isLeaf ? '<span style="color:var(--green);">리프 노드</span>' : (nd.parent === null ? '<span style="color:var(--red);">루트 노드</span>' : '내부 노드'));
+
+                var count = Object.keys(clickedSet).length;
+                var msgEl = container.querySelector('#tree-demo-terms-msg');
+                if (msgEl) {
+                    if (count >= 7) msgEl.textContent = '모든 노드를 확인했습니다! 각 노드의 depth, height, 부모/자식 관계를 이해하셨나요?';
+                    else msgEl.textContent = count + '/7 노드 확인 완료. 나머지 노드도 클릭해보세요!';
+                }
+            });
+        })();
+
+        // ============================
+        // Demo 2: BST 노드 추가
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-bst-svg');
+            var inputEl = container.querySelector('#tree-demo-bst-input');
+            var insertBtn = container.querySelector('#tree-demo-bst-insert');
+            var resetBtn = container.querySelector('#tree-demo-bst-reset');
+            var descEl = container.querySelector('#tree-demo-bst-desc');
+            var stepBtns = container.querySelector('#tree-demo-bst-step-btns');
+            var nextBtn = container.querySelector('#tree-demo-bst-next');
+            if (!svg || !insertBtn) return;
+
+            // BST structure stored as array of {val, x, y, left, right}
+            var bstNodes = [];
+            var bstEdges = [];
+            var insertSteps = [];
+            var insertIdx = 0;
+            var inserting = false;
+
+            // Initial BST: [8, 3, 10, 1, 5, 14]
+            var initVals = [8, 3, 10, 1, 5, 14];
+
+            function bstLayout() {
+                // Build BST structure from bstNodes
+                // Position using level-based x/y
+                if (bstNodes.length === 0) return;
+                var root = bstNodes[0];
+                var q = [{ node: root, x: 250, y: 40, span: 120 }];
+                bstEdges = [];
+                while (q.length > 0) {
+                    var cur = q.shift();
+                    cur.node.x = cur.x;
+                    cur.node.y = cur.y;
+                    if (cur.node.left !== null) {
+                        var leftNode = bstNodes.find(function(n) { return n.val === cur.node.left; });
+                        if (leftNode) {
+                            bstEdges.push({ x1: cur.x, y1: cur.y, x2: cur.x - cur.span, y2: cur.y + 70 });
+                            q.push({ node: leftNode, x: cur.x - cur.span, y: cur.y + 70, span: cur.span * 0.55 });
+                        }
+                    }
+                    if (cur.node.right !== null) {
+                        var rightNode = bstNodes.find(function(n) { return n.val === cur.node.right; });
+                        if (rightNode) {
+                            bstEdges.push({ x1: cur.x, y1: cur.y, x2: cur.x + cur.span, y2: cur.y + 70 });
+                            q.push({ node: rightNode, x: cur.x + cur.span, y: cur.y + 70, span: cur.span * 0.55 });
+                        }
+                    }
+                }
+            }
+
+            function bstInsert(val) {
+                var newNode = { val: val, left: null, right: null, x: 0, y: 0 };
+                if (bstNodes.length === 0) {
+                    bstNodes.push(newNode);
+                    return [];
+                }
+                var steps = [];
+                var current = bstNodes[0];
+                while (true) {
+                    if (val < current.val) {
+                        steps.push({ node: current.val, dir: 'left', desc: val + ' < ' + current.val + ' → 왼쪽으로 이동 (작은 값은 왼쪽!)' });
+                        if (current.left === null) {
+                            current.left = val;
+                            bstNodes.push(newNode);
+                            steps.push({ node: val, dir: 'placed', desc: val + '을(를) ' + current.val + '의 왼쪽 자식으로 삽입 완료!' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.left; });
+                    } else {
+                        steps.push({ node: current.val, dir: 'right', desc: val + ' >= ' + current.val + ' → 오른쪽으로 이동 (크거나 같은 값은 오른쪽!)' });
+                        if (current.right === null) {
+                            current.right = val;
+                            bstNodes.push(newNode);
+                            steps.push({ node: val, dir: 'placed', desc: val + '을(를) ' + current.val + '의 오른쪽 자식으로 삽입 완료!' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.right; });
+                    }
+                }
+                return steps;
+            }
+
+            function drawBST(highlightVal, highlightColor) {
+                bstLayout();
+                svg.innerHTML = '';
+                // Draw edges
+                bstEdges.forEach(function(e) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', e.x1); line.setAttribute('y1', e.y1);
+                    line.setAttribute('x2', e.x2); line.setAttribute('y2', e.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+                // Draw nodes
+                bstNodes.forEach(function(n) {
+                    var g = document.createElementNS(_svgNS, 'g');
+                    var circle = document.createElementNS(_svgNS, 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                    circle.setAttribute('r', '20');
+                    var isHL = highlightVal === n.val;
+                    circle.setAttribute('fill', isHL ? (highlightColor || 'var(--yellow)') : 'var(--bg2)');
+                    circle.setAttribute('stroke', isHL ? (highlightColor || 'var(--yellow)') : 'var(--accent)');
+                    circle.setAttribute('stroke-width', '2.5');
+                    if (isHL) circle.style.filter = 'drop-shadow(0 0 8px ' + (highlightColor || 'var(--yellow)') + ')';
+                    g.appendChild(circle);
+                    var text = document.createElementNS(_svgNS, 'text');
+                    text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '13'); text.setAttribute('font-weight', '700');
+                    text.setAttribute('fill', isHL ? 'white' : 'var(--text)');
+                    text.setAttribute('pointer-events', 'none');
+                    text.textContent = n.val;
+                    g.appendChild(text);
+                    svg.appendChild(g);
+                });
+            }
+
+            function initBST() {
+                bstNodes = []; bstEdges = [];
+                initVals.forEach(function(v) { bstInsert(v); });
+                drawBST();
+                insertSteps = []; insertIdx = 0; inserting = false;
+                stepBtns.style.display = 'none';
+                descEl.textContent = '값을 입력하고 "삽입 시작"을 눌러보세요!';
+            }
+
+            initBST();
+
+            insertBtn.addEventListener('click', function() {
+                var val = parseInt(inputEl.value);
+                if (isNaN(val) || val < 1 || val > 99) { descEl.textContent = '1~99 사이의 숫자를 입력하세요!'; return; }
+                if (bstNodes.find(function(n) { return n.val === val; })) { descEl.textContent = val + '은(는) 이미 트리에 있습니다. 다른 값을 입력하세요!'; return; }
+
+                // Build steps for this insertion without actually inserting
+                var stepsPreview = [];
+                var current = bstNodes[0];
+                while (true) {
+                    if (val < current.val) {
+                        stepsPreview.push({ node: current.val, dir: 'left', desc: val + ' < ' + current.val + ' → 왼쪽으로 이동 (작은 값은 왼쪽!)' });
+                        if (current.left === null) {
+                            stepsPreview.push({ node: current.val, dir: 'place-left', desc: current.val + '의 왼쪽이 비었습니다! 여기에 ' + val + '을(를) 삽입합니다.' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.left; });
+                    } else {
+                        stepsPreview.push({ node: current.val, dir: 'right', desc: val + ' >= ' + current.val + ' → 오른쪽으로 이동 (크거나 같은 값은 오른쪽!)' });
+                        if (current.right === null) {
+                            stepsPreview.push({ node: current.val, dir: 'place-right', desc: current.val + '의 오른쪽이 비었습니다! 여기에 ' + val + '을(를) 삽입합니다.' });
+                            break;
+                        }
+                        current = bstNodes.find(function(n) { return n.val === current.right; });
+                    }
+                }
+                insertSteps = stepsPreview;
+                insertIdx = 0; inserting = true;
+                stepBtns.style.display = 'flex';
+                nextBtn.style.display = '';
+                descEl.textContent = val + ' 삽입을 시작합니다! "다음 비교"를 눌러주세요.';
+                drawBST();
+            });
+
+            nextBtn.addEventListener('click', function() {
+                if (!inserting || insertIdx >= insertSteps.length) return;
+                var step = insertSteps[insertIdx];
+                descEl.textContent = step.desc;
+                if (step.dir === 'place-left' || step.dir === 'place-right') {
+                    // Actually insert
+                    var val = parseInt(inputEl.value);
+                    bstInsert(val);
+                    drawBST(val, 'var(--green)');
+                    inserting = false;
+                    nextBtn.style.display = 'none';
+                    descEl.textContent = step.desc;
+                } else {
+                    drawBST(step.node, 'var(--yellow)');
+                }
+                insertIdx++;
+            });
+
+            resetBtn.addEventListener('click', function() {
+                initBST();
+                inputEl.value = '6';
+            });
+        })();
+
+        // ============================
+        // Demo 3: 전위 순회
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-preorder-svg');
+            var descEl = container.querySelector('#tree-demo-preorder-desc');
+            var nextBtn = container.querySelector('#tree-demo-preorder-next');
+            var resetBtn = container.querySelector('#tree-demo-preorder-reset');
+            var orderEl = container.querySelector('#tree-demo-preorder-order');
+            if (!svg || !nextBtn) return;
+
+            // Tree: 1 root, 2/3 children, 4/5 under 2, 6/7 under 3
+            var treeLayout = [
+                { val: 1, x: 220, y: 35 },
+                { val: 2, x: 120, y: 105 },
+                { val: 3, x: 320, y: 105 },
+                { val: 4, x: 70,  y: 180 },
+                { val: 5, x: 170, y: 180 },
+                { val: 6, x: 270, y: 180 },
+                { val: 7, x: 370, y: 180 }
+            ];
+            var treeEdges = [
+                { x1:220, y1:35, x2:120, y2:105 },
+                { x1:220, y1:35, x2:320, y2:105 },
+                { x1:120, y1:105, x2:70,  y2:180 },
+                { x1:120, y1:105, x2:170, y2:180 },
+                { x1:320, y1:105, x2:270, y2:180 },
+                { x1:320, y1:105, x2:370, y2:180 }
+            ];
+
+            // Preorder: root, left, right → 1,2,4,5,3,6,7
+            var preorderSteps = [
+                { visit: 1, desc: '루트 노드 1을 방문합니다. 전위 순회는 현재 노드를 먼저 기록합니다!' },
+                { visit: 2, desc: '왼쪽 자식 2로 내려갑니다. 먼저 2를 기록합니다.' },
+                { visit: 4, desc: '2의 왼쪽 자식 4로 내려갑니다. 4를 기록합니다. 4는 리프 노드!' },
+                { visit: 5, desc: '4가 끝났으니 2의 오른쪽 자식 5로 갑니다. 5를 기록합니다. 5도 리프!' },
+                { visit: 3, desc: '2의 서브트리가 끝났습니다. 이제 루트의 오른쪽 자식 3으로 갑니다. 3을 기록합니다.' },
+                { visit: 6, desc: '3의 왼쪽 자식 6으로 내려갑니다. 6을 기록합니다. 6은 리프!' },
+                { visit: 7, desc: '3의 오른쪽 자식 7로 갑니다. 7을 기록합니다. 순회 완료!' }
+            ];
+
+            var visitedList = [];
+            var currentStepIdx = -1;
+
+            function drawTree() {
+                svg.innerHTML = '';
+                // edges
+                treeEdges.forEach(function(e) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', e.x1); line.setAttribute('y1', e.y1);
+                    line.setAttribute('x2', e.x2); line.setAttribute('y2', e.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+                // nodes
+                treeLayout.forEach(function(n) {
+                    var g = document.createElementNS(_svgNS, 'g');
+                    var circle = document.createElementNS(_svgNS, 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                    circle.setAttribute('r', '22');
+                    var isVisited = visitedList.indexOf(n.val) !== -1;
+                    var isCurrent = currentStepIdx >= 0 && preorderSteps[currentStepIdx].visit === n.val;
+                    if (isCurrent) {
+                        circle.setAttribute('fill', 'var(--yellow)');
+                        circle.setAttribute('stroke', 'var(--yellow)');
+                        circle.style.filter = 'drop-shadow(0 0 8px var(--yellow))';
+                    } else if (isVisited) {
+                        circle.setAttribute('fill', 'var(--green)');
+                        circle.setAttribute('stroke', 'var(--green)');
+                        circle.style.filter = 'drop-shadow(0 0 4px var(--green))';
+                    } else {
+                        circle.setAttribute('fill', 'var(--bg2)');
+                        circle.setAttribute('stroke', 'var(--accent)');
+                    }
+                    circle.setAttribute('stroke-width', '2.5');
+                    g.appendChild(circle);
+                    var text = document.createElementNS(_svgNS, 'text');
+                    text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '14'); text.setAttribute('font-weight', '700');
+                    text.setAttribute('fill', (isCurrent || isVisited) ? 'white' : 'var(--text)');
+                    text.setAttribute('pointer-events', 'none');
+                    text.textContent = n.val;
+                    g.appendChild(text);
+                    // Show visit order number
+                    var visitIdx = visitedList.indexOf(n.val);
+                    if (visitIdx !== -1) {
+                        var badge = document.createElementNS(_svgNS, 'text');
+                        badge.setAttribute('x', parseFloat(n.x) + 18); badge.setAttribute('y', parseFloat(n.y) - 16);
+                        badge.setAttribute('text-anchor', 'middle');
+                        badge.setAttribute('font-size', '10'); badge.setAttribute('font-weight', '700');
+                        badge.setAttribute('fill', 'var(--accent)');
+                        badge.textContent = '#' + (visitIdx + 1);
+                        g.appendChild(badge);
+                    }
+                    svg.appendChild(g);
+                });
+            }
+
+            function reset() {
+                visitedList = [];
+                currentStepIdx = -1;
+                drawTree();
+                orderEl.textContent = '';
+                descEl.textContent = '▶ "다음 방문" 버튼을 눌러 전위 순회를 따라가 보세요!';
+                nextBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            }
+
+            reset();
+
+            nextBtn.addEventListener('click', function() {
+                if (currentStepIdx >= preorderSteps.length - 1) return;
+                currentStepIdx++;
+                var step = preorderSteps[currentStepIdx];
+                visitedList.push(step.visit);
+                descEl.textContent = step.desc;
+                orderEl.textContent = visitedList.join(' → ');
+                drawTree();
+
+                if (currentStepIdx >= preorderSteps.length - 1) {
+                    nextBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                    descEl.textContent = '전위 순회 완료! 결과: 1 → 2 → 4 → 5 → 3 → 6 → 7. "루트 → 왼쪽 → 오른쪽" 순서를 따라갔습니다.';
+                }
+            });
+
+            resetBtn.addEventListener('click', function() { reset(); });
+        })();
+
+        // ============================
+        // Demo 4: DFS 깊이 탐색 (스택)
+        // ============================
+        (function() {
+            var svg = container.querySelector('#tree-demo-dfs-svg');
+            var stackEl = container.querySelector('#tree-demo-dfs-stack');
+            var descEl = container.querySelector('#tree-demo-dfs-desc');
+            var nextBtn = container.querySelector('#tree-demo-dfs-next');
+            var resetBtn = container.querySelector('#tree-demo-dfs-reset');
+            var visitedListEl = container.querySelector('#tree-demo-dfs-visited-list');
+            if (!svg || !nextBtn) return;
+
+            // Tree layout for DFS demo (same 7-node tree)
+            var treeLayout = [
+                { val: 1, x: 160, y: 35 },
+                { val: 2, x: 80,  y: 100 },
+                { val: 3, x: 240, y: 100 },
+                { val: 4, x: 40,  y: 170 },
+                { val: 5, x: 120, y: 170 },
+                { val: 6, x: 200, y: 170 },
+                { val: 7, x: 280, y: 170 }
+            ];
+            var treeEdges = [
+                { x1:160, y1:35, x2:80,  y2:100 },
+                { x1:160, y1:35, x2:240, y2:100 },
+                { x1:80,  y1:100, x2:40,  y2:170 },
+                { x1:80,  y1:100, x2:120, y2:170 },
+                { x1:240, y1:100, x2:200, y2:170 },
+                { x1:240, y1:100, x2:280, y2:170 }
+            ];
+            // Children map: val -> [left, right]
+            var childrenMap = { 1: [2,3], 2: [4,5], 3: [6,7], 4: [], 5: [], 6: [], 7: [] };
+
+            // DFS steps: each step is either "push" or "pop"
+            // Iterative DFS using explicit stack
+            // stack starts with [1]
+            // pop 1 → visit, push right(3), push left(2)
+            // pop 2 → visit, push right(5), push left(4)
+            // pop 4 → visit (leaf)
+            // pop 5 → visit (leaf)
+            // pop 3 → visit, push right(7), push left(6)
+            // pop 6 → visit (leaf)
+            // pop 7 → visit (leaf)
+            var dfsSteps = [
+                { type: 'push', val: 1, stack: [1], visited: [], current: null,
+                  desc: '루트 노드 1을 스택에 넣습니다 (push). DFS는 스택에서 꺼내며 탐색합니다.' },
+                { type: 'pop', val: 1, stack: [], visited: [1], current: 1,
+                  desc: '스택에서 1을 꺼냅니다 (pop). 1을 방문 완료! 자식 노드를 스택에 넣습니다.' },
+                { type: 'push-children', val: 1, stack: [3, 2], visited: [1], current: 1,
+                  desc: '1의 자식: 오른쪽 3을 먼저 push, 왼쪽 2를 push. 왜? 스택은 LIFO라서 왼쪽(2)이 먼저 나오게!' },
+                { type: 'pop', val: 2, stack: [3], visited: [1, 2], current: 2,
+                  desc: '스택 top은 2 → pop하고 방문! 2의 자식을 push합니다.' },
+                { type: 'push-children', val: 2, stack: [3, 5, 4], visited: [1, 2], current: 2,
+                  desc: '2의 자식: 오른쪽 5 push, 왼쪽 4 push. 스택 top이 4 → 다음에 4를 방문합니다.' },
+                { type: 'pop', val: 4, stack: [3, 5], visited: [1, 2, 4], current: 4,
+                  desc: '스택 top은 4 → pop하고 방문! 4는 리프 노드라 자식이 없습니다.' },
+                { type: 'pop', val: 5, stack: [3], visited: [1, 2, 4, 5], current: 5,
+                  desc: '스택 top은 5 → pop하고 방문! 5도 리프 노드입니다. 2의 서브트리 탐색 완료!' },
+                { type: 'pop', val: 3, stack: [], visited: [1, 2, 4, 5, 3], current: 3,
+                  desc: '스택 top은 3 → pop하고 방문! 3의 자식을 push합니다.' },
+                { type: 'push-children', val: 3, stack: [7, 6], visited: [1, 2, 4, 5, 3], current: 3,
+                  desc: '3의 자식: 오른쪽 7 push, 왼쪽 6 push. 스택 top이 6 → 다음에 6을 방문합니다.' },
+                { type: 'pop', val: 6, stack: [7], visited: [1, 2, 4, 5, 3, 6], current: 6,
+                  desc: '스택 top은 6 → pop하고 방문! 6은 리프 노드입니다.' },
+                { type: 'pop', val: 7, stack: [], visited: [1, 2, 4, 5, 3, 6, 7], current: 7,
+                  desc: '스택 top은 7 → pop하고 방문! 스택이 비었습니다. DFS 탐색 완료!' }
+            ];
+
+            var currentStepIdx = -1;
+
+            function drawDFS(step) {
+                var visited = step ? step.visited : [];
+                var current = step ? step.current : null;
+                var stackArr = step ? step.stack : [];
+
+                // Draw tree
+                svg.innerHTML = '';
+                treeEdges.forEach(function(e) {
+                    var line = document.createElementNS(_svgNS, 'line');
+                    line.setAttribute('x1', e.x1); line.setAttribute('y1', e.y1);
+                    line.setAttribute('x2', e.x2); line.setAttribute('y2', e.y2);
+                    line.setAttribute('stroke', 'var(--bg3)'); line.setAttribute('stroke-width', '2');
+                    svg.appendChild(line);
+                });
+                treeLayout.forEach(function(n) {
+                    var g = document.createElementNS(_svgNS, 'g');
+                    var circle = document.createElementNS(_svgNS, 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+                    circle.setAttribute('r', '20');
+                    var isCurrent = current === n.val;
+                    var isVisited = visited.indexOf(n.val) !== -1;
+                    var inStack = stackArr.indexOf(n.val) !== -1;
+                    if (isCurrent) {
+                        circle.setAttribute('fill', 'var(--yellow)');
+                        circle.setAttribute('stroke', 'var(--yellow)');
+                        circle.style.filter = 'drop-shadow(0 0 8px var(--yellow))';
+                    } else if (isVisited) {
+                        circle.setAttribute('fill', 'var(--green)');
+                        circle.setAttribute('stroke', 'var(--green)');
+                        circle.style.filter = 'drop-shadow(0 0 4px var(--green))';
+                    } else if (inStack) {
+                        circle.setAttribute('fill', 'var(--accent)');
+                        circle.setAttribute('stroke', 'var(--accent)');
+                        circle.style.filter = 'drop-shadow(0 0 4px var(--accent))';
+                    } else {
+                        circle.setAttribute('fill', 'var(--bg2)');
+                        circle.setAttribute('stroke', 'var(--text3)');
+                    }
+                    circle.setAttribute('stroke-width', '2.5');
+                    g.appendChild(circle);
+                    var text = document.createElementNS(_svgNS, 'text');
+                    text.setAttribute('x', n.x); text.setAttribute('y', parseFloat(n.y) + 5);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '13'); text.setAttribute('font-weight', '700');
+                    text.setAttribute('fill', (isCurrent || isVisited || inStack) ? 'white' : 'var(--text)');
+                    text.setAttribute('pointer-events', 'none');
+                    text.textContent = n.val;
+                    g.appendChild(text);
+                    // Depth label
+                    var depthMap = { 1: 0, 2: 1, 3: 1, 4: 2, 5: 2, 6: 2, 7: 2 };
+                    if (isVisited || isCurrent) {
+                        var dl = document.createElementNS(_svgNS, 'text');
+                        dl.setAttribute('x', parseFloat(n.x)); dl.setAttribute('y', parseFloat(n.y) + 35);
+                        dl.setAttribute('text-anchor', 'middle');
+                        dl.setAttribute('font-size', '10'); dl.setAttribute('fill', 'var(--text3)'); dl.setAttribute('font-weight', '600');
+                        dl.textContent = 'd=' + depthMap[n.val];
+                        g.appendChild(dl);
+                    }
+                    svg.appendChild(g);
+                });
+
+                // Draw stack
+                stackEl.innerHTML = '';
+                if (stackArr.length === 0) {
+                    stackEl.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;padding:1rem 0;">비어 있음</div>';
+                } else {
+                    // stack: bottom is index 0, top is last element
+                    stackArr.forEach(function(v, i) {
+                        var item = document.createElement('div');
+                        item.style.cssText = 'padding:6px 18px;background:var(--accent);color:white;border-radius:6px;font-weight:700;font-size:0.9rem;text-align:center;min-width:40px;transition:all 0.3s;';
+                        if (i === stackArr.length - 1) {
+                            item.style.background = 'var(--yellow)';
+                            item.style.boxShadow = '0 0 8px var(--yellow)';
+                            item.textContent = v + ' ← top';
+                        } else {
+                            item.textContent = '' + v;
+                        }
+                        stackEl.appendChild(item);
+                    });
+                }
+
+                // Update visited list text
+                visitedListEl.textContent = visited.join(' → ');
+            }
+
+            function reset() {
+                currentStepIdx = -1;
+                drawDFS(null);
+                descEl.textContent = '▶ "다음 스텝"을 눌러 DFS가 스택으로 어떻게 동작하는지 확인하세요!';
+                visitedListEl.textContent = '';
+                nextBtn.style.display = '';
+                resetBtn.style.display = 'none';
+            }
+
+            reset();
+
+            nextBtn.addEventListener('click', function() {
+                if (currentStepIdx >= dfsSteps.length - 1) return;
+                currentStepIdx++;
+                var step = dfsSteps[currentStepIdx];
+                descEl.textContent = step.desc;
+                drawDFS(step);
+
+                if (currentStepIdx >= dfsSteps.length - 1) {
+                    nextBtn.style.display = 'none';
+                    resetBtn.style.display = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', function() { reset(); });
+        })();
     },
 
     // ===== 시각화 상태 =====
@@ -755,11 +1453,11 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                     var snapHL = JSON.parse(JSON.stringify(currentHL));
                     var snapDepth = JSON.parse(JSON.stringify(depthMap));
                     var desc = isL
-                        ? '노드 ' + v + ' 방문 (리프 노드)'
-                        : '노드 ' + v + ' 방문' + cDesc;
+                        ? '노드 ' + v + ' 방문 — 리프 노드이므로 깊이=1 (자기 자신만 셈)'
+                        : '노드 ' + v + ' 방문 — 서브트리 깊이를 구하기 위해 자식으로 재귀 탐색';
                     var info = isL
-                        ? '노드 <strong>' + v + '</strong> 방문 — 리프 노드 (자식 없음)'
-                        : '노드 <strong>' + v + '</strong> 방문' + cDesc;
+                        ? '노드 <strong>' + v + '</strong> 방문 — 리프 노드: 자식이 없으므로 깊이=1'
+                        : '노드 <strong>' + v + '</strong> 방문 — 왼쪽/오른쪽 서브트리 깊이를 구하기 위해 재귀';
                     steps.push({
                         description: desc,
                         action: function() { svgEl.innerHTML = renderSvg(snapHL, snapDepth); infoEl.innerHTML = info; },
@@ -779,8 +1477,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                     depthMap[k] = 'd=' + d;
                     var snapHL = JSON.parse(JSON.stringify(currentHL));
                     var snapDepth = JSON.parse(JSON.stringify(depthMap));
-                    var desc = '노드 ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = 깊이 ' + d;
-                    var info = '노드 ' + v + ': max(' + leftD + ', ' + rightD + ') + 1 = <strong>깊이 ' + d + '</strong>';
+                    var desc = '노드 ' + v + ': max(' + leftD + ', ' + rightD + ')+1 = 깊이 ' + d + ' — 더 깊은 서브트리 기준으로 +1(자기 자신)';
+                    var info = '노드 ' + v + ': max(' + leftD + ', ' + rightD + ')+1 = <strong>깊이 ' + d + '</strong> — 더 깊은 쪽 +1';
                     steps.push({
                         description: desc,
                         action: function() { svgEl.innerHTML = renderSvg(snapHL, snapDepth); infoEl.innerHTML = info; },
@@ -799,7 +1497,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             var finalDepth = JSON.parse(JSON.stringify(depthMap));
             var prevHL2 = steps.length > 0 ? null : {};
             steps.push({
-                description: '완료! 최대 깊이 = ' + totalDepth,
+                description: '✅ 완료! 루트의 깊이 = ' + totalDepth + ' — 가장 깊은 리프까지의 경로 길이',
                 action: function() {
                     svgEl.innerHTML = renderSvg(finalHL, finalDepth);
                     infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 깊이 = ' + totalDepth + '</strong>';
@@ -929,7 +1627,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                         highlightState[k] = 'done';
                         var snapHL = JSON.parse(JSON.stringify(highlightState));
                         steps.push({
-                            description: '노드 ' + v + ': 리프 노드 (교환할 자식 없음)',
+                            description: '노드 ' + v + ': 리프 노드 — 자식이 없으므로 교환할 대상이 없어 건너뜀',
                             hl: snapHL, prevHL: prevHL,
                             swapNode: null,
                             info: '노드 ' + v + ': 리프 노드 (교환 불필요)'
@@ -944,7 +1642,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                         highlightState[k] = 'swap';
                         var snapHL = JSON.parse(JSON.stringify(highlightState));
                         steps.push({
-                            description: '노드 ' + v + ': 왼쪽(' + lv + ')과 오른쪽(' + rv + ')을 교환!',
+                            description: '노드 ' + v + ': 왼쪽(' + lv + ')↔오른쪽(' + rv + ') 교환 — <strong>거울처럼 반전</strong>하기 위해 모든 노드에서 좌우 자식을 바꿈',
                             hl: snapHL, prevHL: prevHL,
                             swapNode: k,
                             info: '노드 ' + v + ': <strong>' + lv + ' ↔ ' + rv + '</strong> 교환 완료!'
@@ -1039,7 +1737,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             })(finalRoot);
 
             actualSteps.push({
-                description: '완성! 트리가 좌우 반전되었습니다: [' + invertedStr + ']',
+                description: '✅ 완성! 모든 노드에서 좌우 교환이 끝나 트리가 거울 반전됨: [' + invertedStr + ']',
                 action: function() {
                     svgEl.innerHTML = self._makeTreeSvg(finalLayout, allDone, svgW, svgH, 22);
                     infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ Invert 완료! [' + invertedStr + ']</strong>';
@@ -1135,7 +1833,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             // Step 0: Init — put root in queue
             var rootKey = String(root.val) + '_' + root.idx;
             steps.push({
-                description: '초기화: 루트(' + root.val + ')를 큐에 넣습니다.',
+                description: '초기화: 루트(' + root.val + ')를 큐에 넣음 — BFS는 가까운 노드부터 레벨별로 탐색하기 위해 큐를 사용',
                 action: function() {
                     var hl = {}; hl[rootKey] = 'current';
                     svgEl.innerHTML = renderSvg(hl);
@@ -1201,7 +1899,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
 
                 (function(hl, sResult, sNextVals, desc, lvlN, lvlVals) {
                     steps.push({
-                        description: '레벨 ' + lvlN + ': 노드 ' + lvlVals.join(', ') + '을 처리합니다.',
+                        description: '레벨 ' + lvlN + ': 노드 ' + lvlVals.join(', ') + ' 처리 — 같은 깊이의 노드를 한꺼번에 꺼내어 레벨 단위로 묶음',
                         action: function() {
                             svgEl.innerHTML = renderSvg(hl);
                             showQueue(sNextVals);
@@ -1222,7 +1920,7 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
             var finalResult = result.map(function(a) { return a.slice(); });
             var resultStr = '[' + finalResult.map(function(a) { return '[' + a.join(', ') + ']'; }).join(', ') + ']';
             steps.push({
-                description: '완성! 큐가 비었으므로 BFS 종료. 결과: ' + resultStr,
+                description: '✅ 완성! 큐가 비어 모든 레벨 탐색 완료. 결과: ' + resultStr,
                 action: function() {
                     svgEl.innerHTML = renderSvg(allDone);
                     showQueue([]);
@@ -1353,8 +2051,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                 var isFirst = (pi === 0);
                 var isLast = (pi === preOrder.length - 1);
                 var desc = isFirst
-                    ? '전위: 루트 ' + item.val + ' 방문 (출력 → 왼쪽 → 오른쪽)'
-                    : '전위: ' + item.val + ' 방문';
+                    ? '전위: 루트 ' + item.val + ' 방문 — 자기 자신을 먼저 출력한 뒤 왼쪽→오른쪽 순서로 재귀'
+                    : '전위: ' + item.val + ' 방문 — 현재 노드 출력 후 자식으로 내려감';
                 if (isLast) {
                     // Mark all done
                     for (var j = 0; j < preOrder.length; j++) hl[preOrder[j].key] = 'done';
@@ -1388,8 +2086,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                 var isFirst = (ii === 0);
                 var isLast = (ii === inOrder.length - 1);
                 var desc = isFirst
-                    ? '중위: 가장 왼쪽 ' + item.val + ' 먼저 방문 (왼쪽 → 출력 → 오른쪽)'
-                    : '중위: ' + item.val + ' 방문';
+                    ? '중위: 가장 왼쪽 ' + item.val + ' 먼저 — 왼쪽 서브트리를 다 처리한 뒤에야 자기 자신을 출력'
+                    : '중위: ' + item.val + ' 방문 — 왼쪽 완료 후 출력, 그 다음 오른쪽으로';
                 if (isLast) {
                     for (var j = 0; j < inOrder.length; j++) hl[inOrder[j].key] = 'done';
                     desc = '중위 순회 완료!';
@@ -1422,8 +2120,8 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n\
                 var isFirst = (pti === 0);
                 var isLast = (pti === postOrder.length - 1);
                 var desc = isFirst
-                    ? '후위: 가장 깊은 왼쪽 ' + item.val + ' 먼저 (왼쪽 → 오른쪽 → 출력)'
-                    : '후위: ' + item.val + ' 방문';
+                    ? '후위: 가장 깊은 왼쪽 ' + item.val + ' 먼저 — 자식을 모두 처리한 뒤에야 자기 자신을 출력'
+                    : '후위: ' + item.val + ' 방문 — 양쪽 자식 완료 후에야 출력';
                 if (isLast) {
                     for (var j = 0; j < postOrder.length; j++) hl[postOrder[j].key] = 'done';
                     desc = '후위: 루트 ' + item.val + ' 마지막 출력 — 후위 순회 완료!';

@@ -58,6 +58,7 @@ const hashTableTopic = {
             container.appendChild(introDiv);
         }
         const contentDiv = document.createElement('div');
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
@@ -220,6 +221,29 @@ int main() {
     return 0;
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Array vs Dictionary Search Speed</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-search-input" value="grape" placeholder="Value to search" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-search-btn">🔍 Start Search</button>
+                        <button class="concept-demo-btn green" id="ht-demo-search-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Array Search <span style="color:var(--red);font-size:0.85rem;">O(n)</span></div>
+                                <div id="ht-demo-arr-boxes" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                                <div id="ht-demo-arr-count" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Dictionary Lookup <span style="color:var(--green);font-size:0.85rem;">O(1)</span></div>
+                                <div id="ht-demo-dict-boxes" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                                <div id="ht-demo-dict-count" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-search-msg">👆 Enter a value and click "Start Search"! Feel the speed difference between array and dictionary.</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Checking if an element exists in an array is O(n), but why is it O(1) in a set?</span></div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
@@ -289,6 +313,28 @@ int main() {
                     <strong>Why is it fast?</strong> To find <code>"apple"</code> in an array, you have to compare one by one from the start (O(n)).
                     But a hash table computes <code>hash("apple") = 0</code> and <strong>goes directly to slot 0</strong> (O(1)).
                     It's like going straight to a shelf number in a library instead of flipping through books one by one! 📚→🎯
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Hash Function Visualization</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-hash-input" value="apple" placeholder="Enter key" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-hash-btn">⚙️ Compute Hash</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="margin-bottom:12px;">
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">① Convert characters to ASCII numbers</div>
+                            <div id="ht-demo-hash-chars" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">② Sum & Modulo</div>
+                            <div id="ht-demo-hash-calc" style="font-size:0.95rem;color:var(--text2);min-height:1.5em;"></div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">③ Bucket placement (table size: 7)</div>
+                            <div id="ht-demo-hash-buckets" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-hash-msg">👆 Enter a key and click "Compute Hash"! Try different keys to see which bucket they land in.</div>
                 </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">What happens if the table has 10 slots but there are 100 data items?</span></div>
@@ -392,6 +438,25 @@ int longest_unique(const string&amp; s) {
     return max_len;
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Frequency Counting</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-freq-input" value="banana" placeholder="Enter string" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:160px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-freq-btn">📊 Start Counting</button>
+                        <button class="concept-demo-btn green" id="ht-demo-freq-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="margin-bottom:12px;">
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">String</div>
+                            <div id="ht-demo-freq-chars" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                        </div>
+                        <div>
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Frequency Dictionary</div>
+                            <div id="ht-demo-freq-dict" style="display:flex;gap:8px;flex-wrap:wrap;min-height:50px;align-items:flex-end;"></div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-freq-msg">👆 Enter a string and click "Start Counting"! Watch the frequency count build up character by character.</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Why can Two Sum be solved with a hashmap (O(n)) instead of nested for loops (O(n²))?</span></div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
@@ -498,6 +563,19 @@ struct HashTable {
                         <p><span class="lang-py">Python 3.7+'s <code>dict</code> preserves insertion order!</span><span class="lang-cpp">C++'s <code>unordered_map</code> does not guarantee order, but <code>map</code> maintains sorted key order.</span> However, hash tables themselves are not in sorted order.</p>
                     </div>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try it yourself — Collision & Chaining</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <input type="text" id="ht-demo-chain-input" value="apple" placeholder="Enter key" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="ht-demo-chain-add">➕ Insert</button>
+                        <button class="concept-demo-btn danger" id="ht-demo-chain-clear">🗑️ Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Hash Table (size: 5) — Chaining Method</div>
+                        <div id="ht-demo-chain-table" style="display:flex;flex-direction:column;gap:6px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="ht-demo-chain-msg">👆 Enter a key and click "Insert" repeatedly! When multiple keys land in the same bucket, chaining occurs. Try: apple, melon, plum, fig, kiwi</div>
+                </div>
                 <div class="think-box">
                     <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">The worst-case time complexity of a hash table is O(n), so why do we say "O(1)"?</span></div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
@@ -509,6 +587,381 @@ struct HashTable {
         container.querySelectorAll('.think-box-trigger').forEach(btn => {
             btn.addEventListener('click', () => { const box = btn.closest('.think-box'); box.classList.add('revealed'); btn.style.display = 'none'; });
         });
+
+        // ========== Inline Demo Interactions ==========
+
+        // --- 1. Array vs Dictionary Search Speed Demo ---
+        {
+            const arrData = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew'];
+            const dictData = {};
+            arrData.forEach(function(v) { dictData[v] = true; });
+            const searchBtn = container.querySelector('#ht-demo-search-btn');
+            const resetBtn = container.querySelector('#ht-demo-search-reset');
+            const inputEl = container.querySelector('#ht-demo-search-input');
+            const arrBoxes = container.querySelector('#ht-demo-arr-boxes');
+            const dictBoxes = container.querySelector('#ht-demo-dict-boxes');
+            const arrCount = container.querySelector('#ht-demo-arr-count');
+            const dictCount = container.querySelector('#ht-demo-dict-count');
+            const msgEl = container.querySelector('#ht-demo-search-msg');
+
+            var searchAnimating = false;
+
+            function renderArrBoxes() {
+                arrBoxes.innerHTML = '';
+                arrData.forEach(function(v) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-val">' + v + '</div>';
+                    box.dataset.val = v;
+                    arrBoxes.appendChild(box);
+                });
+            }
+            function renderDictBoxes() {
+                dictBoxes.innerHTML = '';
+                arrData.forEach(function(v) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.65rem;">#' + (function(k) { var h = 0; for (var i = 0; i < k.length; i++) h += k.charCodeAt(i); return h % 10; })(v) + '</div><div class="str-char-val">' + v + '</div>';
+                    box.dataset.val = v;
+                    dictBoxes.appendChild(box);
+                });
+            }
+            renderArrBoxes();
+            renderDictBoxes();
+
+            searchBtn.addEventListener('click', function() {
+                if (searchAnimating) return;
+                searchAnimating = true;
+                var target = inputEl.value.trim().toLowerCase();
+                if (!target) { msgEl.textContent = 'Please enter a value to search!'; searchAnimating = false; return; }
+                searchBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                renderArrBoxes();
+                renderDictBoxes();
+                arrCount.textContent = '';
+                dictCount.textContent = '';
+
+                // Array: compare one by one (animated)
+                var arrItems = arrBoxes.querySelectorAll('.str-char-box');
+                var found = false;
+                var step = 0;
+                var comparisons = 0;
+
+                function arrStep() {
+                    if (step >= arrItems.length) {
+                        arrCount.textContent = found ? 'Found! Comparisons: ' + comparisons : 'Not found! Comparisons: ' + comparisons + ' (checked all)';
+                        if (!found) arrCount.style.color = 'var(--red)';
+                        return;
+                    }
+                    if (step > 0) arrItems[step - 1].classList.remove('comparing');
+                    arrItems[step].classList.add('comparing');
+                    comparisons++;
+                    if (arrItems[step].dataset.val === target) {
+                        found = true;
+                        arrItems[step].classList.remove('comparing');
+                        arrItems[step].classList.add('matched');
+                        arrCount.textContent = 'Found! Comparisons: ' + comparisons;
+                        arrCount.style.color = 'var(--green)';
+                        msgEl.textContent = 'Array needed ' + comparisons + ' comparisons, but dictionary finds it in 1 hash computation!';
+                        return;
+                    }
+                    step++;
+                    setTimeout(arrStep, 350);
+                }
+
+                // Dictionary: find immediately (with slight delay)
+                setTimeout(function() {
+                    var dictItems = dictBoxes.querySelectorAll('.str-char-box');
+                    var dictFound = false;
+                    dictItems.forEach(function(box) {
+                        if (box.dataset.val === target) {
+                            box.classList.add('matched');
+                            dictFound = true;
+                        }
+                    });
+                    if (dictFound) {
+                        dictCount.textContent = 'Found instantly with 1 hash computation!';
+                        dictCount.style.color = 'var(--green)';
+                    } else {
+                        dictCount.textContent = '1 hash computation → confirmed not found!';
+                        dictCount.style.color = 'var(--red)';
+                    }
+                    searchAnimating = false;
+                }, 200);
+
+                arrStep();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                searchAnimating = false;
+                searchBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                renderArrBoxes();
+                renderDictBoxes();
+                arrCount.textContent = '';
+                arrCount.style.color = '';
+                dictCount.textContent = '';
+                dictCount.style.color = '';
+                msgEl.textContent = '👆 Enter a value and click "Start Search"! Feel the speed difference between array and dictionary.';
+            });
+        }
+
+        // --- 2. Hash Function Visualization Demo ---
+        {
+            var HASH_TABLE_SIZE = 7;
+            var hashBucketData = [[], [], [], [], [], [], []];
+            var hashBtn = container.querySelector('#ht-demo-hash-btn');
+            var hashInput = container.querySelector('#ht-demo-hash-input');
+            var hashChars = container.querySelector('#ht-demo-hash-chars');
+            var hashCalc = container.querySelector('#ht-demo-hash-calc');
+            var hashBuckets = container.querySelector('#ht-demo-hash-buckets');
+            var hashMsg = container.querySelector('#ht-demo-hash-msg');
+
+            function renderHashBuckets() {
+                hashBuckets.innerHTML = '';
+                for (var i = 0; i < HASH_TABLE_SIZE; i++) {
+                    var bkt = document.createElement('div');
+                    bkt.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;';
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-size:0.75rem;color:var(--text3);font-weight:600;';
+                    label.textContent = '[' + i + ']';
+                    var slot = document.createElement('div');
+                    slot.className = 'str-char-box';
+                    slot.id = 'ht-demo-hash-bucket-' + i;
+                    slot.style.cssText = 'min-width:55px;min-height:36px;transition:all 0.3s ease;';
+                    var keysInBucket = hashBucketData[i];
+                    if (keysInBucket.length > 0) {
+                        slot.innerHTML = '<div class="str-char-val" style="font-size:0.75rem;">' + keysInBucket.join(', ') + '</div>';
+                    } else {
+                        slot.innerHTML = '<div class="str-char-val" style="font-size:0.75rem;color:var(--text3);">—</div>';
+                    }
+                    bkt.appendChild(label);
+                    bkt.appendChild(slot);
+                    hashBuckets.appendChild(bkt);
+                }
+            }
+            renderHashBuckets();
+
+            hashBtn.addEventListener('click', function() {
+                var key = hashInput.value.trim();
+                if (!key) { hashMsg.textContent = 'Please enter a key!'; return; }
+
+                // Step 1: ASCII per character
+                hashChars.innerHTML = '';
+                var total = 0;
+                var parts = [];
+                for (var i = 0; i < key.length; i++) {
+                    var ch = key[i];
+                    var code = key.charCodeAt(i);
+                    total += code;
+                    parts.push(code);
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx">' + ch + '</div><div class="str-char-val">' + code + '</div>';
+                    box.style.animation = 'fadeIn 0.3s ease ' + (i * 0.1) + 's both';
+                    hashChars.appendChild(box);
+                }
+
+                // Step 2: Sum & Modulo
+                var idx = total % HASH_TABLE_SIZE;
+                hashCalc.innerHTML = parts.join(' + ') + ' = <strong>' + total + '</strong> → ' + total + ' % ' + HASH_TABLE_SIZE + ' = <strong style="color:var(--green);">Bucket ' + idx + '</strong>';
+
+                // Step 3: Place in bucket
+                if (hashBucketData[idx].indexOf(key) === -1) {
+                    hashBucketData[idx].push(key);
+                }
+                renderHashBuckets();
+                var targetSlot = container.querySelector('#ht-demo-hash-bucket-' + idx);
+                if (targetSlot) {
+                    targetSlot.classList.add('matched');
+                    setTimeout(function() { targetSlot.classList.remove('matched'); }, 1500);
+                }
+
+                // Check collision
+                if (hashBucketData[idx].length > 1) {
+                    hashMsg.textContent = 'Collision! "' + key + '" goes to bucket ' + idx + ', but "' + hashBucketData[idx].filter(function(k) { return k !== key; }).join(', ') + '" is already there!';
+                } else {
+                    hashMsg.textContent = '"' + key + '" → ASCII sum: ' + total + ' → placed in bucket ' + idx + '! Try adding more keys.';
+                }
+                hashInput.value = '';
+                hashInput.focus();
+            });
+        }
+
+        // --- 3. Frequency Counting Demo ---
+        {
+            var freqBtn = container.querySelector('#ht-demo-freq-btn');
+            var freqReset = container.querySelector('#ht-demo-freq-reset');
+            var freqInput = container.querySelector('#ht-demo-freq-input');
+            var freqChars = container.querySelector('#ht-demo-freq-chars');
+            var freqDict = container.querySelector('#ht-demo-freq-dict');
+            var freqMsg = container.querySelector('#ht-demo-freq-msg');
+            var freqAnimating = false;
+
+            function renderFreqChars(str) {
+                freqChars.innerHTML = '';
+                for (var i = 0; i < str.length; i++) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + str[i] + '</div>';
+                    freqChars.appendChild(box);
+                }
+            }
+
+            function renderFreqDict(freq, highlightKey) {
+                freqDict.innerHTML = '';
+                var keys = Object.keys(freq);
+                if (keys.length === 0) {
+                    freqDict.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;">(empty)</div>';
+                    return;
+                }
+                keys.forEach(function(k) {
+                    var col = document.createElement('div');
+                    col.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;';
+                    var barH = freq[k] * 28;
+                    var bar = document.createElement('div');
+                    bar.style.cssText = 'width:36px;height:' + barH + 'px;background:var(--accent);border-radius:6px 6px 0 0;transition:height 0.3s ease;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;color:#fff;font-weight:700;font-size:0.85rem;';
+                    if (k === highlightKey) bar.style.background = 'var(--green)';
+                    bar.textContent = freq[k];
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-size:0.85rem;font-weight:600;color:var(--text);';
+                    label.textContent = '"' + k + '"';
+                    col.appendChild(bar);
+                    col.appendChild(label);
+                    freqDict.appendChild(col);
+                });
+            }
+
+            freqBtn.addEventListener('click', function() {
+                if (freqAnimating) return;
+                var str = freqInput.value.trim();
+                if (!str) { freqMsg.textContent = 'Please enter a string!'; return; }
+                freqAnimating = true;
+                freqBtn.style.display = 'none';
+                freqReset.style.display = '';
+                renderFreqChars(str);
+                var freq = {};
+                var step = 0;
+                var charBoxes = freqChars.querySelectorAll('.str-char-box');
+
+                function nextStep() {
+                    if (step >= str.length) {
+                        freqMsg.textContent = 'Done! ' + Object.keys(freq).length + ' unique characters found. Result: ' + Object.keys(freq).map(function(k) { return '"' + k + '":' + freq[k]; }).join(', ');
+                        freqAnimating = false;
+                        return;
+                    }
+                    if (step > 0) charBoxes[step - 1].classList.remove('comparing');
+                    charBoxes[step].classList.add('comparing');
+                    var ch = str[step];
+                    if (!freq[ch]) freq[ch] = 0;
+                    freq[ch]++;
+                    renderFreqDict(freq, ch);
+                    freqMsg.textContent = 'Character "' + ch + '" found → freq["' + ch + '"] = ' + freq[ch] + (freq[ch] > 1 ? ' (already exists, +1!)' : ' (first time, newly added!)');
+                    step++;
+                    setTimeout(nextStep, 450);
+                }
+                nextStep();
+            });
+
+            freqReset.addEventListener('click', function() {
+                freqAnimating = false;
+                freqBtn.style.display = '';
+                freqReset.style.display = 'none';
+                renderFreqChars(freqInput.value.trim() || 'banana');
+                freqDict.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;">(empty)</div>';
+                freqMsg.textContent = '👆 Enter a string and click "Start Counting"! Watch the frequency count build up character by character.';
+            });
+            renderFreqDict({});
+        }
+
+        // --- 4. Collision & Chaining Demo ---
+        {
+            var CHAIN_SIZE = 5;
+            var chainTable = [[], [], [], [], []];
+            var chainAddBtn = container.querySelector('#ht-demo-chain-add');
+            var chainClearBtn = container.querySelector('#ht-demo-chain-clear');
+            var chainInput = container.querySelector('#ht-demo-chain-input');
+            var chainTableEl = container.querySelector('#ht-demo-chain-table');
+            var chainMsg = container.querySelector('#ht-demo-chain-msg');
+
+            function chainHash(key) {
+                var h = 0;
+                for (var i = 0; i < key.length; i++) h += key.charCodeAt(i);
+                return h % CHAIN_SIZE;
+            }
+
+            function renderChainTable(highlightBucket, highlightKey) {
+                chainTableEl.innerHTML = '';
+                for (var i = 0; i < CHAIN_SIZE; i++) {
+                    var row = document.createElement('div');
+                    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-weight:700;font-size:0.85rem;color:var(--text2);min-width:30px;text-align:center;';
+                    label.textContent = '[' + i + ']';
+                    row.appendChild(label);
+
+                    if (chainTable[i].length === 0) {
+                        var empty = document.createElement('div');
+                        empty.style.cssText = 'font-size:0.8rem;color:var(--text3);padding:6px 12px;border:1px dashed var(--border);border-radius:8px;';
+                        empty.textContent = 'empty';
+                        row.appendChild(empty);
+                    } else {
+                        chainTable[i].forEach(function(key, idx) {
+                            if (idx > 0) {
+                                var arrow = document.createElement('span');
+                                arrow.style.cssText = 'color:var(--accent);font-weight:700;font-size:1.1rem;';
+                                arrow.textContent = '→';
+                                row.appendChild(arrow);
+                            }
+                            var box = document.createElement('div');
+                            box.className = 'str-char-box';
+                            box.innerHTML = '<div class="str-char-val">' + key + '</div>';
+                            box.style.transition = 'all 0.3s ease';
+                            if (i === highlightBucket && key === highlightKey) {
+                                box.classList.add('matched');
+                            }
+                            row.appendChild(box);
+                        });
+                        if (chainTable[i].length > 1) {
+                            var badge = document.createElement('span');
+                            badge.style.cssText = 'font-size:0.7rem;padding:2px 8px;background:var(--red);color:#fff;border-radius:10px;font-weight:600;margin-left:4px;';
+                            badge.textContent = 'Collision!';
+                            row.appendChild(badge);
+                        }
+                    }
+                    chainTableEl.appendChild(row);
+                }
+            }
+            renderChainTable(-1, '');
+
+            chainAddBtn.addEventListener('click', function() {
+                var key = chainInput.value.trim();
+                if (!key) { chainMsg.textContent = 'Please enter a key!'; return; }
+                var idx = chainHash(key);
+                if (chainTable[idx].indexOf(key) !== -1) {
+                    chainMsg.textContent = '"' + key + '" is already in bucket ' + idx + '! Try a different key.';
+                    renderChainTable(idx, key);
+                    return;
+                }
+                var hadCollision = chainTable[idx].length > 0;
+                chainTable[idx].push(key);
+                renderChainTable(idx, key);
+                if (hadCollision) {
+                    chainMsg.textContent = 'Collision! "' + key + '" → hash = bucket ' + idx + ', but "' + chainTable[idx].filter(function(k) { return k !== key; }).join(', ') + '" is already there — chained together!';
+                } else {
+                    chainMsg.textContent = '"' + key + '" → hash = bucket ' + idx + '! (ASCII sum: ' + (function(k) { var s = 0; for (var i = 0; i < k.length; i++) s += k.charCodeAt(i); return s; })(key) + ' % ' + CHAIN_SIZE + ' = ' + idx + ')';
+                }
+                chainInput.value = '';
+                chainInput.focus();
+            });
+
+            chainClearBtn.addEventListener('click', function() {
+                chainTable = [[], [], [], [], []];
+                renderChainTable(-1, '');
+                chainMsg.textContent = 'Reset complete! Enter a key and click "Insert".';
+                chainInput.value = '';
+            });
+        }
     },
 
     // ===== Visualization Tab (concept tab stub) =====
@@ -682,8 +1135,8 @@ struct HashTable {
         const updateUI = () => {
             const idx = state.currentStep, total = state.steps.length;
             prevBtn.disabled = (idx < 0); nextBtn.disabled = (idx >= total - 1);
-            if (idx < 0) { counter.textContent = 'Before Start'; desc.textContent = '▶ Click Next to start'; }
-            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.textContent = state.steps[idx].description; }
+            if (idx < 0) { counter.textContent = 'Before Start'; desc.innerHTML = '▶ Click Next to start'; }
+            else { counter.textContent = `Step ${idx + 1} / ${total}`; desc.innerHTML = state.steps[idx].description; }
         };
         var actionDelay = 350;
         nextBtn.addEventListener('click', () => { if (state.currentStep >= state.steps.length - 1) return; state.currentStep++; updateUI(); setTimeout(() => { state.steps[state.currentStep].action(); }, actionDelay); });
@@ -930,6 +1383,22 @@ struct HashTable {
             const prefixLastPos = { 0: -1 };
             let prefixSum = 0, count = 0;
 
+            // ──── Step 0: Core idea explanation ────
+            steps.push({ description: '<strong>Core idea</strong>: Let "prefix sum" = sum from index 0 to i. If at some earlier index j the prefix sum was (current prefix sum − k), then the <strong>subarray from j+1 to i has sum = k</strong>! We use a hashmap to record how many times each prefix sum has appeared. Sum=0 is initialized to 1 (the state before any element — "empty prefix").',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    sumEl.innerHTML = '—';
+                    lookupEl.innerHTML = '—';
+                    resultEl.innerHTML = '<span style="color:var(--accent);">current_sum − k = prev_sum → that subarray sums to k!</span>';
+                    resultEl.style.color = 'var(--accent)';
+                    explainEl.style.borderColor = 'var(--accent)'; explainEl.style.background = 'rgba(108,92,231,0.05)';
+                    pcEl.innerHTML = renderPcTable({0: 1});
+                    cntEl.textContent = '0';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
             arr.forEach((num, i) => {
                 prefixSum += num;
                 const diff = prefixSum - k;
@@ -954,7 +1423,7 @@ struct HashTable {
                 var prevPosLabel = prevPos < 0 ? 'Before Start' : 'index ' + prevPos;
 
                 // ──── Step A: Add ────
-                steps.push({ description: 'arr[' + i + '] = ' + num + ' add → sum so far = ' + cs,
+                steps.push({ description: '<strong>[Index ' + i + ']</strong> arr[' + i + '] = ' + num + '. Prefix sum (0 to ' + i + ') = ' + formula + '. <em>We\'ll use this to check if any subarray ending here sums to k.</em>',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -975,7 +1444,7 @@ struct HashTable {
                     var lookupMatch = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
                         ' → <span style="color:var(--green);">Point where sum=' + cd + ': ' + prevPosLabel + '!</span>';
 
-                    steps.push({ description: 'Was there a point where sum=' + cd + '? → Yes! (' + prevPosLabel + ')',
+                    steps.push({ description: 'Prefix sum <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. Look up "was there a previous prefix sum = ' + cd + '?" in the hashmap. <em>Why? If so, the subarray between that point and here sums to ' + cs + '−' + cd + '=' + k + '!</em> → <span style="color:var(--green);font-weight:700;">Yes! (' + prevPosLabel + ')</span>',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -995,7 +1464,7 @@ struct HashTable {
                     var subArr = arr.slice(cSS, cSE + 1);
                     var resultMatch = '→ After ' + prevPosLabel + ' (index ' + cSS + ') ~ here (index ' + cSE + ') = <strong>[' + subArr.join(', ') + ']</strong>, sum = ' + cs + ' − ' + cd + ' = ' + k + ' = k ✅';
 
-                    steps.push({ description: '[' + subArr.join(', ') + '] found! sum = ' + k + ' 🎉',
+                    steps.push({ description: '<span style="color:var(--green);font-weight:700;">Found!</span> Prefix sum at ' + prevPosLabel + ' was ' + cd + ', here at index ' + cSE + ' it\'s ' + cs + '. Subarray [' + subArr.join(', ') + '] sum = ' + cs + ' − ' + cd + ' = <strong>' + k + '</strong> = k! Also record current prefix sum ' + cs + ' in the hashmap.',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -1018,7 +1487,7 @@ struct HashTable {
                     var lookupMiss = cs + ' − ' + k + ' = <strong>' + cd + '</strong>' +
                         ' → <span style="color:var(--text3);">No point where sum=' + cd + '</span>';
 
-                    steps.push({ description: 'Was there a point where sum=' + cd + '? → No. Skip',
+                    steps.push({ description: 'Prefix sum <strong>' + cs + '</strong> − k(<strong>' + k + '</strong>) = <strong>' + cd + '</strong>. Look up "previous prefix sum = ' + cd + '?" in hashmap. <em>Why? If found, that subarray would sum to k!</em> → <span style="color:var(--text3);">Not found.</span> No subarray ending here sums to k. Record current prefix sum ' + cs + ' in hashmap and move on.',
                         _before: null,
                         action: function() {
                             this._before = saveState();

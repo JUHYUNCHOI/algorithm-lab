@@ -243,6 +243,67 @@ window._setAlgoLang = function(lang) {
         topicTitle.textContent = `${topic.icon} ${topic.title}`;
         renderTabs();
         renderContent();
+        updateHash();
+    }
+
+    // ===== 해시 업데이트 (브라우저 URL 동기화) =====
+    function updateHash() {
+        if (!currentTopic) return;
+        var hash = '#/' + currentTopic.id;
+        if (currentProblemId) {
+            hash += '/' + currentProblemId;
+            if (currentTab && currentTab !== 'problem') hash += '/' + currentTab;
+        } else if (currentTab && currentTab !== 'landing') {
+            hash += '/' + currentTab;
+        }
+        if (window.location.hash !== hash) {
+            history.replaceState(null, '', hash);
+        }
+    }
+
+    // ===== 해시에서 상태 복원 =====
+    function restoreFromHash() {
+        var hash = window.location.hash;
+        if (!hash || hash === '#' || hash === '#/') return false;
+        var parts = hash.replace(/^#\/?/, '').split('/');
+        var topicId = parts[0];
+        var topics = window.AlgoTopics || {};
+        var topic = topics[topicId];
+        if (!topic) return false;
+
+        currentTopic = topic;
+
+        if (parts[1]) {
+            // parts[1]이 문제 ID인지 탭 이름인지 확인
+            var prob = topic.problems ? topic.problems.find(function(p) { return p.id === parts[1]; }) : null;
+            if (prob) {
+                currentProblemId = parts[1];
+                currentTab = parts[2] || 'problem';
+            } else {
+                // 탭 이름일 수 있음 (concept, visualize 등)
+                currentProblemId = null;
+                currentTab = parts[1];
+            }
+        } else {
+            currentProblemId = null;
+            currentTab = 'landing';
+        }
+
+        // 사이드바 상태 동기화
+        if (topic.problems && topic.problems.length > 0) {
+            if (expandedTopicId && expandedTopicId !== topicId) collapseSubList(expandedTopicId);
+            expandSubList(topicId);
+            expandedTopicId = topicId;
+        }
+
+        updateSidebarActiveStates();
+        var titleText = currentProblemId && topic.problems ?
+            (function() { var p = topic.problems.find(function(p) { return p.id === currentProblemId; }); return p ? topic.icon + ' ' + p.title : topic.icon + ' ' + topic.title; })() :
+            topic.icon + ' ' + topic.title;
+        topicTitle.textContent = titleText;
+        renderTabs();
+        renderContent();
+        return true;
     }
 
     // ===== 문제 선택 =====
@@ -268,6 +329,7 @@ window._setAlgoLang = function(lang) {
 
         renderTabs();
         renderContent();
+        updateHash();
 
         sidebar.classList.remove('open');
         const overlay = document.querySelector('.sidebar-overlay');
@@ -293,6 +355,7 @@ window._setAlgoLang = function(lang) {
         topicTitle.textContent = `${topic.icon} ${topic.title}`;
         renderTabs();
         renderContent();
+        updateHash();
 
         sidebar.classList.remove('open');
         const overlay = document.querySelector('.sidebar-overlay');
@@ -307,6 +370,7 @@ window._setAlgoLang = function(lang) {
         topicTitle.textContent = `${currentTopic.icon} ${currentTopic.title}`;
         renderTabs();
         renderContent();
+        updateHash();
     }
 
     // ===== 탭 데이터 + 메인 탭바 빌드 =====
@@ -371,6 +435,7 @@ window._setAlgoLang = function(lang) {
                 currentTab = tab.id;
                 renderTabs();
                 renderContent();
+                updateHash();
                 setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
             });
             navRow.appendChild(btn);
@@ -412,6 +477,7 @@ window._setAlgoLang = function(lang) {
         currentTab = tabId;
         renderTabs();
         renderContent();
+        updateHash();
         setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     };
 
@@ -926,14 +992,17 @@ window._setAlgoLang = function(lang) {
     // ===== 초기화 =====
     renderSidebar();
 
-    const topics = window.AlgoTopics || {};
-    const firstTopicId = Object.keys(topics)[0];
-    if (firstTopicId) {
-        const firstTopic = topics[firstTopicId];
-        if (firstTopic && firstTopic.problems && firstTopic.problems.length > 0) {
-            toggleTopicExpand(firstTopicId);
-        } else {
-            selectTopic(firstTopicId);
+    // 해시가 있으면 해시에서 상태 복원, 없으면 첫 번째 토픽
+    if (!restoreFromHash()) {
+        const topics = window.AlgoTopics || {};
+        const firstTopicId = Object.keys(topics)[0];
+        if (firstTopicId) {
+            const firstTopic = topics[firstTopicId];
+            if (firstTopic && firstTopic.problems && firstTopic.problems.length > 0) {
+                toggleTopicExpand(firstTopicId);
+            } else {
+                selectTopic(firstTopicId);
+            }
         }
     }
 
@@ -961,6 +1030,13 @@ window._setAlgoLang = function(lang) {
             var a = _anims.get(el);
             if (a && a.timer) clearInterval(a.timer);
             if (!text || text.length < 2) return;
+
+            // HTML 태그가 포함된 설명은 타자 효과를 건너뛴다 (태그가 깨지므로)
+            var html = el.innerHTML || '';
+            if (html !== text && (html.indexOf('<') !== -1 || html.indexOf('&') !== -1)) {
+                _anims.set(el, { timer: null, fullText: text });
+                return;
+            }
 
             var chars = Array.from(text);
             var len = chars.length;

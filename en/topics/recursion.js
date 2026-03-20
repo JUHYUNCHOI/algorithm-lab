@@ -150,6 +150,32 @@ const recursionTopic = {
                     </div>
                 </div>
 
+                <!-- Demo 2: Base Case Comparison -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — With Base Case vs Without</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="rec-demo-basecase-run">▶ Run</button>
+                        <button class="concept-demo-btn green" id="rec-demo-basecase-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--green);">✅ With Base Case</div>
+                                <div style="font-size:0.82rem;color:var(--text2);margin-bottom:6px;font-family:monospace;">if n &lt;= 1: return 1</div>
+                                <div id="rec-demo-bc-good" style="display:flex;flex-direction:column;gap:4px;min-height:200px;"></div>
+                                <div id="rec-demo-bc-good-msg" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--red);">❌ Without Base Case</div>
+                                <div style="font-size:0.82rem;color:var(--text2);margin-bottom:6px;font-family:monospace;">return n * factorial(n-1)</div>
+                                <div id="rec-demo-bc-bad" style="display:flex;flex-direction:column;gap:4px;min-height:200px;"></div>
+                                <div id="rec-demo-bc-bad-msg" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="rec-demo-basecase-msg">👆 Click "Run" to compare factorial(5) with and without a base case!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -170,28 +196,28 @@ const recursionTopic = {
                 <div class="concept-section-title"><span class="section-num">3</span> How Does Recursion Work?</div>
                 <p style="margin-bottom: 1rem;">Each time a function calls itself, it <strong>stacks up like plates</strong>. When the base case is reached, it returns answers one by one from the top.</p>
 
-                <div class="execution-flow-compare">
-                    <div class="flow-grid">
-                        <div class="flow-card topdown-flow">
-                            <div class="flow-label">📥 Calling Phase (Stacking Plates)</div>
-                            <div class="flow-trace">
-                                <div>Call factorial(4)</div>
-                                <div>&nbsp;&nbsp;→ Call factorial(3)</div>
-                                <div>&nbsp;&nbsp;&nbsp;&nbsp;→ Call factorial(2)</div>
-                                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Call factorial(1)</div>
-                                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ return 1 (Stop!)</div>
+                <!-- Demo 3: Call Stack Visualization -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Building and Unwinding the Call Stack</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-size:0.85rem;color:var(--text2);">n =</label>
+                        <input type="number" id="rec-demo-cs-input" value="4" min="2" max="7" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="rec-demo-cs-step">▶ Next Step</button>
+                        <button class="concept-demo-btn green" id="rec-demo-cs-reset">↺ Start Over</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+                            <div style="flex:0 0 180px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);text-align:center;">Call Stack</div>
+                                <div id="rec-demo-cs-stack" style="display:flex;flex-direction:column;gap:4px;min-height:220px;border:2px dashed var(--border);border-radius:10px;padding:12px;justify-content:flex-end;transition:border-color 0.3s;"></div>
                             </div>
-                        </div>
-                        <div class="flow-card bottomup-flow">
-                            <div class="flow-label">📤 Returning Phase (Removing Plates)</div>
-                            <div class="flow-trace">
-                                <div>factorial(1) = 1</div>
-                                <div>factorial(2) = 2 × 1 = 2</div>
-                                <div>factorial(3) = 3 × 2 = 6</div>
-                                <div>factorial(4) = 4 × 6 = <strong>24</strong></div>
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Execution Trace</div>
+                                <div id="rec-demo-cs-log" style="font-family:monospace;font-size:0.85rem;line-height:1.8;color:var(--text2);min-height:220px;"></div>
                             </div>
                         </div>
                     </div>
+                    <div class="concept-demo-msg" id="rec-demo-cs-msg">👆 Click "Next Step" to watch the call stack build and unwind for factorial(4)!</div>
                 </div>
 
                 <div class="key-difference-box">
@@ -236,6 +262,33 @@ const recursionTopic = {
                     </div>
                 </div>
 
+                <!-- Demo 4: Recursion vs Iteration -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Recursion vs Iteration Side by Side</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-size:0.85rem;color:var(--text2);">n =</label>
+                        <input type="number" id="rec-demo-vs-input" value="5" min="2" max="8" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        <button class="concept-demo-btn" id="rec-demo-vs-run">▶ Run Both</button>
+                        <button class="concept-demo-btn green" id="rec-demo-vs-reset" style="display:none;">↺ Again</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--accent);">🔄 Recursion</div>
+                                <div id="rec-demo-vs-rec" style="font-family:monospace;font-size:0.82rem;line-height:1.8;min-height:180px;"></div>
+                                <div id="rec-demo-vs-rec-result" style="margin-top:8px;font-size:0.9rem;font-weight:600;color:var(--accent);min-height:1.5em;"></div>
+                            </div>
+                            <div style="width:1px;background:var(--border);"></div>
+                            <div style="flex:1;min-width:220px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--green);">🔁 Iteration</div>
+                                <div id="rec-demo-vs-iter" style="font-family:monospace;font-size:0.82rem;line-height:1.8;min-height:180px;"></div>
+                                <div id="rec-demo-vs-iter-result" style="margin-top:8px;font-size:0.9rem;font-weight:600;color:var(--green);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="rec-demo-vs-msg">👆 Click "Run Both" to see how recursion and iteration handle the same calculation differently!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -272,6 +325,33 @@ const recursionTopic = {
                         <h4>Make It Smaller</h4>
                         <p>Each call must get closer to the base case!</p>
                     </div>
+                </div>
+
+                <!-- Demo 5: Fibonacci Call Tree -->
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Unfolding the Fibonacci Call Tree</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-size:0.85rem;color:var(--text2);">fib(</label>
+                        <input type="number" id="rec-demo-fib-input" value="5" min="2" max="7" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        <label style="font-size:0.85rem;color:var(--text2);">)</label>
+                        <button class="concept-demo-btn" id="rec-demo-fib-step">▶ Next Step</button>
+                        <button class="concept-demo-btn green" id="rec-demo-fib-reset">↺ Start Over</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+                            <div style="flex:1;min-width:280px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Call Tree</div>
+                                <div id="rec-demo-fib-tree" style="overflow-x:auto;padding:12px 0;min-height:180px;"></div>
+                            </div>
+                            <div style="flex:0 0 200px;min-width:160px;">
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Call Counts</div>
+                                <div id="rec-demo-fib-counts" style="display:flex;flex-direction:column;gap:6px;"></div>
+                                <div id="rec-demo-fib-total" style="margin-top:12px;font-size:0.9rem;font-weight:600;color:var(--accent);"></div>
+                                <div id="rec-demo-fib-dup" style="margin-top:6px;font-size:0.85rem;color:var(--red);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="rec-demo-fib-msg">👆 Click "Next Step" to see how fib(5) splits apart, and notice the duplicate calculations! This redundancy is solved by DP.</div>
                 </div>
 
                 <div class="think-box">
@@ -369,6 +449,555 @@ const recursionTopic = {
                 resetBtn.classList.add('hidden');
             });
         }
+
+        // ============================
+        // Demo 2: Base Case Comparison
+        // ============================
+        (function() {
+            var bcRunBtn = container.querySelector('#rec-demo-basecase-run');
+            var bcResetBtn = container.querySelector('#rec-demo-basecase-reset');
+            var bcGoodEl = container.querySelector('#rec-demo-bc-good');
+            var bcBadEl = container.querySelector('#rec-demo-bc-bad');
+            var bcGoodMsg = container.querySelector('#rec-demo-bc-good-msg');
+            var bcBadMsg = container.querySelector('#rec-demo-bc-bad-msg');
+            var bcMsg = container.querySelector('#rec-demo-basecase-msg');
+            if (!bcRunBtn) return;
+
+            var bcTimers = [];
+
+            function bcReset() {
+                bcTimers.forEach(function(t) { clearTimeout(t); });
+                bcTimers = [];
+                bcGoodEl.innerHTML = '';
+                bcBadEl.innerHTML = '';
+                bcGoodMsg.textContent = '';
+                bcBadMsg.textContent = '';
+                bcRunBtn.style.display = '';
+                bcResetBtn.style.display = 'none';
+                bcMsg.textContent = '👆 Click "Run" to compare factorial(5) with and without a base case!';
+            }
+
+            function makeFrame(text, color, glow) {
+                var el = document.createElement('div');
+                el.style.cssText = 'padding:6px 12px;border-radius:8px;font-family:monospace;font-size:0.82rem;' +
+                    'border:2px solid ' + color + ';background:' + color + '15;color:var(--text);' +
+                    'opacity:0;transform:translateX(-10px);transition:all 0.3s ease;';
+                el.textContent = text;
+                if (glow) el.style.boxShadow = '0 0 8px ' + color + '40';
+                setTimeout(function() { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; }, 30);
+                return el;
+            }
+
+            bcRunBtn.addEventListener('click', function() {
+                bcRunBtn.style.display = 'none';
+                bcResetBtn.style.display = '';
+                bcMsg.textContent = 'Comparing the two approaches...';
+
+                var goodCalls = [
+                    { text: 'factorial(5) called', delay: 0 },
+                    { text: '  → factorial(4) called', delay: 400 },
+                    { text: '    → factorial(3) called', delay: 800 },
+                    { text: '      → factorial(2) called', delay: 1200 },
+                    { text: '        → factorial(1) called', delay: 1600 },
+                    { text: '        ✅ n<=1! return 1', delay: 2000, color: 'var(--green)', glow: true },
+                    { text: '      ← return 2 × 1 = 2', delay: 2400, color: 'var(--green)' },
+                    { text: '    ← return 3 × 2 = 6', delay: 2800, color: 'var(--green)' },
+                    { text: '  ← return 4 × 6 = 24', delay: 3200, color: 'var(--green)' },
+                    { text: '← return 5 × 24 = 120', delay: 3600, color: 'var(--green)', glow: true }
+                ];
+
+                goodCalls.forEach(function(c) {
+                    var t = setTimeout(function() {
+                        bcGoodEl.appendChild(makeFrame(c.text, c.color || 'var(--accent)', c.glow));
+                        if (c.text.indexOf('120') !== -1) {
+                            bcGoodMsg.textContent = 'Result: 120 (terminated normally!)';
+                            bcGoodMsg.style.color = 'var(--green)';
+                        }
+                    }, c.delay);
+                    bcTimers.push(t);
+                });
+
+                var badCalls = [
+                    { text: 'factorial(5) called', delay: 0 },
+                    { text: '  → factorial(4) called', delay: 400 },
+                    { text: '    → factorial(3) called', delay: 800 },
+                    { text: '      → factorial(2) called', delay: 1200 },
+                    { text: '        → factorial(1) called', delay: 1600 },
+                    { text: '          → factorial(0) called', delay: 2000 },
+                    { text: '            → factorial(-1) called', delay: 2400 },
+                    { text: '              → factorial(-2) called', delay: 2800 },
+                    { text: '                → factorial(-3)...', delay: 3200 },
+                    { text: '💥 RecursionError! Stack overflow!', delay: 3600, color: 'var(--red)', glow: true }
+                ];
+
+                badCalls.forEach(function(c) {
+                    var t = setTimeout(function() {
+                        bcBadEl.appendChild(makeFrame(c.text, c.color || 'var(--red)', c.glow));
+                        if (c.text.indexOf('RecursionError') !== -1) {
+                            bcBadMsg.textContent = '💥 Never stops — stack overflow!';
+                            bcBadMsg.style.color = 'var(--red)';
+                            bcMsg.textContent = 'The left side stops cleanly at the base case (n<=1), but the right side calls forever until it crashes!';
+                        }
+                    }, c.delay);
+                    bcTimers.push(t);
+                });
+            });
+
+            bcResetBtn.addEventListener('click', bcReset);
+        })();
+
+        // ============================
+        // Demo 3: Call Stack Visualization
+        // ============================
+        (function() {
+            var csStepBtn = container.querySelector('#rec-demo-cs-step');
+            var csResetBtn = container.querySelector('#rec-demo-cs-reset');
+            var csInput = container.querySelector('#rec-demo-cs-input');
+            var csStack = container.querySelector('#rec-demo-cs-stack');
+            var csLog = container.querySelector('#rec-demo-cs-log');
+            var csMsg = container.querySelector('#rec-demo-cs-msg');
+            if (!csStepBtn) return;
+
+            var csState = { steps: [], idx: -1 };
+
+            function csBuild(n) {
+                csStack.innerHTML = '';
+                csLog.innerHTML = '';
+                csState.idx = -1;
+
+                var fact = [1];
+                for (var i = 1; i <= n; i++) fact[i] = fact[i - 1] * i;
+
+                var steps = [];
+                // Push phase: factorial(n)→...→factorial(1)
+                for (var k = n; k >= 1; k--) {
+                    (function(ci, fv) {
+                        steps.push({
+                            phase: 'push',
+                            desc: ci === 1
+                                ? 'factorial(1) called — base case! return 1'
+                                : 'factorial(' + ci + ') called — needs ' + ci + ' × factorial(' + (ci - 1) + '), so go deeper',
+                            run: function() {
+                                var frame = document.createElement('div');
+                                frame.style.cssText = 'padding:8px 14px;border-radius:8px;font-family:monospace;font-size:0.82rem;' +
+                                    'border:2px solid ' + (ci === 1 ? 'var(--green)' : 'var(--accent)') + ';' +
+                                    'background:' + (ci === 1 ? 'var(--green)' : 'var(--accent)') + '12;color:var(--text);' +
+                                    'text-align:center;animation:fadeSlideUp 0.3s ease;';
+                                frame.textContent = ci === 1 ? 'factorial(1) = 1 ✓' : 'factorial(' + ci + ') = ' + ci + ' × ?';
+                                frame.dataset.ci = ci;
+                                csStack.prepend(frame);
+                                var line = document.createElement('div');
+                                line.style.cssText = 'color:var(--accent);';
+                                line.textContent = '\u00A0\u00A0'.repeat(n - ci) + '→ factorial(' + ci + ') called';
+                                csLog.appendChild(line);
+                            }
+                        });
+                    })(k, fact);
+                }
+                // Pop phase: factorial(1)→...→factorial(n)
+                for (var k = 1; k <= n; k++) {
+                    (function(ci, fv) {
+                        steps.push({
+                            phase: 'pop',
+                            desc: ci === 1
+                                ? 'factorial(1) = 1 returned (base case)'
+                                : 'factorial(' + ci + ') = ' + ci + ' × ' + fv[ci - 1] + ' = ' + fv[ci] + ' returned — plate removed!',
+                            run: function() {
+                                var top = csStack.firstChild;
+                                if (top) {
+                                    top.textContent = 'factorial(' + ci + ') = ' + fv[ci] + ' ✓';
+                                    top.style.borderColor = 'var(--green)';
+                                    top.style.background = 'var(--green)15';
+                                    top.style.boxShadow = '0 0 8px var(--green)40';
+                                    setTimeout(function() {
+                                        top.style.opacity = '0';
+                                        top.style.transform = 'translateX(20px)';
+                                        top.style.transition = 'all 0.3s ease';
+                                        setTimeout(function() { top.remove(); }, 300);
+                                    }, 500);
+                                }
+                                var line = document.createElement('div');
+                                line.style.cssText = 'color:var(--green);';
+                                line.textContent = '\u00A0\u00A0'.repeat(n - ci) + '← factorial(' + ci + ') = ' + fv[ci];
+                                csLog.appendChild(line);
+                            }
+                        });
+                    })(k, fact);
+                }
+                // Done
+                steps.push({
+                    phase: 'done',
+                    desc: 'Done! factorial(' + n + ') = ' + fact[n],
+                    run: function() {}
+                });
+
+                csState.steps = steps;
+                csMsg.textContent = '👆 Click "Next Step" to watch the call stack for factorial(' + n + ')!';
+            }
+
+            csStepBtn.addEventListener('click', function() {
+                if (csState.idx >= csState.steps.length - 1) return;
+                csState.idx++;
+                var s = csState.steps[csState.idx];
+                csMsg.textContent = s.desc;
+                setTimeout(function() { s.run(); }, 200);
+                if (csState.idx >= csState.steps.length - 1) {
+                    csStepBtn.disabled = true;
+                }
+            });
+
+            csResetBtn.addEventListener('click', function() {
+                csStepBtn.disabled = false;
+                var n = parseInt(csInput.value) || 4;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                csBuild(n);
+            });
+
+            csInput.addEventListener('change', function() {
+                csStepBtn.disabled = false;
+                var n = parseInt(csInput.value) || 4;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                csBuild(n);
+            });
+
+            csBuild(4);
+        })();
+
+        // ============================
+        // Demo 4: Recursion vs Iteration
+        // ============================
+        (function() {
+            var vsRunBtn = container.querySelector('#rec-demo-vs-run');
+            var vsResetBtn = container.querySelector('#rec-demo-vs-reset');
+            var vsInput = container.querySelector('#rec-demo-vs-input');
+            var vsRecEl = container.querySelector('#rec-demo-vs-rec');
+            var vsIterEl = container.querySelector('#rec-demo-vs-iter');
+            var vsRecResult = container.querySelector('#rec-demo-vs-rec-result');
+            var vsIterResult = container.querySelector('#rec-demo-vs-iter-result');
+            var vsMsg = container.querySelector('#rec-demo-vs-msg');
+            if (!vsRunBtn) return;
+
+            var vsTimers = [];
+
+            function vsReset() {
+                vsTimers.forEach(function(t) { clearTimeout(t); });
+                vsTimers = [];
+                vsRecEl.innerHTML = '';
+                vsIterEl.innerHTML = '';
+                vsRecResult.textContent = '';
+                vsIterResult.textContent = '';
+                vsRunBtn.style.display = '';
+                vsResetBtn.style.display = 'none';
+                vsMsg.textContent = '👆 Click "Run Both" to see how recursion and iteration handle the same calculation differently!';
+            }
+
+            function addLine(parent, text, color, delay) {
+                var t = setTimeout(function() {
+                    var el = document.createElement('div');
+                    el.style.cssText = 'opacity:0;transform:translateX(-8px);transition:all 0.25s ease;color:' + (color || 'var(--text2)') + ';';
+                    el.textContent = text;
+                    parent.appendChild(el);
+                    setTimeout(function() { el.style.opacity = '1'; el.style.transform = 'translateX(0)'; }, 30);
+                }, delay);
+                vsTimers.push(t);
+            }
+
+            vsRunBtn.addEventListener('click', function() {
+                var n = parseInt(vsInput.value) || 5;
+                if (n < 2) n = 2;
+                if (n > 8) n = 8;
+                vsRunBtn.style.display = 'none';
+                vsResetBtn.style.display = '';
+                vsMsg.textContent = 'Running... compare the two approaches!';
+
+                // Recursion side: dive into the call stack then return
+                var fact = [1];
+                for (var i = 1; i <= n; i++) fact[i] = fact[i - 1] * i;
+                var delay = 0;
+                var step = 350;
+                // Calling phase
+                for (var i = n; i >= 1; i--) {
+                    var indent = '\u00A0\u00A0'.repeat(n - i);
+                    if (i === 1) {
+                        addLine(vsRecEl, indent + '→ factorial(1) → stop! return 1', 'var(--green)', delay);
+                    } else {
+                        addLine(vsRecEl, indent + '→ factorial(' + i + ') called', 'var(--accent)', delay);
+                    }
+                    delay += step;
+                }
+                // Return phase
+                for (var i = 1; i <= n; i++) {
+                    var indent = '\u00A0\u00A0'.repeat(n - i);
+                    addLine(vsRecEl, indent + '← factorial(' + i + ') = ' + fact[i], 'var(--green)', delay);
+                    delay += step;
+                }
+                var recDone = delay;
+                var t1 = setTimeout(function() {
+                    vsRecResult.textContent = 'Result: ' + fact[n] + ' (stack depth: ' + n + ')';
+                }, recDone);
+                vsTimers.push(t1);
+
+                // Iteration side: simple multiplication loop
+                var iterDelay = 0;
+                addLine(vsIterEl, 'result = 1', 'var(--text2)', iterDelay);
+                iterDelay += step;
+                var result = 1;
+                for (var i = 2; i <= n; i++) {
+                    result *= i;
+                    addLine(vsIterEl, 'i=' + i + ': result = result × ' + i + ' = ' + result, 'var(--green)', iterDelay);
+                    iterDelay += step;
+                }
+                var iterDone = iterDelay;
+                var t2 = setTimeout(function() {
+                    vsIterResult.textContent = 'Result: ' + result + ' (stack depth: 0)';
+                }, iterDone);
+                vsTimers.push(t2);
+
+                var maxDone = Math.max(recDone, iterDone) + 200;
+                var t3 = setTimeout(function() {
+                    vsMsg.textContent = 'Recursion stacks ' + n + ' frames deep, but iteration uses just one variable with no stack. For simple problems like factorial, iteration is more efficient!';
+                }, maxDone);
+                vsTimers.push(t3);
+            });
+
+            vsResetBtn.addEventListener('click', vsReset);
+        })();
+
+        // ============================
+        // Demo 5: Fibonacci Call Tree
+        // ============================
+        (function() {
+            var fibStepBtn = container.querySelector('#rec-demo-fib-step');
+            var fibResetBtn = container.querySelector('#rec-demo-fib-reset');
+            var fibInput = container.querySelector('#rec-demo-fib-input');
+            var fibTree = container.querySelector('#rec-demo-fib-tree');
+            var fibCounts = container.querySelector('#rec-demo-fib-counts');
+            var fibTotal = container.querySelector('#rec-demo-fib-total');
+            var fibDup = container.querySelector('#rec-demo-fib-dup');
+            var fibMsg = container.querySelector('#rec-demo-fib-msg');
+            if (!fibStepBtn) return;
+
+            var fibState = { steps: [], idx: -1, nodeEls: {}, countEls: {}, counts: {}, totalCount: 0 };
+
+            function fibBuild(n) {
+                fibTree.innerHTML = '';
+                fibCounts.innerHTML = '';
+                fibTotal.textContent = '';
+                fibDup.textContent = '';
+                fibState.idx = -1;
+                fibState.nodeEls = {};
+                fibState.countEls = {};
+                fibState.counts = {};
+                fibState.totalCount = 0;
+
+                // Call counter UI
+                for (var i = 0; i <= n; i++) {
+                    fibState.counts[i] = 0;
+                    var row = document.createElement('div');
+                    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+                    row.innerHTML = '<span style="font-family:monospace;font-size:0.82rem;min-width:50px;">fib(' + i + ')</span>' +
+                        '<div style="flex:1;height:16px;background:var(--bg2);border-radius:4px;overflow:hidden;">' +
+                        '<div id="rec-demo-fib-bar-' + i + '" style="height:100%;width:0%;background:var(--accent);border-radius:4px;transition:width 0.3s;"></div></div>' +
+                        '<span id="rec-demo-fib-cnt-' + i + '" style="font-family:monospace;font-size:0.82rem;min-width:20px;text-align:right;">0</span>';
+                    fibCounts.appendChild(row);
+                    fibState.countEls[i] = {
+                        bar: row.querySelector('#rec-demo-fib-bar-' + i),
+                        cnt: row.querySelector('#rec-demo-fib-cnt-' + i)
+                    };
+                }
+
+                // Build SVG tree — calculate node positions first
+                var nodes = [];
+                var edges = [];
+                var nodeId = 0;
+
+                function layoutTree(val, depth, xCenter, xSpan) {
+                    var id = nodeId++;
+                    nodes.push({ id: id, val: val, x: xCenter, y: depth * 60 + 30, depth: depth });
+                    if (val <= 1) return id;
+                    var leftId = layoutTree(val - 1, depth + 1, xCenter - xSpan / 2, xSpan / 2);
+                    edges.push({ from: id, to: leftId });
+                    var rightId = layoutTree(val - 2, depth + 1, xCenter + xSpan / 2, xSpan / 2);
+                    edges.push({ from: id, to: rightId });
+                    return id;
+                }
+
+                var totalWidth = Math.max(400, Math.pow(2, n) * 40);
+                var totalHeight = (n + 1) * 60 + 20;
+                layoutTree(n, 0, totalWidth / 2, totalWidth / 3);
+
+                var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', totalWidth);
+                svg.setAttribute('height', totalHeight);
+                svg.style.cssText = 'display:block;margin:0 auto;';
+
+                // Draw edges (hidden initially)
+                edges.forEach(function(e) {
+                    var fromNode = nodes[e.from];
+                    var toNode = nodes[e.to];
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', fromNode.x);
+                    line.setAttribute('y1', fromNode.y + 14);
+                    line.setAttribute('x2', toNode.x);
+                    line.setAttribute('y2', toNode.y - 14);
+                    line.setAttribute('stroke', 'var(--border)');
+                    line.setAttribute('stroke-width', '2');
+                    line.style.opacity = '0';
+                    line.dataset.from = e.from;
+                    line.dataset.to = e.to;
+                    svg.appendChild(line);
+                });
+
+                // Draw nodes (hidden initially)
+                nodes.forEach(function(nd) {
+                    var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                    g.style.opacity = '0';
+                    g.style.transition = 'opacity 0.3s ease';
+
+                    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', nd.x);
+                    circle.setAttribute('cy', nd.y);
+                    circle.setAttribute('r', 16);
+                    circle.setAttribute('fill', 'var(--bg2)');
+                    circle.setAttribute('stroke', 'var(--border)');
+                    circle.setAttribute('stroke-width', '2');
+                    g.appendChild(circle);
+
+                    var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', nd.x);
+                    text.setAttribute('y', nd.y + 4);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('font-size', '11');
+                    text.setAttribute('font-family', 'monospace');
+                    text.setAttribute('fill', 'var(--text)');
+                    text.textContent = 'f(' + nd.val + ')';
+                    g.appendChild(text);
+
+                    svg.appendChild(g);
+                    fibState.nodeEls[nd.id] = { g: g, circle: circle, text: text };
+                });
+
+                fibTree.appendChild(svg);
+
+                // Build steps: show nodes in DFS order
+                var steps = [];
+                function buildSteps(nodeIdx) {
+                    var nd = nodes[nodeIdx];
+                    steps.push({
+                        desc: nd.val <= 1
+                            ? 'fib(' + nd.val + ') — base case! return ' + nd.val + ' immediately'
+                            : 'fib(' + nd.val + ') called — splits into fib(' + (nd.val - 1) + ') + fib(' + (nd.val - 2) + ')',
+                        nodeId: nodeIdx,
+                        val: nd.val,
+                        isBase: nd.val <= 1
+                    });
+                    if (nd.val > 1) {
+                        var childEdges = edges.filter(function(e) { return e.from === nodeIdx; });
+                        childEdges.forEach(function(ce) {
+                            buildSteps(ce.to);
+                        });
+                        var fibVal = [0, 1];
+                        for (var i = 2; i <= n; i++) fibVal[i] = fibVal[i - 1] + fibVal[i - 2];
+                        steps.push({
+                            desc: 'fib(' + nd.val + ') = fib(' + (nd.val - 1) + ') + fib(' + (nd.val - 2) + ') = ' + fibVal[nd.val - 1] + ' + ' + fibVal[nd.val - 2] + ' = ' + fibVal[nd.val] + ' returned',
+                            nodeId: nodeIdx,
+                            val: nd.val,
+                            isReturn: true,
+                            result: fibVal[nd.val]
+                        });
+                    }
+                }
+                buildSteps(0);
+
+                fibState.steps = steps;
+                fibMsg.textContent = '👆 Click "Next Step" to watch fib(' + n + ')\'s call tree unfold!';
+                fibStepBtn.disabled = false;
+
+                fibState.edges = edges;
+                fibState.svg = svg;
+                fibState.nodes = nodes;
+            }
+
+            fibStepBtn.addEventListener('click', function() {
+                if (fibState.idx >= fibState.steps.length - 1) return;
+                fibState.idx++;
+                var s = fibState.steps[fibState.idx];
+                fibMsg.textContent = s.desc;
+
+                setTimeout(function() {
+                    var nodeEl = fibState.nodeEls[s.nodeId];
+                    if (!nodeEl) return;
+
+                    if (s.isReturn) {
+                        nodeEl.circle.setAttribute('stroke', 'var(--green)');
+                        nodeEl.circle.setAttribute('fill', 'var(--green)15');
+                        nodeEl.circle.setAttribute('stroke-width', '3');
+                    } else {
+                        nodeEl.g.style.opacity = '1';
+                        var parentEdge = fibState.edges.filter(function(e) { return e.to === s.nodeId; });
+                        parentEdge.forEach(function(pe) {
+                            fibState.svg.querySelectorAll('line').forEach(function(line) {
+                                if (parseInt(line.dataset.from) === pe.from && parseInt(line.dataset.to) === pe.to) {
+                                    line.style.opacity = '1';
+                                    line.style.transition = 'opacity 0.3s ease';
+                                }
+                            });
+                        });
+                        fibState.counts[s.val]++;
+                        fibState.totalCount++;
+                        var ce = fibState.countEls[s.val];
+                        if (ce) {
+                            ce.cnt.textContent = fibState.counts[s.val];
+                            var maxCalls = 8;
+                            ce.bar.style.width = Math.min(100, (fibState.counts[s.val] / maxCalls) * 100) + '%';
+                            if (fibState.counts[s.val] > 1) {
+                                ce.bar.style.background = 'var(--red)';
+                                nodeEl.circle.setAttribute('stroke', 'var(--yellow)');
+                                nodeEl.circle.setAttribute('fill', 'var(--yellow)20');
+                            }
+                        }
+                        fibTotal.textContent = 'Total calls: ' + fibState.totalCount;
+                        var dups = [];
+                        for (var k in fibState.counts) {
+                            if (fibState.counts[k] > 1) dups.push('fib(' + k + ')=' + fibState.counts[k] + 'x');
+                        }
+                        fibDup.textContent = dups.length > 0 ? 'Duplicates: ' + dups.join(', ') : '';
+
+                        if (s.isBase) {
+                            nodeEl.circle.setAttribute('stroke', 'var(--green)');
+                            nodeEl.circle.setAttribute('fill', 'var(--green)15');
+                        } else {
+                            nodeEl.circle.setAttribute('stroke', fibState.counts[s.val] > 1 ? 'var(--yellow)' : 'var(--accent)');
+                        }
+                    }
+                }, 200);
+
+                if (fibState.idx >= fibState.steps.length - 1) {
+                    fibStepBtn.disabled = true;
+                    setTimeout(function() {
+                        fibMsg.textContent = 'Done! Notice how the same fib values were computed multiple times? Eliminating this redundancy is exactly what DP (memoization) does!';
+                    }, 400);
+                }
+            });
+
+            fibResetBtn.addEventListener('click', function() {
+                var n = parseInt(fibInput.value) || 5;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                fibBuild(n);
+            });
+
+            fibInput.addEventListener('change', function() {
+                var n = parseInt(fibInput.value) || 5;
+                if (n < 2) n = 2;
+                if (n > 7) n = 7;
+                fibBuild(n);
+            });
+
+            fibBuild(5);
+        })();
     },
 
     // ===== Visualization State =====
@@ -509,8 +1138,8 @@ const recursionTopic = {
                 const ci = i;
                 steps.push({
                     description: ci === 1
-                        ? `Call factorial(1) → Base case! return 1`
-                        : `Call factorial(${ci}) → needs ${ci} × factorial(${ci - 1}), dig deeper`,
+                        ? `Call factorial(1) → <strong>Base case</strong>: n=1 cannot be broken down further, so return 1 immediately without recursion`
+                        : `Call factorial(${ci}) → needs ${ci} × factorial(${ci - 1}), so we recurse to solve the smaller subproblem first`,
                     action() {
                         const frame = document.createElement('div');
                         frame.className = 'stack-frame' + (ci === 1 ? ' base' : '');
@@ -537,8 +1166,8 @@ const recursionTopic = {
                 const ci = i;
                 steps.push({
                     description: ci === 1
-                        ? `factorial(1) = 1 returned (base case)`
-                        : `factorial(${ci}) = ${ci} × ${fact[ci - 1]} = ${fact[ci]} returned`,
+                        ? `factorial(1) = 1 returned — base case, so the value is returned immediately without recursion`
+                        : `factorial(${ci}) = ${ci} × ${fact[ci - 1]} = ${fact[ci]} returned — multiplies the result from the call below and passes it up`,
                     action() {
                         const topFrame = stackEl.firstChild;
                         if (topFrame) {
@@ -565,7 +1194,7 @@ const recursionTopic = {
             }
 
             steps.push({
-                description: `✅ Done! factorial(${n}) = ${fact[n]}`,
+                description: `✅ Done! factorial(${n}) = ${fact[n]} — base case returns chain upward through each call to produce the final result`,
                 action() {},
                 undo() {}
             });
@@ -655,7 +1284,7 @@ const recursionTopic = {
                 if (s.type === 'call') {
                     const ck = s.k;
                     steps.push({
-                        description: `Call fib(${ck}) (depth ${s.depth})`,
+                        description: `Call fib(${ck}) (depth ${s.depth}) — need fib(${ck-1}) + fib(${ck-2}), so we recurse deeper`,
                         action() {
                             callCounts[ck]++;
                             totalCalls++;
@@ -681,7 +1310,7 @@ const recursionTopic = {
                     });
                 } else if (s.type === 'base') {
                     steps.push({
-                        description: `fib(${s.k}) = ${s.value} (base case) returned`,
+                        description: `fib(${s.k}) = ${s.value} returned — <strong>base case</strong>: n<=2 cannot be split further, so return immediately without recursion`,
                         action() {
                             countCells[s.k].classList.add('base');
                             const line = document.createElement('div');
@@ -699,7 +1328,7 @@ const recursionTopic = {
                     });
                 } else if (s.type === 'return') {
                     steps.push({
-                        description: `fib(${s.k}) = fib(${s.k-1}) + fib(${s.k-2}) = ${s.v1} + ${s.v2} = ${s.result} returned`,
+                        description: `fib(${s.k}) = fib(${s.k-1}) + fib(${s.k-2}) = ${s.v1} + ${s.v2} = ${s.result} returned — combines both sub-results and passes them up to the caller`,
                         action() {
                             countCells[s.k].classList.add('filled');
                             const line = document.createElement('div');
@@ -794,7 +1423,7 @@ const recursionTopic = {
 
             const steps = moves.map((m, idx) => {
                 return {
-                    description: `Move disk ${m.disk} from peg ${m.from} → peg ${m.to}`,
+                    description: `Move disk ${m.disk} from peg ${m.from} → peg ${m.to} — must clear smaller disks first before moving a larger one`,
                     action() {
                         const fromEl = el.querySelector(`#peg-${m.from}`);
                         const toEl = el.querySelector(`#peg-${m.to}`);
@@ -881,7 +1510,7 @@ const recursionTopic = {
         }
 
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem':
                 self._renderProblemTab(contentDiv, prob);
@@ -1035,8 +1664,8 @@ const recursionTopic = {
                 (function(ci) {
                     steps.push({
                         description: ci === 1
-                            ? 'Call factorial(1) → Base case! return 1'
-                            : 'Call factorial(' + ci + ') → needs ' + ci + ' × factorial(' + (ci-1) + ')',
+                            ? 'Call factorial(1) → <strong>Base case</strong>: n=1 cannot be split further, return 1 immediately'
+                            : 'Call factorial(' + ci + ') → needs ' + ci + ' × factorial(' + (ci-1) + '), so we recurse to solve the smaller subproblem first',
                         action: function() {
                             var fr = document.createElement('div');
                             fr.className = 'stack-frame' + (ci === 1 ? ' base' : '');
@@ -1057,8 +1686,8 @@ const recursionTopic = {
                 (function(ci) {
                     steps.push({
                         description: ci === 1
-                            ? 'Return factorial(1) = 1'
-                            : 'Return factorial(' + ci + ') = ' + ci + ' × ' + factVals[ci-1] + ' = ' + factVals[ci],
+                            ? 'Return factorial(1) = 1 — base case returns immediately without recursion'
+                            : 'Return factorial(' + ci + ') = ' + ci + ' × ' + factVals[ci-1] + ' = ' + factVals[ci] + ' — receives result from below, multiplies, and passes up',
                         action: function() {
                             var top = stackEl.firstChild;
                             if (top) {
@@ -1138,7 +1767,7 @@ const recursionTopic = {
                 if (s.type === 'call') {
                     (function(sk, sd) {
                         steps.push({
-                            description: 'Call fib(' + sk + ') (depth ' + sd + ')',
+                            description: 'Call fib(' + sk + ') (depth ' + sd + ') — need fib(' + (sk-1) + ') + fib(' + (sk-2) + '), so we recurse deeper',
                             action: function() {
                                 callCount++;
                                 cntEl.textContent = callCount;
@@ -1160,7 +1789,7 @@ const recursionTopic = {
                 } else if (s.type === 'base') {
                     (function(sk, sv) {
                         steps.push({
-                            description: 'fib(' + sk + ') = ' + sv + ' (base case)',
+                            description: 'fib(' + sk + ') = ' + sv + ' — <strong>base case</strong>: n<=2 cannot be split further, return immediately',
                             action: function() {
                                 var line = document.createElement('div');
                                 line.className = 'log-line base-case';
@@ -1178,7 +1807,7 @@ const recursionTopic = {
                 } else if (s.type === 'return') {
                     (function(sk, sr) {
                         steps.push({
-                            description: 'Return fib(' + sk + ') = ' + sr,
+                            description: 'Return fib(' + sk + ') = ' + sr + ' — combines both sub-results and passes them up to the caller',
                             action: function() {
                                 var line = document.createElement('div');
                                 line.className = 'log-line return-val';
@@ -1882,7 +2511,7 @@ const recursionTopic = {
             var steps = [];
             moves.forEach(function(m) {
                 steps.push({
-                    description: 'Move disk ' + m.disk + ' from peg ' + m.from + ' → peg ' + m.to,
+                    description: 'Move disk ' + m.disk + ' from peg ' + m.from + ' → peg ' + m.to + ' — must clear smaller disks above before moving a larger one',
                     action: function() {
                         var fromEl = container.querySelector('#sim-peg-' + m.from);
                         var toEl = container.querySelector('#sim-peg-' + m.to);

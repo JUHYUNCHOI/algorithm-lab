@@ -67,7 +67,7 @@ var dpTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -156,6 +156,23 @@ var dpTopic = {
                     이제 누가 <strong>1+1+1+1+1+1</strong>을 물어봅니다.<br>
                     처음부터 다시 더할 건가요? 아니면 아까 답(5)에 1만 더할 건가요?<br><br>
                     DP는 바로 이 아이디어입니다. <strong>이미 계산한 결과를 저장해두고 재활용</strong>하는 것!
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 피보나치 메모이제이션 테이블</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">DP 테이블이 한 칸씩 채워지는 과정을 봅니다. 이미 계산된 값은 다시 계산하지 않습니다!</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">N:
+                            <input type="number" id="dp-demo-fib-input" value="8" min="3" max="12" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-fib-go">테이블 채우기</button>
+                        <button class="concept-demo-btn green" id="dp-demo-fib-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-fib-table" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;"></div>
+                        <div id="dp-demo-fib-formula" style="text-align:center;font-size:0.95rem;color:var(--text);font-weight:600;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-fib-msg">dp[i] = dp[i-1] + dp[i-2]. 작은 값부터 채워나갑니다.</div>
                 </div>
 
                 <div class="think-box">
@@ -285,6 +302,23 @@ var dpTopic = {
                         </div>
                     </div>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 계단 오르기 4단계</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">1칸 또는 2칸씩 올라갈 수 있을 때, 각 계단까지 가는 방법의 수를 구합니다.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">계단 수:
+                            <input type="number" id="dp-demo-stair-input" value="6" min="2" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-stair-go">채우기 시작</button>
+                        <button class="concept-demo-btn green" id="dp-demo-stair-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-stair-viz" style="display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;min-height:120px;padding-bottom:10px;"></div>
+                        <div id="dp-demo-stair-formula" style="text-align:center;font-size:0.95rem;color:var(--text);font-weight:600;min-height:1.5em;margin-top:8px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-stair-msg">dp[i] = dp[i-1] + dp[i-2]. i번째 계단은 (i-1)에서 1칸 올라오거나 (i-2)에서 2칸 올라오는 두 가지!</div>
+                </div>
             </div>
 
             <!-- ④ Top-Down vs Bottom-Up -->
@@ -392,6 +426,33 @@ int fib(int n) {
                         <strong>실전 팁:</strong> 대부분의 대회/코딩테스트에서는 아래에서 위로 방식을 더 많이 씁니다. 반복문이라 빠르고, 재귀처럼 너무 많이 쌓여서 터지는 문제가 없기 때문입니다.
                     </div>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — Top-Down vs Bottom-Up</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">같은 fib(N)을 두 방식으로 풀 때, 계산 순서가 어떻게 다른지 비교합니다.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">N:
+                            <input type="number" id="dp-demo-compare-input" value="6" min="3" max="8" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-compare-go">비교 시작</button>
+                        <button class="concept-demo-btn green" id="dp-demo-compare-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">Top-Down (재귀+메모)</div>
+                                <div id="dp-demo-td-cells" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;"></div>
+                                <div id="dp-demo-td-log" style="font-size:0.8rem;color:var(--text2);min-height:3em;max-height:100px;overflow-y:auto;"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">Bottom-Up (반복문)</div>
+                                <div id="dp-demo-bu-cells" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;"></div>
+                                <div id="dp-demo-bu-log" style="font-size:0.8rem;color:var(--text2);min-height:3em;max-height:100px;overflow-y:auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-compare-msg">Top-Down은 필요한 것만 계산하고, Bottom-Up은 작은 것부터 전부 계산합니다.</div>
+                </div>
             </div>
 
             <!-- ⑤ 성능 비교 -->
@@ -429,6 +490,16 @@ int fib(int n) {
                     <div class="roadmap-item"><div class="roadmap-icon">📈</div><h4>가장 긴 증가 수열 (LIS)</h4><p>증가 수열, 올라갔다 내려가는 수열, 전깃줄</p></div>
                     <div class="roadmap-item"><div class="roadmap-icon">🔤</div><h4>가장 긴 공통 수열 (LCS)</h4><p>두 문자열 비교, 2차원 표</p></div>
                     <div class="roadmap-item"><div class="roadmap-icon">🎒</div><h4>배낭 문제</h4><p>무게 제한 안에서 가장 값어치 있게 고르기</p></div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — DP 유형 맞추기 퀴즈</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">문제 설명을 읽고 어떤 DP 유형인지 맞혀보세요!</p>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-quiz-cards" style="display:flex;flex-direction:column;gap:10px;"></div>
+                        <div id="dp-demo-quiz-score" style="text-align:center;font-size:1rem;font-weight:600;margin-top:12px;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-quiz-msg">문제를 클릭하면 정답이 나타납니다. 맞히면 초록, 틀리면 빨강!</div>
                 </div>
 
                 <div class="think-box">
@@ -471,6 +542,309 @@ int fib(int n) {
 
         // 신택스 하이라이팅
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // concept demos
+        this._initConceptDemos(container);
+    },
+
+    _initConceptDemos(container) {
+        var self = this;
+
+        // === Demo 1: 피보나치 메모이제이션 테이블 ===
+        {
+            var fibGoBtn = container.querySelector('#dp-demo-fib-go');
+            var fibResetBtn = container.querySelector('#dp-demo-fib-reset');
+            var fibInput = container.querySelector('#dp-demo-fib-input');
+            var fibTable = container.querySelector('#dp-demo-fib-table');
+            var fibFormula = container.querySelector('#dp-demo-fib-formula');
+            var fibMsg = container.querySelector('#dp-demo-fib-msg');
+
+            function cellStyle(state) {
+                var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : 'var(--bg2)');
+                var border = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : 'var(--border)');
+                var color = (state === 'active' || state === 'done') ? 'white' : 'var(--text3)';
+                var shadow = state === 'active' ? 'box-shadow:0 0 10px var(--yellow)50;transform:scale(1.08);' : '';
+                return 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:52px;border-radius:10px;border:2px solid ' + border + ';background:' + bg + ';color:' + color + ';font-weight:700;font-size:0.9rem;transition:all 0.3s;' + shadow;
+            }
+
+            function renderCells(n, dp, activeIdx) {
+                fibTable.innerHTML = '';
+                for (var i = 1; i <= n; i++) {
+                    var state = (i === activeIdx) ? 'active' : (dp[i] !== undefined ? 'done' : 'empty');
+                    var div = document.createElement('div');
+                    div.style.cssText = cellStyle(state);
+                    div.innerHTML = '<div style="font-size:0.65rem;opacity:0.7;">dp[' + i + ']</div><div>' + (dp[i] !== undefined ? dp[i] : '?') + '</div>';
+                    fibTable.appendChild(div);
+                }
+            }
+
+            fibGoBtn.addEventListener('click', function() {
+                fibGoBtn.style.display = 'none';
+                fibResetBtn.style.display = '';
+                var n = Math.max(3, Math.min(12, parseInt(fibInput.value) || 8));
+                var dp = {};
+                dp[1] = 1; dp[2] = 1;
+                renderCells(n, dp);
+                fibFormula.textContent = 'dp[1] = 1, dp[2] = 1 (초기값 설정)';
+
+                var idx = 3;
+                function nextFill() {
+                    if (idx > n) {
+                        renderCells(n, dp);
+                        fibFormula.innerHTML = 'fib(' + n + ') = <strong style="color:var(--green);">' + dp[n] + '</strong>';
+                        fibMsg.textContent = '완료! dp 테이블을 작은 것부터 채워서 fib(' + n + ')을 구했습니다.';
+                        return;
+                    }
+                    renderCells(n, dp, idx);
+                    fibFormula.textContent = 'dp[' + idx + '] = dp[' + (idx - 1) + '](' + dp[idx - 1] + ') + dp[' + (idx - 2) + '](' + dp[idx - 2] + ') = ' + (dp[idx - 1] + dp[idx - 2]);
+                    setTimeout(function() {
+                        dp[idx] = dp[idx - 1] + dp[idx - 2];
+                        renderCells(n, dp);
+                        idx++;
+                        setTimeout(nextFill, 450);
+                    }, 400);
+                }
+                setTimeout(nextFill, 600);
+            });
+
+            fibResetBtn.addEventListener('click', function() {
+                fibGoBtn.style.display = '';
+                fibResetBtn.style.display = 'none';
+                fibTable.innerHTML = '';
+                fibFormula.textContent = '';
+                fibMsg.textContent = 'dp[i] = dp[i-1] + dp[i-2]. 작은 값부터 채워나갑니다.';
+            });
+        }
+
+        // === Demo 2: 계단 오르기 ===
+        {
+            var stairGoBtn = container.querySelector('#dp-demo-stair-go');
+            var stairResetBtn = container.querySelector('#dp-demo-stair-reset');
+            var stairInput = container.querySelector('#dp-demo-stair-input');
+            var stairViz = container.querySelector('#dp-demo-stair-viz');
+            var stairFormula = container.querySelector('#dp-demo-stair-formula');
+            var stairMsg = container.querySelector('#dp-demo-stair-msg');
+
+            function renderStairs(n, dp, activeIdx) {
+                stairViz.innerHTML = '';
+                for (var i = 0; i <= n; i++) {
+                    var h = 30 + i * 14;
+                    var state = (i === activeIdx) ? 'active' : (dp[i] !== undefined ? 'done' : 'empty');
+                    var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--accent)' : 'var(--bg3)');
+                    var color = (state === 'active' || state === 'done') ? 'white' : 'var(--text3)';
+                    var shadow = state === 'active' ? 'box-shadow:0 0 12px var(--yellow)50;' : '';
+                    var div = document.createElement('div');
+                    div.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;width:50px;height:' + h + 'px;background:' + bg + ';border-radius:8px 8px 0 0;color:' + color + ';font-weight:700;padding-bottom:6px;transition:all 0.3s;' + shadow;
+                    div.innerHTML = '<div style="font-size:0.65rem;opacity:0.8;">' + (i === 0 ? '바닥' : i + '칸') + '</div><div style="font-size:0.9rem;">' + (dp[i] !== undefined ? dp[i] : '?') + '</div>';
+                    stairViz.appendChild(div);
+                }
+            }
+
+            stairGoBtn.addEventListener('click', function() {
+                stairGoBtn.style.display = 'none';
+                stairResetBtn.style.display = '';
+                var n = Math.max(2, Math.min(10, parseInt(stairInput.value) || 6));
+                var dp = {};
+                dp[0] = 1; dp[1] = 1;
+                renderStairs(n, dp);
+                stairFormula.textContent = 'dp[0] = 1 (바닥), dp[1] = 1 (1가지 방법)';
+
+                var idx = 2;
+                function nextStep() {
+                    if (idx > n) {
+                        renderStairs(n, dp);
+                        stairFormula.innerHTML = n + '칸까지 가는 방법: <strong style="color:var(--green);">' + dp[n] + '가지</strong>';
+                        stairMsg.textContent = '완료! 각 계단의 방법 수 = 바로 아래(1칸) + 두 칸 아래(2칸)의 합입니다.';
+                        return;
+                    }
+                    renderStairs(n, dp, idx);
+                    dp[idx] = dp[idx - 1] + dp[idx - 2];
+                    stairFormula.textContent = 'dp[' + idx + '] = dp[' + (idx - 1) + '](' + dp[idx - 1] + ') + dp[' + (idx - 2) + '](' + dp[idx - 2] + ') = ' + dp[idx];
+                    setTimeout(function() {
+                        renderStairs(n, dp);
+                        idx++;
+                        setTimeout(nextStep, 450);
+                    }, 400);
+                }
+                setTimeout(nextStep, 600);
+            });
+
+            stairResetBtn.addEventListener('click', function() {
+                stairGoBtn.style.display = '';
+                stairResetBtn.style.display = 'none';
+                stairViz.innerHTML = '';
+                stairFormula.textContent = '';
+                stairMsg.textContent = 'dp[i] = dp[i-1] + dp[i-2]. i번째 계단은 (i-1)에서 1칸 올라오거나 (i-2)에서 2칸 올라오는 두 가지!';
+            });
+        }
+
+        // === Demo 3: Top-Down vs Bottom-Up 비교 ===
+        {
+            var cmpGoBtn = container.querySelector('#dp-demo-compare-go');
+            var cmpResetBtn = container.querySelector('#dp-demo-compare-reset');
+            var cmpInput = container.querySelector('#dp-demo-compare-input');
+            var tdCells = container.querySelector('#dp-demo-td-cells');
+            var buCells = container.querySelector('#dp-demo-bu-cells');
+            var tdLog = container.querySelector('#dp-demo-td-log');
+            var buLog = container.querySelector('#dp-demo-bu-log');
+            var cmpMsg = container.querySelector('#dp-demo-compare-msg');
+
+            function cmpCellStyle(state) {
+                var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : (state === 'memo' ? 'var(--accent)' : 'var(--bg2)'));
+                var border = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : (state === 'memo' ? 'var(--accent)' : 'var(--border)'));
+                var color = state !== 'empty' ? 'white' : 'var(--text3)';
+                var shadow = state === 'active' ? 'box-shadow:0 0 8px var(--yellow)50;' : '';
+                return 'display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;height:44px;border-radius:8px;border:2px solid ' + border + ';background:' + bg + ';color:' + color + ';font-weight:700;font-size:0.8rem;transition:all 0.3s;' + shadow;
+            }
+
+            function renderCmpCells(el, n, vals, activeIdx) {
+                el.innerHTML = '';
+                for (var i = 1; i <= n; i++) {
+                    var state = (i === activeIdx) ? 'active' : (vals[i] !== undefined ? 'done' : 'empty');
+                    var div = document.createElement('div');
+                    div.style.cssText = cmpCellStyle(state);
+                    div.innerHTML = '<div style="font-size:0.6rem;opacity:0.7;">[' + i + ']</div>' + (vals[i] !== undefined ? vals[i] : '?');
+                    el.appendChild(div);
+                }
+            }
+
+            cmpGoBtn.addEventListener('click', function() {
+                cmpGoBtn.style.display = 'none';
+                cmpResetBtn.style.display = '';
+                var n = Math.max(3, Math.min(8, parseInt(cmpInput.value) || 6));
+                var tdVals = {}, buVals = {};
+                tdLog.innerHTML = '';
+                buLog.innerHTML = '';
+                renderCmpCells(tdCells, n, tdVals);
+                renderCmpCells(buCells, n, buVals);
+
+                // Bottom-Up: straightforward i=1..n
+                var buSteps = [];
+                buSteps.push({ i: 1, val: 1, log: 'dp[1] = 1 (초기값)' });
+                buSteps.push({ i: 2, val: 1, log: 'dp[2] = 1 (초기값)' });
+                for (var bi = 3; bi <= n; bi++) {
+                    var bprev = buSteps[bi - 2].val, bprev2 = buSteps[bi - 3].val;
+                    buSteps.push({ i: bi, val: bprev + bprev2, log: 'dp[' + bi + '] = dp[' + (bi - 1) + '] + dp[' + (bi - 2) + '] = ' + (bprev + bprev2) });
+                }
+
+                // Top-Down: simulate recursive call order for fib(n) with memoization
+                var tdSteps = [];
+                var memo = {};
+                function simTD(x) {
+                    if (memo[x] !== undefined) {
+                        tdSteps.push({ i: x, val: memo[x], log: 'fib(' + x + ') = memo[' + x + '] = ' + memo[x] + ' (저장됨!)' });
+                        return memo[x];
+                    }
+                    if (x <= 2) { memo[x] = 1; tdSteps.push({ i: x, val: 1, log: 'fib(' + x + ') = 1 (기저)' }); return 1; }
+                    var a = simTD(x - 1);
+                    var b = simTD(x - 2);
+                    memo[x] = a + b;
+                    tdSteps.push({ i: x, val: a + b, log: 'fib(' + x + ') = ' + a + ' + ' + b + ' = ' + (a + b) });
+                    return a + b;
+                }
+                simTD(n);
+
+                var maxSteps = Math.max(tdSteps.length, buSteps.length);
+                var step = 0;
+                var tdDone = {}, buDone2 = {};
+
+                function animateStep() {
+                    if (step >= maxSteps) {
+                        cmpMsg.textContent = 'Top-Down: ' + tdSteps.length + '단계, Bottom-Up: ' + buSteps.length + '단계. 결과는 같지만 계산 순서가 다릅니다!';
+                        return;
+                    }
+                    if (step < tdSteps.length) {
+                        var ts = tdSteps[step];
+                        tdDone[ts.i] = ts.val;
+                        renderCmpCells(tdCells, n, tdDone, ts.i);
+                        tdLog.innerHTML += '<div>' + ts.log + '</div>';
+                        tdLog.scrollTop = tdLog.scrollHeight;
+                    }
+                    if (step < buSteps.length) {
+                        var bs = buSteps[step];
+                        buDone2[bs.i] = bs.val;
+                        renderCmpCells(buCells, n, buDone2, bs.i);
+                        buLog.innerHTML += '<div>' + bs.log + '</div>';
+                        buLog.scrollTop = buLog.scrollHeight;
+                    }
+                    step++;
+                    setTimeout(animateStep, 600);
+                }
+                animateStep();
+            });
+
+            cmpResetBtn.addEventListener('click', function() {
+                cmpGoBtn.style.display = '';
+                cmpResetBtn.style.display = 'none';
+                tdCells.innerHTML = '';
+                buCells.innerHTML = '';
+                tdLog.innerHTML = '';
+                buLog.innerHTML = '';
+                cmpMsg.textContent = 'Top-Down은 필요한 것만 계산하고, Bottom-Up은 작은 것부터 전부 계산합니다.';
+            });
+        }
+
+        // === Demo 4: DP 유형 맞추기 퀴즈 ===
+        {
+            var quizData = [
+                { q: '피보나치 수열의 N번째 값 구하기', answer: '1차원 DP', options: ['1차원 DP', '2차원 DP', 'LIS', '배낭'] },
+                { q: '삼각형 꼭대기에서 바닥까지 최대 합 경로', answer: '2차원 DP', options: ['1차원 DP', '2차원 DP', 'LCS', '배낭'] },
+                { q: '수열에서 가장 긴 증가하는 부분 수열의 길이', answer: 'LIS', options: ['1차원 DP', 'LIS', 'LCS', '배낭'] },
+                { q: '두 문자열의 가장 긴 공통 부분 수열의 길이', answer: 'LCS', options: ['1차원 DP', 'LIS', 'LCS', '2차원 DP'] },
+                { q: '무게 제한이 있는 가방에 물건을 넣어 최대 가치 구하기', answer: '배낭', options: ['1차원 DP', '2차원 DP', 'LCS', '배낭'] }
+            ];
+            var quizCards = container.querySelector('#dp-demo-quiz-cards');
+            var quizScore = container.querySelector('#dp-demo-quiz-score');
+            var quizMsgEl = container.querySelector('#dp-demo-quiz-msg');
+            var totalCorrect = 0, totalAnswered = 0;
+
+            quizData.forEach(function(item, qIdx) {
+                var card = document.createElement('div');
+                card.style.cssText = 'padding:14px 18px;border-radius:12px;border:2px solid var(--border);background:var(--bg2);transition:all 0.3s;';
+                var qDiv = document.createElement('div');
+                qDiv.style.cssText = 'font-weight:600;font-size:0.95rem;margin-bottom:10px;color:var(--text);';
+                qDiv.textContent = (qIdx + 1) + '. ' + item.q;
+                card.appendChild(qDiv);
+                var optWrap = document.createElement('div');
+                optWrap.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+
+                item.options.forEach(function(opt) {
+                    var btn = document.createElement('button');
+                    btn.style.cssText = 'padding:6px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:0.85rem;cursor:pointer;transition:all 0.2s;';
+                    btn.textContent = opt;
+                    btn.addEventListener('click', function() {
+                        if (card.dataset.answered) return;
+                        card.dataset.answered = 'true';
+                        totalAnswered++;
+                        var correct = (opt === item.answer);
+                        if (correct) {
+                            totalCorrect++;
+                            btn.style.background = 'var(--green)';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = 'var(--green)';
+                            card.style.borderColor = 'var(--green)';
+                        } else {
+                            btn.style.background = 'var(--red)';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = 'var(--red)';
+                            card.style.borderColor = 'var(--red)';
+                            // highlight correct
+                            optWrap.querySelectorAll('button').forEach(function(b) {
+                                if (b.textContent === item.answer) {
+                                    b.style.background = 'var(--green)';
+                                    b.style.color = 'white';
+                                    b.style.borderColor = 'var(--green)';
+                                }
+                            });
+                        }
+                        quizScore.innerHTML = totalCorrect + ' / ' + totalAnswered + ' 정답' + (totalAnswered === quizData.length ? ' — ' + (totalCorrect === quizData.length ? '<span style="color:var(--green);">전부 맞았습니다!</span>' : '<span style="color:var(--accent);">다시 도전해보세요!</span>') : '');
+                    });
+                    optWrap.appendChild(btn);
+                });
+                card.appendChild(optWrap);
+                quizCards.appendChild(card);
+            });
+        }
     },
 
     _initConceptInteractions(container) {
@@ -571,16 +945,16 @@ int fib(int n) {
             var bigDp = Math.max(bigN - 2, 0);
             var ratio = bigDp > 0 ? Math.round(bigRec / bigDp) : 0;
             return [
-                { description: 'fib(' + n + ')를 재귀로 호출하면 fib(1),fib(2)에 도달하는 횟수(리프 수)가 기본 연산 횟수입니다.',
+                { description: 'fib(' + n + ')을 재귀로 구하면, <strong>같은 하위 문제를 반복 계산</strong>하기 때문에 호출 횟수가 기하급수적으로 늘어납니다.',
                   action: function() { infoEl.innerHTML = '재귀: fib(' + n + ')=fib(' + (n-1) + ')+fib(' + (n-2) + '), ... 중복이 생깁니다.'; },
                   undo: function() { infoEl.innerHTML = ''; } },
-                { description: '재귀 fib(' + n + ')의 기본 연산 횟수 = fib(' + n + ') 값 = ' + recCount.toLocaleString() + '회',
+                { description: '재귀는 fib(' + (n-1) + ')과 fib(' + (n-2) + ')을 <strong>각각 독립적으로 다시 계산</strong>하므로, 총 호출 수가 ' + recCount.toLocaleString() + '회나 됩니다.',
                   action: function() { recValEl.textContent = recCount.toLocaleString(); infoEl.innerHTML = '재귀 호출 트리의 리프(return 1) 개수 = <strong>' + recCount.toLocaleString() + '</strong>'; },
                   undo: function() { recValEl.textContent = '?'; infoEl.innerHTML = ''; } },
-                { description: 'DP는 for i=3..' + n + ', 총 ' + dpCount + '번의 덧셈으로 계산합니다.',
+                { description: 'DP는 <strong>이미 계산한 값을 저장해두고 재사용</strong>하므로, 3부터 ' + n + '까지 단 ' + dpCount + '번의 덧셈이면 충분합니다.',
                   action: function() { dpValEl.textContent = dpCount; infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + '번</strong>'; },
                   undo: function() { dpValEl.textContent = '?'; } },
-                { description: 'n=' + bigN + '이면? 재귀=' + bigRec.toLocaleString() + ', DP=' + bigDp + '. 차이가 폭발적입니다!',
+                { description: 'n=' + bigN + '으로 늘리면? 재귀는 <strong>지수적으로 폭발</strong>(' + bigRec.toLocaleString() + '회)하지만, DP는 여전히 ' + bigDp + '번이면 끝납니다.',
                   action: function() { infoEl.innerHTML = '<strong style="color:var(--green);">n=' + bigN + ': 재귀 ' + bigRec.toLocaleString() + '회 vs DP ' + bigDp + '회. DP가 ' + ratio.toLocaleString() + '배 빠릅니다!</strong>'; },
                   undo: function() { infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + '번</strong>'; } }
             ];
@@ -649,16 +1023,16 @@ int fib(int n) {
             }
             var memoEntries = Object.keys(memo).slice(0, 4).map(function(k) { return 'w(' + k + ')=' + memo[k]; }).join(', ');
             return [
-                { description: 'w(' + a + ',' + b + ',' + c + ') 호출 → memo에 없으므로 계산 시작',
+                { description: 'w(' + a + ',' + b + ',' + c + ') 호출 — memo에 저장된 값이 없으므로, <strong>하위 문제로 분해</strong>하여 계산해야 합니다.',
                   action: function() { lines.push('→ w(' + a + ',' + b + ',' + c + ') 호출'); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } },
                 { description: subDesc,
                   action: function() { lines.push('  필요: ' + subCalls); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } },
-                { description: '하위 호출들이 memo에 저장되며 중복 제거',
+                { description: '하위 호출 결과를 <strong>memo에 저장</strong>해두면, 나중에 같은 인자로 호출할 때 다시 계산하지 않고 바로 꺼내 씁니다.',
                   action: function() { lines.push('  ' + memoEntries + ' 저장!'); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } },
-                { description: 'w(' + a + ',' + b + ',' + c + ') = ' + result + ' → memo에 저장!',
+                { description: '하위 결과를 모두 조합하면 w(' + a + ',' + b + ',' + c + ') = ' + result + '. 이 값도 memo에 저장하여 <strong>이후 중복 호출을 방지</strong>합니다.',
                   action: function() { lines.push('← w(' + a + ',' + b + ',' + c + ') = ' + result + ' ✅ 저장!'); logEl.textContent = lines.join('\n'); },
                   undo: function() { lines.pop(); logEl.textContent = lines.join('\n'); } }
             ];
@@ -727,28 +1101,27 @@ int fib(int n) {
             function resetCell(num) { var c = container.querySelector('#to1-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = '?'; c.style.background = 'var(--bg2)';} }
             var steps = [];
             // Step 1: dp[1]=0
-            steps.push({ description: 'dp[1]=0: 이미 1이므로 연산 불필요',
+            steps.push({ description: 'dp[1]=0: 목표인 1에 <strong>이미 도달</strong>한 상태이므로 추가 연산이 필요 없습니다.',
               action: function() { setCell(1, '0', 'var(--accent)15'); infoEl.innerHTML = 'dp[1] = 0'; },
               undo: function() { resetCell(1); infoEl.innerHTML = ''; } });
-            // Middle steps: fill in batches
-            var batchSize = Math.max(1, Math.floor((n - 1) / 3));
-            var start = 2;
-            while (start <= n - 1) {
-                var end = Math.min(start + batchSize - 1, n - 1);
-                (function(s, e) {
-                    var descs = [];
-                    for (var k = s; k <= e; k++) { descs.push('dp[' + k + ']=' + dp[k]); }
+            // Individual steps: fill each dp[k] separately
+            for (var k = 2; k <= n - 1; k++) {
+                (function(idx) {
+                    var ops = [];
+                    if (idx % 3 === 0) ops.push('÷3→dp[' + (idx/3) + ']=' + dp[idx/3]);
+                    if (idx % 2 === 0) ops.push('÷2→dp[' + (idx/2) + ']=' + dp[idx/2]);
+                    ops.push('-1→dp[' + (idx-1) + ']=' + dp[idx-1]);
+                    var desc = idx + '를 1로 만드는 <strong>세 가지 역연산</strong>(÷3, ÷2, -1) 중 이전 결과가 가장 작은 경로를 택합니다. dp[' + idx + '] = min(' + ops.join(', ') + ')+1 = ' + dp[idx];
                     steps.push({
-                        description: 'dp[' + s + ']~dp[' + e + '] 채우기: ' + descs.join(', '),
-                        action: function() { for(var k=s;k<=e;k++) setCell(k, dp[k], 'var(--accent)15'); infoEl.innerHTML = descs.join(', '); },
-                        undo: function() { for(var k=s;k<=e;k++) resetCell(k); }
+                        description: desc,
+                        action: function() { setCell(idx, dp[idx], 'var(--accent)15'); infoEl.innerHTML = desc; },
+                        undo: function() { resetCell(idx); }
                     });
-                })(start, end);
-                start = end + 1;
+                })(k);
             }
             // Final step: show answer and path
             var pathStr = path.join('→');
-            steps.push({ description: 'dp[' + n + ']=' + dp[n] + '. 경로: ' + pathStr,
+            steps.push({ description: '<strong>최종 답</strong>: ' + n + '→1까지 최소 ' + dp[n] + '번. 각 단계에서 가장 적은 연산을 쓰는 경로: ' + pathStr,
               action: function() { setCell(n, dp[n], 'var(--green)'); for(var k=0;k<path.length;k++) setCell(path[k], dp[path[k]], 'var(--green)'); infoEl.innerHTML = '<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n] + ', 경로: ' + pathStr + '</strong>'; },
               undo: function() { setCell(n, dp[n], 'var(--accent)15'); for(var k=0;k<path.length;k++) if(path[k] !== n) setCell(path[k], dp[path[k]], 'var(--accent)15'); } });
             return steps;
@@ -801,16 +1174,16 @@ int fib(int n) {
             function setTile(num, v, bg) { var c = container.querySelector('#tile-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = v; if(bg)c.style.background=bg;} }
             function resetTile(num) { var c = container.querySelector('#tile-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = '?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'dp[1]=1: "1" 한 가지', action: function() { setTile(1,'1','#6c5ce715'); infoEl.innerHTML = 'dp[1]=1 (수열: 1)'; }, undo: function() { resetTile(1); infoEl.innerHTML=''; } });
-            steps.push({ description: 'dp[2]=2: "11", "00" 두 가지', action: function() { setTile(2,'2','#6c5ce715'); infoEl.innerHTML = 'dp[2]=2 (수열: 11, 00)'; }, undo: function() { resetTile(2); } });
+            steps.push({ description: 'dp[1]=1: 길이 1인 수열은 <strong>"1" 하나</strong>뿐입니다. "0" 단독은 불가능하므로("00" 타일이니까).', action: function() { setTile(1,'1','#6c5ce715'); infoEl.innerHTML = 'dp[1]=1 (수열: 1)'; }, undo: function() { resetTile(1); infoEl.innerHTML=''; } });
+            steps.push({ description: 'dp[2]=2: 길이 2인 수열은 <strong>"1"+"1" 또는 "00" 타일</strong> 두 가지. 이것이 기저 조건입니다.', action: function() { setTile(2,'2','#6c5ce715'); infoEl.innerHTML = 'dp[2]=2 (수열: 11, 00)'; }, undo: function() { resetTile(2); } });
             for (var i = 3; i < n; i++) {
                 (function(idx) {
-                    steps.push({ description: 'dp[' + idx + ']=dp[' + (idx-1) + ']+dp[' + (idx-2) + ']=' + dp[idx],
+                    steps.push({ description: 'dp[' + idx + ']: 끝에 <strong>"1"을 붙이면</strong> dp[' + (idx-1) + ']가지, <strong>"00"을 붙이면</strong> dp[' + (idx-2) + ']가지 → 합 = ' + dp[idx],
                       action: function() { setTile(idx, dp[idx], '#6c5ce715'); infoEl.innerHTML = 'dp[' + idx + ']=' + dp[idx-1] + '+' + dp[idx-2] + '=' + dp[idx]; },
                       undo: function() { resetTile(idx); } });
                 })(i);
             }
-            steps.push({ description: 'dp[' + n + ']=dp[' + (n-1) + ']+dp[' + (n-2) + ']=' + dp[n] + ' → 정답!',
+            steps.push({ description: '<strong>최종 답</strong> dp[' + n + ']: 끝에 "1" 붙이기(' + dp[n-1] + '가지) + "00" 붙이기(' + dp[n-2] + '가지) = ' + dp[n],
               action: function() { setTile(n, dp[n], 'var(--green)'); infoEl.innerHTML = '<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n-1] + '+' + dp[n-2] + '=' + dp[n] + '</strong>'; },
               undo: function() { resetTile(n); } });
             return steps;
@@ -867,11 +1240,11 @@ int fib(int n) {
             function resetSt(num) { var c = container.querySelector('#st-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent = 'dp:?'; c.style.background='var(--bg2)';} }
             var steps = [];
             // Initial values
-            steps.push({ description: 'dp[1]=' + dp[1] + (n>=2 ? ', dp[2]=' + dp[2] : ''),
+            steps.push({ description: '기저: dp[1]=' + dp[1] + '(1번 계단만 밟음)' + (n>=2 ? ', dp[2]=' + dp[2] + '(1→2 연속 가능하므로 둘 다 밟음)' : ''),
               action: function() { setSt(1, dp[1], '#fdcb6e15'); if(n>=2) setSt(2, dp[2], '#fdcb6e15'); infoEl.innerHTML='dp[1]=' + sc[0] + (n>=2 ? ', dp[2]=' + sc[0] + '+' + sc[1] + '=' + dp[2] : ''); },
               undo: function() { resetSt(1); if(n>=2) resetSt(2); infoEl.innerHTML=''; } });
             if (n >= 3) {
-                steps.push({ description: 'dp[3]=max(' + sc[0] + ',' + sc[1] + ')+' + sc[2] + '=' + dp[3],
+                steps.push({ description: 'dp[3]: <strong>3연속 불가 규칙</strong> 때문에 1번 또는 2번 중 하나만 밟을 수 있음 → max(' + sc[0] + ',' + sc[1] + ')+' + sc[2] + '=' + dp[3],
                   action: function() { setSt(3, dp[3], '#fdcb6e15'); infoEl.innerHTML='dp[3]=max(' + sc[0] + ',' + sc[1] + ')+' + sc[2] + '=' + dp[3]; },
                   undo: function() { resetSt(3); } });
             }
@@ -879,7 +1252,7 @@ int fib(int n) {
                 (function(idx) {
                     var opt1 = dp[idx-2] + sc[idx-1];
                     var opt2 = dp[idx-3] + sc[idx-2] + sc[idx-1];
-                    steps.push({ description: 'dp[' + idx + ']=max(' + dp[idx-2] + '+' + sc[idx-1] + ', ' + dp[idx-3] + '+' + sc[idx-2] + '+' + sc[idx-1] + ')=max(' + opt1 + ',' + opt2 + ')=' + dp[idx],
+                    steps.push({ description: 'dp[' + idx + ']: <strong>2칸 전에서 점프</strong>(dp[' + (idx-2) + ']+' + sc[idx-1] + '=' + opt1 + ') vs <strong>1칸 전 연속</strong>(dp[' + (idx-3) + ']+' + sc[idx-2] + '+' + sc[idx-1] + '=' + opt2 + ') 중 큰 값 = ' + dp[idx],
                       action: function() { setSt(idx, dp[idx], '#fdcb6e15'); infoEl.innerHTML='dp[' + idx + ']=max(' + opt1 + ',' + opt2 + ')=' + dp[idx]; },
                       undo: function() { resetSt(idx); } });
                 })(i);
@@ -888,7 +1261,7 @@ int fib(int n) {
             if (n >= 4) {
                 var fopt1 = dp[n-2] + sc[n-1];
                 var fopt2 = dp[n-3] + sc[n-2] + sc[n-1];
-                steps.push({ description: 'dp[' + n + ']=max(' + dp[n-2] + '+' + sc[n-1] + ', ' + dp[n-3] + '+' + sc[n-2] + '+' + sc[n-1] + ')=' + dp[n] + ' ✅',
+                steps.push({ description: '<strong>최종 답</strong> dp[' + n + ']: 2칸 전 점프(' + (dp[n-2]+sc[n-1]) + ') vs 1칸 전 연속(' + (dp[n-3]+sc[n-2]+sc[n-1]) + ') → 최대 점수 = ' + dp[n],
                   action: function() { setSt(n, dp[n], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n] + '</strong>'; },
                   undo: function() { resetSt(n); } });
             } else if (n >= 1) {
@@ -949,20 +1322,20 @@ int fib(int n) {
             function setWn(num,v,bg) { var c = container.querySelector('#wn-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent='dp:'+v; if(bg)c.style.background=bg;} }
             function resetWn(num) { var c = container.querySelector('#wn-c' + num + suffix); if(c){c.querySelector('div:last-child').textContent='dp:?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'dp[1]=' + dp[1] + (n>=2 ? ', dp[2]=' + dp[2] : ''),
+            steps.push({ description: '기저: dp[1]=' + dp[1] + '(첫 잔은 당연히 마심)' + (n>=2 ? ', dp[2]=' + dp[2] + '(2연속까지는 허용이므로 둘 다 마심)' : ''),
               action: function() { setWn(1, dp[1], '#00b89415'); if(n>=2) setWn(2, dp[2], '#00b89415'); infoEl.innerHTML='dp[1]=' + w[0] + (n>=2 ? ', dp[2]=' + w[0] + '+' + w[1] + '=' + dp[2] : ''); },
               undo: function() { resetWn(1); if(n>=2) resetWn(2); infoEl.innerHTML=''; } });
             for (var i = 3; i < n; i++) {
                 (function(idx) {
                     var o1 = dp[idx-1], o2 = dp[idx-2] + w[idx-1], o3 = dp[idx-3] + w[idx-2] + w[idx-1];
-                    steps.push({ description: 'dp[' + idx + ']=max(' + o1 + ',' + o2 + ',' + o3 + ')=' + dp[idx],
+                    steps.push({ description: 'dp[' + idx + ']: 3가지 선택 — ①<strong>이번 잔 안 마심</strong>(' + o1 + '), ②<strong>이번만 마심</strong>(한 칸 건너 dp[' + (idx-2) + ']+' + w[idx-1] + '=' + o2 + '), ③<strong>이전+이번 연속</strong>(dp[' + (idx-3) + ']+' + w[idx-2] + '+' + w[idx-1] + '=' + o3 + ') → max=' + dp[idx],
                       action: function() { setWn(idx, dp[idx], '#00b89415'); infoEl.innerHTML='dp[' + idx + ']=max(' + o1 + ', ' + o2 + ', ' + o3 + ')=' + dp[idx]; },
                       undo: function() { resetWn(idx); } });
                 })(i);
             }
             // Final
             var fo1 = dp[n-1], fo2 = dp[n-2] + w[n-1], fo3 = (n>=3 ? dp[n-3] + w[n-2] + w[n-1] : 0);
-            steps.push({ description: 'dp[' + n + ']=max(' + fo1 + ',' + fo2 + ',' + fo3 + ')=' + dp[n] + ' ✅',
+            steps.push({ description: '<strong>최종 답</strong> dp[' + n + ']: 안 마심(' + fo1 + ') / 이번만(' + fo2 + ') / 연속(' + fo3 + ') 중 최대 = ' + dp[n],
               action: function() { setWn(n, dp[n], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ dp[' + n + ']=' + dp[n] + '</strong>'; },
               undo: function() { resetWn(n); } });
             return steps;
@@ -1029,7 +1402,7 @@ int fib(int n) {
             function setMs(i,v,bg) { var c = container.querySelector('#ms-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent=v; if(bg)c.style.background=bg;} }
             function resetMs(i) { var c = container.querySelector('#ms-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'dp[0]=' + a[0] + ' (첫 원소로 시작)',
+            steps.push({ description: 'dp[0]=' + a[0] + ': 첫 원소에서는 <strong>이전 구간이 없으므로</strong> 자기 자신이 곧 최대 연속합입니다.',
               action: function() { setMs(0, curArr[0], '#d6303115'); infoEl.innerHTML='cur=' + curArr[0] + ', ans=' + curArr[0]; },
               undo: function() { resetMs(0); infoEl.innerHTML=''; } });
             // Process in steps of ~3
@@ -1042,11 +1415,16 @@ int fib(int n) {
                 (function(s, e, prevAns, lastStep) {
                     var newAns = prevAns;
                     for (var k = s; k <= e; k++) newAns = Math.max(newAns, curArr[k]);
-                    var desc = 'i=' + s + (s!==e?'~'+e:'') + ': ';
                     var details = [];
-                    for (var k = s; k <= e; k++) details.push('dp[' + k + ']=' + curArr[k]);
-                    desc += details.join(', ');
-                    if (lastStep) desc += '. 최종 답=' + res.ans + ' ✅';
+                    for (var k = s; k <= e; k++) {
+                        var extended = (k > 0 ? curArr[k-1] + a[k] : a[k]);
+                        var alone = a[k];
+                        if (k > 0 && extended > alone) details.push('dp[' + k + ']: 이전 합에 이어감(' + extended + ')>' + alone + ' → ' + curArr[k]);
+                        else if (k > 0) details.push('dp[' + k + ']: <strong>새로 시작</strong>이 유리(' + alone + '≥' + extended + ') → ' + curArr[k]);
+                        else details.push('dp[' + k + ']=' + curArr[k]);
+                    }
+                    var desc = details.join(', ');
+                    if (lastStep) desc += '. <strong>최종 답</strong>=' + res.ans;
                     steps.push({
                         description: desc,
                         action: function() {
@@ -1119,18 +1497,18 @@ int fib(int n) {
             function resetEs(j) { var c = container.querySelector('#es-c' + j + suffix); if(c){c.querySelector('div:last-child').textContent='?'; c.style.background='var(--bg2)';} }
             var steps = [];
             // Step 1: length 1
-            steps.push({ description: '길이 1: dp[1][1~9]=1, dp[1][0]=0 (0으로 시작 불가)',
+            steps.push({ description: '기저: 길이 1인 계단수는 1~9 각각 1개. <strong>0으로 시작하는 수는 없으므로</strong> dp[1][0]=0.',
               action: function() { setEs(0,'0','var(--bg2)'); for(var j=1;j<=9;j++) setEs(j,'1','#0984e315'); infoEl.innerHTML='길이 1인 계단수: 1,2,...,9 (9개)'; },
               undo: function() { for(var j=0;j<=9;j++) resetEs(j); infoEl.innerHTML=''; } });
             // Steps for each length up to n
             for (var len = 2; len <= n; len++) {
                 (function(l) {
                     var isLast = (l === n);
-                    steps.push({ description: '길이 ' + l + ': dp[' + l + '][0]=' + dpTable[l][0] + ', dp[' + l + '][9]=' + dpTable[l][9],
+                    steps.push({ description: '길이 ' + l + ' 경계: 끝자리 0은 <strong>1에서만 내려올 수 있고</strong>(dp[' + l + '][0]=' + dpTable[l][0] + '), 끝자리 9는 <strong>8에서만 올라올 수 있음</strong>(dp[' + l + '][9]=' + dpTable[l][9] + ').',
                       action: function() { setEs(0, dpTable[l][0], '#0984e315'); setEs(9, dpTable[l][9], '#0984e315'); infoEl.innerHTML='끝0←1에서만=' + dpTable[l][0] + ', 끝9←8에서만=' + dpTable[l][9]; },
                       undo: function() { var prev = l > 1 ? dpTable[l-1] : null; setEs(0, prev ? prev[0] : '0', prev && prev[0] > 0 ? '#0984e315' : 'var(--bg2)'); setEs(9, prev ? prev[9] : '?', '#0984e315'); } });
-                    steps.push({ description: '길이 ' + l + ': dp[' + l + '][1~8] 채우기',
-                      action: function() { for(var j=1;j<=8;j++) setEs(j, dpTable[l][j], '#0984e315'); infoEl.innerHTML='끝1~8은 양쪽에서 옴'; },
+                    steps.push({ description: '길이 ' + l + ', 끝자리 1~8: 인접한 <strong>두 자릿수(j-1, j+1)에서 올 수 있으므로</strong> 두 값의 합.',
+                      action: function() { for(var j=1;j<=8;j++) setEs(j, dpTable[l][j], '#0984e315'); infoEl.innerHTML='끝1~8은 양쪽(j-1, j+1)에서 전이'; },
                       undo: function() { var prev = l > 1 ? dpTable[l-1] : null; for(var j=1;j<=8;j++) setEs(j, prev ? prev[j] : '?', prev ? '#0984e315' : 'var(--bg2)'); } });
                     if (isLast) {
                         var total = 0; for(var j=0;j<=9;j++) total = (total + dpTable[l][j]) % MOD;
@@ -1198,15 +1576,15 @@ int fib(int n) {
             function resetRgb(i,j) { var c = container.querySelector('#rgb-' + i + '-' + j + suffix); if(c){c.querySelector('div:last-child').textContent=costs[i][j]; c.style.background='var(--bg2)';} }
             var steps = [];
             // First house
-            steps.push({ description: '집1: dp[1][R]=' + costs[0][0] + ', dp[1][G]=' + costs[0][1] + ', dp[1][B]=' + costs[0][2],
-              action: function() { for(var j=0;j<3;j++) setRgb(0,j,costs[0][j]+'','#e8439315'); infoEl.innerHTML='첫 집은 그대로 비용'; },
+            steps.push({ description: '기저 — 집1: 이전 집이 없으므로 <strong>제약 없이</strong> 각 색의 비용이 그대로 dp 값이 됩니다. R=' + costs[0][0] + ', G=' + costs[0][1] + ', B=' + costs[0][2],
+              action: function() { for(var j=0;j<3;j++) setRgb(0,j,costs[0][j]+'','#e8439315'); infoEl.innerHTML='첫 집은 제약 없이 비용 그대로'; },
               undo: function() { for(var j=0;j<3;j++) resetRgb(0,j); infoEl.innerHTML=''; } });
             // Each subsequent house
             for (var i = 1; i < n; i++) {
                 (function(idx) {
                     var isLast = (idx === n - 1);
-                    steps.push({ description: '집' + (idx+1) + ': R=' + dpArr[idx][0] + ', G=' + dpArr[idx][1] + ', B=' + dpArr[idx][2],
-                      action: function() { for(var j=0;j<3;j++) setRgb(idx,j,dpArr[idx][j]+'','#e8439315'); infoEl.innerHTML='dp[' + (idx+1) + '][R]=' + dpArr[idx][0] + ', dp[' + (idx+1) + '][G]=' + dpArr[idx][1] + ', dp[' + (idx+1) + '][B]=' + dpArr[idx][2]; },
+                    steps.push({ description: '집' + (idx+1) + ': <strong>이웃과 다른 색</strong>이어야 하므로, 각 색은 이전 집의 <em>나머지 두 색</em> 중 최소비용 + 자기 비용. R=' + dpArr[idx][0] + ', G=' + dpArr[idx][1] + ', B=' + dpArr[idx][2],
+                      action: function() { for(var j=0;j<3;j++) setRgb(idx,j,dpArr[idx][j]+'','#e8439315'); infoEl.innerHTML='dp[' + (idx+1) + ']: 이전의 다른 색 최솟값 + 현재 비용'; },
                       undo: function() { for(var j=0;j<3;j++) resetRgb(idx,j); } });
                 })(i);
             }
@@ -1225,7 +1603,7 @@ int fib(int n) {
             }
             path.reverse();
             var pathStr = path.map(function(j) { return colorNames[j]; }).join('→');
-            steps.push({ description: 'min=' + minVal + '. 경로: ' + pathStr + ' ✅',
+            steps.push({ description: '<strong>최종 답</strong>: 마지막 집 R/G/B 중 최소 = ' + minVal + '. 이웃 색 제약을 만족하는 최적 경로: ' + pathStr,
               action: function() { for(var i=0;i<n;i++) setRgb(i, path[i], dpArr[i][path[i]]+'', 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ 최소 비용=' + minVal + ' (' + pathStr + ')</strong>'; },
               undo: function() { for(var i=0;i<n;i++) setRgb(i, path[i], dpArr[i][path[i]]+'', '#e8439315'); } });
             return steps;
@@ -1285,21 +1663,21 @@ int fib(int n) {
             function resetTri(i,j) { var c = container.querySelector('#tri-' + i + '-' + j + suffix); if(c){c.textContent=tri[i][j]; c.style.background='var(--bg2)';} }
             var steps = [];
             // Bottom row
-            steps.push({ description: n + '행(맨 아래)은 그대로: [' + tri[n-1].join(',') + ']',
-              action: function() { for(var j=0;j<tri[n-1].length;j++) setTri(n-1,j,tri[n-1][j],'#fab1a015'); infoEl.innerHTML='맨 아래 행은 초기값 그대로'; },
+            steps.push({ description: '기저: ' + n + '행(맨 아래)은 <strong>더 내려갈 곳이 없으므로</strong> 자기 자신이 곧 최대 합입니다.',
+              action: function() { for(var j=0;j<tri[n-1].length;j++) setTri(n-1,j,tri[n-1][j],'#fab1a015'); infoEl.innerHTML='맨 아래 행: 자기 값이 곧 dp 값'; },
               undo: function() { for(var j=0;j<tri[n-1].length;j++) resetTri(n-1,j); infoEl.innerHTML=''; } });
             // Each row from bottom-1 to 1
             for (var i = n - 2; i >= 1; i--) {
                 (function(row) {
                     var details = [];
                     for (var j = 0; j <= row; j++) details.push(tri[row][j] + '+max(' + dpArr[row+1][j] + ',' + dpArr[row+1][j+1] + ')=' + dpArr[row][j]);
-                    steps.push({ description: (row+1) + '행: ' + details.join(', '),
+                    steps.push({ description: (row+1) + '행: 각 칸은 <strong>아래 좌/우 자식 중 더 큰 합</strong>을 선택하여 자기 값을 더합니다. ' + details.join(', '),
                       action: function() { for(var j=0;j<=row;j++) setTri(row,j,dpArr[row][j],'#fab1a015'); infoEl.innerHTML=details.join(', '); },
                       undo: function() { for(var j=0;j<=row;j++) resetTri(row,j); } });
                 })(i);
             }
             // Top: answer
-            steps.push({ description: '1행: dp[0][0] = ' + tri[0][0] + ' + max(' + dpArr[1][0] + ',' + dpArr[1][1] + ') = ' + dpArr[0][0] + ' ✅',
+            steps.push({ description: '<strong>꼭대기</strong>: ' + tri[0][0] + ' + max(' + dpArr[1][0] + ',' + dpArr[1][1] + ') = ' + dpArr[0][0] + '. 아래에서 올라온 최대 합이 여기에 모입니다.',
               action: function() { setTri(0,0,dpArr[0][0],'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ 최대 합 = ' + dpArr[0][0] + '</strong>'; },
               undo: function() { resetTri(0,0); } });
             return steps;
@@ -1372,10 +1750,10 @@ int fib(int n) {
             for (var i = 0; i < n - 1; i++) {
                 (function(idx) {
                     var reason = 'dp[' + idx + ']=' + dp[idx];
-                    if (dp[idx] === 1) reason += ' (앞에 더 작은 수 없음)';
+                    if (dp[idx] === 1) reason += ': 앞에 a[' + idx + ']=' + a[idx] + '보다 <strong>작은 수가 없어</strong> 자기 혼자 수열의 시작';
                     else {
                         for (var j = 0; j < idx; j++) {
-                            if (a[j] < a[idx] && dp[j] + 1 === dp[idx]) { reason += ' (a[' + j + ']=' + a[j] + ' &lt; ' + a[idx] + ')'; break; }
+                            if (a[j] < a[idx] && dp[j] + 1 === dp[idx]) { reason += ': a[' + j + ']=' + a[j] + '로 끝나는 증가 수열(길이 ' + dp[j] + ') <strong>뒤에 ' + a[idx] + '을 이을 수 있으므로</strong> +1'; break; }
                         }
                     }
                     steps.push({ description: reason,
@@ -1388,7 +1766,7 @@ int fib(int n) {
             var cur = maxLen;
             for (var i = n - 1; i >= 0; i--) { if (dp[i] === cur) { lisPath.unshift(i); cur--; } }
             var lisVals = lisPath.map(function(i) { return a[i]; });
-            steps.push({ description: 'dp[' + (n-1) + ']=' + dp[n-1] + '. LIS 길이=' + maxLen + ': {' + lisVals.join(',') + '} ✅',
+            steps.push({ description: '<strong>최종 답</strong>: dp 배열의 최댓값이 LIS 길이 = ' + maxLen + '. 실제 수열: {' + lisVals.join(',') + '}',
               action: function() {
                   setLis(n-1, dp[n-1], '#74b9ff15');
                   for (var k = 0; k < lisPath.length; k++) setLis(lisPath[k], dp[lisPath[k]], 'var(--green)');
@@ -1457,16 +1835,16 @@ int fib(int n) {
             function setBi(i,txt,bg) { var c = container.querySelector('#bi-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent=txt; if(bg)c.style.background=bg;} }
             function resetBi(i) { var c = container.querySelector('#bi-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='?/?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'LIS 배열 (왼→우 증가): [' + res.lis.join(',') + ']',
+            steps.push({ description: '먼저 <strong>왼→우 LIS</strong>를 구합니다. 각 위치에서 "여기까지 올라올 수 있는 최대 길이"를 뜻합니다. [' + res.lis.join(',') + ']',
               action: function() { for(var i=0;i<n;i++) setBi(i,'L:'+res.lis[i],'#a29bfe15'); infoEl.innerHTML='LIS 배열: [' + res.lis.join(',') + ']'; },
               undo: function() { for(var i=0;i<n;i++) resetBi(i); infoEl.innerHTML=''; } });
-            steps.push({ description: 'LDS 배열 (우→좌 증가): [' + res.lds.join(',') + ']',
+            steps.push({ description: '다음으로 <strong>우→좌 LIS(=LDS)</strong>를 구합니다. "여기서부터 내려갈 수 있는 최대 길이"입니다. [' + res.lds.join(',') + ']',
               action: function() { for(var i=0;i<n;i++) setBi(i,res.lis[i]+'/'+res.lds[i],'#a29bfe15'); infoEl.innerHTML='LDS 배열: [' + res.lds.join(',') + ']'; },
               undo: function() { for(var i=0;i<n;i++) setBi(i,'L:'+res.lis[i],'#a29bfe15'); } });
-            steps.push({ description: 'lis[i]+lds[i]-1 계산: [' + res.sums.join(',') + '] → i=' + res.maxIdx + '이 최대(' + res.maxVal + ')',
+            steps.push({ description: '<strong>lis[i]+lds[i]-1</strong>: 각 위치를 꼭짓점으로 삼았을 때 "올라가는 길이 + 내려가는 길이 - 자기 자신 중복 제거". [' + res.sums.join(',') + '] → i=' + res.maxIdx + '이 최대(' + res.maxVal + ')',
               action: function() { for(var i=0;i<n;i++) setBi(i,res.sums[i],(res.sums[i]>=res.maxVal-1?'#a29bfe30':'#a29bfe15')); infoEl.innerHTML='합: [' + res.sums.join(',') + '] → i=' + res.maxIdx + '이 최대'; },
               undo: function() { for(var i=0;i<n;i++) setBi(i,res.lis[i]+'/'+res.lds[i],'#a29bfe15'); } });
-            steps.push({ description: '최장 바이토닉 길이 = ' + res.maxVal + ' ✅',
+            steps.push({ description: '<strong>최종 답</strong>: 꼭짓점 a[' + res.maxIdx + ']=' + a[res.maxIdx] + '을 기준으로 올라갔다 내려오는 최장 바이토닉 = ' + res.maxVal,
               action: function() { for(var i=0;i<n;i++) setBi(i,a[i],'var(--bg2)'); setBi(res.maxIdx, a[res.maxIdx], 'var(--green)'); infoEl.innerHTML='<strong style="color:var(--green);">✅ 최장 바이토닉 = ' + res.maxVal + ' (꼭짓점: a[' + res.maxIdx + ']=' + a[res.maxIdx] + ')</strong>'; },
               undo: function() { for(var i=0;i<n;i++) setBi(i,res.sums[i],(res.sums[i]>=res.maxVal-1?'#a29bfe30':'#a29bfe15')); } });
             return steps;
@@ -1526,26 +1904,25 @@ int fib(int n) {
             function setWr(i,v,bg) { var c = container.querySelector('#wr-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='dp:'+v; if(bg)c.style.background=bg;} }
             function resetWr(i) { var c = container.querySelector('#wr-c' + i + suffix); if(c){c.querySelector('div:last-child').textContent='dp:?'; c.style.background='var(--bg2)';} }
             var steps = [];
-            steps.push({ description: 'A 기준 정렬 완료. B=[' + b.join(',') + ']에서 LIS를 구합니다.',
-              action: function() { infoEl.innerHTML='B = [' + b.join(', ') + ']. 이 배열에서 LIS를 구하면 됩니다.'; },
+            steps.push({ description: 'A 기준으로 정렬하면 <strong>B의 순서가 증가하는 선끼리는 교차하지 않습니다</strong>. 따라서 B의 LIS = 최대 비교차 선 수.',
+              action: function() { infoEl.innerHTML='B = [' + b.join(', ') + ']. B에서 LIS를 구하면 교차 없는 최대 선 수!'; },
               undo: function() { infoEl.innerHTML=''; } });
-            // Fill dp in batches
-            var batchSize = Math.max(1, Math.floor(n / 3));
-            var start = 0;
-            while (start < n - 1) {
-                var end = Math.min(start + batchSize - 1, n - 2);
-                (function(s, e) {
-                    var details = [];
-                    for (var k = s; k <= e; k++) details.push('dp[' + k + ']=' + dp[k]);
-                    steps.push({ description: details.join(', '),
-                      action: function() { for(var k=s;k<=e;k++) setWr(k,dp[k],'#55efc415'); infoEl.innerHTML=details.join(', '); },
-                      undo: function() { for(var k=s;k<=e;k++) resetWr(k); } });
-                })(start, end);
-                start = end + 1;
+            // Fill dp individually — each element gets its own step
+            for (var k = 0; k < n - 1; k++) {
+                (function(idx) {
+                    var comparisons = [];
+                    for (var j = 0; j < idx; j++) {
+                        if (b[j] < b[idx]) comparisons.push('B[' + j + ']=' + b[j] + '<' + b[idx]);
+                    }
+                    var desc = 'dp[' + idx + ']=' + dp[idx] + (comparisons.length ? ': ' + comparisons.join(', ') + ' → <strong>앞의 더 작은 B값 뒤에 이을 수 있음</strong>' : ': 앞에 더 작은 B값이 없어 <strong>혼자 시작</strong>');
+                    steps.push({ description: desc,
+                      action: function() { setWr(idx, dp[idx], '#55efc415'); infoEl.innerHTML = desc; },
+                      undo: function() { resetWr(idx); } });
+                })(k);
             }
             // Final
             var remove = n - res.lisLen;
-            steps.push({ description: 'LIS=' + res.lisLen + '. 제거 = ' + n + '-' + res.lisLen + ' = ' + remove + ' ✅',
+            steps.push({ description: '<strong>최종 답</strong>: LIS=' + res.lisLen + '(교차 없는 최대 선 수). 전체 ' + n + '개에서 빼면 <strong>제거할 전깃줄 = ' + remove + '개</strong>.',
               action: function() {
                   setWr(n-1, dp[n-1], '#55efc415');
                   // Highlight LIS path
@@ -1657,7 +2034,7 @@ int fib(int n) {
                         ? matchCols.map(function(j){ return 'j=' + j + ': ' + a[row-1] + '=' + b[j-1] + '→대각선+1=' + dp[row][j]; }).join(', ')
                         : a[row-1] + '이(가) B에서 매칭 없음→왼/위 max';
                     steps.push({
-                        description: row + '행: A[' + row + ']=' + a[row-1] + ' vs B. ' + (matchCols.length > 0 ? '같은 글자에서 +1' : '매칭 없음'),
+                        description: row + '행: A[' + row + ']="' + a[row-1] + '"를 B의 각 문자와 비교. ' + (matchCols.length > 0 ? '<strong>같은 글자를 찾으면</strong> 양쪽 이전 상태(대각선)+1, 다르면 왼쪽/위 중 큰 값 유지' : '매칭되는 글자가 없어 모두 왼쪽/위 중 큰 값 유지'),
                         action: function(dir) {
                             if (dir === 'forward') {
                                 for (var j = 1; j <= m; j++) setLcs(row, j, dp[row][j], '#fd79a815');
@@ -1678,7 +2055,7 @@ int fib(int n) {
 
             // Final step: highlight result
             steps.push({
-                description: 'dp[' + n + '][' + m + ']=' + dp[n][m] + '. LCS 길이=' + dp[n][m] + (lcsStr ? ': ' + lcsStr : '') + ' ✅',
+                description: '<strong>최종 답</strong>: dp[' + n + '][' + m + ']=' + dp[n][m] + '. 두 문자열의 최장 공통 부분수열 길이 = ' + dp[n][m] + (lcsStr ? ' (LCS: ' + lcsStr + ')' : ''),
                 action: function(dir) {
                     if (dir === 'forward') {
                         setLcs(n, m, dp[n][m], 'var(--green)');
@@ -1792,7 +2169,7 @@ int fib(int n) {
                     }
                     var changeStr = changes.length > 0 ? changes.join(', ') : '갱신 없음';
                     steps.push({
-                        description: '물건' + (idx+1) + ' (' + item.w + 'kg, 가치' + item.v + '): ' + changeStr,
+                        description: '물건' + (idx+1) + '(' + item.w + 'kg, 가치' + item.v + ') 고려: 용량 w에서 "<strong>이 물건을 넣을까 말까</strong>" 판단 — dp[w-' + item.w + ']+' + item.v + '이 기존 dp[w]보다 크면 갱신. ' + changeStr,
                         action: function(dir) {
                             if (dir === 'forward') {
                                 for (var w = 0; w <= W; w++) {
@@ -1824,7 +2201,7 @@ int fib(int n) {
             var totalW = 0, totalV = 0;
             selected.forEach(function(idx) { totalW += items[idx].w; totalV += items[idx].v; });
             steps.push({
-                description: 'dp[' + W + ']=' + finalDp[W] + '. ' + (selDesc ? selDesc + ' 선택!' : '') + ' ✅',
+                description: '<strong>최종 답</strong>: 용량 ' + W + 'kg에서 담을 수 있는 최대 가치 = ' + finalDp[W] + '.' + (selDesc ? ' 선택: ' + selDesc : ''),
                 action: function(dir) {
                     if (dir === 'forward') {
                         setKn(W, finalDp[W], 'var(--green)');

@@ -57,7 +57,7 @@ var topologicalSortTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -227,6 +227,20 @@ int main() {
                         The answer is <strong>2</strong>! Because two arrows (from Calculus and Linear Algebra) point into Probability.
                     </div>
                 </div>
+
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 Try It — Click a Node to See Its In-degree</div>
+                    <p style="font-size:0.88rem;color:var(--text2);margin-bottom:0.8rem;">Click any node to highlight its incoming edges and see its in-degree value.</p>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;">
+                        <svg id="ts-demo-dag-svg" viewBox="0 0 420 200" width="100%" style="max-width:420px;max-height:200px;">
+                            <defs>
+                                <marker id="ts-demo-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)"/></marker>
+                                <marker id="ts-demo-arrow-hl" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--yellow)"/></marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="concept-demo-msg" id="ts-demo-dag-msg">👆 Click any node!</div>
+                </div>
             </div>
 
             <!-- Section 2: What is Topological Sort? -->
@@ -273,6 +287,24 @@ int main() {
                         <strong>Yes, it is valid!</strong> Both 1 and 2 appear before 3, and 4 can be placed anywhere.
                         [1,2,3,4], [2,1,3,4], [1,2,4,3] and more are all valid answers.
                     </div>
+                </div>
+
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 Try It — Find a Valid Topological Order!</div>
+                    <p style="font-size:0.88rem;color:var(--text2);margin-bottom:0.8rem;">Click nodes in a valid order. You can only click nodes with in-degree 0 (no unresolved prerequisites).</p>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;">
+                        <svg id="ts-demo-puzzle-svg" viewBox="0 0 420 180" width="100%" style="max-width:420px;max-height:180px;">
+                            <defs>
+                                <marker id="ts-puzzle-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)"/></marker>
+                            </defs>
+                        </svg>
+                        <div style="margin-top:0.6rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <span style="font-size:0.85rem;color:var(--text2);font-weight:600;">Your order:</span>
+                            <span id="ts-demo-puzzle-result" style="font-size:0.95rem;font-weight:700;color:var(--accent);min-width:100px;">[ ]</span>
+                        </div>
+                        <button class="concept-demo-btn" id="ts-demo-puzzle-reset" style="margin-top:0.6rem;">🔄 Reset</button>
+                    </div>
+                    <div class="concept-demo-msg" id="ts-demo-puzzle-msg">👆 Click a node with in-degree 0 to start!</div>
                 </div>
             </div>
 
@@ -377,6 +409,38 @@ else {
                         Process 4. Result: <strong>1 2 3 4</strong>
                     </div>
                 </div>
+
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 Try It — Kahn's Algorithm Step-by-Step</div>
+                    <p style="font-size:0.88rem;color:var(--text2);margin-bottom:0.8rem;">Watch Kahn's algorithm process a DAG one step at a time. Graph: 1→3, 1→4, 2→3, 3→4, 2→5, 5→4</p>
+                    <div class="concept-demo-body" id="ts-demo-kahn-body" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+                        <svg id="ts-demo-kahn-svg" viewBox="0 0 400 160" width="100%" style="max-width:400px;max-height:160px;">
+                            <defs>
+                                <marker id="ts-kahn-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)"/></marker>
+                                <marker id="ts-kahn-arrow-dim" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)" opacity="0.2"/></marker>
+                            </defs>
+                        </svg>
+                        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;width:100%;">
+                            <div style="text-align:center;">
+                                <div style="font-size:0.78rem;color:var(--text2);font-weight:600;margin-bottom:4px;">In-degree</div>
+                                <div id="ts-demo-kahn-indeg" style="display:flex;gap:4px;justify-content:center;"></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.78rem;color:var(--text2);font-weight:600;margin-bottom:4px;">Queue</div>
+                                <div id="ts-demo-kahn-queue" style="display:flex;gap:4px;justify-content:center;min-width:60px;min-height:28px;background:var(--bg2);border-radius:6px;padding:2px 6px;align-items:center;font-size:0.85rem;font-weight:600;color:var(--accent);"></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-size:0.78rem;color:var(--text2);font-weight:600;margin-bottom:4px;">Result</div>
+                                <div id="ts-demo-kahn-result" style="display:flex;gap:4px;justify-content:center;min-width:60px;min-height:28px;background:var(--bg2);border-radius:6px;padding:2px 6px;align-items:center;font-size:0.85rem;font-weight:700;color:var(--green);"></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="concept-demo-btn" id="ts-demo-kahn-next">Next Step ▶</button>
+                            <button class="concept-demo-btn" id="ts-demo-kahn-reset">🔄 Reset</button>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ts-demo-kahn-msg">Press "Next Step" to begin Kahn's algorithm!</div>
+                </div>
             </div>
 
             <!-- Section 4: Priority Queue + Topological Sort -->
@@ -460,6 +524,34 @@ for (int i = 0; i &lt; result.size(); i++)
                         Min-heap: Always <strong>[1,2,3,4]</strong>. Because it always dequeues the smallest number first.
                     </div>
                 </div>
+
+                <div class="concept-demo" style="margin-top:1.5rem;">
+                    <div class="concept-demo-title">🎮 Try It — Queue vs Min-Heap Side by Side</div>
+                    <p style="font-size:0.88rem;color:var(--text2);margin-bottom:0.8rem;">Same graph (edges: 3→5, 1→5, 2→4, 4→5), different data structures. Watch how the processing order differs!</p>
+                    <div class="concept-demo-body" id="ts-demo-cmp-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;width:100%;">
+                            <div style="flex:1;min-width:180px;max-width:260px;text-align:center;">
+                                <div style="font-weight:700;font-size:0.9rem;color:var(--accent);margin-bottom:6px;">Regular Queue (FIFO)</div>
+                                <div style="font-size:0.78rem;color:var(--text2);margin-bottom:4px;">Processing order:</div>
+                                <div id="ts-demo-cmp-queue-order" style="min-height:28px;background:var(--bg2);border-radius:6px;padding:4px 8px;font-size:0.9rem;font-weight:700;color:var(--accent);display:flex;gap:4px;justify-content:center;align-items:center;flex-wrap:wrap;"></div>
+                                <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">Queue contents:</div>
+                                <div id="ts-demo-cmp-queue-q" style="min-height:28px;background:var(--bg2);border-radius:6px;padding:4px 8px;font-size:0.85rem;font-weight:600;color:var(--text);display:flex;gap:4px;justify-content:center;align-items:center;"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;max-width:260px;text-align:center;">
+                                <div style="font-weight:700;font-size:0.9rem;color:var(--green);margin-bottom:6px;">Min-Heap (smallest first)</div>
+                                <div style="font-size:0.78rem;color:var(--text2);margin-bottom:4px;">Processing order:</div>
+                                <div id="ts-demo-cmp-heap-order" style="min-height:28px;background:var(--bg2);border-radius:6px;padding:4px 8px;font-size:0.9rem;font-weight:700;color:var(--green);display:flex;gap:4px;justify-content:center;align-items:center;flex-wrap:wrap;"></div>
+                                <div style="font-size:0.78rem;color:var(--text2);margin-top:4px;">Heap contents:</div>
+                                <div id="ts-demo-cmp-heap-q" style="min-height:28px;background:var(--bg2);border-radius:6px;padding:4px 8px;font-size:0.85rem;font-weight:600;color:var(--text);display:flex;gap:4px;justify-content:center;align-items:center;"></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="concept-demo-btn" id="ts-demo-cmp-run">▶ Run Both</button>
+                            <button class="concept-demo-btn" id="ts-demo-cmp-reset">🔄 Reset</button>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="ts-demo-cmp-msg">Press "Run Both" to see the difference!</div>
+                </div>
             </div>
         `;
 
@@ -475,6 +567,616 @@ for (int i = 0; i &lt; result.size(); i++)
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ========== Demo 1: DAG & In-degree Interactive ==========
+        (function() {
+            var svg = container.querySelector('#ts-demo-dag-svg');
+            var msgEl = container.querySelector('#ts-demo-dag-msg');
+            if (!svg || !msgEl) return;
+
+            var nodes = [
+                { id: 1, x: 60,  y: 40  },
+                { id: 2, x: 180, y: 40  },
+                { id: 3, x: 300, y: 40  },
+                { id: 4, x: 120, y: 130 },
+                { id: 5, x: 240, y: 130 },
+                { id: 6, x: 360, y: 130 }
+            ];
+            var edges = [
+                [1, 4], [2, 4], [2, 5], [3, 5], [3, 6], [4, 5]
+            ];
+            var R = 20;
+
+            function shortenLine(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1;
+                var len = Math.sqrt(dx * dx + dy * dy);
+                var ratio = r / len;
+                return { x1: x1 + dx * ratio, y1: y1 + dy * ratio, x2: x2 - dx * ratio, y2: y2 - dy * ratio };
+            }
+
+            // Draw edges
+            edges.forEach(function(e) {
+                var a = nodes[e[0] - 1], b = nodes[e[1] - 1];
+                var p = shortenLine(a.x, a.y, b.x, b.y, R);
+                var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', p.x1); line.setAttribute('y1', p.y1);
+                line.setAttribute('x2', p.x2); line.setAttribute('y2', p.y2);
+                line.setAttribute('stroke', 'var(--text2)'); line.setAttribute('stroke-width', '2');
+                line.setAttribute('marker-end', 'url(#ts-demo-arrow)');
+                line.setAttribute('data-from', e[0]); line.setAttribute('data-to', e[1]);
+                line.setAttribute('class', 'ts-demo-edge');
+                line.style.transition = 'stroke 0.3s, stroke-width 0.3s';
+                svg.appendChild(line);
+            });
+
+            // Draw nodes
+            nodes.forEach(function(n) {
+                var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y); circle.setAttribute('r', R);
+                circle.setAttribute('fill', 'var(--bg2)'); circle.setAttribute('stroke', 'var(--accent)');
+                circle.setAttribute('stroke-width', '2.5'); circle.setAttribute('data-id', n.id);
+                circle.setAttribute('class', 'ts-demo-node');
+                circle.style.cursor = 'pointer'; circle.style.transition = 'fill 0.3s, stroke 0.3s';
+                svg.appendChild(circle);
+
+                var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', n.x); label.setAttribute('y', n.y + 5);
+                label.setAttribute('text-anchor', 'middle'); label.setAttribute('font-size', '14');
+                label.setAttribute('font-weight', 'bold'); label.setAttribute('fill', 'var(--text)');
+                label.style.pointerEvents = 'none';
+                label.textContent = n.id;
+                svg.appendChild(label);
+            });
+
+            // Calculate in-degrees
+            var inDeg = {};
+            nodes.forEach(function(n) { inDeg[n.id] = 0; });
+            edges.forEach(function(e) { inDeg[e[1]]++; });
+
+            // Click handler
+            svg.addEventListener('click', function(ev) {
+                var target = ev.target;
+                if (!target.classList.contains('ts-demo-node')) return;
+                var nodeId = parseInt(target.getAttribute('data-id'));
+
+                // Reset all
+                svg.querySelectorAll('.ts-demo-node').forEach(function(c) {
+                    c.setAttribute('fill', 'var(--bg2)'); c.setAttribute('stroke', 'var(--accent)');
+                });
+                svg.querySelectorAll('.ts-demo-edge').forEach(function(l) {
+                    l.setAttribute('stroke', 'var(--text2)'); l.setAttribute('stroke-width', '2');
+                    l.setAttribute('marker-end', 'url(#ts-demo-arrow)');
+                });
+
+                // Highlight selected node
+                target.setAttribute('fill', 'var(--yellow)'); target.setAttribute('stroke', 'var(--yellow)');
+
+                // Highlight incoming edges
+                var count = 0;
+                svg.querySelectorAll('.ts-demo-edge').forEach(function(l) {
+                    if (parseInt(l.getAttribute('data-to')) === nodeId) {
+                        l.setAttribute('stroke', 'var(--yellow)'); l.setAttribute('stroke-width', '3');
+                        l.setAttribute('marker-end', 'url(#ts-demo-arrow-hl)');
+                        count++;
+                    }
+                });
+
+                msgEl.textContent = 'Node ' + nodeId + ' has in-degree = ' + inDeg[nodeId] +
+                    (inDeg[nodeId] === 0 ? ' (can start immediately!)' : ' (' + count + ' incoming edge' + (count > 1 ? 's' : '') + ')');
+            });
+        })();
+
+        // ========== Demo 2: Ordering Puzzle ==========
+        (function() {
+            var svg = container.querySelector('#ts-demo-puzzle-svg');
+            var msgEl = container.querySelector('#ts-demo-puzzle-msg');
+            var resultEl = container.querySelector('#ts-demo-puzzle-result');
+            var resetBtn = container.querySelector('#ts-demo-puzzle-reset');
+            if (!svg || !msgEl || !resultEl || !resetBtn) return;
+
+            var nodes = [
+                { id: 1, x: 60,  y: 40  },
+                { id: 2, x: 200, y: 40  },
+                { id: 3, x: 340, y: 40  },
+                { id: 4, x: 130, y: 130 },
+                { id: 5, x: 270, y: 130 }
+            ];
+            var edges = [
+                [1, 4], [2, 4], [2, 5], [3, 5]
+            ];
+            var R = 20;
+
+            function shortenLine(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1;
+                var len = Math.sqrt(dx * dx + dy * dy);
+                var ratio = r / len;
+                return { x1: x1 + dx * ratio, y1: y1 + dy * ratio, x2: x2 - dx * ratio, y2: y2 - dy * ratio };
+            }
+
+            var state = { picked: [], currentInDeg: {}, done: false };
+
+            function resetPuzzle() {
+                svg.innerHTML = '<defs><marker id="ts-puzzle-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)"/></marker></defs>';
+                state.picked = []; state.done = false;
+                state.currentInDeg = {};
+                nodes.forEach(function(n) { state.currentInDeg[n.id] = 0; });
+                edges.forEach(function(e) { state.currentInDeg[e[1]]++; });
+
+                // Draw edges
+                edges.forEach(function(e) {
+                    var a = nodes[e[0] - 1], b = nodes[e[1] - 1];
+                    var p = shortenLine(a.x, a.y, b.x, b.y, R);
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', p.x1); line.setAttribute('y1', p.y1);
+                    line.setAttribute('x2', p.x2); line.setAttribute('y2', p.y2);
+                    line.setAttribute('stroke', 'var(--text2)'); line.setAttribute('stroke-width', '2');
+                    line.setAttribute('marker-end', 'url(#ts-puzzle-arrow)');
+                    line.setAttribute('data-from', e[0]); line.setAttribute('data-to', e[1]);
+                    line.setAttribute('class', 'ts-puzzle-edge');
+                    line.style.transition = 'opacity 0.3s';
+                    svg.appendChild(line);
+                });
+
+                // Draw nodes
+                nodes.forEach(function(n) {
+                    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y); circle.setAttribute('r', R);
+                    circle.setAttribute('stroke-width', '2.5'); circle.setAttribute('data-id', n.id);
+                    circle.setAttribute('class', 'ts-puzzle-node');
+                    circle.style.cursor = 'pointer'; circle.style.transition = 'fill 0.3s, stroke 0.3s';
+                    if (state.currentInDeg[n.id] === 0) {
+                        circle.setAttribute('fill', 'var(--bg2)'); circle.setAttribute('stroke', 'var(--green)');
+                    } else {
+                        circle.setAttribute('fill', 'var(--bg2)'); circle.setAttribute('stroke', 'var(--text2)');
+                    }
+                    svg.appendChild(circle);
+
+                    var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    label.setAttribute('x', n.x); label.setAttribute('y', n.y + 5);
+                    label.setAttribute('text-anchor', 'middle'); label.setAttribute('font-size', '14');
+                    label.setAttribute('font-weight', 'bold'); label.setAttribute('fill', 'var(--text)');
+                    label.style.pointerEvents = 'none'; label.setAttribute('class', 'ts-puzzle-label');
+                    label.setAttribute('data-id', n.id);
+                    label.textContent = n.id;
+                    svg.appendChild(label);
+                });
+
+                resultEl.textContent = '[ ]';
+                msgEl.textContent = '👆 Click a node with in-degree 0 (green border) to start!';
+                msgEl.style.color = '';
+            }
+
+            function updateNodeColors() {
+                svg.querySelectorAll('.ts-puzzle-node').forEach(function(c) {
+                    var nid = parseInt(c.getAttribute('data-id'));
+                    if (state.picked.indexOf(nid) >= 0) return; // already picked
+                    if (state.currentInDeg[nid] === 0) {
+                        c.setAttribute('stroke', 'var(--green)');
+                    } else {
+                        c.setAttribute('stroke', 'var(--text2)');
+                    }
+                });
+            }
+
+            svg.addEventListener('click', function(ev) {
+                var target = ev.target;
+                if (!target.classList.contains('ts-puzzle-node') || state.done) return;
+                var nodeId = parseInt(target.getAttribute('data-id'));
+                if (state.picked.indexOf(nodeId) >= 0) return;
+
+                if (state.currentInDeg[nodeId] !== 0) {
+                    // Invalid choice - flash red
+                    target.setAttribute('fill', 'var(--red)');
+                    setTimeout(function() { target.setAttribute('fill', 'var(--bg2)'); }, 400);
+                    msgEl.textContent = 'Node ' + nodeId + ' still has prerequisites! (in-degree = ' + state.currentInDeg[nodeId] + ')';
+                    msgEl.style.color = 'var(--red)';
+                    return;
+                }
+
+                // Valid choice
+                state.picked.push(nodeId);
+                target.setAttribute('fill', 'var(--green)'); target.setAttribute('stroke', 'var(--green)');
+                target.style.cursor = 'default';
+
+                // Reduce in-degrees of neighbors and dim edges
+                edges.forEach(function(e) {
+                    if (e[0] === nodeId) {
+                        state.currentInDeg[e[1]]--;
+                        svg.querySelectorAll('.ts-puzzle-edge').forEach(function(l) {
+                            if (parseInt(l.getAttribute('data-from')) === nodeId) {
+                                l.style.opacity = '0.2';
+                            }
+                        });
+                    }
+                });
+
+                updateNodeColors();
+                resultEl.textContent = '[ ' + state.picked.join(', ') + ' ]';
+
+                if (state.picked.length === nodes.length) {
+                    state.done = true;
+                    msgEl.textContent = 'Correct! ' + resultEl.textContent + ' is a valid topological order!';
+                    msgEl.style.color = 'var(--green)';
+                } else {
+                    msgEl.textContent = 'Node ' + nodeId + ' picked! Choose the next node with in-degree 0.';
+                    msgEl.style.color = '';
+                }
+            });
+
+            resetBtn.addEventListener('click', resetPuzzle);
+            resetPuzzle();
+        })();
+
+        // ========== Demo 3: Kahn's Algorithm Step-by-Step ==========
+        (function() {
+            var svgEl = container.querySelector('#ts-demo-kahn-svg');
+            var indegEl = container.querySelector('#ts-demo-kahn-indeg');
+            var queueEl = container.querySelector('#ts-demo-kahn-queue');
+            var resultEl = container.querySelector('#ts-demo-kahn-result');
+            var msgEl = container.querySelector('#ts-demo-kahn-msg');
+            var nextBtn = container.querySelector('#ts-demo-kahn-next');
+            var resetBtn = container.querySelector('#ts-demo-kahn-reset');
+            if (!svgEl || !nextBtn || !resetBtn) return;
+
+            var nodes = [
+                { id: 1, x: 60,  y: 40  },
+                { id: 2, x: 200, y: 40  },
+                { id: 3, x: 120, y: 120 },
+                { id: 4, x: 280, y: 80  },
+                { id: 5, x: 340, y: 40  }
+            ];
+            var edges = [
+                [1, 3], [1, 4], [2, 3], [3, 4], [2, 5], [5, 4]
+            ];
+            var R = 18;
+
+            function shortenLine(x1, y1, x2, y2, r) {
+                var dx = x2 - x1, dy = y2 - y1;
+                var len = Math.sqrt(dx * dx + dy * dy);
+                var ratio = r / len;
+                return { x1: x1 + dx * ratio, y1: y1 + dy * ratio, x2: x2 - dx * ratio, y2: y2 - dy * ratio };
+            }
+
+            // Build adjacency list
+            var adj = {}; nodes.forEach(function(n) { adj[n.id] = []; });
+            edges.forEach(function(e) { adj[e[0]].push(e[1]); });
+
+            // Pre-compute all steps for Kahn's
+            function buildKahnSteps() {
+                var inDeg = {}; nodes.forEach(function(n) { inDeg[n.id] = 0; });
+                edges.forEach(function(e) { inDeg[e[1]]++; });
+                var queue = [];
+                nodes.forEach(function(n) { if (inDeg[n.id] === 0) queue.push(n.id); });
+                queue.sort(function(a, b) { return a - b; });
+
+                var steps = [];
+                // Step 0: initialization
+                steps.push({
+                    desc: 'Initialize: find all nodes with in-degree 0 and add them to the queue.',
+                    inDeg: JSON.parse(JSON.stringify(inDeg)),
+                    queue: queue.slice(),
+                    result: [],
+                    highlightNode: null,
+                    dimmedNodes: [],
+                    dimmedEdges: [],
+                    highlightEdges: []
+                });
+
+                var result = [];
+                var dimmedNodes = [];
+                var dimmedEdges = [];
+
+                while (queue.length > 0) {
+                    var v = queue.shift();
+                    // Step: dequeue node
+                    steps.push({
+                        desc: 'Dequeue node ' + v + ' from the queue and add it to the result.',
+                        inDeg: JSON.parse(JSON.stringify(inDeg)),
+                        queue: queue.slice(),
+                        result: result.concat([v]),
+                        highlightNode: v,
+                        dimmedNodes: dimmedNodes.slice(),
+                        dimmedEdges: dimmedEdges.slice(),
+                        highlightEdges: []
+                    });
+                    result.push(v);
+                    dimmedNodes.push(v);
+
+                    // Process neighbors one by one
+                    var neighbors = adj[v].slice().sort(function(a, b) { return a - b; });
+                    neighbors.forEach(function(u) {
+                        inDeg[u]--;
+                        dimmedEdges.push([v, u]);
+                        var newInQueue = inDeg[u] === 0;
+                        if (newInQueue) queue.push(u);
+                        queue.sort(function(a, b) { return a - b; });
+                        steps.push({
+                            desc: 'Edge ' + v + '→' + u + ' removed. in-degree[' + u + '] decreases to ' + inDeg[u] + '.' +
+                                  (newInQueue ? ' Now 0 — add node ' + u + ' to queue!' : ''),
+                            inDeg: JSON.parse(JSON.stringify(inDeg)),
+                            queue: queue.slice(),
+                            result: result.slice(),
+                            highlightNode: v,
+                            dimmedNodes: dimmedNodes.slice(),
+                            dimmedEdges: dimmedEdges.slice(),
+                            highlightEdges: [[v, u]]
+                        });
+                    });
+                }
+
+                steps.push({
+                    desc: 'Done! Queue is empty. Result: [' + result.join(', ') + ']',
+                    inDeg: JSON.parse(JSON.stringify(inDeg)),
+                    queue: [],
+                    result: result.slice(),
+                    highlightNode: null,
+                    dimmedNodes: dimmedNodes.slice(),
+                    dimmedEdges: dimmedEdges.slice(),
+                    highlightEdges: []
+                });
+
+                return steps;
+            }
+
+            var kahnSteps = [];
+            var stepIdx = -1;
+
+            function drawGraph(step) {
+                svgEl.innerHTML = '<defs>' +
+                    '<marker id="ts-kahn-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)"/></marker>' +
+                    '<marker id="ts-kahn-arrow-dim" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--text2)" opacity="0.2"/></marker>' +
+                    '<marker id="ts-kahn-arrow-hl" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--yellow)"/></marker>' +
+                    '</defs>';
+
+                // Draw edges
+                edges.forEach(function(e) {
+                    var a = nodes[e[0] - 1], b = nodes[e[1] - 1];
+                    var p = shortenLine(a.x, a.y, b.x, b.y, R);
+                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', p.x1); line.setAttribute('y1', p.y1);
+                    line.setAttribute('x2', p.x2); line.setAttribute('y2', p.y2);
+                    line.setAttribute('stroke-width', '2');
+
+                    var isDimmed = step && step.dimmedEdges.some(function(de) { return de[0] === e[0] && de[1] === e[1]; });
+                    var isHL = step && step.highlightEdges.some(function(he) { return he[0] === e[0] && he[1] === e[1]; });
+
+                    if (isHL) {
+                        line.setAttribute('stroke', 'var(--yellow)'); line.setAttribute('stroke-width', '3');
+                        line.setAttribute('marker-end', 'url(#ts-kahn-arrow-hl)');
+                    } else if (isDimmed) {
+                        line.setAttribute('stroke', 'var(--text2)'); line.style.opacity = '0.2';
+                        line.setAttribute('marker-end', 'url(#ts-kahn-arrow-dim)');
+                    } else {
+                        line.setAttribute('stroke', 'var(--text2)');
+                        line.setAttribute('marker-end', 'url(#ts-kahn-arrow)');
+                    }
+                    svgEl.appendChild(line);
+                });
+
+                // Draw nodes
+                nodes.forEach(function(n) {
+                    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y); circle.setAttribute('r', R);
+                    circle.setAttribute('stroke-width', '2.5');
+
+                    var isDimmed = step && step.dimmedNodes.indexOf(n.id) >= 0;
+                    var isHL = step && step.highlightNode === n.id;
+                    var isInResult = step && step.result.indexOf(n.id) >= 0;
+
+                    if (isHL) {
+                        circle.setAttribute('fill', 'var(--yellow)'); circle.setAttribute('stroke', 'var(--yellow)');
+                    } else if (isInResult || isDimmed) {
+                        circle.setAttribute('fill', 'var(--green)'); circle.setAttribute('stroke', 'var(--green)');
+                        circle.style.opacity = '0.5';
+                    } else {
+                        circle.setAttribute('fill', 'var(--bg2)'); circle.setAttribute('stroke', 'var(--accent)');
+                    }
+                    svgEl.appendChild(circle);
+
+                    var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    label.setAttribute('x', n.x); label.setAttribute('y', n.y + 5);
+                    label.setAttribute('text-anchor', 'middle'); label.setAttribute('font-size', '13');
+                    label.setAttribute('font-weight', 'bold'); label.setAttribute('fill', 'var(--text)');
+                    if (isDimmed || isInResult) label.style.opacity = '0.5';
+                    label.textContent = n.id;
+                    svgEl.appendChild(label);
+                });
+            }
+
+            function renderState(step) {
+                // In-degree display
+                indegEl.innerHTML = '';
+                nodes.forEach(function(n) {
+                    var cell = document.createElement('span');
+                    cell.style.cssText = 'display:inline-flex;flex-direction:column;align-items:center;padding:2px 6px;border-radius:4px;font-size:0.78rem;';
+                    var val = step ? step.inDeg[n.id] : 0;
+                    if (val === 0) cell.style.background = 'var(--green)15';
+                    cell.innerHTML = '<span style="color:var(--text2);font-size:0.7rem;">' + n.id + '</span><span style="font-weight:700;color:' + (val === 0 ? 'var(--green)' : 'var(--text)') + ';">' + val + '</span>';
+                    indegEl.appendChild(cell);
+                });
+
+                // Queue display
+                queueEl.textContent = step && step.queue.length > 0 ? step.queue.join(', ') : '(empty)';
+
+                // Result display
+                resultEl.textContent = step && step.result.length > 0 ? step.result.join(', ') : '(empty)';
+
+                // Message
+                if (step) msgEl.textContent = step.desc;
+
+                // Graph
+                drawGraph(step);
+            }
+
+            function resetKahn() {
+                kahnSteps = buildKahnSteps();
+                stepIdx = -1;
+                nextBtn.disabled = false;
+                renderState(null);
+                // Render initial in-degrees
+                var initInDeg = {}; nodes.forEach(function(n) { initInDeg[n.id] = 0; });
+                edges.forEach(function(e) { initInDeg[e[1]]++; });
+                indegEl.innerHTML = '';
+                nodes.forEach(function(n) {
+                    var cell = document.createElement('span');
+                    cell.style.cssText = 'display:inline-flex;flex-direction:column;align-items:center;padding:2px 6px;border-radius:4px;font-size:0.78rem;';
+                    var val = initInDeg[n.id];
+                    if (val === 0) cell.style.background = 'var(--green)15';
+                    cell.innerHTML = '<span style="color:var(--text2);font-size:0.7rem;">' + n.id + '</span><span style="font-weight:700;color:' + (val === 0 ? 'var(--green)' : 'var(--text)') + ';">' + val + '</span>';
+                    indegEl.appendChild(cell);
+                });
+                queueEl.textContent = '(empty)';
+                resultEl.textContent = '(empty)';
+                msgEl.textContent = 'Press "Next Step" to begin Kahn\'s algorithm!';
+            }
+
+            nextBtn.addEventListener('click', function() {
+                stepIdx++;
+                if (stepIdx >= kahnSteps.length) {
+                    nextBtn.disabled = true;
+                    return;
+                }
+                renderState(kahnSteps[stepIdx]);
+                if (stepIdx >= kahnSteps.length - 1) nextBtn.disabled = true;
+            });
+
+            resetBtn.addEventListener('click', resetKahn);
+            resetKahn();
+        })();
+
+        // ========== Demo 4: Queue vs Min-Heap Comparison ==========
+        (function() {
+            var queueOrderEl = container.querySelector('#ts-demo-cmp-queue-order');
+            var heapOrderEl = container.querySelector('#ts-demo-cmp-heap-order');
+            var queueQEl = container.querySelector('#ts-demo-cmp-queue-q');
+            var heapQEl = container.querySelector('#ts-demo-cmp-heap-q');
+            var msgEl = container.querySelector('#ts-demo-cmp-msg');
+            var runBtn = container.querySelector('#ts-demo-cmp-run');
+            var resetBtn = container.querySelector('#ts-demo-cmp-reset');
+            if (!runBtn || !resetBtn) return;
+
+            // Graph: 3→5, 1→5, 2→4, 4→5
+            // Nodes: 1,2,3,4,5
+            var nodeIds = [1, 2, 3, 4, 5];
+            var edges = [[3, 5], [1, 5], [2, 4], [4, 5]];
+            var adj = {}; nodeIds.forEach(function(n) { adj[n] = []; });
+            edges.forEach(function(e) { adj[e[0]].push(e[1]); });
+
+            function runTopo(useMinHeap) {
+                var inDeg = {}; nodeIds.forEach(function(n) { inDeg[n] = 0; });
+                edges.forEach(function(e) { inDeg[e[1]]++; });
+
+                var q = [];
+                nodeIds.forEach(function(n) { if (inDeg[n] === 0) q.push(n); });
+                // Regular queue: insertion order (which is 1,2,3 since we iterate in order)
+                // Min-heap: sorted
+                if (useMinHeap) q.sort(function(a, b) { return a - b; });
+
+                var steps = []; // each step: { dequeued, queue, result }
+                var result = [];
+                steps.push({ dequeued: null, queue: q.slice(), result: [] });
+
+                while (q.length > 0) {
+                    var v;
+                    if (useMinHeap) {
+                        q.sort(function(a, b) { return a - b; });
+                        v = q.shift();
+                    } else {
+                        v = q.shift();
+                    }
+                    result.push(v);
+                    adj[v].forEach(function(u) {
+                        inDeg[u]--;
+                        if (inDeg[u] === 0) q.push(u);
+                    });
+                    if (useMinHeap) q.sort(function(a, b) { return a - b; });
+                    steps.push({ dequeued: v, queue: q.slice(), result: result.slice() });
+                }
+                return steps;
+            }
+
+            var animTimer = null;
+            var running = false;
+
+            function resetCmp() {
+                if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+                running = false;
+                runBtn.disabled = false;
+                queueOrderEl.innerHTML = ''; heapOrderEl.innerHTML = '';
+                queueQEl.textContent = '(empty)'; heapQEl.textContent = '(empty)';
+                msgEl.textContent = 'Press "Run Both" to see the difference!';
+                msgEl.style.color = '';
+            }
+
+            function animateSteps(qSteps, hSteps) {
+                var maxLen = Math.max(qSteps.length, hSteps.length);
+                var i = 0;
+                running = true;
+                runBtn.disabled = true;
+
+                function tick() {
+                    if (i >= maxLen) {
+                        var qResult = qSteps[qSteps.length - 1].result;
+                        var hResult = hSteps[hSteps.length - 1].result;
+                        var same = qResult.join(',') === hResult.join(',');
+                        msgEl.textContent = same
+                            ? 'Both produced the same order this time! But the queue result can vary.'
+                            : 'Different orders! Queue: [' + qResult.join(',') + '] vs Heap: [' + hResult.join(',') + ']. The min-heap always picks the smallest available node.';
+                        msgEl.style.color = same ? 'var(--accent)' : 'var(--green)';
+                        running = false;
+                        return;
+                    }
+
+                    // Update queue side
+                    if (i < qSteps.length) {
+                        var qs = qSteps[i];
+                        queueQEl.textContent = qs.queue.length > 0 ? qs.queue.join(', ') : '(empty)';
+                        if (qs.dequeued !== null) {
+                            var span = document.createElement('span');
+                            span.textContent = qs.dequeued;
+                            span.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:white;font-weight:700;font-size:0.85rem;';
+                            queueOrderEl.appendChild(span);
+                        }
+                    }
+
+                    // Update heap side
+                    if (i < hSteps.length) {
+                        var hs = hSteps[i];
+                        heapQEl.textContent = hs.queue.length > 0 ? hs.queue.join(', ') : '(empty)';
+                        if (hs.dequeued !== null) {
+                            var span2 = document.createElement('span');
+                            span2.textContent = hs.dequeued;
+                            span2.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:white;font-weight:700;font-size:0.85rem;';
+                            heapOrderEl.appendChild(span2);
+                        }
+                    }
+
+                    if (i === 0) {
+                        msgEl.textContent = 'Initial: nodes with in-degree 0 go into the queue/heap.';
+                    } else {
+                        var qd = i < qSteps.length && qSteps[i].dequeued ? qSteps[i].dequeued : '-';
+                        var hd = i < hSteps.length && hSteps[i].dequeued ? hSteps[i].dequeued : '-';
+                        msgEl.textContent = 'Step ' + i + ': Queue picks ' + qd + ', Heap picks ' + hd;
+                    }
+                    msgEl.style.color = '';
+                    i++;
+                    animTimer = setTimeout(tick, 800);
+                }
+
+                tick();
+            }
+
+            runBtn.addEventListener('click', function() {
+                if (running) return;
+                resetCmp();
+                var qSteps = runTopo(false);
+                var hSteps = runTopo(true);
+                animateSteps(qSteps, hSteps);
+            });
+
+            resetBtn.addEventListener('click', resetCmp);
+            resetCmp();
+        })();
     },
 
     // ===== Visualization State =====
@@ -716,7 +1418,7 @@ for (int i = 0; i &lt; result.size(); i++)
         // Step 0: init
         var s0 = saveState();
         steps.push({
-            description: 'Initialize: Add nodes 1, 2, 3 (in-degree 0) to the queue.',
+            description: 'Initialize: Add nodes 1, 2, 3 (in-degree 0) to the queue. — <em>no prerequisites, so they can be processed immediately</em>',
             action: function() {
                 setNode(1, 'queued'); setNode(2, 'queued'); setNode(3, 'queued');
                 setQueue([1, 2, 3]);
@@ -733,7 +1435,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var curResult = simResult.slice();
 
             steps.push({
-                description: 'Dequeue ' + v + ' and add it to the result.',
+                description: 'Dequeue ' + v + ' and add it to the result. — <em>in-degree 0 means all prerequisites are done, so it can be processed now</em>',
                 _before: null,
                 action: function() {
                     this._before = saveState();
@@ -758,7 +1460,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 var neighborIndeg = {};
                 neighbors.forEach(function(u) { neighborIndeg[u] = simIndeg[u]; });
 
-                var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '.';
+                var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '. — <em>completing ' + v + ' removes one prerequisite from each neighbor</em>';
                 if (newQueued.length > 0) {
                     desc2 += ' → ' + newQueued.join(', ') + ' reached in-degree 0, added to queue.';
                 }
@@ -784,7 +1486,7 @@ for (int i = 0; i &lt; result.size(); i++)
             } else {
                 (function(v2) {
                     steps.push({
-                        description: v2 + ' has no neighbors. Processing complete!',
+                        description: v2 + ' has no neighbors. Processing complete! — <em>no downstream tasks, so no other node\'s in-degree is affected</em>',
                         _before: null,
                         action: function() {
                             this._before = saveState();
@@ -909,7 +1611,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var zeroNodes = simQueue.slice();
             if (zeroNodes.length === 0) {
                 steps.push({
-                    description: 'No node with in-degree 0! There may be a cycle.',
+                    description: 'No node with in-degree 0! — <em>every node has a prerequisite, so nothing can start; this implies a cycle exists</em>',
                     action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">No node with in-degree 0!</strong>'; },
                     undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with Kahn\'s Algorithm.</span>'; }
                 });
@@ -922,7 +1624,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 steps.push({
-                    description: 'Initialize: Add nodes ' + zn.join(', ') + ' (in-degree 0) to the queue.',
+                    description: 'Initialize: Add nodes ' + zn.join(', ') + ' (in-degree 0) to the queue. — <em>no prerequisites, so they can be processed immediately</em>',
                     action: function() { renderNodes(queuedNodes, n); renderQueue(zn.slice()); renderResult([]); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → added to queue'; },
                     undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with Kahn\'s Algorithm.</span>'; }
                 });
@@ -948,7 +1650,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 // Dequeue step
                 (function(vv, pns, cq, cr) {
                     steps.push({
-                        description: 'Dequeue ' + vv + ' and add it to the result.',
+                        description: 'Dequeue ' + vv + ' and add it to the result. — <em>in-degree 0 = all prerequisites done, so it can be processed now</em>',
                         action: function() { renderNodes(pns, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> processing...'; },
                         undo: function() {
                             var prev = steps[steps.length - 1];
@@ -982,7 +1684,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
                     var afterQueue = simQueue.slice();
 
-                    var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '.';
+                    var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '. — <em>completing ' + v + ' removes one prerequisite from each neighbor</em>';
                     if (newQueued.length > 0) {
                         desc2 += ' → ' + newQueued.join(', ') + ' reached in-degree 0, added to queue!';
                     }
@@ -1012,7 +1714,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     }
                     (function(vv3, dns, pns3, pind2, pcq2, pcr2) {
                         steps.push({
-                            description: vv3 + ' has no neighbors. Processing complete!',
+                            description: vv3 + ' has no neighbors. Processing complete! — <em>no downstream tasks, so no other node\'s in-degree is affected</em>',
                             action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' processing complete (no neighbors)'; },
                             undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderQueue(pcq2); renderResult(pcr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> processing...'; }
                         });
@@ -1199,7 +1901,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var zeroNodes = simHeap.slice().sort(function(a, b) { return a - b; });
             if (zeroNodes.length === 0) {
                 steps.push({
-                    description: 'No node with in-degree 0! There may be a cycle.',
+                    description: 'No node with in-degree 0! — <em>every node has a prerequisite, so nothing can start; this implies a cycle exists</em>',
                     action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">No node with in-degree 0!</strong>'; },
                     undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with min-heap.</span>'; }
                 });
@@ -1213,7 +1915,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 var heapDisplay = simHeap.slice();
                 steps.push({
-                    description: 'Initialize: Add nodes ' + zn.join(', ') + ' (in-degree 0) to the heap. Since it is a min-heap, ' + zn[0] + ' comes first!',
+                    description: 'Initialize: Add nodes ' + zn.join(', ') + ' (in-degree 0) to the heap. Since it is a min-heap, ' + zn[0] + ' comes first! — <em>processing smallest-numbered node first among those with no prerequisites guarantees lexicographically smallest order</em>',
                     action: function() { renderNodes(queuedNodes, n); renderHeap(heapDisplay); renderResult([]); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → added to min-heap. Min value: ' + zn[0]; },
                     undo: function() { renderNodes(initN, n); renderIndeg(initInd, n); renderHeap([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting topological sort with min-heap.</span>'; }
                 });
@@ -1239,7 +1941,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 // Pop step
                 (function(vv, pns, chd, cr) {
                     steps.push({
-                        description: 'Pop minimum value ' + vv + ' from the heap and add to result.',
+                        description: 'Pop minimum value ' + vv + ' from the heap and add to result. — <em>among in-degree 0 nodes, picking the smallest ensures lexicographic order</em>',
                         action: function() { renderNodes(pns, n); renderHeap(chd); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '</strong> processing... (min from heap)'; },
                         undo: function() {}
                     });
@@ -1267,7 +1969,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
                     var afterHeap = simHeap.slice();
 
-                    var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '.';
+                    var desc2 = 'Decrease in-degree of neighbors [' + neighbors.join(', ') + '] of ' + v + '. — <em>completing ' + v + ' removes one prerequisite from each neighbor</em>';
                     if (newQueued.length > 0) {
                         desc2 += ' → ' + newQueued.join(', ') + ' reached in-degree 0, added to heap!';
                     }
@@ -1289,7 +1991,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     }
                     (function(vv3, dns, pns3, pind2, phd2, pr2) {
                         steps.push({
-                            description: vv3 + ' has no neighbors. Processing complete!',
+                            description: vv3 + ' has no neighbors. Processing complete! — <em>no downstream tasks, so no other node\'s in-degree is affected</em>',
                             action: function() { renderNodes(dns, n); renderIndeg(pind2, n); infoEl.innerHTML = vv3 + ' processing complete (no neighbors)'; },
                             undo: function() { renderNodes(pns3, n); renderIndeg(pind2, n); renderHeap(phd2); renderResult(pr2); infoEl.innerHTML = '<strong>' + vv3 + '</strong> processing...'; }
                         });
@@ -1443,7 +2145,7 @@ for (int i = 0; i &lt; result.size(); i++)
 
             (function(ae, ins, ids) {
                 steps.push({
-                    description: 'Build edges for all pairs from last year ranking [' + lastRank.join(',') + ']: ' + edgeStr,
+                    description: 'Build edges for all pairs from last year ranking [' + lastRank.join(',') + ']: ' + edgeStr + ' — <em>higher-ranked team points to lower-ranked team to represent precedence</em>',
                     action: function() { renderGraph(ae, ins, n); infoEl.innerHTML = 'Edge construction complete. in-degree: ' + ids; },
                     undo: function() { renderGraph([], ins, n); infoEl.innerHTML = '<span style="color:var(--text2);">Building edges from last year ranking, then applying topological sort.</span>'; }
                 });
@@ -1478,7 +2180,7 @@ for (int i = 0; i &lt; result.size(); i++)
 
                 (function(ae2, ins2, sids, swpDesc) {
                     steps.push({
-                        description: 'Apply changed pairs to reverse edges. Current edges: ' + swapEdgeStr,
+                        description: 'Apply changed pairs to reverse edges. Current edges: ' + swapEdgeStr + ' — <em>reversing edges for swapped pairs reflects this year\'s new relative rankings</em>',
                         action: function() { renderGraph(ae2, ins2, n); infoEl.innerHTML = 'Edge reversal complete. in-degree: ' + sids; },
                         undo: function() {}
                     });
@@ -1497,7 +2199,7 @@ for (int i = 0; i &lt; result.size(); i++)
             var zeroNodes = simQueue.slice();
             if (zeroNodes.length === 0) {
                 steps.push({
-                    description: 'No node with in-degree 0! There may be a cycle.',
+                    description: 'No node with in-degree 0! — <em>edge reversals created a cycle, making ranking determination impossible</em>',
                     action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">IMPOSSIBLE — Cycle detected!</strong>'; },
                     undo: function() {}
                 });
@@ -1510,7 +2212,7 @@ for (int i = 0; i &lt; result.size(); i++)
                 for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
                 zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
                 steps.push({
-                    description: 'Add nodes ' + zn.join(', ') + ' (in-degree 0) to the queue.',
+                    description: 'Add nodes ' + zn.join(', ') + ' (in-degree 0) to the queue. — <em>no teams ranked above them, so they are first-place candidates</em>',
                     action: function() { renderGraph(ae3, queuedNodes, n); renderQueue(zn.slice()); infoEl.innerHTML = 'in-degree 0: <strong>' + zn.join(', ') + '</strong> → added to queue'; },
                     undo: function() {}
                 });
@@ -1593,7 +2295,7 @@ for (int i = 0; i &lt; result.size(); i++)
                     });
                 } else if (amb) {
                     steps.push({
-                        description: 'Cannot determine a unique ranking (?). The queue had 2+ nodes at the same time.',
+                        description: 'Cannot determine a unique ranking (?). The queue had 2+ nodes at the same time. — <em>when multiple nodes have in-degree 0 simultaneously, their relative order is ambiguous</em>',
                         action: function() {
                             var fs2 = {};
                             for (var f2 = 1; f2 <= n; f2++) fs2[f2] = 'done';

@@ -58,7 +58,7 @@ const sortingTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -262,6 +262,88 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                     <div style="margin-top:1rem;padding:10px 14px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:6px;font-size:0.88rem;line-height:1.7;">
                         <strong>핵심 차이:</strong> 삽입 정렬만 최선 O(n)이 가능합니다! 이미 정렬된 데이터에서는 비교만 하고 이동이 없기 때문입니다. 그래서 실전 정렬 알고리즘(TimSort, IntroSort)도 작은 구간에서 삽입 정렬을 활용합니다. 선택 정렬은 교환 횟수가 O(n)으로 가장 적어서, 교환 비용이 큰 경우에 유리합니다.
                     </div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">선택 정렬 미니 데모</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        매 라운드마다 <strong>남은 원소 중 최솟값</strong>을 찾아 맨 앞과 교환합니다.<br>
+                        "Step" 버튼을 눌러 <em>한 비교씩</em> 따라가 보세요 — 최솟값이 어떻게 갱신되는지 확인!
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-sel-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-sel-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-sel-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-sel-msg">▶ Step을 눌러 선택 정렬을 시작하세요!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">삽입 정렬 미니 데모</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        왼쪽부터 <strong>정렬된 부분</strong>을 넓혀갑니다. 새 원소를 꺼내서, 정렬된 부분에서 올바른 자리를 찾아 <em>끼워넣기</em>!<br>
+                        큰 원소들이 오른쪽으로 밀리는 과정을 한 스텝씩 확인하세요.
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-ins-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-ins-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-ins-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-ins-msg">▶ Step을 눌러 삽입 정렬을 시작하세요!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">버블 정렬 미니 데모</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        인접한 두 원소를 비교해서, 왼쪽이 크면 <strong>교환</strong>합니다. 한 패스가 끝나면 가장 큰 원소가 맨 뒤로 "떠오릅니다".<br>
+                        한 비교씩 따라가 보세요!
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-bub-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-bub-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-bub-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-bub-msg">▶ Step을 눌러 버블 정렬을 시작하세요!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">속도 비교: 선택 vs 삽입 vs 버블</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        같은 배열을 세 가지 정렬로 동시에 정렬합니다. 각 알고리즘의 <strong>비교 횟수</strong>와 <strong>교환 횟수</strong>가 얼마나 다른지 확인해보세요!<br>
+                        모두 O(n²)이지만, 실제 연산 수는 다릅니다.
+                    </p>
+                    <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:8px;">
+                        <button class="concept-demo-btn" id="sort-demo-race-prev">← 이전</button>
+                        <span id="sort-demo-race-counter" style="font-size:0.85rem;color:var(--text2);min-width:80px;text-align:center;">시작 전</span>
+                        <button class="concept-demo-btn" id="sort-demo-race-next">다음 →</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-race-reset" style="margin-left:8px;">🔄</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;">
+                            <div style="text-align:center;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--accent);">선택 정렬</div>
+                                <div id="sort-demo-race-sel" style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:44px;"></div>
+                                <div style="margin-top:6px;font-size:0.82rem;">비교: <span id="sort-demo-race-sel-cmp" style="font-weight:700;color:var(--accent);">0</span> · 교환: <span id="sort-demo-race-sel-swp" style="font-weight:700;color:var(--red);">0</span></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--green);">삽입 정렬</div>
+                                <div id="sort-demo-race-ins" style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:44px;"></div>
+                                <div style="margin-top:6px;font-size:0.82rem;">비교: <span id="sort-demo-race-ins-cmp" style="font-weight:700;color:var(--accent);">0</span> · 이동: <span id="sort-demo-race-ins-swp" style="font-weight:700;color:var(--red);">0</span></div>
+                            </div>
+                            <div style="text-align:center;">
+                                <div style="font-weight:700;margin-bottom:6px;color:var(--yellow);">버블 정렬</div>
+                                <div id="sort-demo-race-bub" style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-height:44px;"></div>
+                                <div style="margin-top:6px;font-size:0.82rem;">비교: <span id="sort-demo-race-bub-cmp" style="font-weight:700;color:var(--accent);">0</span> · 교환: <span id="sort-demo-race-bub-swp" style="font-weight:700;color:var(--red);">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-race-msg">▶ "다음 →" 버튼을 눌러 세 정렬을 비교해보세요!</div>
                 </div>
             </div>
 
@@ -572,6 +654,367 @@ sort(words.begin(), words.end(),
             </div>
         `;
         container.querySelectorAll('pre code').forEach(el => { if (window.hljs) hljs.highlightElement(el); });
+
+        // ── 선택 정렬 미니 데모 ──
+        {
+            var selArr = [64, 25, 12, 22, 11];
+            var selState = { arr: selArr.slice(), i: 0, j: 0, minIdx: 0, phase: 'start', done: false };
+            var selArrEl = container.querySelector('#sort-demo-sel-arr');
+            var selMsg = container.querySelector('#sort-demo-sel-msg');
+
+            function renderSelArr() {
+                selArrEl.innerHTML = selState.arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = '';
+                    if (selState.done || idx < selState.i) {
+                        cls += ' matched';
+                    } else if (idx === selState.minIdx && selState.phase === 'compare') {
+                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    }
+                    if (idx === selState.j && selState.phase === 'compare' && idx !== selState.minIdx) {
+                        extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
+                    }
+                    var label = '';
+                    if (idx === selState.minIdx && selState.phase === 'compare') label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">min</div>';
+                    if (idx === selState.j && selState.phase === 'compare') label += '<div style="font-size:0.65rem;color:var(--red);margin-top:2px;">j</div>';
+                    return '<div style="display:flex;flex-direction:column;align-items:center;">' +
+                        '<div class="' + cls + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                }).join('');
+            }
+
+            function selStep() {
+                if (selState.done) return;
+                if (selState.phase === 'start') {
+                    selState.i = 0; selState.minIdx = 0; selState.j = 1;
+                    selState.phase = 'compare';
+                    selMsg.textContent = 'Round 0: ' + selState.arr[0] + '을(를) 임시 최솟값으로 설정. j=1(' + selState.arr[1] + ')과 비교합니다.';
+                    renderSelArr();
+                    return;
+                }
+                if (selState.phase === 'compare') {
+                    if (selState.j < selState.arr.length) {
+                        if (selState.arr[selState.j] < selState.arr[selState.minIdx]) {
+                            selState.minIdx = selState.j;
+                            selMsg.textContent = selState.arr[selState.j] + ' < 현재 최솟값 → 최솟값을 ' + selState.arr[selState.j] + '(인덱스 ' + selState.j + ')으로 갱신!';
+                        } else {
+                            selMsg.textContent = selState.arr[selState.j] + ' >= 현재 최솟값 ' + selState.arr[selState.minIdx] + ' → 변경 없음.';
+                        }
+                        selState.j++;
+                        if (selState.j >= selState.arr.length) {
+                            selState.phase = 'swap';
+                        }
+                        renderSelArr();
+                        return;
+                    }
+                    selState.phase = 'swap';
+                }
+                if (selState.phase === 'swap') {
+                    var a = selState.i, b = selState.minIdx;
+                    if (a !== b) {
+                        selMsg.textContent = '교환! arr[' + a + ']=' + selState.arr[a] + ' ↔ arr[' + b + ']=' + selState.arr[b] + '. 위치 ' + a + ' 확정!';
+                        var tmp = selState.arr[a]; selState.arr[a] = selState.arr[b]; selState.arr[b] = tmp;
+                    } else {
+                        selMsg.textContent = '최솟값이 이미 제자리! 위치 ' + a + ' 확정.';
+                    }
+                    selState.i++;
+                    if (selState.i >= selState.arr.length - 1) {
+                        selState.done = true;
+                        selMsg.textContent = '정렬 완료! [' + selState.arr.join(', ') + '] — 총 비교 횟수: n(n-1)/2';
+                    } else {
+                        selState.minIdx = selState.i;
+                        selState.j = selState.i + 1;
+                        selState.phase = 'compare';
+                    }
+                    renderSelArr();
+                }
+            }
+
+            function selReset() {
+                selState = { arr: [64, 25, 12, 22, 11], i: 0, j: 0, minIdx: 0, phase: 'start', done: false };
+                selMsg.textContent = '▶ Step을 눌러 선택 정렬을 시작하세요!';
+                renderSelArr();
+            }
+
+            container.querySelector('#sort-demo-sel-step').addEventListener('click', selStep);
+            container.querySelector('#sort-demo-sel-reset').addEventListener('click', selReset);
+            renderSelArr();
+        }
+
+        // ── 삽입 정렬 미니 데모 ──
+        {
+            var insInitArr = [64, 25, 12, 22, 11];
+            var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+            var insArrEl = container.querySelector('#sort-demo-ins-arr');
+            var insMsg = container.querySelector('#sort-demo-ins-msg');
+
+            function renderInsArr() {
+                insArrEl.innerHTML = insState.arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = '';
+                    if (insState.done) {
+                        cls += ' matched';
+                    } else if (idx < insState.i && insState.phase === 'pick') {
+                        cls += ' matched';
+                    }
+                    if (idx === insState.i && insState.phase === 'pick' && !insState.done) {
+                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    }
+                    if (idx === insState.j && insState.phase === 'shift') {
+                        extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
+                    }
+                    var label = '';
+                    if (v === insState.key && insState.phase === 'shift' && idx === insState.j + 1) {
+                        label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">key</div>';
+                    }
+                    return '<div style="display:flex;flex-direction:column;align-items:center;">' +
+                        '<div class="' + cls + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                }).join('');
+            }
+
+            function insStep() {
+                if (insState.done) return;
+                if (insState.phase === 'pick') {
+                    if (insState.i >= insState.arr.length) {
+                        insState.done = true;
+                        insMsg.textContent = '정렬 완료! [' + insState.arr.join(', ') + '] — 거의 정렬된 데이터라면 훨씬 빠릅니다!';
+                        renderInsArr();
+                        return;
+                    }
+                    insState.key = insState.arr[insState.i];
+                    insState.j = insState.i - 1;
+                    insMsg.textContent = 'key = ' + insState.key + ' (인덱스 ' + insState.i + ')을 꺼냈습니다. 왼쪽 정렬된 부분에서 자리를 찾습니다.';
+                    insState.phase = 'shift';
+                    renderInsArr();
+                    return;
+                }
+                if (insState.phase === 'shift') {
+                    if (insState.j >= 0 && insState.arr[insState.j] > insState.key) {
+                        insMsg.textContent = insState.arr[insState.j] + ' > key(' + insState.key + ') → 오른쪽으로 한 칸 밀기!';
+                        insState.arr[insState.j + 1] = insState.arr[insState.j];
+                        insState.j--;
+                        renderInsArr();
+                        return;
+                    }
+                    insState.arr[insState.j + 1] = insState.key;
+                    insMsg.textContent = 'key=' + insState.key + '을(를) 인덱스 ' + (insState.j + 1) + '에 삽입! → [' + insState.arr.join(', ') + ']';
+                    insState.i++;
+                    insState.phase = 'pick';
+                    renderInsArr();
+                }
+            }
+
+            function insReset() {
+                insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+                insMsg.textContent = '▶ Step을 눌러 삽입 정렬을 시작하세요!';
+                renderInsArr();
+            }
+
+            container.querySelector('#sort-demo-ins-step').addEventListener('click', insStep);
+            container.querySelector('#sort-demo-ins-reset').addEventListener('click', insReset);
+            renderInsArr();
+        }
+
+        // ── 버블 정렬 미니 데모 ──
+        {
+            var bubInitArr = [64, 25, 12, 22, 11];
+            var bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, done: false };
+            var bubArrEl = container.querySelector('#sort-demo-bub-arr');
+            var bubMsg = container.querySelector('#sort-demo-bub-msg');
+
+            function renderBubArr() {
+                var n = bubState.arr.length;
+                bubArrEl.innerHTML = bubState.arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = '';
+                    if (bubState.done || idx >= n - bubState.pass) {
+                        cls += ' matched';
+                    }
+                    if (!bubState.done && (idx === bubState.j || idx === bubState.j + 1) && idx < n - bubState.pass) {
+                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    }
+                    return '<div class="' + cls + '" style="' + extra + '">' + v + '</div>';
+                }).join('');
+            }
+
+            function bubStep() {
+                if (bubState.done) return;
+                var n = bubState.arr.length;
+                if (bubState.pass >= n - 1) {
+                    bubState.done = true;
+                    bubMsg.textContent = '정렬 완료! [' + bubState.arr.join(', ') + ']';
+                    renderBubArr();
+                    return;
+                }
+                var a = bubState.j, b = bubState.j + 1;
+                if (bubState.arr[a] > bubState.arr[b]) {
+                    bubMsg.textContent = bubState.arr[a] + ' > ' + bubState.arr[b] + ' → 교환! Pass ' + (bubState.pass + 1) + ', 비교 ' + (bubState.j + 1);
+                    var tmp = bubState.arr[a]; bubState.arr[a] = bubState.arr[b]; bubState.arr[b] = tmp;
+                } else {
+                    bubMsg.textContent = bubState.arr[a] + ' <= ' + bubState.arr[b] + ' → 교환 없음. Pass ' + (bubState.pass + 1) + ', 비교 ' + (bubState.j + 1);
+                }
+                bubState.j++;
+                if (bubState.j >= n - 1 - bubState.pass) {
+                    bubState.pass++;
+                    bubState.j = 0;
+                    if (bubState.pass >= n - 1) {
+                        bubState.done = true;
+                        bubMsg.textContent = '정렬 완료! [' + bubState.arr.join(', ') + '] — 총 ' + bubState.pass + '번의 패스를 거쳤습니다.';
+                    }
+                }
+                renderBubArr();
+            }
+
+            function bubReset() {
+                bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, done: false };
+                bubMsg.textContent = '▶ Step을 눌러 버블 정렬을 시작하세요!';
+                renderBubArr();
+            }
+
+            container.querySelector('#sort-demo-bub-step').addEventListener('click', bubStep);
+            container.querySelector('#sort-demo-bub-reset').addEventListener('click', bubReset);
+            renderBubArr();
+        }
+
+        // ── 속도 비교 레이스 데모 ──
+        {
+            var raceInitArr = [64, 34, 25, 12, 22, 11, 90];
+
+            function renderRaceArr(elId, arr, highlights) {
+                var el = container.querySelector('#' + elId);
+                if (!el) return;
+                el.innerHTML = arr.map(function(v, idx) {
+                    var cls = 'str-char-box';
+                    var extra = 'font-size:0.78rem;min-width:28px;padding:4px 6px;';
+                    if (highlights && highlights.sorted && idx < highlights.sorted) cls += ' matched';
+                    if (highlights && highlights.active && highlights.active.indexOf(idx) >= 0) extra += 'border-color:var(--yellow);box-shadow:0 0 6px var(--yellow);';
+                    return '<div class="' + cls + '" style="' + extra + '">' + v + '</div>';
+                }).join('');
+            }
+
+            // Pre-compute all race steps once
+            var raceSelSteps = [], raceInsSteps = [], raceBubSteps = [];
+            var raceAllSteps = []; // unified steps array (one per tick)
+
+            function raceBuildSteps() {
+                raceSelSteps = []; raceInsSteps = []; raceBubSteps = [];
+
+                // Selection sort steps
+                (function() {
+                    var a = raceInitArr.slice(), sw = 0;
+                    for (var i = 0; i < a.length - 1; i++) {
+                        var mi = i;
+                        for (var j = i + 1; j < a.length; j++) {
+                            raceSelSteps.push({ arr: a.slice(), cmp: raceSelSteps.length + 1, swp: sw, sorted: i, active: [mi, j] });
+                            if (a[j] < a[mi]) mi = j;
+                        }
+                        if (mi !== i) { var t = a[i]; a[i] = a[mi]; a[mi] = t; sw++; }
+                        raceSelSteps.push({ arr: a.slice(), cmp: raceSelSteps.length + 1, swp: sw, sorted: i + 1, active: [] });
+                    }
+                    raceSelSteps.push({ arr: a.slice(), cmp: raceSelSteps.length, swp: sw, sorted: a.length, active: [] });
+                })();
+
+                // Insertion sort steps
+                (function() {
+                    var a = raceInitArr.slice(), sw = 0;
+                    for (var i = 1; i < a.length; i++) {
+                        var key = a[i], j = i - 1;
+                        while (j >= 0 && a[j] > key) {
+                            raceInsSteps.push({ arr: a.slice(), cmp: raceInsSteps.length + 1, swp: sw, sorted: i, active: [j, j + 1] });
+                            a[j + 1] = a[j]; j--; sw++;
+                        }
+                        raceInsSteps.push({ arr: a.slice(), cmp: raceInsSteps.length + 1, swp: sw, sorted: i, active: [j + 1] });
+                        a[j + 1] = key;
+                    }
+                    raceInsSteps.push({ arr: a.slice(), cmp: raceInsSteps.length, swp: sw, sorted: a.length, active: [] });
+                })();
+
+                // Bubble sort steps
+                (function() {
+                    var a = raceInitArr.slice(), sw = 0;
+                    for (var i = 0; i < a.length - 1; i++) {
+                        for (var j = 0; j < a.length - 1 - i; j++) {
+                            raceBubSteps.push({ arr: a.slice(), cmp: raceBubSteps.length + 1, swp: sw, sorted: a.length - i, active: [j, j + 1] });
+                            if (a[j] > a[j + 1]) { var t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; sw++; }
+                        }
+                    }
+                    raceBubSteps.push({ arr: a.slice(), cmp: raceBubSteps.length, swp: sw, sorted: 0, active: [] });
+                })();
+
+                var maxLen = Math.max(raceSelSteps.length, raceInsSteps.length, raceBubSteps.length);
+                raceAllSteps = [];
+                for (var t = 0; t < maxLen; t++) {
+                    raceAllSteps.push(t);
+                }
+            }
+
+            var raceStep = -1;
+
+            function raceRenderStep(idx) {
+                var maxLen = raceAllSteps.length;
+                var si = Math.min(idx, raceSelSteps.length - 1);
+                var ii = Math.min(idx, raceInsSteps.length - 1);
+                var bi = Math.min(idx, raceBubSteps.length - 1);
+                var ss = raceSelSteps[si], is2 = raceInsSteps[ii], bs = raceBubSteps[bi];
+                renderRaceArr('sort-demo-race-sel', ss.arr, { sorted: ss.sorted, active: ss.active });
+                container.querySelector('#sort-demo-race-sel-cmp').textContent = ss.cmp;
+                container.querySelector('#sort-demo-race-sel-swp').textContent = ss.swp;
+                renderRaceArr('sort-demo-race-ins', is2.arr, { sorted: is2.sorted, active: is2.active });
+                container.querySelector('#sort-demo-race-ins-cmp').textContent = is2.cmp;
+                container.querySelector('#sort-demo-race-ins-swp').textContent = is2.swp;
+                renderRaceArr('sort-demo-race-bub', bs.arr, { sorted: bs.sorted, active: bs.active });
+                container.querySelector('#sort-demo-race-bub-cmp').textContent = bs.cmp;
+                container.querySelector('#sort-demo-race-bub-swp').textContent = bs.swp;
+            }
+
+            function raceUpdateUI() {
+                var counterEl = container.querySelector('#sort-demo-race-counter');
+                var msgEl = container.querySelector('#sort-demo-race-msg');
+                var prevBtn = container.querySelector('#sort-demo-race-prev');
+                var nextBtn = container.querySelector('#sort-demo-race-next');
+                var maxLen = raceAllSteps.length;
+
+                if (raceStep < 0) {
+                    counterEl.textContent = '시작 전';
+                    msgEl.textContent = '▶ "다음 →" 버튼을 눌러 세 정렬을 비교해보세요!';
+                    renderRaceArr('sort-demo-race-sel', raceInitArr, {});
+                    renderRaceArr('sort-demo-race-ins', raceInitArr, {});
+                    renderRaceArr('sort-demo-race-bub', raceInitArr, {});
+                    container.querySelector('#sort-demo-race-sel-cmp').textContent = '0';
+                    container.querySelector('#sort-demo-race-sel-swp').textContent = '0';
+                    container.querySelector('#sort-demo-race-ins-cmp').textContent = '0';
+                    container.querySelector('#sort-demo-race-ins-swp').textContent = '0';
+                    container.querySelector('#sort-demo-race-bub-cmp').textContent = '0';
+                    container.querySelector('#sort-demo-race-bub-swp').textContent = '0';
+                } else {
+                    counterEl.textContent = (raceStep + 1) + ' / ' + maxLen;
+                    raceRenderStep(raceStep);
+                    if (raceStep >= maxLen - 1) {
+                        var selF = raceSelSteps[raceSelSteps.length - 1], insF = raceInsSteps[raceInsSteps.length - 1], bubF = raceBubSteps[raceBubSteps.length - 1];
+                        msgEl.textContent = '완료! 선택: 비교 ' + selF.cmp + '·교환 ' + selF.swp + ' | 삽입: 비교 ' + insF.cmp + '·이동 ' + insF.swp + ' | 버블: 비교 ' + bubF.cmp + '·교환 ' + bubF.swp;
+                    } else {
+                        msgEl.textContent = '경주 진행 중... 세 정렬이 동시에 한 단계씩 진행됩니다.';
+                    }
+                }
+                prevBtn.disabled = raceStep < 0;
+                nextBtn.disabled = raceStep >= maxLen - 1;
+            }
+
+            function raceReset() {
+                raceStep = -1;
+                raceUpdateUI();
+            }
+
+            raceBuildSteps();
+
+            container.querySelector('#sort-demo-race-next').addEventListener('click', function() {
+                if (raceStep < raceAllSteps.length - 1) { raceStep++; raceUpdateUI(); }
+            });
+            container.querySelector('#sort-demo-race-prev').addEventListener('click', function() {
+                if (raceStep >= 0) { raceStep--; raceUpdateUI(); }
+            });
+            container.querySelector('#sort-demo-race-reset').addEventListener('click', raceReset);
+            raceReset();
+        }
     },
 
     // ===== 시각화 =====
@@ -585,12 +1028,17 @@ sort(words.begin(), words.end(),
 
     renderVisualize(container) { container.innerHTML = ''; },
 
+    _createStepDesc(suffix) {
+        var s = suffix || '';
+        return '<div id="viz-step-desc' + s + '" class="viz-step-desc">\u25B6 다음 버튼을 눌러 시작하세요</div>';
+    },
+
     _createStepControls(suffix) {
         var s = suffix || '';
-        return '<div class="str-step-controls" id="str-step-controls' + s + '" style="position:fixed;bottom:0;left:var(--sidebar-w,280px);right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:100;">' +
-            '<button class="btn" id="str-prev' + s + '">◀ 이전</button>' +
-            '<span id="str-indicator' + s + '" style="font-size:0.9rem;color:var(--text-secondary);min-width:60px;text-align:center;">0 / 0</span>' +
-            '<button class="btn" id="str-next' + s + '">다음 ▶</button>' +
+        return '<div class="viz-step-controls">' +
+            '<button class="btn viz-step-btn" id="viz-prev' + s + '" disabled>&larr; 이전</button>' +
+            '<span id="viz-step-counter' + s + '" class="viz-step-counter">시작 전</span>' +
+            '<button class="btn btn-primary viz-step-btn" id="viz-next' + s + '">다음 &rarr;</button>' +
             '</div>';
     },
 
@@ -598,21 +1046,21 @@ sort(words.begin(), words.end(),
         var s = suffix || '';
         var current = -1;
         var actionDelay = 350;
-        var indicator = container.querySelector('#str-indicator' + s);
-        var prevBtn = container.querySelector('#str-prev' + s);
-        var nextBtn = container.querySelector('#str-next' + s);
-        if (!indicator || !prevBtn || !nextBtn) return;
+        var counter = container.querySelector('#viz-step-counter' + s);
+        var prevBtn = container.querySelector('#viz-prev' + s);
+        var nextBtn = container.querySelector('#viz-next' + s);
+        if (!counter || !prevBtn || !nextBtn) return;
         var total = steps.length;
         var self = this;
-        var descEl = container.querySelector('[id$="desc' + s + '"]');
+        var descEl = container.querySelector('#viz-step-desc' + s);
         var updateUI = function() {
             if (current < 0) {
-                indicator.textContent = '시작 전';
-                if (descEl) descEl.innerHTML = '▶ 다음 버튼을 눌러 시뮬레이션을 시작하세요.';
+                counter.textContent = '시작 전';
+                if (descEl) descEl.innerHTML = '\u25B6 다음 버튼을 눌러 시작하세요';
                 prevBtn.disabled = true;
                 nextBtn.disabled = false;
             } else {
-                indicator.textContent = (current + 1) + ' / ' + total;
+                counter.textContent = (current + 1) + ' / ' + total;
                 if (descEl && steps[current].description) descEl.innerHTML = steps[current].description;
                 prevBtn.disabled = current === 0;
                 nextBtn.disabled = current >= total - 1;
@@ -670,39 +1118,138 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">배열: <input type="text" id="sort-sel-input" value="' + DEFAULT_SEL_ARR.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
                 '<button class="btn btn-primary" id="sort-sel-reset">🔄</button>' +
             '</div>' +
-            '<div class="viz-area">' +
-                '<div id="sort-bars-sel" style="display:flex;gap:6px;align-items:flex-end;justify-content:center;min-height:200px;padding:20px 0;"></div>' +
-                '<div id="sort-desc-sel" style="padding:14px;background:var(--bg-secondary);border-radius:8px;font-size:0.95rem;min-height:40px;"></div>' +
+            self._createStepDesc('-sel') +
+            '<div class="viz-area" style="position:relative;">' +
+                '<div id="sort-bars-sel" style="display:flex;gap:6px;align-items:flex-end;justify-content:center;min-height:220px;padding:20px 0;"></div>' +
+                '<div id="sort-fly-sel" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
             '</div>' +
             self._createStepControls('-sel');
 
         var barsEl = container.querySelector('#sort-bars-sel');
-        var descEl = container.querySelector('#sort-desc-sel');
+        var flyEl = container.querySelector('#sort-fly-sel');
+        var wrapEl = container.querySelector('.viz-area');
+
+        function renderBars(arr, sortedUpTo, comparing, minIdx) {
+            var maxVal = Math.max.apply(null, arr);
+            barsEl.innerHTML = arr.map(function(v, i) {
+                var bg = 'var(--accent)';
+                var glow = '';
+                if (i <= sortedUpTo) bg = 'var(--green)';
+                else if (i === minIdx) { bg = 'var(--yellow)'; glow = 'box-shadow:0 0 12px var(--yellow);'; }
+                else if (comparing.indexOf(i) >= 0) { bg = '#e17055'; glow = 'box-shadow:0 0 12px #e1705580;'; }
+                var h = Math.max(20, (v / maxVal) * 160);
+                var lbl = (i === minIdx && minIdx >= 0) ? '<span style="font-size:0.6rem;color:var(--yellow);font-weight:700;">min</span>'
+                    : '<span style="font-size:0.65rem;color:var(--text2);">[' + i + ']</span>';
+                return '<div id="sort-bar-sel-' + i + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity 0.2s;">' +
+                    '<span style="font-size:0.8rem;font-weight:600;">' + v + '</span>' +
+                    '<div style="width:36px;height:' + h + 'px;background:' + bg + ';border-radius:4px 4px 0 0;transition:background 0.3s;' + glow + '"></div>' +
+                    lbl + '</div>';
+            }).join('');
+        }
+
+        function animateSwap(beforeArr, idxA, idxB, onDone) {
+            var elA = container.querySelector('#sort-bar-sel-' + idxA);
+            var elB = container.querySelector('#sort-bar-sel-' + idxB);
+            if (!elA || !elB) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var rectA = elA.getBoundingClientRect();
+            var rectB = elB.getBoundingClientRect();
+            elA.style.opacity = '0.15';
+            elB.style.opacity = '0.15';
+            function mkGhost(val, rect, color) {
+                var g = document.createElement('div');
+                g.textContent = val;
+                g.style.cssText = 'position:absolute;z-index:20;width:' + rect.width + 'px;height:' + rect.height + 'px;' +
+                    'left:' + (rect.left - wrapRect.left) + 'px;top:' + (rect.top - wrapRect.top) + 'px;' +
+                    'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                    'background:' + color + ';color:white;border-radius:8px;' +
+                    'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+                return g;
+            }
+            var gA = mkGhost(beforeArr[idxA], rectA, '#e17055');
+            var gB = mkGhost(beforeArr[idxB], rectB, 'var(--yellow)');
+            flyEl.appendChild(gA);
+            flyEl.appendChild(gB);
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    gA.style.left = (rectB.left - wrapRect.left) + 'px';
+                    gB.style.left = (rectA.left - wrapRect.left) + 'px';
+                });
+            });
+            setTimeout(function() {
+                if (gA.parentNode) gA.parentNode.removeChild(gA);
+                if (gB.parentNode) gB.parentNode.removeChild(gB);
+                if (onDone) onDone();
+            }, 550);
+        }
 
         function buildSelectionSteps(original) {
-            var states = [];
-            var simArr = original.slice();
-            states.push({ arr: simArr.slice(), sortedUpTo: -1, minIdx: -1, desc: '초기 배열: [' + original.join(', ') + ']. 선택 정렬을 시작합니다!' });
+            var stepData = [];
+            var arr = original.slice();
+            var n = arr.length;
 
-            for (var i = 0; i < simArr.length - 1; i++) {
+            stepData.push({ arr: arr.slice(), sortedUpTo: -1, comparing: [], minIdx: -1,
+                desc: '초기 배열: [' + arr.join(', ') + ']. 선택 정렬을 시작합니다!', swapInfo: null });
+
+            for (var i = 0; i < n - 1; i++) {
                 var minIdx = i;
-                for (var j = i + 1; j < simArr.length; j++) {
-                    if (simArr[j] < simArr[minIdx]) minIdx = j;
-                }
-                states.push({ arr: simArr.slice(), sortedUpTo: i - 1, minIdx: minIdx,
-                    desc: i + '번 위치: 최솟값 ' + simArr[minIdx] + '을(를) 찾았습니다! (인덱스 ' + minIdx + ')' });
-                var tmp = simArr[i]; simArr[i] = simArr[minIdx]; simArr[minIdx] = tmp;
-                states.push({ arr: simArr.slice(), sortedUpTo: i, minIdx: -1,
-                    desc: '교환 완료 → [' + simArr.join(', ') + ']. ' + i + '번 위치 확정!' });
-            }
-            states.push({ arr: simArr.slice(), sortedUpTo: simArr.length - 1, minIdx: -1,
-                desc: '정렬 완료! [' + simArr.join(', ') + ']. 선택 정렬의 시간복잡도는 항상 O(n²)입니다.' });
+                // 라운드 시작: 현재 후보 안내
+                stepData.push({ arr: arr.slice(), sortedUpTo: i - 1, comparing: [], minIdx: i,
+                    desc: i + '번 위치: 나머지 중 최솟값을 찾습니다. 현재 후보 A[' + i + ']=' + arr[i], swapInfo: null });
 
-            return states.map(function(st) {
-                return { description: st.desc, action: function() {
-                    self._renderBars(barsEl, st.arr, st.sortedUpTo, [], st.minIdx);
-                    descEl.innerHTML = st.desc;
-                }};
+                // 매 비교를 개별 스텝으로
+                for (var j = i + 1; j < n; j++) {
+                    var isSmaller = arr[j] < arr[minIdx];
+                    var prevMin = minIdx;
+                    if (isSmaller) minIdx = j;
+                    stepData.push({
+                        arr: arr.slice(), sortedUpTo: i - 1, comparing: [j, prevMin], minIdx: minIdx,
+                        desc: isSmaller
+                            ? 'A[' + j + ']=' + arr[j] + ' < 현재 최소 A[' + prevMin + ']=' + arr[prevMin] + ' → 최솟값 갱신! min=A[' + j + ']'
+                            : 'A[' + j + ']=' + arr[j] + ' ≥ 현재 최소 A[' + minIdx + ']=' + arr[minIdx] + ' → 유지',
+                        swapInfo: null
+                    });
+                }
+
+                // 교환 스텝 (비교와 분리)
+                var beforeArr = arr.slice();
+                if (i !== minIdx) {
+                    var tmp = arr[i]; arr[i] = arr[minIdx]; arr[minIdx] = tmp;
+                    stepData.push({
+                        arr: arr.slice(), sortedUpTo: i, comparing: [], minIdx: -1,
+                        desc: '교환! A[' + i + ']=' + beforeArr[i] + ' ↔ A[' + minIdx + ']=' + beforeArr[minIdx] + ' → ' + i + '번 위치 확정: ' + arr[i],
+                        swapInfo: { a: i, b: minIdx, beforeArr: beforeArr }
+                    });
+                } else {
+                    stepData.push({
+                        arr: arr.slice(), sortedUpTo: i, comparing: [], minIdx: -1,
+                        desc: 'A[' + i + ']=' + arr[i] + '이 이미 최솟값! 교환 불필요. ' + i + '번 위치 확정.',
+                        swapInfo: null
+                    });
+                }
+            }
+
+            stepData.push({ arr: arr.slice(), sortedUpTo: n - 1, comparing: [], minIdx: -1,
+                desc: '정렬 완료! [' + arr.join(', ') + ']. 선택 정렬의 시간복잡도는 항상 O(n²)입니다.', swapInfo: null });
+
+            return stepData.map(function(st) {
+                return {
+                    description: st.desc,
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        if (st.swapInfo && dir === 'forward') {
+                            renderBars(st.swapInfo.beforeArr, st.sortedUpTo - 1, [st.swapInfo.a, st.swapInfo.b], -1);
+                            requestAnimationFrame(function() {
+                                animateSwap(st.swapInfo.beforeArr, st.swapInfo.a, st.swapInfo.b, function() {
+                                    renderBars(st.arr, st.sortedUpTo, [], -1);
+                                });
+                            });
+                        } else {
+                            renderBars(st.arr, st.sortedUpTo, st.comparing, st.minIdx);
+                        }
+                    }
+                };
             });
         }
 
@@ -711,7 +1258,7 @@ sort(words.begin(), words.end(),
             var parsed = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
             if (parsed.length < 2) parsed = DEFAULT_SEL_ARR.slice();
             barsEl.innerHTML = '';
-            descEl.innerHTML = '';
+            flyEl.innerHTML = '';
             var steps = buildSelectionSteps(parsed);
             self._initStepController(container, steps, '-sel');
         }
@@ -730,58 +1277,113 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">좌표 (x y 쌍): <input type="text" id="sort-coord-input" value="' + DEFAULT_COORDS.map(function(c) { return c[0] + ' ' + c[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="sort-coord-reset">🔄</button>' +
             '</div>' +
-            '<div class="viz-area">' +
+            self._createStepDesc('-coord') +
+            '<div class="viz-area" style="position:relative;">' +
                 '<div style="font-weight:600;margin-bottom:8px;">좌표 배열</div>' +
                 '<div id="sort-coords" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:50px;padding:12px 0;"></div>' +
-                '<div id="sort-desc-coord" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
+                '<div id="sort-fly-coord" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
             '</div>' +
             self._createStepControls('-coord');
 
         var coordsEl = container.querySelector('#sort-coords');
-        var descEl = container.querySelector('#sort-desc-coord');
+        var flyEl = container.querySelector('#sort-fly-coord');
+        var wrapEl = container.querySelector('.viz-area');
 
-        function renderCoords(arr, sortedUpTo, comparingIdx) {
+        function renderCoords(arr, sortedUpTo, comparingIdx, shiftIdx) {
             coordsEl.innerHTML = arr.map(function(c, i) {
                 var cls = 'str-char-box';
                 if (i <= sortedUpTo) cls += ' matched';
                 else if (i === comparingIdx) cls += ' comparing';
-                return '<div class="' + cls + '" style="min-width:60px;text-align:center;font-size:0.9rem;">(' + c[0] + ', ' + c[1] + ')</div>';
+                if (i === shiftIdx) cls += ' comparing';
+                return '<div id="sort-coord-' + i + '" class="' + cls + '" style="min-width:60px;text-align:center;font-size:0.9rem;">(' + c[0] + ', ' + c[1] + ')</div>';
             }).join('');
         }
 
+        function coordStr(c) { return '(' + c[0] + ',' + c[1] + ')'; }
+        function coordGt(a, b) { return a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]); }
+
+        function animateMove(srcIdx, destIdx, value, onDone) {
+            var srcEl = container.querySelector('#sort-coord-' + srcIdx);
+            var destEl = container.querySelector('#sort-coord-' + destIdx);
+            if (!srcEl || !destEl) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var srcRect = srcEl.getBoundingClientRect();
+            var destRect = destEl.getBoundingClientRect();
+            srcEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = value;
+            ghost.className = 'str-char-box comparing';
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:60px;text-align:center;font-size:0.9rem;' +
+                'left:' + (srcRect.left - wrapRect.left) + 'px;top:' + (srcRect.top - wrapRect.top) + 'px;' +
+                'transition:left 0.4s cubic-bezier(.4,0,.2,1),top 0.4s cubic-bezier(.4,0,.2,1);';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    ghost.style.left = (destRect.left - wrapRect.left) + 'px';
+                    ghost.style.top = (destRect.top - wrapRect.top) + 'px';
+                });
+            });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 450);
+        }
+
         function buildCoordSteps(coords) {
-            var states = [];
+            var stepData = [];
             var simArr = coords.map(function(c) { return c.slice(); });
-            states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: -1, comp: -1,
-                desc: '초기 좌표: ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + '. 튜플 정렬을 시작합니다!' });
+            var snap = function() { return simArr.map(function(c) { return c.slice(); }); };
+
+            stepData.push({ arr: snap(), sortedUpTo: -1, comp: -1, shift: -1,
+                desc: '초기 좌표: ' + simArr.map(coordStr).join(', ') + '. 삽입 정렬을 시작합니다!', moveInfo: null });
 
             for (var i = 1; i < simArr.length; i++) {
                 var key = simArr[i].slice();
+                // 삽입할 원소 안내
+                stepData.push({ arr: snap(), sortedUpTo: i - 1, comp: i, shift: -1,
+                    desc: coordStr(key) + '을 정렬된 부분에 삽입합니다.', moveInfo: null });
+
                 var j = i - 1;
-                states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: i - 1, comp: i,
-                    desc: '(' + key[0] + ', ' + key[1] + ')을 올바른 위치에 삽입합니다.' });
-                while (j >= 0 && (simArr[j][0] > key[0] || (simArr[j][0] === key[0] && simArr[j][1] > key[1]))) {
+                while (j >= 0 && coordGt(simArr[j], key)) {
+                    // 비교 스텝
+                    stepData.push({ arr: snap(), sortedUpTo: i - 1, comp: i, shift: j,
+                        desc: coordStr(simArr[j]) + ' > ' + coordStr(key) + ' → ' + coordStr(simArr[j]) + '을 오른쪽으로 밀기',
+                        moveInfo: { from: j, to: j + 1, label: coordStr(simArr[j]) } });
                     simArr[j + 1] = simArr[j];
                     j--;
                 }
                 simArr[j + 1] = key;
-                states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: i, comp: -1,
-                    desc: '삽입 완료: ' + simArr.slice(0, i + 1).map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') });
+                // 삽입 완료 스텝
+                stepData.push({ arr: snap(), sortedUpTo: i, comp: -1, shift: -1,
+                    desc: coordStr(key) + '을 [' + (j + 1) + '] 위치에 삽입! → ' + simArr.slice(0, i + 1).map(coordStr).join(', '),
+                    moveInfo: null });
             }
-            states.push({ arr: simArr.map(function(c) { return c.slice(); }), sortedUpTo: simArr.length - 1, comp: -1,
-                desc: '정렬 완료! ' + simArr.map(function(c) { return '(' + c.join(',') + ')'; }).join(', ') + ' ✓' });
+            stepData.push({ arr: snap(), sortedUpTo: simArr.length - 1, comp: -1, shift: -1,
+                desc: '정렬 완료! ' + simArr.map(coordStr).join(', ') + ' ✓', moveInfo: null });
 
-            return states.map(function(st) {
-                return { description: st.desc, action: function() {
-                    renderCoords(st.arr, st.sortedUpTo, st.comp);
-                    descEl.innerHTML = st.desc;
-                }};
+            return stepData.map(function(st) {
+                return {
+                    description: st.desc,
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        if (st.moveInfo && dir === 'forward') {
+                            var mi = st.moveInfo;
+                            renderCoords(st.arr, st.sortedUpTo, st.comp, mi.from);
+                            requestAnimationFrame(function() {
+                                animateMove(mi.from, mi.to, mi.label, function() {
+                                    renderCoords(st.arr, st.sortedUpTo, st.comp, -1);
+                                });
+                            });
+                        } else {
+                            renderCoords(st.arr, st.sortedUpTo, st.comp, -1);
+                        }
+                    }
+                };
             });
         }
 
         function resetCoord() {
             var raw = container.querySelector('#sort-coord-input').value;
-            // Parse "x y, x y, ..." format
             var parsed = raw.split(',').map(function(pair) {
                 var parts = pair.trim().split(/\s+/);
                 if (parts.length >= 2) return [parseInt(parts[0], 10), parseInt(parts[1], 10)];
@@ -789,7 +1391,7 @@ sort(words.begin(), words.end(),
             }).filter(function(c) { return c !== null && !isNaN(c[0]) && !isNaN(c[1]); });
             if (parsed.length < 2) parsed = DEFAULT_COORDS.map(function(c) { return c.slice(); });
             coordsEl.innerHTML = '';
-            descEl.innerHTML = '';
+            flyEl.innerHTML = '';
             var steps = buildCoordSteps(parsed);
             self._initStepController(container, steps, '-coord');
         }
@@ -808,18 +1410,18 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">구간 (start end 쌍): <input type="text" id="sort-merge-input" value="' + DEFAULT_INTERVALS.map(function(iv) { return iv[0] + ' ' + iv[1]; }).join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;"></label>' +
                 '<button class="btn btn-primary" id="sort-merge-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc('-intv') +
             '<div class="viz-area">' +
                 '<div style="font-weight:600;margin-bottom:8px;">구간 배열 (시작점 정렬 후)</div>' +
                 '<div id="sort-intervals" style="position:relative;min-height:60px;padding:20px 0;"></div>' +
                 '<div style="font-weight:600;margin-top:12px;margin-bottom:8px;">병합 결과</div>' +
                 '<div id="sort-merged" style="position:relative;min-height:60px;padding:8px 0;"></div>' +
-                '<div id="sort-desc-intv" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
             self._createStepControls('-intv');
 
         var intervalsEl = container.querySelector('#sort-intervals');
         var mergedEl = container.querySelector('#sort-merged');
-        var descEl = container.querySelector('#sort-desc-intv');
+        var descEl = container.querySelector('#viz-step-desc-intv');
 
         function renderIntervalBar(el, intArr, highlightIdx) {
             var maxVal = 0;
@@ -902,15 +1504,15 @@ sort(words.begin(), words.end(),
                 '<label style="font-weight:600;">나이 이름 목록: <input type="text" id="sort-stable-input" value="' + DEFAULT_STABLE + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:360px;"></label>' +
                 '<button class="btn btn-primary" id="sort-stable-reset">🔄</button>' +
             '</div>' +
+            self._createStepDesc('-stable') +
             '<div class="viz-area">' +
                 '<div style="font-weight:600;margin-bottom:8px;">회원 목록 (입력 순서)</div>' +
                 '<div id="sort-members" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:12px 0;"></div>' +
-                '<div id="sort-desc-stable" style="padding:14px;background:var(--bg-secondary);border-radius:8px;margin-top:12px;font-size:0.95rem;min-height:40px;"></div>' +
             '</div>' +
             self._createStepControls('-stable');
 
         var membersEl = container.querySelector('#sort-members');
-        var descEl = container.querySelector('#sort-desc-stable');
+        var descEl = container.querySelector('#viz-step-desc-stable');
 
         function renderMembers(arr, sortedUpTo) {
             membersEl.innerHTML = arr.map(function(m, i) {
@@ -923,24 +1525,35 @@ sort(words.begin(), words.end(),
         }
 
         function buildStableSteps(members) {
-            var states = [];
+            var stepData = [];
             var simArr = members.map(function(m) { return { age: m.age, name: m.name, order: m.order }; });
-            states.push({ arr: simArr.slice(), sortedUpTo: -1,
+            var snap = function() { return simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }); };
+
+            stepData.push({ arr: snap(), sortedUpTo: -1,
                 desc: '초기 입력: ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '. 나이 기준 안정 정렬 시작!' });
 
-            // Insertion sort by age only (stable)
+            // Insertion sort by age only (stable) — 매 비교를 개별 스텝으로
             for (var i = 1; i < simArr.length; i++) {
-                var key = simArr[i];
+                var key = { age: simArr[i].age, name: simArr[i].name, order: simArr[i].order };
+                stepData.push({ arr: snap(), sortedUpTo: i - 1,
+                    desc: key.age + ' ' + key.name + '을 정렬된 부분에 삽입합니다.' });
+
                 var j = i - 1;
                 while (j >= 0 && simArr[j].age > key.age) {
+                    stepData.push({ arr: snap(), sortedUpTo: i - 1,
+                        desc: simArr[j].age + ' ' + simArr[j].name + '(나이 ' + simArr[j].age + ') > ' + key.name + '(나이 ' + key.age + ') → 오른쪽으로 밀기' });
                     simArr[j + 1] = simArr[j];
                     j--;
                 }
+                if (j >= 0 && simArr[j].age === key.age) {
+                    stepData.push({ arr: snap(), sortedUpTo: i - 1,
+                        desc: simArr[j].age + ' ' + simArr[j].name + '(나이 ' + simArr[j].age + ') = ' + key.age + ' → 같은 나이! 입력 순서 유지를 위해 멈춤 (안정 정렬)' });
+                }
                 simArr[j + 1] = key;
-                states.push({ arr: simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }), sortedUpTo: i,
-                    desc: key.age + ' ' + key.name + '을 삽입 \u2192 나이 같은 경우 입력 순서 유지! (안정 정렬)' });
+                stepData.push({ arr: snap(), sortedUpTo: i,
+                    desc: key.age + ' ' + key.name + '을 [' + (j + 1) + '] 위치에 삽입 완료!' });
             }
-            // Find same-age groups for final description
+
             var ageGroups = {};
             simArr.forEach(function(m) {
                 if (!ageGroups[m.age]) ageGroups[m.age] = [];
@@ -952,13 +1565,12 @@ sort(words.begin(), words.end(),
                     stableNote += ' 나이 ' + age + '인 ' + ageGroups[age].join(', ') + '의 입력 순서가 유지됩니다.';
                 }
             });
-            states.push({ arr: simArr.map(function(m) { return { age: m.age, name: m.name, order: m.order }; }), sortedUpTo: simArr.length - 1,
+            stepData.push({ arr: snap(), sortedUpTo: simArr.length - 1,
                 desc: '정렬 완료! ' + simArr.map(function(m) { return m.age + ' ' + m.name; }).join(', ') + '.' + (stableNote || '') + ' \u2713' });
 
-            return states.map(function(st) {
+            return stepData.map(function(st) {
                 return { description: st.desc, action: function() {
                     renderMembers(st.arr, st.sortedUpTo);
-                    descEl.innerHTML = st.desc;
                 }};
             });
         }

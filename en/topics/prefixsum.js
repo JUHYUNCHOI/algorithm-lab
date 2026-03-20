@@ -58,7 +58,7 @@ var prefixSumTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -186,6 +186,23 @@ vector&lt;int&gt; prefix = {0, 3, 4, 8, 9, 14};\n\
                         Indeed 4 + 1 + 5 = 10, correct!\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Build a Prefix Sum Array</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="ps-demo-build-input" value="3,1,4,1,5,9" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="ps-demo-build-btn">Build Prefix Sum</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-build-reset" style="display:none;">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="margin-bottom:8px;font-weight:600;">Original Array (arr)</div>\
+                        <div id="ps-demo-build-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div style="margin-bottom:8px;font-weight:600;">Prefix Sum Array (prefix)</div>\
+                        <div id="ps-demo-build-prefix" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="ps-demo-build-info" style="padding:8px 12px;background:var(--bg);border-radius:8px;text-align:center;min-height:1.5em;font-size:0.9rem;color:var(--text2);"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-build-msg">Builds the prefix sum array one cell at a time from the original array. Feel free to change the values!</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -253,6 +270,20 @@ for (int i = 1; i &lt;= N; i++) {\n\
                         Without the 0, ranges starting from index 1 would require special handling.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Stacking Process Visualization</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="ps-demo-stack-input" value="2,5,3,7,1,4" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="ps-demo-stack-btn">Start Stacking</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-stack-reset" style="display:none;">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="ps-demo-stack-bars" style="display:flex;gap:8px;align-items:flex-end;height:180px;padding:12px 8px;border-bottom:2px solid var(--border);margin-bottom:12px;"></div>\
+                        <div id="ps-demo-stack-formula" style="padding:8px 12px;background:var(--warm-bg);border-left:4px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;font-size:0.9rem;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-stack-msg">See how each prefix[i] is built by stacking the previous value + current value as a bar chart.</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -302,6 +333,35 @@ int total = prefix[R] - prefix[L - 1];\n\
                         Prefix sum: <strong>100,000 + 100,000 = 200,000 ops</strong> (instant!)<br><br>\
                         This difference is exactly why we use prefix sums.\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Loop vs Prefix Sum Comparison</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <label style="font-size:0.85rem;color:var(--text2);">Array:</label>\
+                        <input type="text" id="ps-demo-cmp-arr" value="3,1,4,1,5,9,2,6" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.85rem;color:var(--text2);">L:</label>\
+                        <input type="number" id="ps-demo-cmp-l" value="2" min="1" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:50px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.85rem;color:var(--text2);">R:</label>\
+                        <input type="number" id="ps-demo-cmp-r" value="5" min="1" style="padding:6px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:50px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="ps-demo-cmp-btn">Start Comparison</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-cmp-reset" style="display:none;">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:220px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Loop Approach <span style="color:var(--red);font-size:0.85rem;">O(N)</span></div>\
+                                <div id="ps-demo-cmp-loop-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                                <div id="ps-demo-cmp-loop-info" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:220px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Prefix Sum Approach <span style="color:var(--green);font-size:0.85rem;">O(1)</span></div>\
+                                <div id="ps-demo-cmp-ps-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                                <div id="ps-demo-cmp-ps-info" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-cmp-msg">Computes the sum from L to R using both a loop and prefix sums. See the speed difference!</div>\
                 </div>\
             </div>\
 \
@@ -388,6 +448,27 @@ int query(int r1, int c1, int r2, int c2) {\n\
                         This is called the <strong>Inclusion-Exclusion Principle</strong>.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — 2D Inclusion-Exclusion Visualization</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="ps-demo-2d-btn">Show Inclusion-Exclusion</button>\
+                        <button class="concept-demo-btn green" id="ps-demo-2d-reset" style="display:none;">Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div>\
+                                <div style="font-weight:600;margin-bottom:8px;">Original Grid (4x4)</div>\
+                                <div id="ps-demo-2d-grid" style="display:inline-grid;grid-template-columns:repeat(4,42px);gap:2px;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;">Inclusion-Exclusion Steps</div>\
+                                <div id="ps-demo-2d-steps" style="min-height:120px;padding:12px;background:var(--bg);border-radius:8px;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="ps-demo-2d-msg">Watch how the sum of region (2,2)~(3,3) is computed using inclusion-exclusion on a 4x4 grid.</div>\
+                </div>\
             </div>\
 \
             <div class="concept-section">\
@@ -420,10 +501,18 @@ int query(int r1, int c1, int r2, int c2) {\n\
                         Especially when "asked multiple times" is mentioned — loops would be too slow, and prefix sums are essential.\
                     </div>\
                 </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Type Matching Quiz</div>\
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">Match each problem to its prefix sum pattern!</p>\
+                    <div id="ps-demo-quiz" style="display:flex;flex-direction:column;gap:12px;"></div>\
+                    <div id="ps-demo-quiz-score" style="margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:8px;text-align:center;min-height:1.5em;font-size:0.9rem;"></div>\
+                </div>\
             </div>\
         ';
 
         this._initConceptInteractions(container);
+        this._initConceptDemos(container);
     },
 
     _initConceptInteractions: function(container) {
@@ -435,6 +524,402 @@ int query(int r1, int c1, int r2, int c2) {\n\
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+    },
+
+    _initConceptDemos: function(container) {
+        // ===== Demo 1: Build Prefix Sum =====
+        {
+            var buildBtn = container.querySelector('#ps-demo-build-btn');
+            var buildReset = container.querySelector('#ps-demo-build-reset');
+            var buildInput = container.querySelector('#ps-demo-build-input');
+            var buildArrEl = container.querySelector('#ps-demo-build-arr');
+            var buildPrefEl = container.querySelector('#ps-demo-build-prefix');
+            var buildInfo = container.querySelector('#ps-demo-build-info');
+            var buildMsg = container.querySelector('#ps-demo-build-msg');
+            var buildAnimating = false;
+
+            function parseArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function renderBuildInit(arr) {
+                buildArrEl.innerHTML = arr.map(function(v, i) {
+                    return '<div class="str-char-box" style="min-width:38px;text-align:center;"><div class="str-char-idx" style="font-size:0.65rem;">' + i + '</div><div class="str-char-val">' + v + '</div></div>';
+                }).join('');
+                var prefLen = arr.length + 1;
+                buildPrefEl.innerHTML = '';
+                for (var i = 0; i < prefLen; i++) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.style.cssText = 'min-width:38px;text-align:center;transition:all 0.3s ease;';
+                    box.innerHTML = '<div class="str-char-idx" style="font-size:0.65rem;">' + i + '</div><div class="str-char-val">?</div>';
+                    buildPrefEl.appendChild(box);
+                }
+                buildInfo.textContent = '';
+            }
+
+            if (buildBtn) {
+                var arr0 = parseArr(buildInput.value);
+                renderBuildInit(arr0);
+
+                buildBtn.addEventListener('click', function() {
+                    if (buildAnimating) return;
+                    buildAnimating = true;
+                    buildBtn.style.display = 'none';
+                    buildReset.style.display = '';
+                    var arr = parseArr(buildInput.value);
+                    if (arr.length === 0) { buildMsg.textContent = 'Please enter an array!'; buildAnimating = false; buildBtn.style.display = ''; buildReset.style.display = 'none'; return; }
+                    renderBuildInit(arr);
+                    var prefix = [0];
+                    for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                    var prefBoxes = buildPrefEl.querySelectorAll('.str-char-box');
+                    var step = 0;
+                    function nextStep() {
+                        if (step > arr.length) { buildInfo.innerHTML = '<strong style="color:var(--green);">Prefix sum complete!</strong>'; buildMsg.textContent = 'The prefix array is complete. Each cell holds the cumulative sum up to that point!'; buildAnimating = false; return; }
+                        if (step === 0) {
+                            prefBoxes[0].querySelector('.str-char-val').textContent = '0';
+                            prefBoxes[0].style.background = 'var(--accent)15';
+                            prefBoxes[0].style.boxShadow = '0 0 8px var(--accent)40';
+                            buildInfo.innerHTML = 'prefix[0] = <strong>0</strong> (initial value)';
+                        } else {
+                            if (step > 1) { prefBoxes[step - 1].style.boxShadow = 'none'; }
+                            prefBoxes[step].querySelector('.str-char-val').textContent = prefix[step];
+                            prefBoxes[step].style.background = 'var(--green)15';
+                            prefBoxes[step].style.boxShadow = '0 0 8px var(--green)40';
+                            buildInfo.innerHTML = 'prefix[' + step + '] = prefix[' + (step - 1) + '] + arr[' + (step - 1) + '] = ' + prefix[step - 1] + ' + ' + arr[step - 1] + ' = <strong>' + prefix[step] + '</strong>';
+                        }
+                        step++;
+                        setTimeout(nextStep, 600);
+                    }
+                    nextStep();
+                });
+
+                buildReset.addEventListener('click', function() {
+                    buildAnimating = false;
+                    buildBtn.style.display = '';
+                    buildReset.style.display = 'none';
+                    var arr = parseArr(buildInput.value);
+                    renderBuildInit(arr);
+                    buildMsg.textContent = 'Builds the prefix sum array one cell at a time from the original array. Feel free to change the values!';
+                });
+            }
+        }
+
+        // ===== Demo 2: Stacking Process =====
+        {
+            var stackBtn = container.querySelector('#ps-demo-stack-btn');
+            var stackReset = container.querySelector('#ps-demo-stack-reset');
+            var stackInput = container.querySelector('#ps-demo-stack-input');
+            var stackBars = container.querySelector('#ps-demo-stack-bars');
+            var stackFormula = container.querySelector('#ps-demo-stack-formula');
+            var stackMsg = container.querySelector('#ps-demo-stack-msg');
+            var stackAnimating = false;
+
+            function parseStackArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+
+            function renderStackInit(arr) {
+                var prefix = [0];
+                for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                var maxVal = Math.max.apply(null, prefix.concat([1]));
+                stackBars.innerHTML = '';
+                for (var j = 0; j <= arr.length; j++) {
+                    var barWrap = document.createElement('div');
+                    barWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:30px;';
+                    var bar = document.createElement('div');
+                    bar.className = 'ps-stack-bar';
+                    bar.style.cssText = 'width:100%;max-width:48px;background:var(--bg2);border-radius:6px 6px 0 0;transition:height 0.5s ease,background 0.5s ease;height:0px;display:flex;align-items:flex-end;justify-content:center;';
+                    bar.dataset.target = Math.max(4, Math.round((prefix[j] / maxVal) * 140));
+                    bar.dataset.val = prefix[j];
+                    bar.innerHTML = '<span style="font-size:0.75rem;font-weight:600;color:var(--text);padding:2px;"></span>';
+                    var label = document.createElement('div');
+                    label.style.cssText = 'font-size:0.7rem;color:var(--text3);';
+                    label.textContent = 'p[' + j + ']';
+                    barWrap.appendChild(bar);
+                    barWrap.appendChild(label);
+                    stackBars.appendChild(barWrap);
+                }
+                stackFormula.innerHTML = 'Click Start Stacking to begin';
+                return { prefix: prefix, maxVal: maxVal };
+            }
+
+            if (stackBtn) {
+                var initData = renderStackInit(parseStackArr(stackInput.value));
+
+                stackBtn.addEventListener('click', function() {
+                    if (stackAnimating) return;
+                    stackAnimating = true;
+                    stackBtn.style.display = 'none';
+                    stackReset.style.display = '';
+                    var arr = parseStackArr(stackInput.value);
+                    if (arr.length === 0) { stackMsg.textContent = 'Please enter an array!'; stackAnimating = false; stackBtn.style.display = ''; stackReset.style.display = 'none'; return; }
+                    var data = renderStackInit(arr);
+                    var bars = stackBars.querySelectorAll('.ps-stack-bar');
+                    var step = 0;
+                    function nextBar() {
+                        if (step > arr.length) { stackFormula.innerHTML = '<strong style="color:var(--green);">Stacking complete!</strong> Each bar represents a prefix sum.'; stackAnimating = false; return; }
+                        if (step > 0) bars[step - 1].style.boxShadow = 'none';
+                        var bar = bars[step];
+                        bar.style.height = bar.dataset.target + 'px';
+                        bar.style.background = step === 0 ? 'var(--accent)' : 'var(--green)';
+                        bar.style.boxShadow = '0 0 10px ' + (step === 0 ? 'var(--accent)' : 'var(--green)') + '60';
+                        bar.querySelector('span').textContent = bar.dataset.val;
+                        if (step === 0) {
+                            stackFormula.innerHTML = 'prefix[0] = <strong>0</strong>';
+                        } else {
+                            stackFormula.innerHTML = 'prefix[' + step + '] = prefix[' + (step - 1) + '] + arr[' + (step - 1) + '] = <strong>' + data.prefix[step - 1] + '</strong> + <strong>' + arr[step - 1] + '</strong> = <strong style="color:var(--green);">' + data.prefix[step] + '</strong>';
+                        }
+                        step++;
+                        setTimeout(nextBar, 700);
+                    }
+                    nextBar();
+                });
+
+                stackReset.addEventListener('click', function() {
+                    stackAnimating = false;
+                    stackBtn.style.display = '';
+                    stackReset.style.display = 'none';
+                    renderStackInit(parseStackArr(stackInput.value));
+                    stackMsg.textContent = 'See how each prefix[i] is built by stacking the previous value + current value as a bar chart.';
+                });
+            }
+        }
+
+        // ===== Demo 3: Loop vs Prefix Sum =====
+        {
+            var cmpBtn = container.querySelector('#ps-demo-cmp-btn');
+            var cmpReset = container.querySelector('#ps-demo-cmp-reset');
+            var cmpArrInput = container.querySelector('#ps-demo-cmp-arr');
+            var cmpLInput = container.querySelector('#ps-demo-cmp-l');
+            var cmpRInput = container.querySelector('#ps-demo-cmp-r');
+            var cmpLoopArr = container.querySelector('#ps-demo-cmp-loop-arr');
+            var cmpPsArr = container.querySelector('#ps-demo-cmp-ps-arr');
+            var cmpLoopInfo = container.querySelector('#ps-demo-cmp-loop-info');
+            var cmpPsInfo = container.querySelector('#ps-demo-cmp-ps-info');
+            var cmpMsg = container.querySelector('#ps-demo-cmp-msg');
+            var cmpAnimating = false;
+
+            function parseCmpArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(v) { return !isNaN(v); });
+            }
+            function renderCmpArr(el, arr, label) {
+                el.innerHTML = arr.map(function(v, i) {
+                    return '<div class="str-char-box" style="min-width:36px;text-align:center;transition:all 0.3s ease;"><div class="str-char-idx" style="font-size:0.6rem;">' + (label ? label + '[' + i + ']' : i) + '</div><div class="str-char-val">' + v + '</div></div>';
+                }).join('');
+            }
+
+            if (cmpBtn) {
+                var arr1 = parseCmpArr(cmpArrInput.value);
+                renderCmpArr(cmpLoopArr, arr1, '');
+                var pref1 = [0]; for (var k = 0; k < arr1.length; k++) pref1.push(pref1[k] + arr1[k]);
+                renderCmpArr(cmpPsArr, pref1, 'p');
+
+                cmpBtn.addEventListener('click', function() {
+                    if (cmpAnimating) return;
+                    cmpAnimating = true;
+                    cmpBtn.style.display = 'none';
+                    cmpReset.style.display = '';
+                    var arr = parseCmpArr(cmpArrInput.value);
+                    var L = parseInt(cmpLInput.value) || 1;
+                    var R = parseInt(cmpRInput.value) || arr.length;
+                    L = Math.max(1, Math.min(L, arr.length));
+                    R = Math.max(L, Math.min(R, arr.length));
+                    renderCmpArr(cmpLoopArr, arr, '');
+                    var prefix = [0]; for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                    renderCmpArr(cmpPsArr, prefix, 'p');
+                    cmpLoopInfo.textContent = '';
+                    cmpPsInfo.textContent = '';
+
+                    // Loop side: animate one by one
+                    var loopBoxes = cmpLoopArr.querySelectorAll('.str-char-box');
+                    var step = L - 1;
+                    var loopSum = 0;
+                    var loopOps = 0;
+                    function loopStep() {
+                        if (step >= R) {
+                            cmpLoopInfo.innerHTML = 'Sum = <strong>' + loopSum + '</strong>, <strong style="color:var(--red);">' + loopOps + ' additions</strong>';
+                            cmpAnimating = false;
+                            return;
+                        }
+                        if (step > L - 1) loopBoxes[step - 1].style.boxShadow = 'none';
+                        loopBoxes[step].style.background = 'var(--yellow)20';
+                        loopBoxes[step].style.boxShadow = '0 0 8px var(--yellow)60';
+                        loopSum += arr[step];
+                        loopOps++;
+                        cmpLoopInfo.textContent = 'Adding... sum = ' + loopSum + ' (addition #' + loopOps + ')';
+                        step++;
+                        setTimeout(loopStep, 400);
+                    }
+
+                    // Prefix side: instant (after brief delay)
+                    setTimeout(function() {
+                        var psBoxes = cmpPsArr.querySelectorAll('.str-char-box');
+                        psBoxes[R].style.background = 'var(--green)20';
+                        psBoxes[R].style.boxShadow = '0 0 8px var(--green)60';
+                        psBoxes[L - 1].style.background = 'var(--red)15';
+                        psBoxes[L - 1].style.boxShadow = '0 0 8px var(--red)40';
+                        var result = prefix[R] - prefix[L - 1];
+                        cmpPsInfo.innerHTML = 'prefix[' + R + '] - prefix[' + (L - 1) + '] = ' + prefix[R] + ' - ' + prefix[L - 1] + ' = <strong style="color:var(--green);">' + result + '</strong> (just <strong>1 subtraction</strong>!)';
+                        cmpMsg.textContent = 'Prefix sum needs just 1 subtraction! The loop needs ' + (R - L + 1) + ' additions.';
+                    }, 300);
+                    loopStep();
+                });
+
+                cmpReset.addEventListener('click', function() {
+                    cmpAnimating = false;
+                    cmpBtn.style.display = '';
+                    cmpReset.style.display = 'none';
+                    var arr = parseCmpArr(cmpArrInput.value);
+                    renderCmpArr(cmpLoopArr, arr, '');
+                    var prefix = [0]; for (var i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);
+                    renderCmpArr(cmpPsArr, prefix, 'p');
+                    cmpLoopInfo.textContent = '';
+                    cmpPsInfo.textContent = '';
+                    cmpMsg.textContent = 'Computes the sum from L to R using both a loop and prefix sums. See the speed difference!';
+                });
+            }
+        }
+
+        // ===== Demo 4: 2D Inclusion-Exclusion =====
+        {
+            var d2Btn = container.querySelector('#ps-demo-2d-btn');
+            var d2Reset = container.querySelector('#ps-demo-2d-reset');
+            var d2Grid = container.querySelector('#ps-demo-2d-grid');
+            var d2Steps = container.querySelector('#ps-demo-2d-steps');
+            var d2Msg = container.querySelector('#ps-demo-2d-msg');
+            var d2Animating = false;
+            var grid2d = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]];
+            // Query: (2,2)~(3,3) (1-indexed)
+            var qr1 = 2, qc1 = 2, qr2 = 3, qc2 = 3;
+
+            function renderGrid(highlights) {
+                d2Grid.innerHTML = '';
+                for (var r = 0; r < 4; r++) {
+                    for (var c = 0; c < 4; c++) {
+                        var cell = document.createElement('div');
+                        cell.style.cssText = 'width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:600;font-size:0.85rem;transition:all 0.3s ease;';
+                        var hl = highlights ? highlights[r + ',' + c] : null;
+                        if (hl) {
+                            cell.style.background = hl.bg;
+                            cell.style.color = hl.color || 'var(--text)';
+                            if (hl.shadow) cell.style.boxShadow = hl.shadow;
+                        } else {
+                            cell.style.background = 'var(--bg2)';
+                            cell.style.color = 'var(--text)';
+                        }
+                        cell.textContent = grid2d[r][c];
+                        d2Grid.appendChild(cell);
+                    }
+                }
+            }
+
+            if (d2Btn) {
+                renderGrid(null);
+                d2Steps.innerHTML = '<span style="color:var(--text3);">Click the button to see the inclusion-exclusion process</span>';
+
+                // Build prefix2d
+                var p2d = [];
+                for (var r = 0; r <= 4; r++) { p2d[r] = []; for (var c = 0; c <= 4; c++) p2d[r][c] = 0; }
+                for (var r = 1; r <= 4; r++) for (var c = 1; c <= 4; c++) p2d[r][c] = grid2d[r-1][c-1] + p2d[r-1][c] + p2d[r][c-1] - p2d[r-1][c-1];
+                var expected = p2d[qr2][qc2] - p2d[qr1-1][qc2] - p2d[qr2][qc1-1] + p2d[qr1-1][qc1-1];
+
+                d2Btn.addEventListener('click', function() {
+                    if (d2Animating) return;
+                    d2Animating = true;
+                    d2Btn.style.display = 'none';
+                    d2Reset.style.display = '';
+
+                    var stepsData = [
+                        { desc: '<strong>Goal:</strong> Compute the sum of region (2,2)~(3,3)', highlights: function() { var h = {}; for (var r = qr1-1; r < qr2; r++) for (var c = qc1-1; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20', shadow: '0 0 6px var(--accent)40' }; return h; } },
+                        { desc: '<strong>Step 1 Full:</strong> prefix[' + qr2 + '][' + qc2 + '] = <strong style="color:var(--accent);">' + p2d[qr2][qc2] + '</strong>', highlights: function() { var h = {}; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20' }; return h; } },
+                        { desc: '<strong>Step 2 Subtract top:</strong> - prefix[' + (qr1-1) + '][' + qc2 + '] = <strong style="color:var(--red);">-' + p2d[qr1-1][qc2] + '</strong>', highlights: function() { var h = {}; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20' }; for (var r = 0; r < qr1-1; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--red)20', color: 'var(--red)' }; return h; } },
+                        { desc: '<strong>Step 3 Subtract left:</strong> - prefix[' + qr2 + '][' + (qc1-1) + '] = <strong style="color:var(--red);">-' + p2d[qr2][qc1-1] + '</strong>', highlights: function() { var h = {}; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--accent)20' }; for (var r = 0; r < qr1-1; r++) for (var c = 0; c < qc2; c++) h[r+','+c] = { bg: 'var(--red)20', color: 'var(--red)' }; for (var r = 0; r < qr2; r++) for (var c = 0; c < qc1-1; c++) h[r+','+c] = { bg: 'var(--red)20', color: 'var(--red)' }; return h; } },
+                        { desc: '<strong>Step 4 Add back overlap:</strong> + prefix[' + (qr1-1) + '][' + (qc1-1) + '] = <strong style="color:var(--yellow);">+' + p2d[qr1-1][qc1-1] + '</strong> (subtracted twice)', highlights: function() { var h = {}; for (var r = qr1-1; r < qr2; r++) for (var c = qc1-1; c < qc2; c++) h[r+','+c] = { bg: 'var(--green)20', shadow: '0 0 6px var(--green)40' }; for (var r = 0; r < qr1-1; r++) for (var c = 0; c < qc1-1; c++) h[r+','+c] = { bg: 'var(--yellow)25', color: 'var(--yellow)' }; return h; } },
+                        { desc: '<strong>Result:</strong> ' + p2d[qr2][qc2] + ' - ' + p2d[qr1-1][qc2] + ' - ' + p2d[qr2][qc1-1] + ' + ' + p2d[qr1-1][qc1-1] + ' = <strong style="color:var(--green);">' + expected + '</strong>', highlights: function() { var h = {}; for (var r = qr1-1; r < qr2; r++) for (var c = qc1-1; c < qc2; c++) h[r+','+c] = { bg: 'var(--green)25', shadow: '0 0 8px var(--green)60', color: 'var(--green)' }; return h; } }
+                    ];
+                    var si = 0;
+                    function nextD2Step() {
+                        if (si >= stepsData.length) { d2Animating = false; return; }
+                        var s = stepsData[si];
+                        renderGrid(s.highlights());
+                        d2Steps.innerHTML = '<div style="font-size:0.9rem;line-height:1.7;">' + s.desc + '</div>';
+                        si++;
+                        setTimeout(nextD2Step, 1500);
+                    }
+                    nextD2Step();
+                });
+
+                d2Reset.addEventListener('click', function() {
+                    d2Animating = false;
+                    d2Btn.style.display = '';
+                    d2Reset.style.display = 'none';
+                    renderGrid(null);
+                    d2Steps.innerHTML = '<span style="color:var(--text3);">Click the button to see the inclusion-exclusion process</span>';
+                    d2Msg.textContent = 'Watch how the sum of region (2,2)~(3,3) is computed using inclusion-exclusion on a 4x4 grid.';
+                });
+            }
+        }
+
+        // ===== Demo 5: Type Matching Quiz =====
+        {
+            var quizEl = container.querySelector('#ps-demo-quiz');
+            var quizScore = container.querySelector('#ps-demo-quiz-score');
+            if (quizEl) {
+                var quizData = [
+                    { q: '"Find the sum from index i to j in an array, Q times"', a: '1D Prefix Sum', choices: ['1D Prefix Sum', '2D Prefix Sum', 'Difference Array', 'Sliding Window'] },
+                    { q: '"Find the maximum sum of a contiguous subarray of length K"', a: '1D Prefix Sum', choices: ['Two Pointers', '1D Prefix Sum', 'Binary Search', 'Sorting'] },
+                    { q: '"Find the sum of a rectangular region in a grid, multiple times"', a: '2D Prefix Sum', choices: ['1D Prefix Sum', 'DFS', '2D Prefix Sum', 'Greedy'] },
+                    { q: '"Count subarrays whose sum is a multiple of K"', a: 'Modular Prefix Sum', choices: ['Brute Force', 'Modular Prefix Sum', 'Two Pointers', 'DP'] },
+                    { q: '"Count subarrays whose sum is exactly K"', a: 'Prefix Sum + HashMap', choices: ['Prefix Sum + HashMap', 'Sorting', 'Binary Search', 'BFS'] }
+                ];
+                var correct = 0;
+                var answered = 0;
+
+                quizData.forEach(function(item, idx) {
+                    var qDiv = document.createElement('div');
+                    qDiv.style.cssText = 'padding:12px 16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);';
+                    var qText = document.createElement('div');
+                    qText.style.cssText = 'font-weight:600;margin-bottom:8px;font-size:0.9rem;';
+                    qText.textContent = (idx + 1) + '. ' + item.q;
+                    qDiv.appendChild(qText);
+                    var btnsDiv = document.createElement('div');
+                    btnsDiv.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+                    item.choices.forEach(function(ch) {
+                        var btn = document.createElement('button');
+                        btn.className = 'concept-demo-btn';
+                        btn.style.cssText = 'font-size:0.8rem;padding:4px 12px;';
+                        btn.textContent = ch;
+                        btn.addEventListener('click', function() {
+                            if (qDiv.dataset.done) return;
+                            qDiv.dataset.done = '1';
+                            answered++;
+                            var isCorrect = (ch === item.a);
+                            if (isCorrect) {
+                                correct++;
+                                btn.style.background = 'var(--green)';
+                                btn.style.color = '#fff';
+                                btn.style.boxShadow = '0 0 8px var(--green)60';
+                            } else {
+                                btn.style.background = 'var(--red)';
+                                btn.style.color = '#fff';
+                                btnsDiv.querySelectorAll('button').forEach(function(b) {
+                                    if (b.textContent === item.a) { b.style.background = 'var(--green)'; b.style.color = '#fff'; }
+                                });
+                            }
+                            if (answered === quizData.length) {
+                                quizScore.innerHTML = '<strong>' + correct + '/' + quizData.length + '</strong> correct! ' + (correct === quizData.length ? 'Perfect!' : 'Review the ones you missed.');
+                                quizScore.style.color = correct === quizData.length ? 'var(--green)' : 'var(--text)';
+                            } else {
+                                quizScore.textContent = correct + '/' + answered + ' correct (' + (quizData.length - answered) + ' remaining)';
+                            }
+                        });
+                        btnsDiv.appendChild(btn);
+                    });
+                    qDiv.appendChild(btnsDiv);
+                    quizEl.appendChild(qDiv);
+                });
+            }
+        }
     },
 
     // ===== Visualization (concept suffix) =====
@@ -482,16 +967,16 @@ int query(int r1, int c1, int r2, int c2) {\n\
         prefEl.innerHTML = '<span style="width:60px;font-weight:600;line-height:40px;">prefix:</span>' + prefix.map(function(v, idx) { return '<div class="ps-cell" style="width:40px;text-align:center;padding:6px 2px;border-radius:6px;background:var(--bg2);">?</div>'; }).join('');
         var steps = [];
         var prefCells = function() { return prefEl.querySelectorAll('.ps-cell'); };
-        steps.push({ description: 'prefix[0] = 0 (initial value)', action: function() { prefCells()[0].textContent = '0'; prefCells()[0].style.background = 'var(--accent)15'; infoEl.innerHTML = 'prefix[0] = 0'; }, undo: function() { prefCells()[0].textContent = '?'; prefCells()[0].style.background = 'var(--bg2)'; infoEl.innerHTML = ''; } });
+        steps.push({ description: 'prefix[0] = 0 \u2014 the sum of "no elements added yet." This zero is essential because prefix[i] - prefix[0] gives us the range sum starting from the first element.', action: function() { prefCells()[0].textContent = '0'; prefCells()[0].style.background = 'var(--accent)15'; infoEl.innerHTML = 'prefix[0] = 0'; }, undo: function() { prefCells()[0].textContent = '?'; prefCells()[0].style.background = 'var(--bg2)'; infoEl.innerHTML = ''; } });
         for (i = 0; i < arr.length; i++) {
             (function(idx) {
-                steps.push({ description: 'prefix[' + (idx+1) + '] = prefix[' + idx + '] + arr[' + (idx+1) + '] = ' + prefix[idx] + ' + ' + arr[idx] + ' = ' + prefix[idx+1],
+                steps.push({ description: 'prefix[' + (idx+1) + '] = previous cumulative sum(' + prefix[idx] + ') + current element(' + arr[idx] + ') = ' + prefix[idx+1] + ' \u2014 this is the sum of arr[1]~arr[' + (idx+1) + '].',
                     action: function() { prefCells()[idx+1].textContent = prefix[idx+1]; prefCells()[idx+1].style.background = 'var(--green)20'; infoEl.innerHTML = 'prefix[' + (idx+1) + '] = ' + prefix[idx] + ' + ' + arr[idx] + ' = <strong>' + prefix[idx+1] + '</strong>'; },
                     undo: function() { prefCells()[idx+1].textContent = '?'; prefCells()[idx+1].style.background = 'var(--bg2)'; infoEl.innerHTML = idx > 0 ? 'prefix[' + idx + '] = ' + prefix[idx] : 'prefix[0] = 0'; }
                 });
             })(i);
         }
-        steps.push({ description: 'Prefix sum complete! Range sum example: arr[2]~arr[5] = prefix[5] - prefix[1] = ' + prefix[5] + ' - ' + prefix[1] + ' = ' + (prefix[5]-prefix[1]),
+        steps.push({ description: 'Prefix sum complete! Any range sum is now just <strong>one subtraction</strong> in O(1). Example: arr[2]~arr[5] = prefix[5] - prefix[1] = ' + prefix[5] + ' - ' + prefix[1] + ' = ' + (prefix[5]-prefix[1]) + ' (subtract the front portion from the total)',
             action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">arr[2]~arr[5] = prefix[5] - prefix[1] = ' + prefix[5] + ' - ' + prefix[1] + ' = ' + (prefix[5]-prefix[1]) + '</strong>'; },
             undo: function() { infoEl.innerHTML = 'prefix[' + arr.length + '] = ' + prefix[arr.length]; }
         });
@@ -511,14 +996,14 @@ int query(int r1, int c1, int r2, int c2) {\n\
         var r, c;
         for (r = 1; r <= 3; r++) for (c = 1; c <= 3; c++) prefix[r][c] = grid[r-1][c-1] + prefix[r-1][c] + prefix[r][c-1] - prefix[r-1][c-1];
         var steps = [];
-        steps.push({ description: 'Compute the 2D prefix sum of a 3x3 grid.', action: function() { infoEl.innerHTML = 'Grid: [[1,2,3],[4,5,6],[7,8,9]]'; }, undo: function() { infoEl.innerHTML = ''; } });
-        steps.push({ description: 'Initialize row/col 0 = 0', action: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; }, undo: function() { infoEl.innerHTML = 'Grid: [[1,2,3],[4,5,6],[7,8,9]]'; } });
-        steps.push({ description: 'prefix[1][1] = 1+0+0-0 = 1', action: function() { infoEl.innerHTML = 'prefix[1][1] = grid[1][1] + prefix[0][1] + prefix[1][0] - prefix[0][0] = <strong>1</strong>'; }, undo: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; } });
-        steps.push({ description: 'Region (1,1)~(2,2) sum = prefix[2][2] - prefix[0][2] - prefix[2][0] + prefix[0][0] = ' + prefix[2][2] + ' - 0 - 0 + 0 = ' + prefix[2][2],
+        steps.push({ description: 'Compute the 2D prefix sum of a 3x3 grid. This extends the 1D principle of "subtracting the front portion" into two dimensions.', action: function() { infoEl.innerHTML = 'Grid: [[1,2,3],[4,5,6],[7,8,9]]'; }, undo: function() { infoEl.innerHTML = ''; } });
+        steps.push({ description: 'Initialize row/col 0 = 0 \u2014 same role as prefix[0]=0 in 1D. This cleanly handles boundary conditions.', action: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; }, undo: function() { infoEl.innerHTML = 'Grid: [[1,2,3],[4,5,6],[7,8,9]]'; } });
+        steps.push({ description: '<strong>Inclusion-exclusion</strong>: prefix[1][1] = grid value(1) + top(0) + left(0) - diagonal(0) = 1. Adding top+left double-counts the diagonal region, so we subtract it once.', action: function() { infoEl.innerHTML = 'prefix[1][1] = grid[1][1] + prefix[0][1] + prefix[1][0] - prefix[0][0] = <strong>1</strong>'; }, undo: function() { infoEl.innerHTML = 'prefix[0][*] = prefix[*][0] = 0'; } });
+        steps.push({ description: 'Region sum also uses <strong>inclusion-exclusion</strong>: from the total (prefix[2][2]), subtract top and left; the top-left corner gets subtracted twice, so add it back. = ' + prefix[2][2],
             action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">(1,1)~(2,2) sum = ' + prefix[2][2] + ' (= 1+2+4+5 = 12)</strong>'; },
             undo: function() { infoEl.innerHTML = 'prefix[1][1] = <strong>1</strong>'; }
         });
-        steps.push({ description: 'Region (2,2)~(3,3) sum = prefix[3][3] - prefix[1][3] - prefix[3][1] + prefix[1][1] = ' + prefix[3][3] + ' - ' + prefix[1][3] + ' - ' + prefix[3][1] + ' + ' + prefix[1][1] + ' = ' + (prefix[3][3]-prefix[1][3]-prefix[3][1]+prefix[1][1]),
+        steps.push({ description: '(2,2)~(3,3): from prefix[3][3](' + prefix[3][3] + '), subtract top(' + prefix[1][3] + ') and left(' + prefix[3][1] + '), then add back the double-subtracted top-left(' + prefix[1][1] + ') = ' + (prefix[3][3]-prefix[1][3]-prefix[3][1]+prefix[1][1]),
             action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">(2,2)~(3,3) sum = ' + (prefix[3][3]-prefix[1][3]-prefix[3][1]+prefix[1][1]) + ' (= 5+6+8+9 = 28)</strong>'; },
             undo: function() { infoEl.innerHTML = '<strong style="color:var(--green)">(1,1)~(2,2) sum = ' + prefix[2][2] + '</strong>'; }
         });
@@ -618,12 +1103,12 @@ int query(int r1, int c1, int r2, int c2) {\n\
             renderCells(prefEl, 'prefix:', prefix);
             infoEl.innerHTML = '<span style="color:var(--text2)">Compute range sums in O(1) using prefix sums.</span>';
             var steps = [];
-            steps.push({ description: 'Prefix sum array: prefix = [' + prefix.join(', ') + ']', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = '<span style="color:var(--text2)">Compute range sums in O(1) using prefix sums.</span>'; } });
+            steps.push({ description: 'Prefix sum array built: prefix[i] = sum of arr[1]~arr[i]. With this array, any range sum becomes just <em>one subtraction</em>.', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = '<span style="color:var(--text2)">Compute range sums in O(1) using prefix sums.</span>'; } });
             queries.forEach(function(q) {
                 var L = q[0], R = q[1];
                 if (L < 1 || R > arr.length || L > R) return;
                 var ans = prefix[R] - prefix[L-1];
-                steps.push({ description: 'arr[' + L + ']~arr[' + R + '] = prefix[' + R + '] - prefix[' + (L-1) + '] = ' + prefix[R] + ' - ' + prefix[L-1] + ' = ' + ans,
+                steps.push({ description: 'arr[' + L + ']~arr[' + R + ']: subtract "sum up to ' + (L-1) + '" from "sum up to ' + R + '" to get range sum = ' + prefix[R] + ' - ' + prefix[L-1] + ' = ' + ans,
                     action: function() { infoEl.innerHTML = 'arr[' + L + ']~arr[' + R + '] = prefix[' + R + '] - prefix[' + (L-1) + '] = ' + prefix[R] + ' - ' + prefix[L-1] + ' = <strong>' + ans + '</strong>'; },
                     undo: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }
                 });
@@ -682,13 +1167,13 @@ int query(int r1, int c1, int r2, int c2) {\n\
             infoEl.innerHTML = '';
             var steps = [];
             var maxVal = -Infinity, maxPos = -1;
-            steps.push({ description: 'Build the prefix sum array and compute the sum of every subarray of length ' + K + '.', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: 'Build the prefix sum array first. This lets us compute each length-' + K + ' subarray sum in O(1), finding the maximum in O(N) total.', action: function() { infoEl.innerHTML = 'prefix = [' + prefix.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
             for (i = 1; i <= arr.length - K + 1; i++) {
                 (function(idx) {
                     var sum = prefix[idx + K - 1] - prefix[idx - 1];
                     if (sum > maxVal) { maxVal = sum; maxPos = idx; }
                     var curMax = maxVal, curPos = maxPos;
-                    steps.push({ description: 'i=' + idx + ': prefix[' + (idx+K-1) + '] - prefix[' + (idx-1) + '] = ' + prefix[idx+K-1] + ' - ' + prefix[idx-1] + ' = ' + sum,
+                    steps.push({ description: 'i=' + idx + ': arr[' + idx + ']~arr[' + (idx+K-1) + '] sum = prefix[' + (idx+K-1) + '] - prefix[' + (idx-1) + '] = ' + sum + ' (one subtraction for ' + K + ' elements!)',
                         action: function() { infoEl.innerHTML = 'arr[' + idx + ']~arr[' + (idx+K-1) + '] sum = <strong>' + sum + '</strong>' + (sum === curMax && idx === curPos ? ' <- current max!' : ''); },
                         undo: function() { infoEl.innerHTML = idx > 1 ? 'arr[' + (idx-1) + ']~arr[' + (idx+K-2) + '] sum = ' + (prefix[idx+K-2] - prefix[idx-2]) : 'prefix = [' + prefix.join(', ') + ']'; }
                     });
@@ -750,14 +1235,14 @@ int query(int r1, int c1, int r2, int c2) {\n\
             var c;
             for (c = 0; c < 26; c++) { count[c] = [0]; for (var j = 0; j < S.length; j++) { count[c].push(count[c][j] + (S.charCodeAt(j) - 97 === c ? 1 : 0)); } }
             var steps = [];
-            steps.push({ description: 'Build a prefix sum array for each of the 26 letters.', action: function() { infoEl.innerHTML = 'Building a prefix sum array for each letter.'; }, undo: function() { infoEl.innerHTML = ''; } });
-            steps.push({ description: 'Example: prefix sum for "a" = [' + count[0].join(',') + ']', action: function() { infoEl.innerHTML = 'count["a"] = [' + count[0].join(', ') + ']'; }, undo: function() { infoEl.innerHTML = 'Building a prefix sum array for each letter.'; } });
+            steps.push({ description: 'Build a prefix sum array for each of the 26 letters. This lets us answer "how many of letter X in range [l,r]?" in O(1).', action: function() { infoEl.innerHTML = 'Building a prefix sum array for each letter.'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: 'Example: prefix sum for "a" = [' + count[0].join(',') + '] \u2014 count["a"][i] is the number of "a"s in S[0]~S[i-1].', action: function() { infoEl.innerHTML = 'count["a"] = [' + count[0].join(', ') + ']'; }, undo: function() { infoEl.innerHTML = 'Building a prefix sum array for each letter.'; } });
             queries.forEach(function(q, qi) {
                 var ch = q[0], l = q[1], r = q[2];
                 var ci = ch.charCodeAt(0) - 97;
                 if (ci < 0 || ci >= 26 || l < 0 || r >= S.length || l > r) return;
                 var ans = count[ci][r+1] - count[ci][l];
-                steps.push({ description: '"' + ch + '" in [' + l + ',' + r + '] = count["' + ch + '"][' + (r+1) + '] - count["' + ch + '"][' + l + '] = ' + count[ci][r+1] + ' - ' + count[ci][l] + ' = ' + ans,
+                steps.push({ description: '"' + ch + '" in [' + l + ',' + r + ']: count up to ' + r + ' minus count up to ' + (l-1) + ' gives the count in that range = ' + count[ci][r+1] + ' - ' + count[ci][l] + ' = ' + ans,
                     action: function() { infoEl.innerHTML = '"' + ch + '" in S[' + l + '..' + r + '] = <strong>' + ans + '</strong>'; },
                     undo: function() { if (qi === 0) infoEl.innerHTML = 'count["a"] = [' + count[0].join(', ') + ']'; else { var pq = queries[qi-1]; var pci = pq[0].charCodeAt(0)-97; infoEl.innerHTML = '"' + pq[0] + '" in S[' + pq[1] + '..' + pq[2] + '] = ' + (count[pci][pq[2]+1] - count[pci][pq[1]]); } }
                 });
@@ -816,15 +1301,15 @@ int query(int r1, int c1, int r2, int c2) {\n\
             cnt[0] = 1;
             for (i = 0; i < arr.length; i++) { prefMod.push(((prefMod[i] + arr[i]) % M + M) % M); cnt[prefMod[i+1]]++; }
             var steps = [];
-            steps.push({ description: 'Build the prefix_mod array (each prefix sum modulo M=' + M + ').', action: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: 'Compute each prefix sum modulo M=' + M + '. Since range sum = prefix[j]-prefix[i], if <em>two remainders are equal</em> then that range sum is divisible by M.', action: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
             var cntStr = [];
             for (r = 0; r < M; r++) cntStr.push('cnt[' + r + ']=' + cnt[r]);
-            steps.push({ description: 'Count per remainder: ' + cntStr.join(', '), action: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + '] (count of remainders 0~' + (M-1) + ')'; }, undo: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; } });
+            steps.push({ description: 'Group by remainder: ' + cntStr.join(', ') + '. Picking any 2 from the same group gives a subarray sum divisible by M!', action: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + '] (count of remainders 0~' + (M-1) + ')'; }, undo: function() { infoEl.innerHTML = 'prefix_mod = [' + prefMod.join(', ') + ']'; } });
             var combParts = []; var ans = 0;
             for (r = 0; r < M; r++) { var c = cnt[r]*(cnt[r]-1)/2; combParts.push(cnt[r] + 'C2'); ans += c; }
             var combVals = [];
             for (r = 0; r < M; r++) combVals.push(cnt[r]*(cnt[r]-1)/2);
-            steps.push({ description: 'Pairs with same remainder = nC2: ' + combParts.join(' + '), action: function() { infoEl.innerHTML = combParts.join(' + ') + ' = ' + combVals.join(' + ') + ' = <strong>' + ans + '</strong>'; }, undo: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + ']'; } });
+            steps.push({ description: 'Choose 2 from each group (nC2 combinations). Every such pair creates a subarray divisible by M: ' + combParts.join(' + '), action: function() { infoEl.innerHTML = combParts.join(' + ') + ' = ' + combVals.join(' + ') + ' = <strong>' + ans + '</strong>'; }, undo: function() { infoEl.innerHTML = 'cnt = [' + cnt.join(', ') + ']'; } });
             steps.push({ description: 'Answer: ' + ans, action: function() { infoEl.innerHTML = '<strong style="color:var(--green)">Subarrays with sum divisible by ' + M + ' = ' + ans + '</strong>'; }, undo: function() { infoEl.innerHTML = 'Answer = ' + ans; } });
             return steps;
         }
@@ -878,13 +1363,13 @@ int query(int r1, int c1, int r2, int c2) {\n\
             infoEl.innerHTML = '';
             var gridStr = grid.map(function(row) { return '[' + row.join(',') + ']'; }).join(',');
             var steps = [];
-            steps.push({ description: 'Build the 2D prefix sum for a ' + N + 'x' + M2 + ' grid.', action: function() { infoEl.innerHTML = 'Grid: [' + gridStr + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
-            steps.push({ description: '2D prefix sum array complete', action: function() { infoEl.innerHTML = 'Computed prefix sums using inclusion-exclusion.'; }, undo: function() { infoEl.innerHTML = 'Grid: [' + gridStr + ']'; } });
+            steps.push({ description: 'Build the 2D prefix sum for the ' + N + 'x' + M2 + ' grid. prefix[i][j] = sum of the rectangle (1,1)~(i,j).', action: function() { infoEl.innerHTML = 'Grid: [' + gridStr + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: '2D prefix sum complete! <strong>Inclusion-exclusion</strong>: adding top+left double-counts the top-left corner, so we subtract it once.', action: function() { infoEl.innerHTML = 'Computed prefix sums using inclusion-exclusion.'; }, undo: function() { infoEl.innerHTML = 'Grid: [' + gridStr + ']'; } });
             queries.forEach(function(q, qi) {
                 var x1 = q[0], y1 = q[1], x2 = q[2], y2 = q[3];
                 if (x1 < 1 || y1 < 1 || x2 > N || y2 > M2 || x1 > x2 || y1 > y2) return;
                 var ans = prefix[x2][y2] - prefix[x1-1][y2] - prefix[x2][y1-1] + prefix[x1-1][y1-1];
-                steps.push({ description: '(' + x1 + ',' + y1 + ')~(' + x2 + ',' + y2 + '): prefix[' + x2 + '][' + y2 + '] - prefix[' + (x1-1) + '][' + y2 + '] - prefix[' + x2 + '][' + (y1-1) + '] + prefix[' + (x1-1) + '][' + (y1-1) + '] = ' + ans,
+                steps.push({ description: '(' + x1 + ',' + y1 + ')~(' + x2 + ',' + y2 + '): <strong>inclusion-exclusion</strong> \u2014 total minus top minus left, plus the double-subtracted corner = ' + ans,
                     action: function() { infoEl.innerHTML = '(' + x1 + ',' + y1 + ')~(' + x2 + ',' + y2 + ') = ' + prefix[x2][y2] + ' - ' + prefix[x1-1][y2] + ' - ' + prefix[x2][y1-1] + ' + ' + prefix[x1-1][y1-1] + ' = <strong>' + ans + '</strong>'; },
                     undo: function() { if (qi === 0) infoEl.innerHTML = 'Computed prefix sums using inclusion-exclusion.'; else { var pq = queries[qi-1]; var pa = prefix[pq[2]][pq[3]] - prefix[pq[0]-1][pq[3]] - prefix[pq[2]][pq[1]-1] + prefix[pq[0]-1][pq[1]-1]; infoEl.innerHTML = '(' + pq[0] + ',' + pq[1] + ')~(' + pq[2] + ',' + pq[3] + ') = ' + pa; } }
                 });
@@ -946,8 +1431,8 @@ int query(int r1, int c1, int r2, int c2) {\n\
             for (i = 1; i <= N; i++) for (j = 1; j <= M2; j++) { var exp = (i+j) % 2 === 0 ? 'B' : 'W'; diff[i][j] = board[i-1][j-1] !== exp ? 1 : 0; }
             for (i = 1; i <= N; i++) for (j = 1; j <= M2; j++) prefix[i][j] = diff[i][j] + prefix[i-1][j] + prefix[i][j-1] - prefix[i-1][j-1];
             var steps = [];
-            steps.push({ description: 'Build the diff array: 1 where cell differs from (i+j) even=B pattern.', action: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
-            steps.push({ description: 'Compute the 2D prefix sum of the diff array.', action: function() { infoEl.innerHTML = '2D prefix sum array complete'; }, undo: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; } });
+            steps.push({ description: 'Mark cells that differ from pattern 1 ((i+j) even=B) as 1. The region sum of this diff array = the number of cells to repaint for pattern 1.', action: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; }, undo: function() { infoEl.innerHTML = ''; } });
+            steps.push({ description: 'Build the 2D prefix sum of the diff array. This preprocessing lets us compute "cells to repaint" for any K\u00d7K region in O(1).', action: function() { infoEl.innerHTML = '2D prefix sum array complete'; }, undo: function() { var rows = []; for (var r = 1; r <= N; r++) { var row = []; for (var c = 1; c <= M2; c++) row.push(diff[r][c]); rows.push('[' + row.join(',') + ']'); } infoEl.innerHTML = 'diff = [' + rows.join(', ') + ']'; } });
             // Scan all K x K regions
             var bestCost = N * M2;
             var results = [];
@@ -961,7 +1446,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
                 }
             }
             results.forEach(function(r, ri) {
-                steps.push({ description: 'Region (' + r.i + ',' + r.j + ')~(' + (r.i+K-1) + ',' + (r.j+K-1) + '): pattern1=' + r.cost1 + ', pattern2=' + r.cost2 + ', min=' + r.best,
+                steps.push({ description: 'Region (' + r.i + ',' + r.j + ')~(' + (r.i+K-1) + ',' + (r.j+K-1) + '): pattern1 needs ' + r.cost1 + ' repaints, inverted pattern2 needs K\u00b2-' + r.cost1 + '=' + r.cost2 + '. Take the smaller = ' + r.best,
                     action: function() { infoEl.innerHTML = '(' + r.i + ',' + r.j + ')~(' + (r.i+K-1) + ',' + (r.j+K-1) + '): pattern1=' + r.cost1 + ', pattern2=' + r.cost2 + ' -> <strong>' + r.best + '</strong>'; },
                     undo: function() { if (ri === 0) infoEl.innerHTML = '2D prefix sum array complete'; else { var p = results[ri-1]; infoEl.innerHTML = '(' + p.i + ',' + p.j + ')~(' + (p.i+K-1) + ',' + (p.j+K-1) + '): min=' + p.best; } }
                 });
@@ -1033,7 +1518,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             },
             solutions: [{
                 approach: '1D Prefix Sum',
-                description: 'Build a prefix sum array, then answer each query with prefix[j] - prefix[i-1] in O(1).',
+                description: 'Build a prefix sum array, then answer each query by subtracting front portion from total: prefix[j] - prefix[i-1] in O(1).',
                 timeComplexity: 'O(N + M)',
                 spaceComplexity: 'O(N)',
                 codeSteps: {
@@ -1084,7 +1569,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             },
             solutions: [{
                 approach: 'Prefix Sum + Sliding',
-                description: 'Compute all subarray sums of length K from the prefix sum array and find the maximum.',
+                description: 'Prefix sum reduces each K-length subarray sum to one subtraction, making the overall scan O(N).',
                 timeComplexity: 'O(N)',
                 spaceComplexity: 'O(N)',
                 codeSteps: {
@@ -1133,7 +1618,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             },
             solutions: [{
                 approach: 'Per-Character Prefix Sum',
-                description: 'Build a prefix sum array for each of the 26 letters to answer queries in O(1).',
+                description: 'One prefix sum per letter (26 total) lets us answer "how many of letter X in range?" in O(1).',
                 timeComplexity: 'O(26N + Q)',
                 spaceComplexity: 'O(26N)',
                 codeSteps: {
@@ -1180,7 +1665,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             },
             solutions: [{
                 approach: 'Remainder Classification',
-                description: 'Count pairs of prefix sums with the same remainder using combinations (nC2).',
+                description: 'Two prefix sums with the same remainder mod M means their difference (= subarray sum) is divisible by M. Count such pairs via nC2.',
                 timeComplexity: 'O(N + M)',
                 spaceComplexity: 'O(M)',
                 codeSteps: {
@@ -1229,7 +1714,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             },
             solutions: [{
                 approach: '2D Prefix Sum',
-                description: '2D prefix sum + inclusion-exclusion formula to compute region sums in O(1).',
+                description: '2D prefix sum + inclusion-exclusion: subtract top and left regions, add back the double-subtracted corner to get O(1) region sums.',
                 timeComplexity: 'O(N^2 + M)',
                 spaceComplexity: 'O(N^2)',
                 codeSteps: {
@@ -1279,7 +1764,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             },
             solutions: [{
                 approach: '2D Prefix Sum + Chessboard Pattern',
-                description: 'Build a 0/1 array for cells differing from the chessboard pattern, then use 2D prefix sums to find the minimum cost.',
+                description: 'Mark cells differing from the chessboard pattern as 1, then 2D prefix sums let us compute repainting cost for any K\u00d7K region in O(1).',
                 timeComplexity: 'O(N*M)',
                 spaceComplexity: 'O(N*M)',
                 codeSteps: {

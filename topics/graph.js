@@ -68,7 +68,7 @@ var graphTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -219,6 +219,29 @@ var graphTopic = {
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 인접 리스트 만들기 (무방향 그래프)\nimport sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())  # 정점 수, 간선 수\ngraph = [[] for _ in range(N + 1)]\n\nfor _ in range(M):\n    u, v = map(int, input().split())\n    graph[u].append(v)\n    graph[v].append(u)  # 무방향이므로 양쪽 다 추가</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 인접 리스트 만들기 (무방향 그래프)\n#include &lt;iostream&gt;\n#include &lt;vector&gt;\nusing namespace std;\n\nint main() {\n    int N, M;  // 정점 수, 간선 수\n    cin &gt;&gt; N &gt;&gt; M;\n    vector&lt;vector&lt;int&gt;&gt; graph(N + 1);\n\n    for (int i = 0; i &lt; M; i++) {\n        int u, v;\n        cin &gt;&gt; u &gt;&gt; v;\n        graph[u].push_back(v);\n        graph[v].push_back(u);  // 무방향이므로 양쪽 다 추가\n    }\n    return 0;\n}</code></pre></div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 인접 리스트 만들기</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">정점 번호 두 개를 입력하고 "간선 추가"를 눌러보세요! 그래프와 인접 리스트가 어떻게 변하는지 확인하세요.</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="number" id="graph-demo-adj-u" value="1" min="1" max="6" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <span style="font-weight:600;">—</span>\
+                        <input type="number" id="graph-demo-adj-v" value="2" min="1" max="6" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="graph-demo-adj-add">+ 간선 추가</button>\
+                        <button class="concept-demo-btn" id="graph-demo-adj-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                    </div>\
+                    <div class="concept-demo-body" style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                        <div style="flex:1;min-width:220px;">\
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">그래프 시각화</div>\
+                            <svg id="graph-demo-adj-svg" width="280" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                        </div>\
+                        <div style="flex:1;min-width:200px;">\
+                            <div style="font-weight:600;margin-bottom:8px;color:var(--text);">인접 리스트</div>\
+                            <div id="graph-demo-adj-list" style="font-family:monospace;font-size:0.9rem;line-height:1.8;color:var(--text);"></div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-adj-msg">정점 1~6 사이의 간선을 추가해보세요! 무방향 그래프이므로 양쪽 모두에 추가됩니다.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -264,6 +287,30 @@ var graphTopic = {
 \
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># DFS \u2014 재귀 방식\ndef dfs(v):\n    visited[v] = True\n    for u in graph[v]:\n        if not visited[u]:\n            dfs(u)\n\n# DFS \u2014 스택 방식\ndef dfs_stack(start):\n    stack = [start]\n    visited[start] = True\n    while stack:\n        v = stack.pop()\n        for u in graph[v]:\n            if not visited[u]:\n                visited[u] = True\n                stack.append(u)</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// DFS \u2014 재귀 방식\nvoid dfs(int v, vector&lt;vector&lt;int&gt;&gt;&amp; graph, vector&lt;bool&gt;&amp; visited) {\n    visited[v] = true;\n    for (int u : graph[v]) {\n        if (!visited[u]) {\n            dfs(u, graph, visited);\n        }\n    }\n}\n\n// DFS \u2014 스택 방식\nvoid dfs_stack(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph, vector&lt;bool&gt;&amp; visited) {\n    stack&lt;int&gt; stk;\n    stk.push(start);\n    visited[start] = true;\n    while (!stk.empty()) {\n        int v = stk.top(); stk.pop();\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                stk.push(u);\n            }\n        }\n    }\n}</code></pre></div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — DFS 따라가기</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">1번에서 DFS를 시작합니다. 한 방향으로 깊이 들어갔다가, 막다른 길이면 돌아오는 과정을 관찰하세요!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-dfs-step">다음 스텝 ▶</button>\
+                        <button class="concept-demo-btn" id="graph-demo-dfs-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                        <span id="graph-demo-dfs-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div style="flex:1;min-width:220px;">\
+                                <svg id="graph-demo-dfs-svg" width="300" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                            </div>\
+                            <div style="flex:1;min-width:160px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--text);">스택</div>\
+                                <div id="graph-demo-dfs-stack" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:40px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></div>\
+                                <div style="font-weight:600;margin:10px 0 6px;color:var(--text);">방문 순서</div>\
+                                <div id="graph-demo-dfs-order" style="display:flex;gap:6px;flex-wrap:wrap;min-height:32px;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-dfs-msg">그래프: 1-2, 1-3, 2-4, 2-5 (작은 번호 우선). "다음 스텝"을 눌러 DFS 과정을 한 단계씩 따라가세요!</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -311,6 +358,30 @@ var graphTopic = {
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// BFS \u2014 큐 사용\n#include &lt;queue&gt;\n\nvoid bfs(int start, vector&lt;vector&lt;int&gt;&gt;&amp; graph,\n         vector&lt;bool&gt;&amp; visited, vector&lt;int&gt;&amp; dist) {\n    queue&lt;int&gt; q;\n    q.push(start);\n    visited[start] = true;\n    dist[start] = 0;\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();  // front()로 꺼내고 pop()으로 제거\n        for (int u : graph[v]) {\n            if (!visited[u]) {\n                visited[u] = true;\n                dist[u] = dist[v] + 1;\n                q.push(u);\n            }\n        }\n    }\n}</code></pre></div></span>\
                 <div style="margin-top:0.6rem;">\
                     <span class="lang-py"><a href="https://docs.python.org/3/library/collections.html#collections.deque" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: collections.deque ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/queue" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: queue ↗</a></span>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — BFS 따라가기</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">1번에서 BFS를 시작합니다. 가까운 정점부터 차례대로 방문하는 과정을 큐와 함께 관찰하세요!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-bfs-step">다음 스텝 ▶</button>\
+                        <button class="concept-demo-btn" id="graph-demo-bfs-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                        <span id="graph-demo-bfs-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div style="flex:1;min-width:220px;">\
+                                <svg id="graph-demo-bfs-svg" width="300" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                            </div>\
+                            <div style="flex:1;min-width:160px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--text);">큐 (Queue)</div>\
+                                <div id="graph-demo-bfs-queue" style="display:flex;gap:4px;min-height:40px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);flex-wrap:wrap;"></div>\
+                                <div style="font-weight:600;margin:10px 0 6px;color:var(--text);">방문 순서 (거리)</div>\
+                                <div id="graph-demo-bfs-order" style="display:flex;gap:6px;flex-wrap:wrap;min-height:32px;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-bfs-msg">그래프: 1-2, 1-3, 2-4, 3-5, 4-6 (작은 번호 우선). "다음 스텝"을 눌러 BFS 과정을 따라가세요!</div>\
                 </div>\
 \
                 <div class="think-box">\
@@ -412,6 +483,21 @@ var graphTopic = {
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 격자 탐색 패턴 (BFS)\ndx = [0, 0, 1, -1]  # 상하좌우\ndy = [1, -1, 0, 0]\n\nfor d in range(4):\n    nx, ny = x + dx[d], y + dy[d]\n    # 범위 체크: 격자 안에 있는지?\n    if 0 <= nx < N and 0 <= ny < M:\n        # 벽이 아니고, 방문하지 않았으면?\n        if grid[nx][ny] != 0 and not visited[nx][ny]:\n            visited[nx][ny] = True\n            queue.append((nx, ny))</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 격자 탐색 패턴 (BFS)\nint dx[] = {0, 0, 1, -1};  // 상하좌우\nint dy[] = {1, -1, 0, 0};\n\nfor (int d = 0; d &lt; 4; d++) {\n    int nx = x + dx[d], ny = y + dy[d];\n    // 범위 체크: 격자 안에 있는지?\n    if (nx &gt;= 0 &amp;&amp; nx &lt; N &amp;&amp; ny &gt;= 0 &amp;&amp; ny &lt; M) {\n        // 벽이 아니고, 방문하지 않았으면?\n        if (grid[nx][ny] != 0 &amp;&amp; !visited[nx][ny]) {\n            visited[nx][ny] = true;\n            q.push({nx, ny});\n        }\n    }\n}</code></pre></div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 격자 BFS (Flood Fill)</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">시작 칸(파란색)을 클릭해서 선택한 뒤 "BFS 시작"을 누르세요. 물결이 퍼지듯 상하좌우로 탐색합니다! 검은 칸은 벽입니다(클릭으로 토글).</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-grid-start">BFS 시작</button>\
+                        <button class="concept-demo-btn" id="graph-demo-grid-step" style="display:none;">다음 스텝 ▶</button>\
+                        <button class="concept-demo-btn" id="graph-demo-grid-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                        <span id="graph-demo-grid-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="graph-demo-grid-area" style="display:inline-grid;grid-template-columns:repeat(7,36px);gap:3px;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-grid-msg">칸을 클릭하면 벽(검정)을 토글합니다. 파란 칸이 시작점입니다. 숫자는 시작점으로부터의 거리를 나타냅니다!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -453,6 +539,17 @@ var graphTopic = {
                     </div>\
                 </div>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 유형 맞추기 퀴즈</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">문제 설명을 읽고, DFS / BFS / 둘 다 중 어떤 탐색이 적합한지 골라보세요!</p>\
+                    <div id="graph-demo-quiz-area" style="display:flex;flex-direction:column;gap:16px;"></div>\
+                    <div style="margin-top:12px;text-align:center;">\
+                        <button class="concept-demo-btn" id="graph-demo-quiz-check">정답 확인</button>\
+                        <button class="concept-demo-btn" id="graph-demo-quiz-retry" style="display:none;background:var(--bg2);color:var(--text2);">다시 풀기</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-quiz-msg">각 문제에 가장 적합한 탐색 방법을 선택한 뒤 "정답 확인"을 눌러보세요!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -480,6 +577,520 @@ var graphTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ========== Demo 1: 인접 리스트 만들기 ==========
+        (function() {
+            var NODE_COUNT = 6;
+            var positions = [
+                {x:140,y:30},{x:60,y:90},{x:220,y:90},
+                {x:30,y:180},{x:140,y:180},{x:250,y:180}
+            ];
+            var adj = {};
+            var edgeSet = {};
+            for (var i = 1; i <= NODE_COUNT; i++) adj[i] = [];
+
+            var svgEl = container.querySelector('#graph-demo-adj-svg');
+            var listEl = container.querySelector('#graph-demo-adj-list');
+            var msgEl = container.querySelector('#graph-demo-adj-msg');
+            var addBtn = container.querySelector('#graph-demo-adj-add');
+            var resetBtn = container.querySelector('#graph-demo-adj-reset');
+            var uInput = container.querySelector('#graph-demo-adj-u');
+            var vInput = container.querySelector('#graph-demo-adj-v');
+
+            function render() {
+                var html = '';
+                // edges
+                for (var key in edgeSet) {
+                    var parts = key.split('-');
+                    var a = parseInt(parts[0]) - 1, b = parseInt(parts[1]) - 1;
+                    html += '<line x1="' + positions[a].x + '" y1="' + positions[a].y + '" x2="' + positions[b].x + '" y2="' + positions[b].y + '" stroke="var(--accent)" stroke-width="2.5" opacity="0.6"/>';
+                }
+                // nodes
+                for (var i = 0; i < NODE_COUNT; i++) {
+                    html += '<circle cx="' + positions[i].x + '" cy="' + positions[i].y + '" r="18" fill="var(--card)" stroke="var(--accent)" stroke-width="2.5"/>';
+                    html += '<text x="' + positions[i].x + '" y="' + (positions[i].y + 5) + '" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">' + (i + 1) + '</text>';
+                }
+                svgEl.innerHTML = html;
+
+                // adjacency list
+                var listHtml = '';
+                for (var i = 1; i <= NODE_COUNT; i++) {
+                    var neighbors = adj[i].slice().sort(function(a,b){return a-b;});
+                    listHtml += '<div style="padding:3px 0;' + (neighbors.length > 0 ? 'color:var(--text);' : 'color:var(--text3);') + '">' +
+                        '<span style="color:var(--accent);font-weight:700;">' + i + '</span>: [' + neighbors.join(', ') + ']</div>';
+                }
+                listEl.innerHTML = listHtml;
+            }
+            render();
+
+            addBtn.addEventListener('click', function() {
+                var u = parseInt(uInput.value), v = parseInt(vInput.value);
+                if (isNaN(u) || isNaN(v) || u < 1 || u > NODE_COUNT || v < 1 || v > NODE_COUNT || u === v) {
+                    msgEl.textContent = '1~' + NODE_COUNT + ' 사이의 서로 다른 정점 번호를 입력하세요!';
+                    msgEl.style.color = 'var(--red)';
+                    return;
+                }
+                var key = Math.min(u,v) + '-' + Math.max(u,v);
+                if (edgeSet[key]) {
+                    msgEl.textContent = u + '-' + v + ' 간선은 이미 있습니다!';
+                    msgEl.style.color = 'var(--yellow)';
+                    return;
+                }
+                edgeSet[key] = true;
+                adj[u].push(v);
+                adj[v].push(u);
+                msgEl.textContent = u + ' — ' + v + ' 간선 추가! 양쪽 인접 리스트에 모두 추가됩니다 (무방향).';
+                msgEl.style.color = 'var(--green)';
+                render();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                adj = {}; edgeSet = {};
+                for (var i = 1; i <= NODE_COUNT; i++) adj[i] = [];
+                msgEl.textContent = '초기화 완료! 간선을 추가해보세요.';
+                msgEl.style.color = 'var(--text2)';
+                render();
+            });
+        })();
+
+        // ========== Demo 2: DFS 따라가기 ==========
+        (function() {
+            var dfsAdj = {1:[2,3], 2:[1,4,5], 3:[1], 4:[2], 5:[2]};
+            var positions = [{x:150,y:30},{x:70,y:100},{x:230,y:100},{x:40,y:190},{x:130,y:190}];
+            var edges = [[1,2],[1,3],[2,4],[2,5]];
+            var nodeLabels = [1,2,3,4,5];
+
+            var svgEl = container.querySelector('#graph-demo-dfs-svg');
+            var stackEl = container.querySelector('#graph-demo-dfs-stack');
+            var orderEl = container.querySelector('#graph-demo-dfs-order');
+            var stepBtn = container.querySelector('#graph-demo-dfs-step');
+            var resetBtn = container.querySelector('#graph-demo-dfs-reset');
+            var counterEl = container.querySelector('#graph-demo-dfs-counter');
+            var msgEl = container.querySelector('#graph-demo-dfs-msg');
+
+            var visited, stack, visitOrder, dfsSteps, stepIdx;
+
+            function buildDfsSteps() {
+                visited = {}; stack = [1]; visitOrder = []; dfsSteps = []; stepIdx = -1;
+                var vis = {}, stk = [1], ord = [];
+                vis[1] = true;
+                // pre-compute steps
+                dfsSteps.push({type:'init', node:1, stack:[1], order:[], desc:'시작: 1번을 스택에 넣고 방문 표시합니다.'});
+                while (stk.length > 0) {
+                    var v = stk.pop();
+                    ord.push(v);
+                    var snap = stk.slice();
+                    dfsSteps.push({type:'pop', node:v, stack:snap.slice(), order:ord.slice(), desc:v + '번을 스택에서 꺼내 처리합니다. 방문 순서: ' + ord.join(' → ')});
+                    var neighbors = dfsAdj[v].slice().sort(function(a,b){return b-a;}); // reverse for stack
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            stk.push(u);
+                            snap = stk.slice();
+                            dfsSteps.push({type:'push', node:u, from:v, stack:snap.slice(), order:ord.slice(), desc:v + '번의 이웃 ' + u + '번을 스택에 넣고 방문 표시합니다.'});
+                        }
+                    });
+                }
+                dfsSteps.push({type:'done', stack:[], order:ord.slice(), desc:'DFS 완료! 방문 순서: ' + ord.join(' → ')});
+            }
+
+            function renderDfs(step) {
+                var html = '';
+                // edges
+                edges.forEach(function(e) {
+                    var a = e[0]-1, b = e[1]-1;
+                    html += '<line x1="'+positions[a].x+'" y1="'+positions[a].y+'" x2="'+positions[b].x+'" y2="'+positions[b].y+'" stroke="var(--bg3)" stroke-width="2.5"/>';
+                });
+                // nodes
+                for (var i = 0; i < 5; i++) {
+                    var nd = nodeLabels[i];
+                    var fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                    if (step && step.order && step.order.indexOf(nd) >= 0) {
+                        fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white';
+                    }
+                    if (step && step.node === nd && step.type === 'pop') {
+                        fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333';
+                    }
+                    if (step && step.node === nd && step.type === 'push') {
+                        stroke = 'var(--accent)';
+                    }
+                    html += '<circle cx="'+positions[i].x+'" cy="'+positions[i].y+'" r="20" fill="'+fill+'" stroke="'+stroke+'" stroke-width="3"/>';
+                    html += '<text x="'+positions[i].x+'" y="'+(positions[i].y+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="'+txtColor+'">'+nd+'</text>';
+                }
+                svgEl.innerHTML = html;
+
+                // stack
+                stackEl.innerHTML = '';
+                if (step && step.stack) {
+                    step.stack.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:6px 14px;background:var(--accent);color:white;border-radius:6px;font-weight:700;text-align:center;font-size:0.9rem;';
+                        div.textContent = nd;
+                        stackEl.appendChild(div);
+                    });
+                }
+                if (!step || !step.stack || step.stack.length === 0) {
+                    stackEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">비어있음</span>';
+                }
+
+                // order
+                orderEl.innerHTML = '';
+                if (step && step.order) {
+                    step.order.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'width:32px;height:32px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;';
+                        div.textContent = nd;
+                        orderEl.appendChild(div);
+                    });
+                }
+            }
+
+            function reset() {
+                buildDfsSteps();
+                stepIdx = -1;
+                renderDfs(null);
+                counterEl.textContent = '';
+                msgEl.textContent = '그래프: 1-2, 1-3, 2-4, 2-5 (작은 번호 우선). "다음 스텝"을 눌러 DFS 과정을 한 단계씩 따라가세요!';
+                stepBtn.disabled = false;
+            }
+
+            stepBtn.addEventListener('click', function() {
+                stepIdx++;
+                if (stepIdx >= dfsSteps.length) { stepBtn.disabled = true; return; }
+                var s = dfsSteps[stepIdx];
+                renderDfs(s);
+                counterEl.textContent = (stepIdx + 1) + ' / ' + dfsSteps.length;
+                msgEl.textContent = s.desc;
+                if (stepIdx >= dfsSteps.length - 1) stepBtn.disabled = true;
+            });
+            resetBtn.addEventListener('click', reset);
+            reset();
+        })();
+
+        // ========== Demo 3: BFS 따라가기 ==========
+        (function() {
+            var bfsAdj = {1:[2,3], 2:[1,4], 3:[1,5], 4:[2,6], 5:[3], 6:[4]};
+            var positions = [{x:150,y:25},{x:70,y:95},{x:230,y:95},{x:40,y:180},{x:230,y:180},{x:120,y:180}];
+            var edges = [[1,2],[1,3],[2,4],[3,5],[4,6]];
+            var nodeLabels = [1,2,3,4,5,6];
+
+            var svgEl = container.querySelector('#graph-demo-bfs-svg');
+            var queueEl = container.querySelector('#graph-demo-bfs-queue');
+            var orderEl = container.querySelector('#graph-demo-bfs-order');
+            var stepBtn = container.querySelector('#graph-demo-bfs-step');
+            var resetBtn = container.querySelector('#graph-demo-bfs-reset');
+            var counterEl = container.querySelector('#graph-demo-bfs-counter');
+            var msgEl = container.querySelector('#graph-demo-bfs-msg');
+
+            var bfsSteps, stepIdx, dist;
+
+            function buildBfsSteps() {
+                bfsSteps = []; dist = {};
+                var vis = {}, queue = [1], ord = [];
+                vis[1] = true; dist[1] = 0;
+                bfsSteps.push({type:'init', node:1, queue:[1], order:[], dist:{1:0}, desc:'시작: 1번을 큐에 넣고 방문 표시합니다. 거리=0.'});
+                while (queue.length > 0) {
+                    var v = queue.shift();
+                    ord.push(v);
+                    var snap = queue.slice();
+                    var dSnap = {};
+                    for (var k in dist) dSnap[k] = dist[k];
+                    bfsSteps.push({type:'dequeue', node:v, queue:snap.slice(), order:ord.slice(), dist:Object.assign({},dSnap), desc:v + '번을 큐에서 꺼내 처리합니다. 거리=' + dist[v] + '. 방문 순서: ' + ord.join(' → ')});
+                    var neighbors = bfsAdj[v].slice().sort(function(a,b){return a-b;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            dist[u] = dist[v] + 1;
+                            queue.push(u);
+                            snap = queue.slice();
+                            dSnap = {};
+                            for (var k in dist) dSnap[k] = dist[k];
+                            bfsSteps.push({type:'enqueue', node:u, from:v, queue:snap.slice(), order:ord.slice(), dist:Object.assign({},dSnap), desc:v + '번의 이웃 ' + u + '번을 큐에 넣습니다. 거리=' + dist[u] + '.'});
+                        }
+                    });
+                }
+                bfsSteps.push({type:'done', queue:[], order:ord.slice(), dist:Object.assign({},dist), desc:'BFS 완료! 방문 순서: ' + ord.join(' → ') + '. 모든 정점의 최단 거리가 계산되었습니다.'});
+            }
+
+            function renderBfs(step) {
+                var html = '';
+                edges.forEach(function(e) {
+                    var a = e[0]-1, b = e[1]-1;
+                    html += '<line x1="'+positions[a].x+'" y1="'+positions[a].y+'" x2="'+positions[b].x+'" y2="'+positions[b].y+'" stroke="var(--bg3)" stroke-width="2.5"/>';
+                });
+                for (var i = 0; i < nodeLabels.length; i++) {
+                    var nd = nodeLabels[i];
+                    var fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                    if (step && step.order && step.order.indexOf(nd) >= 0) {
+                        fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white';
+                    }
+                    if (step && step.node === nd && step.type === 'dequeue') {
+                        fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333';
+                    }
+                    if (step && step.node === nd && step.type === 'enqueue') {
+                        stroke = 'var(--accent)'; if (step.order.indexOf(nd) < 0) fill = 'var(--accent)15';
+                    }
+                    html += '<circle cx="'+positions[i].x+'" cy="'+positions[i].y+'" r="20" fill="'+fill+'" stroke="'+stroke+'" stroke-width="3"/>';
+                    html += '<text x="'+positions[i].x+'" y="'+(positions[i].y+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="'+txtColor+'">'+nd+'</text>';
+                    // distance label
+                    if (step && step.dist && step.dist[nd] !== undefined) {
+                        html += '<text x="'+(positions[i].x+22)+'" y="'+(positions[i].y-14)+'" text-anchor="middle" font-size="10" fill="var(--accent)" font-weight="600">d='+step.dist[nd]+'</text>';
+                    }
+                }
+                svgEl.innerHTML = html;
+
+                // queue
+                queueEl.innerHTML = '';
+                if (step && step.queue && step.queue.length > 0) {
+                    step.queue.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:6px 14px;background:var(--accent);color:white;border-radius:6px;font-weight:700;font-size:0.9rem;';
+                        div.textContent = nd;
+                        queueEl.appendChild(div);
+                    });
+                } else {
+                    queueEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">비어있음</span>';
+                }
+
+                // order with distance
+                orderEl.innerHTML = '';
+                if (step && step.order) {
+                    step.order.forEach(function(nd) {
+                        var d = step.dist && step.dist[nd] !== undefined ? step.dist[nd] : '?';
+                        var div = document.createElement('div');
+                        div.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;';
+                        div.innerHTML = '<div style="width:32px;height:32px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;">'+nd+'</div><span style="font-size:0.7rem;color:var(--text2);">d='+d+'</span>';
+                        orderEl.appendChild(div);
+                    });
+                }
+            }
+
+            function reset() {
+                buildBfsSteps();
+                stepIdx = -1;
+                renderBfs(null);
+                counterEl.textContent = '';
+                msgEl.textContent = '그래프: 1-2, 1-3, 2-4, 3-5, 4-6 (작은 번호 우선). "다음 스텝"을 눌러 BFS 과정을 따라가세요!';
+                stepBtn.disabled = false;
+            }
+
+            stepBtn.addEventListener('click', function() {
+                stepIdx++;
+                if (stepIdx >= bfsSteps.length) { stepBtn.disabled = true; return; }
+                var s = bfsSteps[stepIdx];
+                renderBfs(s);
+                counterEl.textContent = (stepIdx + 1) + ' / ' + bfsSteps.length;
+                msgEl.textContent = s.desc;
+                if (stepIdx >= bfsSteps.length - 1) stepBtn.disabled = true;
+            });
+            resetBtn.addEventListener('click', reset);
+            reset();
+        })();
+
+        // ========== Demo 4: 격자 BFS (Flood Fill) ==========
+        (function() {
+            var ROWS = 6, COLS = 7;
+            var grid, dist, startR, startC, bfsQueue, bfsRunning, bfsStepIdx;
+            var areaEl = container.querySelector('#graph-demo-grid-area');
+            var startBtn = container.querySelector('#graph-demo-grid-start');
+            var stepBtn = container.querySelector('#graph-demo-grid-step');
+            var resetBtn = container.querySelector('#graph-demo-grid-reset');
+            var counterEl = container.querySelector('#graph-demo-grid-counter');
+            var msgEl = container.querySelector('#graph-demo-grid-msg');
+            var dx = [-1,1,0,0], dy = [0,0,-1,1];
+
+            function initGrid() {
+                grid = []; dist = [];
+                for (var r = 0; r < ROWS; r++) {
+                    grid[r] = []; dist[r] = [];
+                    for (var c = 0; c < COLS; c++) { grid[r][c] = 0; dist[r][c] = -1; }
+                }
+                // some walls
+                [[1,2],[1,3],[2,3],[3,1],[3,4],[4,4]].forEach(function(w) { grid[w[0]][w[1]] = 1; });
+                startR = 0; startC = 0;
+                bfsQueue = []; bfsRunning = false; bfsStepIdx = 0;
+            }
+
+            function renderGrid() {
+                areaEl.innerHTML = '';
+                for (var r = 0; r < ROWS; r++) {
+                    for (var c = 0; c < COLS; c++) {
+                        var cell = document.createElement('div');
+                        cell.dataset.r = r; cell.dataset.c = c;
+                        cell.style.cssText = 'width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;border:2px solid var(--bg3);';
+                        if (grid[r][c] === 1) {
+                            cell.style.background = '#333'; cell.style.color = '#666';
+                        } else if (r === startR && c === startC) {
+                            cell.style.background = 'var(--accent)'; cell.style.color = 'white';
+                            cell.textContent = 'S';
+                        } else if (dist[r][c] >= 0) {
+                            var hue = 120 + dist[r][c] * 30;
+                            cell.style.background = 'hsl(' + (hue % 360) + ', 60%, 55%)';
+                            cell.style.color = 'white';
+                            cell.textContent = dist[r][c];
+                        } else {
+                            cell.style.background = 'var(--card)'; cell.style.color = 'var(--text3)';
+                        }
+                        if (!bfsRunning) {
+                            cell.addEventListener('click', (function(rr,cc) {
+                                return function() {
+                                    if (rr === startR && cc === startC) return;
+                                    grid[rr][cc] = grid[rr][cc] === 1 ? 0 : 1;
+                                    renderGrid();
+                                };
+                            })(r,c));
+                        }
+                        areaEl.appendChild(cell);
+                    }
+                }
+            }
+
+            function reset() {
+                initGrid();
+                renderGrid();
+                startBtn.style.display = '';
+                stepBtn.style.display = 'none';
+                counterEl.textContent = '';
+                msgEl.textContent = '칸을 클릭하면 벽(검정)을 토글합니다. 파란 칸이 시작점입니다.';
+                msgEl.style.color = 'var(--text2)';
+            }
+
+            startBtn.addEventListener('click', function() {
+                bfsRunning = true;
+                dist = [];
+                for (var r = 0; r < ROWS; r++) { dist[r] = []; for (var c = 0; c < COLS; c++) dist[r][c] = -1; }
+                dist[startR][startC] = 0;
+                bfsQueue = [{r:startR, c:startC}];
+                bfsStepIdx = 0;
+                startBtn.style.display = 'none';
+                stepBtn.style.display = '';
+                renderGrid();
+                msgEl.textContent = 'BFS 시작! 시작점 (' + startR + ',' + startC + ')에서 출발합니다. "다음 스텝"으로 물결이 퍼지는 과정을 보세요.';
+                msgEl.style.color = 'var(--accent)';
+            });
+
+            stepBtn.addEventListener('click', function() {
+                if (bfsQueue.length === 0) {
+                    msgEl.textContent = 'BFS 완료! 도달 가능한 모든 칸의 최단 거리가 표시되었습니다.';
+                    msgEl.style.color = 'var(--green)';
+                    stepBtn.disabled = true;
+                    return;
+                }
+                var cur = bfsQueue.shift();
+                bfsStepIdx++;
+                var added = [];
+                for (var d = 0; d < 4; d++) {
+                    var nr = cur.r + dx[d], nc = cur.c + dy[d];
+                    if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && grid[nr][nc] === 0 && dist[nr][nc] < 0) {
+                        dist[nr][nc] = dist[cur.r][cur.c] + 1;
+                        bfsQueue.push({r:nr, c:nc});
+                        added.push('(' + nr + ',' + nc + ')');
+                    }
+                }
+                renderGrid();
+                counterEl.textContent = 'Step ' + bfsStepIdx + ' | 큐: ' + bfsQueue.length + '개';
+                if (added.length > 0) {
+                    msgEl.textContent = '(' + cur.r + ',' + cur.c + ') 처리 (거리 ' + dist[cur.r][cur.c] + '). 이웃 ' + added.join(', ') + '을 큐에 추가.';
+                } else {
+                    msgEl.textContent = '(' + cur.r + ',' + cur.c + ') 처리 (거리 ' + dist[cur.r][cur.c] + '). 새로 추가할 이웃이 없습니다.';
+                }
+                msgEl.style.color = 'var(--text)';
+            });
+
+            resetBtn.addEventListener('click', function() {
+                bfsRunning = false;
+                stepBtn.disabled = false;
+                reset();
+            });
+            reset();
+        })();
+
+        // ========== Demo 5: 유형 맞추기 퀴즈 ==========
+        (function() {
+            var quizData = [
+                {q:'미로에서 출구까지 최단 거리 구하기', answer:'BFS', why:'BFS는 가까운 곳부터 탐색하므로 최단 거리를 보장합니다.'},
+                {q:'그래프에서 연결된 덩어리(컴포넌트) 수 세기', answer:'둘 다', why:'연결 요소는 DFS든 BFS든 탐색 가능합니다. 둘 다 OK!'},
+                {q:'사이클이 있는지 탐지하기', answer:'DFS', why:'DFS는 한 경로를 깊이 따라가므로 사이클 탐지에 자연스럽습니다.'},
+                {q:'토마토가 여러 곳에서 동시에 익어감', answer:'BFS', why:'다중 시작점 BFS! 시작점을 모두 큐에 넣고 시작합니다.'},
+                {q:'격자에서 물이 동시에 퍼져나가는 시뮬레이션', answer:'BFS', why:'동시에 퍼지는 현상은 BFS의 레벨별 탐색과 동일합니다.'}
+            ];
+            var choices = ['DFS', 'BFS', '둘 다'];
+            var quizArea = container.querySelector('#graph-demo-quiz-area');
+            var checkBtn = container.querySelector('#graph-demo-quiz-check');
+            var retryBtn = container.querySelector('#graph-demo-quiz-retry');
+            var quizMsg = container.querySelector('#graph-demo-quiz-msg');
+            var userAnswers = [];
+
+            function renderQuiz() {
+                quizArea.innerHTML = '';
+                userAnswers = [];
+                quizData.forEach(function(item, idx) {
+                    userAnswers.push(null);
+                    var card = document.createElement('div');
+                    card.style.cssText = 'padding:14px 18px;background:var(--card);border-radius:10px;border:1.5px solid var(--bg3);';
+                    card.id = 'graph-demo-quiz-q' + idx;
+                    var html = '<div style="font-weight:600;color:var(--text);margin-bottom:8px;">' + (idx+1) + '. ' + item.q + '</div>';
+                    html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+                    choices.forEach(function(ch) {
+                        html += '<button class="concept-demo-btn graph-demo-quiz-opt" data-idx="' + idx + '" data-val="' + ch + '" style="padding:6px 16px;font-size:0.85rem;background:var(--bg2);color:var(--text);border:1.5px solid var(--bg3);">' + ch + '</button>';
+                    });
+                    html += '</div>';
+                    html += '<div class="graph-demo-quiz-feedback" style="margin-top:8px;font-size:0.85rem;color:var(--text2);display:none;"></div>';
+                    card.innerHTML = html;
+                    quizArea.appendChild(card);
+                });
+                // bind option buttons
+                quizArea.querySelectorAll('.graph-demo-quiz-opt').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var idx = parseInt(btn.dataset.idx);
+                        var val = btn.dataset.val;
+                        userAnswers[idx] = val;
+                        // highlight selected
+                        var card = container.querySelector('#graph-demo-quiz-q' + idx);
+                        card.querySelectorAll('.graph-demo-quiz-opt').forEach(function(b) {
+                            b.style.background = 'var(--bg2)'; b.style.borderColor = 'var(--bg3)'; b.style.color = 'var(--text)';
+                        });
+                        btn.style.background = 'var(--accent)'; btn.style.color = 'white'; btn.style.borderColor = 'var(--accent)';
+                    });
+                });
+            }
+
+            checkBtn.addEventListener('click', function() {
+                var score = 0;
+                quizData.forEach(function(item, idx) {
+                    var card = container.querySelector('#graph-demo-quiz-q' + idx);
+                    var fb = card.querySelector('.graph-demo-quiz-feedback');
+                    fb.style.display = 'block';
+                    if (userAnswers[idx] === item.answer) {
+                        score++;
+                        fb.innerHTML = '<span style="color:var(--green);font-weight:600;">정답!</span> ' + item.why;
+                        card.style.borderColor = 'var(--green)';
+                    } else if (userAnswers[idx] === null) {
+                        fb.innerHTML = '<span style="color:var(--text2);">선택하지 않았습니다.</span> 정답: <strong>' + item.answer + '</strong>. ' + item.why;
+                        card.style.borderColor = 'var(--yellow)';
+                    } else {
+                        fb.innerHTML = '<span style="color:var(--red);font-weight:600;">오답!</span> 정답: <strong>' + item.answer + '</strong>. ' + item.why;
+                        card.style.borderColor = 'var(--red)';
+                    }
+                    // disable buttons
+                    card.querySelectorAll('.graph-demo-quiz-opt').forEach(function(b) { b.disabled = true; });
+                });
+                quizMsg.textContent = quizData.length + '문제 중 ' + score + '개 정답!';
+                quizMsg.style.color = score === quizData.length ? 'var(--green)' : 'var(--accent)';
+                checkBtn.style.display = 'none';
+                retryBtn.style.display = '';
+            });
+
+            retryBtn.addEventListener('click', function() {
+                renderQuiz();
+                quizMsg.textContent = '각 문제에 가장 적합한 탐색 방법을 선택한 뒤 "정답 확인"을 눌러보세요!';
+                quizMsg.style.color = 'var(--text2)';
+                checkBtn.style.display = '';
+                retryBtn.style.display = 'none';
+            });
+
+            renderQuiz();
+        })();
     },
 
     // ===== 시각화 상태 =====
@@ -583,7 +1194,7 @@ var graphTopic = {
             var adj = buildAdj(n, edges);
             var steps = [], visited = {}, queue = [];
             // BFS from node 1
-            steps.push({ description: '1번을 큐에 넣고 방문 처리합니다.',
+            steps.push({ description: '<strong>1번</strong>이 감염 시작점 — 큐에 넣어 이웃 탐색을 준비합니다. BFS는 <em>가까운 이웃부터</em> 퍼져나가므로 연결된 모든 컴퓨터를 빠짐없이 찾을 수 있습니다.',
                 action: function() { visited = {1:true}; queue = [1]; renderNodes(n, visited, 1, queue); infoEl.innerHTML = 'visited[1] = True, 큐 = [1]'; },
                 undo: function() { visited = {}; queue = []; renderNodes(n, {}, null, []); infoEl.innerHTML = ''; } });
             // simulate BFS to generate steps
@@ -595,7 +1206,7 @@ var graphTopic = {
                     (function(cv, nb) {
                         var addedNodes = nb.slice();
                         steps.push({
-                            description: '큐에서 ' + cv + '를 꺼냄 → 미방문 이웃 ' + nb.join(', ') + '을 큐에 추가',
+                            description: '큐의 <strong>맨 앞</strong>인 ' + cv + '를 꺼냄 — FIFO 순서로 가까운 노드부터 처리하기 위해. 이웃 <strong>' + nb.join(', ') + '</strong>이 아직 미방문이므로 감염시키고 큐에 추가합니다.',
                             action: function() { addedNodes.forEach(function(u) { visited[u] = true; }); queue = simQ.slice(); renderNodes(n, visited, cv, queue); infoEl.innerHTML = cv + '의 미방문 이웃: ' + nb.join(', ') + ' → 감염!'; },
                             undo: function() { addedNodes.forEach(function(u) { delete visited[u]; }); renderNodes(n, visited, null, []); infoEl.innerHTML = ''; }
                         });
@@ -604,7 +1215,7 @@ var graphTopic = {
                 } else if (v !== 1) {
                     (function(cv) {
                         steps.push({
-                            description: '큐에서 ' + cv + '를 꺼냄 → 미방문 이웃 없음',
+                            description: '큐에서 ' + cv + '를 꺼냄 — 이웃이 <em>모두 이미 방문됨</em>. 중복 방문을 막기 위해 visited 체크를 하므로, 이 노드에서는 더 이상 퍼뜨릴 곳이 없습니다.',
                             action: function() { renderNodes(n, visited, cv, simQ.slice()); infoEl.innerHTML = cv + '의 이웃 모두 방문됨'; },
                             undo: function() { renderNodes(n, visited, null, []); infoEl.innerHTML = ''; }
                         });
@@ -614,7 +1225,7 @@ var graphTopic = {
             // final step
             var infectedCount = Object.keys(simVis).length - 1;
             var infectedList = Object.keys(simVis).filter(function(k){return k!=='1';}).join(',');
-            steps.push({ description: '탐색 완료! 감염된 컴퓨터 = ' + infectedCount + '대',
+            steps.push({ description: 'BFS 큐가 비었으므로 <strong>탐색 완료</strong> — 1번에서 도달 가능한 모든 컴퓨터를 방문했습니다. 감염된 컴퓨터 = <strong>' + infectedCount + '대</strong>',
                 action: function() { queue = []; renderNodes(n, visited, null, []); infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 감염된 컴퓨터 = ' + infectedCount + '대 (' + infectedList + ')</strong>'; },
                 undo: function() { renderNodes(n, visited, null, []); infoEl.innerHTML = ''; } });
             return steps;
@@ -679,17 +1290,22 @@ var graphTopic = {
             dfs(start, -1);
             visitLog.forEach(function(entry, idx) {
                 (function(e, i) {
-                    var desc = (e.from === -1 ? 'dfs(' + e.node + ')' : e.from + '→' + e.node) + ': order[' + e.node + ']=' + e.order;
+                    var desc;
+                    if (e.from === -1) {
+                        desc = '<strong>' + e.node + '번</strong>에서 DFS 시작 — 재귀 호출로 <em>갈 수 있는 가장 깊은 곳까지</em> 먼저 탐색합니다. order[' + e.node + ']=' + e.order;
+                    } else {
+                        desc = e.from + '의 이웃 중 <strong>오름차순</strong>으로 가장 작은 미방문 노드 <strong>' + e.node + '</strong>으로 깊이 진입 — DFS는 한 방향을 끝까지 파고들기 때문. order[' + e.node + ']=' + e.order;
+                    }
                     steps.push({
                         description: desc,
-                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = desc; },
+                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = 'order[' + e.node + '] = ' + e.order; },
                         undo: function() { delete order[e.node]; var prev = i > 0 ? visitLog[i-1] : null; renderNodes(n, order, prev ? prev.node : null); infoEl.innerHTML = prev ? 'order[' + prev.node + '] = ' + prev.order : ''; }
                     });
                 })(entry, idx);
             });
             // final
             var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: '완료! 방문 순서: ' + result.join(','),
+            steps.push({ description: '모든 재귀 호출이 끝나 <strong>탐색 완료</strong> — 오름차순 DFS이므로 작은 번호 이웃을 먼저 방문했습니다. 방문 순서: <strong>' + result.join(',') + '</strong>',
                 action: function() { renderNodes(n, order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: ' + result.join(',') + '</strong>'; },
                 undo: function() { var last = visitLog[visitLog.length-1]; renderNodes(n, order, last.node); infoEl.innerHTML = 'order[' + last.node + '] = ' + last.order; } });
             return steps;
@@ -752,16 +1368,21 @@ var graphTopic = {
             dfs(start, -1);
             visitLog.forEach(function(entry, idx) {
                 (function(e, i) {
-                    var desc = (e.from === -1 ? 'dfs(' + e.node + ')' : e.from + '\u2192' + e.node) + ': order[' + e.node + ']=' + e.order;
+                    var desc;
+                    if (e.from === -1) {
+                        desc = '<strong>' + e.node + '번</strong>에서 DFS 시작 — 이번에는 이웃을 <em>내림차순</em>으로 방문합니다. 같은 그래프라도 방문 순서가 달라집니다. order[' + e.node + ']=' + e.order;
+                    } else {
+                        desc = e.from + '의 이웃 중 <strong>내림차순</strong>으로 가장 큰 미방문 노드 <strong>' + e.node + '</strong>으로 깊이 진입. order[' + e.node + ']=' + e.order;
+                    }
                     steps.push({
                         description: desc,
-                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = desc; },
+                        action: function() { order[e.node] = e.order; renderNodes(n, order, e.node); infoEl.innerHTML = 'order[' + e.node + '] = ' + e.order; },
                         undo: function() { delete order[e.node]; var prev = i > 0 ? visitLog[i-1] : null; renderNodes(n, order, prev ? prev.node : null); infoEl.innerHTML = prev ? 'order[' + prev.node + '] = ' + prev.order : ''; }
                     });
                 })(entry, idx);
             });
             var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: '완료! 방문 순서: ' + result.join(','),
+            steps.push({ description: '탐색 완료 — 내림차순이므로 큰 번호 이웃을 먼저 방문했습니다. 오름차순 DFS와 <em>방문 순서가 다른 것</em>을 비교해보세요! 결과: <strong>' + result.join(',') + '</strong>',
                 action: function() { renderNodes(n, order, null); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: ' + result.join(',') + '</strong>'; },
                 undo: function() { var last = visitLog[visitLog.length-1]; renderNodes(n, order, last.node); infoEl.innerHTML = 'order[' + last.node + '] = ' + last.order; } });
             return steps;
@@ -830,19 +1451,19 @@ var graphTopic = {
             bfsLog.forEach(function(entry, idx) {
                 (function(e, i) {
                     if (e.type === 'start') {
-                        steps.push({ description: '시작: ' + e.node + '번을 큐에 넣음, order[' + e.node + ']=1',
+                        steps.push({ description: '<strong>' + e.node + '번</strong>에서 BFS 시작 — 큐에 넣고 방문 처리. BFS는 큐(FIFO)를 사용해 <em>가까운 노드부터 순서대로</em> 탐색합니다. order[' + e.node + ']=1',
                             action: function() { order[e.node] = 1; renderNodes(n, order, e.node, [e.node]); infoEl.innerHTML = 'order[' + e.node + '] = 1, 큐 = [' + e.node + ']'; },
                             undo: function() { order = {}; renderNodes(n, {}, null, []); infoEl.innerHTML = ''; } });
                     } else {
-                        var addedDesc = e.added.length > 0 ? '미방문 이웃: ' + e.added.join(',') + ' 추가' : '미방문 이웃 없음';
-                        steps.push({ description: '큐에서 ' + e.node + ' 꺼냄 \u2192 ' + addedDesc,
+                        var addedDesc = e.added.length > 0 ? '미방문 이웃 <strong>' + e.added.join(', ') + '</strong>을 큐 뒤쪽에 추가 — 오름차순이므로 작은 번호부터' : '이웃이 모두 방문됨 — 중복 방문을 막아 무한 루프 방지';
+                        steps.push({ description: '큐 맨 앞의 <strong>' + e.node + '</strong>을 꺼냄 (FIFO: 먼저 들어온 노드 먼저 처리) \u2192 ' + addedDesc,
                             action: function() { e.added.forEach(function(u) { order[u] = simOrder[u]; }); renderNodes(n, order, e.node, e.queue); infoEl.innerHTML = addedDesc + '. 큐 = [' + e.queue.join(', ') + ']'; },
                             undo: function() { e.added.forEach(function(u) { delete order[u]; }); renderNodes(n, order, null, []); infoEl.innerHTML = ''; } });
                     }
                 })(entry, idx);
             });
             var result = []; for (var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: '완료! 방문 순서: ' + result.join(','),
+            steps.push({ description: '큐가 비어 <strong>탐색 완료</strong> — BFS의 FIFO 특성 덕분에 거리 1인 노드 → 거리 2인 노드 → ... 순서로 방문했습니다. 결과: <strong>' + result.join(',') + '</strong>',
                 action: function() { renderNodes(n, order, null, []); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 방문 순서: ' + result.join(',') + '</strong>'; },
                 undo: function() { renderNodes(n, order, null, []); infoEl.innerHTML = ''; } });
             return steps;
@@ -907,19 +1528,19 @@ var graphTopic = {
             bfsLog.forEach(function(entry) {
                 (function(e) {
                     if (e.type==='start') {
-                        steps.push({ description: '시작: order['+e.node+']=1, 큐=['+e.node+']',
+                        steps.push({ description: '<strong>'+e.node+'번</strong>에서 BFS 시작 — 이번에는 이웃을 <em>내림차순</em>으로 탐색합니다. 큐에 넣는 순서가 달라지면 방문 순서도 달라집니다.',
                             action: function() { order[e.node]=1; renderNodes(n,order,e.node,[e.node]); infoEl.innerHTML='order['+e.node+'] = 1'; },
                             undo: function() { order={}; renderNodes(n,{},null,[]); infoEl.innerHTML=''; } });
                     } else {
-                        var addedDesc = e.added.length>0 ? '미방문: '+e.added.join(',')+' 추가' : '미방문 이웃 없음';
-                        steps.push({ description: e.node+' 꺼냄 \u2192 '+addedDesc,
+                        var addedDesc = e.added.length>0 ? '미방문 이웃 <strong>'+e.added.join(', ')+'</strong>을 내림차순으로 큐에 추가' : '이웃 모두 방문됨 — 더 이상 퍼뜨릴 곳 없음';
+                        steps.push({ description: '큐 맨 앞의 <strong>'+e.node+'</strong>을 꺼내 처리 (FIFO) \u2192 '+addedDesc,
                             action: function() { e.added.forEach(function(u){order[u]=simOrder[u];}); renderNodes(n,order,e.node,e.queue); infoEl.innerHTML=addedDesc; },
                             undo: function() { e.added.forEach(function(u){delete order[u];}); renderNodes(n,order,null,[]); infoEl.innerHTML=''; } });
                     }
                 })(entry);
             });
             var result=[]; for(var i=1;i<=n;i++) result.push(simOrder[i]||0);
-            steps.push({ description: '완료! 결과: '+result.join(','),
+            steps.push({ description: '탐색 완료 — 오름차순 BFS와 비교하면 <em>방문 순서가 다릅니다</em>. 인접 리스트 정렬 순서가 BFS 결과에 영향을 줍니다. 결과: <strong>'+result.join(',')+'</strong>',
                 action: function() { renderNodes(n,order,null,[]); infoEl.innerHTML='<strong style="color:var(--green);">\u2705 방문 순서: '+result.join(',')+'</strong>'; },
                 undo: function() { renderNodes(n,order,null,[]); infoEl.innerHTML=''; } });
             return steps;
@@ -977,7 +1598,7 @@ var graphTopic = {
             dfsResult.forEach(function(node, idx) {
                 (function(nd, i) {
                     steps.push({
-                        description: 'DFS: ' + (i===0 ? nd + '에서 출발' : '\u2192 ' + nd),
+                        description: 'DFS: ' + (i===0 ? '<strong>' + nd + '</strong>에서 출발 — 재귀/스택으로 <em>한 방향을 끝까지</em> 파고듭니다' : '→ <strong>' + nd + '</strong>로 깊이 진입 — 더 깊이 갈 곳이 있으면 계속 들어갑니다'),
                         action: function() { dfsShown = dfsResult.slice(0,i+1); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsShown.join(' \u2192 '); infoEl.innerHTML = 'DFS 진행 중...'; },
                         undo: function() { dfsShown = dfsResult.slice(0,i); areaEl.innerHTML = i>0 ? '<strong>DFS:</strong> ' + dfsShown.join(' \u2192 ') : ''; infoEl.innerHTML = ''; }
                     });
@@ -987,13 +1608,13 @@ var graphTopic = {
             bfsResult.forEach(function(node, idx) {
                 (function(nd, i) {
                     steps.push({
-                        description: 'BFS: ' + (i===0 ? nd + '에서 출발' : '\u2192 ' + nd),
+                        description: 'BFS: ' + (i===0 ? '<strong>' + nd + '</strong>에서 출발 — 큐(FIFO)로 <em>같은 거리의 노드를 먼저</em> 모두 방문합니다' : '→ <strong>' + nd + '</strong> 방문 — 큐 순서대로 가까운 노드부터 처리하므로 DFS와 방문 순서가 다릅니다'),
                         action: function() { bfsShown = bfsResult.slice(0,i+1); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsShown.join(' \u2192 '); infoEl.innerHTML = 'BFS 진행 중...'; },
                         undo: function() { bfsShown = bfsResult.slice(0,i); areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' \u2192 ') + (i>0?'<br><strong>BFS:</strong> '+bfsShown.join(' \u2192 '):''); infoEl.innerHTML = ''; }
                     });
                 })(node, idx);
             });
-            steps.push({ description: '완료! DFS: ' + dfsResult.join(' ') + ' / BFS: ' + bfsResult.join(' '),
+            steps.push({ description: '<strong>비교 완료!</strong> DFS는 깊이 우선으로 한 경로를 끝까지 탐색한 반면, BFS는 거리 순서대로 넓게 퍼져나갔습니다. 같은 그래프에서 <em>탐색 순서가 다릅니다</em>.',
                 action: function() { areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsResult.join(' '); infoEl.innerHTML = '<strong style="color:var(--green);">\u2705 DFS: ' + dfsResult.join(' ') + ' / BFS: ' + bfsResult.join(' ') + '</strong>'; },
                 undo: function() { areaEl.innerHTML = '<strong>DFS:</strong> ' + dfsResult.join(' ') + '<br><strong>BFS:</strong> ' + bfsResult.join(' \u2192 '); infoEl.innerHTML = ''; } });
             return steps;
@@ -1054,7 +1675,7 @@ var graphTopic = {
                     (function(gid, cells) {
                         var cellStr = cells.map(function(p){return '('+p[0]+','+p[1]+')';}).join(',');
                         steps.push({
-                            description: '('+cells[0][0]+','+cells[0][1]+')에서 배추 발견 → '+gid+'번 덩어리: '+cells.length+'칸',
+                            description: '('+cells[0][0]+','+cells[0][1]+')에서 <strong>아직 방문하지 않은 배추</strong> 발견 — 새로운 연결 요소이므로 BFS/DFS로 이어진 배추를 <em>모두 탐색</em>합니다. '+gid+'번 덩어리: <strong>'+cells.length+'칸</strong>. 하나의 지렁이가 이 덩어리를 담당합니다.',
                             action: function() { cells.forEach(function(p){colors[p[0]][p[1]]=gid;}); renderGrid(grid,colors); infoEl.innerHTML=gid+'번 덩어리: '+cellStr+' → '+cells.length+'칸'; },
                             undo: function() { cells.forEach(function(p){colors[p[0]][p[1]]=0;}); renderGrid(grid,colors); infoEl.innerHTML=''; }
                         });
@@ -1062,7 +1683,7 @@ var graphTopic = {
                 }
             }
             var totalGroups = groupId;
-            steps.push({ description: '완료! 총 '+totalGroups+'개 덩어리 → 지렁이 '+totalGroups+'마리 필요',
+            steps.push({ description: '격자 전체를 순회했으므로 <strong>탐색 완료</strong> — 연결 요소 하나 = 지렁이 하나이므로, 총 <strong>'+totalGroups+'마리</strong>가 필요합니다.',
                 action: function() { renderGrid(grid,colors); infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 필요한 지렁이 = '+totalGroups+'마리</strong>'; },
                 undo: function() { renderGrid(grid,colors); infoEl.innerHTML=''; } });
             return steps;
@@ -1118,7 +1739,7 @@ var graphTopic = {
                     sizes.push(comp.length);
                     (function(gid,cells){
                         steps.push({
-                            description:'('+cells[0][0]+','+cells[0][1]+')에서 집 발견 → '+gid+'번 단지: '+cells.length+'칸',
+                            description:'('+cells[0][0]+','+cells[0][1]+')에서 <strong>미방문 집</strong> 발견 — 상하좌우로 이어진 집을 BFS로 모두 탐색하면 하나의 단지가 됩니다. '+gid+'번 단지: <strong>'+cells.length+'칸</strong>',
                             action:function(){cells.forEach(function(p){colors[p[0]][p[1]]=gid;});renderGrid(grid,colors);infoEl.innerHTML=gid+'번 단지: '+cells.length+'칸';},
                             undo:function(){cells.forEach(function(p){colors[p[0]][p[1]]=0;});renderGrid(grid,colors);infoEl.innerHTML='';}
                         });
@@ -1126,7 +1747,7 @@ var graphTopic = {
                 }
             }
             var sortedSizes=sizes.slice().sort(function(a,b){return a-b;});
-            steps.push({description:'완료! '+groupId+'개 단지, 오름차순: '+sortedSizes.join(', '),
+            steps.push({description:'격자 순회 완료 — 연결 요소 = 단지이므로 <strong>'+groupId+'개 단지</strong>. 크기를 오름차순 정렬하면: <strong>'+sortedSizes.join(', ')+'</strong>',
                 action:function(){renderGrid(grid,colors);infoEl.innerHTML='<strong style="color:var(--green);">\u2705 단지 수: '+groupId+' / 크기(오름차순): '+sortedSizes.join(', ')+'</strong>';},
                 undo:function(){renderGrid(grid,colors);infoEl.innerHTML='';}});
             return steps;
@@ -1200,13 +1821,13 @@ var graphTopic = {
                 (function(cells,idx){
                     var cellsStr=cells.map(function(p){return '('+p.r+','+p.c+')='+p.d;}).join(', ');
                     steps.push({
-                        description: idx===0?'(0,0)에서 BFS 시작. dist=1':'BFS 확장: '+cellsStr,
+                        description: idx===0?'(0,0)에서 BFS 시작 — BFS는 <em>가까운 칸부터</em> 탐색하므로 처음 도착한 거리가 곧 최단 거리가 됩니다. dist=1':'<strong>거리 '+idx+'</strong>인 칸들을 확장: '+cellsStr+' — 이전 레벨에서 상하좌우로 한 칸 이동 가능한 미방문 길을 모두 발견합니다.',
                         action:function(){cells.forEach(function(p){dist[p.r][p.c]=p.d;});renderMaze(maze,dist);infoEl.innerHTML=cellsStr;},
                         undo:function(){cells.forEach(function(p){dist[p.r][p.c]=-1;});renderMaze(maze,dist);infoEl.innerHTML='';}
                     });
                 })(levelCells,li);
             });
-            steps.push({description:'완료! (0,0)→('+(R-1)+','+(C-1)+') 최단 거리 = '+(finalDist>=0?finalDist:'도달 불가'),
+            steps.push({description:'BFS 탐색 완료 — <strong>(0,0)→('+(R-1)+','+(C-1)+')</strong> 최단 거리 = <strong>'+(finalDist>=0?finalDist+'칸':'도달 불가')+'</strong>. BFS는 레벨별로 확장하므로 가장 먼저 도착한 경로가 최단입니다.',
                 action:function(){renderMaze(maze,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 최단 거리 = '+(finalDist>=0?finalDist+'칸':'도달 불가')+'</strong>';},
                 undo:function(){renderMaze(maze,dist);infoEl.innerHTML='';}});
             return steps;
@@ -1268,12 +1889,12 @@ var graphTopic = {
             path.forEach(function(node, idx){
                 (function(nd,i){
                     var desc;
-                    if(i===0) desc='시작: 위치 '+nd+', 거리 0';
+                    if(i===0) desc='위치 <strong>'+nd+'</strong>에서 시작 — X-1, X+1, 2*X 세 가지 이동을 BFS로 탐색하면 <em>최소 이동 횟수</em>를 보장합니다.';
                     else {
                         var prevNode=path[i-1];
-                        if(nd===prevNode*2) desc=prevNode+'\u00D72='+nd+'으로 순간이동 ('+i+'초)';
-                        else if(nd===prevNode+1) desc=prevNode+'+1='+nd+'으로 이동 ('+i+'초)';
-                        else desc=prevNode+'-1='+nd+'으로 이동 ('+i+'초)';
+                        if(nd===prevNode*2) desc=prevNode+'\u00D72=<strong>'+nd+'</strong>으로 순간이동 ('+i+'초) — 곱하기가 더 빠르게 접근할 수 있어 BFS가 이 경로를 선택했습니다.';
+                        else if(nd===prevNode+1) desc=prevNode+'+1=<strong>'+nd+'</strong>으로 한 칸 전진 ('+i+'초) — 이 시점에서 +1이 최단 경로의 일부입니다.';
+                        else desc=prevNode+'-1=<strong>'+nd+'</strong>으로 한 칸 후퇴 ('+i+'초) — 순간이동을 위해 뒤로 갔다가 2배 점프하는 것이 더 빠를 수 있습니다.';
                     }
                     steps.push({
                         description:desc,
@@ -1283,7 +1904,7 @@ var graphTopic = {
                 })(node,idx);
             });
             if(dist[targetK]>=0){
-                steps.push({description:'도착! 최소 시간 = '+dist[targetK]+'초',
+                steps.push({description:'<strong>목표 도착!</strong> BFS는 모든 이동을 비용 1로 취급하므로, 처음 도달한 경로가 곧 <em>최단 경로</em>입니다. 최소 시간 = <strong>'+dist[targetK]+'초</strong>',
                     action:function(){areaEl.innerHTML=path.join(' \u2192 ');infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 시간 = '+dist[targetK]+'초</strong>';},
                     undo:function(){areaEl.innerHTML=path.map(function(p,j){return j===path.length-1?'<strong>'+p+'</strong>':p;}).join(' \u2192 ');infoEl.innerHTML='';}});
             }
@@ -1354,13 +1975,13 @@ var graphTopic = {
                 (function(levelIdx, cells){
                     var cellsStr = cells.length<=6 ? cells.map(function(p){return '('+p.r+','+p.c+')';}).join(', ') : cells.length+'개 위치';
                     steps.push({
-                        description: levelIdx===0 ? '('+sr+','+sc+')에서 시작, 나이트 8방향 이동' : levelIdx+'번째 이동: '+cellsStr,
+                        description: levelIdx===0 ? '('+sr+','+sc+')에서 시작 — 나이트는 L자로 8방향 이동 가능. BFS로 탐색하면 <em>이동 횟수가 적은 칸부터</em> 발견하므로 최소 이동 횟수를 보장합니다.' : '<strong>'+levelIdx+'번째 이동</strong>으로 도달할 수 있는 위치: '+cellsStr+' — 이전 레벨의 모든 위치에서 L자 8방향을 시도한 미방문 칸들입니다.',
                         action: function() { areaEl.innerHTML = levelIdx+'번 이동: '+cellsStr; infoEl.innerHTML = 'dist='+levelIdx+' 위치 '+cells.length+'개'; },
                         undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; }
                     });
                 })(li, levels[li]);
             }
-            steps.push({description: finalDist>=0 ? finalDist+'번 이동으로 ('+er+','+ec+') 도달!' : '('+er+','+ec+')에 도달 불가',
+            steps.push({description: finalDist>=0 ? 'BFS 완료 — <strong>'+finalDist+'번 이동</strong>으로 ('+er+','+ec+') 도달! BFS가 보장하는 최단 이동 횟수입니다.' : '('+er+','+ec+')에 <strong>도달 불가</strong> — 나이트의 L자 이동으로는 해당 위치에 갈 수 없습니다.',
                 action: function() { areaEl.innerHTML = '('+sr+','+sc+') \u2192 ('+er+','+ec+')<br><strong>'+finalDist+'번 이동</strong>'; infoEl.innerHTML = '<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 이동 = '+finalDist+'번</strong>'; },
                 undo: function() { areaEl.innerHTML = ''; infoEl.innerHTML = ''; }});
             return steps;
@@ -1417,7 +2038,7 @@ var graphTopic = {
                 var nextQ=[],nextLevel=[];
                 q.forEach(function(pos){
                     for(var d=0;d<4;d++){var nr=pos[0]+dx[d],nc=pos[1]+dy[d];
-                        if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===0&&dist[nr][nc]<0){dist[nr][nc]=dist[pos[0]][pos[1]]+1;nextQ.push([nr,nc]);nextLevel.push({r:nr,c:nc,d:dist[nr][nc]});}}
+                        if(nr>=0&&nr<R&&nc>=0&&nc<C&&grid[nr][nc]===0&&dist[nr][nc]<0){dist[nr][nc]=dist[pos[0]][pos[1]]+1;nextQ.push([nr,nc]);nextLevel.push({r:nr,c:nc,d:dist[nr][nc],pr:pos[0],pc:pos[1]});}}
                 });
                 if(nextLevel.length>0) levels.push(nextLevel);
                 q=nextQ;
@@ -1427,17 +2048,27 @@ var graphTopic = {
             // reset dist for step-by-step
             for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[r][c]=-1;
             var steps=[];
-            levels.forEach(function(levelCells,li){
-                (function(cells,idx){
-                    var desc=idx===0?'익은 토마토를 모두 큐에 넣음 ('+cells.length+'개)':idx+'일째: '+cells.length+'칸 추가 감염';
-                    steps.push({
-                        description:desc,
-                        action:function(){cells.forEach(function(p){dist[p.r][p.c]=p.d!==undefined?p.d:0;});renderTomato(grid,dist);infoEl.innerHTML=desc;},
-                        undo:function(){cells.forEach(function(p){dist[p.r][p.c]=-1;});renderTomato(grid,dist);infoEl.innerHTML='';}
-                    });
-                })(levelCells,li);
+            // level 0: initial ripe tomatoes
+            var initCells=levels[0];
+            steps.push({
+                description:'<strong>다중 시작점 BFS</strong> — 이미 익은 토마토 <strong>'+initCells.length+'개</strong>를 모두 큐에 넣어 <em>동시에</em> 퍼뜨리기 시작합니다. 시작점이 여러 개여도 BFS 하나로 해결됩니다.',
+                action:function(){initCells.forEach(function(p){dist[p.r][p.c]=0;});renderTomato(grid,dist);infoEl.innerHTML='시작점 '+initCells.length+'개';},
+                undo:function(){initCells.forEach(function(p){dist[p.r][p.c]=-1;});renderTomato(grid,dist);infoEl.innerHTML='';}
             });
-            steps.push({description:impossible?'안 익은 토마토가 남아있음 → -1':'완료! 모든 토마토 익는 최소 일수 = '+maxDist,
+            // each subsequent cell individually
+            for(var li=1;li<levels.length;li++){
+                for(var ci=0;ci<levels[li].length;ci++){
+                    (function(cell,levelIdx){
+                        var desc='<strong>'+levelIdx+'일째</strong>: ('+cell.r+','+cell.c+')가 인접한 ('+cell.pr+','+cell.pc+')에서 익음 — 상하좌우로 하루에 한 칸씩 전파되므로 BFS 레벨 = 경과 일수입니다.';
+                        steps.push({
+                            description:desc,
+                            action:function(){dist[cell.r][cell.c]=cell.d;renderTomato(grid,dist);infoEl.innerHTML=desc;},
+                            undo:function(){dist[cell.r][cell.c]=-1;renderTomato(grid,dist);infoEl.innerHTML='';}
+                        });
+                    })(levels[li][ci],li);
+                }
+            }
+            steps.push({description:impossible?'BFS가 끝났는데 <strong>안 익은 토마토가 남아있음</strong> — 벽(-1)으로 막혀 전파가 불가능한 칸이 있으므로 답은 <strong>-1</strong>':'BFS 완료! 마지막으로 익은 토마토의 거리가 답 — 모든 토마토 익는 <strong>최소 일수 = '+maxDist+'</strong>',
                 action:function(){renderTomato(grid,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(impossible?'결과 = -1 (불가능)':'최소 일수 = '+maxDist)+'</strong>';},
                 undo:function(){renderTomato(grid,dist);infoEl.innerHTML='';}});
             return steps;
@@ -1504,7 +2135,7 @@ var graphTopic = {
                 q.forEach(function(pos){
                     for(var d=0;d<6;d++){var nh=pos[0]+dh[d],nr=pos[1]+dr[d],nc=pos[2]+dc[d];
                         if(nh>=0&&nh<H&&nr>=0&&nr<R&&nc>=0&&nc<C&&layers[nh][nr][nc]===0&&dist[nh][nr][nc]<0){
-                            dist[nh][nr][nc]=dist[pos[0]][pos[1]][pos[2]]+1;nextQ.push([nh,nr,nc]);nextLevel.push({h:nh,r:nr,c:nc,d:dist[nh][nr][nc]});}}
+                            dist[nh][nr][nc]=dist[pos[0]][pos[1]][pos[2]]+1;nextQ.push([nh,nr,nc]);nextLevel.push({h:nh,r:nr,c:nc,d:dist[nh][nr][nc],ph:pos[0],pr:pos[1],pc:pos[2]});}}
                 });
                 if(nextLevel.length>0) levels.push(nextLevel);
                 q=nextQ;
@@ -1514,16 +2145,27 @@ var graphTopic = {
             // reset for step-by-step
             for(var h=0;h<H;h++) for(var r=0;r<R;r++) for(var c=0;c<C;c++) dist[h][r][c]=-1;
             var steps=[];
-            levels.forEach(function(cells,li){
-                (function(cs,idx){
-                    steps.push({
-                        description:idx===0?'익은 토마토 '+cs.length+'개를 큐에 넣음':idx+'일째: '+cs.length+'칸 감염',
-                        action:function(){cs.forEach(function(p){dist[p.h][p.r][p.c]=p.d!==undefined?p.d:0;});render3D(layers,dist);infoEl.innerHTML=(idx===0?'시작점 '+cs.length+'개':idx+'일째: '+cs.length+'칸');},
-                        undo:function(){cs.forEach(function(p){dist[p.h][p.r][p.c]=-1;});render3D(layers,dist);infoEl.innerHTML='';}
-                    });
-                })(cells,li);
+            // level 0: initial ripe tomatoes
+            var initCells3=levels[0];
+            steps.push({
+                description:'<strong>3D 다중 시작점 BFS</strong> — 익은 토마토 <strong>'+initCells3.length+'개</strong>를 큐에 넣습니다. 2D와 같은 원리이지만 위/아래 층도 포함해 <em>6방향</em>으로 전파합니다.',
+                action:function(){initCells3.forEach(function(p){dist[p.h][p.r][p.c]=0;});render3D(layers,dist);infoEl.innerHTML='시작점 '+initCells3.length+'개';},
+                undo:function(){initCells3.forEach(function(p){dist[p.h][p.r][p.c]=-1;});render3D(layers,dist);infoEl.innerHTML='';}
             });
-            steps.push({description:impossible?'불가능 → -1':'완료! 3D BFS 최소 일수 = '+maxDist,
+            // each subsequent cell individually
+            for(var li=1;li<levels.length;li++){
+                for(var ci=0;ci<levels[li].length;ci++){
+                    (function(cell,levelIdx){
+                        var desc='<strong>'+levelIdx+'일째</strong>: '+cell.h+'층('+cell.r+','+cell.c+')가 '+cell.ph+'층('+cell.pr+','+cell.pc+')에서 익음 — '+(cell.h!==cell.ph?'위/아래 층 간 전파 (6방향 중 상하)':'같은 층 내 상하좌우 전파');
+                        steps.push({
+                            description:desc,
+                            action:function(){dist[cell.h][cell.r][cell.c]=cell.d;render3D(layers,dist);infoEl.innerHTML=desc;},
+                            undo:function(){dist[cell.h][cell.r][cell.c]=-1;render3D(layers,dist);infoEl.innerHTML='';}
+                        });
+                    })(levels[li][ci],li);
+                }
+            }
+            steps.push({description:impossible?'<strong>전파 불가능한 토마토 존재</strong> — 6방향으로도 도달할 수 없는 칸이 있으므로 답은 <strong>-1</strong>':'3D BFS 완료! 6방향 전파의 최대 거리가 답 — <strong>최소 일수 = '+maxDist+'</strong>',
                 action:function(){render3D(layers,dist);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(impossible?'결과 = -1':'3D BFS 최소 일수 = '+maxDist)+'</strong>';},
                 undo:function(){render3D(layers,dist);infoEl.innerHTML='';}});
             return steps;
@@ -1590,15 +2232,15 @@ var graphTopic = {
             path.forEach(function(node,idx){
                 (function(nd,i){
                     var desc;
-                    if(i===0) desc='1번 칸에서 시작';
+                    if(i===0) desc='<strong>1번 칸</strong>에서 시작 — 주사위 1~6을 BFS의 6가지 간선으로 모델링합니다. 사다리/뱀은 <em>자동 이동</em>이므로 같은 간선 비용(1회) 안에 포함됩니다.';
                     else {
                         var prevNode=path[i-1];
                         if(warpUsed[nd]!==null){
                             var wp=warpUsed[nd];
                             var isLadder=ladders.some(function(l){return l[0]===wp;});
-                            desc=i+'회째: '+prevNode+' → '+wp+(isLadder?' → \uD83E\uDE9C사다리! → ':' → \uD83D\uDC0D뱀! → ')+nd;
+                            desc='<strong>'+i+'회째</strong>: '+prevNode+' → '+wp+(isLadder?' → \uD83E\uDE9C사다리로 <strong>'+nd+'</strong>까지 점프! 사다리 덕분에 비용 없이 이동합니다.':' → \uD83D\uDC0D뱀에 물려 <strong>'+nd+'</strong>으로 후퇴! BFS는 이 상황도 고려하여 최적 경로를 찾습니다.');
                         } else {
-                            desc=i+'회째: '+prevNode+' → '+nd;
+                            desc='<strong>'+i+'회째</strong>: '+prevNode+' → <strong>'+nd+'</strong>으로 주사위 이동 — BFS가 찾은 최단 경로의 일부입니다.';
                         }
                     }
                     steps.push({
@@ -1609,7 +2251,7 @@ var graphTopic = {
                 })(node,idx);
             });
             if(dist[100]>=0){
-                steps.push({description:'100번 도착! 최소 주사위 = '+dist[100]+'회',
+                steps.push({description:'<strong>100번 도착!</strong> BFS는 주사위 횟수를 비용으로 취급하므로 사다리/뱀을 고려한 <em>최소 주사위 횟수</em> = <strong>'+dist[100]+'회</strong>',
                     action:function(){areaEl.innerHTML=path.join(' \u2192 ')+' \uD83C\uDFC1';infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 최소 주사위 횟수 = '+dist[100]+'</strong>';},
                     undo:function(){areaEl.innerHTML=path.join(' \u2192 ');infoEl.innerHTML='';}});
             }
@@ -1682,7 +2324,7 @@ var graphTopic = {
             colorLog.forEach(function(entry,idx){
                 (function(e,i){
                     var colorName=e.color===0?'0(회색)':'1(빨강)';
-                    var desc=e.from?e.from+'의 이웃 '+e.node+'번을 색 '+colorName+'으로 칠합니다':e.node+'번을 색 '+colorName+'으로 칠합니다';
+                    var desc=e.from?e.from+'의 이웃 <strong>'+e.node+'번</strong>을 <em>반대 색</em> '+colorName+'으로 칠합니다 — 이분 그래프라면 인접한 노드는 항상 다른 색이어야 하기 때문입니다.':'<strong>'+e.node+'번</strong>을 색 '+colorName+'으로 시작 — 아직 색이 없는 노드에서 BFS 2-coloring을 시작합니다.';
                     steps.push({
                         description:desc,
                         action:function(){colors[e.node]=e.color;renderBip(n,colors);infoEl.innerHTML='color['+e.node+'] = '+e.color+(e.from?' ('+e.from+'과 다른 색)':'');},
@@ -1690,7 +2332,7 @@ var graphTopic = {
                     });
                 })(entry,idx);
             });
-            steps.push({description:isBipartite?'모든 인접 쌍이 다른 색 → 이분 그래프 YES!':'같은 색 인접 쌍 발견 → 이분 그래프 NO!',
+            steps.push({description:isBipartite?'모든 인접 노드가 <em>서로 다른 색</em>으로 칠해졌으므로 → <strong>이분 그래프 YES!</strong> 두 그룹으로 분리할 수 있습니다.':'인접한 두 노드가 <em>같은 색</em>이 되는 충돌 발생 → <strong>이분 그래프 NO!</strong> 홀수 길이 사이클이 존재합니다.',
                 action:function(){renderBip(n,colors);infoEl.innerHTML='<strong style="color:'+(isBipartite?'var(--green)':'var(--red)')+';font-size:1.1rem;">'+(isBipartite?'\u2705 이분 그래프입니다 (YES)':'\u274C 이분 그래프가 아닙니다 (NO)')+'</strong>';},
                 undo:function(){renderBip(n,colors);infoEl.innerHTML='';}});
             return steps;
@@ -1760,12 +2402,12 @@ var graphTopic = {
                         if(grid[nr][nc]===0&&dist3[nr][nc][cb]<0){
                             dist3[nr][nc][cb]=dist3[cr][cc][cb]+1;
                             nextQ.push([nr,nc,cb]);
-                            nextLevel.push({r:nr,c:nc,b:cb,d:dist3[nr][nc][cb]});
+                            nextLevel.push({r:nr,c:nc,b:cb,d:dist3[nr][nc][cb],pr:cr,pc:cc});
                         }
                         if(grid[nr][nc]===1&&cb===0&&dist3[nr][nc][1]<0){
                             dist3[nr][nc][1]=dist3[cr][cc][cb]+1;
                             nextQ.push([nr,nc,1]);
-                            nextLevel.push({r:nr,c:nc,b:1,d:dist3[nr][nc][1]});
+                            nextLevel.push({r:nr,c:nc,b:1,d:dist3[nr][nc][1],pr:cr,pc:cc});
                         }
                     }
                 });
@@ -1782,16 +2424,28 @@ var graphTopic = {
             for(var r=0;r<R;r++){dist0.push([]);dist1.push([]);for(var c=0;c<C;c++){dist0[r].push(-1);dist1[r].push(-1);}}
 
             var steps=[];
-            levels.forEach(function(cells,li){
-                (function(cs,idx){
-                    steps.push({
-                        description:idx===0?'(0,0)에서 시작, broken=0':'확장 '+(idx)+': '+cs.length+'칸',
-                        action:function(){cs.forEach(function(p){dist3[p.r][p.c][p.b]=p.d;if(p.b===0) dist0[p.r][p.c]=p.d; else dist1[p.r][p.c]=p.d;});renderWall(grid,dist0,dist1);infoEl.innerHTML=idx===0?'dist[0][0][0] = 1':''+cs.length+'칸 확장';},
-                        undo:function(){cs.forEach(function(p){dist3[p.r][p.c][p.b]=-1;if(p.b===0) dist0[p.r][p.c]=-1; else dist1[p.r][p.c]=-1;});renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
-                    });
-                })(cells,li);
+            // level 0: start at (0,0)
+            var initW=levels[0];
+            steps.push({
+                description:'(0,0)에서 시작 — <strong>상태 BFS</strong>: visited[r][c][<em>벽 부숨 여부</em>]로 관리합니다. 같은 칸이라도 벽을 부쉈는지 여부에 따라 <em>다른 상태</em>이므로 3차원 방문 배열이 필요합니다.',
+                action:function(){initW.forEach(function(p){dist3[p.r][p.c][p.b]=p.d;if(p.b===0) dist0[p.r][p.c]=p.d; else dist1[p.r][p.c]=p.d;});renderWall(grid,dist0,dist1);infoEl.innerHTML='dist[0][0][0] = 1';},
+                undo:function(){initW.forEach(function(p){dist3[p.r][p.c][p.b]=-1;if(p.b===0) dist0[p.r][p.c]=-1; else dist1[p.r][p.c]=-1;});renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
             });
-            steps.push({description:ans>=0?'최단 경로 = '+ans+'칸':'도달 불가 (-1)',
+            // each subsequent cell individually
+            for(var li=1;li<levels.length;li++){
+                for(var ci=0;ci<levels[li].length;ci++){
+                    (function(cell){
+                        var broke=cell.b===1;
+                        var desc=broke?'('+cell.r+','+cell.c+') <strong>벽을 부수고</strong> 진입 ← ('+cell.pr+','+cell.pc+')에서. 벽 부숨 기회를 사용했으므로 이후에는 벽을 더 부술 수 없습니다. dist='+cell.d:'('+cell.r+','+cell.c+') 길로 이동 ← ('+cell.pr+','+cell.pc+')에서. 벽을 아직 안 부순 상태를 유지합니다. dist='+cell.d;
+                        steps.push({
+                            description:desc,
+                            action:function(){dist3[cell.r][cell.c][cell.b]=cell.d;if(cell.b===0) dist0[cell.r][cell.c]=cell.d; else dist1[cell.r][cell.c]=cell.d;renderWall(grid,dist0,dist1);infoEl.innerHTML=desc;},
+                            undo:function(){dist3[cell.r][cell.c][cell.b]=-1;if(cell.b===0) dist0[cell.r][cell.c]=-1; else dist1[cell.r][cell.c]=-1;renderWall(grid,dist0,dist1);infoEl.innerHTML='';}
+                        });
+                    })(levels[li][ci]);
+                }
+            }
+            steps.push({description:ans>=0?'상태 BFS 완료 — 벽을 부순 경로와 안 부순 경로 중 <em>더 짧은 것</em>이 답. <strong>최단 경로 = '+ans+'칸</strong>':'두 상태 모두에서 <strong>도달 불가</strong> — 벽을 하나 부숴도 경로를 만들 수 없습니다. 답: <strong>-1</strong>',
                 action:function(){renderWall(grid,dist0,dist1);infoEl.innerHTML='<strong style="color:var(--green);font-size:1.1rem;">\u2705 '+(ans>=0?'최단 경로 = '+ans+'칸':'도달 불가 (-1)')+'</strong>';},
                 undo:function(){renderWall(grid,dist0,dist1);infoEl.innerHTML='';}});
             return steps;

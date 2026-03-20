@@ -57,7 +57,7 @@ var greedyTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -181,6 +181,23 @@ int main() {
     return 0;
 }</code></pre></div></span>
 
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 거스름돈 그리디</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">거스름돈:
+                            <input type="number" id="gr-demo-coin-input" value="1260" min="10" step="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:100px;background:var(--card);color:var(--text);">원
+                        </label>
+                        <button class="concept-demo-btn" id="gr-demo-coin-go">동전 선택 시작</button>
+                        <button class="concept-demo-btn green" id="gr-demo-coin-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="gr-demo-coin-coins" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;"></div>
+                        <div id="gr-demo-coin-remain" style="text-align:center;font-size:1rem;font-weight:600;color:var(--text);min-height:2em;"></div>
+                        <div id="gr-demo-coin-result" style="text-align:center;font-size:0.9rem;color:var(--text2);min-height:1.5em;margin-top:6px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="gr-demo-coin-msg">큰 동전부터 최대한 많이 사용하는 과정을 한 단계씩 봅니다.</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -227,6 +244,30 @@ int main() {
                 </div>
                 <div style="margin-top:0.6rem;">
                     <a href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Greedy Algorithm (탐욕 선택 속성 & 최적 부분 구조) ↗</a>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 그리디가 실패하는 경우</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">동전이 <strong>[1, 3, 4]</strong>원이고 거스름돈이 <strong>6</strong>원일 때, 그리디와 최적해를 비교합니다.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="gr-demo-fail-go">비교 시작</button>
+                        <button class="concept-demo-btn green" id="gr-demo-fail-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">그리디 (큰 것부터)</div>
+                                <div id="gr-demo-fail-greedy" style="min-height:60px;"></div>
+                                <div id="gr-demo-fail-greedy-result" style="margin-top:8px;font-size:0.85rem;min-height:1.5em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">최적해 (DP)</div>
+                                <div id="gr-demo-fail-optimal" style="min-height:60px;"></div>
+                                <div id="gr-demo-fail-optimal-result" style="margin-top:8px;font-size:0.85rem;min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="gr-demo-fail-msg">그리디는 4+1+1=3개를 쓰지만, 최적해는 3+3=2개입니다. 동전이 배수 관계가 아니면 그리디가 틀릴 수 있습니다!</div>
                 </div>
 
                 <div class="think-box">
@@ -277,6 +318,20 @@ int main() {
                     <strong>핵심 차이:</strong>
                     그리디는 <strong>"지금 최선"만 보고 바로 결정</strong>합니다. DP는 <strong>"나중 결과까지 다 따져보고 결정"</strong>합니다.<br>
                     <span style="color:var(--text2)">그리디가 통하는 문제는 그리디로 풀면 훨씬 빠르고 간단합니다!</span>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 활동 선택 타임라인</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">끝나는 시간이 빠른 활동부터 선택해서 최대한 많이 고릅니다.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="gr-demo-activity-go">선택 시작</button>
+                        <button class="concept-demo-btn green" id="gr-demo-activity-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="gr-demo-activity-timeline" style="position:relative;min-height:220px;"></div>
+                        <div id="gr-demo-activity-result" style="text-align:center;font-size:0.9rem;color:var(--text2);margin-top:10px;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="gr-demo-activity-msg">끝나는 시간 기준으로 정렬한 뒤, 겹치지 않는 활동을 하나씩 선택합니다.</div>
                 </div>
 
                 <div class="think-box">
@@ -359,6 +414,33 @@ int main() {
                         이것이 BOJ 11399 (ATM) 문제의 핵심입니다.
                     </div>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — ATM 줄서기</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">각 사람의 인출 시간이 주어질 때, 총 대기시간이 최소가 되도록 줄을 세웁니다.</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">인출 시간:
+                            <input type="text" id="gr-demo-atm-input" value="3,1,4,3,2" placeholder="쉼표 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="gr-demo-atm-go">정렬 & 계산</button>
+                        <button class="concept-demo-btn green" id="gr-demo-atm-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">원래 순서</div>
+                                <div id="gr-demo-atm-original" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                                <div id="gr-demo-atm-orig-total" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:180px;">
+                                <div style="font-weight:600;margin-bottom:8px;">정렬 후 (짧은 순)</div>
+                                <div id="gr-demo-atm-sorted" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+                                <div id="gr-demo-atm-sort-total" style="margin-top:8px;font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="gr-demo-atm-msg">짧은 시간의 사람을 앞에 세우면, 뒤 사람들의 대기 시간이 줄어듭니다.</div>
+                </div>
             </div>
 
             <!-- ⑤ 그리디 문제 푸는 3단계 -->
@@ -400,6 +482,21 @@ int main() {
                     </div>
                 </div>
 
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 회의실 배정 3단계</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">회의 목록이 주어지면: ① 끝나는 시간으로 정렬 → ② 겹치지 않는 회의 선택 → ③ 결과 확인</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <button class="concept-demo-btn" id="gr-demo-meet-go">3단계 시작</button>
+                        <button class="concept-demo-btn green" id="gr-demo-meet-reset" style="display:none;">다시</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="gr-demo-meet-step-label" style="font-weight:600;font-size:1rem;margin-bottom:10px;min-height:1.5em;color:var(--accent);"></div>
+                        <div id="gr-demo-meet-timeline" style="position:relative;min-height:200px;"></div>
+                        <div id="gr-demo-meet-result" style="text-align:center;font-size:0.9rem;color:var(--text2);margin-top:10px;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="gr-demo-meet-msg">끝나는 시간 기준 정렬 → 겹치지 않으면 선택 → 최대 회의 수 확인의 3단계를 봅니다.</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -417,6 +514,7 @@ int main() {
         `;
 
         this._initConceptInteractions(container);
+        this._initConceptDemos(container);
     },
 
     _initConceptInteractions(container) {
@@ -424,10 +522,416 @@ int main() {
             btn.addEventListener('click', function() {
                 var ans = btn.nextElementSibling;
                 ans.classList.toggle('show');
-                btn.textContent = ans.classList.contains('show') ? '🔼 접기' : '🤔 생각해보고 클릭!';
+                btn.textContent = ans.classList.contains('show') ? '접기' : '생각해보고 클릭!';
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+    },
+
+    _initConceptDemos(container) {
+        // === Demo 1: 거스름돈 그리디 ===
+        {
+            var coins = [500, 100, 50, 10];
+            var goBtn = container.querySelector('#gr-demo-coin-go');
+            var resetBtn = container.querySelector('#gr-demo-coin-reset');
+            var inputEl = container.querySelector('#gr-demo-coin-input');
+            var coinsEl = container.querySelector('#gr-demo-coin-coins');
+            var remainEl = container.querySelector('#gr-demo-coin-remain');
+            var resultEl = container.querySelector('#gr-demo-coin-result');
+            var msgEl = container.querySelector('#gr-demo-coin-msg');
+            var animating = false;
+
+            function renderCoinState(usedMap, highlight) {
+                coinsEl.innerHTML = '';
+                coins.forEach(function(c) {
+                    var cnt = usedMap[c] || 0;
+                    var isHL = (highlight === c);
+                    var div = document.createElement('div');
+                    div.style.cssText = 'display:inline-flex;flex-direction:column;align-items:center;gap:4px;padding:10px 14px;border-radius:12px;border:2px solid ' + (isHL ? 'var(--yellow)' : (cnt > 0 ? 'var(--green)' : 'var(--border)')) + ';background:' + (isHL ? 'var(--yellow)15' : (cnt > 0 ? 'var(--green)10' : 'var(--bg2)')) + ';transition:all 0.3s;' + (isHL ? 'box-shadow:0 0 12px var(--yellow)40;transform:scale(1.05);' : '');
+                    div.innerHTML = '<div style="width:44px;height:44px;border-radius:50%;background:' + (cnt > 0 || isHL ? 'var(--accent)' : 'var(--text3)') + ';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;">' + c + '</div><div style="font-size:0.85rem;font-weight:600;">' + (cnt > 0 ? cnt + '개' : '-') + '</div>';
+                    coinsEl.appendChild(div);
+                });
+            }
+            renderCoinState({});
+            remainEl.textContent = '';
+
+            goBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                goBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var K = parseInt(inputEl.value) || 1260;
+                if (K < 10) K = 10;
+                var rem = K, totalCount = 0, usedMap = {};
+                renderCoinState({});
+                remainEl.innerHTML = '남은 금액: <strong>' + K + '</strong>원';
+                resultEl.textContent = '';
+
+                var steps = [];
+                coins.forEach(function(coin) {
+                    var cnt = Math.floor(rem / coin);
+                    if (cnt > 0) {
+                        steps.push({ coin: coin, cnt: cnt, newRem: rem - coin * cnt });
+                        rem -= coin * cnt;
+                        totalCount += cnt;
+                    }
+                });
+
+                var idx = 0;
+                var curRem = K;
+                function nextStep() {
+                    if (idx >= steps.length) {
+                        renderCoinState(usedMap);
+                        remainEl.innerHTML = '남은 금액: <strong>0</strong>원';
+                        resultEl.innerHTML = '총 <strong>' + totalCount + '개</strong> 동전 사용! 매번 가장 큰 동전부터 선택했습니다.';
+                        resultEl.style.color = 'var(--green)';
+                        msgEl.textContent = '큰 동전부터 최대한 많이 쓰면 동전 수가 최소가 됩니다!';
+                        animating = false;
+                        return;
+                    }
+                    var s = steps[idx];
+                    renderCoinState(usedMap, s.coin);
+                    remainEl.innerHTML = s.coin + '원 x ' + s.cnt + '개 사용! 남은 금액: <strong>' + curRem + '</strong>원 → <strong>' + s.newRem + '</strong>원';
+                    setTimeout(function() {
+                        usedMap[s.coin] = s.cnt;
+                        curRem = s.newRem;
+                        renderCoinState(usedMap);
+                        remainEl.innerHTML = '남은 금액: <strong>' + curRem + '</strong>원';
+                        idx++;
+                        setTimeout(nextStep, 500);
+                    }, 600);
+                }
+                nextStep();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                goBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                renderCoinState({});
+                remainEl.textContent = '';
+                resultEl.textContent = '';
+                resultEl.style.color = '';
+                msgEl.textContent = '큰 동전부터 최대한 많이 사용하는 과정을 한 단계씩 봅니다.';
+            });
+        }
+
+        // === Demo 2: 그리디 실패 경우 ===
+        {
+            var failGoBtn = container.querySelector('#gr-demo-fail-go');
+            var failResetBtn = container.querySelector('#gr-demo-fail-reset');
+            var greedyEl = container.querySelector('#gr-demo-fail-greedy');
+            var greedyResEl = container.querySelector('#gr-demo-fail-greedy-result');
+            var optimalEl = container.querySelector('#gr-demo-fail-optimal');
+            var optimalResEl = container.querySelector('#gr-demo-fail-optimal-result');
+            var failMsgEl = container.querySelector('#gr-demo-fail-msg');
+
+            function coinBox(val, color) {
+                return '<div style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:' + color + ';color:white;font-weight:700;font-size:0.9rem;margin:3px;">' + val + '</div>';
+            }
+
+            failGoBtn.addEventListener('click', function() {
+                failGoBtn.style.display = 'none';
+                failResetBtn.style.display = '';
+                // Greedy: coins [4,3,1], target 6 → picks 4,1,1 = 3 coins
+                var greedyCoins = [4, 1, 1];
+                var optCoins = [3, 3];
+                greedyEl.innerHTML = '';
+                optimalEl.innerHTML = '';
+                greedyResEl.textContent = '';
+                optimalResEl.textContent = '';
+
+                var gIdx = 0;
+                function showGreedy() {
+                    if (gIdx >= greedyCoins.length) {
+                        greedyResEl.innerHTML = '<span style="color:var(--red);font-weight:600;">3개 사용 (4+1+1=6)</span>';
+                        // now show optimal
+                        var oIdx = 0;
+                        function showOpt() {
+                            if (oIdx >= optCoins.length) {
+                                optimalResEl.innerHTML = '<span style="color:var(--green);font-weight:600;">2개 사용 (3+3=6)</span>';
+                                failMsgEl.textContent = '그리디는 4를 먼저 선택해서 3개가 필요하지만, 3+3=2개가 최적입니다!';
+                                return;
+                            }
+                            optimalEl.innerHTML += coinBox(optCoins[oIdx], 'var(--green)');
+                            oIdx++;
+                            setTimeout(showOpt, 400);
+                        }
+                        setTimeout(showOpt, 300);
+                        return;
+                    }
+                    greedyEl.innerHTML += coinBox(greedyCoins[gIdx], 'var(--red)');
+                    gIdx++;
+                    setTimeout(showGreedy, 400);
+                }
+                showGreedy();
+            });
+
+            failResetBtn.addEventListener('click', function() {
+                failGoBtn.style.display = '';
+                failResetBtn.style.display = 'none';
+                greedyEl.innerHTML = '';
+                optimalEl.innerHTML = '';
+                greedyResEl.textContent = '';
+                optimalResEl.textContent = '';
+                failMsgEl.textContent = '그리디는 4+1+1=3개를 쓰지만, 최적해는 3+3=2개입니다. 동전이 배수 관계가 아니면 그리디가 틀릴 수 있습니다!';
+            });
+        }
+
+        // === Demo 3: 활동 선택 타임라인 ===
+        {
+            var activities = [
+                {name:'A', s:1, e:4}, {name:'B', s:3, e:5}, {name:'C', s:0, e:6},
+                {name:'D', s:5, e:7}, {name:'E', s:3, e:9}, {name:'F', s:5, e:9},
+                {name:'G', s:6, e:10}, {name:'H', s:8, e:11}
+            ];
+            var sorted = activities.slice().sort(function(a,b) { return a.e - b.e || a.s - b.s; });
+            var actGoBtn = container.querySelector('#gr-demo-activity-go');
+            var actResetBtn = container.querySelector('#gr-demo-activity-reset');
+            var timelineEl = container.querySelector('#gr-demo-activity-timeline');
+            var actResultEl = container.querySelector('#gr-demo-activity-result');
+            var actMsgEl = container.querySelector('#gr-demo-activity-msg');
+            var maxTime = 12;
+            var colors = ['var(--accent)', 'var(--green)', '#e17055', '#6c5ce7', '#fdcb6e', '#00b894', '#d63031', '#0984e3'];
+
+            function renderTimeline(acts, selectedSet, currentIdx) {
+                var html = '<div style="position:relative;padding:10px 0 30px 0;">';
+                // time axis
+                html += '<div style="position:relative;height:20px;margin-bottom:10px;">';
+                for (var t = 0; t <= maxTime; t++) {
+                    var left = (t / maxTime * 100);
+                    html += '<span style="position:absolute;left:' + left + '%;transform:translateX(-50%);font-size:0.7rem;color:var(--text3);">' + t + '</span>';
+                }
+                html += '</div>';
+                // bars
+                acts.forEach(function(act, i) {
+                    var leftP = (act.s / maxTime * 100);
+                    var widthP = ((act.e - act.s) / maxTime * 100);
+                    var isSelected = selectedSet && selectedSet[act.name];
+                    var isCurrent = (currentIdx === i);
+                    var isRejected = (currentIdx !== undefined && currentIdx > i && !isSelected);
+                    var bg = isSelected ? 'var(--green)' : (isCurrent ? 'var(--yellow)' : (isRejected ? 'var(--red)' : colors[i % colors.length]));
+                    var opacity = isRejected ? '0.3' : '1';
+                    html += '<div style="position:relative;height:28px;margin-bottom:4px;">' +
+                        '<div style="position:absolute;left:' + leftP + '%;width:' + widthP + '%;height:100%;background:' + bg + ';border-radius:6px;opacity:' + opacity + ';display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.8rem;transition:all 0.3s;' + (isCurrent ? 'box-shadow:0 0 10px var(--yellow)60;' : '') + (isSelected ? 'box-shadow:0 0 10px var(--green)60;' : '') + '">' +
+                        act.name + ' [' + act.s + '-' + act.e + ']</div></div>';
+                });
+                html += '</div>';
+                timelineEl.innerHTML = html;
+            }
+
+            renderTimeline(sorted, {});
+
+            actGoBtn.addEventListener('click', function() {
+                actGoBtn.style.display = 'none';
+                actResetBtn.style.display = '';
+                renderTimeline(sorted, {});
+                var selectedSet = {};
+                var selectedCount = 0;
+                var lastEnd = 0;
+                var idx = 0;
+
+                function step() {
+                    if (idx >= sorted.length) {
+                        renderTimeline(sorted, selectedSet);
+                        actResultEl.innerHTML = '선택된 활동: <strong>' + selectedCount + '개</strong> (끝나는 시간이 빠른 순서로 겹치지 않게 선택)';
+                        actResultEl.style.color = 'var(--green)';
+                        actMsgEl.textContent = '끝나는 시간 기준 정렬 후, 겹치지 않는 활동을 순서대로 선택하면 최대 개수를 얻습니다!';
+                        return;
+                    }
+                    var act = sorted[idx];
+                    renderTimeline(sorted, selectedSet, idx);
+                    if (act.s >= lastEnd) {
+                        actResultEl.innerHTML = act.name + ' [' + act.s + '-' + act.e + ']: 시작(' + act.s + ') >= 마지막 끝(' + lastEnd + ') → <span style="color:var(--green);font-weight:600;">선택!</span>';
+                        setTimeout(function() {
+                            selectedSet[act.name] = true;
+                            selectedCount++;
+                            lastEnd = act.e;
+                            renderTimeline(sorted, selectedSet);
+                            idx++;
+                            setTimeout(step, 500);
+                        }, 600);
+                    } else {
+                        actResultEl.innerHTML = act.name + ' [' + act.s + '-' + act.e + ']: 시작(' + act.s + ') < 마지막 끝(' + lastEnd + ') → <span style="color:var(--red);">겹침! 건너뜀</span>';
+                        idx++;
+                        setTimeout(step, 600);
+                    }
+                }
+                step();
+            });
+
+            actResetBtn.addEventListener('click', function() {
+                actGoBtn.style.display = '';
+                actResetBtn.style.display = 'none';
+                renderTimeline(sorted, {});
+                actResultEl.textContent = '';
+                actResultEl.style.color = '';
+                actMsgEl.textContent = '끝나는 시간 기준으로 정렬한 뒤, 겹치지 않는 활동을 하나씩 선택합니다.';
+            });
+        }
+
+        // === Demo 4: ATM 줄서기 ===
+        {
+            var atmGoBtn = container.querySelector('#gr-demo-atm-go');
+            var atmResetBtn = container.querySelector('#gr-demo-atm-reset');
+            var atmInput = container.querySelector('#gr-demo-atm-input');
+            var origEl = container.querySelector('#gr-demo-atm-original');
+            var sortedEl = container.querySelector('#gr-demo-atm-sorted');
+            var origTotalEl = container.querySelector('#gr-demo-atm-orig-total');
+            var sortTotalEl = container.querySelector('#gr-demo-atm-sort-total');
+            var atmMsgEl = container.querySelector('#gr-demo-atm-msg');
+
+            function personBox(val, wait, color, glow) {
+                return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border-radius:10px;border:2px solid ' + (color || 'var(--border)') + ';background:' + (color ? color + '15' : 'var(--bg2)') + ';' + (glow ? 'box-shadow:0 0 8px ' + color + '50;' : '') + '">' +
+                    '<div style="font-size:1.2rem;">🧑</div>' +
+                    '<div style="font-weight:600;font-size:0.9rem;">' + val + '분</div>' +
+                    (wait !== undefined ? '<div style="font-size:0.75rem;color:var(--text2);">대기:' + wait + '분</div>' : '') +
+                    '</div>';
+            }
+
+            function calcTotal(arr) {
+                var total = 0, acc = 0;
+                arr.forEach(function(v) { acc += v; total += acc; });
+                return total;
+            }
+
+            atmGoBtn.addEventListener('click', function() {
+                atmGoBtn.style.display = 'none';
+                atmResetBtn.style.display = '';
+                var arr = atmInput.value.split(',').map(function(v) { return parseInt(v.trim()); }).filter(function(v) { return !isNaN(v) && v > 0; });
+                if (arr.length < 2) arr = [3, 1, 4, 3, 2];
+                var sortedArr = arr.slice().sort(function(a, b) { return a - b; });
+
+                // Show original with cumulative wait
+                var origHtml = '', acc1 = 0;
+                arr.forEach(function(v) { acc1 += v; origHtml += personBox(v, acc1, 'var(--text3)'); });
+                origEl.innerHTML = origHtml;
+                var origTotal = calcTotal(arr);
+                origTotalEl.innerHTML = '총 대기시간: <strong style="color:var(--red);">' + origTotal + '분</strong>';
+
+                // Animate sorted
+                sortedEl.innerHTML = '';
+                sortTotalEl.textContent = '';
+                var idx = 0, acc2 = 0, sTotal = 0;
+                function showNext() {
+                    if (idx >= sortedArr.length) {
+                        sortTotalEl.innerHTML = '총 대기시간: <strong style="color:var(--green);">' + sTotal + '분</strong>';
+                        atmMsgEl.textContent = '정렬 후 총 대기시간: ' + sTotal + '분 (원래: ' + origTotal + '분). ' + (origTotal - sTotal) + '분 절약!';
+                        return;
+                    }
+                    acc2 += sortedArr[idx];
+                    sTotal += acc2;
+                    sortedEl.innerHTML += personBox(sortedArr[idx], acc2, 'var(--green)', true);
+                    idx++;
+                    setTimeout(showNext, 400);
+                }
+                showNext();
+            });
+
+            atmResetBtn.addEventListener('click', function() {
+                atmGoBtn.style.display = '';
+                atmResetBtn.style.display = 'none';
+                origEl.innerHTML = '';
+                sortedEl.innerHTML = '';
+                origTotalEl.textContent = '';
+                sortTotalEl.textContent = '';
+                atmMsgEl.textContent = '짧은 시간의 사람을 앞에 세우면, 뒤 사람들의 대기 시간이 줄어듭니다.';
+            });
+        }
+
+        // === Demo 5: 회의실 배정 3단계 ===
+        {
+            var meetings = [
+                {s:1, e:4}, {s:3, e:5}, {s:0, e:6}, {s:5, e:7},
+                {s:3, e:8}, {s:5, e:9}, {s:6, e:10}, {s:8, e:11}
+            ];
+            var meetGoBtn = container.querySelector('#gr-demo-meet-go');
+            var meetResetBtn = container.querySelector('#gr-demo-meet-reset');
+            var meetStepLabel = container.querySelector('#gr-demo-meet-step-label');
+            var meetTimeline = container.querySelector('#gr-demo-meet-timeline');
+            var meetResultEl = container.querySelector('#gr-demo-meet-result');
+            var meetMsgEl = container.querySelector('#gr-demo-meet-msg');
+            var meetMaxTime = 12;
+            var meetColors = ['#6c5ce7', '#e17055', '#00b894', '#fdcb6e', '#0984e3', '#d63031', '#a29bfe', '#fab1a0'];
+
+            function renderMeetTimeline(list, selectedSet, phase) {
+                var html = '<div style="position:relative;padding:10px 0 30px 0;">';
+                html += '<div style="position:relative;height:20px;margin-bottom:10px;">';
+                for (var t = 0; t <= meetMaxTime; t++) {
+                    html += '<span style="position:absolute;left:' + (t / meetMaxTime * 100) + '%;transform:translateX(-50%);font-size:0.7rem;color:var(--text3);">' + t + '</span>';
+                }
+                html += '</div>';
+                list.forEach(function(m, i) {
+                    var leftP = (m.s / meetMaxTime * 100);
+                    var widthP = ((m.e - m.s) / meetMaxTime * 100);
+                    var sel = selectedSet && selectedSet[i];
+                    var bg = sel ? 'var(--green)' : meetColors[i % meetColors.length];
+                    var op = (phase === 3 && !sel) ? '0.25' : '1';
+                    html += '<div style="position:relative;height:26px;margin-bottom:3px;">' +
+                        '<div style="position:absolute;left:' + leftP + '%;width:' + widthP + '%;height:100%;background:' + bg + ';border-radius:5px;opacity:' + op + ';display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:0.75rem;transition:all 0.4s;' + (sel ? 'box-shadow:0 0 8px var(--green)60;' : '') + '">' +
+                        '[' + m.s + '-' + m.e + ']</div></div>';
+                });
+                html += '</div>';
+                meetTimeline.innerHTML = html;
+            }
+
+            renderMeetTimeline(meetings, {}, 0);
+
+            meetGoBtn.addEventListener('click', function() {
+                meetGoBtn.style.display = 'none';
+                meetResetBtn.style.display = '';
+
+                // Step 1: Sort
+                meetStepLabel.textContent = '① 끝나는 시간으로 정렬';
+                meetResultEl.textContent = '끝나는 시간이 빠른 순서로 정렬합니다...';
+                var sorted2 = meetings.slice().sort(function(a, b) { return a.e - b.e || a.s - b.s; });
+                setTimeout(function() {
+                    renderMeetTimeline(sorted2, {}, 1);
+                    meetResultEl.textContent = '정렬 완료! 끝나는 시간 순서: ' + sorted2.map(function(m) { return '[' + m.s + '-' + m.e + ']'; }).join(', ');
+
+                    // Step 2: Select
+                    setTimeout(function() {
+                        meetStepLabel.textContent = '② 겹치지 않는 회의 선택';
+                        var selSet = {};
+                        var lastEnd = 0, count = 0, idx2 = 0;
+                        function selectStep() {
+                            if (idx2 >= sorted2.length) {
+                                // Step 3: Result
+                                setTimeout(function() {
+                                    meetStepLabel.textContent = '③ 결과';
+                                    renderMeetTimeline(sorted2, selSet, 3);
+                                    meetResultEl.innerHTML = '최대 <strong style="color:var(--green);">' + count + '개</strong> 회의를 배정할 수 있습니다!';
+                                    meetMsgEl.textContent = '3단계 완료! 끝나는 시간 정렬 → 겹치지 않으면 선택 → 결과 확인.';
+                                }, 500);
+                                return;
+                            }
+                            var m = sorted2[idx2];
+                            if (m.s >= lastEnd) {
+                                selSet[idx2] = true;
+                                lastEnd = m.e;
+                                count++;
+                                meetResultEl.innerHTML = '[' + m.s + '-' + m.e + '] → <span style="color:var(--green);">선택!</span> (시작 ' + m.s + ' >= 마지막끝 ' + (m.s === 0 ? 0 : lastEnd - (m.e - m.s)) + ')';
+                            } else {
+                                meetResultEl.innerHTML = '[' + m.s + '-' + m.e + '] → <span style="color:var(--red);">겹침, 건너뜀</span>';
+                            }
+                            renderMeetTimeline(sorted2, selSet, 2);
+                            idx2++;
+                            setTimeout(selectStep, 600);
+                        }
+                        selectStep();
+                    }, 800);
+                }, 700);
+            });
+
+            meetResetBtn.addEventListener('click', function() {
+                meetGoBtn.style.display = '';
+                meetResetBtn.style.display = 'none';
+                meetStepLabel.textContent = '';
+                renderMeetTimeline(meetings, {}, 0);
+                meetResultEl.textContent = '';
+                meetMsgEl.textContent = '끝나는 시간 기준 정렬 → 겹치지 않으면 선택 → 최대 회의 수 확인의 3단계를 봅니다.';
+            });
+        }
     },
 
     // ===== 시각화 상태 =====
@@ -537,7 +1041,7 @@ int main() {
                     var afterRem = rem, afterTotal = totalCount;
                     (function(coin, cnt, prevRem, afterRem, afterTotal) {
                         steps.push({
-                            description: coin + '원: ' + prevRem + ' ÷ ' + coin + ' = ' + cnt + '개 사용 → 남은 금액: ' + afterRem + '원',
+                            description: coin + '원: ' + prevRem + ' ÷ ' + coin + ' = ' + cnt + '개 사용 → 남은 금액: ' + afterRem + '원 — <em>큰 동전부터 써야 동전 수가 최소</em>(배수 관계이므로 항상 최적)',
                             action: function() { usedSoFar[coin] = cnt; renderCoins(usedSoFar); infoEl.innerHTML = coin + '원 × ' + cnt + '개 = ' + (coin * cnt) + '원 사용 → 남은: <strong>' + afterRem + '원</strong>'; },
                             undo: function() { delete usedSoFar[coin]; renderCoins(usedSoFar); infoEl.innerHTML = '<span style="color:var(--text2);">남은 금액: <strong>' + prevRem + '원</strong></span>'; }
                         });
@@ -609,7 +1113,7 @@ int main() {
                 var snapshot = accArr.slice();
                 (function(i, v, curAcc, curTotal, snapshot) {
                     steps.push({
-                        description: 'P' + (i + 1) + '=' + v + '분: 누적 대기 = ' + curAcc + '분, 총합 = ' + curTotal + '분',
+                        description: 'P' + (i + 1) + '=' + v + '분: 누적 대기 = ' + curAcc + '분, 총합 = ' + curTotal + '분 — <em>짧은 사람이 앞에 와야 뒤 모든 사람의 대기시간이 줄어듦</em>',
                         action: function() { renderBars(i, snapshot); infoEl.innerHTML = 'P' + (i + 1) + ': 대기 <strong>' + curAcc + '분</strong>, 누적 합계: <strong>' + curTotal + '분</strong>'; },
                         undo: function() { renderBars(-1, null); infoEl.innerHTML = '<span style="color:var(--text2);">짧은 시간부터 처리하여 총 대기시간을 줄입니다.</span>'; }
                     });
@@ -682,7 +1186,7 @@ int main() {
                     var cnt = selectedCount;
                     (function(i, start, end, prevEnd, cnt) {
                         steps.push({
-                            description: '회의 (' + start + '~' + end + '): 시작(' + start + ') >= 이전 종료(' + (prevEnd < 0 ? '없음' : prevEnd) + ') → 선택! (' + cnt + '개째)',
+                            description: '회의 (' + start + '~' + end + '): 시작(' + start + ') >= 이전 종료(' + (prevEnd < 0 ? '없음' : prevEnd) + ') → <strong>선택!</strong> (' + cnt + '개째) — <em>종료 시간이 빠른 회의를 선택해야 남은 시간이 최대화되어 더 많은 회의 가능</em>',
                             action: function() {
                                 var bar = container.querySelector('#mt-bar-' + i + suffix);
                                 if (bar) { bar.style.background = 'var(--green)'; bar.style.borderColor = 'var(--green)'; bar.style.color = 'white'; }
@@ -699,7 +1203,7 @@ int main() {
                     var curEnd = lastEnd;
                     (function(i, start, end, curEnd) {
                         steps.push({
-                            description: '회의 (' + start + '~' + end + '): 시작(' + start + ') < 이전 종료(' + curEnd + ') → 겹침! 건너뜀',
+                            description: '회의 (' + start + '~' + end + '): 시작(' + start + ') < 이전 종료(' + curEnd + ') → <strong>겹침! 건너뜀</strong> — <em>이미 선택한 회의와 시간이 겹치므로, 이 회의를 넣으면 앞 회의를 포기해야 해서 손해</em>',
                             action: function() {
                                 var bar = container.querySelector('#mt-bar-' + i + suffix);
                                 if (bar) { bar.style.background = 'var(--red)15'; bar.style.borderColor = 'var(--red)'; bar.style.color = 'var(--red)'; bar.style.opacity = '0.5'; }
@@ -714,7 +1218,7 @@ int main() {
             });
             var finalCount = selectedCount;
             steps.push({
-                description: '완성! 최대 ' + finalCount + '개 회의를 겹치지 않게 배정!',
+                description: '완성! 최대 ' + finalCount + '개 회의를 겹치지 않게 배정! — <em>종료 시간 기준 정렬 + 겹치지 않으면 선택이 최적 전략</em>',
                 action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 ' + finalCount + '개 회의 배정 완료!</strong>'; },
                 undo: function() { infoEl.innerHTML = '선택: <strong style="color:var(--green);">' + finalCount + '개</strong>'; }
             });
@@ -787,7 +1291,7 @@ int main() {
             var splitDisplay = groupLabels.join(' <span style="color:var(--red);font-size:1.5rem;">-</span> ');
             var groupDescParts = groups.map(function(gt, gi) { return '그룹 ' + (gi + 1) + ': <strong>' + gt.trim() + '</strong>'; });
             steps.push({
-                description: 'Step 1: 수식을 "-" 기준으로 ' + groups.length + '개 그룹으로 분리합니다.',
+                description: 'Step 1: 수식을 "-" 기준으로 ' + groups.length + '개 그룹으로 분리합니다. — <em>"-" 뒤에 괄호를 넣으면 그 안의 모든 수를 빼기로 바꿀 수 있기 때문</em>',
                 action: function() {
                     exprEl.innerHTML = splitDisplay;
                     infoEl.innerHTML = groupDescParts.join(', ');
@@ -800,7 +1304,7 @@ int main() {
                 var bracketExpr = bracketParts.join('+');
                 var wrappedDisplay = '<span style="color:var(--accent);">' + groups[0].trim() + '</span> - <span style="color:#e17055;border:2px dashed #e17055;padding:2px 8px;border-radius:6px;">(' + bracketExpr + ')</span>';
                 steps.push({
-                    description: 'Step 2: "-" 뒤의 그룹들을 괄호로 묶습니다.',
+                    description: 'Step 2: "-" 뒤의 그룹들을 괄호로 묶습니다. — <em>괄호 안의 "+"가 모두 "-"로 바뀌어 뺄 수 있는 값이 최대</em>',
                     action: function() {
                         exprEl.innerHTML = wrappedDisplay;
                         infoEl.innerHTML = '괄호를 넣으면: ' + groups[0].trim() + ' - <strong>(' + bracketExpr + ')</strong>';
@@ -817,7 +1321,7 @@ int main() {
                     return '그룹 ' + (gi + 1) + ' 합: ' + (groupTexts[gi].indexOf('+') >= 0 ? groupTexts[gi] + ' = ' : '') + '<strong>' + sums[gi] + '</strong>';
                 });
                 steps.push({
-                    description: 'Step 3: 각 그룹의 합을 계산합니다.',
+                    description: 'Step 3: 각 그룹의 합을 계산합니다. — <em>괄호 안에서는 "+"이므로 그룹별 합산이 먼저</em>',
                     action: function() {
                         exprEl.innerHTML = '<span style="color:var(--accent);">' + sums[0] + '</span> - <span style="color:#e17055;">(' + restSum + ')</span>';
                         infoEl.innerHTML = sumDescs.join(', ');
@@ -829,7 +1333,7 @@ int main() {
                 });
                 // Step 4: compute result
                 steps.push({
-                    description: 'Step 4: 첫 그룹은 더하고 나머지는 빼기 → ' + sums[0] + ' - ' + restSum + ' = ' + result,
+                    description: 'Step 4: 첫 그룹은 더하고 나머지는 빼기 → ' + sums[0] + ' - ' + restSum + ' = ' + result + ' — <em>첫 "-" 뒤를 전부 빼면 결과가 최소</em>',
                     action: function() {
                         exprEl.innerHTML = sums[0] + ' - ' + restSum + ' = <span style="color:var(--green);font-size:1.5rem;">' + result + '</span>';
                         infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최솟값: ' + result + '</strong>';
@@ -937,7 +1441,7 @@ int main() {
                 var cMinP = minPrice, cTotal = totalCost, cCity = ci, cSegCost = segCost, cDist = dist[ci];
                 (function(cCity, cMinP, cTotal, cSegCost, cDist) {
                     steps.push({
-                        description: '도시 ' + (cCity + 1) + ': 최소가격 ' + cMinP + '원 × ' + cDist + 'km = ' + cSegCost + '원 (누적: ' + cTotal + '원)',
+                        description: '도시 ' + (cCity + 1) + ': 최소가격 ' + cMinP + '원 × ' + cDist + 'km = ' + cSegCost + '원 (누적: ' + cTotal + '원) — <em>지금까지 본 가장 싼 곳에서 미리 넣는 게 최적</em>',
                         action: function() { renderRoad(cCity, cMinP, costMap); infoEl.innerHTML = '도시 ' + (cCity + 1) + ': <strong>' + cMinP + '원/L</strong> × ' + cDist + 'km = ' + cSegCost + '원, 누적: <strong>' + cTotal + '원</strong>'; },
                         undo: function() { renderRoad(-1, -1, null); infoEl.innerHTML = '<span style="color:var(--text2);">지금까지 본 최소 가격으로 기름을 넣습니다.</span>'; }
                     });

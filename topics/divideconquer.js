@@ -61,7 +61,7 @@ var divideConquerTopic = {
             container.appendChild(introDiv);
         }
         var contentDiv = document.createElement('div');
-        container.appendChild(contentDiv);
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';        container.appendChild(contentDiv);
         switch (tabId) {
             case 'problem': self._renderProblemTab(contentDiv, prob); break;
             case 'think':   self._renderThinkTab(contentDiv, prob); break;
@@ -409,6 +409,115 @@ var divideConquerTopic = {
                     </div>\
                 </div>\
             </div>\
+\
+            <!-- ⑥ 데모: 이진탐색 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">6</span> 데모: 이진 탐색 — 분할정복으로 찾기</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 정렬된 배열에서 절반씩 나눠 찾기</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="number" id="dc-demo-bs-target" value="7" min="0" max="99" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:80px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="dc-demo-bs-btn">🔍 탐색 시작</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-bs-reset" style="display:none;">↺ 다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-demo-bs-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
+                        <div id="dc-demo-bs-pointers" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;margin-bottom:8px;"></div>\
+                        <div id="dc-demo-bs-log" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-bs-msg">👆 찾을 숫자를 입력하고 "탐색 시작"을 눌러보세요! 배열을 절반씩 나누며 찾는 과정을 확인하세요.</div>\
+                </div>\
+            </div>\
+\
+            <!-- ⑦ 데모: 합병정렬 3단계 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">7</span> 데모: 합병 정렬 3단계 — 나누고, 풀고, 합치기</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 합병 정렬 시각화</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <input type="text" id="dc-demo-ms-input" value="5,3,8,1,4,2,7,6" placeholder="쉼표 구분 숫자" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:200px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="dc-demo-ms-btn">▶ 정렬 시작</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-ms-reset" style="display:none;">↺ 다시</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-demo-ms-viz" style="min-height:120px;overflow-x:auto;"></div>\
+                        <div id="dc-demo-ms-phase" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:2em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-ms-msg">👆 숫자를 바꿔보고 "정렬 시작"을 눌러보세요! 나누기 → 풀기 → 합치기 3단계를 확인하세요.</div>\
+                </div>\
+            </div>\
+\
+            <!-- ⑧ 데모: 겹침비교 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">8</span> 데모: 겹침 비교 — 분할정복 vs DP</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 부분 문제가 겹치는가?</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-demo-overlap-ms">합병 정렬 (겹치지 않음)</button>\
+                        <button class="concept-demo-btn" id="dc-demo-overlap-fib">피보나치 (겹침!)</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-demo-overlap-viz" style="min-height:140px;overflow-x:auto;font-family:monospace;"></div>\
+                        <div id="dc-demo-overlap-stats" style="margin-top:10px;display:flex;gap:1.5rem;flex-wrap:wrap;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-overlap-msg">👆 버튼을 눌러 호출 트리를 비교해보세요! 같은 색은 같은 부분 문제입니다.</div>\
+                </div>\
+            </div>\
+\
+            <!-- ⑨ 데모: 빠른 거듭제곱 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">9</span> 데모: 빠른 거듭제곱 — 지수를 반으로!</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — x^n을 빠르게 계산</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <label style="font-size:0.9rem;color:var(--text);">밑:</label>\
+                        <input type="number" id="dc-demo-pow-base" value="2" min="1" max="10" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <label style="font-size:0.9rem;color:var(--text);">지수:</label>\
+                        <input type="number" id="dc-demo-pow-exp" value="8" min="1" max="32" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">\
+                        <button class="concept-demo-btn" id="dc-demo-pow-btn">⚡ 계산 비교</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--red);">단순 곱셈 <span style="font-size:0.85rem;">O(n)</span></div>\
+                                <div id="dc-demo-pow-naive" style="font-size:0.85rem;color:var(--text2);line-height:1.8;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:200px;">\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--green);">분할정복 <span style="font-size:0.85rem;">O(log n)</span></div>\
+                                <div id="dc-demo-pow-fast" style="font-size:0.85rem;color:var(--text2);line-height:1.8;"></div>\
+                            </div>\
+                        </div>\
+                        <div id="dc-demo-pow-result" style="margin-top:12px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-pow-msg">👆 밑과 지수를 바꿔보고 "계산 비교"를 눌러보세요! 분할정복이 얼마나 빠른지 확인하세요.</div>\
+                </div>\
+            </div>\
+\
+            <!-- ⑩ 데모: 색종이 쿼드트리 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">10</span> 데모: 색종이 쿼드트리 — 재귀적 4등분</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 직접 해보기 — 4×4 색종이를 쿼드트리로 분할</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <span style="font-size:0.85rem;color:var(--text2);">셀 클릭으로 색 변경 |</span>\
+                        <button class="concept-demo-btn" id="dc-demo-qt-run">🔍 쿼드트리 분할</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-qt-reset">↺ 초기화</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div>\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">색종이 (클릭으로 편집)</div>\
+                                <div id="dc-demo-qt-grid" style="display:grid;grid-template-columns:repeat(4,40px);gap:2px;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:8px;color:var(--text);">쿼드트리 분할 결과</div>\
+                                <div id="dc-demo-qt-result" style="font-size:0.9rem;color:var(--text2);line-height:1.8;font-family:monospace;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="dc-demo-qt-msg">👆 셀을 클릭해서 흰색/파란색을 바꾸고 "쿼드트리 분할"을 눌러보세요! 같은 색이면 합치고, 다르면 4등분하는 과정을 확인하세요.</div>\
+                </div>\
+            </div>\
         ';
 
         this._initConceptInteractions(container);
@@ -423,6 +532,446 @@ var divideConquerTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== 데모 1: 이진 탐색 ======
+        (function() {
+            var arr = [1, 3, 5, 7, 9, 12, 15, 18, 21, 25];
+            var searchBtn = container.querySelector('#dc-demo-bs-btn');
+            var resetBtn = container.querySelector('#dc-demo-bs-reset');
+            var targetInput = container.querySelector('#dc-demo-bs-target');
+            var arrEl = container.querySelector('#dc-demo-bs-arr');
+            var pointersEl = container.querySelector('#dc-demo-bs-pointers');
+            var logEl = container.querySelector('#dc-demo-bs-log');
+            var msgEl = container.querySelector('#dc-demo-bs-msg');
+            var animating = false;
+
+            function renderArr(lo, hi, mid, found) {
+                arrEl.innerHTML = '';
+                arr.forEach(function(v, i) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    var labels = [];
+                    if (i === lo) labels.push('L');
+                    if (i === hi) labels.push('R');
+                    if (i === mid) labels.push('mid');
+                    var labelStr = labels.length ? '<div class="str-char-idx" style="font-size:0.65rem;color:var(--accent);font-weight:700;">' + labels.join(',') + '</div>' : '';
+                    box.innerHTML = labelStr + '<div class="str-char-val">' + v + '</div>';
+                    if (i < lo || i > hi) { box.style.opacity = '0.3'; }
+                    if (i === mid && found === true) {
+                        box.style.borderColor = 'var(--green)';
+                        box.style.boxShadow = '0 0 8px var(--green)';
+                        box.style.background = 'rgba(0,184,148,0.15)';
+                    } else if (i === mid && found === false) {
+                        box.style.borderColor = 'var(--yellow)';
+                        box.style.boxShadow = '0 0 6px var(--yellow)';
+                    }
+                    arrEl.appendChild(box);
+                });
+            }
+            renderArr(0, arr.length - 1, -1);
+
+            searchBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                searchBtn.style.display = 'none';
+                resetBtn.style.display = '';
+                var target = parseInt(targetInput.value);
+                if (isNaN(target)) { msgEl.textContent = '숫자를 입력해주세요!'; animating = false; return; }
+                var lo = 0, hi = arr.length - 1;
+                var steps = [];
+                while (lo <= hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    if (arr[mid] === target) { steps.push({ lo: lo, hi: hi, mid: mid, found: true }); break; }
+                    else if (arr[mid] < target) { steps.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'right' }); lo = mid + 1; }
+                    else { steps.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'left' }); hi = mid - 1; }
+                }
+                if (steps.length === 0 || !steps[steps.length - 1].found) {
+                    steps.push({ lo: lo, hi: hi, mid: -1, found: null });
+                }
+                var idx = 0;
+                function playStep() {
+                    if (idx >= steps.length) { animating = false; return; }
+                    var s = steps[idx];
+                    renderArr(s.lo, s.hi, s.mid, s.found);
+                    if (s.found === true) {
+                        pointersEl.innerHTML = '<strong style="color:var(--green);">찾았습니다!</strong> arr[' + s.mid + '] = ' + arr[s.mid];
+                        logEl.textContent = '총 ' + steps.length + '번 비교 (log₂(' + arr.length + ') ≈ ' + Math.ceil(Math.log2(arr.length)) + ')';
+                        animating = false;
+                    } else if (s.found === false) {
+                        pointersEl.innerHTML = 'L=' + s.lo + ', R=' + s.hi + ', mid=' + s.mid + ' → arr[' + s.mid + ']=' + arr[s.mid];
+                        logEl.textContent = arr[s.mid] + (s.dir === 'right' ? ' < ' + target + ' → 오른쪽 절반으로' : ' > ' + target + ' → 왼쪽 절반으로');
+                        idx++;
+                        setTimeout(playStep, 800);
+                    } else {
+                        pointersEl.innerHTML = '<strong style="color:var(--red);">' + target + '은(는) 배열에 없습니다</strong>';
+                        logEl.textContent = '총 ' + (steps.length - 1) + '번 비교';
+                        animating = false;
+                    }
+                }
+                playStep();
+            });
+            resetBtn.addEventListener('click', function() {
+                animating = false;
+                searchBtn.style.display = '';
+                resetBtn.style.display = 'none';
+                renderArr(0, arr.length - 1, -1);
+                pointersEl.textContent = '';
+                logEl.textContent = '';
+                msgEl.textContent = '👆 찾을 숫자를 입력하고 "탐색 시작"을 눌러보세요!';
+            });
+        })();
+
+        // ====== 데모 2: 합병 정렬 3단계 ======
+        (function() {
+            var msBtn = container.querySelector('#dc-demo-ms-btn');
+            var msReset = container.querySelector('#dc-demo-ms-reset');
+            var msInput = container.querySelector('#dc-demo-ms-input');
+            var msViz = container.querySelector('#dc-demo-ms-viz');
+            var msPhase = container.querySelector('#dc-demo-ms-phase');
+            var msMsg = container.querySelector('#dc-demo-ms-msg');
+            var animating = false;
+
+            function buildMergeSteps(arr) {
+                var steps = [];
+                function mergeSort(a, depth, label) {
+                    if (a.length <= 1) return a;
+                    var mid = Math.floor(a.length / 2);
+                    var left = a.slice(0, mid);
+                    var right = a.slice(mid);
+                    steps.push({ phase: 'divide', arr: a.slice(), left: left.slice(), right: right.slice(), depth: depth, label: label });
+                    var sl = mergeSort(left, depth + 1, label + 'L');
+                    var sr = mergeSort(right, depth + 1, label + 'R');
+                    var merged = [];
+                    var i = 0, j = 0;
+                    while (i < sl.length && j < sr.length) {
+                        if (sl[i] <= sr[j]) merged.push(sl[i++]);
+                        else merged.push(sr[j++]);
+                    }
+                    while (i < sl.length) merged.push(sl[i++]);
+                    while (j < sr.length) merged.push(sr[j++]);
+                    steps.push({ phase: 'merge', left: sl.slice(), right: sr.slice(), merged: merged.slice(), depth: depth, label: label });
+                    return merged;
+                }
+                mergeSort(arr, 0, '');
+                return steps;
+            }
+
+            function renderMergeStep(step) {
+                var boxStyle = 'display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;font-weight:600;color:var(--text);margin:2px;padding:0 4px;';
+                if (step.phase === 'divide') {
+                    var indent = '&nbsp;'.repeat(step.depth * 4);
+                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                        '<span style="color:var(--accent);font-weight:600;">나누기: </span>' +
+                        '[' + step.arr.join(', ') + '] → [' + step.left.join(', ') + '] + [' + step.right.join(', ') + ']</div>';
+                    msPhase.innerHTML = '<strong style="color:var(--accent);">1. 나누기(Divide)</strong>: [' + step.arr.join(', ') + ']를 절반으로 나눕니다';
+                } else {
+                    var indent = '&nbsp;'.repeat(step.depth * 4);
+                    var mergedHtml = step.merged.map(function(v) {
+                        return '<span style="' + boxStyle + 'border-color:var(--green);background:rgba(0,184,148,0.1);">' + v + '</span>';
+                    }).join('');
+                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                        '<span style="color:var(--green);font-weight:600;">합치기: </span>' +
+                        '[' + step.left.join(', ') + '] + [' + step.right.join(', ') + '] → ' + mergedHtml + '</div>';
+                    msPhase.innerHTML = '<strong style="color:var(--green);">3. 합치기(Combine)</strong>: 정렬된 두 부분을 합칩니다 → [' + step.merged.join(', ') + ']';
+                }
+            }
+
+            msBtn.addEventListener('click', function() {
+                if (animating) return;
+                animating = true;
+                msBtn.style.display = 'none';
+                msReset.style.display = '';
+                var vals = msInput.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+                if (vals.length < 2) { msMsg.textContent = '숫자를 2개 이상 입력해주세요!'; animating = false; return; }
+                var steps = buildMergeSteps(vals);
+                msViz.innerHTML = '';
+                var idx = 0;
+                function play() {
+                    if (idx >= steps.length) { msPhase.innerHTML = '<strong style="color:var(--green);">정렬 완료!</strong>'; animating = false; return; }
+                    renderMergeStep(steps[idx]);
+                    idx++;
+                    setTimeout(play, 700);
+                }
+                play();
+            });
+            msReset.addEventListener('click', function() {
+                animating = false;
+                msBtn.style.display = '';
+                msReset.style.display = 'none';
+                msViz.innerHTML = '';
+                msPhase.textContent = '';
+                msMsg.textContent = '👆 숫자를 바꿔보고 "정렬 시작"을 눌러보세요!';
+            });
+        })();
+
+        // ====== 데모 3: 겹침 비교 (분할정복 vs DP) ======
+        (function() {
+            var msBtn = container.querySelector('#dc-demo-overlap-ms');
+            var fibBtn = container.querySelector('#dc-demo-overlap-fib');
+            var vizEl = container.querySelector('#dc-demo-overlap-viz');
+            var statsEl = container.querySelector('#dc-demo-overlap-stats');
+            var colors = ['#6c5ce7', '#00b894', '#e17055', '#fdcb6e', '#0984e3', '#d63031', '#00cec9', '#e84393'];
+
+            // --- Merge Sort tree: manual step controls ---
+            var msLines = [
+                'sort([5,3,8,1])',
+                '├─ sort(<span style="color:#6c5ce7">[5,3]</span>)',
+                '│  ├─ sort([5])',
+                '│  └─ sort([3])',
+                '├─ sort(<span style="color:#00b894">[8,1]</span>)',
+                '│  ├─ sort([8])',
+                '│  └─ sort([1])',
+                '└─ merge → [1,3,5,8]'
+            ];
+            var msStatsHtml =
+                '<div style="padding:8px 14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--accent);">' +
+                '<strong>분할정복</strong>: 모든 부분 문제가 <strong style="color:var(--green);">서로 다름</strong><br>' +
+                '왼쪽 [5,3]과 오른쪽 [8,1]은 완전히 독립적입니다.</div>';
+            var msStep = -1;
+            var msCtrlHtml =
+                '<div id="dc-ms-ctrl" style="display:none;flex-direction:row;gap:12px;justify-content:center;align-items:center;margin-top:12px;">' +
+                '<button id="dc-ms-prev" class="concept-demo-btn">\u2190 이전</button>' +
+                '<span id="dc-ms-counter" style="font-size:0.85rem;color:var(--text2);">시작 전</span>' +
+                '<button id="dc-ms-next" class="concept-demo-btn">다음 \u2192</button>' +
+                '</div>';
+            vizEl.insertAdjacentHTML('afterend', msCtrlHtml);
+            var msCtrl = container.querySelector('#dc-ms-ctrl');
+            var msPrev = container.querySelector('#dc-ms-prev');
+            var msNext = container.querySelector('#dc-ms-next');
+            var msCounter = container.querySelector('#dc-ms-counter');
+
+            function renderMsTree() {
+                var html = '';
+                for (var i = 0; i <= msStep; i++) {
+                    html += '<div style="padding:2px 0;animation:fadeIn 0.3s ease;">' + msLines[i] + '</div>';
+                }
+                vizEl.innerHTML = html;
+                if (msStep >= msLines.length - 1) {
+                    statsEl.innerHTML = msStatsHtml;
+                } else {
+                    statsEl.innerHTML = '';
+                }
+                msCounter.textContent = msStep < 0 ? '시작 전' : (msStep + 1) + ' / ' + msLines.length;
+                msPrev.disabled = msStep < 0;
+                msNext.disabled = msStep >= msLines.length - 1;
+            }
+
+            msBtn.addEventListener('click', function() {
+                msStep = -1;
+                vizEl.innerHTML = '';
+                statsEl.innerHTML = '';
+                msCtrl.style.display = 'flex';
+                // hide fib controls if visible
+                fibCtrl.style.display = 'none';
+                fibStep = -1;
+                renderMsTree();
+            });
+            msPrev.addEventListener('click', function() {
+                if (msStep >= 0) { msStep--; renderMsTree(); }
+            });
+            msNext.addEventListener('click', function() {
+                if (msStep < msLines.length - 1) { msStep++; renderMsTree(); }
+            });
+
+            // --- Fibonacci tree: manual step controls ---
+            var fibLines = [
+                'fib(5)',
+                '├─ fib(4)',
+                '│  ├─ <span style="color:#e17055;font-weight:700;">fib(3)</span>',
+                '│  │  ├─ <span style="color:#fdcb6e;font-weight:700;">fib(2)</span>',
+                '│  │  └─ fib(1)',
+                '│  └─ <span style="color:#fdcb6e;font-weight:700;">fib(2)</span> ← 중복!',
+                '└─ <span style="color:#e17055;font-weight:700;">fib(3)</span> ← 중복!',
+                '   ├─ <span style="color:#fdcb6e;font-weight:700;">fib(2)</span> ← 또 중복!',
+                '   └─ fib(1)'
+            ];
+            var fibStatsHtml =
+                '<div style="padding:8px 14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--red);">' +
+                '<strong>겹치는 부분 문제!</strong> fib(3)이 <strong style="color:var(--red);">2번</strong>, fib(2)가 <strong style="color:var(--red);">3번</strong> 호출됩니다.<br>' +
+                '이런 경우에는 분할정복 대신 <strong>DP(메모이제이션)</strong>를 써서 중복 계산을 없앱니다.</div>';
+            var fibStep = -1;
+            var fibCtrlHtml =
+                '<div id="dc-fib-ctrl" style="display:none;flex-direction:row;gap:12px;justify-content:center;align-items:center;margin-top:12px;">' +
+                '<button id="dc-fib-prev" class="concept-demo-btn">\u2190 이전</button>' +
+                '<span id="dc-fib-counter" style="font-size:0.85rem;color:var(--text2);">시작 전</span>' +
+                '<button id="dc-fib-next" class="concept-demo-btn">다음 \u2192</button>' +
+                '</div>';
+            msCtrl.insertAdjacentHTML('afterend', fibCtrlHtml);
+            var fibCtrl = container.querySelector('#dc-fib-ctrl');
+            var fibPrev = container.querySelector('#dc-fib-prev');
+            var fibNext = container.querySelector('#dc-fib-next');
+            var fibCounter = container.querySelector('#dc-fib-counter');
+
+            function renderFibTree() {
+                var html = '';
+                for (var i = 0; i <= fibStep; i++) {
+                    html += '<div style="padding:2px 0;animation:fadeIn 0.3s ease;">' + fibLines[i] + '</div>';
+                }
+                vizEl.innerHTML = html;
+                if (fibStep >= fibLines.length - 1) {
+                    statsEl.innerHTML = fibStatsHtml;
+                } else {
+                    statsEl.innerHTML = '';
+                }
+                fibCounter.textContent = fibStep < 0 ? '시작 전' : (fibStep + 1) + ' / ' + fibLines.length;
+                fibPrev.disabled = fibStep < 0;
+                fibNext.disabled = fibStep >= fibLines.length - 1;
+            }
+
+            fibBtn.addEventListener('click', function() {
+                fibStep = -1;
+                vizEl.innerHTML = '';
+                statsEl.innerHTML = '';
+                fibCtrl.style.display = 'flex';
+                // hide ms controls if visible
+                msCtrl.style.display = 'none';
+                msStep = -1;
+                renderFibTree();
+            });
+            fibPrev.addEventListener('click', function() {
+                if (fibStep >= 0) { fibStep--; renderFibTree(); }
+            });
+            fibNext.addEventListener('click', function() {
+                if (fibStep < fibLines.length - 1) { fibStep++; renderFibTree(); }
+            });
+        })();
+
+        // ====== 데모 4: 빠른 거듭제곱 ======
+        (function() {
+            var powBtn = container.querySelector('#dc-demo-pow-btn');
+            var baseInput = container.querySelector('#dc-demo-pow-base');
+            var expInput = container.querySelector('#dc-demo-pow-exp');
+            var naiveEl = container.querySelector('#dc-demo-pow-naive');
+            var fastEl = container.querySelector('#dc-demo-pow-fast');
+            var resultEl = container.querySelector('#dc-demo-pow-result');
+
+            powBtn.addEventListener('click', function() {
+                var base = parseInt(baseInput.value) || 2;
+                var exp = parseInt(expInput.value) || 8;
+                if (exp > 32) exp = 32;
+                if (base > 10) base = 10;
+
+                // Naive
+                var naiveSteps = [];
+                var val = 1;
+                for (var i = 0; i < exp; i++) {
+                    val *= base;
+                    naiveSteps.push(base + '^' + (i + 1) + ' = ' + val);
+                }
+                naiveEl.innerHTML = naiveSteps.map(function(s, idx) {
+                    return '<div style="animation:fadeIn 0.2s ease ' + (idx * 0.05) + 's both;">' + s + '</div>';
+                }).join('');
+
+                // Fast
+                var fastSteps = [];
+                function fastPow(b, n, prefix) {
+                    if (n === 0) { fastSteps.push(prefix + b + '^0 = 1'); return 1; }
+                    if (n === 1) { fastSteps.push(prefix + b + '^1 = ' + b); return b; }
+                    if (n % 2 === 0) {
+                        fastSteps.push(prefix + b + '^' + n + ' = (' + b + '^' + (n / 2) + ')²');
+                        var half = fastPow(b, n / 2, prefix + '  ');
+                        var result = half * half;
+                        fastSteps.push(prefix + '= ' + half + '² = ' + result);
+                        return result;
+                    } else {
+                        fastSteps.push(prefix + b + '^' + n + ' = ' + b + ' × (' + b + '^' + (n - 1) + ')');
+                        var rest = fastPow(b, n - 1, prefix + '  ');
+                        var result = b * rest;
+                        fastSteps.push(prefix + '= ' + b + ' × ' + rest + ' = ' + result);
+                        return result;
+                    }
+                }
+                fastPow(base, exp, '');
+                fastEl.innerHTML = fastSteps.map(function(s, idx) {
+                    return '<div style="animation:fadeIn 0.2s ease ' + (idx * 0.08) + 's both;">' + s.replace(/ /g, '&nbsp;') + '</div>';
+                }).join('');
+
+                resultEl.innerHTML = '<strong>단순 곱셈</strong>: ' + naiveSteps.length + '번 계산 | <strong>분할정복</strong>: ' +
+                    Math.ceil(Math.log2(exp + 1)) + '번 분할 → <strong style="color:var(--green);">' +
+                    Math.round(naiveSteps.length / Math.max(1, Math.ceil(Math.log2(exp + 1)))) + '배 빠름!</strong>';
+            });
+        })();
+
+        // ====== 데모 5: 색종이 쿼드트리 ======
+        (function() {
+            var grid = [
+                [0, 0, 1, 1],
+                [0, 0, 1, 1],
+                [1, 0, 1, 1],
+                [0, 1, 1, 1]
+            ];
+            var gridEl = container.querySelector('#dc-demo-qt-grid');
+            var resultEl = container.querySelector('#dc-demo-qt-result');
+            var runBtn = container.querySelector('#dc-demo-qt-run');
+            var resetBtn = container.querySelector('#dc-demo-qt-reset');
+
+            function renderGrid() {
+                gridEl.innerHTML = '';
+                for (var r = 0; r < 4; r++) {
+                    for (var c = 0; c < 4; c++) {
+                        var cell = document.createElement('div');
+                        cell.style.cssText = 'width:40px;height:40px;border:1.5px solid var(--border);border-radius:4px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;';
+                        cell.style.background = grid[r][c] ? 'var(--accent)' : 'var(--card)';
+                        cell.style.color = grid[r][c] ? '#fff' : 'var(--text3)';
+                        cell.textContent = grid[r][c];
+                        cell.dataset.r = r;
+                        cell.dataset.c = c;
+                        cell.addEventListener('click', function() {
+                            var rr = parseInt(this.dataset.r), cc = parseInt(this.dataset.c);
+                            grid[rr][cc] = 1 - grid[rr][cc];
+                            renderGrid();
+                        });
+                        gridEl.appendChild(cell);
+                    }
+                }
+            }
+            renderGrid();
+
+            function quadtree(sr, sc, size, depth) {
+                var allSame = true;
+                var first = grid[sr][sc];
+                for (var r = sr; r < sr + size; r++) {
+                    for (var c = sc; c < sc + size; c++) {
+                        if (grid[r][c] !== first) { allSame = false; break; }
+                    }
+                    if (!allSame) break;
+                }
+                var indent = '&nbsp;'.repeat(depth * 3);
+                if (allSame) {
+                    return [indent + '<span style="color:var(--green);font-weight:600;">' + first + '</span> (' + size + '×' + size + ' 동일)'];
+                }
+                var half = size / 2;
+                var lines = [indent + '<span style="color:var(--accent);">(</span> ← ' + size + '×' + size + ' 4등분'];
+                var parts = [
+                    { label: '좌상', r: sr, c: sc },
+                    { label: '우상', r: sr, c: sc + half },
+                    { label: '좌하', r: sr + half, c: sc },
+                    { label: '우하', r: sr + half, c: sc + half }
+                ];
+                parts.forEach(function(p) {
+                    var sub = quadtree(p.r, p.c, half, depth + 1);
+                    sub.forEach(function(l) { lines.push(l); });
+                });
+                lines.push(indent + '<span style="color:var(--accent);">)</span>');
+                return lines;
+            }
+
+            runBtn.addEventListener('click', function() {
+                var lines = quadtree(0, 0, 4, 0);
+                resultEl.innerHTML = '';
+                lines.forEach(function(line, i) {
+                    setTimeout(function() {
+                        resultEl.innerHTML += '<div style="animation:fadeIn 0.3s ease;">' + line + '</div>';
+                    }, i * 150);
+                });
+            });
+
+            resetBtn.addEventListener('click', function() {
+                grid = [[0, 0, 1, 1], [0, 0, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1]];
+                renderGrid();
+                resultEl.innerHTML = '';
+            });
+        })();
     },
 
     // ===== 시각화 (개념 탭에서는 빈 스텁) =====
@@ -503,10 +1052,14 @@ var divideConquerTopic = {
             '<button class="btn btn-primary" id="dc-paper-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
+            '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:12px;"></div>' +
+            '<div id="dc-tree' + suffix + '" style="flex:1;min-width:220px;max-height:400px;overflow-y:auto;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--bg3);"></div>' +
+            '</div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var gridEl = container.querySelector('#dc-grid' + suffix);
+        var treeEl = container.querySelector('#dc-tree' + suffix);
         var infoEl = container.querySelector('#dc-info' + suffix);
         var inputEl = container.querySelector('#dc-paper-input');
         var resetBtn = container.querySelector('#dc-paper-reset');
@@ -532,6 +1085,46 @@ var divideConquerTopic = {
             var SIZE = grid.length;
             gridEl.style.gridTemplateColumns = 'repeat(' + SIZE + ',48px)';
 
+            // Tree node tracking: each node has {id, label, depth, status}
+            // status: 'unvisited' | 'current' | 'checking' | 'uniform' | 'mixed'
+            var treeNodes = [];
+            var treeNodeId = 0;
+
+            function addTreeNode(r, c, sz, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, label: '[' + r + ',' + c + '] ' + sz + '\u00d7' + sz, depth: depth, status: 'unvisited', parentId: parentId, result: '' });
+                return id;
+            }
+
+            function renderTree(highlightId) {
+                var html = '<div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:8px;">재귀 호출 트리</div>';
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var n = treeNodes[i];
+                    var indent = n.depth * 24;
+                    var borderCol = 'var(--bg3)';
+                    var bgCol = 'var(--bg2)';
+                    var shadow = '';
+                    var textCol = 'var(--text)';
+                    if (n.status === 'current' || n.status === 'checking') {
+                        borderCol = 'var(--yellow)';
+                        shadow = 'box-shadow:0 0 8px var(--yellow);';
+                    } else if (n.status === 'uniform') {
+                        bgCol = 'var(--green)15';
+                        borderCol = 'var(--green)';
+                        shadow = 'box-shadow:0 0 6px var(--green)40;';
+                    } else if (n.status === 'mixed') {
+                        borderCol = 'var(--red)';
+                        bgCol = 'var(--red)10';
+                    }
+                    if (highlightId === n.id) {
+                        shadow = 'box-shadow:0 0 10px var(--yellow);';
+                    }
+                    var resultTag = n.result ? ' <span style="font-size:0.75rem;color:var(--text2);">' + n.result + '</span>' : '';
+                    html += '<div style="margin-left:' + indent + 'px;padding:6px 12px;margin:4px 0;border-radius:8px;border:2px solid ' + borderCol + ';background:' + bgCol + ';font-size:0.85rem;color:' + textCol + ';transition:all 0.3s;' + shadow + '">' + n.label + resultTag + '</div>';
+                }
+                treeEl.innerHTML = html;
+            }
+
             function renderGrid(highlights) {
                 var html = '';
                 for (var r = 0; r < SIZE; r++) {
@@ -543,69 +1136,190 @@ var divideConquerTopic = {
                 gridEl.innerHTML = html;
             }
             renderGrid(null);
-            infoEl.innerHTML = '<span style="color:var(--text2);">' + SIZE + '×' + SIZE + ' 색종이를 검사합니다.</span>';
+            infoEl.innerHTML = '<span style="color:var(--text2);">' + SIZE + '\u00d7' + SIZE + ' 색종이를 검사합니다.</span>';
 
-            // 재귀적으로 스텝을 생성
+            // Pre-build tree structure with DFS
+            function preAddNodes(r, c, sz, depth, parentId) {
+                var nodeId = addTreeNode(r, c, sz, depth, parentId);
+                var first = grid[r][c], allSame = true;
+                for (var i = r; i < r + sz && allSame; i++)
+                    for (var j = c; j < c + sz && allSame; j++)
+                        if (grid[i][j] !== first) allSame = false;
+                if (!allSame) {
+                    var half = sz / 2;
+                    preAddNodes(r, c, half, depth + 1, nodeId);
+                    preAddNodes(r, c + half, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c + half, half, depth + 1, nodeId);
+                }
+                return nodeId;
+            }
+            preAddNodes(0, 0, SIZE, 0, -1);
+
+            // Build steps with granular actions
             var steps = [];
             var whiteCnt = 0, blueCnt = 0;
+            var nodeIdx = 0; // tracks which tree node we are on
 
-            function buildSteps(r, c, size, grid) {
-                // 영역 내 모두 같은지 확인
+            function buildSteps(r, c, size, grid, depth) {
+                var curNodeIdx = nodeIdx;
+                nodeIdx++;
+
                 var first = grid[r][c];
                 var allSame = true;
+                var diffR = -1, diffC = -1;
                 for (var i = r; i < r + size && allSame; i++)
                     for (var j = c; j < c + size && allSame; j++)
-                        if (grid[i][j] !== first) allSame = false;
+                        if (grid[i][j] !== first) { allSame = false; diffR = i; diffC = j; }
+
+                // Step 1: Announce region check
+                (function(r2, c2, sz, nid) {
+                    steps.push({
+                        description: '영역 [' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ' — 이 영역이 <em>한 색</em>인지 확인해야 합니다. 단일 색이면 종이 1장, 아니면 더 쪼개야 합니다.',
+                        action: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz; i++)
+                                for (var j = c2; j < c2 + sz; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ' 영역을 검사합니다.';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'unvisited';
+                            renderGrid(null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(되돌리기)';
+                        }
+                    });
+                })(r, c, size, curNodeIdx);
+
+                // Step 2: Check cells - announce first color
+                (function(r2, c2, sz, nid, firstVal) {
+                    steps.push({
+                        description: '셀을 하나씩 확인합니다. 첫 번째 색은 ' + (firstVal === 1 ? '파랑' : '흰색') + ' (' + firstVal + ') — 나머지 셀도 이 색과 같은지 비교합니다.',
+                        action: function() {
+                            var h = {};
+                            // highlight first cell strongly
+                            h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;transform:scale(1.1);';
+                            for (var i = r2; i < r2 + sz; i++)
+                                for (var j = c2; j < c2 + sz; j++)
+                                    if (!(i === r2 && j === c2)) h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'checking';
+                            renderTree(nid);
+                            infoEl.innerHTML = '\uccab \ubc88\uc9f8 \uc140 [' + r2 + ',' + c2 + '] = <strong>' + firstVal + '</strong> (' + (firstVal === 1 ? '\ud30c\ub791' : '\ud770\uc0c9') + ')';
+                        },
+                        undo: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz; i++)
+                                for (var j = c2; j < c2 + sz; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(r, c, size, curNodeIdx, first);
 
                 if (allSame) {
-                    var color = first === 1 ? '파랑' : '흰색';
+                    // Step 3: All same color - resolved
+                    var color = first === 1 ? '\ud30c\ub791' : '\ud770\uc0c9';
                     var borderColor = first === 1 ? 'var(--accent)' : 'var(--green)';
-                    (function(r2,c2,sz,col,bc,f) {
+                    (function(r2, c2, sz, col, bc, f, nid) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': 전부 ' + col + '! ' + col + '+1',
+                            description: '전부 같은 색(' + col + ')! → 이 영역은 <strong>' + col + ' 종이 1장</strong>으로 표현 가능하므로 카운트를 +1합니다.',
                             action: function() {
                                 var h = {};
                                 for (var i = r2; i < r2 + sz; i++)
                                     for (var j = c2; j < c2 + sz; j++)
-                                        h[i + ',' + j] = 'border:3px solid ' + bc + ';box-shadow:0 0 8px ' + bc + '40;';
+                                        h[i + ',' + j] = 'border:3px solid ' + bc + ';box-shadow:0 0 10px ' + bc + '40;';
                                 renderGrid(h);
                                 if (f === 0) whiteCnt++; else blueCnt++;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': 전부 ' + col + ' → <strong>' + col + ' +1</strong> (흰:' + whiteCnt + ', 파:' + blueCnt + ')';
+                                treeNodes[nid].status = 'uniform';
+                                treeNodes[nid].result = '\u2192 ' + col + ' (\ud770:' + whiteCnt + ' \ud30c:' + blueCnt + ')';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '\u00d7' + sz + ': \uc804\ubd80 ' + col + ' \u2192 <strong>' + col + ' +1</strong> (\ud770:' + whiteCnt + ', \ud30c:' + blueCnt + ')';
                             },
                             undo: function() {
                                 if (f === 0) whiteCnt--; else blueCnt--;
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
                                 renderGrid(null);
-                                infoEl.innerHTML = '(되돌리기)';
+                                renderTree(-1);
+                                infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
                             }
                         });
-                    })(r, c, size, color, borderColor, first);
+                    })(r, c, size, color, borderColor, first, curNodeIdx);
                 } else {
-                    (function(r2,c2,sz) {
+                    // Step 3: Different color found
+                    (function(r2, c2, sz, nid, dr, dc) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ' 검사: 색이 섞여 있음 → 4등분!',
+                            description: '다른 색 발견! [' + dr + ',' + dc + '] = ' + grid[dr][dc] + ' — 색이 섞여 있으므로 이 영역을 <em>하나의 종이로 표현할 수 없습니다</em>. 더 작게 나눠야 합니다.',
                             action: function() {
                                 var h = {};
                                 for (var i = r2; i < r2 + sz; i++)
                                     for (var j = c2; j < c2 + sz; j++)
-                                        h[i + ',' + j] = 'border:3px solid var(--red);';
+                                        h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                                h[dr + ',' + dc] = 'border:3px solid var(--red);box-shadow:0 0 10px var(--red)40;transform:scale(1.1);';
+                                h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;';
                                 renderGrid(h);
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '×' + sz + ': 색이 다름 → <strong>4등분!</strong>';
+                                treeNodes[nid].status = 'checking';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']=' + grid[r2][c2] + ' vs [' + dr + ',' + dc + ']=' + grid[dr][dc] + ' → <strong>다른 색 발견!</strong>';
                             },
                             undo: function() {
+                                treeNodes[nid].status = 'checking';
                                 renderGrid(null);
+                                renderTree(-1);
                                 infoEl.innerHTML = '(되돌리기)';
                             }
                         });
-                    })(r, c, size);
+                    })(r, c, size, curNodeIdx, diffR, diffC);
+
+                    // Step 4: Subdivide
+                    (function(r2, c2, sz, nid) {
+                        var half = sz / 2;
+                        steps.push({
+                            description: '색이 섞여 단일 종이 불가 → <strong>4등분</strong>하여 ' + half + '×' + half + ' 4개 영역으로 나눕니다. 각 부분이 단일 색인지 다시 확인합니다.',
+                            action: function() {
+                                var h = {};
+                                var colors = ['var(--accent)', 'var(--green)', '#e17055', '#6c5ce7'];
+                                var regions = [[r2,c2],[r2,c2+half],[r2+half,c2],[r2+half,c2+half]];
+                                for (var q = 0; q < 4; q++) {
+                                    var rr = regions[q][0], cc = regions[q][1];
+                                    for (var i = rr; i < rr + half; i++)
+                                        for (var j = cc; j < cc + half; j++)
+                                            h[i + ',' + j] = 'border:3px solid ' + colors[q] + ';';
+                                }
+                                renderGrid(h);
+                                treeNodes[nid].status = 'mixed';
+                                treeNodes[nid].result = '\u2192 4\ub4f1\ubd84';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz + '\u00d7' + sz + ' \u2192 <strong>4\ub4f1\ubd84!</strong> \uac01 ' + half + '\u00d7' + half + ' \uc601\uc5ed\uc73c\ub85c \ub098\ub244\ub2c8\ub2e4.';
+                            },
+                            undo: function() {
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
+                                renderGrid(null);
+                                renderTree(-1);
+                                infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                            }
+                        });
+                    })(r, c, size, curNodeIdx);
+
                     var half = size / 2;
-                    buildSteps(r, c, half, grid);
-                    buildSteps(r, c + half, half, grid);
-                    buildSteps(r + half, c, half, grid);
-                    buildSteps(r + half, c + half, half, grid);
+                    buildSteps(r, c, half, grid, depth + 1);
+                    buildSteps(r, c + half, half, grid, depth + 1);
+                    buildSteps(r + half, c, half, grid, depth + 1);
+                    buildSteps(r + half, c + half, half, grid, depth + 1);
                 }
             }
             whiteCnt = 0; blueCnt = 0;
-            buildSteps(0, 0, SIZE, grid);
+            nodeIdx = 0;
+            buildSteps(0, 0, SIZE, grid, 0);
             var finalW = 0, finalB = 0;
             (function countAll(r,c,sz) {
                 var f = grid[r][c], ok = true;
@@ -614,11 +1328,17 @@ var divideConquerTopic = {
                 else { var h2=sz/2; countAll(r,c,h2); countAll(r,c+h2,h2); countAll(r+h2,c,h2); countAll(r+h2,c+h2,h2); }
             })(0,0,SIZE);
             steps.push({
-                description: '완성! 흰색 ' + finalW + '개, 파란색 ' + finalB + '개',
-                action: function() { renderGrid(null); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! 흰색: ' + finalW + '개, 파란색: ' + finalB + '개</strong>'; },
-                undo: function() { renderGrid(null); infoEl.innerHTML = '(되돌리기)'; }
+                description: '\uc644\uc131! \ud770\uc0c9 ' + finalW + '\uac1c, \ud30c\ub780\uc0c9 ' + finalB + '\uac1c',
+                action: function() {
+                    renderGrid(null);
+                    for (var i = 0; i < treeNodes.length; i++) if (treeNodes[i].status !== 'mixed') treeNodes[i].status = 'uniform';
+                    renderTree(-1);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 \uc644\uc131! \ud770\uc0c9: ' + finalW + '\uac1c, \ud30c\ub780\uc0c9: ' + finalB + '\uac1c</strong>';
+                },
+                undo: function() { renderGrid(null); renderTree(-1); infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)'; }
             });
             whiteCnt = 0; blueCnt = 0;
+            renderTree(-1);
             self._initStepController(container, steps, suffix);
         }
 
@@ -643,11 +1363,17 @@ var divideConquerTopic = {
             '<button class="btn btn-primary" id="dc-quad-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
+            '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
+            '<div>' +
             '<div id="dc-grid' + suffix + '" style="display:inline-grid;gap:2px;margin-bottom:8px;"></div>' +
             '<div id="dc-result' + suffix + '" style="font-family:monospace;font-size:1.1rem;padding:8px;background:var(--bg);border-radius:8px;margin-bottom:12px;text-align:center;min-height:30px;"></div>' +
+            '</div>' +
+            '<div id="dc-tree' + suffix + '" style="flex:1;min-width:220px;max-height:400px;overflow-y:auto;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--bg3);"></div>' +
+            '</div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var gridEl = container.querySelector('#dc-grid' + suffix);
+        var treeEl = container.querySelector('#dc-tree' + suffix);
         var resultEl = container.querySelector('#dc-result' + suffix);
         var infoEl = container.querySelector('#dc-info' + suffix);
         var inputEl = container.querySelector('#dc-quad-input');
@@ -668,6 +1394,44 @@ var divideConquerTopic = {
             var SIZE = grid.length;
             gridEl.style.gridTemplateColumns = 'repeat(' + SIZE + ',48px)';
 
+            // Tree node tracking
+            var treeNodes = [];
+            var treeNodeId = 0;
+
+            function addTreeNode(r, c, sz, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, label: '[' + r + ',' + c + '] ' + sz + '\u00d7' + sz, depth: depth, status: 'unvisited', parentId: parentId, result: '' });
+                return id;
+            }
+
+            function renderTree(highlightId) {
+                var html = '<div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:8px;">쿼드트리 구조</div>';
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var n = treeNodes[i];
+                    var indent = n.depth * 24;
+                    var borderCol = 'var(--bg3)';
+                    var bgCol = 'var(--bg2)';
+                    var shadow = '';
+                    if (n.status === 'current' || n.status === 'checking') {
+                        borderCol = 'var(--yellow)';
+                        shadow = 'box-shadow:0 0 8px var(--yellow);';
+                    } else if (n.status === 'uniform') {
+                        bgCol = 'var(--green)15';
+                        borderCol = 'var(--green)';
+                        shadow = 'box-shadow:0 0 6px var(--green)40;';
+                    } else if (n.status === 'mixed') {
+                        borderCol = 'var(--red)';
+                        bgCol = 'var(--red)10';
+                    }
+                    if (highlightId === n.id) {
+                        shadow = 'box-shadow:0 0 10px var(--yellow);';
+                    }
+                    var resultTag = n.result ? ' <span style="font-size:0.75rem;color:var(--text2);">' + n.result + '</span>' : '';
+                    html += '<div style="margin-left:' + indent + 'px;padding:6px 12px;margin:4px 0;border-radius:8px;border:2px solid ' + borderCol + ';background:' + bgCol + ';font-size:0.85rem;color:var(--text);transition:all 0.3s;' + shadow + '">' + n.label + resultTag + '</div>';
+                }
+                treeEl.innerHTML = html;
+            }
+
             function renderGrid(highlights) {
                 var html = '';
                 for (var r = 0; r < SIZE; r++) for (var c = 0; c < SIZE; c++) {
@@ -682,8 +1446,23 @@ var divideConquerTopic = {
             resultEl.textContent = '';
             infoEl.innerHTML = '<span style="color:var(--text2);">쿼드트리 압축을 시작합니다.</span>';
 
-            var steps = [];
-            var resultStr = '';
+            // Pre-build tree structure
+            function preAddNodes(r, c, sz, depth, parentId) {
+                var nodeId = addTreeNode(r, c, sz, depth, parentId);
+                var first = grid[r][c], allSame = true;
+                for (var i = r; i < r + sz && allSame; i++)
+                    for (var j = c; j < c + sz && allSame; j++)
+                        if (grid[i][j] !== first) allSame = false;
+                if (!allSame) {
+                    var half = sz / 2;
+                    preAddNodes(r, c, half, depth + 1, nodeId);
+                    preAddNodes(r, c + half, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c, half, depth + 1, nodeId);
+                    preAddNodes(r + half, c + half, half, depth + 1, nodeId);
+                }
+                return nodeId;
+            }
+            preAddNodes(0, 0, SIZE, 0, -1);
 
             // 쿼드트리 결과 먼저 계산
             function quadResult(r, c, sz) {
@@ -695,81 +1474,199 @@ var divideConquerTopic = {
             }
             var finalResult = quadResult(0, 0, SIZE);
 
+            var steps = [];
+            var resultStr = '';
+            var nodeIdx = 0;
+
             function buildSteps(r, c, sz) {
+                var curNodeIdx = nodeIdx;
+                nodeIdx++;
+
                 var f = grid[r][c], ok = true;
-                for (var i=r;i<r+sz&&ok;i++) for(var j=c;j<c+sz&&ok;j++) if(grid[i][j]!==f) ok=false;
+                var diffR = -1, diffC = -1;
+                for (var i=r;i<r+sz&&ok;i++) for(var j=c;j<c+sz&&ok;j++) if(grid[i][j]!==f) { ok=false; diffR=i; diffC=j; }
+
+                // Step 1: Announce region
+                (function(r2, c2, sz2, nid) {
+                    steps.push({
+                        description: '영역 [' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' — 모든 셀이 같은 값이면 그 숫자 하나로 압축, 아니면 4등분이 필요합니다.',
+                        action: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz2; i++)
+                                for (var j = c2; j < c2 + sz2; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' 영역을 검사합니다.';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'unvisited';
+                            renderGrid(null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(되돌리기)';
+                        }
+                    });
+                })(r, c, sz, curNodeIdx);
+
+                // Step 2: Check cells
+                (function(r2, c2, sz2, nid, firstVal) {
+                    steps.push({
+                        description: '셀을 확인합니다. 첫 번째 값은 ' + firstVal + ' — 나머지도 같은지 비교합니다.',
+                        action: function() {
+                            var h = {};
+                            h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;transform:scale(1.1);';
+                            for (var i = r2; i < r2 + sz2; i++)
+                                for (var j = c2; j < c2 + sz2; j++)
+                                    if (!(i === r2 && j === c2)) h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'checking';
+                            renderTree(nid);
+                            infoEl.innerHTML = '\uccab \ubc88\uc9f8 \uc140 [' + r2 + ',' + c2 + '] = <strong>' + firstVal + '</strong>';
+                        },
+                        undo: function() {
+                            var h = {};
+                            for (var i = r2; i < r2 + sz2; i++)
+                                for (var j = c2; j < c2 + sz2; j++)
+                                    h[i + ',' + j] = 'border:3px solid var(--yellow);box-shadow:0 0 8px var(--yellow)40;';
+                            renderGrid(h);
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(r, c, sz, curNodeIdx, f);
+
                 if (ok) {
-                    (function(r2,c2,sz2,val) {
+                    // Step 3: All same - output digit
+                    (function(r2, c2, sz2, val, nid) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 전부 ' + val + ' → "' + val + '"',
+                            description: '전부 같은 값 ' + val + '! → 영역 전체를 숫자 <strong>"' + val + '"</strong> 하나로 압축합니다. 더 이상 나눌 필요 없습니다.',
                             action: function() {
                                 var h = {};
-                                for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--green);';
+                                for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--green);box-shadow:0 0 8px var(--green)40;';
                                 renderGrid(h);
                                 resultStr += '' + val;
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']: 전부 ' + val + ' → <strong>"' + val + '"</strong>';
+                                treeNodes[nid].status = 'uniform';
+                                treeNodes[nid].result = '\u2192 "' + val + '"';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']: \uc804\ubd80 ' + val + ' \u2192 <strong>"' + val + '"</strong> \ucd9c\ub825';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
                                 resultEl.textContent = resultStr;
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
                                 renderGrid(null);
+                                renderTree(-1);
+                                infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                            }
+                        });
+                    })(r, c, sz, f, curNodeIdx);
+                } else {
+                    // Step 3: Different color found
+                    (function(r2, c2, sz2, nid, dr, dc) {
+                        steps.push({
+                            description: '다른 값 발견! [' + dr + ',' + dc + '] = ' + grid[dr][dc] + ' — 값이 섞여 있으므로 하나의 숫자로 압축 불가. 4등분이 필요합니다.',
+                            action: function() {
+                                var h = {};
+                                for (var i = r2; i < r2 + sz2; i++)
+                                    for (var j = c2; j < c2 + sz2; j++)
+                                        h[i + ',' + j] = 'border:2px solid var(--yellow);opacity:0.7;';
+                                h[dr + ',' + dc] = 'border:3px solid var(--red);box-shadow:0 0 10px var(--red)40;transform:scale(1.1);';
+                                h[r2 + ',' + c2] = 'border:3px solid var(--green);box-shadow:0 0 10px var(--green)40;';
+                                renderGrid(h);
+                                treeNodes[nid].status = 'checking';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + ']=' + grid[r2][c2] + ' vs [' + dr + ',' + dc + ']=' + grid[dr][dc] + ' → <strong>다른 색!</strong>';
+                            },
+                            undo: function() {
+                                treeNodes[nid].status = 'checking';
+                                renderGrid(null);
+                                renderTree(-1);
                                 infoEl.innerHTML = '(되돌리기)';
                             }
                         });
-                    })(r, c, sz, f);
-                } else {
-                    (function(r2,c2,sz2) {
+                    })(r, c, sz, curNodeIdx, diffR, diffC);
+
+                    // Step 4: Subdivide + open paren
+                    (function(r2, c2, sz2, nid) {
+                        var half = sz2 / 2;
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 색이 섞임 → "(" 시작, 4등분!',
+                            description: '값이 섞여 압축 불가 → <strong>"(" 열고 4등분</strong>하여 ' + half + '×' + half + ' 4개 하위 영역을 재귀적으로 처리합니다.',
                             action: function() {
                                 var h = {};
-                                for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--red);';
+                                var colors = ['var(--accent)', 'var(--green)', '#e17055', '#6c5ce7'];
+                                var regions = [[r2,c2],[r2,c2+half],[r2+half,c2],[r2+half,c2+half]];
+                                for (var q = 0; q < 4; q++) {
+                                    var rr = regions[q][0], cc = regions[q][1];
+                                    for (var i = rr; i < rr + half; i++)
+                                        for (var j = cc; j < cc + half; j++)
+                                            h[i + ',' + j] = 'border:3px solid ' + colors[q] + ';';
+                                }
                                 renderGrid(h);
                                 resultStr += '(';
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 섞임 → <strong>"(" 열기</strong>';
+                                treeNodes[nid].status = 'mixed';
+                                treeNodes[nid].result = '\u2192 (...)';
+                                renderTree(nid);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] ' + sz2 + '\u00d7' + sz2 + ': \uc0c9\uc774 \uc12c\uc784 \u2192 <strong>"(" \uc5f4\uae30</strong>, 4\ub4f1\ubd84!';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
                                 resultEl.textContent = resultStr;
+                                treeNodes[nid].status = 'checking';
+                                treeNodes[nid].result = '';
                                 renderGrid(null);
-                                infoEl.innerHTML = '(되돌리기)';
+                                renderTree(-1);
+                                infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
                             }
                         });
-                    })(r, c, sz);
+                    })(r, c, sz, curNodeIdx);
+
                     var h = sz/2;
                     buildSteps(r, c, h);
                     buildSteps(r, c+h, h);
                     buildSteps(r+h, c, h);
                     buildSteps(r+h, c+h, h);
-                    // 닫는 괄호
-                    (function(r2,c2,sz2) {
+
+                    // Close paren
+                    (function(r2, c2, sz2, nid) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' 완료 → ")" 닫기',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ' 4개 하위 영역 처리 완료 → <strong>")" 닫기</strong>로 이 영역의 압축 결과를 마무리합니다.',
                             action: function() {
                                 renderGrid(null);
                                 resultStr += ')';
                                 resultEl.textContent = resultStr;
-                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] 영역 완료 → <strong>")" 닫기</strong>';
+                                renderTree(-1);
+                                infoEl.innerHTML = '[' + r2 + ',' + c2 + '] \uc601\uc5ed \uc644\ub8cc \u2192 <strong>")" \ub2eb\uae30</strong>';
                             },
                             undo: function() {
                                 resultStr = resultStr.slice(0, -1);
                                 resultEl.textContent = resultStr;
                                 renderGrid(null);
-                                infoEl.innerHTML = '(되돌리기)';
+                                renderTree(-1);
+                                infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
                             }
                         });
-                    })(r, c, sz);
+                    })(r, c, sz, curNodeIdx);
                 }
             }
             buildSteps(0, 0, SIZE);
             steps.push({
-                description: '완성! 결과: ' + finalResult,
-                action: function() { renderGrid(null); resultEl.textContent = finalResult; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 완성! ' + finalResult + '</strong>'; },
-                undo: function() { renderGrid(null); infoEl.innerHTML = '(되돌리기)'; }
+                description: '\uc644\uc131! \uacb0\uacfc: ' + finalResult,
+                action: function() {
+                    renderGrid(null);
+                    resultEl.textContent = finalResult;
+                    for (var i = 0; i < treeNodes.length; i++) if (treeNodes[i].status !== 'mixed') treeNodes[i].status = 'uniform';
+                    renderTree(-1);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 \uc644\uc131! ' + finalResult + '</strong>';
+                },
+                undo: function() { renderGrid(null); renderTree(-1); infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)'; }
             });
             resultStr = '';
+            renderTree(-1);
             self._initStepController(container, steps, suffix);
         }
 
@@ -844,7 +1741,7 @@ var divideConquerTopic = {
                     (function(r2,c2,sz2,val) {
                         var borderColor = val === -1 ? '#e17055' : val === 0 ? 'var(--green)' : 'var(--accent)';
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 전부 ' + val + ' → ' + val + ' +1',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 전부 ' + val + ' → 이 영역은 값 ' + val + '인 <strong>종이 1장</strong>으로 카운트합니다.',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid ' + borderColor + ';box-shadow:0 0 6px ' + borderColor + '40;';
@@ -862,7 +1759,7 @@ var divideConquerTopic = {
                 } else {
                     (function(r2,c2,sz2) {
                         steps.push({
-                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 값이 섞여 있음 → 9등분!',
+                            description: '[' + r2 + ',' + c2 + '] ' + sz2 + '×' + sz2 + ': 값이 섞여 있어 한 장으로 표현 불가 → <strong>9등분</strong>하여 각 부분을 다시 확인합니다.',
                             action: function() {
                                 var h = {};
                                 for (var i=r2;i<r2+sz2;i++) for(var j=c2;j<c2+sz2;j++) h[i+','+j]='border:3px solid var(--red);';
@@ -964,7 +1861,7 @@ var divideConquerTopic = {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: A + '^' + exp + ': ' + (odd ? '홀수' : '짝수') + ' → ' + A + '^' + half + ' × ' + A + '^' + half + (odd ? ' × ' + A : ''),
+                        description: A + '^' + exp + ': 지수가 ' + (odd ? '홀수' : '짝수') + '이므로 ' + A + '^' + half + '만 구하면 됩니다 → ' + A + '^' + half + ' × ' + A + '^' + half + (odd ? ' × ' + A : '') + '. <em>O(B) → O(log B)</em>로 단축!',
                         action: function() {
                             infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + A + '<sup>' + half + '</sup> × ' + A + '<sup>' + half + '</sup>' + (odd ? ' × ' + A : '') + ' (' + (odd ? '홀수: 반×반×밑' : '짝수: 반×반') + ')';
                         },
@@ -979,7 +1876,7 @@ var divideConquerTopic = {
             var baseVal = A % C;
             (function(be, bv, lastIdx) {
                 steps.push({
-                    description: '기저 조건: ' + A + '^' + be + ' = ' + bv + ' (mod ' + C + ')',
+                    description: '기저 조건: 지수가 1이 되면 더 나눌 수 없으므로 직접 계산합니다. ' + A + '^' + be + ' = ' + bv + ' (mod ' + C + ')',
                     action: function() { nodes[lastIdx].value = bv; renderTree(); infoEl.innerHTML = '기저: ' + A + '<sup>' + be + '</sup> mod ' + C + ' = <strong>' + bv + '</strong>'; },
                     undo: function() { nodes[lastIdx].value = null; renderTree(); infoEl.innerHTML = '(되돌리기)'; }
                 });
@@ -995,7 +1892,7 @@ var divideConquerTopic = {
                     var result = halfVal * halfVal % C;
                     if (exp % 2 === 1) result = result * (A % C) % C;
                     steps.push({
-                        description: '합치기: ' + A + '^' + exp + ' = ' + halfVal + '×' + halfVal + (exp % 2 === 1 ? '×' + (A%C) : '') + ' mod ' + C + ' = ' + result,
+                        description: '합치기: 하위 결과(' + A + '^' + Math.floor(exp/2) + '=' + halfVal + ')를 제곱' + (exp % 2 === 1 ? '하고 밑을 한 번 더 곱해' : '해서') + ' ' + A + '^' + exp + ' = ' + result + ' (mod ' + C + ')',
                         action: function() { nodes[idx].value = result; renderTree(); infoEl.innerHTML = A + '<sup>' + exp + '</sup> = ' + halfVal + ' × ' + halfVal + (exp % 2 === 1 ? ' × ' + (A%C) : '') + ' mod ' + C + ' = <strong>' + result + '</strong>'; },
                         undo: function() { nodes[idx].value = null; renderTree(); infoEl.innerHTML = '(되돌리기)'; }
                     });
@@ -1060,19 +1957,19 @@ var divideConquerTopic = {
 
             var facStr = fac.map(function(v,i){return i+'!='+v;}).join(', ');
             var steps = [
-                { description: '팩토리얼 계산: ' + facStr + ' (mod ' + MOD + ')',
+                { description: 'C(N,K) = N!/(K!·(N-K)!) — 분모를 직접 나눌 수 없으니 먼저 팩토리얼을 mod ' + MOD + '로 구합니다.',
                   action: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = '팩토리얼 계산 완료 (mod ' + MOD + ')'; },
                   undo: function() { calcEl.textContent = 'C(' + N + ',' + K + ') = ' + N + '! / (' + K + '! × ' + (N-K) + '!)'; infoEl.innerHTML = '<span style="color:var(--text2);">페르마 소정리로 모듈러 역원을 구합니다.</span>'; }
                 },
-                { description: '페르마 소정리: ' + K + '!의 역원 = ' + fac[K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invK,
+                { description: '모듈러에서는 나눗셈 대신 <em>역원</em>을 곱합니다. 페르마 소정리: ' + K + '!의 역원 = ' + fac[K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invK,
                   action: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → 역원 = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!의 모듈러 역원: <strong>' + invK + '</strong>'; },
                   undo: function() { calcEl.innerHTML = facStr; infoEl.innerHTML = '팩토리얼 계산 완료 (mod ' + MOD + ')'; }
                 },
-                { description: (N-K) + '!의 역원 = ' + fac[N-K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invNK,
+                { description: '같은 원리로 ' + (N-K) + '!의 역원도 구합니다: ' + fac[N-K] + '^' + (MOD-2) + ' mod ' + MOD + ' = ' + invNK,
                   action: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → 역원 = ' + fac[N-K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!의 모듈러 역원: <strong>' + invNK + '</strong>'; },
                   undo: function() { calcEl.innerHTML = K + '! = ' + fac[K] + ' → 역원 = ' + fac[K] + '<sup>' + (MOD-2) + '</sup> mod ' + MOD + ' = <strong>' + invK + '</strong>'; infoEl.innerHTML = K + '!의 모듈러 역원: <strong>' + invK + '</strong>'; }
                 },
-                { description: '결합: ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = ' + ans,
+                { description: 'N!에 두 역원을 곱하면 나눗셈 효과: ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = ' + ans,
                   action: function() { calcEl.innerHTML = N + '! × (' + K + '!)⁻¹ × (' + (N-K) + '!)⁻¹ = ' + fac[N] + ' × ' + invK + ' × ' + invNK + ' mod ' + MOD + ' = <strong>' + ans + '</strong>'; infoEl.innerHTML = 'C(' + N + ',' + K + ') mod ' + MOD + ' = <strong>' + ans + '</strong>'; },
                   undo: function() { calcEl.innerHTML = (N-K) + '! = ' + fac[N-K] + ' → 역원 = <strong>' + invNK + '</strong>'; infoEl.innerHTML = (N-K) + '!의 모듈러 역원: <strong>' + invNK + '</strong>'; }
                 },
@@ -1139,7 +2036,7 @@ var divideConquerTopic = {
                         for (var k = 0; k < M; k++) { val += A[ii][k] * B[k][jj]; parts.push(A[ii][k] + '×' + B[k][jj]); }
                         var isLast = (ii === N - 1 && jj === K - 1);
                         steps.push({
-                            description: 'C[' + ii + '][' + jj + '] = ' + parts.join(' + ') + ' = ' + val + (isLast ? '. 완성!' : ''),
+                            description: 'C[' + ii + '][' + jj + ']: A의 ' + ii + '행과 B의 ' + jj + '열을 원소별로 곱한 뒤 합산 = ' + parts.join(' + ') + ' = ' + val + (isLast ? '. 완성!' : ''),
                             action: function() {
                                 C[ii][jj] = val;
                                 matEl.innerHTML = showMat(A,'A') + ' × ' + showMat(B,'B') + ' = ' + showMat(C,'C');
@@ -1224,7 +2121,7 @@ var divideConquerTopic = {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: 'M^' + exp + ' = M^' + half + ' × M^' + half + (odd ? ' × M' : '') + ' (' + (odd ? '홀수' : '짝수') + ')',
+                        description: '지수 ' + exp + '은 ' + (odd ? '홀수' : '짝수') + ' → M^' + half + '만 구하면 제곱' + (odd ? '후 ×M' : '') + '으로 완성. 숫자 거듭제곱과 동일한 분할정복!',
                         action: function() { matEl.innerHTML = 'M<sup>' + exp + '</sup> → M<sup>' + half + '</sup> 먼저 계산!'; infoEl.innerHTML = (odd ? '홀수' : '짝수') + ' 지수: M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> × M<sup>' + half + '</sup>' + (odd ? ' × M' : ''); },
                         undo: function() { matEl.innerHTML = '(되돌리기)'; infoEl.innerHTML = '(되돌리기)'; }
                     });
@@ -1233,7 +2130,7 @@ var divideConquerTopic = {
             // 기저: M^1 = M mod MOD
             var M1 = [[M[0][0]%MOD,M[0][1]%MOD],[M[1][0]%MOD,M[1][1]%MOD]];
             steps.push({
-                description: 'M^1 = ' + matStr(M1) + ' (mod ' + MOD + ')',
+                description: '기저 조건: 지수 1이면 행렬 자체입니다. M^1 = ' + matStr(M1) + ' (mod ' + MOD + ')',
                 action: function() { matEl.innerHTML = showM(M1, 'M¹'); infoEl.innerHTML = '기저: M<sup>1</sup> = ' + matStr(M1); },
                 undo: function() { matEl.innerHTML = '(되돌리기)'; infoEl.innerHTML = '(되돌리기)'; }
             });
@@ -1244,7 +2141,7 @@ var divideConquerTopic = {
                     var superscripts = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
                     var supStr = ('' + exp).split('').map(function(d){return superscripts[d]||d;}).join('');
                     steps.push({
-                        description: 'M^' + exp + ' = ' + matStr(result),
+                        description: '합치기: 하위 결과를 행렬 곱셈으로 합쳐 M^' + exp + ' = ' + matStr(result),
                         action: function() { matEl.innerHTML = showM(result, 'M' + supStr); infoEl.innerHTML = 'M<sup>' + exp + '</sup> = ' + matStr(result); },
                         undo: function() { matEl.innerHTML = '(되돌리기)'; infoEl.innerHTML = '(되돌리기)'; }
                     });
@@ -1315,7 +2212,7 @@ var divideConquerTopic = {
                     var half = Math.floor(exp / 2);
                     var odd = exp % 2 === 1;
                     steps.push({
-                        description: 'M^' + exp + ' = M^' + half + ' × M^' + half + (odd ? ' × M' : '') + '. ' + (odd ? '홀수' : '짝수') + '이므로 ' + (odd ? '반×반×M' : '반×반') + '!',
+                        description: 'M^' + exp + ': 지수 ' + (odd ? '홀수' : '짝수') + ' → M^' + half + '를 먼저 구한 뒤 ' + (odd ? '반×반×M' : '반×반') + '으로 합칩니다. O(n) → O(log n)!',
                         action: function() { fibEl.innerHTML = 'M<sup>' + exp + '</sup> = M<sup>' + half + '</sup> × M<sup>' + half + '</sup>' + (odd ? ' × M' : '') + ' (' + (odd ? '홀수' : '짝수') + ')'; infoEl.innerHTML = exp + '은 ' + (odd ? '홀수' : '짝수') + ' → <strong>M^' + half + '를 먼저 구합니다</strong>'; },
                         undo: function() { fibEl.innerHTML = '(되돌리기)'; infoEl.innerHTML = '(되돌리기)'; }
                     });
@@ -1325,7 +2222,7 @@ var divideConquerTopic = {
             // 기저: M^1
             var M1 = [[1,1],[1,0]];
             steps.push({
-                description: 'M^1 = [[1,1],[1,0]] (기저)',
+                description: '기저 조건: M^1 = [[1,1],[1,0]] — 피보나치 점화식 F(n)=F(n-1)+F(n-2)를 행렬로 표현한 것입니다.',
                 action: function() { fibEl.innerHTML = 'M<sup>1</sup> = ' + matStr(M1); infoEl.innerHTML = '기저: M<sup>1</sup> = ' + matStr(M1); },
                 undo: function() { fibEl.innerHTML = '(되돌리기)'; infoEl.innerHTML = '(되돌리기)'; }
             });
@@ -1335,7 +2232,7 @@ var divideConquerTopic = {
                 (function(exp) {
                     var result = matPow(base, exp);
                     steps.push({
-                        description: 'M^' + exp + ' = ' + matStr(result),
+                        description: '합치기: M^' + exp + ' = ' + matStr(result) + ' → [0][1] 원소가 F(' + exp + ') = ' + result[0][1],
                         action: function() { fibEl.innerHTML = 'M<sup>' + exp + '</sup> = ' + matStr(result); infoEl.innerHTML = 'M<sup>' + exp + '</sup>[0][1] = <strong>' + result[0][1] + '</strong>'; },
                         undo: function() { fibEl.innerHTML = '(되돌리기)'; infoEl.innerHTML = '(되돌리기)'; }
                     });
@@ -1374,10 +2271,14 @@ var divideConquerTopic = {
             '<button class="btn btn-primary" id="dc-histo-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
+            '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
             '<div id="dc-bars' + suffix + '" style="display:flex;gap:2px;align-items:flex-end;height:160px;margin-bottom:12px;"></div>' +
+            '<div id="dc-tree' + suffix + '" style="flex:1;min-width:220px;max-height:360px;overflow-y:auto;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--bg3);"></div>' +
+            '</div>' +
             '<div id="dc-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var barsEl = container.querySelector('#dc-bars' + suffix);
+        var treeEl = container.querySelector('#dc-tree' + suffix);
         var infoEl = container.querySelector('#dc-info' + suffix);
         var inputEl = container.querySelector('#dc-histo-input');
         var resetBtn = container.querySelector('#dc-histo-reset');
@@ -1388,26 +2289,70 @@ var divideConquerTopic = {
             if (bars.length < 1) bars = [1];
             var maxH = Math.max.apply(null, bars) || 1;
 
-            function renderBars(highlights, rectRange) {
+            // Tree node tracking for recursive call tree
+            var treeNodes = [];
+            var treeNodeId = 0;
+
+            function addTreeNode(lo, hi, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, label: '[' + lo + '..' + hi + ']', depth: depth, status: 'unvisited', parentId: parentId, result: '' });
+                return id;
+            }
+
+            function renderTree(highlightId) {
+                var html = '<div style="font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:8px;">재귀 분할 트리</div>';
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var n = treeNodes[i];
+                    var indent = n.depth * 24;
+                    var borderCol = 'var(--bg3)';
+                    var bgCol = 'var(--bg2)';
+                    var shadow = '';
+                    if (n.status === 'current') {
+                        borderCol = 'var(--yellow)';
+                        shadow = 'box-shadow:0 0 8px var(--yellow);';
+                    } else if (n.status === 'resolved') {
+                        bgCol = 'var(--green)15';
+                        borderCol = 'var(--green)';
+                        shadow = 'box-shadow:0 0 6px var(--green)40;';
+                    } else if (n.status === 'split') {
+                        borderCol = 'var(--accent)';
+                        bgCol = 'var(--accent)10';
+                    } else if (n.status === 'cross') {
+                        borderCol = 'var(--red)';
+                        bgCol = 'var(--red)10';
+                    }
+                    if (highlightId === n.id) {
+                        shadow = 'box-shadow:0 0 10px var(--yellow);';
+                    }
+                    var resultTag = n.result ? ' <span style="font-size:0.75rem;color:var(--text2);">' + n.result + '</span>' : '';
+                    html += '<div style="margin-left:' + indent + 'px;padding:6px 12px;margin:4px 0;border-radius:8px;border:2px solid ' + borderCol + ';background:' + bgCol + ';font-size:0.85rem;color:var(--text);transition:all 0.3s;' + shadow + '">' + n.label + resultTag + '</div>';
+                }
+                treeEl.innerHTML = html;
+            }
+
+            function renderBars(highlights, rectRange, rangeHL) {
                 barsEl.innerHTML = bars.map(function(h, i) {
                     var pct = (h / maxH) * 100;
                     var bg = 'var(--accent)';
                     var extra = '';
+                    if (rangeHL && i >= rangeHL.lo && i <= rangeHL.hi) {
+                        bg = rangeHL.color || 'var(--yellow)';
+                        extra = 'box-shadow:0 0 6px var(--yellow)40;';
+                    }
                     if (highlights && highlights[i]) { bg = highlights[i]; }
                     if (rectRange && i >= rectRange.l && i <= rectRange.r) { extra = 'box-shadow:0 0 6px var(--green)40;'; bg = 'var(--green)'; }
                     return '<div style="width:40px;height:' + (pct/100*160) + 'px;background:' + bg + ';border-radius:4px 4px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px;font-size:0.8rem;font-weight:600;color:white;' + extra + '">' + h + '</div>';
                 }).join('');
             }
-            renderBars(null, null);
+            renderBars(null, null, null);
             infoEl.innerHTML = '<span style="color:var(--text2);">배열을 반으로 나누고, 왼/오/가운데 걸침 중 최대를 구합니다.</span>';
 
-            // 분할정복으로 최대 직사각형 (+ 어디서 나왔는지 추적)
+            // Pre-compute all results via full recursion
             function solve(lo, hi) {
                 if (lo === hi) return { area: bars[lo], l: lo, r: lo };
                 var mid = Math.floor((lo + hi) / 2);
                 var leftRes = solve(lo, mid);
                 var rightRes = solve(mid + 1, hi);
-                // 가운데 걸치는 경우
                 var l = mid, r = mid + 1;
                 var h = Math.min(bars[l], bars[r]);
                 var crossMax = h * 2, cl = l, cr = r;
@@ -1422,78 +2367,209 @@ var divideConquerTopic = {
                 return crossRes;
             }
 
-            var n = bars.length;
-            var mid = Math.floor((n - 1) / 2);
-            var leftRes = n > 1 ? solve(0, mid) : { area: bars[0], l: 0, r: 0 };
-            var rightRes = n > 1 ? solve(mid + 1, n - 1) : { area: 0, l: 0, r: 0 };
-            // 가운데 걸침
-            var cl = mid, cr = mid + 1;
-            if (cr >= n) cr = mid;
-            var ch = n > 1 ? Math.min(bars[cl], bars[cr]) : bars[0];
-            var crossMax = n > 1 ? ch * 2 : bars[0];
-            var bestCl = cl, bestCr = cr;
-            if (n > 1) {
-                var tl = cl, tr = cr, th = ch;
-                while (tl > 0 || tr < n - 1) {
-                    if (tl > 0 && (tr >= n - 1 || bars[tl-1] >= bars[tr+1])) { tl--; th = Math.min(th, bars[tl]); }
-                    else { tr++; th = Math.min(th, bars[tr]); }
-                    if (th * (tr - tl + 1) > crossMax) { crossMax = th * (tr - tl + 1); bestCl = tl; bestCr = tr; }
+            // Pre-build tree structure
+            function preAddNodes(lo, hi, depth, parentId) {
+                var nodeId = addTreeNode(lo, hi, depth, parentId);
+                if (lo < hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    preAddNodes(lo, mid, depth + 1, nodeId);
+                    preAddNodes(mid + 1, hi, depth + 1, nodeId);
                 }
+                return nodeId;
             }
-            var crossRes = { area: crossMax, l: bestCl, r: bestCr };
-            var best = leftRes;
-            if (rightRes.area > best.area) best = rightRes;
-            if (crossRes.area > best.area) best = crossRes;
+
+            var n = bars.length;
+            preAddNodes(0, n - 1, 0, -1);
 
             var steps = [];
-            // 스텝 1: 반으로 나누기
-            steps.push({
-                description: '전체 [0..' + (n-1) + ']을 반으로 나눕니다: 왼쪽 [0..' + mid + '], 오른쪽 [' + (mid+1) + '..' + (n-1) + ']',
-                action: function() {
-                    var h = {};
-                    for (var i = 0; i <= mid; i++) h[i] = 'var(--accent)';
-                    for (var i = mid+1; i < n; i++) h[i] = '#6c5ce7';
-                    renderBars(h, null);
-                    infoEl.innerHTML = '왼쪽 [0..' + mid + '] (파랑), 오른쪽 [' + (mid+1) + '..' + (n-1) + '] (보라)';
-                },
-                undo: function() { renderBars(null, null); infoEl.innerHTML = '<span style="color:var(--text2);">배열을 반으로 나누고, 왼/오/가운데 걸침 중 최대를 구합니다.</span>'; }
-            });
-            // 스텝 2: 왼쪽 최대
-            steps.push({
-                description: '왼쪽 [0..' + mid + '] 최대: bars[' + leftRes.l + '..' + leftRes.r + '], 넓이=' + leftRes.area,
-                action: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = '왼쪽 최대: bars[' + leftRes.l + '..' + leftRes.r + '], 넓이 = <strong>' + leftRes.area + '</strong>'; },
-                undo: function() { var h = {}; for (var i=0;i<=mid;i++) h[i]='var(--accent)'; for(var i=mid+1;i<n;i++) h[i]='#6c5ce7'; renderBars(h, null); infoEl.innerHTML = '왼쪽/오른쪽 분할'; }
-            });
-            // 스텝 3: 오른쪽 최대
-            if (n > 1) {
-                steps.push({
-                    description: '오른쪽 [' + (mid+1) + '..' + (n-1) + '] 최대: bars[' + rightRes.l + '..' + rightRes.r + '], 넓이=' + rightRes.area,
-                    action: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = '오른쪽 최대: bars[' + rightRes.l + '..' + rightRes.r + '], 넓이 = <strong>' + rightRes.area + '</strong>'; },
-                    undo: function() { renderBars(null, {l: leftRes.l, r: leftRes.r}); infoEl.innerHTML = '왼쪽 최대: <strong>' + leftRes.area + '</strong>'; }
-                });
-            }
-            // 스텝 4: 가운데 걸침
-            if (n > 1) {
-                steps.push({
-                    description: '가운데 걸치는 경우: mid=' + mid + '에서 양쪽 확장 → bars[' + bestCl + '..' + bestCr + '], 넓이=' + crossMax,
-                    action: function() {
-                        var h = {};
-                        for (var i = bestCl; i <= bestCr; i++) h[i] = 'var(--red)';
-                        renderBars(h, null);
-                        infoEl.innerHTML = '가운데 걸침: bars[' + bestCl + '..' + bestCr + '], 넓이 = <strong>' + crossMax + '</strong>';
-                    },
-                    undo: function() { renderBars(null, {l: rightRes.l, r: rightRes.r}); infoEl.innerHTML = '오른쪽 최대: <strong>' + rightRes.area + '</strong>'; }
-                });
-            }
-            // 스텝 5: 완성
-            steps.push({
-                description: '완성! max(왼쪽 ' + leftRes.area + ', 오른쪽 ' + rightRes.area + ', 가운데 ' + crossMax + ') = ' + best.area,
-                action: function() { renderBars(null, {l: best.l, r: best.r}); infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최대 직사각형 넓이 = ' + best.area + ' (bars[' + best.l + '..' + best.r + '])</strong>'; },
-                undo: function() {
-                    if (n > 1) { var h = {}; for (var i=bestCl;i<=bestCr;i++) h[i]='var(--red)'; renderBars(h, null); infoEl.innerHTML = '가운데 걸침: <strong>' + crossMax + '</strong>'; }
-                    else { renderBars(null, null); infoEl.innerHTML = '(되돌리기)'; }
+            var nodeIdx = 0;
+
+            // Build steps recursively following the divide-and-conquer order
+            function buildSteps(lo, hi, depth) {
+                var curNodeIdx = nodeIdx;
+                nodeIdx++;
+                var mid = Math.floor((lo + hi) / 2);
+
+                // Step: Announce range
+                (function(lo2, hi2, nid) {
+                    steps.push({
+                        description: '범위 [' + lo2 + '..' + hi2 + '] — 이 구간에서 가능한 최대 직사각형을 찾아야 합니다.',
+                        action: function() {
+                            renderBars(null, null, {lo: lo2, hi: hi2, color: 'var(--yellow)'});
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '\ubc94\uc704 [' + lo2 + '..' + hi2 + ']\ub97c \uac80\uc0ac\ud569\ub2c8\ub2e4.';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'unvisited';
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(lo, hi, curNodeIdx);
+
+                if (lo === hi) {
+                    // Base case: single bar
+                    (function(idx, nid) {
+                        steps.push({
+                            description: '기저 조건! 막대가 1개뿐이므로 더 나눌 수 없습니다. bars[' + idx + '] = ' + bars[idx] + ' → 넓이 = ' + bars[idx],
+                            action: function() {
+                                renderBars(null, {l: idx, r: idx}, null);
+                                treeNodes[nid].status = 'resolved';
+                                treeNodes[nid].result = '\u2192 \ub113\uc774 ' + bars[idx];
+                                renderTree(nid);
+                                infoEl.innerHTML = '\uae30\uc800 \uc870\uac74: bars[' + idx + '] = ' + bars[idx] + ' \u2192 <strong>\ub113\uc774 = ' + bars[idx] + '</strong>';
+                            },
+                            undo: function() {
+                                treeNodes[nid].status = 'current';
+                                treeNodes[nid].result = '';
+                                renderBars(null, null, {lo: idx, hi: idx, color: 'var(--yellow)'});
+                                renderTree(nid);
+                                infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                            }
+                        });
+                    })(lo, curNodeIdx);
+                    return;
                 }
+
+                // Step: Split into halves
+                (function(lo2, hi2, m, nid) {
+                    steps.push({
+                        description: '최대 직사각형은 왼쪽에만, 오른쪽에만, 또는 가운데 걸쳐 있을 수 있습니다. 먼저 반으로 나눕니다: [' + lo2 + '..' + m + '], [' + (m+1) + '..' + hi2 + ']',
+                        action: function() {
+                            var h = {};
+                            for (var i = lo2; i <= m; i++) h[i] = 'var(--accent)';
+                            for (var i = m+1; i <= hi2; i++) h[i] = '#6c5ce7';
+                            renderBars(h, null, null);
+                            treeNodes[nid].status = 'split';
+                            renderTree(nid);
+                            infoEl.innerHTML = '\uc67c\ucabd [' + lo2 + '..' + m + '] (blue), \uc624\ub978\ucabd [' + (m+1) + '..' + hi2 + '] (purple)';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'current';
+                            renderBars(null, null, {lo: lo2, hi: hi2, color: 'var(--yellow)'});
+                            renderTree(nid);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(lo, hi, mid, curNodeIdx);
+
+                // Recurse left
+                buildSteps(lo, mid, depth + 1);
+
+                // Recurse right
+                buildSteps(mid + 1, hi, depth + 1);
+
+                // Compute cross result
+                var leftRes = solve(lo, mid);
+                var rightRes = solve(mid + 1, hi);
+                // Cross computation for this range
+                var cl2 = mid, cr2 = mid + 1;
+                var ch2 = Math.min(bars[cl2], bars[cr2]);
+                var crossMax2 = ch2 * 2, bestCl2 = cl2, bestCr2 = cr2;
+                var tl2 = cl2, tr2 = cr2, th2 = ch2;
+                while (tl2 > lo || tr2 < hi) {
+                    if (tl2 > lo && (tr2 >= hi || bars[tl2-1] >= bars[tr2+1])) { tl2--; th2 = Math.min(th2, bars[tl2]); }
+                    else { tr2++; th2 = Math.min(th2, bars[tr2]); }
+                    if (th2 * (tr2 - tl2 + 1) > crossMax2) { crossMax2 = th2 * (tr2 - tl2 + 1); bestCl2 = tl2; bestCr2 = tr2; }
+                }
+                var totalBest = solve(lo, hi);
+
+                // Step: Show left result
+                (function(lo2, m, lRes, nid) {
+                    steps.push({
+                        description: '왼쪽 [' + lo2 + '..' + m + ']에서 찾은 최대 넓이: ' + lRes.area + ' — 3가지 후보 중 첫 번째입니다.',
+                        action: function() {
+                            renderBars(null, {l: lRes.l, r: lRes.r}, {lo: lo2, hi: m, color: 'var(--accent)40'});
+                            treeNodes[nid].status = 'current';
+                            renderTree(nid);
+                            infoEl.innerHTML = '\uc67c\ucabd \ucd5c\ub300: bars[' + lRes.l + '..' + lRes.r + '], \ub113\uc774 = <strong>' + lRes.area + '</strong>';
+                        },
+                        undo: function() {
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(lo, mid, leftRes, curNodeIdx);
+
+                // Step: Show right result
+                (function(m, hi2, rRes, nid) {
+                    steps.push({
+                        description: '오른쪽 [' + (m+1) + '..' + hi2 + ']에서 찾은 최대 넓이: ' + rRes.area + ' — 두 번째 후보입니다.',
+                        action: function() {
+                            renderBars(null, {l: rRes.l, r: rRes.r}, {lo: m+1, hi: hi2, color: '#6c5ce740'});
+                            renderTree(nid);
+                            infoEl.innerHTML = '\uc624\ub978\ucabd \ucd5c\ub300: bars[' + rRes.l + '..' + rRes.r + '], \ub113\uc774 = <strong>' + rRes.area + '</strong>';
+                        },
+                        undo: function() {
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(mid, hi, rightRes, curNodeIdx);
+
+                // Step: Cross expansion
+                (function(lo2, hi2, m, cMax, bcl, bcr, nid) {
+                    steps.push({
+                        description: '가운데 걸침(세 번째 후보): mid=' + m + '에서 양쪽으로 높이가 큰 쪽부터 확장하여 최대 넓이 = ' + cMax + ' (범위 [' + bcl + '..' + bcr + '])',
+                        action: function() {
+                            var h = {};
+                            for (var i = bcl; i <= bcr; i++) h[i] = 'var(--red)';
+                            renderBars(h, null, null);
+                            treeNodes[nid].status = 'cross';
+                            renderTree(nid);
+                            infoEl.innerHTML = '\uac00\uc6b4\ub370 \uac78\uce68: bars[' + bcl + '..' + bcr + '], \ub113\uc774 = <strong>' + cMax + '</strong>';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'current';
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(lo, hi, mid, crossMax2, bestCl2, bestCr2, curNodeIdx);
+
+                // Step: Resolve this node with the max
+                (function(lo2, hi2, lRes, rRes, cMax, best, nid) {
+                    steps.push({
+                        description: '[' + lo2 + '..' + hi2 + '] 결정! 3후보(왼 ' + lRes.area + ', 오 ' + rRes.area + ', 걸침 ' + cMax + ') 중 최대 = <strong>' + best.area + '</strong>',
+                        action: function() {
+                            renderBars(null, {l: best.l, r: best.r}, {lo: lo2, hi: hi2, color: 'var(--green)20'});
+                            treeNodes[nid].status = 'resolved';
+                            treeNodes[nid].result = '\u2192 \ub113\uc774 ' + best.area;
+                            renderTree(nid);
+                            infoEl.innerHTML = '[' + lo2 + '..' + hi2 + ']: max(\uc67c ' + lRes.area + ', \uc624 ' + rRes.area + ', \uac00\uc6b4\ub370 ' + cMax + ') = <strong>' + best.area + '</strong>';
+                        },
+                        undo: function() {
+                            treeNodes[nid].status = 'cross';
+                            treeNodes[nid].result = '';
+                            renderBars(null, null, null);
+                            renderTree(-1);
+                            infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)';
+                        }
+                    });
+                })(lo, hi, leftRes, rightRes, crossMax2, totalBest, curNodeIdx);
+            }
+
+            buildSteps(0, n - 1, 0);
+
+            // Final step
+            var finalBest = solve(0, n - 1);
+            steps.push({
+                description: '\uc644\uc131! \ucd5c\ub300 \uc9c1\uc0ac\uac01\ud615 \ub113\uc774 = ' + finalBest.area,
+                action: function() {
+                    renderBars(null, {l: finalBest.l, r: finalBest.r}, null);
+                    for (var i = 0; i < treeNodes.length; i++) treeNodes[i].status = 'resolved';
+                    renderTree(-1);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 \ucd5c\ub300 \uc9c1\uc0ac\uac01\ud615 \ub113\uc774 = ' + finalBest.area + ' (bars[' + finalBest.l + '..' + finalBest.r + '])</strong>';
+                },
+                undo: function() { renderBars(null, null, null); renderTree(-1); infoEl.innerHTML = '(\ub418\ub3cc\ub9ac\uae30)'; }
             });
+
+            renderTree(-1);
             self._initStepController(container, steps, suffix);
         }
 

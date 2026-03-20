@@ -82,6 +82,7 @@ const arrayTopic = {
         }
 
         const contentDiv = document.createElement('div');
+        if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
 
         // 접근법 기반 탭 or 레거시 탭
@@ -560,6 +561,26 @@ const arrayTopic = {
                     0번 사물함, 1번 사물함... 순서대로 나란히 있고, 번호만 알면 바로 열어볼 수 있습니다(O(1)).
                     다만 중간에 사물함을 끼워넣으려면 뒤의 것들을 모두 밀어야 합니다(O(n)).
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 인덱스로 O(1) 접근 vs 값 검색 O(n)</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-index-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">인덱스:
+                                <input type="number" id="arr-demo-index-input" min="0" max="7" value="0" style="width:56px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                            </label>
+                            <button class="concept-demo-btn" id="arr-demo-index-go">⚡ O(1) 바로 접근</button>
+                            <button class="concept-demo-btn" id="arr-demo-index-search" style="background:var(--yellow);color:#333;">🔍 O(n) 값 검색 시작</button>
+                        </div>
+                        <div id="arr-demo-search-controls" style="display:none;gap:12px;justify-content:center;align-items:center;margin-top:4px;">
+                            <button id="arr-demo-search-prev" class="concept-demo-btn">← 이전</button>
+                            <span id="arr-demo-search-counter" style="font-size:0.85rem;color:var(--text2);">시작 전</span>
+                            <button id="arr-demo-search-next" class="concept-demo-btn">다음 →</button>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-index-msg">👆 인덱스를 입력하고 버튼을 눌러보세요! "바로 접근"과 "값 검색"의 차이를 느껴보세요.</div>
+                </div>
+
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -633,6 +654,25 @@ int main() {
                 <div style="margin-top:0.5rem;">
                     <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#list" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: list ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/vector" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: vector ↗</a></span>
                 </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 삽입/삭제 비용 체감</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-insert-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;min-height:60px;align-items:flex-end;"></div>
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <button class="concept-demo-btn" id="arr-demo-insert-mid">📥 중간에 삽입 (O(n))</button>
+                            <button class="concept-demo-btn green" id="arr-demo-insert-end">📥 끝에 추가 (O(1))</button>
+                            <button class="concept-demo-btn danger" id="arr-demo-insert-reset">🔄 초기화</button>
+                        </div>
+                        <div id="arr-demo-insert-controls" style="display:none;gap:12px;justify-content:center;align-items:center;margin-top:4px;">
+                            <button id="arr-demo-insert-prev" class="concept-demo-btn">← 이전</button>
+                            <span id="arr-demo-insert-counter" style="font-size:0.85rem;color:var(--text2);">시작 전</span>
+                            <button id="arr-demo-insert-next" class="concept-demo-btn">다음 →</button>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-insert-msg">👆 "중간에 삽입"을 눌러보세요. 뒤의 원소들이 하나씩 밀리는 과정을 확인할 수 있습니다!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -656,6 +696,22 @@ int main() {
                     정렬된 배열에서 두 수의 합을 찾을 때, 합이 너무 크면 오른쪽을 줄이고, 너무 작으면 왼쪽을 늘립니다.
                     이중 for문(O(n²)) 대신 <strong>O(n)</strong>에 해결할 수 있습니다!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 투 포인터로 합 찾기</div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">목표 합:
+                                <input type="number" id="arr-demo-tp-target" value="10" style="width:60px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                            </label>
+                            <button class="concept-demo-btn" id="arr-demo-tp-step">▶ 다음 스텝</button>
+                            <button class="concept-demo-btn danger" id="arr-demo-tp-reset">🔄 초기화</button>
+                        </div>
+                        <div id="arr-demo-tp-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div id="arr-demo-tp-pointers" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;font-size:0.75rem;font-weight:700;min-height:20px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-tp-msg">👆 "다음 스텝" 버튼을 눌러 L, R 포인터가 어떻게 이동하는지 확인해보세요!</div>
+                </div>
+
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -912,6 +968,454 @@ int main() {
                 btn.style.display = 'none';
             });
         });
+
+        // --- helper: 배열 박스 생성 ---
+        var _mkBox = function(val, idx) {
+            var d = document.createElement('div');
+            d.className = 'str-char-box';
+            d.innerHTML = '<span class="str-char-idx">' + idx + '</span><span class="str-char-val">' + val + '</span>';
+            return d;
+        };
+
+        // --- 1. 인덱스 O(1) 접근 데모 ---
+        {
+            var idxArr = [10, 25, 8, 42, 17, 33, 5, 61];
+            var boxesEl = container.querySelector('#arr-demo-index-boxes');
+            var inputEl = container.querySelector('#arr-demo-index-input');
+            var goBtn = container.querySelector('#arr-demo-index-go');
+            var searchBtn = container.querySelector('#arr-demo-index-search');
+            var msgEl = container.querySelector('#arr-demo-index-msg');
+            var animating = false;
+
+            var renderBoxes = function() {
+                boxesEl.innerHTML = '';
+                for (var i = 0; i < idxArr.length; i++) {
+                    boxesEl.appendChild(_mkBox(idxArr[i], i));
+                }
+            };
+            renderBoxes();
+
+            var clearHighlights = function() {
+                boxesEl.querySelectorAll('.str-char-box').forEach(function(b) {
+                    b.classList.remove('comparing', 'matched');
+                    b.style.borderColor = '';
+                    b.style.background = '';
+                    b.style.transform = '';
+                    b.style.boxShadow = '';
+                });
+            };
+
+            goBtn.addEventListener('click', function() {
+                if (animating) return;
+                clearHighlights();
+                var idx = parseInt(inputEl.value);
+                if (isNaN(idx) || idx < 0 || idx >= idxArr.length) {
+                    msgEl.textContent = '인덱스는 0~' + (idxArr.length - 1) + ' 사이로 입력하세요!';
+                    return;
+                }
+                var boxes = boxesEl.querySelectorAll('.str-char-box');
+                boxes[idx].classList.add('matched');
+                msgEl.textContent = 'arr[' + idx + '] = ' + idxArr[idx] + ' → 바로 접근! 비교 0번, O(1)입니다. 인덱스만 알면 즉시 찾습니다.';
+            });
+
+            // --- Linear search: manual step controls ---
+            var searchControlsEl = container.querySelector('#arr-demo-search-controls');
+            var searchPrevBtn = container.querySelector('#arr-demo-search-prev');
+            var searchNextBtn = container.querySelector('#arr-demo-search-next');
+            var searchCounterEl = container.querySelector('#arr-demo-search-counter');
+            var searchSteps = [];
+            var searchStep = -1;
+            var searchActive = false;
+
+            var buildSearchSteps = function(targetIdx) {
+                var targetVal = idxArr[targetIdx];
+                var steps = [];
+                for (var i = 0; i <= targetIdx; i++) {
+                    (function(si) {
+                        if (si < targetIdx) {
+                            steps.push({
+                                desc: 'arr[' + si + '] = ' + idxArr[si] + ' → ' + targetVal + '이(가) 아닙니다. 다음!',
+                                action: function() {
+                                    var boxes = boxesEl.querySelectorAll('.str-char-box');
+                                    boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                                    for (var j = 0; j < si; j++) { boxes[j].style.opacity = '0.5'; }
+                                    boxes[si].style.opacity = '';
+                                    boxes[si].classList.add('comparing');
+                                    for (var j = si + 1; j < boxes.length; j++) { boxes[j].style.opacity = ''; }
+                                }
+                            });
+                        } else {
+                            steps.push({
+                                desc: '값 ' + targetVal + ' 발견! ' + (si + 1) + '번 비교했습니다. O(n) — 최악의 경우 ' + idxArr.length + '번 비교해야 합니다!',
+                                action: function() {
+                                    var boxes = boxesEl.querySelectorAll('.str-char-box');
+                                    boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                                    for (var j = 0; j < si; j++) { boxes[j].style.opacity = '0.5'; }
+                                    boxes[si].style.opacity = '';
+                                    boxes[si].classList.add('matched');
+                                    for (var j = si + 1; j < boxes.length; j++) { boxes[j].style.opacity = ''; }
+                                }
+                            });
+                        }
+                    })(i);
+                }
+                return steps;
+            };
+
+            var updateSearchUI = function() {
+                if (searchStep < 0) {
+                    searchCounterEl.textContent = '시작 전';
+                    searchPrevBtn.disabled = true;
+                    searchNextBtn.disabled = false;
+                } else if (searchStep >= searchSteps.length - 1) {
+                    searchCounterEl.textContent = (searchStep + 1) + ' / ' + searchSteps.length;
+                    searchPrevBtn.disabled = false;
+                    searchNextBtn.disabled = true;
+                } else {
+                    searchCounterEl.textContent = (searchStep + 1) + ' / ' + searchSteps.length;
+                    searchPrevBtn.disabled = false;
+                    searchNextBtn.disabled = false;
+                }
+                if (searchStep >= 0 && searchStep < searchSteps.length) {
+                    msgEl.textContent = searchSteps[searchStep].desc;
+                    searchSteps[searchStep].action();
+                } else {
+                    clearHighlights();
+                    boxesEl.querySelectorAll('.str-char-box').forEach(function(b) { b.style.opacity = ''; });
+                }
+            };
+
+            var resetSearch = function() {
+                searchActive = false;
+                searchStep = -1;
+                searchSteps = [];
+                searchControlsEl.style.display = 'none';
+                goBtn.disabled = false;
+                searchBtn.disabled = false;
+                searchBtn.textContent = '🔍 O(n) 값 검색 시작';
+                inputEl.disabled = false;
+                clearHighlights();
+                boxesEl.querySelectorAll('.str-char-box').forEach(function(b) { b.style.opacity = ''; });
+                msgEl.textContent = '👆 인덱스를 입력하고 버튼을 눌러보세요! "바로 접근"과 "값 검색"의 차이를 느껴보세요.';
+            };
+
+            searchBtn.addEventListener('click', function() {
+                if (searchActive) {
+                    resetSearch();
+                    return;
+                }
+                clearHighlights();
+                var idx = parseInt(inputEl.value);
+                if (isNaN(idx) || idx < 0 || idx >= idxArr.length) {
+                    msgEl.textContent = '인덱스는 0~' + (idxArr.length - 1) + ' 사이로 입력하세요!';
+                    return;
+                }
+                searchSteps = buildSearchSteps(idx);
+                searchStep = -1;
+                searchActive = true;
+                goBtn.disabled = true;
+                inputEl.disabled = true;
+                searchBtn.textContent = '🔄 검색 초기화';
+                searchControlsEl.style.display = 'flex';
+                msgEl.textContent = '값 ' + idxArr[idx] + '을(를) 찾기 위해 앞에서부터 하나씩 확인합니다. "다음 →"을 눌러보세요!';
+                updateSearchUI();
+            });
+
+            searchNextBtn.addEventListener('click', function() {
+                if (searchStep < searchSteps.length - 1) {
+                    searchStep++;
+                    updateSearchUI();
+                }
+            });
+
+            searchPrevBtn.addEventListener('click', function() {
+                if (searchStep > -1) {
+                    searchStep--;
+                    updateSearchUI();
+                    if (searchStep < 0) {
+                        msgEl.textContent = '값을 찾기 위해 앞에서부터 하나씩 확인합니다. "다음 →"을 눌러보세요!';
+                    }
+                }
+            });
+        }
+
+        // --- 2. 삽입/삭제 비용 데모 ---
+        {
+            var insertArr = [3, 7, 1, 9, 4, 6];
+            var insertBoxesEl = container.querySelector('#arr-demo-insert-boxes');
+            var insertMidBtn = container.querySelector('#arr-demo-insert-mid');
+            var insertEndBtn = container.querySelector('#arr-demo-insert-end');
+            var insertResetBtn = container.querySelector('#arr-demo-insert-reset');
+            var insertMsgEl = container.querySelector('#arr-demo-insert-msg');
+            var insertControlsEl = container.querySelector('#arr-demo-insert-controls');
+            var insertPrevBtn = container.querySelector('#arr-demo-insert-prev');
+            var insertNextBtn = container.querySelector('#arr-demo-insert-next');
+            var insertCounterEl = container.querySelector('#arr-demo-insert-counter');
+            var insertCount = 0;
+            var insertSteps = [];
+            var insertStep = -1;
+            var insertActive = false;
+
+            var renderInsertBoxes = function() {
+                insertBoxesEl.innerHTML = '';
+                for (var i = 0; i < insertArr.length; i++) {
+                    insertBoxesEl.appendChild(_mkBox(insertArr[i], i));
+                }
+            };
+            renderInsertBoxes();
+
+            var buildInsertSteps = function(arr, midIdx, newVal) {
+                var steps = [];
+                var arrCopy = arr.slice();
+                // Step for each element shifting (from right to left)
+                for (var si = arrCopy.length - 1; si >= midIdx; si--) {
+                    (function(shiftI, totalShifts) {
+                        steps.push({
+                            desc: 'arr[' + shiftI + '] = ' + arrCopy[shiftI] + '을(를) 한 칸 오른쪽으로 밀고 있습니다... (' + (arrCopy.length - shiftI) + '/' + totalShifts + ')',
+                            action: function() {
+                                var boxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                                boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                                if (boxes[shiftI]) {
+                                    boxes[shiftI].classList.add('comparing');
+                                }
+                            }
+                        });
+                    })(si, arrCopy.length - midIdx);
+                }
+                // Final step: insert the element
+                steps.push({
+                    desc: newVal + '을(를) 인덱스 ' + midIdx + '에 삽입 완료! ' + (arrCopy.length - midIdx) + '개 원소를 밀었습니다 → O(n)',
+                    action: function() {
+                        insertArr.splice(midIdx, 0, newVal);
+                        renderInsertBoxes();
+                        var newBoxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                        newBoxes[midIdx].classList.add('matched');
+                    },
+                    isFinal: true
+                });
+                return steps;
+            };
+
+            var updateInsertUI = function() {
+                if (insertStep < 0) {
+                    insertCounterEl.textContent = '시작 전';
+                    insertPrevBtn.disabled = true;
+                    insertNextBtn.disabled = false;
+                } else if (insertStep >= insertSteps.length - 1) {
+                    insertCounterEl.textContent = (insertStep + 1) + ' / ' + insertSteps.length;
+                    insertPrevBtn.disabled = false;
+                    insertNextBtn.disabled = true;
+                } else {
+                    insertCounterEl.textContent = (insertStep + 1) + ' / ' + insertSteps.length;
+                    insertPrevBtn.disabled = false;
+                    insertNextBtn.disabled = false;
+                }
+                if (insertStep >= 0 && insertStep < insertSteps.length) {
+                    insertMsgEl.textContent = insertSteps[insertStep].desc;
+                    insertSteps[insertStep].action();
+                }
+            };
+
+            var resetInsertDemo = function() {
+                insertActive = false;
+                insertStep = -1;
+                insertSteps = [];
+                insertControlsEl.style.display = 'none';
+                insertMidBtn.disabled = insertArr.length >= 10;
+                insertEndBtn.disabled = insertArr.length >= 10;
+                insertMidBtn.textContent = '📥 중간에 삽입 (O(n))';
+                var boxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                insertMsgEl.textContent = '👆 "중간에 삽입"을 눌러보세요. 뒤의 원소들이 하나씩 밀리는 과정을 확인할 수 있습니다!';
+            };
+
+            insertMidBtn.addEventListener('click', function() {
+                if (insertArr.length >= 10) return;
+                if (insertActive) {
+                    // Reset without completing - revert array if final step not reached
+                    resetInsertDemo();
+                    return;
+                }
+                var midIdx = Math.floor(insertArr.length / 2);
+                var newVal = [0, 8, 2, 5, 11, 15][insertCount % 6];
+                insertSteps = buildInsertSteps(insertArr, midIdx, newVal);
+                insertStep = -1;
+                insertActive = true;
+                insertEndBtn.disabled = true;
+                insertMidBtn.textContent = '🔄 삽입 초기화';
+                insertControlsEl.style.display = 'flex';
+                insertMsgEl.textContent = '인덱스 ' + midIdx + '에 ' + newVal + '을(를) 삽입합니다. 먼저 뒤의 원소들을 밀어야 합니다! "다음 →"을 눌러보세요.';
+                updateInsertUI();
+            });
+
+            insertNextBtn.addEventListener('click', function() {
+                if (insertStep < insertSteps.length - 1) {
+                    insertStep++;
+                    updateInsertUI();
+                    // If final step reached, finish the insertion
+                    if (insertSteps[insertStep] && insertSteps[insertStep].isFinal) {
+                        insertCount++;
+                        // Auto-finish after a moment
+                        setTimeout(function() {
+                            insertActive = false;
+                            insertSteps = [];
+                            insertStep = -1;
+                            insertControlsEl.style.display = 'none';
+                            insertMidBtn.textContent = '📥 중간에 삽입 (O(n))';
+                            insertMidBtn.disabled = insertArr.length >= 10;
+                            insertEndBtn.disabled = insertArr.length >= 10;
+                        }, 1200);
+                    }
+                }
+            });
+
+            insertPrevBtn.addEventListener('click', function() {
+                if (insertStep > -1) {
+                    // If we were on the final step, undo the splice
+                    if (insertSteps[insertStep] && insertSteps[insertStep].isFinal) {
+                        var midIdx = Math.floor((insertArr.length - 1) / 2);
+                        insertArr.splice(midIdx, 1);
+                        renderInsertBoxes();
+                        insertCount--;
+                    }
+                    insertStep--;
+                    if (insertStep >= 0) {
+                        updateInsertUI();
+                    } else {
+                        insertCounterEl.textContent = '시작 전';
+                        insertPrevBtn.disabled = true;
+                        insertNextBtn.disabled = false;
+                        var boxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                        boxes.forEach(function(b) { b.classList.remove('comparing', 'matched'); });
+                        insertMsgEl.textContent = '인덱스에 값을 삽입합니다. "다음 →"을 눌러보세요.';
+                    }
+                }
+            });
+
+            insertEndBtn.addEventListener('click', function() {
+                if (insertActive || insertArr.length >= 10) return;
+                var newVal = [0, 8, 2, 5, 11, 15][insertCount % 6];
+                insertArr.push(newVal);
+                renderInsertBoxes();
+                var newBoxes = insertBoxesEl.querySelectorAll('.str-char-box');
+                newBoxes[newBoxes.length - 1].classList.add('matched');
+                insertMsgEl.textContent = newVal + '을(를) 끝에 추가! 아무것도 밀 필요 없음 → O(1). 뒤에 그냥 붙이면 됩니다!';
+                insertMidBtn.disabled = insertArr.length >= 10;
+                insertEndBtn.disabled = insertArr.length >= 10;
+                insertCount++;
+            });
+
+            insertResetBtn.addEventListener('click', function() {
+                if (insertActive) {
+                    resetInsertDemo();
+                }
+                insertArr = [3, 7, 1, 9, 4, 6];
+                insertCount = 0;
+                renderInsertBoxes();
+                resetInsertDemo();
+            });
+        }
+
+        // --- 3. 투 포인터 데모 ---
+        {
+            var tpArr = [1, 2, 4, 6, 8, 10, 13, 15];
+            var tpBoxesEl = container.querySelector('#arr-demo-tp-boxes');
+            var tpPointersEl = container.querySelector('#arr-demo-tp-pointers');
+            var tpStepBtn = container.querySelector('#arr-demo-tp-step');
+            var tpResetBtn = container.querySelector('#arr-demo-tp-reset');
+            var tpTargetEl = container.querySelector('#arr-demo-tp-target');
+            var tpMsgEl = container.querySelector('#arr-demo-tp-msg');
+            var tpL, tpR, tpDone;
+
+            var renderTpBoxes = function() {
+                tpBoxesEl.innerHTML = '';
+                tpPointersEl.innerHTML = '';
+                for (var i = 0; i < tpArr.length; i++) {
+                    tpBoxesEl.appendChild(_mkBox(tpArr[i], i));
+                    var ptr = document.createElement('span');
+                    ptr.style.cssText = 'display:inline-block;width:44px;text-align:center;';
+                    ptr.id = 'arr-demo-tp-ptr-' + i;
+                    tpPointersEl.appendChild(ptr);
+                }
+            };
+
+            var updateTpPointers = function() {
+                for (var i = 0; i < tpArr.length; i++) {
+                    var ptr = container.querySelector('#arr-demo-tp-ptr-' + i);
+                    if (ptr) {
+                        var labels = [];
+                        if (i === tpL) labels.push('L');
+                        if (i === tpR) labels.push('R');
+                        ptr.textContent = labels.join(' ');
+                        ptr.style.color = i === tpL ? 'var(--green)' : i === tpR ? 'var(--accent)' : '';
+                    }
+                }
+                var boxes = tpBoxesEl.querySelectorAll('.str-char-box');
+                boxes.forEach(function(b, idx) {
+                    b.classList.remove('comparing', 'matched');
+                    b.style.borderColor = '';
+                    b.style.boxShadow = '';
+                    if (idx === tpL) {
+                        b.style.borderColor = 'var(--green)';
+                        b.style.boxShadow = '0 0 8px rgba(0,184,148,0.4)';
+                    }
+                    if (idx === tpR) {
+                        b.style.borderColor = 'var(--accent)';
+                        b.style.boxShadow = '0 0 8px rgba(108,92,231,0.4)';
+                    }
+                });
+            };
+
+            var tpInit = function() {
+                tpL = 0;
+                tpR = tpArr.length - 1;
+                tpDone = false;
+                renderTpBoxes();
+                updateTpPointers();
+                tpStepBtn.disabled = false;
+                tpMsgEl.textContent = '👆 "다음 스텝" 버튼을 눌러 L, R 포인터가 어떻게 이동하는지 확인해보세요!';
+            };
+            tpInit();
+
+            tpStepBtn.addEventListener('click', function() {
+                if (tpDone || tpL >= tpR) {
+                    tpMsgEl.textContent = '탐색이 끝났습니다! 🔄 초기화를 눌러 다시 시도해보세요.';
+                    tpStepBtn.disabled = true;
+                    return;
+                }
+                var target = parseInt(tpTargetEl.value) || 10;
+                var sum = tpArr[tpL] + tpArr[tpR];
+                var boxes = tpBoxesEl.querySelectorAll('.str-char-box');
+
+                if (sum === target) {
+                    boxes[tpL].classList.add('matched');
+                    boxes[tpR].classList.add('matched');
+                    tpMsgEl.textContent = 'arr[' + tpL + '] + arr[' + tpR + '] = ' + tpArr[tpL] + ' + ' + tpArr[tpR] + ' = ' + sum + ' ✓ 정답을 찾았습니다!';
+                    tpDone = true;
+                    tpStepBtn.disabled = true;
+                } else if (sum < target) {
+                    boxes[tpL].classList.add('comparing');
+                    boxes[tpR].classList.add('comparing');
+                    tpMsgEl.textContent = 'arr[' + tpL + '] + arr[' + tpR + '] = ' + tpArr[tpL] + ' + ' + tpArr[tpR] + ' = ' + sum + ' < ' + target + ' → 합이 작으니 L을 오른쪽으로!';
+                    setTimeout(function() {
+                        tpL++;
+                        updateTpPointers();
+                    }, 500);
+                } else {
+                    boxes[tpL].classList.add('comparing');
+                    boxes[tpR].classList.add('comparing');
+                    tpMsgEl.textContent = 'arr[' + tpL + '] + arr[' + tpR + '] = ' + tpArr[tpL] + ' + ' + tpArr[tpR] + ' = ' + sum + ' > ' + target + ' → 합이 크니 R을 왼쪽으로!';
+                    setTimeout(function() {
+                        tpR--;
+                        updateTpPointers();
+                    }, 500);
+                }
+            });
+
+            tpResetBtn.addEventListener('click', function() {
+                tpInit();
+            });
+        }
     },
 
     // ===== 시각화 탭 =====
@@ -934,7 +1438,8 @@ int main() {
             </div>
 
             ${self._createStepDesc()}
-            <div id="arr-sim-box" class="sim-card" style="overflow:hidden;padding:0;">
+            <div id="arr-sim-box" class="sim-card" style="overflow:visible;padding:0;position:relative;">
+                <div id="arr-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>
                 <div style="padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;">
                     <div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">
                         <span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> 확인 중</span>
@@ -967,6 +1472,8 @@ int main() {
         const ptrEl = container.querySelector('#arr-pointer-info');
         const seenEl = container.querySelector('#sw-seen');
         const statusEl = container.querySelector('#arr-status');
+        const flyEl = container.querySelector('#arr-fly');
+        const wrapEl = container.querySelector('#arr-sim-box');
 
         function renderBoxes(arr) {
             boxes.innerHTML = '';
@@ -1047,6 +1554,7 @@ int main() {
                     _before: null,
                     action: function() {
                         this._before = saveState();
+                        flyEl.innerHTML = '';
                         for (let j = 0; j < nums.length; j++) setBoxState(j, '');
                         setBoxState(i, 'current');
                         ptrEl.innerHTML = `<strong>${num}</strong>의 짝꿍 <strong>${comp}</strong> 찾는 중…`;
@@ -1058,7 +1566,7 @@ int main() {
                             statusEl.innerHTML = `<span style="color:var(--text3);">${comp} 없다 → 저장하고 넘어가자</span>`;
                         }
                     },
-                    undo: function() { restoreState(this._before); }
+                    undo: function() { flyEl.innerHTML = ''; restoreState(this._before); }
                 });
 
                 if (found) {
@@ -1066,6 +1574,7 @@ int main() {
                         _before: null,
                         action: function() {
                             this._before = saveState();
+                            flyEl.innerHTML = '';
                             for (let j = 0; j < nums.length; j++) setBoxState(j, '');
                             setBoxState(foundIdx, 'matched');
                             setBoxState(i, 'matched');
@@ -1073,7 +1582,7 @@ int main() {
                             ptrEl.innerHTML = `<span style="color:var(--green);">${nums[foundIdx]} + ${num} = ${target} ✅</span>`;
                             statusEl.innerHTML = `<span style="color:var(--green);font-size:1.1rem;">정답! [${foundIdx}, ${i}]</span>`;
                         },
-                        undo: function() { restoreState(this._before); }
+                        undo: function() { flyEl.innerHTML = ''; restoreState(this._before); }
                     });
                     break;
                 } else {
@@ -1083,12 +1592,47 @@ int main() {
                         _before: null,
                         action: function() {
                             this._before = saveState();
+                            flyEl.innerHTML = '';
+                            var srcBox = boxes.querySelector('[data-idx="' + i + '"]');
+                            var srcRect = srcBox ? srcBox.getBoundingClientRect() : null;
                             clearSeenHighlight();
                             setBoxState(i, '');
                             renderSeen(seenSnap);
                             statusEl.innerHTML = `seen에 ${num} 저장 ✓`;
+                            // Flying ghost: array box → hashmap entry
+                            var dstKey = seenEl.querySelector('#seen-key-' + num);
+                            if (srcRect && dstKey && wrapEl) {
+                                var wr = wrapEl.getBoundingClientRect();
+                                var dr = dstKey.getBoundingClientRect();
+                                dstKey.style.opacity = '0';
+                                var ghost = document.createElement('div');
+                                ghost.textContent = num;
+                                ghost.style.cssText = 'position:absolute;z-index:20;padding:4px 10px;' +
+                                    'left:' + (srcRect.left - wr.left) + 'px;top:' + (srcRect.top - wr.top) + 'px;' +
+                                    'font-weight:700;font-size:0.9rem;background:var(--accent);color:white;border-radius:8px;' +
+                                    'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);';
+                                flyEl.appendChild(ghost);
+                                requestAnimationFrame(function() { requestAnimationFrame(function() {
+                                    ghost.style.left = (dr.left - wr.left) + 'px';
+                                    ghost.style.top = (dr.top - wr.top) + 'px';
+                                }); });
+                                setTimeout(function() {
+                                    if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                                    if (dstKey) {
+                                        dstKey.style.opacity = '1';
+                                        dstKey.style.background = 'rgba(108,92,231,0.3)';
+                                        dstKey.style.transform = 'scale(1.15)';
+                                        dstKey.style.display = 'inline-block';
+                                        setTimeout(function() {
+                                            dstKey.style.background = 'rgba(0,0,0,0.05)';
+                                            dstKey.style.transform = '';
+                                        }, 400);
+                                    }
+                                }, 550);
+                            }
                         },
-                        undo: function() { restoreState(this._before); }
+                        undo: function() { flyEl.innerHTML = ''; restoreState(this._before); }
                     });
                     seen[num] = i;
                 }
@@ -1099,6 +1643,7 @@ int main() {
         function resetAll() {
             state.steps = [];
             state.currentStep = -1;
+            flyEl.innerHTML = '';
             renderBoxes(DEFAULT_ARR);
             ptrEl.textContent = ''; seenEl.innerHTML = '{ }'; statusEl.textContent = '—';
             stepCounter.textContent = '시작 전';
