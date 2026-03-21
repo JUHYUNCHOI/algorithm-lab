@@ -3,10 +3,10 @@ var divideConquerTopic = {
     id: 'divideconquer',
     title: '분할정복',
     icon: '🔪',
-    category: '심화 (Gold~Platinum)',
+    category: '문제 해결 기법 (Silver~Gold)',
     order: 13,
     description: '큰 문제를 작게 나눠서 풀고 합치는 기법',
-    relatedNote: '분할정복은 병합 정렬, 퀵 정렬의 기반이며, FFT, 카라츠바 곱셈 등 고급 알고리즘에도 쓰입니다.',
+    relatedNote: '분할정복은 병합 정렬, 퀵 정렬, 이진 탐색의 기반이며, 색종이/쿼드트리 같은 영역 분할 문제에서 자주 활용됩니다.',
 
     sidebarExpandable: true,
 
@@ -364,8 +364,8 @@ var divideConquerTopic = {
                                 <text x="30" y="58" font-size="14" fill="var(--yellow)">×</text>\
                             </svg>\
                         </div>\
-                        <h3>행렬 거듭제곱</h3>\
-                        <p>행렬의 거듭제곱도 같은 원리입니다. <strong>피보나치 수</strong>를 O(log n)에 구하는 데 사용합니다.</p>\
+                        <h3>행렬 거듭제곱 <span style="font-size:0.7rem;color:var(--text3);">(Gold+)</span></h3>\
+                        <p>행렬의 거듭제곱도 같은 원리입니다. <strong>피보나치 수</strong>를 O(log n)에 구하는 데 사용합니다. 빠른 거듭제곱을 먼저 이해한 뒤 도전하세요!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -376,7 +376,7 @@ var divideConquerTopic = {
                                 <rect x="52" y="20" width="12" height="50" fill="none" stroke="var(--blue)" stroke-width="2"/>\
                             </svg>\
                         </div>\
-                        <h3>구간 분할</h3>\
+                        <h3>구간 분할 <span style="font-size:0.7rem;color:var(--text3);">(Gold+)</span></h3>\
                         <p>배열을 <strong>왼쪽/오른쪽으로 나눠서</strong> 각각의 답을 구하고, 걸치는 경우를 처리합니다. 히스토그램 문제가 대표적입니다.</p>\
                     </div>\
                 </div>\

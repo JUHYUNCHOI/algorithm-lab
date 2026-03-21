@@ -357,7 +357,7 @@ ListNode* reverseList(ListNode* head) {
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 연결 리스트 뒤집기는 코딩 면접의 단골 문제입니다!
+                    <strong>💡 생각해보기:</strong> 연결 리스트 뒤집기는 알고리즘 대회에서도 자주 등장하는 핵심 기법입니다!
                     반복 버전과 재귀 버전 모두 구현할 수 있으면 좋습니다.
                 </div>
                 <div class="concept-demo">
@@ -455,8 +455,8 @@ ListNode* middleNode(ListNode* head) {
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 생각해보기:</strong> 코딩 테스트에서 연결 리스트 문제가 나오면,
-                    "뒤집기", "사이클 탐지", "중간 찾기", "병합" 이 4가지 패턴을 떠올리세요!
+                    <strong>💡 생각해보기:</strong> 연결 리스트 문제를 만나면,
+                    "뒤집기", "사이클 탐지", "중간 찾기", "병합" 이 4가지 핵심 패턴을 떠올리세요!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 토끼와 거북이 (Floyd's Cycle Detection)</div>
@@ -990,23 +990,41 @@ ListNode* middleNode(ListNode* head) {
             // Initial state
             states.push({
                 nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: -1, currIdx: 0, newHead: -1,
-                desc: '초기 상태: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + ').',
+                desc: '초기 상태: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + '). 세 포인터로 방향을 바꿀 준비를 합니다.',
                 animInfo: null
             });
 
-            // Step through reversal
+            // Step through reversal — split into sub-steps for granularity
             for (var step = 0; step < values.length; step++) {
                 var sc = simCurr;
                 var sp = simPrev;
                 var snext = simNodes[sc].nextIdx;
+
+                // Sub-step 1: Save next_node
+                states.push({
+                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: sp, currIdx: sc, newHead: -1,
+                    desc: 'next_node = curr.next &rarr; ' + (snext >= 0 ? '노드 ' + values[snext] : 'None') + '을 저장합니다. 다음 단계에서 curr.next를 바꾸면 다음 노드를 잃어버리므로, 미리 저장해야 합니다!',
+                    animInfo: null
+                });
+
+                // Sub-step 2: Flip pointer
                 simNodes[sc].nextIdx = simPrev;
+                states.push({
+                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: sp, currIdx: sc, newHead: -1,
+                    desc: 'curr(' + values[sc] + ').next = prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + ' &rarr; 화살표 방향을 뒤집습니다! 이것이 뒤집기의 핵심 동작입니다.',
+                    animInfo: { currNode: sc, prevNode: sp }
+                });
+
+                // Sub-step 3: Move prev and curr
                 simPrev = sc;
                 simCurr = snext;
                 states.push({
-                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: simCurr, newHead: -1,
-                    desc: 'curr(' + values[sc] + ').next를 prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + '로 바꿉니다. prev=' + values[sc] + ', curr=' + (snext >= 0 ? values[snext] : 'None') + '으로 이동.',
-                    animInfo: { currNode: sc, prevNode: sp }
+                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: simCurr >= 0 ? simCurr : -1, newHead: -1,
+                    desc: 'prev = ' + values[simPrev] + ', curr = ' + (simCurr >= 0 && simCurr < values.length ? values[simCurr] : 'None') + '으로 한 칸 전진합니다. 다음 노드를 처리하기 위해 이동합니다.',
+                    animInfo: null
                 });
+
+                if (simCurr < 0 || simCurr >= values.length) break;
             }
             var reversed = values.slice().reverse();
             states.push({
@@ -1135,19 +1153,25 @@ ListNode* middleNode(ListNode* head) {
         function buildSteps(list1, list2) {
             var states = [];
             var i1 = 0, i2 = 0, result = [];
-            states.push({ i1: 0, i2: 0, result: [], desc: 'dummy 노드를 만들고 두 리스트를 비교하며 병합합니다.', animInfo: null });
+            states.push({ i1: 0, i2: 0, result: [], desc: 'dummy 노드를 만듭니다. 결과 리스트의 시작점을 dummy.next로 추적하면 첫 노드를 특별 처리하지 않아도 됩니다.', animInfo: null });
 
             while (i1 < list1.length && i2 < list2.length) {
+                // Step 1: Compare
+                states.push({ i1: i1, i2: i2, result: result.slice(),
+                    desc: 'list1[' + i1 + ']=' + list1[i1] + '과 list2[' + i2 + ']=' + list2[i2] + '을 비교합니다. 두 리스트 모두 정렬되어 있으므로, 각각의 맨 앞만 비교하면 전체 순서가 유지됩니다.',
+                    animInfo: null });
                 if (list1[i1] <= list2[i2]) {
+                    // Step 2: Pick from list1
                     result.push(list1[i1]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &le; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list1에서 ' + list1[i1] + '을 연결합니다.',
+                        desc: list1[i1] + ' &le; ' + list2[i2] + '이므로 list1에서 ' + list1[i1] + '을 결과에 연결합니다. 더 작은 값을 먼저 넣어야 정렬이 유지되기 때문입니다.',
                         animInfo: { srcId: 'll-merge-l1-' + i1, destIdx: result.length - 1, value: list1[i1] } });
                     i1++;
                 } else {
+                    // Step 2: Pick from list2
                     result.push(list2[i2]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &gt; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list2에서 ' + list2[i2] + '을 연결합니다.',
+                        desc: list1[i1] + ' &gt; ' + list2[i2] + '이므로 list2에서 ' + list2[i2] + '을 결과에 연결합니다. 더 작은 값을 먼저 넣어야 정렬이 유지되기 때문입니다.',
                         animInfo: { srcId: 'll-merge-l2-' + i2, destIdx: result.length - 1, value: list2[i2] } });
                     i2++;
                 }
@@ -1155,19 +1179,19 @@ ListNode* middleNode(ListNode* head) {
             while (i1 < list1.length) {
                 result.push(list1[i1]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                    desc: 'list2 소진! list1의 나머지 ' + list1[i1] + '을 연결합니다.',
+                    desc: 'list2가 모두 소진되었습니다! list1의 나머지 ' + list1[i1] + '을 연결합니다. 이미 정렬되어 있으므로 남은 값을 그대로 붙이면 됩니다.',
                     animInfo: { srcId: 'll-merge-l1-' + i1, destIdx: result.length - 1, value: list1[i1] } });
                 i1++;
             }
             while (i2 < list2.length) {
                 result.push(list2[i2]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                    desc: 'list1 소진! list2의 나머지 ' + list2[i2] + '을 연결합니다.',
+                    desc: 'list1이 모두 소진되었습니다! list2의 나머지 ' + list2[i2] + '을 연결합니다. 이미 정렬되어 있으므로 남은 값을 그대로 붙이면 됩니다.',
                     animInfo: { srcId: 'll-merge-l2-' + i2, destIdx: result.length - 1, value: list2[i2] } });
                 i2++;
             }
             states.push({ i1: i1, i2: i2, result: result.slice(),
-                desc: '병합 완료! 결과: [' + result.join(', ') + '] &#10003;', animInfo: null });
+                desc: '병합 완료! 결과: [' + result.join(', ') + ']. 두 정렬된 리스트가 하나의 정렬된 리스트로 합쳐졌습니다 &#10003;', animInfo: null });
 
             return states.map(function(st) {
                 return {

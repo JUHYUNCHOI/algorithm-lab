@@ -87,7 +87,7 @@ const hashTableTopic = {
             prob.descriptionHTML +
             '<div style="text-align:right;margin-top:1.2rem;">' +
             '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>';
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>';
         contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
     },
 
@@ -137,7 +137,7 @@ const hashTableTopic = {
             '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
             '<option value="python">Python</option><option value="cpp">C++</option></select>' +
             '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>' +
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>' +
             '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
         var codeEl = wrapper.querySelector('code');
         codeEl.textContent = prob.templates.python;
@@ -1067,7 +1067,7 @@ struct HashTable {
             items.forEach(function(item) {
                 const h = simpleHash(item.key);
                 steps.push({
-                    description: '"' + item.key + '" \u2192 hash into slot ' + h + '!',
+                    description: '"' + item.key + '" → The hash function computes the position. hash("' + item.key + '") = ' + h + ', so it goes into slot ' + h + '.',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1086,7 +1086,7 @@ struct HashTable {
                 });
 
                 steps.push({
-                    description: '"' + item.key + '" stored \u2713',
+                    description: '"' + item.key + '" → Stored in slot ' + h + '! Later, to find this key, just run the hash function to know exactly where it is.',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1317,7 +1317,7 @@ struct HashTable {
                 const isDup = buildSeen.has(v);
                 buildSeen.add(v);
                 if (isDup) found = true;
-                steps.push({ description: isDup ? `${v} → Duplicate found! 🎉` : `${v} → Not seen, store it!`,
+                steps.push({ description: isDup ? `${v} → Already in the set, so duplicate found! 🎉` : `${v} → Not in the set, so this is a new value! Store it so we can catch duplicates later.`,
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1401,7 +1401,7 @@ struct HashTable {
 
                 const capturedStart = start, capturedMax = maxLen, capturedSeen = JSON.parse(JSON.stringify(seen));
                 const movedStart = start !== oldStart;
-                steps.push({ description: `'${c}' → ${movedStart ? 'Duplicate! Move start, ' : ''}length ${curLen}${curLen === capturedMax && curLen > 0 ? ' → New max! 🎉' : ''}`,
+                steps.push({ description: `'${c}' → ${movedStart ? 'Seen before, so move window start past the duplicate! ' : 'New character, so extend the window. '}Current window length ${curLen}${curLen === capturedMax && curLen > 0 ? ' → New max! 🎉' : ''}`,
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1721,7 +1721,7 @@ struct HashTable {
             const company = new Set();
             logs.forEach(function(log, i) {
                 const isEnter = log.action === 'enter';
-                steps.push({ description: log.name + ' ' + (isEnter ? 'enters! 📥' : 'leaves! 📤'),
+                steps.push({ description: log.name + ' ' + (isEnter ? 'enters! 📥 Add to set to track who is currently in the company.' : 'leaves! 📤 Remove from set to show they are no longer present.'),
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -2447,7 +2447,7 @@ int main() {
         bb.addEventListener('click', () => this.renderProblem(container)); container.appendChild(bb);
         const isLC = problem.link.includes('leetcode');
         const dd = document.createElement('div'); dd.className = 'problem-detail';
-        dd.innerHTML = `<div class="problem-meta"><a href="${problem.link}" target="_blank" class="btn btn-primary">${isLC?'LeetCodeSolve on LeetCode ↗':'BOJSolve on LeetCode ↗'}</a></div>${problem.descriptionHTML}`;
+        dd.innerHTML = `<div class="problem-meta"><a href="${problem.link}" target="_blank" class="btn btn-primary">${isLC?'Solve on LeetCode ↗':'Solve on BOJ ↗'}</a></div>${problem.descriptionHTML}`;
         container.appendChild(dd);
 
         const hs = document.createElement('div'); hs.className = 'hints-section'; hs.innerHTML = '<h3>Step-by-step Hints</h3>';

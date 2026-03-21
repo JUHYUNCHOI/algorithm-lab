@@ -3,10 +3,10 @@ var divideConquerTopic = {
     id: 'divideconquer',
     title: 'Divide & Conquer',
     icon: '🔪',
-    category: 'Advanced (Gold~Platinum)',
+    category: 'Problem Solving (Silver~Gold)',
     order: 13,
     description: 'Break a big problem into smaller pieces, solve each, and combine the results',
-    relatedNote: 'Divide & Conquer is the foundation of merge sort, quick sort, and is also used in advanced algorithms such as FFT and Karatsuba multiplication.',
+    relatedNote: 'Divide & Conquer is the foundation of merge sort, quick sort, and binary search, and is commonly used in area-division problems like colored paper and quadtree.',
 
     sidebarExpandable: true,
 
@@ -88,7 +88,7 @@ var divideConquerTopic = {
             prob.descriptionHTML +
             '<div style="text-align:right;margin-top:1.2rem;">' +
             '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>';
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>';
         contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
     },
 
@@ -364,8 +364,8 @@ var divideConquerTopic = {
                                 <text x="30" y="58" font-size="14" fill="var(--yellow)">×</text>\
                             </svg>\
                         </div>\
-                        <h3>Matrix Exponentiation</h3>\
-                        <p>Matrix exponentiation works on the same principle. Used to compute <strong>Fibonacci numbers</strong> in O(log n).</p>\
+                        <h3>Matrix Exponentiation <span style="font-size:0.7rem;color:var(--text3);">(Gold+)</span></h3>\
+                        <p>Matrix exponentiation works on the same principle. Used to compute <strong>Fibonacci numbers</strong> in O(log n). Master fast exponentiation first before tackling this!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon">\
@@ -376,7 +376,7 @@ var divideConquerTopic = {
                                 <rect x="52" y="20" width="12" height="50" fill="none" stroke="var(--blue)" stroke-width="2"/>\
                             </svg>\
                         </div>\
-                        <h3>Range Division</h3>\
+                        <h3>Range Division <span style="font-size:0.7rem;color:var(--text3);">(Gold+)</span></h3>\
                         <p>Split an array into <strong>left and right halves</strong>, find the answer for each, and handle the crossing case. The histogram problem is a classic example.</p>\
                     </div>\
                 </div>\

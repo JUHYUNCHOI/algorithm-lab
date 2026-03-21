@@ -1960,7 +1960,7 @@ int main() {
                 var _i = i, _price = price, _minPrice = minPrice, _minIdx = minIdx, _profit = profit, _maxProfit = maxProfit, _newMin = newMin, _newProfit = newProfit, _bestBuy = bestBuy, _bestSell = bestSell;
 
                 steps.push({
-                    description: _newProfit ? '이익 ' + _profit + ' → 최고 기록! 🎉' : _newMin ? '최저가 ' + _price + ' → 여기서 사자! 🏷️' : _profit > 0 ? '이익 ' + _profit + ', 아직 최고(' + _maxProfit + ') 미만' : '이익 없음, 패스',
+                    description: _newProfit ? '가격 ' + _price + ', 최저가(' + _minPrice + ')에 사서 지금 팔면 이익 ' + _profit + ' → 지금까지 최고 이익 갱신! 🎉' : _newMin ? '가격 ' + _price + ' → 지금까지 본 가격 중 가장 싸므로 최저가 갱신! 이후에 비싸게 팔 기회를 노립니다. 🏷️' : _profit > 0 ? '가격 ' + _price + ', 최저가(' + _minPrice + ')에 사서 팔면 이익 ' + _profit + '이지만 최고(' + _maxProfit + ')보다 작아서 갱신 안 함' : '가격 ' + _price + ', 최저가(' + _minPrice + ') 이하라 이익 없음, 패스',
                     _before: null,
                     action: function() {
                         this._before = saveState(data);

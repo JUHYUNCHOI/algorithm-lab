@@ -85,7 +85,7 @@ const linkedListTopic = {
             prob.descriptionHTML +
             '<div style="text-align:right;margin-top:1.2rem;">' +
             '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>';
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>';
         contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
     },
 
@@ -135,7 +135,7 @@ const linkedListTopic = {
             '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
             '<option value="python">Python</option><option value="cpp">C++</option></select>' +
             '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>' +
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>' +
             '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
         var codeEl = wrapper.querySelector('code');
         codeEl.textContent = prob.templates.python;
@@ -357,7 +357,7 @@ ListNode* reverseList(ListNode* head) {
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 Think about it:</strong> Reversing a linked list is a classic coding interview question!
+                    <strong>💡 Think about it:</strong> Reversing a linked list is a fundamental technique that appears frequently in competitive programming!
                     It's great if you can implement both the iterative and recursive versions.
                 </div>
                 <div class="concept-demo">
@@ -455,7 +455,7 @@ ListNode* middleNode(ListNode* head) {
 }</code></pre>
                 </div></span>
                 <div class="think-box">
-                    <strong>💡 Think about it:</strong> When you encounter a linked list problem in coding tests,
+                    <strong>💡 Think about it:</strong> When you encounter a linked list problem,
                     remember these 4 patterns: "reversal", "cycle detection", "finding the middle", and "merging"!
                 </div>
                 <div class="concept-demo">
@@ -972,23 +972,41 @@ ListNode* middleNode(ListNode* head) {
             // Initial state
             states.push({
                 nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: -1, currIdx: 0, newHead: -1,
-                desc: 'Initial state: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + ').',
+                desc: 'Initial state: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + '). Three pointers are set up to reverse the direction.',
                 animInfo: null
             });
 
-            // Step through reversal
+            // Step through reversal — split into sub-steps for granularity
             for (var step = 0; step < values.length; step++) {
                 var sc = simCurr;
                 var sp = simPrev;
                 var snext = simNodes[sc].nextIdx;
+
+                // Sub-step 1: Save next_node
+                states.push({
+                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: sp, currIdx: sc, newHead: -1,
+                    desc: 'next_node = curr.next &rarr; save ' + (snext >= 0 ? 'node ' + values[snext] : 'None') + '. We must save the next node before flipping the pointer, or we lose access to the rest of the list!',
+                    animInfo: null
+                });
+
+                // Sub-step 2: Flip pointer
                 simNodes[sc].nextIdx = simPrev;
+                states.push({
+                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: sp, currIdx: sc, newHead: -1,
+                    desc: 'curr(' + values[sc] + ').next = prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + ' &rarr; Flip the arrow direction! This is the core reversal operation.',
+                    animInfo: { currNode: sc, prevNode: sp }
+                });
+
+                // Sub-step 3: Move prev and curr
                 simPrev = sc;
                 simCurr = snext;
                 states.push({
-                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: simCurr, newHead: -1,
-                    desc: 'Change curr(' + values[sc] + ').next to prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + '. Move prev=' + values[sc] + ', curr=' + (snext >= 0 ? values[snext] : 'None') + '.',
-                    animInfo: { currNode: sc, prevNode: sp }
+                    nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: simCurr >= 0 ? simCurr : -1, newHead: -1,
+                    desc: 'Move prev = ' + values[simPrev] + ', curr = ' + (simCurr >= 0 && simCurr < values.length ? values[simCurr] : 'None') + '. Advance to process the next node.',
+                    animInfo: null
                 });
+
+                if (simCurr < 0 || simCurr >= values.length) break;
             }
             var reversed = values.slice().reverse();
             states.push({
@@ -1117,19 +1135,25 @@ ListNode* middleNode(ListNode* head) {
         function buildSteps(list1, list2) {
             var states = [];
             var i1 = 0, i2 = 0, result = [];
-            states.push({ i1: 0, i2: 0, result: [], desc: 'Create a dummy node and merge the two lists by comparing values.', animInfo: null });
+            states.push({ i1: 0, i2: 0, result: [], desc: 'Create a dummy node. By tracking the result via dummy.next, we avoid special-casing the first node.', animInfo: null });
 
             while (i1 < list1.length && i2 < list2.length) {
+                // Step 1: Compare
+                states.push({ i1: i1, i2: i2, result: result.slice(),
+                    desc: 'Compare list1[' + i1 + ']=' + list1[i1] + ' and list2[' + i2 + ']=' + list2[i2] + '. Since both lists are sorted, comparing only the fronts preserves the overall order.',
+                    animInfo: null });
                 if (list1[i1] <= list2[i2]) {
+                    // Step 2: Pick from list1
                     result.push(list1[i1]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &le; list2[' + i2 + ']=' + list2[i2] + ' &rarr; Connect ' + list1[i1] + ' from list1.',
+                        desc: list1[i1] + ' &le; ' + list2[i2] + ', so connect ' + list1[i1] + ' from list1 to the result. We pick the smaller value to maintain sorted order.',
                         animInfo: { srcId: 'll-merge-l1-' + i1, destIdx: result.length - 1, value: list1[i1] } });
                     i1++;
                 } else {
+                    // Step 2: Pick from list2
                     result.push(list2[i2]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &gt; list2[' + i2 + ']=' + list2[i2] + ' &rarr; Connect ' + list2[i2] + ' from list2.',
+                        desc: list1[i1] + ' &gt; ' + list2[i2] + ', so connect ' + list2[i2] + ' from list2 to the result. We pick the smaller value to maintain sorted order.',
                         animInfo: { srcId: 'll-merge-l2-' + i2, destIdx: result.length - 1, value: list2[i2] } });
                     i2++;
                 }
@@ -1137,19 +1161,19 @@ ListNode* middleNode(ListNode* head) {
             while (i1 < list1.length) {
                 result.push(list1[i1]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                    desc: 'list2 exhausted! Connect remaining ' + list1[i1] + ' from list1.',
+                    desc: 'list2 is exhausted! Connect remaining ' + list1[i1] + ' from list1. Since list1 is already sorted, we can append the rest directly.',
                     animInfo: { srcId: 'll-merge-l1-' + i1, destIdx: result.length - 1, value: list1[i1] } });
                 i1++;
             }
             while (i2 < list2.length) {
                 result.push(list2[i2]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                    desc: 'list1 exhausted! Connect remaining ' + list2[i2] + ' from list2.',
+                    desc: 'list1 is exhausted! Connect remaining ' + list2[i2] + ' from list2. Since list2 is already sorted, we can append the rest directly.',
                     animInfo: { srcId: 'll-merge-l2-' + i2, destIdx: result.length - 1, value: list2[i2] } });
                 i2++;
             }
             states.push({ i1: i1, i2: i2, result: result.slice(),
-                desc: 'Merge complete! Result: [' + result.join(', ') + '] &#10003;', animInfo: null });
+                desc: 'Merge complete! Result: [' + result.join(', ') + ']. Two sorted lists have been merged into one sorted list &#10003;', animInfo: null });
 
             return states.map(function(st) {
                 return {

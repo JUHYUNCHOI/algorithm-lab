@@ -1071,7 +1071,7 @@ struct HashTable {
             items.forEach(function(item) {
                 const h = simpleHash(item.key);
                 steps.push({
-                    description: '"' + item.key + '" \u2192 hash ' + h + '번 칸에!',
+                    description: '"' + item.key + '" → 해시 함수로 위치를 계산합니다. hash("' + item.key + '") = ' + h + '이므로 ' + h + '번 칸에 저장해야 합니다.',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1090,7 +1090,7 @@ struct HashTable {
                 });
 
                 steps.push({
-                    description: '"' + item.key + '" 저장 \u2713',
+                    description: '"' + item.key + '" → ' + h + '번 칸에 저장 완료! 나중에 이 키를 찾을 때 해시 함수만 돌리면 바로 위치를 알 수 있어요.',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1321,7 +1321,7 @@ struct HashTable {
                 const isDup = buildSeen.has(v);
                 buildSeen.add(v);
                 if (isDup) found = true;
-                steps.push({ description: isDup ? `${v} → 중복 발견! 🎉` : `${v} → 없다, 저장!`,
+                steps.push({ description: isDup ? `${v} → set에 이미 있으므로 중복 발견! 🎉` : `${v} → set에 없으므로 처음 보는 값! set에 저장해서 나중에 같은 값이 오면 잡을 수 있게 합니다.`,
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1405,7 +1405,7 @@ struct HashTable {
 
                 const capturedStart = start, capturedMax = maxLen, capturedSeen = JSON.parse(JSON.stringify(seen));
                 const movedStart = start !== oldStart;
-                steps.push({ description: `'${c}' → ${movedStart ? '중복! start 이동, ' : ''}길이 ${curLen}${curLen === capturedMax && curLen > 0 ? ' → 최대! 🎉' : ''}`,
+                steps.push({ description: `'${c}' → ${movedStart ? '이전에 본 적 있으므로 윈도우 시작을 중복 다음으로 이동! ' : '새 문자이므로 윈도우 확장. '}현재 윈도우 길이 ${curLen}${curLen === capturedMax && curLen > 0 ? ' → 최대 갱신! 🎉' : ''}`,
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -1725,7 +1725,7 @@ struct HashTable {
             const company = new Set();
             logs.forEach(function(log, i) {
                 const isEnter = log.action === 'enter';
-                steps.push({ description: log.name + ' ' + (isEnter ? '입장! 📥' : '퇴장! 📤'),
+                steps.push({ description: log.name + ' ' + (isEnter ? '입장! 📥 set에 추가하여 현재 회사에 있는 사람으로 기록합니다.' : '퇴장! 📤 set에서 제거하여 더 이상 회사에 없음을 표시합니다.'),
                     _before: null,
                     action: function() {
                         this._before = saveState();

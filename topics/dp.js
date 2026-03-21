@@ -6,7 +6,7 @@ var dpTopic = {
     category: '문제 해결 기법 (Silver~Gold)',
     order: 12,
     description: '중복 계산을 제거하여 효율적으로 문제를 푸는 기법',
-    relatedNote: 'DP는 비트마스크 DP, 트리 DP, 구간 DP, 확률 DP 등 다양한 변형이 있으며, 거의 모든 코딩테스트에 출제됩니다.',
+    relatedNote: 'DP는 피보나치, 계단 오르기, LIS 등 기본 문제부터 배낭 문제, LCS까지 거의 모든 코딩테스트에 출제되는 핵심 기법입니다.',
 
     sidebarExpandable: true,
 
@@ -547,7 +547,7 @@ int fib(int n) {
 
                 <div class="concept-demo">
                     <div class="concept-demo-title">직접 해보기 — DP 유형 맞추기 퀴즈</div>
-                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">문제 설명을 읽고 어떤 DP 유형인지 맞혀보세요!</p>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">문제 설명을 읽고 어떤 DP 유형인지 맞춰보세요!</p>
                     <div class="concept-demo-body">
                         <div id="dp-demo-quiz-cards" style="display:flex;flex-direction:column;gap:10px;"></div>
                         <div id="dp-demo-quiz-score" style="text-align:center;font-size:1rem;font-weight:600;margin-top:12px;min-height:1.5em;"></div>

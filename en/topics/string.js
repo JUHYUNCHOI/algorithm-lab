@@ -2055,7 +2055,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 let prevCount = buildFreq[ch] || 0;
                 buildFreq[ch] = prevCount + 1;
                 steps.push({
-                    description: prevCount ? '\'' + ch + '\' → ' + (prevCount+1) + ' time!' : '\'' + ch + '\' first appearance!',
+                    description: prevCount ? '\'' + ch + '\' → ' + (prevCount+1) + ' time! Increment count to track this character\'s frequency.' : '\'' + ch + '\' first appearance! Add to frequency table to track how many times this character occurs.',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -2512,7 +2512,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 for (var k in buildGroups) _groupSnap[k] = buildGroups[k].slice();
 
                 steps.push({
-                    description: '"' + _word + '" → sort → "' + _sorted + '" → ' + (_isNew ? 'New group created!' : 'Added to existing group!'),
+                    description: '"' + _word + '" → Sort its letters to get "' + _sorted + '". Anagrams have the same letters, so they produce the same sorted result! → ' + (_isNew ? 'First time seeing this sorted key, so create a new group!' : 'Same sorted key already exists, so add to existing group!'),
                     _before: null,
                     action: function() {
                         this._before = saveState();

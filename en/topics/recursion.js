@@ -1546,7 +1546,7 @@ const recursionTopic = {
             prob.descriptionHTML +
             '<div style="text-align:right;margin-top:1.2rem;">' +
                 '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
-                    'BOJSolve on LeetCode ↗' +
+                    'Solve on BOJ ↗' +
                 '</a>' +
             '</div>';
         contentEl.querySelectorAll('pre code').forEach(function(codeEl) {
@@ -1609,7 +1609,7 @@ const recursionTopic = {
                     '<option value="python">Python</option>' +
                     '<option value="cpp">C++</option>' +
                 '</select>' +
-                '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">BOJSolve on LeetCode ↗</a>' +
+                '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">Solve on BOJ ↗</a>' +
             '</div>' +
             '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
 

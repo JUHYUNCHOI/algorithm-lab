@@ -2055,7 +2055,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 let prevCount = buildFreq[ch] || 0;
                 buildFreq[ch] = prevCount + 1;
                 steps.push({
-                    description: prevCount ? '\'' + ch + '\' → ' + (prevCount+1) + '번째!' : '\'' + ch + '\' 첫 등장!',
+                    description: prevCount ? '\'' + ch + '\' → ' + (prevCount+1) + '번째 등장! 카운트를 1 증가시켜 빈도를 기록합니다.' : '\'' + ch + '\' 첫 등장! 빈도 테이블에 추가하여 이 글자가 몇 번 나오는지 추적합니다.',
                     _before: null,
                     action: function() {
                         this._before = saveState();
@@ -2512,7 +2512,7 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
                 for (var k in buildGroups) _groupSnap[k] = buildGroups[k].slice();
 
                 steps.push({
-                    description: '"' + _word + '" → 정렬 → "' + _sorted + '" → ' + (_isNew ? '새 그룹 생성!' : '기존 그룹에 추가!'),
+                    description: '"' + _word + '" → 글자를 정렬하면 "' + _sorted + '". 애너그램은 같은 글자로 이루어져 있으므로 정렬 결과가 같습니다! → ' + (_isNew ? '이 정렬 결과는 처음이므로 새 그룹 생성!' : '같은 정렬 결과가 있으므로 기존 그룹에 추가!'),
                     _before: null,
                     action: function() {
                         this._before = saveState();

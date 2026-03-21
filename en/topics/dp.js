@@ -6,7 +6,7 @@ var dpTopic = {
     category: 'Problem Solving (Silver~Gold)',
     order: 12,
     description: 'A technique for solving problems efficiently by eliminating redundant computation',
-    relatedNote: 'DP has many variations including bitmask DP, tree DP, interval DP, probability DP, and appears in nearly every coding test.',
+    relatedNote: 'DP covers fundamental problems like Fibonacci, stair climbing, and LIS, up to knapsack and LCS. It appears in nearly every coding test.',
 
     sidebarExpandable: true,
 
@@ -94,7 +94,7 @@ var dpTopic = {
             prob.descriptionHTML +
             '<div style="text-align:right;margin-top:1.2rem;">' +
             '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>';
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>';
         contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
     },
 

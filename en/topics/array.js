@@ -101,7 +101,7 @@ const arrayTopic = {
             prob.descriptionHTML +
             '<div style="text-align:right;margin-top:1.2rem;">' +
             '<a href="' + prob.link + '" target="_blank" class="btn" style="font-size:0.8rem;padding:6px 14px;color:var(--accent);border:1.5px solid var(--accent);border-radius:8px;text-decoration:none;display:inline-block;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>';
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>';
         contentEl.querySelectorAll('pre code').forEach(function(codeEl) { if (window.hljs) hljs.highlightElement(codeEl); });
     },
 
@@ -188,7 +188,7 @@ const arrayTopic = {
             '<select class="str-lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--card);color:var(--text);">' +
             '<option value="python">Python</option><option value="cpp">C++</option></select>' +
             '<a href="' + prob.link + '" target="_blank" class="btn btn-primary" style="font-size:0.85rem;">' +
-            (isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗') + '</a></div>' +
+            (isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗') + '</a></div>' +
             '<div class="code-block"><pre><code class="language-python"></code></pre></div>';
         var codeEl = wrapper.querySelector('code');
         codeEl.textContent = prob.templates.python;
@@ -1954,7 +1954,7 @@ int main() {
                 var _i = i, _price = price, _minPrice = minPrice, _minIdx = minIdx, _profit = profit, _maxProfit = maxProfit, _newMin = newMin, _newProfit = newProfit, _bestBuy = bestBuy, _bestSell = bestSell;
 
                 steps.push({
-                    description: _newProfit ? 'Profit ' + _profit + ' → new best! 🎉' : _newMin ? 'Lowest price ' + _price + ' → buy here! 🏷️' : _profit > 0 ? 'Profit ' + _profit + ', not beating best (' + _maxProfit + ')' : 'No profit, skip',
+                    description: _newProfit ? 'Price ' + _price + ', buy at min(' + _minPrice + ') sell now → profit ' + _profit + ' → new best profit! 🎉' : _newMin ? 'Price ' + _price + ' → cheapest so far, update min! We\'ll look for a higher selling price later. 🏷️' : _profit > 0 ? 'Price ' + _price + ', buy at min(' + _minPrice + ') → profit ' + _profit + ', but not beating best (' + _maxProfit + ')' : 'Price ' + _price + ', at or below min(' + _minPrice + ') → no profit, skip',
                     _before: null,
                     action: function() {
                         this._before = saveState(data);
@@ -3583,7 +3583,7 @@ int main() {
         const isLC = problem.link.includes('leetcode');
         const descDiv = document.createElement('div');
         descDiv.className = 'problem-detail';
-        descDiv.innerHTML = `<div class="problem-meta"><a href="${problem.link}" target="_blank" class="btn btn-primary">${isLC ? 'LeetCodeSolve on LeetCode ↗' : 'BOJSolve on LeetCode ↗'}</a></div>${problem.descriptionHTML}`;
+        descDiv.innerHTML = `<div class="problem-meta"><a href="${problem.link}" target="_blank" class="btn btn-primary">${isLC ? 'Solve on LeetCode ↗' : 'Solve on BOJ ↗'}</a></div>${problem.descriptionHTML}`;
         container.appendChild(descDiv);
 
         const hintsSection = document.createElement('div');
