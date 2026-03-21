@@ -449,7 +449,7 @@ const stringTopic = {
     id: 'string',
     title: 'String Manipulation',
     icon: '🔤',
-    category: 'Data Structures',
+    category: 'Fundamentals (Bronze~Silver)',
     order: 1,
     description: 'Key string problem types and solutions: frequency analysis, palindromes, anagrams, and more',
 

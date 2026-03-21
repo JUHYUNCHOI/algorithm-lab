@@ -3,8 +3,8 @@ var greedyTopic = {
     id: 'greedy',
     title: 'Greedy',
     icon: '🏆',
-    category: 'Algorithm Techniques',
-    order: 12,
+    category: 'Problem Solving (Silver~Gold)',
+    order: 11,
     description: 'A technique that repeatedly makes the best choice at each moment',
     relatedNote: 'Greedy is often used together with sorting and priority queues. The key is proving whether it guarantees an optimal solution.',
 
@@ -324,8 +324,8 @@ int main() {
                     <div class="concept-demo-title">Try It — Activity Selection Timeline</div>
                     <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Select activities that end earliest to maximize the number of non-overlapping activities.</p>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
-                        <button class="concept-demo-btn" id="gr-demo-activity-go">Start Selection</button>
-                        <button class="concept-demo-btn green" id="gr-demo-activity-reset" style="display:none;">Reset</button>
+                        <button class="concept-demo-btn" id="gr-demo-activity-go">Step ▶</button>
+                        <button class="concept-demo-btn green" id="gr-demo-activity-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="gr-demo-activity-timeline" style="position:relative;min-height:220px;"></div>
@@ -422,8 +422,8 @@ int main() {
                         <label style="font-weight:600;font-size:0.9rem;">Withdrawal times:
                             <input type="text" id="gr-demo-atm-input" value="3,1,4,3,2" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">
                         </label>
-                        <button class="concept-demo-btn" id="gr-demo-atm-go">Sort & Calculate</button>
-                        <button class="concept-demo-btn green" id="gr-demo-atm-reset" style="display:none;">Reset</button>
+                        <button class="concept-demo-btn" id="gr-demo-atm-go">Step ▶</button>
+                        <button class="concept-demo-btn green" id="gr-demo-atm-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="display:flex;gap:2rem;flex-wrap:wrap;">
@@ -716,53 +716,78 @@ int main() {
                 timelineEl.innerHTML = html;
             }
 
-            renderTimeline(sorted, {});
+            // Pre-compute steps for manual control
+            var actState = { stepIdx: -1, steps: [] };
 
-            actGoBtn.addEventListener('click', function() {
-                actGoBtn.style.display = 'none';
-                actResetBtn.style.display = '';
-                renderTimeline(sorted, {});
+            function actBuildSteps() {
+                var steps = [];
                 var selectedSet = {};
                 var selectedCount = 0;
                 var lastEnd = 0;
-                var idx = 0;
-
-                function step() {
-                    if (idx >= sorted.length) {
-                        renderTimeline(sorted, selectedSet);
-                        actResultEl.innerHTML = 'Selected activities: <strong>' + selectedCount + '</strong> (selected non-overlapping in order of earliest end time)';
-                        actResultEl.style.color = 'var(--green)';
-                        actMsgEl.textContent = 'After sorting by end time, selecting non-overlapping activities in order gives the maximum count!';
-                        return;
-                    }
-                    var act = sorted[idx];
-                    renderTimeline(sorted, selectedSet, idx);
+                for (var i = 0; i < sorted.length; i++) {
+                    var act = sorted[i];
                     if (act.s >= lastEnd) {
-                        actResultEl.innerHTML = act.name + ' [' + act.s + '-' + act.e + ']: start(' + act.s + ') >= last end(' + lastEnd + ') -> <span style="color:var(--green);font-weight:600;">Selected!</span>';
-                        setTimeout(function() {
-                            selectedSet[act.name] = true;
-                            selectedCount++;
-                            lastEnd = act.e;
-                            renderTimeline(sorted, selectedSet);
-                            idx++;
-                            setTimeout(step, 500);
-                        }, 600);
+                        // Step: highlight current, show comparison
+                        (function(idx, a, le, ss) {
+                            var snapBefore = JSON.parse(JSON.stringify(ss));
+                            steps.push({ apply: function() {
+                                renderTimeline(sorted, snapBefore, idx);
+                                actResultEl.innerHTML = a.name + ' [' + a.s + '-' + a.e + ']: start(' + a.s + ') >= last end(' + le + ') → <span style="color:var(--green);font-weight:600;">Selected!</span>';
+                            }});
+                        })(i, act, lastEnd, selectedSet);
+                        // Step: mark as selected
+                        selectedSet[act.name] = true;
+                        selectedCount++;
+                        lastEnd = act.e;
+                        (function(ss) {
+                            var snapAfter = JSON.parse(JSON.stringify(ss));
+                            steps.push({ apply: function() {
+                                renderTimeline(sorted, snapAfter);
+                                actResultEl.innerHTML = '';
+                            }});
+                        })(selectedSet);
                     } else {
-                        actResultEl.innerHTML = act.name + ' [' + act.s + '-' + act.e + ']: start(' + act.s + ') < last end(' + lastEnd + ') -> <span style="color:var(--red);">Overlap! Skip</span>';
-                        idx++;
-                        setTimeout(step, 600);
+                        // Step: highlight current, show rejection
+                        (function(idx, a, le, ss) {
+                            var snap = JSON.parse(JSON.stringify(ss));
+                            steps.push({ apply: function() {
+                                renderTimeline(sorted, snap, idx);
+                                actResultEl.innerHTML = a.name + ' [' + a.s + '-' + a.e + ']: start(' + a.s + ') < last end(' + le + ') → <span style="color:var(--red);">Overlap! Skip</span>';
+                            }});
+                        })(i, act, lastEnd, selectedSet);
                     }
                 }
-                step();
-            });
+                // Final step: show result
+                var finalSS = JSON.parse(JSON.stringify(selectedSet));
+                var finalCount = selectedCount;
+                steps.push({ apply: function() {
+                    renderTimeline(sorted, finalSS);
+                    actResultEl.innerHTML = 'Selected activities: <strong>' + finalCount + '</strong> (selected non-overlapping in order of earliest end time)';
+                    actResultEl.style.color = 'var(--green)';
+                    actMsgEl.textContent = 'After sorting by end time, selecting non-overlapping activities in order gives the maximum count!';
+                }});
+                return steps;
+            }
 
-            actResetBtn.addEventListener('click', function() {
-                actGoBtn.style.display = '';
-                actResetBtn.style.display = 'none';
+            function actReset() {
+                actState.steps = actBuildSteps();
+                actState.stepIdx = -1;
                 renderTimeline(sorted, {});
                 actResultEl.textContent = '';
                 actResultEl.style.color = '';
                 actMsgEl.textContent = 'Sort by end time, then select non-overlapping activities one by one.';
+            }
+
+            actReset();
+
+            actGoBtn.addEventListener('click', function() {
+                if (actState.stepIdx >= actState.steps.length - 1) return;
+                actState.stepIdx++;
+                actState.steps[actState.stepIdx].apply();
+            });
+
+            actResetBtn.addEventListener('click', function() {
+                actReset();
             });
         }
 
@@ -791,45 +816,78 @@ int main() {
                 return total;
             }
 
-            atmGoBtn.addEventListener('click', function() {
-                atmGoBtn.style.display = 'none';
-                atmResetBtn.style.display = '';
+            // Pre-compute steps for manual control
+            var atmState = { stepIdx: -1, steps: [] };
+
+            function atmBuildSteps() {
                 var arr = atmInput.value.split(',').map(function(v) { return parseInt(v.trim()); }).filter(function(v) { return !isNaN(v) && v > 0; });
                 if (arr.length < 2) arr = [3, 1, 4, 3, 2];
                 var sortedArr = arr.slice().sort(function(a, b) { return a - b; });
-
-                var origHtml = '', acc1 = 0;
-                arr.forEach(function(v) { acc1 += v; origHtml += personBox(v, acc1, 'var(--text3)'); });
-                origEl.innerHTML = origHtml;
                 var origTotal = calcTotal(arr);
-                origTotalEl.innerHTML = 'Total wait: <strong style="color:var(--red);">' + origTotal + ' min</strong>';
 
-                sortedEl.innerHTML = '';
-                sortTotalEl.textContent = '';
-                var idx = 0, acc2 = 0, sTotal = 0;
-                function showNext() {
-                    if (idx >= sortedArr.length) {
-                        sortTotalEl.innerHTML = 'Total wait: <strong style="color:var(--green);">' + sTotal + ' min</strong>';
-                        atmMsgEl.textContent = 'Sorted total wait: ' + sTotal + ' min (original: ' + origTotal + ' min). Saved ' + (origTotal - sTotal) + ' min!';
-                        return;
-                    }
-                    acc2 += sortedArr[idx];
+                var steps = [];
+
+                // Step 0: Show original order with cumulative wait
+                steps.push({ apply: function() {
+                    var origHtml = '', acc1 = 0;
+                    arr.forEach(function(v) { acc1 += v; origHtml += personBox(v, acc1, 'var(--text3)'); });
+                    origEl.innerHTML = origHtml;
+                    origTotalEl.innerHTML = 'Total wait: <strong style="color:var(--red);">' + origTotal + ' min</strong>';
+                    sortedEl.innerHTML = '';
+                    sortTotalEl.textContent = '';
+                    atmMsgEl.textContent = 'Original order total wait is ' + origTotal + ' min. Will sorting reduce it?';
+                }});
+
+                // Steps 1..N: Add each sorted person one by one
+                var acc2 = 0, sTotal = 0;
+                for (var i = 0; i < sortedArr.length; i++) {
+                    acc2 += sortedArr[i];
                     sTotal += acc2;
-                    sortedEl.innerHTML += personBox(sortedArr[idx], acc2, 'var(--green)', true);
-                    idx++;
-                    setTimeout(showNext, 400);
+                    (function(idx, cumWait, runTotal, sArr) {
+                        steps.push({ apply: function() {
+                            var html = '';
+                            var a = 0;
+                            for (var j = 0; j <= idx; j++) {
+                                a += sArr[j];
+                                html += personBox(sArr[j], a, 'var(--green)', j === idx);
+                            }
+                            sortedEl.innerHTML = html;
+                            sortTotalEl.textContent = '';
+                            atmMsgEl.textContent = sArr[idx] + ' min person added → cumulative wait: ' + cumWait + ' min';
+                        }});
+                    })(i, acc2, sTotal, sortedArr);
                 }
-                showNext();
-            });
 
-            atmResetBtn.addEventListener('click', function() {
-                atmGoBtn.style.display = '';
-                atmResetBtn.style.display = 'none';
+                // Final step: show totals and comparison
+                var finalSTotal = sTotal;
+                steps.push({ apply: function() {
+                    sortTotalEl.innerHTML = 'Total wait: <strong style="color:var(--green);">' + finalSTotal + ' min</strong>';
+                    atmMsgEl.textContent = 'Sorted total wait: ' + finalSTotal + ' min (original: ' + origTotal + ' min). Saved ' + (origTotal - finalSTotal) + ' min!';
+                }});
+
+                return steps;
+            }
+
+            function atmReset() {
+                atmState.steps = atmBuildSteps();
+                atmState.stepIdx = -1;
                 origEl.innerHTML = '';
                 sortedEl.innerHTML = '';
                 origTotalEl.textContent = '';
                 sortTotalEl.textContent = '';
                 atmMsgEl.textContent = 'Putting people with shorter times first reduces the waiting time for everyone behind them.';
+            }
+
+            atmReset();
+
+            atmGoBtn.addEventListener('click', function() {
+                if (atmState.stepIdx >= atmState.steps.length - 1) return;
+                atmState.stepIdx++;
+                atmState.steps[atmState.stepIdx].apply();
+            });
+
+            atmResetBtn.addEventListener('click', function() {
+                atmReset();
             });
         }
 

@@ -5,8 +5,8 @@ var shortestPathTopic = {
     id: 'shortestpath',
     title: '최단 경로',
     icon: '🛤️',
-    category: '고급 자료구조와 그래프',
-    order: 18,
+    category: '심화 (Gold~Platinum)',
+    order: 15,
     description: '가중치 그래프에서 최소 비용 경로를 찾는 알고리즘',
     relatedNote: '이 외에도 벨만-포드(음수 간선), SPFA, A* 탐색 등의 최단 경로 알고리즘이 있습니다.',
 

@@ -3,8 +3,8 @@ const recursionTopic = {
     id: 'recursion',
     title: 'Recursion',
     icon: '🔄',
-    category: 'Recursion & Trees',
-    order: 8,
+    category: 'Search (Silver)',
+    order: 7,
     description: 'A technique that breaks down problems by calling itself',
     relatedNote: 'Recursion is the foundation of nearly all algorithms: tree traversal, backtracking, divide and conquer, DP (memoization), and more.',
 

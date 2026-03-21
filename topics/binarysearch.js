@@ -3,8 +3,8 @@ const binarySearchTopic = {
     id: 'binarysearch',
     title: '이분 탐색',
     icon: '🔍',
-    category: '정렬과 탐색',
-    order: 7,
+    category: '탐색 (Silver)',
+    order: 6,
     description: '정렬된 데이터에서 원하는 값을 빠르게 찾는 기법',
     relatedNote: '이분 탐색은 최적화 문제에서 결정 문제로 변환하는 매개변수 탐색(Parametric Search) 기법으로 자주 확장됩니다.',
 
@@ -221,7 +221,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         <label style="font-weight:600;font-size:0.9rem;">target:
                             <input type="number" id="bs-demo-fail-target" value="6" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;">
                         </label>
-                        <button class="concept-demo-btn" id="bs-demo-fail-run">🔍 탐색 시작</button>
+                    </div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bs-demo-fail-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-fail-reset">Reset ↺</button>
                     </div>
                     <div id="bs-demo-fail-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <div id="bs-demo-fail-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
@@ -335,7 +338,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                             <input type="number" id="bs-demo-param-capacity" value="15" min="1" max="50" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;"> kg
                         </label>
                         <span style="font-size:0.85rem;color:var(--text3);">짐 무게: [2, 4, 5, 7, 8, 10, 12, 15, 18, 20] kg</span>
-                        <button class="concept-demo-btn" id="bs-demo-param-run">🔍 경계 찾기</button>
+                    </div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bs-demo-param-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-param-reset">Reset ↺</button>
                     </div>
                     <div style="margin-bottom:6px;font-size:0.85rem;color:var(--text2);" id="bs-demo-param-question"></div>
                     <div id="bs-demo-param-arr" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -375,12 +381,15 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
         (function() {
             var FAIL_ARR = [1, 3, 5, 7, 9, 11, 13];
             var failTargetInput = container.querySelector('#bs-demo-fail-target');
-            var failRunBtn = container.querySelector('#bs-demo-fail-run');
+            var failStepBtn = container.querySelector('#bs-demo-fail-step');
+            var failResetBtn = container.querySelector('#bs-demo-fail-reset');
             var failArrEl = container.querySelector('#bs-demo-fail-arr');
             var failPointers = container.querySelector('#bs-demo-fail-pointers');
             var failLog = container.querySelector('#bs-demo-fail-log');
             var failMsg = container.querySelector('#bs-demo-fail-msg');
-            if (!failRunBtn) return;
+            if (!failStepBtn) return;
+
+            var failState = { steps: [], stepIdx: -1, logLines: [], target: 6 };
 
             function failCell(v, i, style) {
                 return '<div style="width:44px;text-align:center;padding:7px 3px;border-radius:8px;font-weight:600;font-size:0.88rem;transition:all 0.3s;' + style + '"><div>' + v + '</div><div style="font-size:0.65rem;color:var(--text3);">[' + i + ']</div></div>';
@@ -395,79 +404,86 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }).join('');
             }
 
-            function runFailSearch() {
+            function buildFailSteps() {
                 var target = parseInt(failTargetInput.value);
                 if (isNaN(target)) { failMsg.textContent = 'target에 숫자를 입력해주세요!'; return; }
-                // Check if target is actually in the array
+                failState.target = target;
+                failState.steps = [];
+                failState.stepIdx = -1;
+                failState.logLines = [];
+
                 var found = FAIL_ARR.indexOf(target) !== -1;
-                failLog.innerHTML = '';
-                failPointers.innerHTML = '';
-                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
-
                 var lo = 0, hi = FAIL_ARR.length - 1;
-                var logLines = [];
-                var stepsData = []; // store each step for animation
-
                 var round = 0;
                 while (lo <= hi) {
                     var mid = Math.floor((lo + hi) / 2);
                     round++;
                     if (FAIL_ARR[mid] === target) {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
+                        failState.steps.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
                         break;
                     } else if (FAIL_ARR[mid] < target) {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'right', round: round, newLo: mid + 1, newHi: hi });
+                        failState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, newLo: mid + 1, newHi: hi });
                         lo = mid + 1;
                     } else {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'left', round: round, newLo: lo, newHi: mid - 1 });
+                        failState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, newLo: lo, newHi: mid - 1 });
                         hi = mid - 1;
                     }
                 }
                 if (!found) {
-                    stepsData.push({ failed: true, round: round + 1 });
+                    failState.steps.push({ failed: true, round: round + 1 });
                 }
+                // 초기 상태 렌더
+                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
+                failPointers.innerHTML = '';
+                failLog.innerHTML = '';
+                failMsg.textContent = 'Step을 눌러 target=' + target + ' 탐색을 한 단계씩 진행하세요. (' + failState.steps.length + '단계)';
+            }
 
-                // Animate steps one by one
-                var stepIdx = 0;
-                function showNextStep() {
-                    if (stepIdx >= stepsData.length) return;
-                    var s = stepsData[stepIdx];
-                    if (s.failed) {
-                        failPointers.innerHTML = '<strong style="color:var(--red);">lo > hi → 탐색 범위가 사라졌습니다!</strong>';
-                        renderFailArr(0, 0, -1, true);
-                        logLines.push('<span style="color:var(--red);font-weight:700;">❌ ' + target + '은(는) 배열에 없습니다! → return -1</span>');
-                        failLog.innerHTML = logLines.join('<br>');
-                        failMsg.innerHTML = '<strong style="color:var(--red);">lo > hi가 되면 "없다"고 판단합니다.</strong> 이것이 이분 탐색이 -1을 반환하는 이유입니다.';
-                    } else if (s.found) {
-                        renderFailArr(s.lo, s.hi, s.mid, false);
-                        failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
-                        logLines.push('<span style="color:var(--green);font-weight:700;">' + s.round + '회차: arr[' + s.mid + ']=' + FAIL_ARR[s.mid] + ' == ' + target + ' ✅ 찾았습니다!</span>');
-                        failLog.innerHTML = logLines.join('<br>');
-                        failMsg.innerHTML = '<strong style="color:var(--green);">찾았습니다!</strong> 배열에 있는 값이라 탐색 성공. 없는 값을 넣어보세요!';
+            function failStep() {
+                // 첫 클릭 시 스텝 생성
+                if (failState.steps.length === 0 || failState.stepIdx >= failState.steps.length - 1) {
+                    buildFailSteps();
+                    return;
+                }
+                failState.stepIdx++;
+                var s = failState.steps[failState.stepIdx];
+                var target = failState.target;
+                if (s.failed) {
+                    failPointers.innerHTML = '<strong style="color:var(--red);">lo > hi → 탐색 범위가 사라졌습니다!</strong>';
+                    renderFailArr(0, 0, -1, true);
+                    failState.logLines.push('<span style="color:var(--red);font-weight:700;">결과: ' + target + '은(는) 배열에 없습니다! → return -1</span>');
+                    failMsg.innerHTML = '<strong style="color:var(--red);">lo > hi가 되면 "없다"고 판단합니다.</strong> 이것이 이분 탐색이 -1을 반환하는 이유입니다.';
+                } else if (s.found) {
+                    renderFailArr(s.lo, s.hi, s.mid, false);
+                    failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    failState.logLines.push('<span style="color:var(--green);font-weight:700;">' + s.round + '회차: arr[' + s.mid + ']=' + FAIL_ARR[s.mid] + ' == ' + target + ' → 찾았습니다!</span>');
+                    failMsg.innerHTML = '<strong style="color:var(--green);">찾았습니다!</strong> 배열에 있는 값이라 탐색 성공. 없는 값을 넣어보세요!';
+                } else {
+                    renderFailArr(s.lo, s.hi, s.mid, false);
+                    failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    var cmp = FAIL_ARR[s.mid] < target ? (FAIL_ARR[s.mid] + ' < ' + target + ' → 오른쪽으로!') : (FAIL_ARR[s.mid] + ' > ' + target + ' → 왼쪽으로!');
+                    failState.logLines.push(s.round + '회차: arr[' + s.mid + ']=' + cmp + ' (lo=' + s.newLo + ', hi=' + s.newHi + ')');
+                    if (s.newLo > s.newHi) {
+                        failMsg.innerHTML = 'lo=' + s.newLo + ' > hi=' + s.newHi + ' → <strong>범위가 사라질 예정!</strong>';
                     } else {
-                        renderFailArr(s.lo, s.hi, s.mid, false);
-                        failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
-                        var cmp = FAIL_ARR[s.mid] < target ? (FAIL_ARR[s.mid] + ' < ' + target + ' → 오른쪽으로!') : (FAIL_ARR[s.mid] + ' > ' + target + ' → 왼쪽으로!');
-                        logLines.push(s.round + '회차: arr[' + s.mid + ']=' + cmp + ' (lo=' + s.newLo + ', hi=' + s.newHi + ')');
-                        failLog.innerHTML = logLines.join('<br>');
-                        if (s.newLo > s.newHi) {
-                            failMsg.innerHTML = 'lo=' + s.newLo + ' > hi=' + s.newHi + ' → <strong>범위가 사라질 예정!</strong>';
-                        } else {
-                            failMsg.textContent = '범위가 [' + s.newLo + '~' + s.newHi + ']로 좁혀졌습니다. 계속 진행...';
-                        }
-                    }
-                    failLog.scrollTop = failLog.scrollHeight;
-                    stepIdx++;
-                    if (stepIdx < stepsData.length) {
-                        setTimeout(showNextStep, 700);
+                        failMsg.textContent = '범위가 [' + s.newLo + '~' + s.newHi + ']로 좁혀졌습니다. Step을 눌러 계속 진행하세요.';
                     }
                 }
-                showNextStep();
+                failLog.innerHTML = failState.logLines.join('<br>');
+                failLog.scrollTop = failLog.scrollHeight;
+            }
+
+            function failReset() {
+                failState = { steps: [], stepIdx: -1, logLines: [], target: parseInt(failTargetInput.value) || 6 };
+                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
+                failPointers.innerHTML = '';
+                failLog.innerHTML = '';
+                failMsg.textContent = 'target에 배열에 없는 값(예: 6, 4, 0)을 넣고 Step을 눌러보세요!';
             }
 
             renderFailArr(0, FAIL_ARR.length - 1, -1, false);
-            failRunBtn.addEventListener('click', runFailSearch);
-            failTargetInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') runFailSearch(); });
+            failStepBtn.addEventListener('click', failStep);
+            failResetBtn.addEventListener('click', failReset);
         })();
 
         // ── Demo 2: 크기 비교 (슬라이더) ──
@@ -523,13 +539,16 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
         (function() {
             var WEIGHTS = [2, 4, 5, 7, 8, 10, 12, 15, 18, 20];
             var capacityInput = container.querySelector('#bs-demo-param-capacity');
-            var paramRunBtn = container.querySelector('#bs-demo-param-run');
+            var paramStepBtn = container.querySelector('#bs-demo-param-step');
+            var paramResetBtn = container.querySelector('#bs-demo-param-reset');
             var paramArrEl = container.querySelector('#bs-demo-param-arr');
             var paramPointers = container.querySelector('#bs-demo-param-pointers');
             var paramLog = container.querySelector('#bs-demo-param-log');
             var paramMsg = container.querySelector('#bs-demo-param-msg');
             var paramQuestion = container.querySelector('#bs-demo-param-question');
-            if (!paramRunBtn) return;
+            if (!paramStepBtn) return;
+
+            var paramState = { steps: [], stepIdx: -1, logLines: [], capacity: 15 };
 
             function paramCell(v, i, canCarry, style) {
                 var label = canCarry ? '<span style="color:var(--green);font-weight:700;">YES</span>' : '<span style="color:var(--red);font-weight:700;">NO</span>';
@@ -554,76 +573,84 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }).join('');
             }
 
-            function runParamSearch() {
+            function buildParamSteps() {
                 var capacity = parseInt(capacityInput.value);
                 if (isNaN(capacity) || capacity < 1) { paramMsg.textContent = '배낭 용량에 양수를 입력해주세요!'; return; }
+                paramState.capacity = capacity;
+                paramState.steps = [];
+                paramState.stepIdx = -1;
+                paramState.logLines = [];
                 paramQuestion.innerHTML = '<strong>"무게 X kg을 배낭(용량 ' + capacity + 'kg)에 넣을 수 있는가?"</strong> → YES가 가능한 <strong>가장 큰 X</strong>를 찾습니다.';
-                paramLog.innerHTML = '';
-                paramPointers.innerHTML = '';
-                showInitialArr(capacity);
 
-                // Find boundary: last YES (weight <= capacity)
-                // Binary search for rightmost YES
                 var lo = 0, hi = WEIGHTS.length - 1;
-                var stepsData = [];
                 var answer = -1;
                 var round = 0;
-
                 while (lo <= hi) {
                     var mid = Math.floor((lo + hi) / 2);
                     round++;
                     if (WEIGHTS[mid] <= capacity) {
                         answer = mid;
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, canCarry: true, round: round, newLo: mid + 1, newHi: hi });
+                        paramState.steps.push({ lo: lo, hi: hi, mid: mid, canCarry: true, round: round, newLo: mid + 1, newHi: hi });
                         lo = mid + 1;
                     } else {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, canCarry: false, round: round, newLo: lo, newHi: mid - 1 });
+                        paramState.steps.push({ lo: lo, hi: hi, mid: mid, canCarry: false, round: round, newLo: lo, newHi: mid - 1 });
                         hi = mid - 1;
                     }
                 }
-                stepsData.push({ done: true, answer: answer });
+                paramState.steps.push({ done: true, answer: answer });
+                showInitialArr(capacity);
+                paramPointers.innerHTML = '';
+                paramLog.innerHTML = '';
+                paramMsg.textContent = 'Step을 눌러 경계 탐색을 한 단계씩 진행하세요. (' + paramState.steps.length + '단계)';
+            }
 
-                var stepIdx = 0;
-                var logLines = [];
-                function showNextParamStep() {
-                    if (stepIdx >= stepsData.length) return;
-                    var s = stepsData[stepIdx];
-                    if (s.done) {
-                        if (s.answer === -1) {
-                            renderParamArr(capacity, -1, -1, -1, -1);
-                            logLines.push('<span style="color:var(--red);font-weight:700;">어떤 짐도 넣을 수 없습니다!</span>');
-                            paramMsg.innerHTML = '<strong style="color:var(--red);">배낭 용량이 너무 작아 아무것도 넣을 수 없습니다.</strong>';
-                        } else {
-                            renderParamArr(capacity, -1, -1, -1, s.answer);
-                            logLines.push('<span style="color:var(--green);font-weight:700;">경계 발견! 넣을 수 있는 가장 무거운 짐: ' + WEIGHTS[s.answer] + 'kg (인덱스 ' + s.answer + ')</span>');
-                            paramMsg.innerHTML = '<strong style="color:var(--green);">YES→NO 경계를 찾았습니다!</strong> ' + WEIGHTS[s.answer] + 'kg까지 가능, ' + (s.answer + 1 < WEIGHTS.length ? WEIGHTS[s.answer + 1] + 'kg부터 불가능' : '모두 가능') + '. 이것이 매개변수 탐색!';
-                        }
-                        paramPointers.innerHTML = '';
+            function paramStep() {
+                if (paramState.steps.length === 0 || paramState.stepIdx >= paramState.steps.length - 1) {
+                    buildParamSteps();
+                    return;
+                }
+                paramState.stepIdx++;
+                var s = paramState.steps[paramState.stepIdx];
+                var capacity = paramState.capacity;
+                if (s.done) {
+                    if (s.answer === -1) {
+                        renderParamArr(capacity, -1, -1, -1, -1);
+                        paramState.logLines.push('<span style="color:var(--red);font-weight:700;">어떤 짐도 넣을 수 없습니다!</span>');
+                        paramMsg.innerHTML = '<strong style="color:var(--red);">배낭 용량이 너무 작아 아무것도 넣을 수 없습니다.</strong>';
                     } else {
-                        renderParamArr(capacity, s.lo, s.hi, s.mid, -1);
-                        paramPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
-                        if (s.canCarry) {
-                            logLines.push(s.round + '회차: ' + WEIGHTS[s.mid] + 'kg <= ' + capacity + 'kg → <span style="color:var(--green);font-weight:600;">YES!</span> 더 무거운 쪽 탐색 (lo=' + s.newLo + ')');
-                            paramMsg.textContent = WEIGHTS[s.mid] + 'kg은 넣을 수 있습니다! 더 무거운 것도 가능할까요?';
-                        } else {
-                            logLines.push(s.round + '회차: ' + WEIGHTS[s.mid] + 'kg > ' + capacity + 'kg → <span style="color:var(--red);font-weight:600;">NO!</span> 더 가벼운 쪽 탐색 (hi=' + s.newHi + ')');
-                            paramMsg.textContent = WEIGHTS[s.mid] + 'kg은 넣을 수 없습니다! 더 가벼운 쪽으로 이동합니다.';
-                        }
+                        renderParamArr(capacity, -1, -1, -1, s.answer);
+                        paramState.logLines.push('<span style="color:var(--green);font-weight:700;">경계 발견! 넣을 수 있는 가장 무거운 짐: ' + WEIGHTS[s.answer] + 'kg (인덱스 ' + s.answer + ')</span>');
+                        paramMsg.innerHTML = '<strong style="color:var(--green);">YES→NO 경계를 찾았습니다!</strong> ' + WEIGHTS[s.answer] + 'kg까지 가능, ' + (s.answer + 1 < WEIGHTS.length ? WEIGHTS[s.answer + 1] + 'kg부터 불가능' : '모두 가능') + '. 이것이 매개변수 탐색!';
                     }
-                    paramLog.innerHTML = logLines.join('<br>');
-                    paramLog.scrollTop = paramLog.scrollHeight;
-                    stepIdx++;
-                    if (stepIdx < stepsData.length) {
-                        setTimeout(showNextParamStep, 800);
+                    paramPointers.innerHTML = '';
+                } else {
+                    renderParamArr(capacity, s.lo, s.hi, s.mid, -1);
+                    paramPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    if (s.canCarry) {
+                        paramState.logLines.push(s.round + '회차: ' + WEIGHTS[s.mid] + 'kg <= ' + capacity + 'kg → <span style="color:var(--green);font-weight:600;">YES!</span> 더 무거운 쪽 탐색 (lo=' + s.newLo + ')');
+                        paramMsg.textContent = WEIGHTS[s.mid] + 'kg은 넣을 수 있습니다! 더 무거운 것도 가능할까요? Step을 눌러보세요.';
+                    } else {
+                        paramState.logLines.push(s.round + '회차: ' + WEIGHTS[s.mid] + 'kg > ' + capacity + 'kg → <span style="color:var(--red);font-weight:600;">NO!</span> 더 가벼운 쪽 탐색 (hi=' + s.newHi + ')');
+                        paramMsg.textContent = WEIGHTS[s.mid] + 'kg은 넣을 수 없습니다! Step을 눌러 더 가벼운 쪽으로 이동하세요.';
                     }
                 }
-                showNextParamStep();
+                paramLog.innerHTML = paramState.logLines.join('<br>');
+                paramLog.scrollTop = paramLog.scrollHeight;
+            }
+
+            function paramReset() {
+                paramState = { steps: [], stepIdx: -1, logLines: [], capacity: parseInt(capacityInput.value) || 15 };
+                showInitialArr(paramState.capacity);
+                paramPointers.innerHTML = '';
+                paramLog.innerHTML = '';
+                paramQuestion.innerHTML = '<strong>"무게 X kg을 배낭(용량 ' + paramState.capacity + 'kg)에 넣을 수 있는가?"</strong> → YES가 가능한 <strong>가장 큰 X</strong>를 찾습니다.';
+                paramMsg.textContent = '배낭 용량을 설정하고 Step을 눌러보세요!';
             }
 
             showInitialArr(15);
             paramQuestion.innerHTML = '<strong>"무게 X kg을 배낭(용량 15kg)에 넣을 수 있는가?"</strong> → YES가 가능한 <strong>가장 큰 X</strong>를 찾습니다.';
-            paramRunBtn.addEventListener('click', runParamSearch);
-            capacityInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') runParamSearch(); });
+            paramStepBtn.addEventListener('click', paramStep);
+            paramResetBtn.addEventListener('click', paramReset);
         })();
     },
 

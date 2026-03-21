@@ -3,8 +3,8 @@ var greedyTopic = {
     id: 'greedy',
     title: '그리디',
     icon: '🏆',
-    category: '알고리즘 기법',
-    order: 12,
+    category: '문제 해결 기법 (Silver~Gold)',
+    order: 11,
     description: '지금 당장 가장 좋은 선택을 반복하는 기법',
     relatedNote: '그리디는 정렬, 우선순위 큐와 함께 사용되는 경우가 많으며, 최적해를 보장하는지 증명하는 것이 핵심입니다.',
 
@@ -324,8 +324,8 @@ int main() {
                     <div class="concept-demo-title">직접 해보기 — 활동 선택 타임라인</div>
                     <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">끝나는 시간이 빠른 활동부터 선택해서 최대한 많이 고릅니다.</p>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
-                        <button class="concept-demo-btn" id="gr-demo-activity-go">선택 시작</button>
-                        <button class="concept-demo-btn green" id="gr-demo-activity-reset" style="display:none;">다시</button>
+                        <button class="concept-demo-btn" id="gr-demo-activity-go">Step ▶</button>
+                        <button class="concept-demo-btn green" id="gr-demo-activity-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="gr-demo-activity-timeline" style="position:relative;min-height:220px;"></div>
@@ -422,8 +422,8 @@ int main() {
                         <label style="font-weight:600;font-size:0.9rem;">인출 시간:
                             <input type="text" id="gr-demo-atm-input" value="3,1,4,3,2" placeholder="쉼표 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:140px;background:var(--card);color:var(--text);">
                         </label>
-                        <button class="concept-demo-btn" id="gr-demo-atm-go">정렬 & 계산</button>
-                        <button class="concept-demo-btn green" id="gr-demo-atm-reset" style="display:none;">다시</button>
+                        <button class="concept-demo-btn" id="gr-demo-atm-go">Step ▶</button>
+                        <button class="concept-demo-btn green" id="gr-demo-atm-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="display:flex;gap:2rem;flex-wrap:wrap;">
@@ -720,53 +720,78 @@ int main() {
                 timelineEl.innerHTML = html;
             }
 
-            renderTimeline(sorted, {});
+            // Pre-compute steps for manual control
+            var actState = { stepIdx: -1, steps: [] };
 
-            actGoBtn.addEventListener('click', function() {
-                actGoBtn.style.display = 'none';
-                actResetBtn.style.display = '';
-                renderTimeline(sorted, {});
+            function actBuildSteps() {
+                var steps = [];
                 var selectedSet = {};
                 var selectedCount = 0;
                 var lastEnd = 0;
-                var idx = 0;
-
-                function step() {
-                    if (idx >= sorted.length) {
-                        renderTimeline(sorted, selectedSet);
-                        actResultEl.innerHTML = '선택된 활동: <strong>' + selectedCount + '개</strong> (끝나는 시간이 빠른 순서로 겹치지 않게 선택)';
-                        actResultEl.style.color = 'var(--green)';
-                        actMsgEl.textContent = '끝나는 시간 기준 정렬 후, 겹치지 않는 활동을 순서대로 선택하면 최대 개수를 얻습니다!';
-                        return;
-                    }
-                    var act = sorted[idx];
-                    renderTimeline(sorted, selectedSet, idx);
+                for (var i = 0; i < sorted.length; i++) {
+                    var act = sorted[i];
                     if (act.s >= lastEnd) {
-                        actResultEl.innerHTML = act.name + ' [' + act.s + '-' + act.e + ']: 시작(' + act.s + ') >= 마지막 끝(' + lastEnd + ') → <span style="color:var(--green);font-weight:600;">선택!</span>';
-                        setTimeout(function() {
-                            selectedSet[act.name] = true;
-                            selectedCount++;
-                            lastEnd = act.e;
-                            renderTimeline(sorted, selectedSet);
-                            idx++;
-                            setTimeout(step, 500);
-                        }, 600);
+                        // Step: highlight current, show comparison
+                        (function(idx, a, le, ss) {
+                            var snapBefore = JSON.parse(JSON.stringify(ss));
+                            steps.push({ apply: function() {
+                                renderTimeline(sorted, snapBefore, idx);
+                                actResultEl.innerHTML = a.name + ' [' + a.s + '-' + a.e + ']: 시작(' + a.s + ') >= 마지막 끝(' + le + ') → <span style="color:var(--green);font-weight:600;">선택!</span>';
+                            }});
+                        })(i, act, lastEnd, selectedSet);
+                        // Step: mark as selected
+                        selectedSet[act.name] = true;
+                        selectedCount++;
+                        lastEnd = act.e;
+                        (function(ss) {
+                            var snapAfter = JSON.parse(JSON.stringify(ss));
+                            steps.push({ apply: function() {
+                                renderTimeline(sorted, snapAfter);
+                                actResultEl.innerHTML = '';
+                            }});
+                        })(selectedSet);
                     } else {
-                        actResultEl.innerHTML = act.name + ' [' + act.s + '-' + act.e + ']: 시작(' + act.s + ') < 마지막 끝(' + lastEnd + ') → <span style="color:var(--red);">겹침! 건너뜀</span>';
-                        idx++;
-                        setTimeout(step, 600);
+                        // Step: highlight current, show rejection
+                        (function(idx, a, le, ss) {
+                            var snap = JSON.parse(JSON.stringify(ss));
+                            steps.push({ apply: function() {
+                                renderTimeline(sorted, snap, idx);
+                                actResultEl.innerHTML = a.name + ' [' + a.s + '-' + a.e + ']: 시작(' + a.s + ') < 마지막 끝(' + le + ') → <span style="color:var(--red);">겹침! 건너뜀</span>';
+                            }});
+                        })(i, act, lastEnd, selectedSet);
                     }
                 }
-                step();
-            });
+                // Final step: show result
+                var finalSS = JSON.parse(JSON.stringify(selectedSet));
+                var finalCount = selectedCount;
+                steps.push({ apply: function() {
+                    renderTimeline(sorted, finalSS);
+                    actResultEl.innerHTML = '선택된 활동: <strong>' + finalCount + '개</strong> (끝나는 시간이 빠른 순서로 겹치지 않게 선택)';
+                    actResultEl.style.color = 'var(--green)';
+                    actMsgEl.textContent = '끝나는 시간 기준 정렬 후, 겹치지 않는 활동을 순서대로 선택하면 최대 개수를 얻습니다!';
+                }});
+                return steps;
+            }
 
-            actResetBtn.addEventListener('click', function() {
-                actGoBtn.style.display = '';
-                actResetBtn.style.display = 'none';
+            function actReset() {
+                actState.steps = actBuildSteps();
+                actState.stepIdx = -1;
                 renderTimeline(sorted, {});
                 actResultEl.textContent = '';
                 actResultEl.style.color = '';
                 actMsgEl.textContent = '끝나는 시간 기준으로 정렬한 뒤, 겹치지 않는 활동을 하나씩 선택합니다.';
+            }
+
+            actReset();
+
+            actGoBtn.addEventListener('click', function() {
+                if (actState.stepIdx >= actState.steps.length - 1) return;
+                actState.stepIdx++;
+                actState.steps[actState.stepIdx].apply();
+            });
+
+            actResetBtn.addEventListener('click', function() {
+                actReset();
             });
         }
 
@@ -795,47 +820,78 @@ int main() {
                 return total;
             }
 
-            atmGoBtn.addEventListener('click', function() {
-                atmGoBtn.style.display = 'none';
-                atmResetBtn.style.display = '';
+            // Pre-compute steps for manual control
+            var atmState = { stepIdx: -1, steps: [] };
+
+            function atmBuildSteps() {
                 var arr = atmInput.value.split(',').map(function(v) { return parseInt(v.trim()); }).filter(function(v) { return !isNaN(v) && v > 0; });
                 if (arr.length < 2) arr = [3, 1, 4, 3, 2];
                 var sortedArr = arr.slice().sort(function(a, b) { return a - b; });
-
-                // Show original with cumulative wait
-                var origHtml = '', acc1 = 0;
-                arr.forEach(function(v) { acc1 += v; origHtml += personBox(v, acc1, 'var(--text3)'); });
-                origEl.innerHTML = origHtml;
                 var origTotal = calcTotal(arr);
-                origTotalEl.innerHTML = '총 대기시간: <strong style="color:var(--red);">' + origTotal + '분</strong>';
 
-                // Animate sorted
-                sortedEl.innerHTML = '';
-                sortTotalEl.textContent = '';
-                var idx = 0, acc2 = 0, sTotal = 0;
-                function showNext() {
-                    if (idx >= sortedArr.length) {
-                        sortTotalEl.innerHTML = '총 대기시간: <strong style="color:var(--green);">' + sTotal + '분</strong>';
-                        atmMsgEl.textContent = '정렬 후 총 대기시간: ' + sTotal + '분 (원래: ' + origTotal + '분). ' + (origTotal - sTotal) + '분 절약!';
-                        return;
-                    }
-                    acc2 += sortedArr[idx];
+                var steps = [];
+
+                // Step 0: Show original order with cumulative wait
+                steps.push({ apply: function() {
+                    var origHtml = '', acc1 = 0;
+                    arr.forEach(function(v) { acc1 += v; origHtml += personBox(v, acc1, 'var(--text3)'); });
+                    origEl.innerHTML = origHtml;
+                    origTotalEl.innerHTML = '총 대기시간: <strong style="color:var(--red);">' + origTotal + '분</strong>';
+                    sortedEl.innerHTML = '';
+                    sortTotalEl.textContent = '';
+                    atmMsgEl.textContent = '원래 순서의 총 대기시간은 ' + origTotal + '분입니다. 정렬하면 줄어들까요?';
+                }});
+
+                // Steps 1..N: Add each sorted person one by one
+                var acc2 = 0, sTotal = 0;
+                for (var i = 0; i < sortedArr.length; i++) {
+                    acc2 += sortedArr[i];
                     sTotal += acc2;
-                    sortedEl.innerHTML += personBox(sortedArr[idx], acc2, 'var(--green)', true);
-                    idx++;
-                    setTimeout(showNext, 400);
+                    (function(idx, cumWait, runTotal, sArr) {
+                        steps.push({ apply: function() {
+                            var html = '';
+                            var a = 0;
+                            for (var j = 0; j <= idx; j++) {
+                                a += sArr[j];
+                                html += personBox(sArr[j], a, 'var(--green)', j === idx);
+                            }
+                            sortedEl.innerHTML = html;
+                            sortTotalEl.textContent = '';
+                            atmMsgEl.textContent = sArr[idx] + '분짜리 사람 추가 → 누적 대기: ' + cumWait + '분';
+                        }});
+                    })(i, acc2, sTotal, sortedArr);
                 }
-                showNext();
-            });
 
-            atmResetBtn.addEventListener('click', function() {
-                atmGoBtn.style.display = '';
-                atmResetBtn.style.display = 'none';
+                // Final step: show totals and comparison
+                var finalSTotal = sTotal;
+                steps.push({ apply: function() {
+                    sortTotalEl.innerHTML = '총 대기시간: <strong style="color:var(--green);">' + finalSTotal + '분</strong>';
+                    atmMsgEl.textContent = '정렬 후 총 대기시간: ' + finalSTotal + '분 (원래: ' + origTotal + '분). ' + (origTotal - finalSTotal) + '분 절약!';
+                }});
+
+                return steps;
+            }
+
+            function atmReset() {
+                atmState.steps = atmBuildSteps();
+                atmState.stepIdx = -1;
                 origEl.innerHTML = '';
                 sortedEl.innerHTML = '';
                 origTotalEl.textContent = '';
                 sortTotalEl.textContent = '';
                 atmMsgEl.textContent = '짧은 시간의 사람을 앞에 세우면, 뒤 사람들의 대기 시간이 줄어듭니다.';
+            }
+
+            atmReset();
+
+            atmGoBtn.addEventListener('click', function() {
+                if (atmState.stepIdx >= atmState.steps.length - 1) return;
+                atmState.stepIdx++;
+                atmState.steps[atmState.stepIdx].apply();
+            });
+
+            atmResetBtn.addEventListener('click', function() {
+                atmReset();
             });
         }
 

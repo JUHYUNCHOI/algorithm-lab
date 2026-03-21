@@ -3,8 +3,8 @@ var prefixSumTopic = {
     id: 'prefixsum',
     title: '누적합',
     icon: '📊',
-    category: '알고리즘 기법',
-    order: 14,
+    category: '탐색 (Silver)',
+    order: 9,
     description: '구간의 합을 한 번에 구하는 기법',
     relatedNote: '누적합은 IMOS법(차분 배열), 2차원 확장, 나머지 연산과의 조합 등으로 다양하게 응용됩니다.',
 

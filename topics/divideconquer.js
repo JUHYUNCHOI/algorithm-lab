@@ -3,8 +3,8 @@ var divideConquerTopic = {
     id: 'divideconquer',
     title: '분할정복',
     icon: '🔪',
-    category: '알고리즘 기법',
-    order: 11,
+    category: '심화 (Gold~Platinum)',
+    order: 13,
     description: '큰 문제를 작게 나눠서 풀고 합치는 기법',
     relatedNote: '분할정복은 병합 정렬, 퀵 정렬의 기반이며, FFT, 카라츠바 곱셈 등 고급 알고리즘에도 쓰입니다.',
 
@@ -417,8 +417,8 @@ var divideConquerTopic = {
                     <div class="concept-demo-title">🎮 직접 해보기 — 정렬된 배열에서 절반씩 나눠 찾기</div>\
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
                         <input type="number" id="dc-demo-bs-target" value="7" min="0" max="99" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:80px;background:var(--card);color:var(--text);">\
-                        <button class="concept-demo-btn" id="dc-demo-bs-btn">🔍 탐색 시작</button>\
-                        <button class="concept-demo-btn green" id="dc-demo-bs-reset" style="display:none;">↺ 다시</button>\
+                        <button class="concept-demo-btn" id="dc-demo-bs-step">Step ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-bs-reset">Reset ↺</button>\
                     </div>\
                     <div class="concept-demo-body">\
                         <div id="dc-demo-bs-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
@@ -436,8 +436,8 @@ var divideConquerTopic = {
                     <div class="concept-demo-title">🎮 직접 해보기 — 합병 정렬 시각화</div>\
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
                         <input type="text" id="dc-demo-ms-input" value="5,3,8,1,4,2,7,6" placeholder="쉼표 구분 숫자" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:200px;background:var(--card);color:var(--text);">\
-                        <button class="concept-demo-btn" id="dc-demo-ms-btn">▶ 정렬 시작</button>\
-                        <button class="concept-demo-btn green" id="dc-demo-ms-reset" style="display:none;">↺ 다시</button>\
+                        <button class="concept-demo-btn" id="dc-demo-ms-step">Step ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-ms-reset">Reset ↺</button>\
                     </div>\
                     <div class="concept-demo-body">\
                         <div id="dc-demo-ms-viz" style="min-height:120px;overflow-x:auto;"></div>\
@@ -536,14 +536,14 @@ var divideConquerTopic = {
         // ====== 데모 1: 이진 탐색 ======
         (function() {
             var arr = [1, 3, 5, 7, 9, 12, 15, 18, 21, 25];
-            var searchBtn = container.querySelector('#dc-demo-bs-btn');
+            var stepBtn = container.querySelector('#dc-demo-bs-step');
             var resetBtn = container.querySelector('#dc-demo-bs-reset');
             var targetInput = container.querySelector('#dc-demo-bs-target');
             var arrEl = container.querySelector('#dc-demo-bs-arr');
             var pointersEl = container.querySelector('#dc-demo-bs-pointers');
             var logEl = container.querySelector('#dc-demo-bs-log');
             var msgEl = container.querySelector('#dc-demo-bs-msg');
-            var animating = false;
+            var bsState = { steps: [], stepIdx: -1 };
 
             function renderArr(lo, hi, mid, found) {
                 arrEl.innerHTML = '';
@@ -568,15 +568,8 @@ var divideConquerTopic = {
                     arrEl.appendChild(box);
                 });
             }
-            renderArr(0, arr.length - 1, -1);
 
-            searchBtn.addEventListener('click', function() {
-                if (animating) return;
-                animating = true;
-                searchBtn.style.display = 'none';
-                resetBtn.style.display = '';
-                var target = parseInt(targetInput.value);
-                if (isNaN(target)) { msgEl.textContent = '숫자를 입력해주세요!'; animating = false; return; }
+            function buildBsSteps(target) {
                 var lo = 0, hi = arr.length - 1;
                 var steps = [];
                 while (lo <= hi) {
@@ -588,48 +581,70 @@ var divideConquerTopic = {
                 if (steps.length === 0 || !steps[steps.length - 1].found) {
                     steps.push({ lo: lo, hi: hi, mid: -1, found: null });
                 }
-                var idx = 0;
-                function playStep() {
-                    if (idx >= steps.length) { animating = false; return; }
-                    var s = steps[idx];
-                    renderArr(s.lo, s.hi, s.mid, s.found);
-                    if (s.found === true) {
-                        pointersEl.innerHTML = '<strong style="color:var(--green);">찾았습니다!</strong> arr[' + s.mid + '] = ' + arr[s.mid];
-                        logEl.textContent = '총 ' + steps.length + '번 비교 (log₂(' + arr.length + ') ≈ ' + Math.ceil(Math.log2(arr.length)) + ')';
-                        animating = false;
-                    } else if (s.found === false) {
-                        pointersEl.innerHTML = 'L=' + s.lo + ', R=' + s.hi + ', mid=' + s.mid + ' → arr[' + s.mid + ']=' + arr[s.mid];
-                        logEl.textContent = arr[s.mid] + (s.dir === 'right' ? ' < ' + target + ' → 오른쪽 절반으로' : ' > ' + target + ' → 왼쪽 절반으로');
-                        idx++;
-                        setTimeout(playStep, 800);
-                    } else {
-                        pointersEl.innerHTML = '<strong style="color:var(--red);">' + target + '은(는) 배열에 없습니다</strong>';
-                        logEl.textContent = '총 ' + (steps.length - 1) + '번 비교';
-                        animating = false;
-                    }
+                return steps;
+            }
+
+            function renderBsStep() {
+                var idx = bsState.stepIdx;
+                var steps = bsState.steps;
+                var target = bsState.target;
+                if (idx < 0) {
+                    renderArr(0, arr.length - 1, -1);
+                    pointersEl.textContent = '';
+                    logEl.textContent = '';
+                    stepBtn.disabled = steps.length === 0;
+                    return;
                 }
-                playStep();
+                var s = steps[idx];
+                renderArr(s.lo, s.hi, s.mid, s.found);
+                if (s.found === true) {
+                    pointersEl.innerHTML = '<strong style="color:var(--green);">찾았습니다!</strong> arr[' + s.mid + '] = ' + arr[s.mid];
+                    logEl.textContent = '총 ' + steps.length + '번 비교 (log\u2082(' + arr.length + ') \u2248 ' + Math.ceil(Math.log2(arr.length)) + ')';
+                    stepBtn.disabled = true;
+                } else if (s.found === false) {
+                    pointersEl.innerHTML = 'L=' + s.lo + ', R=' + s.hi + ', mid=' + s.mid + ' \u2192 arr[' + s.mid + ']=' + arr[s.mid];
+                    logEl.textContent = arr[s.mid] + (s.dir === 'right' ? ' < ' + target + ' \u2192 오른쪽 절반으로' : ' > ' + target + ' \u2192 왼쪽 절반으로');
+                    stepBtn.disabled = false;
+                } else {
+                    pointersEl.innerHTML = '<strong style="color:var(--red);">' + target + '은(는) 배열에 없습니다</strong>';
+                    logEl.textContent = '총 ' + (steps.length - 1) + '번 비교';
+                    stepBtn.disabled = true;
+                }
+            }
+
+            function resetBs() {
+                var target = parseInt(targetInput.value);
+                if (isNaN(target)) { msgEl.textContent = '숫자를 입력해주세요!'; bsState.steps = []; bsState.stepIdx = -1; stepBtn.disabled = true; return; }
+                bsState.target = target;
+                bsState.steps = buildBsSteps(target);
+                bsState.stepIdx = -1;
+                msgEl.textContent = 'Step 버튼을 눌러 한 단계씩 탐색을 진행하세요.';
+                renderBsStep();
+            }
+
+            renderArr(0, arr.length - 1, -1);
+            resetBs();
+
+            stepBtn.addEventListener('click', function() {
+                if (bsState.stepIdx < bsState.steps.length - 1) {
+                    bsState.stepIdx++;
+                    renderBsStep();
+                }
             });
             resetBtn.addEventListener('click', function() {
-                animating = false;
-                searchBtn.style.display = '';
-                resetBtn.style.display = 'none';
-                renderArr(0, arr.length - 1, -1);
-                pointersEl.textContent = '';
-                logEl.textContent = '';
-                msgEl.textContent = '👆 찾을 숫자를 입력하고 "탐색 시작"을 눌러보세요!';
+                resetBs();
             });
         })();
 
         // ====== 데모 2: 합병 정렬 3단계 ======
         (function() {
-            var msBtn = container.querySelector('#dc-demo-ms-btn');
+            var msStepBtn = container.querySelector('#dc-demo-ms-step');
             var msReset = container.querySelector('#dc-demo-ms-reset');
             var msInput = container.querySelector('#dc-demo-ms-input');
             var msViz = container.querySelector('#dc-demo-ms-viz');
             var msPhase = container.querySelector('#dc-demo-ms-phase');
             var msMsg = container.querySelector('#dc-demo-ms-msg');
-            var animating = false;
+            var msState = { steps: [], stepIdx: -1 };
 
             function buildMergeSteps(arr) {
                 var steps = [];
@@ -656,51 +671,60 @@ var divideConquerTopic = {
                 return steps;
             }
 
-            function renderMergeStep(step) {
+            function renderMergeUpTo(steps, upTo) {
                 var boxStyle = 'display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;font-weight:600;color:var(--text);margin:2px;padding:0 4px;';
-                if (step.phase === 'divide') {
-                    var indent = '&nbsp;'.repeat(step.depth * 4);
-                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
-                        '<span style="color:var(--accent);font-weight:600;">나누기: </span>' +
-                        '[' + step.arr.join(', ') + '] → [' + step.left.join(', ') + '] + [' + step.right.join(', ') + ']</div>';
-                    msPhase.innerHTML = '<strong style="color:var(--accent);">1. 나누기(Divide)</strong>: [' + step.arr.join(', ') + ']를 절반으로 나눕니다';
+                msViz.innerHTML = '';
+                for (var k = 0; k <= upTo; k++) {
+                    var step = steps[k];
+                    if (step.phase === 'divide') {
+                        var indent = '&nbsp;'.repeat(step.depth * 4);
+                        msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                            '<span style="color:var(--accent);font-weight:600;">나누기: </span>' +
+                            '[' + step.arr.join(', ') + '] \u2192 [' + step.left.join(', ') + '] + [' + step.right.join(', ') + ']</div>';
+                    } else {
+                        var indent = '&nbsp;'.repeat(step.depth * 4);
+                        var mergedHtml = step.merged.map(function(v) {
+                            return '<span style="' + boxStyle + 'border-color:var(--green);background:rgba(0,184,148,0.1);">' + v + '</span>';
+                        }).join('');
+                        msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                            '<span style="color:var(--green);font-weight:600;">합치기: </span>' +
+                            '[' + step.left.join(', ') + '] + [' + step.right.join(', ') + '] \u2192 ' + mergedHtml + '</div>';
+                    }
+                }
+                // Update phase description for current step
+                var cur = steps[upTo];
+                if (cur.phase === 'divide') {
+                    msPhase.innerHTML = '<strong style="color:var(--accent);">1. 나누기(Divide)</strong>: [' + cur.arr.join(', ') + ']를 절반으로 나눕니다';
                 } else {
-                    var indent = '&nbsp;'.repeat(step.depth * 4);
-                    var mergedHtml = step.merged.map(function(v) {
-                        return '<span style="' + boxStyle + 'border-color:var(--green);background:rgba(0,184,148,0.1);">' + v + '</span>';
-                    }).join('');
-                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
-                        '<span style="color:var(--green);font-weight:600;">합치기: </span>' +
-                        '[' + step.left.join(', ') + '] + [' + step.right.join(', ') + '] → ' + mergedHtml + '</div>';
-                    msPhase.innerHTML = '<strong style="color:var(--green);">3. 합치기(Combine)</strong>: 정렬된 두 부분을 합칩니다 → [' + step.merged.join(', ') + ']';
+                    msPhase.innerHTML = '<strong style="color:var(--green);">3. 합치기(Combine)</strong>: 정렬된 두 부분을 합칩니다 \u2192 [' + cur.merged.join(', ') + ']';
                 }
             }
 
-            msBtn.addEventListener('click', function() {
-                if (animating) return;
-                animating = true;
-                msBtn.style.display = 'none';
-                msReset.style.display = '';
+            function resetMs() {
                 var vals = msInput.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
-                if (vals.length < 2) { msMsg.textContent = '숫자를 2개 이상 입력해주세요!'; animating = false; return; }
-                var steps = buildMergeSteps(vals);
-                msViz.innerHTML = '';
-                var idx = 0;
-                function play() {
-                    if (idx >= steps.length) { msPhase.innerHTML = '<strong style="color:var(--green);">정렬 완료!</strong>'; animating = false; return; }
-                    renderMergeStep(steps[idx]);
-                    idx++;
-                    setTimeout(play, 700);
-                }
-                play();
-            });
-            msReset.addEventListener('click', function() {
-                animating = false;
-                msBtn.style.display = '';
-                msReset.style.display = 'none';
+                if (vals.length < 2) { msMsg.textContent = '숫자를 2개 이상 입력해주세요!'; msState.steps = []; msState.stepIdx = -1; msStepBtn.disabled = true; return; }
+                msState.steps = buildMergeSteps(vals);
+                msState.stepIdx = -1;
                 msViz.innerHTML = '';
                 msPhase.textContent = '';
-                msMsg.textContent = '👆 숫자를 바꿔보고 "정렬 시작"을 눌러보세요!';
+                msMsg.textContent = 'Step 버튼을 눌러 한 단계씩 정렬 과정을 확인하세요.';
+                msStepBtn.disabled = false;
+            }
+
+            resetMs();
+
+            msStepBtn.addEventListener('click', function() {
+                if (msState.stepIdx < msState.steps.length - 1) {
+                    msState.stepIdx++;
+                    renderMergeUpTo(msState.steps, msState.stepIdx);
+                    if (msState.stepIdx >= msState.steps.length - 1) {
+                        msPhase.innerHTML = '<strong style="color:var(--green);">정렬 완료!</strong>';
+                        msStepBtn.disabled = true;
+                    }
+                }
+            });
+            msReset.addEventListener('click', function() {
+                resetMs();
             });
         })();
 

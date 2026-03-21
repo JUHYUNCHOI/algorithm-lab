@@ -3,8 +3,8 @@ var graphTopic = {
     id: 'graph',
     title: 'Graphs & Traversal',
     icon: '🕸️',
-    category: 'Advanced DS & Graphs',
-    order: 16,
+    category: 'Search (Silver)',
+    order: 8,
     description: 'Techniques for traversing graphs made of vertices and edges using DFS/BFS',
     relatedNote: 'There are also advanced graph algorithms such as topological sort, shortest path, minimum spanning tree, and strongly connected components.',
 

@@ -5,8 +5,8 @@ var shortestPathTopic = {
     id: 'shortestpath',
     title: 'Shortest Path',
     icon: '🛤️',
-    category: 'Advanced DS & Graphs',
-    order: 18,
+    category: 'Advanced (Gold~Platinum)',
+    order: 15,
     description: 'Algorithms for finding minimum-cost paths in weighted graphs',
     relatedNote: 'There are also other shortest path algorithms such as Bellman-Ford (negative edges), SPFA, A* search, and more.',
 

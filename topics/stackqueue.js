@@ -5,7 +5,7 @@ const stackQueueTopic = {
     id: 'stackqueue',
     title: '스택과 큐',
     icon: '📦',
-    category: '자료구조 활용',
+    category: '기초 (Bronze~Silver)',
     order: 4,
     description: 'LIFO 스택과 FIFO 큐의 원리, 괄호 검증, 덱 활용',
     relatedNote: '이 외에도 모노톤 스택, 후위 표기식 변환, 슬라이딩 윈도우 최대값(덱) 등이 스택/큐 문제에 자주 출제됩니다.',

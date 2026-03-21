@@ -3,8 +3,8 @@ var dpTopic = {
     id: 'dp',
     title: 'Dynamic Programming',
     icon: '🧩',
-    category: 'Algorithm Techniques',
-    order: 13,
+    category: 'Problem Solving (Silver~Gold)',
+    order: 12,
     description: 'A technique for solving problems efficiently by eliminating redundant computation',
     relatedNote: 'DP has many variations including bitmask DP, tree DP, interval DP, probability DP, and appears in nearly every coding test.',
 

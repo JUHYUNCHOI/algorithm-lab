@@ -3,8 +3,8 @@ var prefixSumTopic = {
     id: 'prefixsum',
     title: 'Prefix Sum',
     icon: '📊',
-    category: 'Algorithm Techniques',
-    order: 14,
+    category: 'Search (Silver)',
+    order: 9,
     description: 'A technique for computing range sums in constant time',
     relatedNote: 'Prefix sums can be extended to IMOS method (difference arrays), 2D applications, and combinations with modular arithmetic.',
 

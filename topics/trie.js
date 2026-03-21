@@ -5,7 +5,7 @@ var trieTopic = {
     id: 'trie',
     title: '트라이',
     icon: '🔠',
-    category: '심화 선택',
+    category: '고급 자료구조 (Gold~Platinum)',
     order: 20,
     description: '문자열을 효율적으로 저장하고 검색하는 트리 자료구조',
     relatedNote: '트라이는 자동완성, 맞춤법 검사, IP 라우팅 등에 활용되며, 압축 트라이(Radix Tree)로 메모리를 절약할 수 있습니다.',
@@ -198,7 +198,9 @@ var trieTopic = {
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
                         <input type="text" id="trie-demo-build-input" value="cat" placeholder="단어 입력" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
                         <button class="concept-demo-btn" id="trie-demo-build-insert">+ 삽입</button>\
+                        <button class="concept-demo-btn" id="trie-demo-build-step" style="display:none;">Step ▶</button>\
                         <button class="concept-demo-btn" id="trie-demo-build-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                        <span id="trie-demo-build-counter" style="font-size:0.8rem;color:var(--text3);"></span>\
                     </div>\
                     <div class="concept-demo-body">\
                         <div style="font-weight:600;margin-bottom:8px;color:var(--text);">트라이 구조</div>\
@@ -522,8 +524,13 @@ var trieTopic = {
             var wordsEl = container.querySelector('#trie-demo-build-words');
             var inputEl = container.querySelector('#trie-demo-build-input');
             var insertBtn = container.querySelector('#trie-demo-build-insert');
+            var stepBtn = container.querySelector('#trie-demo-build-step');
             var resetBtn = container.querySelector('#trie-demo-build-reset');
+            var counterEl = container.querySelector('#trie-demo-build-counter');
             var msgEl = container.querySelector('#trie-demo-build-msg');
+
+            // State for step-by-step insertion
+            var buildState = { word: '', stepIdx: 0, node: null, inserting: false };
 
             function renderBuild() {
                 var allNodes = layoutTrie(trie.root);
@@ -540,59 +547,6 @@ var trieTopic = {
                 }
             }
 
-            function animateInsert(word) {
-                var node = trie.root;
-                var allNodes = layoutTrie(trie.root);
-                var path = [allNodes[0]]; // root
-                var i = 0;
-                insertBtn.disabled = true;
-                function step() {
-                    if (i >= word.length) {
-                        // mark is_end
-                        node.isEnd = true;
-                        insertedWords.push(word);
-                        allNodes = layoutTrie(trie.root);
-                        // find path for highlight
-                        var hp = [allNodes[0]];
-                        var cur = trie.root;
-                        for (var j = 0; j < word.length; j++) {
-                            cur = cur.children[word[j]];
-                            var found = allNodes.filter(function(n) { return n.node === cur; });
-                            if (found.length > 0) hp.push(found[0]);
-                        }
-                        renderTrieSvg(svgEl, allNodes, hp, 'found');
-                        renderBuildWords();
-                        msgEl.textContent = '"' + word + '" 삽입 완료! is_end 표시(초록 점)를 확인하세요.';
-                        msgEl.style.color = 'var(--green)';
-                        insertBtn.disabled = false;
-                        return;
-                    }
-                    var ch = word[i];
-                    if (!node.children[ch]) {
-                        node.children[ch] = new TrieNode();
-                        msgEl.textContent = '"' + ch + '" 노드가 없으므로 새로 만듭니다! (깊이 ' + (i+1) + ')';
-                        msgEl.style.color = 'var(--accent)';
-                    } else {
-                        msgEl.textContent = '"' + ch + '" 노드가 이미 있으므로 따라갑니다. (공유!)';
-                        msgEl.style.color = 'var(--yellow)';
-                    }
-                    node = node.children[ch];
-                    allNodes = layoutTrie(trie.root);
-                    // build path
-                    var hp = [allNodes[0]];
-                    var cur = trie.root;
-                    for (var j = 0; j <= i; j++) {
-                        cur = cur.children[word[j]];
-                        var found = allNodes.filter(function(n) { return n.node === cur; });
-                        if (found.length > 0) hp.push(found[0]);
-                    }
-                    renderTrieSvg(svgEl, allNodes, hp, 'searching');
-                    i++;
-                    setTimeout(step, 500);
-                }
-                step();
-            }
-
             function renderBuildWords() {
                 wordsEl.innerHTML = '';
                 insertedWords.forEach(function(w) {
@@ -603,7 +557,58 @@ var trieTopic = {
                 });
             }
 
+            function buildStepExec() {
+                var word = buildState.word;
+                var i = buildState.stepIdx;
+                // Total steps: word.length (one per char) + 1 (final is_end marking)
+                if (i >= word.length) {
+                    // Final step: mark is_end
+                    buildState.node.isEnd = true;
+                    insertedWords.push(word);
+                    var allNodes = layoutTrie(trie.root);
+                    var hp = [allNodes[0]];
+                    var cur = trie.root;
+                    for (var j = 0; j < word.length; j++) {
+                        cur = cur.children[word[j]];
+                        var found = allNodes.filter(function(n) { return n.node === cur; });
+                        if (found.length > 0) hp.push(found[0]);
+                    }
+                    renderTrieSvg(svgEl, allNodes, hp, 'found');
+                    renderBuildWords();
+                    msgEl.textContent = '"' + word + '" 삽입 완료! is_end 표시(초록 점)를 확인하세요.';
+                    msgEl.style.color = 'var(--green)';
+                    counterEl.textContent = (i + 1) + ' / ' + (word.length + 1);
+                    // Done — hide step, show insert again
+                    buildState.inserting = false;
+                    stepBtn.style.display = 'none';
+                    insertBtn.disabled = false;
+                    return;
+                }
+                var ch = word[i];
+                if (!buildState.node.children[ch]) {
+                    buildState.node.children[ch] = new TrieNode();
+                    msgEl.textContent = '"' + ch + '" 노드가 없으므로 새로 만듭니다! (깊이 ' + (i+1) + ')';
+                    msgEl.style.color = 'var(--accent)';
+                } else {
+                    msgEl.textContent = '"' + ch + '" 노드가 이미 있으므로 따라갑니다. (공유!)';
+                    msgEl.style.color = 'var(--yellow)';
+                }
+                buildState.node = buildState.node.children[ch];
+                var allNodes = layoutTrie(trie.root);
+                var hp = [allNodes[0]];
+                var cur = trie.root;
+                for (var j = 0; j <= i; j++) {
+                    cur = cur.children[word[j]];
+                    var found = allNodes.filter(function(n) { return n.node === cur; });
+                    if (found.length > 0) hp.push(found[0]);
+                }
+                renderTrieSvg(svgEl, allNodes, hp, 'searching');
+                counterEl.textContent = (i + 1) + ' / ' + (word.length + 1);
+                buildState.stepIdx++;
+            }
+
             insertBtn.addEventListener('click', function() {
+                if (buildState.inserting) return;
                 var word = inputEl.value.trim().toLowerCase();
                 if (!word || !/^[a-z]+$/.test(word)) {
                     msgEl.textContent = '영문 소문자 단어를 입력하세요!';
@@ -615,12 +620,33 @@ var trieTopic = {
                     msgEl.style.color = 'var(--yellow)';
                     return;
                 }
-                animateInsert(word);
+                // Begin step-by-step insertion
+                buildState.word = word;
+                buildState.stepIdx = 0;
+                buildState.node = trie.root;
+                buildState.inserting = true;
+                insertBtn.disabled = true;
+                stepBtn.style.display = '';
+                counterEl.textContent = '0 / ' + (word.length + 1);
+                msgEl.textContent = '"' + word + '" 삽입을 시작합니다. Step 버튼을 눌러 한 글자씩 진행하세요.';
+                msgEl.style.color = 'var(--text2)';
+            });
+
+            stepBtn.addEventListener('click', function() {
+                if (!buildState.inserting) return;
+                buildStepExec();
             });
 
             resetBtn.addEventListener('click', function() {
                 trie = new TrieDS();
                 insertedWords = [];
+                buildState.inserting = false;
+                buildState.word = '';
+                buildState.stepIdx = 0;
+                buildState.node = null;
+                stepBtn.style.display = 'none';
+                insertBtn.disabled = false;
+                counterEl.textContent = '';
                 renderBuild();
                 msgEl.textContent = '"cat", "car", "card" 등을 넣어보세요! 같은 접두사를 공유하는 모습을 관찰하세요.';
                 msgEl.style.color = 'var(--text2)';

@@ -5,7 +5,7 @@ const arrayTopic = {
     id: 'array',
     title: 'Array',
     icon: '📊',
-    category: 'Data Structures',
+    category: 'Fundamentals (Bronze~Silver)',
     order: 2,
     description: 'Key patterns for solving array problems: Two Pointers, Sliding Window, and range processing',
     relatedNote: 'Other techniques like Kadane\'s algorithm, Monotone Stack, and Dutch National Flag are also commonly used in array problems.',

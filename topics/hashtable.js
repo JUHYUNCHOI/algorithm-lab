@@ -5,8 +5,8 @@ const hashTableTopic = {
     id: 'hashtable',
     title: '해시 테이블',
     icon: '🗂️',
-    category: '자료구조 활용',
-    order: 3,
+    category: '기초 (Bronze~Silver)',
+    order: 5,
     description: '딕셔너리와 집합을 활용한 O(1) 탐색과 카운팅 기법',
     relatedNote: '해시맵은 투 포인터, 슬라이딩 윈도우와 함께 쓰이는 경우가 많고, 정렬 대신 O(1) 탐색으로 시간을 줄이는 핵심 도구입니다.',
 

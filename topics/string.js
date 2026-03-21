@@ -449,7 +449,7 @@ const stringTopic = {
     id: 'string',
     title: '문자열 조작',
     icon: '🔤',
-    category: '자료구조 활용',
+    category: '기초 (Bronze~Silver)',
     order: 1,
     description: '빈도수 분석, 팰린드롬, 애너그램 등 문자열 핵심 유형과 풀이법',
 

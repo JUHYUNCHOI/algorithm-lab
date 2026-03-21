@@ -5,7 +5,7 @@ var bitManipulationTopic = {
     id: 'bitmanipulation',
     title: 'Bit Manipulation',
     icon: '💻',
-    category: 'Advanced Topics',
+    category: 'Advanced DS (Gold~Platinum)',
     order: 19,
     description: 'Efficient problem-solving techniques using bitwise operations and bitmasks',
     relatedNote: 'Bitwise operations form the foundation for various optimization techniques such as bitmask DP, subset enumeration, and XOR tricks.',
@@ -614,15 +614,15 @@ int main() {
                     <div class="concept-demo-title">🎮 Try It — XOR all numbers and the unpaired one remains</div>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
                         <input type="text" id="bit-demo-xor-input" value="4,1,2,1,2" placeholder="Comma-separated numbers" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">
-                        <button class="concept-demo-btn" id="bit-demo-xor-btn">⚡ Run XOR</button>
-                        <button class="concept-demo-btn green" id="bit-demo-xor-reset" style="display:none;">↺ Again</button>
+                        <button class="concept-demo-btn" id="bit-demo-xor-btn">Step ▶</button>
+                        <button class="concept-demo-btn green" id="bit-demo-xor-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="bit-demo-xor-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
                         <div id="bit-demo-xor-steps" style="font-family:monospace;font-size:0.9rem;color:var(--text);line-height:2;"></div>
                         <div id="bit-demo-xor-result" style="margin-top:8px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>
                     </div>
-                    <div class="concept-demo-msg" id="bit-demo-xor-msg">👆 Change the numbers and click "Run XOR"! Paired numbers cancel out and only the unpaired one remains.</div>
+                    <div class="concept-demo-msg" id="bit-demo-xor-msg">👆 Change the numbers and click "Step" to advance one step at a time! Paired numbers cancel out and only the unpaired one remains.</div>
                 </div>
             </div>
         `;
@@ -830,15 +830,15 @@ int main() {
             var arrEl = container.querySelector('#bit-demo-xor-arr');
             var stepsEl = container.querySelector('#bit-demo-xor-steps');
             var resultEl = container.querySelector('#bit-demo-xor-result');
-            var animating = false;
+            var xorState = { nums: [], stepIdx: -1, xorVal: 0, initialized: false };
 
-            xorBtn.addEventListener('click', function() {
-                if (animating) return;
-                animating = true;
-                xorBtn.style.display = 'none';
-                resetBtn.style.display = '';
+            function xorInitDemo() {
                 var nums = inputEl.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
-                if (nums.length < 2) { resultEl.textContent = 'Please enter at least 2 numbers!'; animating = false; return; }
+                if (nums.length < 2) { resultEl.textContent = 'Please enter at least 2 numbers!'; return false; }
+                xorState.nums = nums;
+                xorState.stepIdx = -1;
+                xorState.xorVal = 0;
+                xorState.initialized = true;
 
                 arrEl.innerHTML = '';
                 nums.forEach(function(n) {
@@ -847,47 +847,56 @@ int main() {
                     box.innerHTML = '<div class="str-char-val">' + n + '</div>';
                     arrEl.appendChild(box);
                 });
-
                 stepsEl.innerHTML = '';
-                var xorVal = 0;
-                var idx = 0;
-                function step() {
-                    if (idx >= nums.length) {
-                        resultEl.innerHTML = '<strong style="color:var(--green);">Unpaired number: ' + xorVal + '</strong> — Paired numbers cancel out via XOR, leaving only the unique one!';
-                        var boxes = arrEl.querySelectorAll('.str-char-box');
-                        boxes.forEach(function(box) {
-                            if (box.textContent.trim() == String(xorVal)) {
-                                box.style.borderColor = 'var(--green)';
-                                box.style.boxShadow = '0 0 8px var(--green)';
-                            }
-                        });
-                        animating = false;
-                        return;
-                    }
-                    var prev = xorVal;
-                    xorVal ^= nums[idx];
-                    var line = document.createElement('div');
-                    line.style.animation = 'fadeIn 0.3s ease';
-                    line.innerHTML = prev + ' ^ ' + nums[idx] + ' = <strong style="color:var(--accent);">' + xorVal + '</strong>';
-                    stepsEl.appendChild(line);
+                resultEl.textContent = '';
+                return true;
+            }
 
-                    var boxes = arrEl.querySelectorAll('.str-char-box');
-                    boxes.forEach(function(b) { b.style.borderColor = ''; b.style.boxShadow = ''; });
-                    if (boxes[idx]) {
-                        boxes[idx].style.borderColor = 'var(--yellow)';
-                        boxes[idx].style.boxShadow = '0 0 6px var(--yellow)';
-                    }
-
-                    idx++;
-                    setTimeout(step, 500);
+            function xorAdvanceStep() {
+                if (!xorState.initialized) {
+                    if (!xorInitDemo()) return;
                 }
-                step();
-            });
+                var nums = xorState.nums;
+                xorState.stepIdx++;
+                if (xorState.stepIdx >= nums.length) {
+                    // Already finished — do nothing on extra clicks
+                    xorState.stepIdx = nums.length;
+                    return;
+                }
+                var idx = xorState.stepIdx;
+                var prev = xorState.xorVal;
+                xorState.xorVal ^= nums[idx];
+                var line = document.createElement('div');
+                line.style.animation = 'fadeIn 0.3s ease';
+                line.innerHTML = prev + ' ^ ' + nums[idx] + ' = <strong style="color:var(--accent);">' + xorState.xorVal + '</strong>';
+                stepsEl.appendChild(line);
+
+                // Highlight current in array
+                var boxes = arrEl.querySelectorAll('.str-char-box');
+                boxes.forEach(function(b) { b.style.borderColor = ''; b.style.boxShadow = ''; });
+                if (boxes[idx]) {
+                    boxes[idx].style.borderColor = 'var(--yellow)';
+                    boxes[idx].style.boxShadow = '0 0 6px var(--yellow)';
+                }
+
+                // If last step, show result
+                if (xorState.stepIdx >= nums.length - 1) {
+                    resultEl.innerHTML = '<strong style="color:var(--green);">Unpaired number: ' + xorState.xorVal + '</strong> — Paired numbers cancel out via XOR, leaving only the unique one!';
+                    boxes.forEach(function(box) {
+                        if (box.textContent.trim() == String(xorState.xorVal)) {
+                            box.style.borderColor = 'var(--green)';
+                            box.style.boxShadow = '0 0 8px var(--green)';
+                        }
+                    });
+                }
+            }
+
+            xorBtn.addEventListener('click', xorAdvanceStep);
 
             resetBtn.addEventListener('click', function() {
-                animating = false;
-                xorBtn.style.display = '';
-                resetBtn.style.display = 'none';
+                xorState.initialized = false;
+                xorState.stepIdx = -1;
+                xorState.xorVal = 0;
                 arrEl.innerHTML = '';
                 stepsEl.innerHTML = '';
                 resultEl.textContent = '';

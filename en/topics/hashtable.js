@@ -5,8 +5,8 @@ const hashTableTopic = {
     id: 'hashtable',
     title: 'Hash Table',
     icon: '🗂️',
-    category: 'Data Structures',
-    order: 3,
+    category: 'Fundamentals (Bronze~Silver)',
+    order: 5,
     description: 'O(1) lookup and counting techniques using dictionaries and sets',
     relatedNote: 'HashMaps are often used alongside two pointers and sliding window, and are a key tool for reducing time by using O(1) lookup instead of sorting.',
 

@@ -3,8 +3,8 @@ var priorityQueueTopic = {
     id: 'priorityqueue',
     title: 'Priority Queue',
     icon: '🏥',
-    category: 'Advanced DS & Graphs',
-    order: 15,
+    category: 'Advanced DS (Gold~Platinum)',
+    order: 17,
     description: 'A data structure that always retrieves the most important item first',
     relatedNote: 'Priority queues are a key building block in many algorithms, including Dijkstra, Huffman coding, median maintenance, and task scheduling.',
 

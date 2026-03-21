@@ -5,7 +5,7 @@ var trieTopic = {
     id: 'trie',
     title: 'Trie',
     icon: '🔠',
-    category: 'Advanced Topics',
+    category: 'Advanced DS (Gold~Platinum)',
     order: 20,
     description: 'A tree data structure for efficiently storing and searching strings',
     relatedNote: 'Tries are used in autocomplete, spell-checking, IP routing, and more. A compressed trie (Radix Tree) can save memory.',
@@ -198,7 +198,9 @@ var trieTopic = {
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
                         <input type="text" id="trie-demo-build-input" value="cat" placeholder="Enter a word" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
                         <button class="concept-demo-btn" id="trie-demo-build-insert">+ Insert</button>\
+                        <button class="concept-demo-btn" id="trie-demo-build-step" style="display:none;">Step ▶</button>\
                         <button class="concept-demo-btn" id="trie-demo-build-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                        <span id="trie-demo-build-counter" style="font-size:0.8rem;color:var(--text3);"></span>\
                     </div>\
                     <div class="concept-demo-body">\
                         <div style="font-weight:600;margin-bottom:8px;color:var(--text);">Trie Structure</div>\
@@ -512,8 +514,13 @@ var trieTopic = {
             var wordsEl = container.querySelector('#trie-demo-build-words');
             var inputEl = container.querySelector('#trie-demo-build-input');
             var insertBtn = container.querySelector('#trie-demo-build-insert');
+            var stepBtn = container.querySelector('#trie-demo-build-step');
             var resetBtn = container.querySelector('#trie-demo-build-reset');
+            var counterEl = container.querySelector('#trie-demo-build-counter');
             var msgEl = container.querySelector('#trie-demo-build-msg');
+
+            // State for step-by-step insertion
+            var buildState = { word: '', stepIdx: 0, node: null, inserting: false };
 
             function renderBuild() {
                 var allNodes = layoutTrie(trie.root);
@@ -530,56 +537,6 @@ var trieTopic = {
                 }
             }
 
-            function animateInsert(word) {
-                var node = trie.root;
-                var allNodes = layoutTrie(trie.root);
-                var path = [allNodes[0]];
-                var i = 0;
-                insertBtn.disabled = true;
-                function step() {
-                    if (i >= word.length) {
-                        node.isEnd = true;
-                        insertedWords.push(word);
-                        allNodes = layoutTrie(trie.root);
-                        var hp = [allNodes[0]];
-                        var cur = trie.root;
-                        for (var j = 0; j < word.length; j++) {
-                            cur = cur.children[word[j]];
-                            var found = allNodes.filter(function(n) { return n.node === cur; });
-                            if (found.length > 0) hp.push(found[0]);
-                        }
-                        renderTrieSvg(svgEl, allNodes, hp, 'found');
-                        renderBuildWords();
-                        msgEl.textContent = '"' + word + '" inserted! Check the is_end marker (green dot).';
-                        msgEl.style.color = 'var(--green)';
-                        insertBtn.disabled = false;
-                        return;
-                    }
-                    var ch = word[i];
-                    if (!node.children[ch]) {
-                        node.children[ch] = new TrieNode();
-                        msgEl.textContent = 'Node "' + ch + '" does not exist, creating a new one! (depth ' + (i+1) + ')';
-                        msgEl.style.color = 'var(--accent)';
-                    } else {
-                        msgEl.textContent = 'Node "' + ch + '" already exists, following it. (shared!)';
-                        msgEl.style.color = 'var(--yellow)';
-                    }
-                    node = node.children[ch];
-                    allNodes = layoutTrie(trie.root);
-                    var hp = [allNodes[0]];
-                    var cur = trie.root;
-                    for (var j = 0; j <= i; j++) {
-                        cur = cur.children[word[j]];
-                        var found = allNodes.filter(function(n) { return n.node === cur; });
-                        if (found.length > 0) hp.push(found[0]);
-                    }
-                    renderTrieSvg(svgEl, allNodes, hp, 'searching');
-                    i++;
-                    setTimeout(step, 500);
-                }
-                step();
-            }
-
             function renderBuildWords() {
                 wordsEl.innerHTML = '';
                 insertedWords.forEach(function(w) {
@@ -590,7 +547,58 @@ var trieTopic = {
                 });
             }
 
+            function buildStepExec() {
+                var word = buildState.word;
+                var i = buildState.stepIdx;
+                // Total steps: word.length (one per char) + 1 (final is_end marking)
+                if (i >= word.length) {
+                    // Final step: mark is_end
+                    buildState.node.isEnd = true;
+                    insertedWords.push(word);
+                    var allNodes = layoutTrie(trie.root);
+                    var hp = [allNodes[0]];
+                    var cur = trie.root;
+                    for (var j = 0; j < word.length; j++) {
+                        cur = cur.children[word[j]];
+                        var found = allNodes.filter(function(n) { return n.node === cur; });
+                        if (found.length > 0) hp.push(found[0]);
+                    }
+                    renderTrieSvg(svgEl, allNodes, hp, 'found');
+                    renderBuildWords();
+                    msgEl.textContent = '"' + word + '" inserted! Check the is_end marker (green dot).';
+                    msgEl.style.color = 'var(--green)';
+                    counterEl.textContent = (i + 1) + ' / ' + (word.length + 1);
+                    // Done — hide step, show insert again
+                    buildState.inserting = false;
+                    stepBtn.style.display = 'none';
+                    insertBtn.disabled = false;
+                    return;
+                }
+                var ch = word[i];
+                if (!buildState.node.children[ch]) {
+                    buildState.node.children[ch] = new TrieNode();
+                    msgEl.textContent = 'Node "' + ch + '" does not exist, creating a new one! (depth ' + (i+1) + ')';
+                    msgEl.style.color = 'var(--accent)';
+                } else {
+                    msgEl.textContent = 'Node "' + ch + '" already exists, following it. (shared!)';
+                    msgEl.style.color = 'var(--yellow)';
+                }
+                buildState.node = buildState.node.children[ch];
+                var allNodes = layoutTrie(trie.root);
+                var hp = [allNodes[0]];
+                var cur = trie.root;
+                for (var j = 0; j <= i; j++) {
+                    cur = cur.children[word[j]];
+                    var found = allNodes.filter(function(n) { return n.node === cur; });
+                    if (found.length > 0) hp.push(found[0]);
+                }
+                renderTrieSvg(svgEl, allNodes, hp, 'searching');
+                counterEl.textContent = (i + 1) + ' / ' + (word.length + 1);
+                buildState.stepIdx++;
+            }
+
             insertBtn.addEventListener('click', function() {
+                if (buildState.inserting) return;
                 var word = inputEl.value.trim().toLowerCase();
                 if (!word || !/^[a-z]+$/.test(word)) {
                     msgEl.textContent = 'Please enter a lowercase English word!';
@@ -602,12 +610,33 @@ var trieTopic = {
                     msgEl.style.color = 'var(--yellow)';
                     return;
                 }
-                animateInsert(word);
+                // Begin step-by-step insertion
+                buildState.word = word;
+                buildState.stepIdx = 0;
+                buildState.node = trie.root;
+                buildState.inserting = true;
+                insertBtn.disabled = true;
+                stepBtn.style.display = '';
+                counterEl.textContent = '0 / ' + (word.length + 1);
+                msgEl.textContent = 'Inserting "' + word + '". Press the Step button to advance one character at a time.';
+                msgEl.style.color = 'var(--text2)';
+            });
+
+            stepBtn.addEventListener('click', function() {
+                if (!buildState.inserting) return;
+                buildStepExec();
             });
 
             resetBtn.addEventListener('click', function() {
                 trie = new TrieDS();
                 insertedWords = [];
+                buildState.inserting = false;
+                buildState.word = '';
+                buildState.stepIdx = 0;
+                buildState.node = null;
+                stepBtn.style.display = 'none';
+                insertBtn.disabled = false;
+                counterEl.textContent = '';
                 renderBuild();
                 msgEl.textContent = 'Try inserting "cat", "car", "card"! Watch how they share the same prefix path.';
                 msgEl.style.color = 'var(--text2)';

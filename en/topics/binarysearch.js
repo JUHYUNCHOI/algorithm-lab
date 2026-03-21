@@ -3,8 +3,8 @@ const binarySearchTopic = {
     id: 'binarysearch',
     title: 'Binary Search',
     icon: '🔍',
-    category: 'Sorting & Searching',
-    order: 7,
+    category: 'Search (Silver)',
+    order: 6,
     description: 'A technique for quickly finding a value in sorted data',
     relatedNote: 'Binary search is often extended to Parametric Search, a technique that converts optimization problems into decision problems.',
 
@@ -221,7 +221,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         <label style="font-weight:600;font-size:0.9rem;">target:
                             <input type="number" id="bs-demo-fail-target" value="6" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;">
                         </label>
-                        <button class="concept-demo-btn" id="bs-demo-fail-run">🔍 Start Search</button>
+                    </div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bs-demo-fail-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-fail-reset">Reset ↺</button>
                     </div>
                     <div id="bs-demo-fail-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <div id="bs-demo-fail-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
@@ -335,7 +338,10 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                             <input type="number" id="bs-demo-param-capacity" value="15" min="1" max="50" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;"> kg
                         </label>
                         <span style="font-size:0.85rem;color:var(--text3);">Item weights: [2, 4, 5, 7, 8, 10, 12, 15, 18, 20] kg</span>
-                        <button class="concept-demo-btn" id="bs-demo-param-run">🔍 Find Boundary</button>
+                    </div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bs-demo-param-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-param-reset">Reset ↺</button>
                     </div>
                     <div style="margin-bottom:6px;font-size:0.85rem;color:var(--text2);" id="bs-demo-param-question"></div>
                     <div id="bs-demo-param-arr" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px;"></div>
@@ -375,12 +381,15 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
         (function() {
             var FAIL_ARR = [1, 3, 5, 7, 9, 11, 13];
             var failTargetInput = container.querySelector('#bs-demo-fail-target');
-            var failRunBtn = container.querySelector('#bs-demo-fail-run');
+            var failStepBtn = container.querySelector('#bs-demo-fail-step');
+            var failResetBtn = container.querySelector('#bs-demo-fail-reset');
             var failArrEl = container.querySelector('#bs-demo-fail-arr');
             var failPointers = container.querySelector('#bs-demo-fail-pointers');
             var failLog = container.querySelector('#bs-demo-fail-log');
             var failMsg = container.querySelector('#bs-demo-fail-msg');
-            if (!failRunBtn) return;
+            if (!failStepBtn) return;
+
+            var failState = { steps: [], stepIdx: -1, logLines: [], target: 6 };
 
             function failCell(v, i, style) {
                 return '<div style="width:44px;text-align:center;padding:7px 3px;border-radius:8px;font-weight:600;font-size:0.88rem;transition:all 0.3s;' + style + '"><div>' + v + '</div><div style="font-size:0.65rem;color:var(--text3);">[' + i + ']</div></div>';
@@ -395,77 +404,86 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }).join('');
             }
 
-            function runFailSearch() {
+            function buildFailSteps() {
                 var target = parseInt(failTargetInput.value);
                 if (isNaN(target)) { failMsg.textContent = 'Please enter a number for target!'; return; }
+                failState.target = target;
+                failState.steps = [];
+                failState.stepIdx = -1;
+                failState.logLines = [];
+
                 var found = FAIL_ARR.indexOf(target) !== -1;
-                failLog.innerHTML = '';
-                failPointers.innerHTML = '';
-                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
-
                 var lo = 0, hi = FAIL_ARR.length - 1;
-                var logLines = [];
-                var stepsData = [];
-
                 var round = 0;
                 while (lo <= hi) {
                     var mid = Math.floor((lo + hi) / 2);
                     round++;
                     if (FAIL_ARR[mid] === target) {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
+                        failState.steps.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
                         break;
                     } else if (FAIL_ARR[mid] < target) {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'right', round: round, newLo: mid + 1, newHi: hi });
+                        failState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, newLo: mid + 1, newHi: hi });
                         lo = mid + 1;
                     } else {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, found: false, dir: 'left', round: round, newLo: lo, newHi: mid - 1 });
+                        failState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, newLo: lo, newHi: mid - 1 });
                         hi = mid - 1;
                     }
                 }
                 if (!found) {
-                    stepsData.push({ failed: true, round: round + 1 });
+                    failState.steps.push({ failed: true, round: round + 1 });
                 }
+                // Initial state render
+                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
+                failPointers.innerHTML = '';
+                failLog.innerHTML = '';
+                failMsg.textContent = 'Click Step to advance target=' + target + ' search one step at a time. (' + failState.steps.length + ' steps)';
+            }
 
-                var stepIdx = 0;
-                function showNextStep() {
-                    if (stepIdx >= stepsData.length) return;
-                    var s = stepsData[stepIdx];
-                    if (s.failed) {
-                        failPointers.innerHTML = '<strong style="color:var(--red);">lo > hi \u2192 Search range is gone!</strong>';
-                        renderFailArr(0, 0, -1, true);
-                        logLines.push('<span style="color:var(--red);font-weight:700;">\u274c ' + target + ' is not in the array! \u2192 return -1</span>');
-                        failLog.innerHTML = logLines.join('<br>');
-                        failMsg.innerHTML = '<strong style="color:var(--red);">When lo > hi, we determine "not found".</strong> This is why binary search returns -1.';
-                    } else if (s.found) {
-                        renderFailArr(s.lo, s.hi, s.mid, false);
-                        failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
-                        logLines.push('<span style="color:var(--green);font-weight:700;">Round ' + s.round + ': arr[' + s.mid + ']=' + FAIL_ARR[s.mid] + ' == ' + target + ' \u2705 Found!</span>');
-                        failLog.innerHTML = logLines.join('<br>');
-                        failMsg.innerHTML = '<strong style="color:var(--green);">Found it!</strong> The value exists in the array. Try entering a value that\'s not in the array!';
+            function failStep() {
+                // Build steps on first click
+                if (failState.steps.length === 0 || failState.stepIdx >= failState.steps.length - 1) {
+                    buildFailSteps();
+                    return;
+                }
+                failState.stepIdx++;
+                var s = failState.steps[failState.stepIdx];
+                var target = failState.target;
+                if (s.failed) {
+                    failPointers.innerHTML = '<strong style="color:var(--red);">lo > hi \u2192 Search range is gone!</strong>';
+                    renderFailArr(0, 0, -1, true);
+                    failState.logLines.push('<span style="color:var(--red);font-weight:700;">Result: ' + target + ' is not in the array! \u2192 return -1</span>');
+                    failMsg.innerHTML = '<strong style="color:var(--red);">When lo > hi, we determine "not found".</strong> This is why binary search returns -1.';
+                } else if (s.found) {
+                    renderFailArr(s.lo, s.hi, s.mid, false);
+                    failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    failState.logLines.push('<span style="color:var(--green);font-weight:700;">Round ' + s.round + ': arr[' + s.mid + ']=' + FAIL_ARR[s.mid] + ' == ' + target + ' \u2192 Found!</span>');
+                    failMsg.innerHTML = '<strong style="color:var(--green);">Found it!</strong> The value exists in the array. Try entering a value that\'s not in the array!';
+                } else {
+                    renderFailArr(s.lo, s.hi, s.mid, false);
+                    failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    var cmp = FAIL_ARR[s.mid] < target ? (FAIL_ARR[s.mid] + ' < ' + target + ' \u2192 go right!') : (FAIL_ARR[s.mid] + ' > ' + target + ' \u2192 go left!');
+                    failState.logLines.push('Round ' + s.round + ': arr[' + s.mid + ']=' + cmp + ' (lo=' + s.newLo + ', hi=' + s.newHi + ')');
+                    if (s.newLo > s.newHi) {
+                        failMsg.innerHTML = 'lo=' + s.newLo + ' > hi=' + s.newHi + ' \u2192 <strong>Range is about to disappear!</strong>';
                     } else {
-                        renderFailArr(s.lo, s.hi, s.mid, false);
-                        failPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
-                        var cmp = FAIL_ARR[s.mid] < target ? (FAIL_ARR[s.mid] + ' < ' + target + ' \u2192 go right!') : (FAIL_ARR[s.mid] + ' > ' + target + ' \u2192 go left!');
-                        logLines.push('Round ' + s.round + ': arr[' + s.mid + ']=' + cmp + ' (lo=' + s.newLo + ', hi=' + s.newHi + ')');
-                        failLog.innerHTML = logLines.join('<br>');
-                        if (s.newLo > s.newHi) {
-                            failMsg.innerHTML = 'lo=' + s.newLo + ' > hi=' + s.newHi + ' \u2192 <strong>Range is about to disappear!</strong>';
-                        } else {
-                            failMsg.textContent = 'Range narrowed to [' + s.newLo + '~' + s.newHi + ']. Continuing...';
-                        }
-                    }
-                    failLog.scrollTop = failLog.scrollHeight;
-                    stepIdx++;
-                    if (stepIdx < stepsData.length) {
-                        setTimeout(showNextStep, 700);
+                        failMsg.textContent = 'Range narrowed to [' + s.newLo + '~' + s.newHi + ']. Click Step to continue.';
                     }
                 }
-                showNextStep();
+                failLog.innerHTML = failState.logLines.join('<br>');
+                failLog.scrollTop = failLog.scrollHeight;
+            }
+
+            function failReset() {
+                failState = { steps: [], stepIdx: -1, logLines: [], target: parseInt(failTargetInput.value) || 6 };
+                renderFailArr(0, FAIL_ARR.length - 1, -1, false);
+                failPointers.innerHTML = '';
+                failLog.innerHTML = '';
+                failMsg.textContent = 'Enter a value not in the array (e.g., 6, 4, 0) as target and click Step!';
             }
 
             renderFailArr(0, FAIL_ARR.length - 1, -1, false);
-            failRunBtn.addEventListener('click', runFailSearch);
-            failTargetInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') runFailSearch(); });
+            failStepBtn.addEventListener('click', failStep);
+            failResetBtn.addEventListener('click', failReset);
         })();
 
         // ── Demo 2: Speed Comparison (slider) ──
@@ -517,13 +535,16 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
         (function() {
             var WEIGHTS = [2, 4, 5, 7, 8, 10, 12, 15, 18, 20];
             var capacityInput = container.querySelector('#bs-demo-param-capacity');
-            var paramRunBtn = container.querySelector('#bs-demo-param-run');
+            var paramStepBtn = container.querySelector('#bs-demo-param-step');
+            var paramResetBtn = container.querySelector('#bs-demo-param-reset');
             var paramArrEl = container.querySelector('#bs-demo-param-arr');
             var paramPointers = container.querySelector('#bs-demo-param-pointers');
             var paramLog = container.querySelector('#bs-demo-param-log');
             var paramMsg = container.querySelector('#bs-demo-param-msg');
             var paramQuestion = container.querySelector('#bs-demo-param-question');
-            if (!paramRunBtn) return;
+            if (!paramStepBtn) return;
+
+            var paramState = { steps: [], stepIdx: -1, logLines: [], capacity: 15 };
 
             function paramCell(v, i, canCarry, style) {
                 var label = canCarry ? '<span style="color:var(--green);font-weight:700;">YES</span>' : '<span style="color:var(--red);font-weight:700;">NO</span>';
@@ -548,74 +569,84 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                 }).join('');
             }
 
-            function runParamSearch() {
+            function buildParamSteps() {
                 var capacity = parseInt(capacityInput.value);
                 if (isNaN(capacity) || capacity < 1) { paramMsg.textContent = 'Please enter a positive number for backpack capacity!'; return; }
+                paramState.capacity = capacity;
+                paramState.steps = [];
+                paramState.stepIdx = -1;
+                paramState.logLines = [];
                 paramQuestion.innerHTML = '<strong>"Can we fit item weighing X kg into the backpack (capacity ' + capacity + 'kg)?"</strong> \u2192 Find the <strong>heaviest X</strong> where the answer is YES.';
-                paramLog.innerHTML = '';
-                paramPointers.innerHTML = '';
-                showInitialArr(capacity);
 
                 var lo = 0, hi = WEIGHTS.length - 1;
-                var stepsData = [];
                 var answer = -1;
                 var round = 0;
-
                 while (lo <= hi) {
                     var mid = Math.floor((lo + hi) / 2);
                     round++;
                     if (WEIGHTS[mid] <= capacity) {
                         answer = mid;
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, canCarry: true, round: round, newLo: mid + 1, newHi: hi });
+                        paramState.steps.push({ lo: lo, hi: hi, mid: mid, canCarry: true, round: round, newLo: mid + 1, newHi: hi });
                         lo = mid + 1;
                     } else {
-                        stepsData.push({ lo: lo, hi: hi, mid: mid, canCarry: false, round: round, newLo: lo, newHi: mid - 1 });
+                        paramState.steps.push({ lo: lo, hi: hi, mid: mid, canCarry: false, round: round, newLo: lo, newHi: mid - 1 });
                         hi = mid - 1;
                     }
                 }
-                stepsData.push({ done: true, answer: answer });
+                paramState.steps.push({ done: true, answer: answer });
+                showInitialArr(capacity);
+                paramPointers.innerHTML = '';
+                paramLog.innerHTML = '';
+                paramMsg.textContent = 'Click Step to advance boundary search one step at a time. (' + paramState.steps.length + ' steps)';
+            }
 
-                var stepIdx = 0;
-                var logLines = [];
-                function showNextParamStep() {
-                    if (stepIdx >= stepsData.length) return;
-                    var s = stepsData[stepIdx];
-                    if (s.done) {
-                        if (s.answer === -1) {
-                            renderParamArr(capacity, -1, -1, -1, -1);
-                            logLines.push('<span style="color:var(--red);font-weight:700;">No item can fit!</span>');
-                            paramMsg.innerHTML = '<strong style="color:var(--red);">Backpack capacity is too small to fit anything.</strong>';
-                        } else {
-                            renderParamArr(capacity, -1, -1, -1, s.answer);
-                            logLines.push('<span style="color:var(--green);font-weight:700;">Boundary found! Heaviest item that fits: ' + WEIGHTS[s.answer] + 'kg (index ' + s.answer + ')</span>');
-                            paramMsg.innerHTML = '<strong style="color:var(--green);">Found the YES\u2192NO boundary!</strong> ' + WEIGHTS[s.answer] + 'kg fits, ' + (s.answer + 1 < WEIGHTS.length ? WEIGHTS[s.answer + 1] + 'kg doesn\'t' : 'all items fit') + '. This is parametric search!';
-                        }
-                        paramPointers.innerHTML = '';
+            function paramStep() {
+                if (paramState.steps.length === 0 || paramState.stepIdx >= paramState.steps.length - 1) {
+                    buildParamSteps();
+                    return;
+                }
+                paramState.stepIdx++;
+                var s = paramState.steps[paramState.stepIdx];
+                var capacity = paramState.capacity;
+                if (s.done) {
+                    if (s.answer === -1) {
+                        renderParamArr(capacity, -1, -1, -1, -1);
+                        paramState.logLines.push('<span style="color:var(--red);font-weight:700;">No item can fit!</span>');
+                        paramMsg.innerHTML = '<strong style="color:var(--red);">Backpack capacity is too small to fit anything.</strong>';
                     } else {
-                        renderParamArr(capacity, s.lo, s.hi, s.mid, -1);
-                        paramPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
-                        if (s.canCarry) {
-                            logLines.push('Round ' + s.round + ': ' + WEIGHTS[s.mid] + 'kg <= ' + capacity + 'kg \u2192 <span style="color:var(--green);font-weight:600;">YES!</span> Search heavier side (lo=' + s.newLo + ')');
-                            paramMsg.textContent = WEIGHTS[s.mid] + 'kg fits! Can something heavier fit too?';
-                        } else {
-                            logLines.push('Round ' + s.round + ': ' + WEIGHTS[s.mid] + 'kg > ' + capacity + 'kg \u2192 <span style="color:var(--red);font-weight:600;">NO!</span> Search lighter side (hi=' + s.newHi + ')');
-                            paramMsg.textContent = WEIGHTS[s.mid] + 'kg doesn\'t fit! Moving to lighter items.';
-                        }
+                        renderParamArr(capacity, -1, -1, -1, s.answer);
+                        paramState.logLines.push('<span style="color:var(--green);font-weight:700;">Boundary found! Heaviest item that fits: ' + WEIGHTS[s.answer] + 'kg (index ' + s.answer + ')</span>');
+                        paramMsg.innerHTML = '<strong style="color:var(--green);">Found the YES\u2192NO boundary!</strong> ' + WEIGHTS[s.answer] + 'kg fits, ' + (s.answer + 1 < WEIGHTS.length ? WEIGHTS[s.answer + 1] + 'kg doesn\'t' : 'all items fit') + '. This is parametric search!';
                     }
-                    paramLog.innerHTML = logLines.join('<br>');
-                    paramLog.scrollTop = paramLog.scrollHeight;
-                    stepIdx++;
-                    if (stepIdx < stepsData.length) {
-                        setTimeout(showNextParamStep, 800);
+                    paramPointers.innerHTML = '';
+                } else {
+                    renderParamArr(capacity, s.lo, s.hi, s.mid, -1);
+                    paramPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    if (s.canCarry) {
+                        paramState.logLines.push('Round ' + s.round + ': ' + WEIGHTS[s.mid] + 'kg <= ' + capacity + 'kg \u2192 <span style="color:var(--green);font-weight:600;">YES!</span> Search heavier side (lo=' + s.newLo + ')');
+                        paramMsg.textContent = WEIGHTS[s.mid] + 'kg fits! Can something heavier fit too? Click Step to continue.';
+                    } else {
+                        paramState.logLines.push('Round ' + s.round + ': ' + WEIGHTS[s.mid] + 'kg > ' + capacity + 'kg \u2192 <span style="color:var(--red);font-weight:600;">NO!</span> Search lighter side (hi=' + s.newHi + ')');
+                        paramMsg.textContent = WEIGHTS[s.mid] + 'kg doesn\'t fit! Click Step to move to lighter items.';
                     }
                 }
-                showNextParamStep();
+                paramLog.innerHTML = paramState.logLines.join('<br>');
+                paramLog.scrollTop = paramLog.scrollHeight;
+            }
+
+            function paramReset() {
+                paramState = { steps: [], stepIdx: -1, logLines: [], capacity: parseInt(capacityInput.value) || 15 };
+                showInitialArr(paramState.capacity);
+                paramPointers.innerHTML = '';
+                paramLog.innerHTML = '';
+                paramQuestion.innerHTML = '<strong>"Can we fit item weighing X kg into the backpack (capacity ' + paramState.capacity + 'kg)?"</strong> \u2192 Find the <strong>heaviest X</strong> where the answer is YES.';
+                paramMsg.textContent = 'Set the backpack capacity and click Step!';
             }
 
             showInitialArr(15);
             paramQuestion.innerHTML = '<strong>"Can we fit item weighing X kg into the backpack (capacity 15kg)?"</strong> \u2192 Find the <strong>heaviest X</strong> where the answer is YES.';
-            paramRunBtn.addEventListener('click', runParamSearch);
-            capacityInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') runParamSearch(); });
+            paramStepBtn.addEventListener('click', paramStep);
+            paramResetBtn.addEventListener('click', paramReset);
         })();
     },
 

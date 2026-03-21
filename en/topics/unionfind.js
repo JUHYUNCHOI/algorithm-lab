@@ -5,8 +5,8 @@ var unionFindTopic = {
     id: 'unionfind',
     title: 'Union-Find',
     icon: '🤝',
-    category: 'Advanced Topics',
-    order: 21,
+    category: 'Advanced DS (Gold~Platinum)',
+    order: 18,
     description: 'A data structure for efficiently managing disjoint sets',
     relatedNote: 'Union-Find is a core component of Kruskal MST, network connectivity, dynamic connectivity queries, and more.',
 

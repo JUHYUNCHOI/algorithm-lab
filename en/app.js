@@ -79,7 +79,7 @@ window._setAlgoLang = function(lang) {
     });
 
     // ===== Topic list rendering =====
-    const categoryOrder = ['Data Structures', 'Sorting & Searching', 'Recursion & Trees', 'Algorithm Techniques', 'Advanced DS & Graphs', 'Advanced Topics'];
+    const categoryOrder = ['Fundamentals (Bronze~Silver)', 'Search (Silver)', 'Problem Solving (Silver~Gold)', 'Advanced (Gold~Platinum)', 'Advanced DS (Gold~Platinum)', 'Extra Study'];
 
     function renderSidebar() {
         const topics = window.AlgoTopics || {};

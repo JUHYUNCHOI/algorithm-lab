@@ -5,8 +5,8 @@ var unionFindTopic = {
     id: 'unionfind',
     title: '유니온 파인드',
     icon: '🤝',
-    category: '심화 선택',
-    order: 21,
+    category: '고급 자료구조 (Gold~Platinum)',
+    order: 18,
     description: '서로소 집합을 효율적으로 관리하는 자료구조',
     relatedNote: '유니온 파인드는 크루스칼 MST, 네트워크 연결성, 동적 연결 쿼리 등에 핵심적으로 사용됩니다.',
 

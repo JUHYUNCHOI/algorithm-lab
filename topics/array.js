@@ -5,7 +5,7 @@ const arrayTopic = {
     id: 'array',
     title: '배열',
     icon: '📊',
-    category: '자료구조 활용',
+    category: '기초 (Bronze~Silver)',
     order: 2,
     description: '배열을 활용한 투 포인터, 슬라이딩 윈도우, 구간 처리 기법',
     relatedNote: '이 외에도 카데인 알고리즘, 모노톤 스택, Dutch National Flag 등의 기법이 배열 문제에 활용됩니다.',

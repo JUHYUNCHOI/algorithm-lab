@@ -5,8 +5,8 @@ var topologicalSortTopic = {
     id: 'topologicalsort',
     title: '위상 정렬',
     icon: '📋',
-    category: '고급 자료구조와 그래프',
-    order: 17,
+    category: '심화 (Gold~Platinum)',
+    order: 16,
     description: 'DAG에서 선후관계를 지키며 모든 노드를 일렬로 나열하는 기법',
     relatedNote: '위상 정렬은 빌드 시스템, 수강 순서, 작업 스케줄링 등 선행 조건이 있는 문제에 활용됩니다.',
 

@@ -5,8 +5,8 @@ const sortingTopic = {
     id: 'sorting',
     title: 'Sort',
     icon: '🔢',
-    category: 'Sorting & Searching',
-    order: 6,
+    category: 'Fundamentals (Bronze~Silver)',
+    order: 3,
     description: 'Everything about sorting — from Bubble/Selection/Insertion to Merge/Quick Sort',
     relatedNote: 'Also important are special sorts like Counting Sort and Radix Sort, as well as the concept of sort stability.',
 
@@ -275,7 +275,10 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         <button class="concept-demo-btn danger" id="sort-demo-sel-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
-                        <div id="sort-demo-sel-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                        <div style="position:relative;">
+                            <div id="sort-demo-sel-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                            <div id="sort-demo-sel-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                        </div>
                     </div>
                     <div class="concept-demo-msg" id="sort-demo-sel-msg">▶ Click Step to start Selection Sort!</div>
                 </div>
@@ -291,7 +294,10 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         <button class="concept-demo-btn danger" id="sort-demo-ins-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
-                        <div id="sort-demo-ins-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                        <div style="position:relative;">
+                            <div id="sort-demo-ins-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                            <div id="sort-demo-ins-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                        </div>
                     </div>
                     <div class="concept-demo-msg" id="sort-demo-ins-msg">▶ Click Step to start Insertion Sort!</div>
                 </div>
@@ -307,7 +313,10 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         <button class="concept-demo-btn danger" id="sort-demo-bub-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
-                        <div id="sort-demo-bub-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                        <div style="position:relative;">
+                            <div id="sort-demo-bub-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
+                            <div id="sort-demo-bub-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
+                        </div>
                     </div>
                     <div class="concept-demo-msg" id="sort-demo-bub-msg">▶ Click Step to start Bubble Sort!</div>
                 </div>
@@ -660,34 +669,92 @@ sort(words.begin(), words.end(),
             var selArr = [64, 25, 12, 22, 11];
             var selState = { arr: selArr.slice(), i: 0, j: 0, minIdx: 0, phase: 'start', done: false };
             var selArrEl = container.querySelector('#sort-demo-sel-arr');
+            var selFlyEl = container.querySelector('#sort-demo-sel-fly');
             var selMsg = container.querySelector('#sort-demo-sel-msg');
+
+            var selStepBtn = container.querySelector('#sort-demo-sel-step');
+            var selAnimating = false;
 
             function renderSelArr() {
                 selArrEl.innerHTML = selState.arr.map(function(v, idx) {
                     var cls = 'str-char-box';
                     var extra = '';
+                    var showLabels = (selState.phase === 'compare' || selState.phase === 'ready_swap');
                     if (selState.done || idx < selState.i) {
                         cls += ' matched';
-                    } else if (idx === selState.minIdx && selState.phase === 'compare') {
+                        if (selState.phase === 'swapped' && idx === selState.i - 1) {
+                            extra = 'border-color:var(--green);box-shadow:0 0 14px var(--green);transform:scale(1.1);';
+                        }
+                    } else if (selState.phase === 'swap' && (idx === selState.i || idx === selState.minIdx)) {
+                        extra = 'border-color:var(--accent);box-shadow:0 0 12px var(--accent);transform:scale(1.08);';
+                    } else if (idx === selState.minIdx && showLabels) {
                         extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
                     }
                     if (idx === selState.j && selState.phase === 'compare' && idx !== selState.minIdx) {
                         extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
                     }
                     var label = '';
-                    if (idx === selState.minIdx && selState.phase === 'compare') label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">min</div>';
+                    if (idx === selState.minIdx && showLabels) label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">min</div>';
                     if (idx === selState.j && selState.phase === 'compare') label += '<div style="font-size:0.65rem;color:var(--red);margin-top:2px;">j</div>';
+                    if (selState.phase === 'swap' && idx === selState.i && selState.i !== selState.minIdx) label = '<div style="font-size:0.65rem;color:var(--accent);margin-top:2px;">i</div>';
+                    if (selState.phase === 'swap' && idx === selState.minIdx) label += '<div style="font-size:0.65rem;color:var(--accent);margin-top:2px;">min</div>';
                     return '<div style="display:flex;flex-direction:column;align-items:center;">' +
-                        '<div class="' + cls + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                        '<div class="' + cls + '" id="sel-box-' + idx + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
                 }).join('');
             }
 
+            function animateConceptSwap(arrEl, flyEl, idxA, idxB, valA, valB, colorA, colorB, onDone) {
+                var elA = arrEl.querySelector('#sel-box-' + idxA);
+                var elB = arrEl.querySelector('#sel-box-' + idxB);
+                var wrapRect = arrEl.parentElement.getBoundingClientRect();
+                if (!elA || !elB) { if (onDone) onDone(); return; }
+                var rectA = elA.getBoundingClientRect();
+                var rectB = elB.getBoundingClientRect();
+                elA.style.opacity = '0.15'; elB.style.opacity = '0.15';
+                function mkGhost(val, rect, color) {
+                    var g = document.createElement('div');
+                    g.textContent = val;
+                    g.className = 'str-char-box';
+                    g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
+                        'left:' + (rect.left - wrapRect.left) + 'px;' +
+                        'top:' + (rect.top - wrapRect.top) + 'px;' +
+                        'width:' + rect.width + 'px;height:' + rect.height + 'px;' +
+                        'display:flex;align-items:center;justify-content:center;' +
+                        'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1);' +
+                        'background:' + color + ';color:white;border-color:' + color + ';' +
+                        'box-shadow:0 0 12px ' + color + ';transform:scale(1.1);';
+                    return g;
+                }
+                var gA = mkGhost(valA, rectA, colorA);
+                var gB = mkGhost(valB, rectB, colorB);
+                flyEl.appendChild(gA); flyEl.appendChild(gB);
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        gA.style.left = (rectB.left - wrapRect.left) + 'px';
+                        gB.style.left = (rectA.left - wrapRect.left) + 'px';
+                    });
+                });
+                setTimeout(function() {
+                    if (gA.parentNode) gA.parentNode.removeChild(gA);
+                    if (gB.parentNode) gB.parentNode.removeChild(gB);
+                    if (onDone) onDone();
+                }, 550);
+            }
+
             function selStep() {
-                if (selState.done) return;
+                if (selState.done || selAnimating) return;
                 if (selState.phase === 'start') {
                     selState.i = 0; selState.minIdx = 0; selState.j = 1;
                     selState.phase = 'compare';
                     selMsg.textContent = 'Round 0: Set ' + selState.arr[0] + ' as tentative min. Compare with j=1 (' + selState.arr[1] + ').';
+                    renderSelArr();
+                    return;
+                }
+                if (selState.phase === 'swapped') {
+                    selState.minIdx = selState.i;
+                    selState.j = selState.i + 1;
+                    selState.phase = 'compare';
+                    selMsg.textContent = 'Round ' + selState.i + ': Set ' + selState.arr[selState.i] + ' as tentative min. Compare with j=' + (selState.i + 1) + ' (' + selState.arr[selState.i + 1] + ').';
                     renderSelArr();
                     return;
                 }
@@ -701,36 +768,67 @@ sort(words.begin(), words.end(),
                         }
                         selState.j++;
                         if (selState.j >= selState.arr.length) {
-                            selState.phase = 'swap';
+                            selState.phase = 'ready_swap';
                         }
                         renderSelArr();
                         return;
                     }
+                    selState.phase = 'ready_swap';
+                }
+                if (selState.phase === 'ready_swap') {
+                    var a = selState.i, b = selState.minIdx;
+                    if (a !== b) {
+                        selMsg.textContent = 'Comparisons done! Min = ' + selState.arr[b] + ' (index ' + b + '). Next Step will swap with arr[' + a + ']=' + selState.arr[a] + '.';
+                    } else {
+                        selMsg.textContent = 'Comparisons done! Min = ' + selState.arr[b] + ' — already in place. Position ' + a + ' finalized!';
+                    }
                     selState.phase = 'swap';
+                    renderSelArr();
+                    return;
                 }
                 if (selState.phase === 'swap') {
                     var a = selState.i, b = selState.minIdx;
                     if (a !== b) {
-                        selMsg.textContent = 'Swap! arr[' + a + ']=' + selState.arr[a] + ' ↔ arr[' + b + ']=' + selState.arr[b] + '. Position ' + a + ' finalized!';
-                        var tmp = selState.arr[a]; selState.arr[a] = selState.arr[b]; selState.arr[b] = tmp;
+                        selMsg.textContent = 'Swap! arr[' + a + ']=' + selState.arr[a] + ' ↔ arr[' + b + ']=' + selState.arr[b];
+                        var valA = selState.arr[a], valB = selState.arr[b];
+                        selFlyEl.innerHTML = '';
+                        selAnimating = true;
+                        selStepBtn.disabled = true;
+                        selStepBtn.style.opacity = '0.5';
+                        animateConceptSwap(selArrEl, selFlyEl, a, b, valA, valB, '#e17055', 'var(--yellow)', function() {
+                            selAnimating = false;
+                            selStepBtn.disabled = false;
+                            selStepBtn.style.opacity = '';
+                            var tmp = selState.arr[a]; selState.arr[a] = selState.arr[b]; selState.arr[b] = tmp;
+                            selState.i++;
+                            if (selState.i >= selState.arr.length - 1) {
+                                selState.done = true;
+                                selMsg.textContent = 'Sort complete! [' + selState.arr.join(', ') + '] — Total comparisons: n(n-1)/2';
+                            } else {
+                                selState.phase = 'swapped';
+                                selMsg.textContent = 'Position ' + a + ' finalized: ' + selState.arr[a] + '. Click Step for next round!';
+                            }
+                            renderSelArr();
+                        });
                     } else {
-                        selMsg.textContent = 'Min is already in place! Position ' + a + ' finalized.';
+                        selState.i++;
+                        if (selState.i >= selState.arr.length - 1) {
+                            selState.done = true;
+                            selMsg.textContent = 'Sort complete! [' + selState.arr.join(', ') + '] — Total comparisons: n(n-1)/2';
+                        } else {
+                            selState.phase = 'swapped';
+                            selMsg.textContent = 'Min already in place! Position ' + (selState.i - 1) + ' finalized: ' + selState.arr[selState.i - 1] + '. Click Step for next round!';
+                        }
+                        renderSelArr();
                     }
-                    selState.i++;
-                    if (selState.i >= selState.arr.length - 1) {
-                        selState.done = true;
-                        selMsg.textContent = 'Sort complete! [' + selState.arr.join(', ') + '] — Total comparisons: n(n-1)/2';
-                    } else {
-                        selState.minIdx = selState.i;
-                        selState.j = selState.i + 1;
-                        selState.phase = 'compare';
-                    }
-                    renderSelArr();
                 }
             }
 
             function selReset() {
                 selState = { arr: [64, 25, 12, 22, 11], i: 0, j: 0, minIdx: 0, phase: 'start', done: false };
+                selAnimating = false;
+                selStepBtn.disabled = false;
+                selStepBtn.style.opacity = '';
                 selMsg.textContent = '▶ Click Step to start Selection Sort!';
                 renderSelArr();
             }
@@ -745,6 +843,7 @@ sort(words.begin(), words.end(),
             var insInitArr = [64, 25, 12, 22, 11];
             var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
             var insArrEl = container.querySelector('#sort-demo-ins-arr');
+            var insFlyEl = container.querySelector('#sort-demo-ins-fly');
             var insMsg = container.querySelector('#sort-demo-ins-msg');
 
             function renderInsArr() {
@@ -767,12 +866,15 @@ sort(words.begin(), words.end(),
                         label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">key</div>';
                     }
                     return '<div style="display:flex;flex-direction:column;align-items:center;">' +
-                        '<div class="' + cls + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                        '<div class="' + cls + '" id="ins-box-' + idx + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
                 }).join('');
             }
 
+            var insStepBtn = container.querySelector('#sort-demo-ins-step');
+            var insAnimating = false;
+
             function insStep() {
-                if (insState.done) return;
+                if (insState.done || insAnimating) return;
                 if (insState.phase === 'pick') {
                     if (insState.i >= insState.arr.length) {
                         insState.done = true;
@@ -790,15 +892,57 @@ sort(words.begin(), words.end(),
                 if (insState.phase === 'shift') {
                     if (insState.j >= 0 && insState.arr[insState.j] > insState.key) {
                         insMsg.textContent = insState.arr[insState.j] + ' > key(' + insState.key + ') → Shift right by one!';
-                        insState.arr[insState.j + 1] = insState.arr[insState.j];
-                        insState.j--;
-                        renderInsArr();
+                        var srcIdx = insState.j, destIdx = insState.j + 1;
+                        var shiftVal = insState.arr[srcIdx];
+                        insFlyEl.innerHTML = '';
+                        var elSrc = insArrEl.querySelector('#ins-box-' + srcIdx);
+                        var wrapRect = insArrEl.parentElement.getBoundingClientRect();
+                        if (elSrc) {
+                            var rectSrc = elSrc.getBoundingClientRect();
+                            var elDest = insArrEl.querySelector('#ins-box-' + destIdx);
+                            var rectDest = elDest ? elDest.getBoundingClientRect() : rectSrc;
+                            elSrc.style.opacity = '0.15';
+                            var g = document.createElement('div');
+                            g.textContent = shiftVal;
+                            g.className = 'str-char-box';
+                            g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
+                                'left:' + (rectSrc.left - wrapRect.left) + 'px;' +
+                                'top:' + (rectSrc.top - wrapRect.top) + 'px;' +
+                                'width:' + rectSrc.width + 'px;height:' + rectSrc.height + 'px;' +
+                                'display:flex;align-items:center;justify-content:center;' +
+                                'transition:left 0.4s cubic-bezier(.4,0,.2,1);' +
+                                'background:#e17055;color:white;border-color:#e17055;' +
+                                'box-shadow:0 0 10px #e17055;transform:scale(1.05);';
+                            insFlyEl.appendChild(g);
+                            insAnimating = true;
+                            insStepBtn.disabled = true;
+                            insStepBtn.style.opacity = '0.5';
+                            requestAnimationFrame(function() {
+                                requestAnimationFrame(function() {
+                                    g.style.left = (rectDest.left - wrapRect.left) + 'px';
+                                });
+                            });
+                            setTimeout(function() {
+                                insAnimating = false;
+                                insStepBtn.disabled = false;
+                                insStepBtn.style.opacity = '';
+                                if (g.parentNode) g.parentNode.removeChild(g);
+                                insState.arr[destIdx] = insState.arr[srcIdx];
+                                insState.j--;
+                                renderInsArr();
+                            }, 450);
+                        } else {
+                            insState.arr[destIdx] = insState.arr[srcIdx];
+                            insState.j--;
+                            renderInsArr();
+                        }
                         return;
                     }
                     insState.arr[insState.j + 1] = insState.key;
                     insMsg.textContent = 'Insert key=' + insState.key + ' at index ' + (insState.j + 1) + '! → [' + insState.arr.join(', ') + ']';
                     insState.i++;
                     insState.phase = 'pick';
+                    insFlyEl.innerHTML = '';
                     renderInsArr();
                 }
             }
@@ -817,9 +961,12 @@ sort(words.begin(), words.end(),
         // ── Bubble Sort Mini Demo ──
         {
             var bubInitArr = [64, 25, 12, 22, 11];
-            var bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, done: false };
+            var bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, phase: 'compare', done: false };
             var bubArrEl = container.querySelector('#sort-demo-bub-arr');
+            var bubFlyEl = container.querySelector('#sort-demo-bub-fly');
             var bubMsg = container.querySelector('#sort-demo-bub-msg');
+            var bubStepBtn = container.querySelector('#sort-demo-bub-step');
+            var bubAnimating = false;
 
             function renderBubArr() {
                 var n = bubState.arr.length;
@@ -830,28 +977,18 @@ sort(words.begin(), words.end(),
                         cls += ' matched';
                     }
                     if (!bubState.done && (idx === bubState.j || idx === bubState.j + 1) && idx < n - bubState.pass) {
-                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                        if (bubState.phase === 'need_swap') {
+                            extra = 'border-color:var(--red);box-shadow:0 0 10px var(--red);transform:scale(1.08);';
+                        } else {
+                            extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                        }
                     }
-                    return '<div class="' + cls + '" style="' + extra + '">' + v + '</div>';
+                    return '<div class="' + cls + '" id="bub-box-' + idx + '" style="' + extra + '">' + v + '</div>';
                 }).join('');
             }
 
-            function bubStep() {
-                if (bubState.done) return;
+            function bubAdvanceJ() {
                 var n = bubState.arr.length;
-                if (bubState.pass >= n - 1) {
-                    bubState.done = true;
-                    bubMsg.textContent = 'Sort complete! [' + bubState.arr.join(', ') + ']';
-                    renderBubArr();
-                    return;
-                }
-                var a = bubState.j, b = bubState.j + 1;
-                if (bubState.arr[a] > bubState.arr[b]) {
-                    bubMsg.textContent = bubState.arr[a] + ' > ' + bubState.arr[b] + ' → Swap! Pass ' + (bubState.pass + 1) + ', comparison ' + (bubState.j + 1);
-                    var tmp = bubState.arr[a]; bubState.arr[a] = bubState.arr[b]; bubState.arr[b] = tmp;
-                } else {
-                    bubMsg.textContent = bubState.arr[a] + ' <= ' + bubState.arr[b] + ' → No swap. Pass ' + (bubState.pass + 1) + ', comparison ' + (bubState.j + 1);
-                }
                 bubState.j++;
                 if (bubState.j >= n - 1 - bubState.pass) {
                     bubState.pass++;
@@ -861,11 +998,88 @@ sort(words.begin(), words.end(),
                         bubMsg.textContent = 'Sort complete! [' + bubState.arr.join(', ') + '] — Took ' + bubState.pass + ' passes total.';
                     }
                 }
-                renderBubArr();
+                bubState.phase = 'compare';
+            }
+
+            function bubStep() {
+                if (bubState.done || bubAnimating) return;
+                var n = bubState.arr.length;
+                if (bubState.pass >= n - 1) {
+                    bubState.done = true;
+                    bubMsg.textContent = 'Sort complete! [' + bubState.arr.join(', ') + ']';
+                    renderBubArr();
+                    return;
+                }
+                if (bubState.phase === 'compare') {
+                    var a = bubState.j, b = bubState.j + 1;
+                    if (bubState.arr[a] > bubState.arr[b]) {
+                        bubMsg.textContent = bubState.arr[a] + ' > ' + bubState.arr[b] + ' → Swap needed! (Pass ' + (bubState.pass + 1) + ', comparison ' + (bubState.j + 1) + ')';
+                        bubState.phase = 'need_swap';
+                    } else {
+                        bubMsg.textContent = bubState.arr[a] + ' <= ' + bubState.arr[b] + ' → No swap. (Pass ' + (bubState.pass + 1) + ', comparison ' + (bubState.j + 1) + ')';
+                        bubAdvanceJ();
+                    }
+                    renderBubArr();
+                    return;
+                }
+                if (bubState.phase === 'need_swap') {
+                    var a = bubState.j, b = bubState.j + 1;
+                    var valA = bubState.arr[a], valB = bubState.arr[b];
+                    bubMsg.textContent = 'Swapping ' + bubState.arr[a] + ' and ' + bubState.arr[b] + '!';
+                    bubFlyEl.innerHTML = '';
+                    bubAnimating = true;
+                    bubStepBtn.disabled = true;
+                    bubStepBtn.style.opacity = '0.5';
+                    (function(idxA, idxB) {
+                        var elA = bubArrEl.querySelector('#bub-box-' + idxA);
+                        var elB = bubArrEl.querySelector('#bub-box-' + idxB);
+                        var wrapRect = bubArrEl.parentElement.getBoundingClientRect();
+                        if (!elA || !elB) { bubAnimating = false; bubStepBtn.disabled = false; bubStepBtn.style.opacity = ''; return; }
+                        var rectA = elA.getBoundingClientRect();
+                        var rectB = elB.getBoundingClientRect();
+                        elA.style.opacity = '0.15'; elB.style.opacity = '0.15';
+                        function mkG(val, rect, color) {
+                            var g = document.createElement('div');
+                            g.textContent = val;
+                            g.className = 'str-char-box';
+                            g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
+                                'left:' + (rect.left - wrapRect.left) + 'px;' +
+                                'top:' + (rect.top - wrapRect.top) + 'px;' +
+                                'width:' + rect.width + 'px;height:' + rect.height + 'px;' +
+                                'display:flex;align-items:center;justify-content:center;' +
+                                'transition:left 0.5s cubic-bezier(.4,0,.2,1);' +
+                                'background:' + color + ';color:white;border-color:' + color + ';' +
+                                'box-shadow:0 0 12px ' + color + ';transform:scale(1.1);';
+                            return g;
+                        }
+                        var gA = mkG(valA, rectA, '#e17055');
+                        var gB = mkG(valB, rectB, 'var(--yellow)');
+                        bubFlyEl.appendChild(gA); bubFlyEl.appendChild(gB);
+                        requestAnimationFrame(function() {
+                            requestAnimationFrame(function() {
+                                gA.style.left = (rectB.left - wrapRect.left) + 'px';
+                                gB.style.left = (rectA.left - wrapRect.left) + 'px';
+                            });
+                        });
+                        setTimeout(function() {
+                            bubAnimating = false;
+                            bubStepBtn.disabled = false;
+                            bubStepBtn.style.opacity = '';
+                            if (gA.parentNode) gA.parentNode.removeChild(gA);
+                            if (gB.parentNode) gB.parentNode.removeChild(gB);
+                            var tmp = bubState.arr[idxA]; bubState.arr[idxA] = bubState.arr[idxB]; bubState.arr[idxB] = tmp;
+                            bubAdvanceJ();
+                            renderBubArr();
+                        }, 550);
+                    })(a, b);
+                }
             }
 
             function bubReset() {
-                bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, done: false };
+                bubState = { arr: bubInitArr.slice(), pass: 0, j: 0, phase: 'compare', done: false };
+                bubAnimating = false;
+                bubStepBtn.disabled = false;
+                bubStepBtn.style.opacity = '';
                 bubMsg.textContent = '▶ Click Step to start Bubble Sort!';
                 renderBubArr();
             }

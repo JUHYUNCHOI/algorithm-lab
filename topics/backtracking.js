@@ -3,7 +3,7 @@ var backtrackingTopic = {
     id: 'backtracking',
     title: '백트래킹',
     icon: '🔙',
-    category: '알고리즘 기법',
+    category: '문제 해결 기법 (Silver~Gold)',
     order: 10,
     description: '끝까지 해보고, 안 되면 돌아와서 다른 길을 가보는 기법',
     relatedNote: '백트래킹은 순열/조합 생성, 제약 충족 문제(CSP), 게임 트리 탐색 등에 광범위하게 활용됩니다.',
@@ -482,14 +482,14 @@ for (int i = 1; i &lt;= n; i++) {
                 <p style="margin-bottom:0.5rem;">4x4 체스판에 퀸 4개를 <strong>서로 공격할 수 없도록</strong> 놓아 보세요.
                     퀸은 같은 행, 같은 열, 대각선에 있는 말을 공격합니다.</p>
                 <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--text2);">
-                    직접 놓아 보거나, "자동 풀기"를 눌러 백트래킹이 어떻게 해결하는지 관찰하세요!</p>
+                    직접 놓아 보거나, "Step"을 눌러 백트래킹이 어떻게 해결하는지 한 단계씩 관찰하세요!</p>
 
                 <!-- Demo 6: 4Queen -->
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 4-Queen 백트래킹</div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bt-demo-4q-auto">🤖 자동 풀기</button>
-                        <button class="concept-demo-btn danger" id="bt-demo-4q-clear">🗑️ 초기화</button>
+                        <button class="concept-demo-btn" id="bt-demo-4q-auto">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bt-demo-4q-clear">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="bt-demo-4q-board" style="display:inline-grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 auto;"></div>
@@ -499,7 +499,7 @@ for (int i = 1; i &lt;= n; i++) {
                             <span>되돌리기: <strong id="bt-demo-4q-backs">0</strong>회</span>
                         </div>
                     </div>
-                    <div class="concept-demo-msg" id="bt-demo-4q-msg">👆 칸을 클릭해서 퀸을 놓아 보세요! 공격 범위는 빨간색으로 표시됩니다. 또는 "자동 풀기"로 백트래킹 과정을 관찰하세요.</div>
+                    <div class="concept-demo-msg" id="bt-demo-4q-msg">칸을 클릭해서 퀸을 놓아 보세요! 공격 범위는 빨간색으로 표시됩니다. 또는 "Step"으로 백트래킹 과정을 한 단계씩 관찰하세요.</div>
                 </div>
 
                 <div class="think-box">
@@ -972,84 +972,94 @@ for (int i = 1; i &lt;= n; i++) {
                     renderBoard(null);
                 }
 
-                // Auto-solve with backtracking animation
-                autoBtn.addEventListener('click', function() {
-                    if (autoRunning) return;
-                    autoRunning = true;
-                    autoBtn.disabled = true;
-                    queens = [];
-                    tries4q = 0;
-                    backs4q = 0;
-                    renderBoard(null);
+                // Step-by-step solve with backtracking
+                var solveState = { steps: null, stepIdx: -1 };
 
-                    // Build solution steps
-                    var solveSteps = [];
+                function buildSolveSteps() {
+                    var steps = [];
                     function solve4(row, qs) {
                         if (row === N4) {
-                            solveSteps.push({ type: 'done', queens: qs.slice() });
+                            steps.push({ type: 'done', queens: qs.slice() });
                             return true;
                         }
                         for (var c = 0; c < N4; c++) {
-                            solveSteps.push({ type: 'try', r: row, c: c, queens: qs.slice() });
+                            steps.push({ type: 'try', r: row, c: c, queens: qs.slice() });
                             if (isSafe(row, c, qs)) {
                                 qs.push({ r: row, c: c });
-                                solveSteps.push({ type: 'place', r: row, c: c, queens: qs.slice() });
+                                steps.push({ type: 'place', r: row, c: c, queens: qs.slice() });
                                 if (solve4(row + 1, qs)) return true;
                                 qs.pop();
-                                solveSteps.push({ type: 'back', r: row, c: c, queens: qs.slice() });
+                                steps.push({ type: 'back', r: row, c: c, queens: qs.slice() });
                             } else {
-                                solveSteps.push({ type: 'fail', r: row, c: c, queens: qs.slice() });
+                                steps.push({ type: 'fail', r: row, c: c, queens: qs.slice() });
                             }
                         }
                         return false;
                     }
                     solve4(0, []);
+                    return steps;
+                }
 
-                    var si = 0;
-                    function playStep() {
-                        if (si >= solveSteps.length) {
-                            autoRunning = false;
-                            autoBtn.disabled = false;
-                            return;
-                        }
-                        var s = solveSteps[si];
-                        queens = s.queens.slice();
-                        if (s.type === 'try') {
-                            tries4q++;
-                            msgEl4q.textContent = '🔍 행 ' + s.r + ', 열 ' + s.c + ' 시도 중...';
-                            msgEl4q.style.borderLeftColor = 'var(--yellow)';
-                            renderBoard({ r: s.r, c: s.c });
-                        } else if (s.type === 'place') {
-                            msgEl4q.textContent = '✅ (' + s.r + ',' + s.c + ')에 퀸 배치! (' + queens.length + '/4)';
-                            msgEl4q.style.borderLeftColor = 'var(--green)';
-                            renderBoard(null);
-                        } else if (s.type === 'fail') {
-                            msgEl4q.textContent = '❌ (' + s.r + ',' + s.c + ') 공격 범위 — 건너뜁니다';
-                            msgEl4q.style.borderLeftColor = 'var(--red)';
-                            renderBoard({ r: s.r, c: s.c });
-                        } else if (s.type === 'back') {
-                            backs4q++;
-                            msgEl4q.textContent = '↩️ (' + s.r + ',' + s.c + ') 되돌리기! 다른 열을 시도합니다';
-                            msgEl4q.style.borderLeftColor = 'var(--red)';
-                            renderBoard(null);
-                        } else if (s.type === 'done') {
-                            msgEl4q.textContent = '🎉 해결! 시도 ' + tries4q + '회, 되돌리기 ' + backs4q + '회. 백트래킹 덕분에 효율적으로 찾았습니다!';
-                            msgEl4q.style.borderLeftColor = 'var(--green)';
-                            renderBoard(null);
-                        }
-                        si++;
-                        setTimeout(playStep, s.type === 'done' ? 0 : (s.type === 'try' ? 250 : 400));
+                function applyStep(s) {
+                    queens = s.queens.slice();
+                    if (s.type === 'try') {
+                        tries4q++;
+                        msgEl4q.textContent = '행 ' + s.r + ', 열 ' + s.c + ' 시도 중...';
+                        msgEl4q.style.borderLeftColor = 'var(--yellow)';
+                        renderBoard({ r: s.r, c: s.c });
+                    } else if (s.type === 'place') {
+                        msgEl4q.textContent = '(' + s.r + ',' + s.c + ')에 퀸 배치! (' + queens.length + '/4)';
+                        msgEl4q.style.borderLeftColor = 'var(--green)';
+                        renderBoard(null);
+                    } else if (s.type === 'fail') {
+                        msgEl4q.textContent = '(' + s.r + ',' + s.c + ') 공격 범위 -- 건너뜁니다';
+                        msgEl4q.style.borderLeftColor = 'var(--red)';
+                        renderBoard({ r: s.r, c: s.c });
+                    } else if (s.type === 'back') {
+                        backs4q++;
+                        msgEl4q.textContent = '(' + s.r + ',' + s.c + ') 되돌리기! 다른 열을 시도합니다';
+                        msgEl4q.style.borderLeftColor = 'var(--red)';
+                        renderBoard(null);
+                    } else if (s.type === 'done') {
+                        msgEl4q.textContent = '해결! 시도 ' + tries4q + '회, 되돌리기 ' + backs4q + '회. 백트래킹 덕분에 효율적으로 찾았습니다!';
+                        msgEl4q.style.borderLeftColor = 'var(--green)';
+                        renderBoard(null);
                     }
-                    playStep();
+                }
+
+                autoBtn.addEventListener('click', function() {
+                    // First click: build steps and enter step mode
+                    if (!solveState.steps) {
+                        autoRunning = true;
+                        queens = [];
+                        tries4q = 0;
+                        backs4q = 0;
+                        renderBoard(null);
+                        solveState.steps = buildSolveSteps();
+                        solveState.stepIdx = -1;
+                    }
+                    // Advance one step
+                    solveState.stepIdx++;
+                    if (solveState.stepIdx >= solveState.steps.length) {
+                        // Already finished, do nothing
+                        solveState.stepIdx = solveState.steps.length - 1;
+                        return;
+                    }
+                    applyStep(solveState.steps[solveState.stepIdx]);
+                    // If done, allow reset
+                    if (solveState.stepIdx >= solveState.steps.length - 1) {
+                        autoRunning = false;
+                    }
                 });
 
                 clearBtn4q.addEventListener('click', function() {
                     autoRunning = false;
-                    autoBtn.disabled = false;
+                    solveState.steps = null;
+                    solveState.stepIdx = -1;
                     queens = [];
                     tries4q = 0;
                     backs4q = 0;
-                    msgEl4q.textContent = '👆 칸을 클릭해서 퀸을 놓아 보세요! 공격 범위는 빨간색으로 표시됩니다. 또는 "자동 풀기"로 백트래킹 과정을 관찰하세요.';
+                    msgEl4q.textContent = '칸을 클릭해서 퀸을 놓아 보세요! 공격 범위는 빨간색으로 표시됩니다. 또는 "Step"으로 백트래킹 과정을 한 단계씩 관찰하세요.';
                     msgEl4q.style.borderLeftColor = '';
                     renderBoard(null);
                 });

@@ -3,8 +3,8 @@ var treeTopic = {
     id: 'tree',
     title: '트리',
     icon: '🌳',
-    category: '재귀와 트리',
-    order: 9,
+    category: '심화 (Gold~Platinum)',
+    order: 14,
     description: '계층 구조를 표현하는 트리와 다양한 순회 방법을 배웁니다',
     relatedNote: '이 외에도 이진 탐색 트리(BST), 세그먼트 트리, AVL/레드블랙 트리 등의 심화 트리 자료구조가 있습니다.',
 

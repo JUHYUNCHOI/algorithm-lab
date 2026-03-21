@@ -3,7 +3,7 @@ var backtrackingTopic = {
     id: 'backtracking',
     title: 'Backtracking',
     icon: '🔙',
-    category: 'Algorithm Techniques',
+    category: 'Problem Solving (Silver~Gold)',
     order: 10,
     description: 'A technique that tries every path and backtracks when stuck to explore alternatives',
     relatedNote: 'Backtracking is widely used in generating permutations/combinations, constraint satisfaction problems (CSP), game tree searches, and more.',
@@ -523,8 +523,8 @@ for (int i = 1; i &lt;= n; i++) {
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — 4-Queen Backtracking</div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bt-demo-4q-auto">🤖 Auto Solve</button>
-                        <button class="concept-demo-btn danger" id="bt-demo-4q-clear">🗑️ Reset</button>
+                        <button class="concept-demo-btn" id="bt-demo-4q-auto">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bt-demo-4q-clear">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="bt-demo-4q-board" style="display:inline-grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:0 auto;"></div>
@@ -534,7 +534,7 @@ for (int i = 1; i &lt;= n; i++) {
                             <span>Backtracks: <strong id="bt-demo-4q-backs">0</strong></span>
                         </div>
                     </div>
-                    <div class="concept-demo-msg" id="bt-demo-4q-msg">👆 Click a cell to place a queen! Attack ranges are shown in red. Or click "Auto Solve" to watch the backtracking process.</div>
+                    <div class="concept-demo-msg" id="bt-demo-4q-msg">👆 Click a cell to place a queen! Attack ranges are shown in red. Or click "Step" to watch the backtracking process step by step.</div>
                 </div>
 
                 <div class="think-box">
@@ -1032,82 +1032,94 @@ for (int i = 1; i &lt;= n; i++) {
                     renderBoard(null);
                 }
 
-                autoBtn.addEventListener('click', function() {
-                    if (autoRunning) return;
-                    autoRunning = true;
-                    autoBtn.disabled = true;
-                    queens = [];
-                    tries4q = 0;
-                    backs4q = 0;
-                    renderBoard(null);
+                // Step-by-step solve with backtracking
+                var solveState = { steps: null, stepIdx: -1 };
 
-                    var solveSteps = [];
+                function buildSolveSteps() {
+                    var steps = [];
                     function solve4(row, qs) {
                         if (row === N4) {
-                            solveSteps.push({ type: 'done', queens: qs.slice() });
+                            steps.push({ type: 'done', queens: qs.slice() });
                             return true;
                         }
                         for (var c = 0; c < N4; c++) {
-                            solveSteps.push({ type: 'try', r: row, c: c, queens: qs.slice() });
+                            steps.push({ type: 'try', r: row, c: c, queens: qs.slice() });
                             if (isSafe(row, c, qs)) {
                                 qs.push({ r: row, c: c });
-                                solveSteps.push({ type: 'place', r: row, c: c, queens: qs.slice() });
+                                steps.push({ type: 'place', r: row, c: c, queens: qs.slice() });
                                 if (solve4(row + 1, qs)) return true;
                                 qs.pop();
-                                solveSteps.push({ type: 'back', r: row, c: c, queens: qs.slice() });
+                                steps.push({ type: 'back', r: row, c: c, queens: qs.slice() });
                             } else {
-                                solveSteps.push({ type: 'fail', r: row, c: c, queens: qs.slice() });
+                                steps.push({ type: 'fail', r: row, c: c, queens: qs.slice() });
                             }
                         }
                         return false;
                     }
                     solve4(0, []);
+                    return steps;
+                }
 
-                    var si = 0;
-                    function playStep() {
-                        if (si >= solveSteps.length) {
-                            autoRunning = false;
-                            autoBtn.disabled = false;
-                            return;
-                        }
-                        var s = solveSteps[si];
-                        queens = s.queens.slice();
-                        if (s.type === 'try') {
-                            tries4q++;
-                            msgEl4q.textContent = '🔍 Trying row ' + s.r + ', col ' + s.c + '...';
-                            msgEl4q.style.borderLeftColor = 'var(--yellow)';
-                            renderBoard({ r: s.r, c: s.c });
-                        } else if (s.type === 'place') {
-                            msgEl4q.textContent = '✅ Placed queen at (' + s.r + ',' + s.c + ')! (' + queens.length + '/4)';
-                            msgEl4q.style.borderLeftColor = 'var(--green)';
-                            renderBoard(null);
-                        } else if (s.type === 'fail') {
-                            msgEl4q.textContent = '❌ (' + s.r + ',' + s.c + ') in attack range — skip';
-                            msgEl4q.style.borderLeftColor = 'var(--red)';
-                            renderBoard({ r: s.r, c: s.c });
-                        } else if (s.type === 'back') {
-                            backs4q++;
-                            msgEl4q.textContent = '↩️ Backtrack from (' + s.r + ',' + s.c + ')! Try another column';
-                            msgEl4q.style.borderLeftColor = 'var(--red)';
-                            renderBoard(null);
-                        } else if (s.type === 'done') {
-                            msgEl4q.textContent = '🎉 Solved! ' + tries4q + ' attempts, ' + backs4q + ' backtracks. Backtracking found it efficiently!';
-                            msgEl4q.style.borderLeftColor = 'var(--green)';
-                            renderBoard(null);
-                        }
-                        si++;
-                        setTimeout(playStep, s.type === 'done' ? 0 : (s.type === 'try' ? 250 : 400));
+                function applyStep(s) {
+                    queens = s.queens.slice();
+                    if (s.type === 'try') {
+                        tries4q++;
+                        msgEl4q.textContent = 'Trying row ' + s.r + ', col ' + s.c + '...';
+                        msgEl4q.style.borderLeftColor = 'var(--yellow)';
+                        renderBoard({ r: s.r, c: s.c });
+                    } else if (s.type === 'place') {
+                        msgEl4q.textContent = 'Placed queen at (' + s.r + ',' + s.c + ')! (' + queens.length + '/4)';
+                        msgEl4q.style.borderLeftColor = 'var(--green)';
+                        renderBoard(null);
+                    } else if (s.type === 'fail') {
+                        msgEl4q.textContent = '(' + s.r + ',' + s.c + ') in attack range — skip';
+                        msgEl4q.style.borderLeftColor = 'var(--red)';
+                        renderBoard({ r: s.r, c: s.c });
+                    } else if (s.type === 'back') {
+                        backs4q++;
+                        msgEl4q.textContent = 'Backtrack from (' + s.r + ',' + s.c + ')! Try another column';
+                        msgEl4q.style.borderLeftColor = 'var(--red)';
+                        renderBoard(null);
+                    } else if (s.type === 'done') {
+                        msgEl4q.textContent = 'Solved! ' + tries4q + ' attempts, ' + backs4q + ' backtracks. Backtracking found it efficiently!';
+                        msgEl4q.style.borderLeftColor = 'var(--green)';
+                        renderBoard(null);
                     }
-                    playStep();
+                }
+
+                autoBtn.addEventListener('click', function() {
+                    // First click: build steps and enter step mode
+                    if (!solveState.steps) {
+                        autoRunning = true;
+                        queens = [];
+                        tries4q = 0;
+                        backs4q = 0;
+                        renderBoard(null);
+                        solveState.steps = buildSolveSteps();
+                        solveState.stepIdx = -1;
+                    }
+                    // Advance one step
+                    solveState.stepIdx++;
+                    if (solveState.stepIdx >= solveState.steps.length) {
+                        // Already finished, do nothing
+                        solveState.stepIdx = solveState.steps.length - 1;
+                        return;
+                    }
+                    applyStep(solveState.steps[solveState.stepIdx]);
+                    // If done, allow reset
+                    if (solveState.stepIdx >= solveState.steps.length - 1) {
+                        autoRunning = false;
+                    }
                 });
 
                 clearBtn4q.addEventListener('click', function() {
                     autoRunning = false;
-                    autoBtn.disabled = false;
+                    solveState.steps = null;
+                    solveState.stepIdx = -1;
                     queens = [];
                     tries4q = 0;
                     backs4q = 0;
-                    msgEl4q.textContent = '👆 Click a cell to place a queen! Attack ranges are shown in red. Or click "Auto Solve" to watch the backtracking process.';
+                    msgEl4q.textContent = '👆 Click a cell to place a queen! Attack ranges are shown in red. Or click "Step" to watch the backtracking process step by step.';
                     msgEl4q.style.borderLeftColor = '';
                     renderBoard(null);
                 });

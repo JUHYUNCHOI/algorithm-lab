@@ -3,8 +3,8 @@ var divideConquerTopic = {
     id: 'divideconquer',
     title: 'Divide & Conquer',
     icon: '🔪',
-    category: 'Algorithm Techniques',
-    order: 11,
+    category: 'Advanced (Gold~Platinum)',
+    order: 13,
     description: 'Break a big problem into smaller pieces, solve each, and combine the results',
     relatedNote: 'Divide & Conquer is the foundation of merge sort, quick sort, and is also used in advanced algorithms such as FFT and Karatsuba multiplication.',
 
@@ -417,15 +417,15 @@ var divideConquerTopic = {
                     <div class="concept-demo-title">🎮 Try It — Halving a sorted array to find a number</div>\
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
                         <input type="number" id="dc-demo-bs-target" value="7" min="0" max="99" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:80px;background:var(--card);color:var(--text);">\
-                        <button class="concept-demo-btn" id="dc-demo-bs-btn">🔍 Start Search</button>\
-                        <button class="concept-demo-btn green" id="dc-demo-bs-reset" style="display:none;">↺ Again</button>\
+                        <button class="concept-demo-btn" id="dc-demo-bs-step">Step ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-bs-reset">Reset ↺</button>\
                     </div>\
                     <div class="concept-demo-body">\
                         <div id="dc-demo-bs-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>\
                         <div id="dc-demo-bs-pointers" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;margin-bottom:8px;"></div>\
                         <div id="dc-demo-bs-log" style="font-size:0.85rem;color:var(--text2);min-height:1.5em;"></div>\
                     </div>\
-                    <div class="concept-demo-msg" id="dc-demo-bs-msg">👆 Enter a number to find and click "Start Search"! Watch how it halves the array each time.</div>\
+                    <div class="concept-demo-msg" id="dc-demo-bs-msg">👆 Enter a number to find and press Step to search one step at a time.</div>\
                 </div>\
             </div>\
 \
@@ -436,14 +436,14 @@ var divideConquerTopic = {
                     <div class="concept-demo-title">🎮 Try It — Merge Sort Visualization</div>\
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
                         <input type="text" id="dc-demo-ms-input" value="5,3,8,1,4,2,7,6" placeholder="Comma-separated numbers" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:200px;background:var(--card);color:var(--text);">\
-                        <button class="concept-demo-btn" id="dc-demo-ms-btn">▶ Start Sort</button>\
-                        <button class="concept-demo-btn green" id="dc-demo-ms-reset" style="display:none;">↺ Again</button>\
+                        <button class="concept-demo-btn" id="dc-demo-ms-step">Step ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-demo-ms-reset">Reset ↺</button>\
                     </div>\
                     <div class="concept-demo-body">\
                         <div id="dc-demo-ms-viz" style="min-height:120px;overflow-x:auto;"></div>\
                         <div id="dc-demo-ms-phase" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:2em;"></div>\
                     </div>\
-                    <div class="concept-demo-msg" id="dc-demo-ms-msg">👆 Change the numbers and click "Start Sort"! Watch the 3 phases: Divide → Solve → Combine.</div>\
+                    <div class="concept-demo-msg" id="dc-demo-ms-msg">👆 Change the numbers and press Step to see the sort one step at a time.</div>\
                 </div>\
             </div>\
 \
@@ -536,14 +536,14 @@ var divideConquerTopic = {
         // ====== Demo 1: Binary Search ======
         (function() {
             var arr = [1, 3, 5, 7, 9, 12, 15, 18, 21, 25];
-            var searchBtn = container.querySelector('#dc-demo-bs-btn');
+            var stepBtn = container.querySelector('#dc-demo-bs-step');
             var resetBtn = container.querySelector('#dc-demo-bs-reset');
             var targetInput = container.querySelector('#dc-demo-bs-target');
             var arrEl = container.querySelector('#dc-demo-bs-arr');
             var pointersEl = container.querySelector('#dc-demo-bs-pointers');
             var logEl = container.querySelector('#dc-demo-bs-log');
             var msgEl = container.querySelector('#dc-demo-bs-msg');
-            var animating = false;
+            var bsState = { steps: [], stepIdx: -1 };
 
             function renderArr(lo, hi, mid, found) {
                 arrEl.innerHTML = '';
@@ -568,15 +568,8 @@ var divideConquerTopic = {
                     arrEl.appendChild(box);
                 });
             }
-            renderArr(0, arr.length - 1, -1);
 
-            searchBtn.addEventListener('click', function() {
-                if (animating) return;
-                animating = true;
-                searchBtn.style.display = 'none';
-                resetBtn.style.display = '';
-                var target = parseInt(targetInput.value);
-                if (isNaN(target)) { msgEl.textContent = 'Please enter a number!'; animating = false; return; }
+            function buildBsSteps(target) {
                 var lo = 0, hi = arr.length - 1;
                 var steps = [];
                 while (lo <= hi) {
@@ -588,48 +581,70 @@ var divideConquerTopic = {
                 if (steps.length === 0 || !steps[steps.length - 1].found) {
                     steps.push({ lo: lo, hi: hi, mid: -1, found: null });
                 }
-                var idx = 0;
-                function playStep() {
-                    if (idx >= steps.length) { animating = false; return; }
-                    var s = steps[idx];
-                    renderArr(s.lo, s.hi, s.mid, s.found);
-                    if (s.found === true) {
-                        pointersEl.innerHTML = '<strong style="color:var(--green);">Found!</strong> arr[' + s.mid + '] = ' + arr[s.mid];
-                        logEl.textContent = 'Total ' + steps.length + ' comparisons (log\u2082(' + arr.length + ') \u2248 ' + Math.ceil(Math.log2(arr.length)) + ')';
-                        animating = false;
-                    } else if (s.found === false) {
-                        pointersEl.innerHTML = 'L=' + s.lo + ', R=' + s.hi + ', mid=' + s.mid + ' \u2192 arr[' + s.mid + ']=' + arr[s.mid];
-                        logEl.textContent = arr[s.mid] + (s.dir === 'right' ? ' < ' + target + ' \u2192 search right half' : ' > ' + target + ' \u2192 search left half');
-                        idx++;
-                        setTimeout(playStep, 800);
-                    } else {
-                        pointersEl.innerHTML = '<strong style="color:var(--red);">' + target + ' is not in the array</strong>';
-                        logEl.textContent = 'Total ' + (steps.length - 1) + ' comparisons';
-                        animating = false;
-                    }
+                return steps;
+            }
+
+            function renderBsStep() {
+                var idx = bsState.stepIdx;
+                var steps = bsState.steps;
+                var target = bsState.target;
+                if (idx < 0) {
+                    renderArr(0, arr.length - 1, -1);
+                    pointersEl.textContent = '';
+                    logEl.textContent = '';
+                    stepBtn.disabled = steps.length === 0;
+                    return;
                 }
-                playStep();
+                var s = steps[idx];
+                renderArr(s.lo, s.hi, s.mid, s.found);
+                if (s.found === true) {
+                    pointersEl.innerHTML = '<strong style="color:var(--green);">Found!</strong> arr[' + s.mid + '] = ' + arr[s.mid];
+                    logEl.textContent = 'Total ' + steps.length + ' comparisons (log\u2082(' + arr.length + ') \u2248 ' + Math.ceil(Math.log2(arr.length)) + ')';
+                    stepBtn.disabled = true;
+                } else if (s.found === false) {
+                    pointersEl.innerHTML = 'L=' + s.lo + ', R=' + s.hi + ', mid=' + s.mid + ' \u2192 arr[' + s.mid + ']=' + arr[s.mid];
+                    logEl.textContent = arr[s.mid] + (s.dir === 'right' ? ' < ' + target + ' \u2192 search right half' : ' > ' + target + ' \u2192 search left half');
+                    stepBtn.disabled = false;
+                } else {
+                    pointersEl.innerHTML = '<strong style="color:var(--red);">' + target + ' is not in the array</strong>';
+                    logEl.textContent = 'Total ' + (steps.length - 1) + ' comparisons';
+                    stepBtn.disabled = true;
+                }
+            }
+
+            function resetBs() {
+                var target = parseInt(targetInput.value);
+                if (isNaN(target)) { msgEl.textContent = 'Please enter a number!'; bsState.steps = []; bsState.stepIdx = -1; stepBtn.disabled = true; return; }
+                bsState.target = target;
+                bsState.steps = buildBsSteps(target);
+                bsState.stepIdx = -1;
+                msgEl.textContent = 'Press Step to search one step at a time.';
+                renderBsStep();
+            }
+
+            renderArr(0, arr.length - 1, -1);
+            resetBs();
+
+            stepBtn.addEventListener('click', function() {
+                if (bsState.stepIdx < bsState.steps.length - 1) {
+                    bsState.stepIdx++;
+                    renderBsStep();
+                }
             });
             resetBtn.addEventListener('click', function() {
-                animating = false;
-                searchBtn.style.display = '';
-                resetBtn.style.display = 'none';
-                renderArr(0, arr.length - 1, -1);
-                pointersEl.textContent = '';
-                logEl.textContent = '';
-                msgEl.textContent = '👆 Enter a number to find and click "Start Search"!';
+                resetBs();
             });
         })();
 
         // ====== Demo 2: Merge Sort 3-Phase ======
         (function() {
-            var msBtn = container.querySelector('#dc-demo-ms-btn');
+            var msStepBtn = container.querySelector('#dc-demo-ms-step');
             var msReset = container.querySelector('#dc-demo-ms-reset');
             var msInput = container.querySelector('#dc-demo-ms-input');
             var msViz = container.querySelector('#dc-demo-ms-viz');
             var msPhase = container.querySelector('#dc-demo-ms-phase');
             var msMsg = container.querySelector('#dc-demo-ms-msg');
-            var animating = false;
+            var msState = { steps: [], stepIdx: -1 };
 
             function buildMergeSteps(arr) {
                 var steps = [];
@@ -656,51 +671,60 @@ var divideConquerTopic = {
                 return steps;
             }
 
-            function renderMergeStep(step) {
+            function renderMergeUpTo(steps, upTo) {
                 var boxStyle = 'display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;font-weight:600;color:var(--text);margin:2px;padding:0 4px;';
-                if (step.phase === 'divide') {
-                    var indent = '&nbsp;'.repeat(step.depth * 4);
-                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
-                        '<span style="color:var(--accent);font-weight:600;">Divide: </span>' +
-                        '[' + step.arr.join(', ') + '] \u2192 [' + step.left.join(', ') + '] + [' + step.right.join(', ') + ']</div>';
-                    msPhase.innerHTML = '<strong style="color:var(--accent);">1. Divide</strong>: Splitting [' + step.arr.join(', ') + '] in half';
+                msViz.innerHTML = '';
+                for (var k = 0; k <= upTo; k++) {
+                    var step = steps[k];
+                    if (step.phase === 'divide') {
+                        var indent = '&nbsp;'.repeat(step.depth * 4);
+                        msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                            '<span style="color:var(--accent);font-weight:600;">Divide: </span>' +
+                            '[' + step.arr.join(', ') + '] \u2192 [' + step.left.join(', ') + '] + [' + step.right.join(', ') + ']</div>';
+                    } else {
+                        var indent = '&nbsp;'.repeat(step.depth * 4);
+                        var mergedHtml = step.merged.map(function(v) {
+                            return '<span style="' + boxStyle + 'border-color:var(--green);background:rgba(0,184,148,0.1);">' + v + '</span>';
+                        }).join('');
+                        msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
+                            '<span style="color:var(--green);font-weight:600;">Combine: </span>' +
+                            '[' + step.left.join(', ') + '] + [' + step.right.join(', ') + '] \u2192 ' + mergedHtml + '</div>';
+                    }
+                }
+                // Update phase description for current step
+                var cur = steps[upTo];
+                if (cur.phase === 'divide') {
+                    msPhase.innerHTML = '<strong style="color:var(--accent);">1. Divide</strong>: Splitting [' + cur.arr.join(', ') + '] in half';
                 } else {
-                    var indent = '&nbsp;'.repeat(step.depth * 4);
-                    var mergedHtml = step.merged.map(function(v) {
-                        return '<span style="' + boxStyle + 'border-color:var(--green);background:rgba(0,184,148,0.1);">' + v + '</span>';
-                    }).join('');
-                    msViz.innerHTML += '<div style="margin:4px 0;">' + indent +
-                        '<span style="color:var(--green);font-weight:600;">Combine: </span>' +
-                        '[' + step.left.join(', ') + '] + [' + step.right.join(', ') + '] \u2192 ' + mergedHtml + '</div>';
-                    msPhase.innerHTML = '<strong style="color:var(--green);">3. Combine</strong>: Merging two sorted halves \u2192 [' + step.merged.join(', ') + ']';
+                    msPhase.innerHTML = '<strong style="color:var(--green);">3. Combine</strong>: Merging two sorted halves \u2192 [' + cur.merged.join(', ') + ']';
                 }
             }
 
-            msBtn.addEventListener('click', function() {
-                if (animating) return;
-                animating = true;
-                msBtn.style.display = 'none';
-                msReset.style.display = '';
+            function resetMs() {
                 var vals = msInput.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
-                if (vals.length < 2) { msMsg.textContent = 'Please enter at least 2 numbers!'; animating = false; return; }
-                var steps = buildMergeSteps(vals);
-                msViz.innerHTML = '';
-                var idx = 0;
-                function play() {
-                    if (idx >= steps.length) { msPhase.innerHTML = '<strong style="color:var(--green);">Sort Complete!</strong>'; animating = false; return; }
-                    renderMergeStep(steps[idx]);
-                    idx++;
-                    setTimeout(play, 700);
-                }
-                play();
-            });
-            msReset.addEventListener('click', function() {
-                animating = false;
-                msBtn.style.display = '';
-                msReset.style.display = 'none';
+                if (vals.length < 2) { msMsg.textContent = 'Please enter at least 2 numbers!'; msState.steps = []; msState.stepIdx = -1; msStepBtn.disabled = true; return; }
+                msState.steps = buildMergeSteps(vals);
+                msState.stepIdx = -1;
                 msViz.innerHTML = '';
                 msPhase.textContent = '';
-                msMsg.textContent = '👆 Change the numbers and click "Start Sort"!';
+                msMsg.textContent = 'Press Step to see the sort one step at a time.';
+                msStepBtn.disabled = false;
+            }
+
+            resetMs();
+
+            msStepBtn.addEventListener('click', function() {
+                if (msState.stepIdx < msState.steps.length - 1) {
+                    msState.stepIdx++;
+                    renderMergeUpTo(msState.steps, msState.stepIdx);
+                    if (msState.stepIdx >= msState.steps.length - 1) {
+                        msPhase.innerHTML = '<strong style="color:var(--green);">Sort Complete!</strong>';
+                        msStepBtn.disabled = true;
+                    }
+                }
+            });
+            msReset.addEventListener('click', function() {
+                resetMs();
             });
         })();
 

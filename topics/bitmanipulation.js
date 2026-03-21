@@ -5,7 +5,7 @@ var bitManipulationTopic = {
     id: 'bitmanipulation',
     title: '비트 조작',
     icon: '💻',
-    category: '심화 선택',
+    category: '고급 자료구조 (Gold~Platinum)',
     order: 19,
     description: '비트 연산과 비트 마스크를 활용한 효율적인 문제 해결 기법',
     relatedNote: '비트 연산은 비트마스크 DP, 부분집합 열거, XOR 트릭 등 다양한 최적화 기법의 기반이 됩니다.',
@@ -614,15 +614,15 @@ int main() {
                     <div class="concept-demo-title">🎮 직접 해보기 — 모든 수를 XOR하면 짝 없는 수만 남는다</div>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
                         <input type="text" id="bit-demo-xor-input" value="4,1,2,1,2" placeholder="쉼표 구분 숫자" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:180px;background:var(--card);color:var(--text);">
-                        <button class="concept-demo-btn" id="bit-demo-xor-btn">⚡ XOR 실행</button>
-                        <button class="concept-demo-btn green" id="bit-demo-xor-reset" style="display:none;">↺ 다시</button>
+                        <button class="concept-demo-btn" id="bit-demo-xor-btn">Step ▶</button>
+                        <button class="concept-demo-btn green" id="bit-demo-xor-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="bit-demo-xor-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
                         <div id="bit-demo-xor-steps" style="font-family:monospace;font-size:0.9rem;color:var(--text);line-height:2;"></div>
                         <div id="bit-demo-xor-result" style="margin-top:8px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>
                     </div>
-                    <div class="concept-demo-msg" id="bit-demo-xor-msg">👆 숫자를 바꿔보고 "XOR 실행"을 눌러보세요! 짝이 있는 수는 사라지고 혼자인 수만 남습니다.</div>
+                    <div class="concept-demo-msg" id="bit-demo-xor-msg">숫자를 바꿔보고 "Step"을 눌러 한 단계씩 진행해보세요! 짝이 있는 수는 사라지고 혼자인 수만 남습니다.</div>
                 </div>
             </div>
         `;
@@ -831,15 +831,16 @@ int main() {
             var arrEl = container.querySelector('#bit-demo-xor-arr');
             var stepsEl = container.querySelector('#bit-demo-xor-steps');
             var resultEl = container.querySelector('#bit-demo-xor-result');
-            var animating = false;
 
-            xorBtn.addEventListener('click', function() {
-                if (animating) return;
-                animating = true;
-                xorBtn.style.display = 'none';
-                resetBtn.style.display = '';
+            var xorState = { nums: [], stepIdx: -1, xorVal: 0, initialized: false };
+
+            function xorInitDemo() {
                 var nums = inputEl.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
-                if (nums.length < 2) { resultEl.textContent = '숫자를 2개 이상 입력해주세요!'; animating = false; return; }
+                if (nums.length < 2) { resultEl.textContent = '숫자를 2개 이상 입력해주세요!'; return false; }
+                xorState.nums = nums;
+                xorState.stepIdx = -1;
+                xorState.xorVal = 0;
+                xorState.initialized = true;
 
                 arrEl.innerHTML = '';
                 nums.forEach(function(n) {
@@ -848,49 +849,56 @@ int main() {
                     box.innerHTML = '<div class="str-char-val">' + n + '</div>';
                     arrEl.appendChild(box);
                 });
-
                 stepsEl.innerHTML = '';
-                var xorVal = 0;
-                var idx = 0;
-                function step() {
-                    if (idx >= nums.length) {
-                        resultEl.innerHTML = '<strong style="color:var(--green);">짝 없는 수: ' + xorVal + '</strong> — 짝이 있는 수는 XOR로 사라지고, 혼자인 수만 남습니다!';
-                        // Highlight the answer in array
-                        var boxes = arrEl.querySelectorAll('.str-char-box');
-                        boxes.forEach(function(box) {
-                            if (box.textContent.trim() == String(xorVal)) {
-                                box.style.borderColor = 'var(--green)';
-                                box.style.boxShadow = '0 0 8px var(--green)';
-                            }
-                        });
-                        animating = false;
-                        return;
-                    }
-                    var prev = xorVal;
-                    xorVal ^= nums[idx];
-                    var line = document.createElement('div');
-                    line.style.animation = 'fadeIn 0.3s ease';
-                    line.innerHTML = prev + ' ^ ' + nums[idx] + ' = <strong style="color:var(--accent);">' + xorVal + '</strong>';
-                    stepsEl.appendChild(line);
+                resultEl.textContent = '';
+                return true;
+            }
 
-                    // Highlight current in array
-                    var boxes = arrEl.querySelectorAll('.str-char-box');
-                    boxes.forEach(function(b) { b.style.borderColor = ''; b.style.boxShadow = ''; });
-                    if (boxes[idx]) {
-                        boxes[idx].style.borderColor = 'var(--yellow)';
-                        boxes[idx].style.boxShadow = '0 0 6px var(--yellow)';
-                    }
-
-                    idx++;
-                    setTimeout(step, 500);
+            function xorAdvanceStep() {
+                if (!xorState.initialized) {
+                    if (!xorInitDemo()) return;
                 }
-                step();
-            });
+                var nums = xorState.nums;
+                xorState.stepIdx++;
+                if (xorState.stepIdx >= nums.length) {
+                    // Already finished — do nothing on extra clicks
+                    xorState.stepIdx = nums.length;
+                    return;
+                }
+                var idx = xorState.stepIdx;
+                var prev = xorState.xorVal;
+                xorState.xorVal ^= nums[idx];
+                var line = document.createElement('div');
+                line.style.animation = 'fadeIn 0.3s ease';
+                line.innerHTML = prev + ' ^ ' + nums[idx] + ' = <strong style="color:var(--accent);">' + xorState.xorVal + '</strong>';
+                stepsEl.appendChild(line);
+
+                // Highlight current in array
+                var boxes = arrEl.querySelectorAll('.str-char-box');
+                boxes.forEach(function(b) { b.style.borderColor = ''; b.style.boxShadow = ''; });
+                if (boxes[idx]) {
+                    boxes[idx].style.borderColor = 'var(--yellow)';
+                    boxes[idx].style.boxShadow = '0 0 6px var(--yellow)';
+                }
+
+                // If last step, show result
+                if (xorState.stepIdx >= nums.length - 1) {
+                    resultEl.innerHTML = '<strong style="color:var(--green);">짝 없는 수: ' + xorState.xorVal + '</strong> — 짝이 있는 수는 XOR로 사라지고, 혼자인 수만 남습니다!';
+                    boxes.forEach(function(box) {
+                        if (box.textContent.trim() == String(xorState.xorVal)) {
+                            box.style.borderColor = 'var(--green)';
+                            box.style.boxShadow = '0 0 8px var(--green)';
+                        }
+                    });
+                }
+            }
+
+            xorBtn.addEventListener('click', xorAdvanceStep);
 
             resetBtn.addEventListener('click', function() {
-                animating = false;
-                xorBtn.style.display = '';
-                resetBtn.style.display = 'none';
+                xorState.initialized = false;
+                xorState.stepIdx = -1;
+                xorState.xorVal = 0;
                 arrEl.innerHTML = '';
                 stepsEl.innerHTML = '';
                 resultEl.textContent = '';

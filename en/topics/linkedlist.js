@@ -5,8 +5,8 @@ const linkedListTopic = {
     id: 'linkedlist',
     title: 'Linked List',
     icon: '🔗',
-    category: 'Data Structures',
-    order: 5,
+    category: 'Extra Study',
+    order: 21,
     description: 'Nodes and pointers, singly/doubly linked lists, cycle detection and reversal',
     relatedNote: 'Beyond this, there are also advanced concepts such as doubly linked lists, LRU cache (hashmap + list), skip lists, and more.',
 
