@@ -319,7 +319,7 @@ var priorityQueueTopic = {
                     <div class="think-box-answer">\
                         Insert <strong>(abs(x), x)</strong> tuples!<br>\
                         When absolute values are equal, the one with the smaller actual value comes out first.<br>\
-                        This is the key idea behind <strong>BOJ 11286 Absolute Value Heap</strong>!\
+                        This is the key idea behind <strong>Absolute Value Heap</strong> problems!\
                     </div>\
                 </div>\
             </div></span>\
@@ -343,13 +343,13 @@ var priorityQueueTopic = {
                     <div class="think-box-answer">\
                         Insert <strong>{abs(x), x}</strong> pairs into a min heap!<br>\
                         When absolute values are equal, the one with the smaller actual value comes out first.<br>\
-                        This is the key idea behind <strong>BOJ 11286 Absolute Value Heap</strong>!\
+                        This is the key idea behind <strong>Absolute Value Heap</strong> problems!\
                     </div>\
                 </div>\
             </div></span>\
 \
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">4.5</span> Heap Simulator</div>\
+                <div class="concept-section-title"><span class="section-num">5</span> Heap Simulator</div>\
                 <div class="concept-demo">\
                     <div class="concept-demo-title">Try it — Push / Pop Simulator</div>\
                     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
@@ -376,7 +376,7 @@ var priorityQueueTopic = {
             </div>\
 \
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">5</span> Tips for Solving Priority Queue Problems</div>\
+                <div class="concept-section-title"><span class="section-num">6</span> Tips for Solving Priority Queue Problems</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <span class="lang-py"><div class="concept-card"><h3>\u2460 Basic Heap Ops</h3><p>Use heappush/heappop to implement<br>max\u00B7min\u00B7absolute value heaps.</p></div></span>\
                     <span class="lang-cpp"><div class="concept-card"><h3>\u2460 Basic Heap Ops</h3><p>Use push/top/pop to implement<br>max\u00B7min\u00B7absolute value heaps.</p></div></span>\

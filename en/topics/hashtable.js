@@ -360,7 +360,7 @@ int main() {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">in?</text></svg></div>
                         <h3>Existence Check</h3>
-                        <p>In Two Sum, checking "does target - num already exist?" in O(1).</p>
+                        <p>Checking "does the value I need already exist?" in O(1). The key to complement search!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">a↔b</text></svg></div>
@@ -378,7 +378,7 @@ words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
 freq = Counter(words)
 print(freq.most_common(1))  # [('apple', 3)]
 
-# Pattern 2: Solving Two Sum in O(n) with a hashmap
+# Pattern 2: Complement search — find pairs in O(n)
 def two_sum(nums, target):
     seen = {}
     for i, num in enumerate(nums):
@@ -413,7 +413,7 @@ unordered_map&lt;string, int&gt; freq;
 for (auto&amp; w : words) freq[w]++;
 // freq["apple"] = 3, freq["banana"] = 2, freq["cherry"] = 1
 
-// Pattern 2: Solving Two Sum in O(n) with a hashmap
+// Pattern 2: Complement search — find pairs in O(n)
 vector&lt;int&gt; two_sum(vector&lt;int&gt;&amp; nums, int target) {
     unordered_map&lt;int, int&gt; seen;
     for (int i = 0; i &lt; nums.size(); i++) {
@@ -458,9 +458,9 @@ int longest_unique(const string&amp; s) {
                     <div class="concept-demo-msg" id="ht-demo-freq-msg">👆 Enter a string and click "Start Counting"! Watch the frequency count build up character by character.</div>
                 </div>
                 <div class="think-box">
-                    <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Why can Two Sum be solved with a hashmap (O(n)) instead of nested for loops (O(n²))?</span></div>
+                    <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Why can "find two numbers that sum to target" be solved with a hashmap (O(n)) instead of nested for loops (O(n²))?</span></div>
                     <button class="think-box-trigger">🤔 Think first, then click!</button>
-                    <div class="think-box-answer">Nested for loops compare "all pairs," but a hashmap checks "does this number's pair already exist?" in O(1) during a <strong>single pass</strong>. n times × O(1) = O(n)!</div>
+                    <div class="think-box-answer">Nested for loops compare "all pairs," but a hashmap checks "does this number's complement (target - num) already exist?" in O(1) during a <strong>single pass</strong>. n times × O(1) = O(n)!</div>
                 </div>
             </div>
 

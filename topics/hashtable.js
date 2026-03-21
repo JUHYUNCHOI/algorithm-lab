@@ -360,7 +360,7 @@ int main() {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">in?</text></svg></div>
                         <h3>존재 확인</h3>
-                        <p>Two Sum에서 "target - num이 이미 있는가?"를 O(1)에 확인합니다.</p>
+                        <p>"찾는 값이 이미 있는가?"를 O(1)에 확인합니다. 보수(complement) 탐색의 핵심!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">a↔b</text></svg></div>
@@ -378,7 +378,7 @@ words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
 freq = Counter(words)
 print(freq.most_common(1))  # [('apple', 3)]
 
-# 패턴 2: Two Sum을 해시맵으로 O(n)에 풀기
+# 패턴 2: 보수(complement) 탐색 — O(n)으로 짝 찾기
 def two_sum(nums, target):
     seen = {}
     for i, num in enumerate(nums):
@@ -413,7 +413,7 @@ unordered_map&lt;string, int&gt; freq;
 for (auto&amp; w : words) freq[w]++;
 // freq["apple"] = 3, freq["banana"] = 2, freq["cherry"] = 1
 
-// 패턴 2: Two Sum을 해시맵으로 O(n)에 풀기
+// 패턴 2: 보수(complement) 탐색 — O(n)으로 짝 찾기
 vector&lt;int&gt; two_sum(vector&lt;int&gt;&amp; nums, int target) {
     unordered_map&lt;int, int&gt; seen;
     for (int i = 0; i &lt; nums.size(); i++) {
@@ -458,9 +458,9 @@ int longest_unique(const string&amp; s) {
                     <div class="concept-demo-msg" id="ht-demo-freq-msg">👆 문자열을 입력하고 "세기 시작"을 눌러보세요! 한 글자씩 빈도수를 세는 과정을 볼 수 있습니다.</div>
                 </div>
                 <div class="think-box">
-                    <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">Two Sum을 이중 for문(O(n²))이 아닌 해시맵(O(n))으로 풀 수 있는 이유는?</span></div>
+                    <div class="think-box-question"><span class="think-box-question-icon">Q</span><span class="think-box-question-text">"합이 target인 두 수 찾기"를 이중 for문(O(n²)) 대신 해시맵(O(n))으로 풀 수 있는 이유는?</span></div>
                     <button class="think-box-trigger">🤔 생각해보고 클릭!</button>
-                    <div class="think-box-answer">이중 for문은 "모든 쌍"을 비교하지만, 해시맵은 <strong>한 번 순회</strong>하면서 "이 숫자의 짝이 이미 있나?"를 O(1)에 확인합니다. n번 × O(1) = O(n)!</div>
+                    <div class="think-box-answer">이중 for문은 "모든 쌍"을 비교하지만, 해시맵은 <strong>한 번 순회</strong>하면서 "이 숫자의 보수(target - num)가 이미 있나?"를 O(1)에 확인합니다. n번 × O(1) = O(n)!</div>
                 </div>
             </div>
 

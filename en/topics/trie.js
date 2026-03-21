@@ -225,10 +225,54 @@ var trieTopic = {
                 </div>\
             </div>\
 \
-            <!-- Section 2: Implementing a Trie -->\
+            <!-- Section 2: Trie vs HashMap -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">2</span> Implementing a Trie\
+                    <span class="section-num">2</span> Trie vs HashMap — Why Do We Need a Trie?\
+                </div>\
+                <div class="analogy-box">\
+                    <strong>Key Question:</strong> A hash set (<span class="lang-py"><code>set</code></span><span class="lang-cpp"><code>unordered_set</code></span>) can search in O(1), so why do we need a Trie?\
+                    The answer lies in <strong>"prefixes"</strong>!\
+                </div>\
+                <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
+                    <div class="concept-card" style="border-color: var(--green);">\
+                        <h3>HashMap (Set)</h3>\
+                        <p><strong>Exact word search</strong>: O(L) average ✅<br>\
+                        <strong>Find words starting with "app"</strong>: Must scan all entries → O(N×L) ❌<br>\
+                        <strong>Lexicographic order</strong>: Requires separate sorting ❌</p>\
+                    </div>\
+                    <div class="concept-card" style="border-color: var(--accent);">\
+                        <h3>Trie</h3>\
+                        <p><strong>Exact word search</strong>: O(L) worst case ✅<br>\
+                        <strong>Find words starting with "app"</strong>: Follow prefix path → O(L + results) ✅<br>\
+                        <strong>Lexicographic order</strong>: Naturally sorted ✅</p>\
+                    </div>\
+                </div>\
+                <div class="key-difference-box" style="margin-top:16px;padding:16px;background:var(--bg);border-radius:var(--radius);border-left:4px solid var(--accent);">\
+                    <strong>Key Difference!</strong><br>\
+                    • <strong>HashMap</strong>: "Does this word exist?" → ✅ Fast | "What words start with this prefix?" → ❌ Slow<br>\
+                    • <strong>Trie</strong>: Both are fast! When prefix search is needed, Trie is the answer<br><br>\
+                    <strong>When to use a Trie?</strong> Autocomplete, prefix matching, lexicographic traversal, checking prefix relationships in a set of strings\
+                </div>\
+                <div class="think-box">\
+                    <div class="think-box-question">\
+                        <span class="think-box-question-icon">Q</span>\
+                        <span class="think-box-question-text">With 100,000 words stored, which is faster at finding all words starting with "pre" — a hash set or a trie?</span>\
+                    </div>\
+                    <button class="think-box-trigger">🤔 Think first, then click!</button>\
+                    <div class="think-box-answer">\
+                        <strong>Trie wins by a huge margin!</strong><br>\
+                        Hash set: Check all 100,000 entries with startsWith("pre") → O(100,000 × L)<br>\
+                        Trie: Move to p → r → e node in 3 steps, then collect words below → O(3 + result count)<br>\
+                        The more words stored, the bigger the difference!\
+                    </div>\
+                </div>\
+            </div>\
+\
+            <!-- Section 3: Implementing a Trie -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">3</span> Implementing a Trie\
                 </div>\
                 <div class="analogy-box">\
                     <strong>Understanding by analogy:</strong> each node is like <em>"a signpost at a crossroads"</em>!<br>\
@@ -297,10 +341,10 @@ var trieTopic = {
                 </div>\
             </div>\
 \
-            <!-- Section 3: Trie Applications -->\
+            <!-- Section 4: Trie Applications -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">3</span> Trie Applications\
+                    <span class="section-num">4</span> Trie Applications\
                 </div>\
                 <div class="analogy-box">\
                     <strong>Understanding by analogy:</strong> When you type on your smartphone,\
@@ -369,7 +413,7 @@ var trieTopic = {
                         While inserting all numbers into the trie, if you pass through a node with <code>is_end = True</code>,\
                         it means <strong>an existing number is a prefix of the current number</strong>!\
                         Conversely, if the final node already has children, <strong>the current number is a prefix of another number</strong>.\
-                        This approach can be used to solve BOJ 5052 (Phone List).\
+                        This approach can be used to solve "Phone List" type problems.\
                     </div>\
                 </div>\
             </div>\

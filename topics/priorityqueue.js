@@ -319,7 +319,7 @@ var priorityQueueTopic = {
                     <div class="think-box-answer">\
                         <strong>(abs(x), x)</strong> 튜플을 넣으면 됩니다!<br>\
                         절댓값이 같으면 두 번째 원소(실제 값)가 작은 것이 먼저 나옵니다.<br>\
-                        이것이 바로 <strong>BOJ 11286 절댓값 힙</strong>의 핵심입니다!\
+                        이것이 바로 <strong>절댓값 힙</strong> 문제의 핵심입니다!\
                     </div>\
                 </div>\
             </div></span>\
@@ -343,13 +343,13 @@ var priorityQueueTopic = {
                     <div class="think-box-answer">\
                         <strong>{abs(x), x}</strong> pair를 최소 힙에 넣으면 됩니다!<br>\
                         절댓값이 같으면 두 번째 원소(실제 값)가 작은 것이 먼저 나옵니다.<br>\
-                        이것이 바로 <strong>BOJ 11286 절댓값 힙</strong>의 핵심입니다!\
+                        이것이 바로 <strong>절댓값 힙</strong> 문제의 핵심입니다!\
                     </div>\
                 </div>\
             </div></span>\
 \
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">4.5</span> 힙 시뮬레이터</div>\
+                <div class="concept-section-title"><span class="section-num">5</span> 힙 시뮬레이터</div>\
                 <div class="concept-demo">\
                     <div class="concept-demo-title">직접 해보기 — Push / Pop 시뮬레이터</div>\
                     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
@@ -376,7 +376,7 @@ var priorityQueueTopic = {
             </div>\
 \
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">5</span> 우선순위 큐 문제 푸는 팁</div>\
+                <div class="concept-section-title"><span class="section-num">6</span> 우선순위 큐 문제 푸는 팁</div>\
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\
                     <span class="lang-py"><div class="concept-card"><h3>\u2460 기본 힙 연산</h3><p>heappush/heappop으로<br>최대\u00B7최소\u00B7절댓값 힙을 구현합니다.</p></div></span>\
                     <span class="lang-cpp"><div class="concept-card"><h3>\u2460 기본 힙 연산</h3><p>push/top/pop으로<br>최대\u00B7최소\u00B7절댓값 힙을 구현합니다.</p></div></span>\

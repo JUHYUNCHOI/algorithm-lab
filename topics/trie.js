@@ -225,10 +225,54 @@ var trieTopic = {
                 </div>\
             </div>\
 \
-            <!-- 섹션 2: 트라이 구현 -->\
+            <!-- 섹션 2: 트라이 vs 해시맵 -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">2</span> 트라이 구현\
+                    <span class="section-num">2</span> 트라이 vs 해시맵 — 왜 트라이가 필요할까?\
+                </div>\
+                <div class="analogy-box">\
+                    <strong>핵심 질문:</strong> 해시맵(<span class="lang-py"><code>set</code></span><span class="lang-cpp"><code>unordered_set</code></span>)도 O(1)에 검색할 수 있는데, 왜 트라이가 필요할까요?\
+                    답은 <strong>"접두사"</strong>에 있습니다!\
+                </div>\
+                <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
+                    <div class="concept-card" style="border-color: var(--green);">\
+                        <h3>해시맵 (Set)</h3>\
+                        <p><strong>정확한 단어 검색</strong>: O(L) 평균 ✅<br>\
+                        <strong>"app"으로 시작하는 단어 찾기</strong>: 전체를 순회해야 함 → O(N×L) ❌<br>\
+                        <strong>사전순 정렬</strong>: 별도 정렬 필요 ❌</p>\
+                    </div>\
+                    <div class="concept-card" style="border-color: var(--accent);">\
+                        <h3>트라이 (Trie)</h3>\
+                        <p><strong>정확한 단어 검색</strong>: O(L) 최악 ✅<br>\
+                        <strong>"app"으로 시작하는 단어 찾기</strong>: 접두사 경로만 따라감 → O(L+결과수) ✅<br>\
+                        <strong>사전순 정렬</strong>: 자연스럽게 정렬됨 ✅</p>\
+                    </div>\
+                </div>\
+                <div class="key-difference-box" style="margin-top:16px;padding:16px;background:var(--bg);border-radius:var(--radius);border-left:4px solid var(--accent);">\
+                    <strong>핵심 차이!</strong><br>\
+                    • <strong>해시맵</strong>: "이 단어가 있는가?" → ✅ 빠름 | "이 접두사로 시작하는 단어들은?" → ❌ 느림<br>\
+                    • <strong>트라이</strong>: 둘 다 빠름! 접두사 검색이 필요하면 트라이가 정답<br><br>\
+                    <strong>언제 트라이를 쓰나?</strong> 자동완성, 접두사 매칭, 사전순 탐색, 문자열 집합에서 접두사 관계 확인\
+                </div>\
+                <div class="think-box">\
+                    <div class="think-box-question">\
+                        <span class="think-box-question-icon">Q</span>\
+                        <span class="think-box-question-text">10만 개의 단어가 저장된 상태에서, "pre"로 시작하는 단어를 모두 찾으려면 해시맵과 트라이 중 어디가 빠를까요?</span>\
+                    </div>\
+                    <button class="think-box-trigger">🤔 생각해보고 클릭!</button>\
+                    <div class="think-box-answer">\
+                        <strong>트라이가 압도적으로 빠릅니다!</strong><br>\
+                        해시맵: 10만 개를 전부 확인하며 startsWith("pre")를 체크 → O(100,000 × L)<br>\
+                        트라이: p → r → e 노드로 3번 이동한 뒤, 그 아래 단어만 수집 → O(3 + 결과 수)<br>\
+                        단어 수가 많을수록 차이가 커집니다!\
+                    </div>\
+                </div>\
+            </div>\
+\
+            <!-- 섹션 3: 트라이 구현 -->\
+            <div class="concept-section">\
+                <div class="concept-section-title">\
+                    <span class="section-num">3</span> 트라이 구현\
                 </div>\
                 <div class="analogy-box">\
                     <strong>비유로 이해하기:</strong> 각 노드는 <em>"갈림길에 있는 이정표"</em>입니다!<br>\
@@ -297,10 +341,10 @@ var trieTopic = {
                 </div>\
             </div>\
 \
-            <!-- 섹션 3: 트라이 활용 -->\
+            <!-- 섹션 4: 트라이 활용 -->\
             <div class="concept-section">\
                 <div class="concept-section-title">\
-                    <span class="section-num">3</span> 트라이 활용\
+                    <span class="section-num">4</span> 트라이 활용\
                 </div>\
                 <div class="analogy-box">\
                     <strong>비유로 이해하기:</strong> 여러분이 스마트폰에서 글자를 입력할 때\
@@ -369,7 +413,7 @@ var trieTopic = {
                         모든 번호를 트라이에 넣으면서, 삽입 도중 이미 <code>is_end = True</code>인 노드를 지나가면\
                         <strong>기존 번호가 현재 번호의 접두사</strong>라는 뜻입니다!\
                         반대로, 삽입이 끝난 노드에 이미 자식이 있으면 <strong>현재 번호가 다른 번호의 접두사</strong>입니다.\
-                        이 방법으로 BOJ 5052 전화번호 목록 문제를 풀 수 있습니다.\
+                        이 방법으로 "전화번호 목록" 유형의 문제를 풀 수 있습니다.\
                     </div>\
                 </div>\
             </div>\

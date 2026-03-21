@@ -411,7 +411,7 @@ int main() {
                         <strong>Put people with the shortest time first</strong>!<br>
                         The time of each person in front must be waited by all people behind them,<br>
                         so shorter times in front reduces the total waiting sum.<br>
-                        This is the key idea behind BOJ 11399 (ATM).
+                        This is the key idea behind "queue optimization" problems.
                     </div>
                 </div>
 
