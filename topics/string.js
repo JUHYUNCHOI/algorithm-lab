@@ -461,6 +461,7 @@ const stringTopic = {
 
     // 문제-유형 매핑 (top-level)
     problemMeta: {
+        'boj-10809': { type: '알파벳 찾기', color: '#00b894', vizMethod: '_renderVizAlphaFind' },
         'boj-1157':  { type: '빈도수 분석', color: 'var(--accent)', vizMethod: '_renderVizFrequency' },
         'lc-125':    { type: '팰린드롬 판별', color: 'var(--green)', vizMethod: '_renderVizPalindrome' },
         'lc-49':     { type: '애너그램 그룹화', color: '#e17055', vizMethod: '_renderVizAnagram' },
@@ -469,10 +470,11 @@ const stringTopic = {
 
     // 학습 스테이지 (순차 로드맵용)
     stages: [
-        { num: 1, title: '빈도수 분석', desc: '문자 등장 횟수 세기', problemIds: ['boj-1157'] },
-        { num: 2, title: '팰린드롬 판별', desc: '투 포인터 기본 패턴', problemIds: ['lc-125'] },
-        { num: 3, title: '애너그램 그룹화', desc: '정렬 키 + 해시맵', problemIds: ['lc-49'] },
-        { num: 4, title: '문자열 재구성', desc: '빈도수 활용한 재배열', problemIds: ['boj-1213'] },
+        { num: 1, title: '알파벳 찾기', desc: '문자열 순회 입문', problemIds: ['boj-10809'] },
+        { num: 2, title: '빈도수 분석', desc: '문자 등장 횟수 세기', problemIds: ['boj-1157'] },
+        { num: 3, title: '팰린드롬 판별', desc: '투 포인터 기본 패턴', problemIds: ['lc-125'] },
+        { num: 4, title: '애너그램 그룹화', desc: '정렬 키 + 해시맵', problemIds: ['lc-49'] },
+        { num: 5, title: '문자열 재구성', desc: '빈도수 활용한 재배열', problemIds: ['boj-1213'] },
     ],
 
     // 추가 유형 안내
@@ -499,7 +501,7 @@ const stringTopic = {
 
         self._clearVizState();
 
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
         // 문제 헤더 (타입 배지 + 난이도)
         const header = document.createElement('div');
@@ -566,7 +568,7 @@ const stringTopic = {
 
         const problemMeta = self.problemMeta;
 
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
         // --- 히어로 + 개념 데모 + 문제 리스트 컨테이너 ---
         container.innerHTML = `
@@ -1623,6 +1625,173 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
         contentEl.appendChild(bonus);
     },
 
+    // ===== 알파벳 찾기 시각화 =====
+    _renderVizAlphaFind(container) {
+        const self = this;
+        container.innerHTML = `
+            <div id="alpha-find-section" style="padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);border-left:4px solid #00b894;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:1rem;color:#00b894;">
+                        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:#00b894;color:#fff;font-size:0.8rem;font-weight:700;">1</span>
+                        알파벳 찾기
+                    </span>
+                    <span class="approach-meta-badge time">⏱ O(n)</span>
+                    <span class="approach-meta-badge space">💾 O(1)</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+                    <label style="font-weight:600;">문자열:
+                        <input type="text" id="alpha-find-input" value="baekjoon"
+                            style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;">
+                    </label>
+                    <button class="btn btn-primary" id="alpha-find-start" style="font-size:1rem;">🔍 탐색 시작</button>
+                </div>
+                <div id="alpha-find-viz-area" style="display:none;">
+                    ${self._createStepDesc('-alphafind')}
+                    <div class="sim-card" style="padding:24px;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
+                            <div id="alpha-find-char-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        </div>
+                        <div style="margin-top:16px;width:100%;">
+                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">결과 배열 (a~z 첫 등장 위치, 없으면 -1)</div>
+                            <div id="alpha-find-result" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;font-family:var(--font-mono);font-size:0.85rem;"></div>
+                        </div>
+                        <div style="min-width:140px;margin-top:12px;">
+                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">현재 상태</div>
+                            <div id="alpha-find-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
+                        </div>
+                        <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-top:12px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> 대기</span>
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> 현재 확인 중</span>
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> 처리 완료</span>
+                        </div>
+                    </div>
+                    ${self._createStepControls('-alphafind')}
+                </div>
+            </div>
+        `;
+
+        var section = container.querySelector('#alpha-find-section');
+        var vizArea = section.querySelector('#alpha-find-viz-area');
+        var charBoxes = section.querySelector('#alpha-find-char-boxes');
+        var resultArea = section.querySelector('#alpha-find-result');
+        var statusEl = section.querySelector('#alpha-find-status');
+
+        function renderBoxes(str) {
+            charBoxes.innerHTML = '';
+            for (var i = 0; i < str.length; i++) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + str[i] + '</div>';
+                charBoxes.appendChild(box);
+            }
+        }
+
+        function renderResult(arr) {
+            resultArea.innerHTML = '';
+            for (var i = 0; i < 26; i++) {
+                var ch = String.fromCharCode(97 + i); // a~z
+                var cell = document.createElement('div');
+                cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;padding:4px 5px;border-radius:6px;min-width:28px;' +
+                    (arr[i] >= 0 ? 'background:rgba(0,184,148,0.15);color:var(--green);font-weight:700;' : 'background:var(--bg);color:var(--text3);');
+                cell.innerHTML = '<span style="font-size:0.75rem;font-weight:600;">' + ch + '</span><span>' + arr[i] + '</span>';
+                cell.id = 'alpha-result-' + i;
+                resultArea.appendChild(cell);
+            }
+        }
+
+        function saveState() {
+            return {
+                boxes: Array.from(charBoxes.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
+                result: resultArea.innerHTML,
+                status: statusEl.innerHTML
+            };
+        }
+
+        function restoreState(s) {
+            charBoxes.querySelectorAll('.str-char-box').forEach(function(b, i) { b.className = s.boxes[i]; });
+            resultArea.innerHTML = s.result;
+            statusEl.innerHTML = s.status;
+        }
+
+        section.querySelector('#alpha-find-start').addEventListener('click', function() {
+            self._clearVizState();
+            var str = section.querySelector('#alpha-find-input').value.toLowerCase();
+            if (!str.length) return;
+
+            vizArea.style.display = '';
+            this.textContent = '🔄 다시 시작';
+
+            renderBoxes(str);
+            var result = new Array(26).fill(-1);
+            renderResult(result);
+            statusEl.innerHTML = '준비 완료';
+
+            var steps = [];
+
+            // 각 문자를 순서대로 확인
+            for (let i = 0; i < str.length; i++) {
+                let idx = i, ch = str[i];
+                let alphaIdx = ch.charCodeAt(0) - 97;
+                let isFirst = result[alphaIdx] === -1;
+                if (isFirst) result[alphaIdx] = i; // 미리 계산
+
+                steps.push({
+                    description: isFirst
+                        ? 'str[' + idx + '] = \'' + ch + '\' → \'' + ch + '\'의 첫 등장! 위치 ' + idx + ' 기록'
+                        : 'str[' + idx + '] = \'' + ch + '\' → 이미 위치 ' + result[alphaIdx] + '에서 등장했으므로 건너뜀',
+                    _before: null,
+                    _isFirst: isFirst,
+                    _alphaIdx: alphaIdx,
+                    _idx: idx,
+                    _ch: ch,
+                    action: function() {
+                        this._before = saveState();
+                        // 현재까지의 박스 상태 업데이트
+                        for (var j = 0; j < str.length; j++) {
+                            var box = charBoxes.querySelector('[data-idx="' + j + '"]');
+                            if (!box) continue;
+                            box.className = j < this._idx ? 'str-char-box matched' : j === this._idx ? 'str-char-box comparing' : 'str-char-box';
+                        }
+                        // 결과 배열에서 해당 알파벳 하이라이트
+                        var cell = resultArea.querySelector('#alpha-result-' + this._alphaIdx);
+                        if (cell && this._isFirst) {
+                            cell.style.background = 'rgba(0,184,148,0.15)';
+                            cell.style.color = 'var(--green)';
+                            cell.style.fontWeight = '700';
+                            cell.querySelector('span:last-child').textContent = this._idx;
+                        }
+                        statusEl.innerHTML = this._isFirst
+                            ? '<span style="color:var(--green);">\'' + this._ch + '\' 첫 등장! → result[' + this._alphaIdx + '] = ' + this._idx + '</span>'
+                            : '\'' + this._ch + '\' → 이미 기록됨 (건너뜀)';
+                    },
+                    undo: function() {
+                        restoreState(this._before);
+                    }
+                });
+            }
+
+            // 완료 스텝
+            steps.push({
+                description: '완료! 26개 알파벳의 첫 등장 위치를 모두 구했습니다 🎉',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    charBoxes.querySelectorAll('.str-char-box').forEach(function(b) { b.className = 'str-char-box matched'; });
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.05rem;">완료! 결과 배열에서 -1인 알파벳은 문자열에 없는 글자입니다.</span>';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            // result를 다시 초기화 (시뮬레이션용)
+            result = new Array(26).fill(-1);
+            renderResult(result);
+
+            self._initLocalStepController(section, steps, '-alphafind');
+            section.querySelector('#viz-next-alphafind').click();
+        });
+    },
+
     // ===== 빈도수 세기 시각화 =====
     _renderVizFrequency(container) {
         const self = this;
@@ -2558,6 +2727,126 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
 
     // ===== 문제 데이터 =====
     problems: [
+        {
+            id: 'boj-10809',
+            title: 'BOJ 10809 - 알파벳 찾기',
+            difficulty: 'bronze',
+            link: 'https://www.acmicpc.net/problem/10809',
+            simIntro: '문자열을 한 글자씩 순회하면서 각 알파벳의 첫 등장 위치를 기록하는 과정을 확인해보세요!',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>알파벳 소문자로만 이루어진 단어 S가 주어진다. 각각의 알파벳에 대해서, 단어에 포함되어 있는 경우에는 <strong>처음 등장하는 위치</strong>를, 포함되어 있지 않은 경우에는 <strong>-1</strong>을 출력하는 프로그램을 작성하시오.</p>
+
+                <h4>입력</h4>
+                <p>첫째 줄에 단어 S가 주어진다. 단어의 길이는 100을 넘지 않으며, 알파벳 소문자로만 이루어져 있다.</p>
+
+                <h4>출력</h4>
+                <p>각각의 알파벳에 대해서, a가 처음 등장하는 위치, b가 처음 등장하는 위치, … z가 처음 등장하는 위치를 공백으로 구분해서 출력한다.</p>
+                <p>만약, 어떤 알파벳이 단어에 포함되어 있지 않다면 -1을 출력한다. 단어의 첫 번째 글자는 0번째 위치이고, 두 번째 글자는 1번째 위치이다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>baekjoon</pre></div>
+                    <div><strong>출력</strong><pre>1 0 -1 -1 2 -1 -1 -1 -1 4 3 -1 -1 7 5 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1</pre></div>
+                </div>
+                <p class="example-explain">b→0, a→1, e→2, k→3, j→4, o→5, n→7 위치에 처음 등장. 나머지 알파벳은 -1</p>
+                </div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>단어의 길이는 1 이상 100 이하</li>
+                    <li>알파벳 소문자로만 이루어져 있음</li>
+                </ul>
+            `,
+            hints: [
+                {
+                    title: '문제를 쉽게 이해해보자',
+                    content: '"baekjoon"에서 a는 몇 번째에 <strong>처음</strong> 나올까?<br>b→0번, a→1번, e→2번… 이렇게 26개 알파벳 각각의 <strong>첫 등장 위치</strong>를 찾는 문제예요!<br>문자열에 없는 알파벳은 <code>-1</code>로 출력합니다.'
+                },
+                {
+                    title: '크기 26인 배열을 만들자!',
+                    content: '알파벳은 a~z 총 <strong>26개</strong>니까, 크기 26인 배열을 <code>-1</code>로 채워서 시작해요.<br><span class="lang-py">Python: <code>result = [-1] * 26</code></span><span class="lang-cpp">C++: <code>int result[26]; fill(result, result+26, -1);</code></span><br><br>a→0번 칸, b→1번 칸, … z→25번 칸으로 매핑하면 돼요!'
+                },
+                {
+                    title: '문자를 숫자로 바꾸는 법',
+                    content: '알파벳을 배열 인덱스로 바꾸려면?<br><span class="lang-py">Python: <code>ord(\'a\') - ord(\'a\') = 0</code>, <code>ord(\'b\') - ord(\'a\') = 1</code></span><span class="lang-cpp">C++: <code>\'a\' - \'a\' = 0</code>, <code>\'b\' - \'a\' = 1</code> (char 자체가 숫자!)</span><br><br>이렇게 하면 어떤 알파벳이든 0~25 사이의 인덱스로 변환할 수 있어요.'
+                },
+                {
+                    title: '핵심: "처음"만 기록하기',
+                    content: '문자열을 앞에서부터 순회하면서:<br>1. 현재 글자의 인덱스를 계산 (<code>ch - \'a\'</code>)<br>2. <code>result[인덱스]</code>가 <code>-1</code>이면? → <strong>처음 등장!</strong> 현재 위치를 기록<br>3. <code>-1</code>이 아니면? → 이미 기록됨, <strong>건너뛰기</strong><br><br>이 조건 하나면 "처음 등장하는 위치"만 정확히 기록할 수 있어요!'
+                }
+            ],
+            solutions: [
+                {
+                    approach: '배열 순회',
+                    description: '크기 26 배열을 -1로 초기화하고, 문자열을 순회하며 첫 등장 위치만 기록한다',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `s = input()
+result = [-1] * 26  # a~z 26칸, 모두 -1로 시작
+
+for i in range(len(s)):
+    idx = ord(s[i]) - ord('a')  # 알파벳 → 배열 인덱스
+    if result[idx] == -1:        # 처음 등장하는 경우에만 기록
+        result[idx] = i
+
+print(' '.join(map(str, result)))`,
+                        cpp: `#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int result[26];
+    fill(result, result + 26, -1);  // 모두 -1로 초기화
+
+    for (int i = 0; i < s.size(); i++) {
+        int idx = s[i] - 'a';  // 알파벳 → 배열 인덱스
+        if (result[idx] == -1)  // 처음 등장하는 경우에만 기록
+            result[idx] = i;
+    }
+
+    for (int i = 0; i < 26; i++)
+        cout << result[i] << (i < 25 ? " " : "\\n");
+}`
+                    }
+                },
+                {
+                    approach: 'find 메서드',
+                    description: '각 알파벳에 대해 find()로 첫 등장 위치를 바로 구한다',
+                    timeComplexity: 'O(26·n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `s = input()
+
+# 각 알파벳에 대해 find()로 첫 위치를 구함
+# find()는 없으면 -1을 반환 — 딱 우리가 원하는 것!
+result = [s.find(chr(i + ord('a'))) for i in range(26)]
+
+print(' '.join(map(str, result)))`,
+                        cpp: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+
+    for (int i = 0; i < 26; i++) {
+        char ch = 'a' + i;
+        // find()는 못 찾으면 string::npos 반환
+        size_t pos = s.find(ch);
+        cout << (pos == string::npos ? -1 : (int)pos);
+        if (i < 25) cout << ' ';
+    }
+    cout << endl;
+}`
+                    }
+                }
+            ]
+        },
         {
             id: 'boj-1157',
             title: 'BOJ 1157 - 단어 공부',
@@ -3580,9 +3869,38 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
 
 (function assignCodeSteps() {
     const p = stringTopic.problems;
+    function findProb(id) { return p.find(function(x) { return x.id === id; }); }
+
+    // ── boj-10809 배열 순회 ──
+    findProb('boj-10809').solutions[0].codeSteps = {
+        python: [
+            { title: '입력 받기', desc: '알파벳 소문자로 이루어진 단어를 입력받습니다.', code: 's = input()' },
+            { title: '결과 배열 초기화', desc: '26개 알파벳(a~z)의 첫 등장 위치를 저장할 배열.\n처음엔 모두 -1 → "아직 안 나왔다"는 뜻!', code: 'result = [-1] * 26  # a~z 각각의 첫 위치' },
+            { title: '문자열 순회 + 기록', desc: '핵심: 각 문자를 0~25 인덱스로 변환!\nord(\'a\') - ord(\'a\') = 0, ord(\'b\') - ord(\'a\') = 1, ...\n-1인 경우에만 기록 → "처음 등장"만 저장.', code: 'for i in range(len(s)):\n    idx = ord(s[i]) - ord(\'a\')  # 알파벳 → 0~25 인덱스\n    if result[idx] == -1:        # 처음 등장하는 경우에만\n        result[idx] = i          # 현재 위치를 기록' },
+            { title: '출력', desc: '26개 값을 공백으로 구분하여 출력합니다.\nmap(str, result) → 숫자 리스트를 문자열로 변환.', code: 'print(\' \'.join(map(str, result)))' }
+        ],
+        cpp: [
+            { title: '입력 + 배열 초기화', desc: '문자열 입력 후 크기 26 배열을 -1로 채웁니다.\nfill()로 배열 전체를 한번에 초기화!', code: '#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int result[26];\n    fill(result, result + 26, -1);  // 모두 -1로 초기화' },
+            { title: '문자열 순회 + 기록', desc: 'C++에서는 char 자체가 숫자!\ns[i] - \'a\' → 0~25 인덱스 변환.\n-1일 때만 기록 → 첫 등장 위치만 저장.', code: '    for (int i = 0; i < s.size(); i++) {\n        int idx = s[i] - \'a\';      // 알파벳 → 0~25 인덱스\n        if (result[idx] == -1)      // 처음 등장하는 경우에만\n            result[idx] = i;        // 현재 위치를 기록\n    }' },
+            { title: '출력', desc: '26개 값을 공백으로 구분하여 출력합니다.', code: '    for (int i = 0; i < 26; i++)\n        cout << result[i] << (i < 25 ? " " : "\\n");\n}' }
+        ]
+    };
+
+    // ── boj-10809 find 메서드 ──
+    findProb('boj-10809').solutions[1].codeSteps = {
+        python: [
+            { title: 'find() 메서드란?', desc: 'Python의 str.find(ch)는 문자열에서 ch의\n첫 등장 위치를 반환합니다.\n없으면 -1 반환 → 딱 우리가 원하는 것!', code: 's = input()' },
+            { title: 'a~z 각각 find()', desc: '리스트 컴프리헨션으로 26개 알파벳 한번에 처리!\nchr(i + ord(\'a\')) → 0→\'a\', 1→\'b\', ..., 25→\'z\'', code: '# 각 알파벳에 대해 find()로 첫 위치를 구함\nresult = [s.find(chr(i + ord(\'a\'))) for i in range(26)]' },
+            { title: '출력', desc: '결과 출력. find()가 -1을 반환하므로 별도 처리 불필요!', code: 'print(\' \'.join(map(str, result)))' }
+        ],
+        cpp: [
+            { title: 'string::find()란?', desc: 'C++의 string::find(ch)는 문자의\n첫 등장 위치를 반환합니다.\n없으면 string::npos(매우 큰 수) 반환.', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;' },
+            { title: 'a~z 각각 find()', desc: '각 알파벳에 대해 find()로 첫 위치를 구합니다.\nnpos면 -1로 변환하여 출력합니다.', code: '    for (int i = 0; i < 26; i++) {\n        char ch = \'a\' + i;\n        size_t pos = s.find(ch);\n        cout << (pos == string::npos ? -1 : (int)pos);\n        if (i < 25) cout << \' \';\n    }\n    cout << endl;\n}' }
+        ]
+    };
 
     // ── boj-1157 배열 카운팅 ──
-    p[0].solutions[0].codeSteps = {
+    findProb('boj-1157').solutions[0].codeSteps = {
         python: [
             { title: '입력 + 대문자 변환', desc: '대소문자 구분 없이 세야 하므로 upper()로 통일.\n"Mississipi" → "MISSISSIPI"', code: 'word = input().upper()  # 대소문자 통일' },
             { title: '빈도 배열 카운팅', desc: '핵심: 크기 26 배열로 알파벳 빈도를 셉니다.\nord(c) - ord(\'A\') → A=0, B=1, ..., Z=25 인덱스 변환.', code: 'cnt = [0] * 26  # A~Z 각 빈도\nfor c in word:\n    cnt[ord(c) - ord(\'A\')] += 1  # 해당 알파벳 +1' },
@@ -3598,7 +3916,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── boj-1157 딕셔너리 ──
-    p[0].solutions[1].codeSteps = {
+    findProb('boj-1157').solutions[1].codeSteps = {
         python: [
             { title: '입력 + 대문자 변환', desc: '대소문자 구분 없이 세기 위해 upper()로 통일.', code: 'word = input().upper()  # 대소문자 통일' },
             { title: '딕셔너리 카운팅', desc: '배열 대신 딕셔너리로 빈도를 셉니다.\n키가 없으면 1로 초기화, 있으면 +1.\n→ 어떤 문자든 셀 수 있어 더 범용적!', code: 'freq = {}  # {문자: 빈도}\nfor c in word:\n    if c in freq:\n        freq[c] += 1   # 이미 있으면 +1\n    else:\n        freq[c] = 1     # 처음 보면 1로 시작' },
@@ -3614,7 +3932,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── boj-1157 Counter ──
-    p[0].solutions[2].codeSteps = {
+    findProb('boj-1157').solutions[2].codeSteps = {
         python: [
             { title: 'Counter란?', desc: 'Python의 빈도 카운팅 전용 클래스!\n딕셔너리 직접 만드는 것보다 훨씬 간결합니다.', explanation: _counterExplainHTML, code: null },
             { title: 'Counter로 빈도 세기', desc: 'Counter(word) 한 줄로 빈도 딕셔너리 완성!\nmost_common() → 빈도 내림차순 정렬된 리스트 반환.', code: 'from collections import Counter\n\nword = input().upper()\ncounter = Counter(word)  # 한 줄로 빈도 카운팅!\ntop = counter.most_common()  # [(문자, 빈도)] 내림차순' },
@@ -3628,7 +3946,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── lc-125 뒤집어서 비교 ──
-    p[1].solutions[0].codeSteps = {
+    findProb('lc-125').solutions[0].codeSteps = {
         python: [
             { title: '함수 정의', desc: '팰린드롬 여부를 판별하는 함수입니다.', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:' },
             { title: '영숫자만 추출', desc: '핵심: 공백, 특수문자는 무시하고 영숫자만 남기기!\nisalnum() → 영문자 또는 숫자인지 확인.\nlower() → 대소문자 구분 없이 비교하기 위해.', code: '        cleaned = \'\'\n        for c in s:\n            if c.isalnum():        # 영문자/숫자만\n                cleaned += c.lower()  # 소문자로 통일' },
@@ -3642,7 +3960,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── lc-125 투 포인터 ──
-    p[1].solutions[1].codeSteps = {
+    findProb('lc-125').solutions[1].codeSteps = {
         python: [
             { title: '포인터 초기화', desc: '핵심: 양쪽 끝에서 시작하는 두 포인터!\n새 문자열을 만들지 않으므로 O(1) 공간.', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1  # 양쪽 끝에서 시작' },
             { title: '양쪽에서 비교', desc: '영숫자가 아닌 문자는 건너뛰고 비교.\n다르면 즉시 False! → 전체 정제 없이 바로 판별.\nlower()로 대소문자 무시.', code: '        while left < right:\n            while left < right and not s[left].isalnum():  # 영숫자 아니면 skip\n                left += 1\n            while left < right and not s[right].isalnum(): # 영숫자 아니면 skip\n                right -= 1\n            if s[left].lower() != s[right].lower():  # 다르면 팰린드롬 아님!\n                return False\n            left += 1\n            right -= 1' },
@@ -3656,7 +3974,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── lc-49 정렬 키 ──
-    p[2].solutions[0].codeSteps = {
+    findProb('lc-49').solutions[0].codeSteps = {
         python: [
             { title: '해시맵 준비', desc: '핵심 아이디어: 애너그램은 정렬하면 같은 문자열!\n"eat" → "aet", "tea" → "aet" → 같은 그룹!\n→ 정렬 결과를 키로 쓰면 자동 그룹화.', code: 'class Solution:\n    def groupAnagrams(self, strs):\n        groups = {}  # {정렬된 키: [원본 단어들]}' },
             { title: '정렬 키로 그룹화', desc: '각 단어를 sorted()로 정렬 → 키로 사용.\n같은 애너그램끼리 같은 키에 모입니다!\nO(n × k log k) — n개 단어, 평균 길이 k.', code: '        for s in strs:\n            key = \'\'.join(sorted(s))  # "eat" → "aet"\n            if key not in groups:\n                groups[key] = []\n            groups[key].append(s)     # 같은 키에 모으기' },
@@ -3670,7 +3988,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── boj-1213 배열 카운팅 ──
-    p[3].solutions[0].codeSteps = {
+    findProb('boj-1213').solutions[0].codeSteps = {
         python: [
             { title: '입력 + 빈도 세기', desc: '각 알파벳이 몇 번 등장하는지 크기 26 배열로 셉니다.\nord(c) - ord(\'A\') → A=0, B=1, ..., Z=25', code: 'import sys\ninput = sys.stdin.readline\n\nname = input().strip()\ncnt = [0] * 26  # A~Z 빈도\nfor c in name:\n    cnt[ord(c) - ord(\'A\')] += 1' },
             { title: '홀수 개수 체크', desc: '핵심: 팰린드롬에서 홀수 빈도 문자는 최대 1개!\n(가운데 한 자리만 홀수 가능)\n홀수가 2개 이상이면 팰린드롬 불가능.', code: 'odd_count = sum(1 for x in cnt if x % 2 != 0)\nif odd_count > 1:  # 홀수 빈도 문자가 2개 이상 → 불가능\n    print("I\'m Sorry Hansoo")' },
@@ -3686,7 +4004,7 @@ const _counterExplainHTML = '<h4>Counter란?</h4>' +
     };
 
     // ── boj-1213 Counter 활용 ──
-    p[3].solutions[1].codeSteps = {
+    findProb('boj-1213').solutions[1].codeSteps = {
         python: [
             { title: 'Counter란?', desc: 'Python의 빈도 카운팅 전용 클래스!\n배열 대신 Counter를 쓰면 더 간결합니다.', explanation: _counterExplainHTML, code: null },
             { title: 'Counter로 빈도 세기', desc: 'Counter(name) 한 줄로 {문자: 빈도} 완성!\n배열 만들고 ord() 변환하는 과정이 사라집니다.', code: 'from collections import Counter\n\nname = input().strip()\ncounter = Counter(name)  # 한 줄로 빈도 카운팅!' },

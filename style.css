@@ -2191,6 +2191,13 @@ button.problem-card:hover {
 }
 
 /* 난이도별 색상 — BOJ */
+.problem-card.bronze {
+    border-left: 4px solid #8d6e63;
+}
+.problem-card.bronze .problem-diff {
+    color: #8d6e63;
+    background: rgba(141, 110, 99, 0.1);
+}
 .problem-card.silver {
     border-left: 4px solid #5c6bc0;
 }

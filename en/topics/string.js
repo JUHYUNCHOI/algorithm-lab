@@ -461,6 +461,7 @@ const stringTopic = {
 
     // Problem-type mapping (top-level)
     problemMeta: {
+        'boj-10809': { type: 'Alphabet Find', color: '#00b894', vizMethod: '_renderVizAlphaFind' },
         'boj-1157':  { type: 'Frequency Analysis', color: 'var(--accent)', vizMethod: '_renderVizFrequency' },
         'lc-125':    { type: 'Palindrome Check', color: 'var(--green)', vizMethod: '_renderVizPalindrome' },
         'lc-49':     { type: 'Anagram Grouping', color: '#e17055', vizMethod: '_renderVizAnagram' },
@@ -469,10 +470,11 @@ const stringTopic = {
 
     // Learning stages (sequential roadmap)
     stages: [
-        { num: 1, title: 'Frequency Analysis', desc: 'Counting character occurrences', problemIds: ['boj-1157'] },
-        { num: 2, title: 'Palindrome Check', desc: 'Basic two-pointer pattern', problemIds: ['lc-125'] },
-        { num: 3, title: 'Anagram Grouping', desc: 'Sort key + hashmap', problemIds: ['lc-49'] },
-        { num: 4, title: 'String Reconstruction', desc: 'Rearranging with frequency counts', problemIds: ['boj-1213'] },
+        { num: 1, title: 'Alphabet Find', desc: 'String traversal basics', problemIds: ['boj-10809'] },
+        { num: 2, title: 'Frequency Analysis', desc: 'Counting character occurrences', problemIds: ['boj-1157'] },
+        { num: 3, title: 'Palindrome Check', desc: 'Basic two-pointer pattern', problemIds: ['lc-125'] },
+        { num: 4, title: 'Anagram Grouping', desc: 'Sort key + hashmap', problemIds: ['lc-49'] },
+        { num: 5, title: 'String Reconstruction', desc: 'Rearranging with frequency counts', problemIds: ['boj-1213'] },
     ],
 
     // Additional type notes
@@ -499,7 +501,7 @@ const stringTopic = {
 
         self._clearVizState();
 
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
         // Problem header (type badge + difficulty)
         const header = document.createElement('div');
@@ -566,7 +568,7 @@ const stringTopic = {
 
         const problemMeta = self.problemMeta;
 
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
         // --- Hero + concept demos + problem list container ---
         container.innerHTML = `
@@ -1623,6 +1625,173 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
         contentEl.appendChild(bonus);
     },
 
+    // ===== Alphabet Find visualization =====
+    _renderVizAlphaFind(container) {
+        const self = this;
+        container.innerHTML = `
+            <div id="alpha-find-section" style="padding:16px;background:var(--bg2);border-radius:12px;border:1px solid var(--border);border-left:4px solid #00b894;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:1rem;color:#00b894;">
+                        <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:#00b894;color:#fff;font-size:0.8rem;font-weight:700;">1</span>
+                        Alphabet Find
+                    </span>
+                    <span class="approach-meta-badge time">⏱ O(n)</span>
+                    <span class="approach-meta-badge space">💾 O(1)</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+                    <label style="font-weight:600;">String:
+                        <input type="text" id="alpha-find-input" value="baekjoon"
+                            style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;">
+                    </label>
+                    <button class="btn btn-primary" id="alpha-find-start" style="font-size:1rem;">🔍 Start Search</button>
+                </div>
+                <div id="alpha-find-viz-area" style="display:none;">
+                    ${self._createStepDesc('-alphafind')}
+                    <div class="sim-card" style="padding:24px;">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
+                            <div id="alpha-find-char-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        </div>
+                        <div style="margin-top:16px;width:100%;">
+                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Result Array (first position of a~z, -1 if absent)</div>
+                            <div id="alpha-find-result" style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;font-family:var(--font-mono);font-size:0.85rem;"></div>
+                        </div>
+                        <div style="min-width:140px;margin-top:12px;">
+                            <div style="font-weight:700;margin-bottom:6px;color:var(--text2);">Current Status</div>
+                            <div id="alpha-find-status" class="graph-queue-display" style="min-height:50px;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--text2);padding:12px;">—</div>
+                        </div>
+                        <div style="display:flex;gap:16px;padding:10px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-top:12px;flex-wrap:wrap;font-size:0.85rem;color:var(--text2);">
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--card);border:2px solid var(--border);vertical-align:middle;"></span> Waiting</span>
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:var(--yellow);border:2px solid var(--yellow);vertical-align:middle;"></span> Currently checking</span>
+                            <span><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:rgba(0,184,148,0.3);border:2px solid var(--green);vertical-align:middle;"></span> Processed</span>
+                        </div>
+                    </div>
+                    ${self._createStepControls('-alphafind')}
+                </div>
+            </div>
+        `;
+
+        var section = container.querySelector('#alpha-find-section');
+        var vizArea = section.querySelector('#alpha-find-viz-area');
+        var charBoxes = section.querySelector('#alpha-find-char-boxes');
+        var resultArea = section.querySelector('#alpha-find-result');
+        var statusEl = section.querySelector('#alpha-find-status');
+
+        function renderBoxes(str) {
+            charBoxes.innerHTML = '';
+            for (var i = 0; i < str.length; i++) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + str[i] + '</div>';
+                charBoxes.appendChild(box);
+            }
+        }
+
+        function renderResult(arr) {
+            resultArea.innerHTML = '';
+            for (var i = 0; i < 26; i++) {
+                var ch = String.fromCharCode(97 + i); // a~z
+                var cell = document.createElement('div');
+                cell.style.cssText = 'display:flex;flex-direction:column;align-items:center;padding:4px 5px;border-radius:6px;min-width:28px;' +
+                    (arr[i] >= 0 ? 'background:rgba(0,184,148,0.15);color:var(--green);font-weight:700;' : 'background:var(--bg);color:var(--text3);');
+                cell.innerHTML = '<span style="font-size:0.75rem;font-weight:600;">' + ch + '</span><span>' + arr[i] + '</span>';
+                cell.id = 'alpha-result-' + i;
+                resultArea.appendChild(cell);
+            }
+        }
+
+        function saveState() {
+            return {
+                boxes: Array.from(charBoxes.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
+                result: resultArea.innerHTML,
+                status: statusEl.innerHTML
+            };
+        }
+
+        function restoreState(s) {
+            charBoxes.querySelectorAll('.str-char-box').forEach(function(b, i) { b.className = s.boxes[i]; });
+            resultArea.innerHTML = s.result;
+            statusEl.innerHTML = s.status;
+        }
+
+        section.querySelector('#alpha-find-start').addEventListener('click', function() {
+            self._clearVizState();
+            var str = section.querySelector('#alpha-find-input').value.toLowerCase();
+            if (!str.length) return;
+
+            vizArea.style.display = '';
+            this.textContent = '🔄 Restart';
+
+            renderBoxes(str);
+            var result = new Array(26).fill(-1);
+            renderResult(result);
+            statusEl.innerHTML = 'Ready';
+
+            var steps = [];
+
+            // Check each character in order
+            for (let i = 0; i < str.length; i++) {
+                let idx = i, ch = str[i];
+                let alphaIdx = ch.charCodeAt(0) - 97;
+                let isFirst = result[alphaIdx] === -1;
+                if (isFirst) result[alphaIdx] = i; // pre-calculate
+
+                steps.push({
+                    description: isFirst
+                        ? 'str[' + idx + '] = \'' + ch + '\' → \'' + ch + '\'\'s first occurrence! Recording position ' + idx
+                        : 'str[' + idx + '] = \'' + ch + '\' → already appeared at position ' + result[alphaIdx] + ', skipping',
+                    _before: null,
+                    _isFirst: isFirst,
+                    _alphaIdx: alphaIdx,
+                    _idx: idx,
+                    _ch: ch,
+                    action: function() {
+                        this._before = saveState();
+                        // Update box states up to current
+                        for (var j = 0; j < str.length; j++) {
+                            var box = charBoxes.querySelector('[data-idx="' + j + '"]');
+                            if (!box) continue;
+                            box.className = j < this._idx ? 'str-char-box matched' : j === this._idx ? 'str-char-box comparing' : 'str-char-box';
+                        }
+                        // Highlight the alphabet in result array
+                        var cell = resultArea.querySelector('#alpha-result-' + this._alphaIdx);
+                        if (cell && this._isFirst) {
+                            cell.style.background = 'rgba(0,184,148,0.15)';
+                            cell.style.color = 'var(--green)';
+                            cell.style.fontWeight = '700';
+                            cell.querySelector('span:last-child').textContent = this._idx;
+                        }
+                        statusEl.innerHTML = this._isFirst
+                            ? '<span style="color:var(--green);">\'' + this._ch + '\' First occurrence! → result[' + this._alphaIdx + '] = ' + this._idx + '</span>'
+                            : '\'' + this._ch + '\' → Already recorded (skipping)';
+                    },
+                    undo: function() {
+                        restoreState(this._before);
+                    }
+                });
+            }
+
+            // Completion step
+            steps.push({
+                description: 'Done! Found the first occurrence position of all 26 alphabets 🎉',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    charBoxes.querySelectorAll('.str-char-box').forEach(function(b) { b.className = 'str-char-box matched'; });
+                    statusEl.innerHTML = '<span style="color:var(--green);font-size:1.05rem;">Done! Alphabets with -1 in the result array are not in the string.</span>';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            // Reset result for simulation
+            result = new Array(26).fill(-1);
+            renderResult(result);
+
+            self._initLocalStepController(section, steps, '-alphafind');
+            section.querySelector('#viz-next-alphafind').click();
+        });
+    },
+
     // ===== Frequency counting visualization =====
     _renderVizFrequency(container) {
         const self = this;
@@ -2558,6 +2727,125 @@ top = cnt.most_common(<span class="hljs-number">2</span>)
 
     // ===== Problem Data =====
     problems: [
+        {
+            id: 'boj-10809',
+            title: 'BOJ 10809 - 알파벳 찾기',
+            difficulty: 'bronze',
+            link: 'https://www.acmicpc.net/problem/10809',
+            simIntro: 'Watch how each character is checked one by one and the first occurrence position is recorded for each alphabet!',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>A word S consisting only of lowercase alphabets is given. For each alphabet, if it is included in the word, print the <strong>position of its first occurrence</strong>; if not, print <strong>-1</strong>.</p>
+
+                <h4>Input</h4>
+                <p>The first line contains a word S. The word length does not exceed 100 and consists only of lowercase alphabets.</p>
+
+                <h4>Output</h4>
+                <p>For each alphabet, print the first occurrence position of a, b, ... z separated by spaces.</p>
+                <p>If an alphabet is not in the word, print -1. The first character is at position 0, the second at position 1.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>baekjoon</pre></div>
+                    <div><strong>Output</strong><pre>1 0 -1 -1 2 -1 -1 -1 -1 4 3 -1 -1 7 5 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1</pre></div>
+                </div>
+                <p class="example-explain">b→0, a→1, e→2, k→3, j→4, o→5, n→7 first appear at these positions. Other alphabets are -1</p>
+                </div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>Word length is between 1 and 100</li>
+                    <li>Consists only of lowercase alphabets</li>
+                </ul>
+            `,
+            hints: [
+                {
+                    title: "Let's understand the problem",
+                    content: 'In "baekjoon", at which position does \'a\' <strong>first</strong> appear?<br>b→0, a→1, e→2… We need to find the <strong>first occurrence position</strong> of each of the 26 alphabets!<br>Alphabets not in the string get <code>-1</code>.'
+                },
+                {
+                    title: 'Create an array of size 26!',
+                    content: 'There are exactly <strong>26</strong> alphabets a~z, so create an array of size 26 filled with <code>-1</code>.<br><span class="lang-py">Python: <code>result = [-1] * 26</code></span><span class="lang-cpp">C++: <code>int result[26]; fill(result, result+26, -1);</code></span><br><br>Map a→slot 0, b→slot 1, … z→slot 25!'
+                },
+                {
+                    title: 'Converting characters to numbers',
+                    content: 'To convert an alphabet to an array index:<br><span class="lang-py">Python: <code>ord(\'a\') - ord(\'a\') = 0</code>, <code>ord(\'b\') - ord(\'a\') = 1</code></span><span class="lang-cpp">C++: <code>\'a\' - \'a\' = 0</code>, <code>\'b\' - \'a\' = 1</code> (char is already a number!)</span><br><br>This converts any alphabet to an index between 0~25.'
+                },
+                {
+                    title: 'Key: Record only the "first" occurrence',
+                    content: 'Traverse the string from left to right:<br>1. Calculate the index of the current character (<code>ch - \'a\'</code>)<br>2. Is <code>result[index]</code> equal to <code>-1</code>? → <strong>First occurrence!</strong> Record current position<br>3. Not <code>-1</code>? → Already recorded, <strong>skip</strong><br><br>This one condition ensures we only record the first occurrence!'
+                }
+            ],
+            solutions: [
+                {
+                    approach: 'Array Traversal',
+                    description: 'Initialize a size-26 array with -1, traverse the string and record only first occurrences',
+                    timeComplexity: 'O(n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `s = input()
+result = [-1] * 26  # a~z 26 slots, all start as -1
+
+for i in range(len(s)):
+    idx = ord(s[i]) - ord('a')  # alphabet → array index
+    if result[idx] == -1:        # record only first occurrence
+        result[idx] = i
+
+print(' '.join(map(str, result)))`,
+                        cpp: `#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+    int result[26];
+    fill(result, result + 26, -1);  // initialize all to -1
+
+    for (int i = 0; i < s.size(); i++) {
+        int idx = s[i] - 'a';      // alphabet → array index
+        if (result[idx] == -1)      // record only first occurrence
+            result[idx] = i;
+    }
+
+    for (int i = 0; i < 26; i++)
+        cout << result[i] << (i < 25 ? " " : "\\n");
+}`
+                    }
+                },
+                {
+                    approach: 'find Method',
+                    description: 'Use find() for each alphabet to directly get the first occurrence position',
+                    timeComplexity: 'O(26·n)',
+                    spaceComplexity: 'O(1)',
+                    templates: {
+                        python: `s = input()
+
+# Use find() for each alphabet — returns -1 if not found!
+result = [s.find(chr(i + ord('a'))) for i in range(26)]
+
+print(' '.join(map(str, result)))`,
+                        cpp: `#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    cin >> s;
+
+    for (int i = 0; i < 26; i++) {
+        char ch = 'a' + i;
+        // find() returns string::npos if not found
+        size_t pos = s.find(ch);
+        cout << (pos == string::npos ? -1 : (int)pos);
+        if (i < 25) cout << ' ';
+    }
+    cout << endl;
+}`
+                    }
+                }
+            ]
+        },
         {
             id: 'boj-1157',
             title: 'BOJ 1157 - Word Study',
@@ -3580,9 +3868,38 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
 
 (function assignCodeSteps() {
     const p = stringTopic.problems;
+    function findProb(id) { return p.find(function(x) { return x.id === id; }); }
+
+    // ── boj-10809 Array Traversal ──
+    findProb('boj-10809').solutions[0].codeSteps = {
+        python: [
+            { title: 'Read Input', desc: 'Read a word consisting of lowercase alphabets.', code: 's = input()' },
+            { title: 'Initialize Result Array', desc: 'Array for 26 alphabets (a~z) to store first positions.\nAll start as -1 → means "not yet found"!', code: 'result = [-1] * 26  # first position of each a~z' },
+            { title: 'Traverse + Record', desc: 'Key: Convert each character to index 0~25!\nord(\'a\') - ord(\'a\') = 0, ord(\'b\') - ord(\'a\') = 1, ...\nOnly record when -1 → stores "first occurrence" only.', code: 'for i in range(len(s)):\n    idx = ord(s[i]) - ord(\'a\')  # alphabet → 0~25 index\n    if result[idx] == -1:        # only if first occurrence\n        result[idx] = i          # record current position' },
+            { title: 'Output', desc: 'Print 26 values separated by spaces.\nmap(str, result) → converts number list to strings.', code: 'print(\' \'.join(map(str, result)))' }
+        ],
+        cpp: [
+            { title: 'Input + Initialize', desc: 'Read string and fill size-26 array with -1.\nfill() initializes the entire array at once!', code: '#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int result[26];\n    fill(result, result + 26, -1);  // initialize all to -1' },
+            { title: 'Traverse + Record', desc: 'In C++, char IS a number!\ns[i] - \'a\' → converts to 0~25 index.\nOnly record when -1 → stores first occurrence only.', code: '    for (int i = 0; i < s.size(); i++) {\n        int idx = s[i] - \'a\';      // alphabet → 0~25 index\n        if (result[idx] == -1)      // only if first occurrence\n            result[idx] = i;        // record current position\n    }' },
+            { title: 'Output', desc: 'Print 26 values separated by spaces.', code: '    for (int i = 0; i < 26; i++)\n        cout << result[i] << (i < 25 ? " " : "\\n");\n}' }
+        ]
+    };
+
+    // ── boj-10809 find Method ──
+    findProb('boj-10809').solutions[1].codeSteps = {
+        python: [
+            { title: 'What is find()?', desc: 'Python\'s str.find(ch) returns the\nfirst occurrence position of ch in the string.\nReturns -1 if not found — exactly what we need!', code: 's = input()' },
+            { title: 'find() for each a~z', desc: 'List comprehension processes all 26 at once!\nchr(i + ord(\'a\')) → 0→\'a\', 1→\'b\', ..., 25→\'z\'', code: '# Use find() to get first position of each alphabet\nresult = [s.find(chr(i + ord(\'a\'))) for i in range(26)]' },
+            { title: 'Output', desc: 'Print result. find() returns -1 automatically, no extra handling needed!', code: 'print(\' \'.join(map(str, result)))' }
+        ],
+        cpp: [
+            { title: 'What is string::find()?', desc: 'C++\'s string::find(ch) returns the\nfirst occurrence position of a character.\nReturns string::npos (very large number) if not found.', code: '#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;' },
+            { title: 'find() for each a~z', desc: 'Call find() for each alphabet.\nConvert npos to -1 for output.', code: '    for (int i = 0; i < 26; i++) {\n        char ch = \'a\' + i;\n        size_t pos = s.find(ch);\n        cout << (pos == string::npos ? -1 : (int)pos);\n        if (i < 25) cout << \' \';\n    }\n    cout << endl;\n}' }
+        ]
+    };
 
     // ── boj-1157 array counting ──
-    p[0].solutions[0].codeSteps = {
+    findProb('boj-1157').solutions[0].codeSteps = {
         python: [
             { title: 'Input + Uppercase Conversion', desc: 'Need case-insensitive counting, so unify with upper().\n"Mississipi" → "MISSISSIPI"', code: 'word = input().upper()  # unify case' },
             { title: 'Frequency Array Counting', desc: 'Key: Count letter frequencies with a size-26 array.\nord(c) - ord(\'A\') → A=0, B=1, ..., Z=25 index mapping.', code: 'cnt = [0] * 26  # frequency of A~Z\nfor c in word:\n    cnt[ord(c) - ord(\'A\')] += 1  # increment for each letter' },
@@ -3598,7 +3915,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── boj-1157 dictionary ──
-    p[0].solutions[1].codeSteps = {
+    findProb('boj-1157').solutions[1].codeSteps = {
         python: [
             { title: 'Input + Uppercase Conversion', desc: 'Unify with upper() for case-insensitive counting.', code: 'word = input().upper()  # unify case' },
             { title: 'Dictionary Counting', desc: 'Count frequencies with a dictionary instead of an array.\nInitialize to 1 if key missing, otherwise +1.\n→ Can count any character, more versatile!', code: 'freq = {}  # {letter: count}\nfor c in word:\n    if c in freq:\n        freq[c] += 1   # already exists → +1\n    else:\n        freq[c] = 1     # first seen → start at 1' },
@@ -3614,7 +3931,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── boj-1157 Counter ──
-    p[0].solutions[2].codeSteps = {
+    findProb('boj-1157').solutions[2].codeSteps = {
         python: [
             { title: 'What is Counter?', desc: 'Python\'s dedicated frequency counting class!\nMuch more concise than building a dictionary manually.', explanation: _counterExplainHTML, code: null },
             { title: 'Count with Counter', desc: 'Counter(word) builds a frequency dict in one line!\nmost_common() → returns a list sorted by frequency descending.', code: 'from collections import Counter\n\nword = input().upper()\ncounter = Counter(word)  # one-line frequency counting!\ntop = counter.most_common()  # [(char, freq)] descending' },
@@ -3628,7 +3945,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── lc-125 reverse & compare ──
-    p[1].solutions[0].codeSteps = {
+    findProb('lc-125').solutions[0].codeSteps = {
         python: [
             { title: 'Function Definition', desc: 'A function to determine if a string is a palindrome.', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:' },
             { title: 'Extract Alphanumerics', desc: 'Key: Ignore spaces and special characters, keep only alphanumerics!\nisalnum() → checks if character is a letter or digit.\nlower() → for case-insensitive comparison.', code: '        cleaned = \'\'\n        for c in s:\n            if c.isalnum():        # alphanumeric only\n                cleaned += c.lower()  # normalize to lowercase' },
@@ -3642,7 +3959,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── lc-125 two pointers ──
-    p[1].solutions[1].codeSteps = {
+    findProb('lc-125').solutions[1].codeSteps = {
         python: [
             { title: 'Initialize Pointers', desc: 'Key: Two pointers starting from both ends!\nNo new string created → O(1) space.', code: 'class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1  # start from both ends' },
             { title: 'Compare from Both Sides', desc: 'Skip non-alphanumeric characters and compare.\nIf different → immediately False! Direct check without full cleaning.\nlower() ignores case.', code: '        while left < right:\n            while left < right and not s[left].isalnum():  # skip non-alnum\n                left += 1\n            while left < right and not s[right].isalnum(): # skip non-alnum\n                right -= 1\n            if s[left].lower() != s[right].lower():  # different → not palindrome!\n                return False\n            left += 1\n            right -= 1' },
@@ -3656,7 +3973,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── lc-49 sort key ──
-    p[2].solutions[0].codeSteps = {
+    findProb('lc-49').solutions[0].codeSteps = {
         python: [
             { title: 'Prepare Hashmap', desc: 'Key idea: Anagrams become the same string when sorted!\n"eat" → "aet", "tea" → "aet" → same group!\n→ Use sorted result as key for automatic grouping.', code: 'class Solution:\n    def groupAnagrams(self, strs):\n        groups = {}  # {sorted key: [original words]}' },
             { title: 'Group by Sort Key', desc: 'Sort each word with sorted() → use as key.\nAnagrams share the same key!\nO(n × k log k) — n words, average length k.', code: '        for s in strs:\n            key = \'\'.join(sorted(s))  # "eat" → "aet"\n            if key not in groups:\n                groups[key] = []\n            groups[key].append(s)     # collect under same key' },
@@ -3670,7 +3987,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── boj-1213 array counting ──
-    p[3].solutions[0].codeSteps = {
+    findProb('boj-1213').solutions[0].codeSteps = {
         python: [
             { title: 'Input + Count Frequencies', desc: 'Count each letter\'s occurrences with a size-26 array.\nord(c) - ord(\'A\') → A=0, B=1, ..., Z=25', code: 'import sys\ninput = sys.stdin.readline\n\nname = input().strip()\ncnt = [0] * 26  # A~Z frequency\nfor c in name:\n    cnt[ord(c) - ord(\'A\')] += 1' },
             { title: 'Odd Count Check', desc: 'Key: In a palindrome, at most 1 character can have odd frequency!\n(Only the middle position can be odd)\nIf 2+ are odd → impossible.', code: 'odd_count = sum(1 for x in cnt if x % 2 != 0)\nif odd_count > 1:  # 2+ odd frequency chars → impossible\n    print("I\'m Sorry Hansoo")' },
@@ -3686,7 +4003,7 @@ const _counterExplainHTML = '<h4>What is Counter?</h4>' +
     };
 
     // ── boj-1213 using Counter ──
-    p[3].solutions[1].codeSteps = {
+    findProb('boj-1213').solutions[1].codeSteps = {
         python: [
             { title: 'What is Counter?', desc: 'Python\'s dedicated frequency counting class!\nUsing Counter instead of arrays is more concise.', explanation: _counterExplainHTML, code: null },
             { title: 'Count with Counter', desc: 'Counter(name) builds {letter: freq} in one line!\nNo more array creation and ord() conversion.', code: 'from collections import Counter\n\nname = input().strip()\ncounter = Counter(name)  # one-line frequency counting!' },
