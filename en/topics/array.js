@@ -26,20 +26,6 @@ const arrayTopic = {
 
     // ===== Problem tab definitions =====
     getProblemTabs(problemId) {
-        const prob = this.problems.find(p => p.id === problemId);
-        // New structure: approach-based tabs when solutions have hints
-        if (prob && prob.solutions && prob.solutions.length > 0 && prob.solutions[0].hints) {
-            const icons = ['🔨', '⚡', '🚀'];
-            const tabs = [{ id: 'problem', label: 'Problem', icon: '📋' }];
-            prob.solutions.forEach((sol, i) => {
-                tabs.push({ id: 'approach-' + i, label: sol.approach, icon: icons[i] || '📌' });
-            });
-            if (prob.library) {
-                tabs.push({ id: 'library', label: 'Learn More', icon: '📦' });
-            }
-            return tabs;
-        }
-        // Legacy: original 4-tab structure
         return [
             { id: 'problem', label: 'Problem', icon: '📋' },
             { id: 'think', label: 'Approach', icon: '💡' },
@@ -86,36 +72,24 @@ const arrayTopic = {
         if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
 
-        // Approach-based tabs or legacy tabs
-        if (tabId.startsWith('approach-')) {
-            const idx = parseInt(tabId.split('-')[1]);
-            self._renderApproachContent(contentDiv, prob, idx);
-        } else if (tabId === 'library') {
-            self._renderLibraryTab(contentDiv, prob);
-        } else {
-            switch (tabId) {
-                case 'problem': self._renderProblemTab(contentDiv, prob); break;
-                case 'think':   self._renderThinkTab(contentDiv, prob); break;
-                case 'sim':     if (meta.vizMethod) self[meta.vizMethod](contentDiv); break;
-                case 'code':    self._renderCodeTab(contentDiv, prob); break;
-            }
+        switch (tabId) {
+            case 'problem': self._renderProblemTab(contentDiv, prob); break;
+            case 'think':   self._renderThinkTab(contentDiv, prob); break;
+            case 'sim':     if (meta.vizMethod) self[meta.vizMethod](contentDiv); break;
+            case 'code':    self._renderCodeTab(contentDiv, prob); break;
         }
 
         // Next tab navigation button
-        const allTabs = self.getProblemTabs(problemId);
-        const curIdx = allTabs.findIndex(t => t.id === tabId);
-        if (curIdx >= 0 && curIdx < allTabs.length - 1) {
-            const nextTab = allTabs[curIdx + 1];
-            // CTA text
-            let ctaText = 'Continue to next step';
-            if (tabId === 'problem') ctaText = 'Understood the problem?';
-            else if (tabId.startsWith('approach-')) ctaText = 'Got this approach?';
-            else if (tabId === 'think') ctaText = 'Reviewed all hints?';
-            else if (tabId === 'sim') ctaText = 'Understand how it works?';
-            const nextDiv = document.createElement('div');
+        var tabOrder = ['problem', 'think', 'sim', 'code'];
+        var tabLabels = { problem: 'Problem', think: 'Approach', sim: 'Simulation', code: 'Code' };
+        var ctaTexts = { problem: 'Understood the problem?', think: 'Reviewed all hints?', sim: 'Understand how it works?' };
+        var curIdx = tabOrder.indexOf(tabId);
+        if (curIdx >= 0 && curIdx < tabOrder.length - 1) {
+            var nextId = tabOrder[curIdx + 1];
+            var nextDiv = document.createElement('div');
             nextDiv.className = 'flow-next';
-            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaText + ' → ' + nextTab.label + ' →</button>';
-            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextTab.id); });
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaTexts[tabId] + ' → ' + tabLabels[nextId] + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextId); });
             container.appendChild(nextDiv);
         }
     },
@@ -228,322 +202,6 @@ const arrayTopic = {
         });
         contentEl.appendChild(wrapper);
     },
-
-    // ===== Unified approach renderer (hints + simulation + code + limitation/comparison) =====
-    _renderApproachContent(contentEl, prob, approachIdx) {
-        const sol = prob.solutions[approachIdx];
-        const self = this;
-
-        // Approach description + complexity badges
-        const descDiv = document.createElement('div');
-        descDiv.className = 'approach-desc-header';
-        descDiv.innerHTML =
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;flex-wrap:wrap;">' +
-            '<span class="approach-meta-badge time">⏱ ' + sol.timeComplexity + '</span>' +
-            '<span class="approach-meta-badge space">💾 ' + sol.spaceComplexity + '</span>' +
-            '</div>' +
-            '<p style="color:var(--text2);font-size:0.95rem;line-height:1.6;margin:0;">' + sol.description + '</p>';
-        contentEl.appendChild(descDiv);
-
-        // 1) 💡 Think About It
-        if (sol.hints && sol.hints.length > 0) {
-            var section1 = document.createElement('div');
-            section1.className = 'approach-flow-section';
-            section1.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">💡</span>Think About It</div>';
-            self._renderHints(section1, sol.hints);
-            contentEl.appendChild(section1);
-        }
-
-        // 2) 📊 Simulation
-        if (sol.vizMethod) {
-            var section2 = document.createElement('div');
-            section2.className = 'approach-flow-section';
-            section2.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">📊</span>Simulation</div>';
-            if (sol.simIntro) {
-                var intro = document.createElement('p');
-                intro.style.cssText = 'color:var(--text2);font-size:0.9rem;margin:0 0 1rem;';
-                intro.textContent = sol.simIntro;
-                section2.appendChild(intro);
-            }
-            var simDiv = document.createElement('div');
-            section2.appendChild(simDiv);
-            self[sol.vizMethod](simDiv);
-            contentEl.appendChild(section2);
-        }
-
-        // 3) 💻 Code
-        var section3 = document.createElement('div');
-        section3.className = 'approach-flow-section';
-        section3.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">💻</span>Code</div>';
-        self._renderSingleSolutionCode(section3, sol, prob);
-        contentEl.appendChild(section3);
-
-        // 4) ⚠️ Limitation or ✅ Comparison
-        if (sol.limitation) {
-            var limitDiv = document.createElement('div');
-            limitDiv.className = 'approach-callout limitation';
-            limitDiv.innerHTML = '<div class="approach-callout-icon">⚠️</div><div class="approach-callout-body"><div class="approach-callout-title">Limitation of this approach</div>' + sol.limitation + '</div>';
-            contentEl.appendChild(limitDiv);
-        }
-        if (sol.comparison) {
-            var compDiv = document.createElement('div');
-            compDiv.className = 'approach-callout comparison';
-            compDiv.innerHTML = '<div class="approach-callout-icon">✅</div><div class="approach-callout-body"><div class="approach-callout-title">Improvement</div>' + sol.comparison + '</div>';
-            contentEl.appendChild(compDiv);
-        }
-    },
-
-    // ===== Hints renderer (renders hint arrays per approach) =====
-    _renderHints(contentEl, hints) {
-        var guide = document.createElement('div');
-        guide.className = 'hint-steps-guide';
-        guide.textContent = 'Click each step to reveal hints';
-        contentEl.appendChild(guide);
-
-        var hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hint-steps';
-        var openedState = {};
-
-        hints.forEach(function(hint, idx) {
-            var step = document.createElement('div');
-            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
-            step.innerHTML =
-                '<div class="hint-step-header">' +
-                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
-                '<span class="hint-step-title">' + hint.title + '</span>' +
-                '<span class="hint-step-toggle">▾</span></div>' +
-                '<div class="hint-step-body">' + hint.content + '</div>';
-            if (hint.viz) {
-                var vizArea = document.createElement('div');
-                vizArea.className = 'hint-viz-area';
-                step.querySelector('.hint-step-body').appendChild(vizArea);
-            }
-            step.querySelector('.hint-step-header').addEventListener('click', function() {
-                if (step.classList.contains('locked')) return;
-                var wasOpened = step.classList.contains('opened');
-                step.classList.toggle('opened');
-                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('opened') ? '▴' : '▾';
-                if (!openedState[idx]) {
-                    openedState[idx] = true;
-                    if (idx + 1 < hints.length) {
-                        var nextStep = hintsDiv.children[idx + 1];
-                        if (nextStep) nextStep.classList.remove('locked');
-                    }
-                }
-                if (hint.viz) {
-                    var va = step.querySelector('.hint-viz-area');
-                    if (!wasOpened) {
-                        if (step._vizCtrl) { step._vizCtrl.destroy(); }
-                        va.innerHTML = '';
-                        step._vizCtrl = hint.viz(va);
-                    } else {
-                        if (step._vizCtrl) { step._vizCtrl.stop(); }
-                    }
-                }
-            });
-            hintsDiv.appendChild(step);
-        });
-        contentEl.appendChild(hintsDiv);
-
-        if (window.hljs) {
-            hintsDiv.querySelectorAll('pre code').forEach(function(codeEl) {
-                hljs.highlightElement(codeEl);
-                var lines = codeEl.innerHTML.split('\n');
-                codeEl.innerHTML = lines.map(function(line, i) {
-                    return '<div class="code-line" style="--i:' + i + '">' + (line || '&nbsp;') + '</div>';
-                }).join('');
-            });
-        }
-    },
-
-    // ===== Single approach code renderer =====
-    _renderSingleSolutionCode(contentEl, sol, prob) {
-        var isLC = prob.link.includes('leetcode');
-        var wrapper = document.createElement('div');
-        var langs = Object.keys(sol.templates);
-        var langNames = { python: 'Python', cpp: 'C++' };
-        var currentLang = langs[0] || 'python';
-        var currentStep = -1;
-
-        // Control bar: language selector + step controls (top-right)
-        var controls = document.createElement('div');
-        controls.style.cssText = 'display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;';
-        var stepBtnHTML = '';
-        if (sol.codeSteps) {
-            stepBtnHTML =
-                '<div style="display:flex;gap:6px;align-items:center;margin-left:auto;">' +
-                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← Prev</button>' +
-                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">Before Start</span>' +
-                '<button class="btn btn-primary code-step-btn cs-next pulse-hint" style="font-size:0.8rem;padding:4px 10px;">Start →</button></div>';
-        }
-        controls.innerHTML =
-            '<select class="lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--bg2);color:var(--text);font-family:inherit;">' +
-            langs.map(function(l) { return '<option value="' + l + '">' + (langNames[l] || l) + '</option>'; }).join('') +
-            '</select>' + stepBtnHTML;
-        wrapper.appendChild(controls);
-        var select = controls.querySelector('.lang-select');
-
-        var stepDesc;
-        var topPrev, topNext, topCounter, botPrev, botNext, botCounter;
-        if (sol.codeSteps) {
-            topPrev = controls.querySelector('.cs-prev');
-            topNext = controls.querySelector('.cs-next');
-            topCounter = controls.querySelector('.code-step-counter');
-
-            stepDesc = document.createElement('div');
-            stepDesc.className = 'code-step-desc';
-            stepDesc.textContent = '▶ Click Next to walk through the code step by step';
-            wrapper.appendChild(stepDesc);
-        }
-
-        // Code block (macOS editor style)
-        var codeBlock = document.createElement('div');
-        codeBlock.className = 'code-block';
-        codeBlock.innerHTML =
-            '<div class="code-block-header">' +
-            '<div class="code-block-dots"><span></span><span></span><span></span></div>' +
-            '<span class="code-block-title">solution.py</span>' +
-            '</div>' +
-            '<pre><code class="language-python"></code></pre>';
-        wrapper.appendChild(codeBlock);
-
-        // Step controls — bottom-right (sticky, same small size)
-        if (sol.codeSteps) {
-            var botCtrl = document.createElement('div');
-            botCtrl.style.cssText = 'display:flex;gap:6px;align-items:center;justify-content:flex-end;position:sticky;bottom:12px;z-index:100;margin-top:12px;padding:8px 0;';
-            botCtrl.innerHTML =
-                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← Prev</button>' +
-                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">Before Start</span>' +
-                '<button class="btn btn-primary code-step-btn cs-next" style="font-size:0.8rem;padding:4px 10px;">Next →</button>';
-            wrapper.appendChild(botCtrl);
-
-            botPrev = botCtrl.querySelector('.cs-prev');
-            botNext = botCtrl.querySelector('.cs-next');
-            botCounter = botCtrl.querySelector('.code-step-counter');
-        }
-        var codeEl = codeBlock.querySelector('code');
-        var codeTitle = codeBlock.querySelector('.code-block-title');
-
-        function langClass(l) { return l === 'cpp' ? 'cpp' : l; }
-        function getSteps() { return sol.codeSteps ? (sol.codeSteps[currentLang] || []) : []; }
-
-        function highlightNewLines(codeElm, newLineNums) {
-            if (!newLineNums || !newLineNums.length) return;
-            var html = codeElm.innerHTML;
-            var lines = html.split('\n');
-            codeElm.innerHTML = lines.map(function(line, i) {
-                return newLineNums.indexOf(i + 1) !== -1 ? '<mark class="code-line-new">' + line + '</mark>' : line;
-            }).join('\n');
-        }
-
-        function render() {
-            var titleMap = { python: 'solution.py', cpp: 'solution.cpp' };
-            codeEl.className = 'language-' + langClass(currentLang);
-            codeTitle.textContent = titleMap[currentLang] || 'solution';
-
-            var steps = getSteps();
-
-            if (steps.length > 0 && currentStep >= 0 && currentStep < steps.length) {
-                var step = steps[currentStep];
-                // Build accumulated code
-                var fragments = steps.slice(0, currentStep + 1).filter(function(s) { return s.code; }).map(function(s) { return s.code; });
-                var accumulated = fragments.join('\n\n');
-                codeEl.textContent = accumulated;
-                codeEl.removeAttribute('data-highlighted');
-                if (window.hljs) hljs.highlightElement(codeEl);
-                // Highlight new lines
-                if (step.code) {
-                    var prevFrags = steps.slice(0, currentStep).filter(function(s) { return s.code; }).map(function(s) { return s.code; });
-                    var prevAcc = prevFrags.join('\n\n');
-                    var prevCount = prevAcc ? prevAcc.split('\n').length : 0;
-                    var totalCount = accumulated.split('\n').length;
-                    var startNew = prevCount > 0 ? prevCount + 2 : 1;
-                    var newLines = [];
-                    for (var ln = startNew; ln <= totalCount; ln++) newLines.push(ln);
-                    highlightNewLines(codeEl, newLines);
-                }
-                if (stepDesc) {
-                    stepDesc.innerHTML = '<span class="step-desc-title">' + step.title + '</span><span class="step-desc-body">' + step.desc.replace(/\n/g, '<br>') + '</span>';
-                    stepDesc.style.display = 'block';
-                }
-            } else {
-                codeEl.textContent = sol.templates[currentLang] || '';
-                codeEl.removeAttribute('data-highlighted');
-                if (window.hljs) hljs.highlightElement(codeEl);
-                if (stepDesc) {
-                    if (currentStep < 0 && steps.length > 0) {
-                        stepDesc.textContent = '▶ Click Next to walk through the code step by step';
-                    } else if (steps.length === 0) {
-                        stepDesc.style.display = 'none';
-                    }
-                }
-            }
-
-            // Step control state update (sync top/bottom)
-            if (sol.codeSteps) {
-                [
-                    [topPrev, topNext, topCounter],
-                    [botPrev, botNext, botCounter]
-                ].forEach(function(trio) {
-                    if (!trio[0]) return;
-                    trio[0].disabled = currentStep < 0;
-                    trio[1].disabled = currentStep >= steps.length - 1;
-                    if (currentStep < 0) {
-                        trio[2].textContent = 'Before Start';
-                        trio[1].textContent = 'Start →';
-                    } else {
-                        trio[2].textContent = 'Step ' + (currentStep + 1) + '/' + steps.length;
-                        trio[1].textContent = 'Next →';
-                    }
-                });
-            }
-        }
-
-        // Events
-        select.addEventListener('change', function() {
-            currentLang = this.value;
-            currentStep = -1;
-            render();
-        });
-        if (sol.codeSteps) {
-            function doPrev() { if (currentStep > -1) { currentStep--; render(); } }
-            function doNext() {
-                topNext.classList.remove('pulse-hint');
-                botNext.classList.remove('pulse-hint');
-                var steps = getSteps();
-                if (currentStep < steps.length - 1) { currentStep++; render(); }
-            }
-            topPrev.addEventListener('click', doPrev);
-            topNext.addEventListener('click', doNext);
-            botPrev.addEventListener('click', doPrev);
-            botNext.addEventListener('click', doNext);
-        }
-
-        render();
-        contentEl.appendChild(wrapper);
-    },
-
-    // ===== Library/Module tab =====
-    _renderLibraryTab(contentEl, prob) {
-        if (!prob.library) {
-            contentEl.innerHTML = '<p>No library information available for this problem yet.</p>';
-            return;
-        }
-        var lib = prob.library;
-        var section = document.createElement('div');
-        section.className = 'approach-flow-section';
-        section.innerHTML =
-            '<div class="approach-flow-title"><span class="approach-flow-icon">📦</span>' + lib.title + '</div>' +
-            '<p style="color:var(--text2);line-height:1.7;margin-bottom:1rem;">' + lib.description + '</p>' +
-            '<div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span></span><span></span><span></span></div><span class="code-block-title">module.py</span></div>' +
-            '<pre><code class="language-python">' + lib.code + '</code></pre></div>' +
-            (lib.note ? '<div class="approach-callout comparison" style="margin-top:1rem;"><div class="approach-callout-icon">💡</div><div class="approach-callout-body">' + lib.note + '</div></div>' : '');
-        contentEl.appendChild(section);
-        contentEl.querySelectorAll('pre code').forEach(function(codeEl) {
-            if (window.hljs) hljs.highlightElement(codeEl);
-        });
-    },
-
     // ===== Concept Tab =====
     renderConcept(container) {
         container.innerHTML = `
@@ -2600,6 +2258,12 @@ int main() {
             `,
             inputDefault: 0,
             solve() { return '7 35'; },
+            hints: [
+                { title: 'Understanding the problem', content: '<div class="hint-key">💡 Find the smallest and largest among N integers!</div><p>Example: [20, 10, 35, 30, 7] → Min <strong>7</strong>, Max <strong>35</strong></p><p>Can we find both values in a single pass through the array?</p>' },
+                { title: 'How to set initial values?', content: '<div class="hint-key">🤔 We need a baseline to compare against!</div><p>Set the first element as the <strong>initial min and max</strong>.</p><p>Since we haven\'t seen any other numbers yet, the first number is both the current minimum and maximum.</p><span class="lang-py"><pre><code class="language-python">min_val = nums[0]  # initial min\nmax_val = nums[0]  # initial max</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">int minVal = nums[0]; // initial min\nint maxVal = nums[0]; // initial max</code></pre></span>' },
+                { title: 'Traverse and compare!', content: '<div class="hint-key">🔄 Compare each element from the second one onwards</div><p>For each element, check two things:</p><ul><li>Is it <strong>smaller</strong> than current min? → Update min</li><li>Is it <strong>larger</strong> than current max? → Update max</li></ul><p>This way we solve it in <strong>one pass</strong> — O(n)!</p>' },
+                { title: 'There\'s an even simpler way!', content: '<div class="hint-key">💡 Most languages have built-in min/max functions!</div><span class="lang-py"><p>Python: <code>min()</code> and <code>max()</code> — pass a list and get the result instantly.</p></span><span class="lang-cpp"><p>C++: <code>*min_element()</code> and <code>*max_element()</code> — found in the <code>&lt;algorithm&gt;</code> header.</p></span><p>Built-in functions also traverse the array internally, so time complexity is the same <strong>O(n)</strong>, but the code is much shorter and more readable!</p>' }
+            ],
             templates: {
                 python: `import sys
 input = sys.stdin.readline
@@ -2738,6 +2402,216 @@ int main() {
             `,
             inputDefault: 0,
             solve() { return '[0, 1]'; },
+            hints: [
+                { title: 'First thought: Nested loops', content: '<div class="hint-key">💡 Simplest approach: Check every pair!</div><p>Compare all two-number combinations in the array one by one.</p><span class="lang-py"><pre><code class="language-python">for i in range(len(nums)):\n    for j in range(i+1, len(nums)):\n        if nums[i] + nums[j] == target:\n            return [i, j]</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">for (int i = 0; i < nums.size(); i++)\n    for (int j = i+1; j < nums.size(); j++)\n        if (nums[i] + nums[j] == target)\n            return {i, j};</code></pre></span>' },
+                {
+                    title: 'Try it — how many comparisons does brute force take?',
+                    content: '<div class="hint-key">🔍 Let\'s try Brute Force!</div><div class="hint-sub">Tap to compare each pair one by one</div>',
+                    viz: function(container) {
+                        var nums = [1, 3, 4, 9, 2, 7], target = 9;
+                        container.setAttribute('data-clickable', '');
+                        container.innerHTML =
+                            '<div class="hint-viz-label">nums = [1, 3, 4, 9, 2, 7], target = 9</div>' +
+                            '<div class="hint-viz-cells"></div>' +
+                            '<div class="hint-viz-msg"></div>' +
+                            '<div class="hint-viz-tap">👆 Tap for next comparison</div>' +
+                            '<div class="hint-viz-replay" style="display:none"><button>▶ Restart</button></div>';
+                        var cellsEl = container.querySelector('.hint-viz-cells');
+                        var msgEl = container.querySelector('.hint-viz-msg');
+                        var tapEl = container.querySelector('.hint-viz-tap');
+                        var replayEl = container.querySelector('.hint-viz-replay');
+                        nums.forEach(function(v, i) {
+                            var cell = document.createElement('div');
+                            cell.className = 'hint-viz-cell';
+                            cell.dataset.idx = i;
+                            cell.innerHTML = '<div class="viz-idx">' + i + '</div><div class="viz-val">' + v + '</div>';
+                            cellsEl.appendChild(cell);
+                        });
+                        function getCell(i) { return cellsEl.querySelector('[data-idx="' + i + '"]'); }
+                        function clearCells() {
+                            cellsEl.querySelectorAll('.hint-viz-cell').forEach(function(c) { c.className = 'hint-viz-cell'; });
+                        }
+                        var pairs = [];
+                        for (var i = 0; i < nums.length; i++) {
+                            for (var j = i + 1; j < nums.length; j++) {
+                                pairs.push([i, j]);
+                                if (nums[i] + nums[j] === target) { i = nums.length; break; }
+                            }
+                        }
+                        var si = 0, done = false, timer = null;
+                        function advance() {
+                            if (done) return;
+                            if (si >= pairs.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; return; }
+                            var pi = pairs[si][0], pj = pairs[si][1];
+                            var sum = nums[pi] + nums[pj];
+                            var isMatch = sum === target;
+                            var c = si + 1;
+                            clearCells();
+                            getCell(pi).classList.add('comparing');
+                            getCell(pj).classList.add('comparing');
+                            msgEl.innerHTML = '<span style="color:var(--text3)">#' + c + '</span> i=' + pi + ', j=' + pj + ': <strong>' + nums[pi] + ' + ' + nums[pj] + ' = ' + sum + '</strong>';
+                            clearTimeout(timer);
+                            timer = setTimeout(function() {
+                                if (isMatch) {
+                                    getCell(pi).classList.remove('comparing'); getCell(pj).classList.remove('comparing');
+                                    getCell(pi).classList.add('matched'); getCell(pj).classList.add('matched');
+                                    msgEl.innerHTML = '<span class="viz-result">✅ Found! [' + pi + ', ' + pj + '] — ' + c + ' comparisons</span>';
+                                    done = true; tapEl.style.display = 'none'; replayEl.style.display = '';
+                                } else {
+                                    getCell(pi).classList.remove('comparing'); getCell(pj).classList.remove('comparing');
+                                    getCell(pi).classList.add('mismatch'); getCell(pj).classList.add('mismatch');
+                                    msgEl.innerHTML += ' ❌';
+                                }
+                            }, 400);
+                            si++;
+                        }
+                        function reset() {
+                            clearTimeout(timer); si = 0; done = false;
+                            clearCells(); msgEl.innerHTML = '';
+                            tapEl.style.display = ''; replayEl.style.display = 'none';
+                        }
+                        container.addEventListener('click', function(e) {
+                            if (e.target.closest('.hint-viz-replay')) return;
+                            advance();
+                        });
+                        replayEl.querySelector('button').addEventListener('click', function() { reset(); });
+                        return {
+                            stop: function() { clearTimeout(timer); },
+                            reset: function() { reset(); },
+                            play: function() {},
+                            destroy: function() { clearTimeout(timer); }
+                        };
+                    }
+                },
+                { title: 'Problem: Too slow!', content: '<p>With n = <strong>10,000</strong>, that\'s about <strong>50 million</strong> comparisons! 😱</p><p>Scanning all remaining numbers for each element leads to time limit exceeded.</p><div class="hint-key">💡 "What if we could remember the numbers we\'ve already seen?"</div><p>Key insight: for each number, calculate <strong>target - num = complement</strong>,<br>and check if the complement exists in a <strong>hash map — O(1) lookup</strong>!</p>' },
+                {
+                    title: 'Hash map does it in one pass!',
+                    content: '<div class="hint-key">✨ Find the "complement" with a hash map</div><div class="hint-sub">For each number, instantly check if its complement was seen before!<br>Brute force: 15 comparisons vs hash map: how many? Tap to compare!</div>',
+                    viz: function(container) {
+                        var nums = [1, 3, 4, 9, 2, 7], target = 9;
+                        container.setAttribute('data-clickable', '');
+                        container.innerHTML =
+                            '<div class="hint-viz-label">nums = [1, 3, 4, 9, 2, 7], target = 9</div>' +
+                            '<div class="hint-viz-split">' +
+                            '  <div><div class="hint-viz-label" style="margin-bottom:4px">Array</div><div class="hint-viz-cells"></div></div>' +
+                            '  <div><div class="hint-viz-label" style="margin-bottom:4px">seen { }</div><div class="hint-viz-hashmap"></div></div>' +
+                            '</div>' +
+                            '<div class="hint-viz-msg"></div>' +
+                            '<div class="hint-viz-tap">👆 Tap for next step</div>' +
+                            '<div class="hint-viz-replay" style="display:none"><button>▶ Restart</button></div>';
+                        var cellsEl = container.querySelector('.hint-viz-cells');
+                        var hmEl = container.querySelector('.hint-viz-hashmap');
+                        var msgEl = container.querySelector('.hint-viz-msg');
+                        var tapEl = container.querySelector('.hint-viz-tap');
+                        var replayEl = container.querySelector('.hint-viz-replay');
+                        nums.forEach(function(v, i) {
+                            var cell = document.createElement('div');
+                            cell.className = 'hint-viz-cell';
+                            cell.dataset.idx = i;
+                            cell.innerHTML = '<div class="viz-idx">' + i + '</div><div class="viz-val">' + v + '</div>';
+                            cellsEl.appendChild(cell);
+                        });
+                        function getCell(i) { return cellsEl.querySelector('[data-idx="' + i + '"]'); }
+                        function clearCells() {
+                            cellsEl.querySelectorAll('.hint-viz-cell').forEach(function(c) { c.className = 'hint-viz-cell'; });
+                        }
+                        function addHmRow(key, val) {
+                            var row = document.createElement('div');
+                            row.className = 'hm-row';
+                            row.dataset.key = key;
+                            row.innerHTML = '<span class="hm-key">' + key + '</span><span class="hm-val">→ ' + val + '</span>';
+                            hmEl.appendChild(row);
+                        }
+                        function clearHmHighlight() {
+                            hmEl.querySelectorAll('.hm-row').forEach(function(r) { r.classList.remove('hm-found', 'hm-miss'); });
+                        }
+                        function highlightHmRow(key, found) {
+                            clearHmHighlight();
+                            if (found) {
+                                var row = hmEl.querySelector('[data-key="' + key + '"]');
+                                if (row) row.classList.add('hm-found');
+                            } else {
+                                hmEl.querySelectorAll('.hm-row').forEach(function(r) { r.classList.add('hm-miss'); });
+                            }
+                        }
+                        var steps = [], seen = {}, foundI = -1, foundJ = -1;
+                        for (var idx = 0; idx < nums.length; idx++) {
+                            (function(i) {
+                                var num = nums[i], comp = target - num;
+                                if (seen.hasOwnProperty(comp)) {
+                                    foundI = seen[comp]; foundJ = i;
+                                    steps.push(function() {
+                                        clearCells(); getCell(i).classList.add('current');
+                                        highlightHmRow(comp, true);
+                                        msgEl.innerHTML = 'Complement of <strong>' + num + '</strong> = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 Check seen… ✨ <strong>Found!</strong>';
+                                    });
+                                    steps.push(function() {
+                                        clearHmHighlight();
+                                        getCell(foundI).classList.add('matched');
+                                        getCell(i).classList.remove('current'); getCell(i).classList.add('matched');
+                                        msgEl.innerHTML = '<span class="viz-result">✅ Answer! [' + foundI + ', ' + i + '] — Just ' + (i + 1) + ' lookups! (brute force needed 15)</span>';
+                                    });
+                                } else {
+                                    steps.push(function() {
+                                        clearCells(); getCell(i).classList.add('current');
+                                        highlightHmRow(comp, false);
+                                        msgEl.innerHTML = 'Complement of <strong>' + num + '</strong> = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 Check seen… Not found';
+                                    });
+                                    steps.push(function() {
+                                        clearHmHighlight();
+                                        addHmRow(num, i);
+                                        msgEl.innerHTML = 'Remember ' + num + ' → seen[' + num + '] = ' + i;
+                                    });
+                                    seen[num] = i;
+                                }
+                                if (foundJ >= 0) return;
+                            })(idx);
+                            if (foundJ >= 0) break;
+                        }
+                        var si = 0, done = false;
+                        function advance() {
+                            if (done) return;
+                            if (si >= steps.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; return; }
+                            steps[si]();
+                            si++;
+                            if (si >= steps.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; }
+                        }
+                        function reset() {
+                            si = 0; done = false;
+                            clearCells(); hmEl.innerHTML = ''; msgEl.innerHTML = '';
+                            tapEl.style.display = ''; replayEl.style.display = 'none';
+                            steps = []; seen = {}; foundI = -1; foundJ = -1;
+                            for (var idx2 = 0; idx2 < nums.length; idx2++) {
+                                (function(i) {
+                                    var num = nums[i], comp = target - num;
+                                    if (seen.hasOwnProperty(comp)) {
+                                        foundI = seen[comp]; foundJ = i;
+                                        steps.push(function() { clearCells(); getCell(i).classList.add('current'); highlightHmRow(comp, true); msgEl.innerHTML = 'Complement of <strong>' + num + '</strong> = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 Check seen… ✨ <strong>Found!</strong>'; });
+                                        steps.push(function() { clearHmHighlight(); getCell(foundI).classList.add('matched'); getCell(i).classList.remove('current'); getCell(i).classList.add('matched'); msgEl.innerHTML = '<span class="viz-result">✅ Answer! [' + foundI + ', ' + i + '] — Just ' + (i + 1) + ' lookups! (brute force needed 15)</span>'; });
+                                    } else {
+                                        steps.push(function() { clearCells(); getCell(i).classList.add('current'); highlightHmRow(comp, false); msgEl.innerHTML = 'Complement of <strong>' + num + '</strong> = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 Check seen… Not found'; });
+                                        steps.push(function() { clearHmHighlight(); addHmRow(num, i); msgEl.innerHTML = 'Remember ' + num + ' → seen[' + num + '] = ' + i; });
+                                        seen[num] = i;
+                                    }
+                                    if (foundJ >= 0) return;
+                                })(idx2);
+                                if (foundJ >= 0) break;
+                            }
+                        }
+                        container.addEventListener('click', function(e) {
+                            if (e.target.closest('.hint-viz-replay')) return;
+                            advance();
+                        });
+                        replayEl.querySelector('button').addEventListener('click', function() { reset(); });
+                        return {
+                            stop: function() {},
+                            reset: function() { reset(); },
+                            play: function() {},
+                            destroy: function() {}
+                        };
+                    }
+                }
+            ],
             templates: {
                 python: `class Solution:
     def twoSum(self, nums, target):

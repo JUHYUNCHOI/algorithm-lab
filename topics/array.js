@@ -26,20 +26,6 @@ const arrayTopic = {
 
     // ===== 문제별 탭 정의 =====
     getProblemTabs(problemId) {
-        const prob = this.problems.find(p => p.id === problemId);
-        // 새 구조: solutions에 hints가 있으면 접근법 기반 탭
-        if (prob && prob.solutions && prob.solutions.length > 0 && prob.solutions[0].hints) {
-            const icons = ['🔨', '⚡', '🚀'];
-            const tabs = [{ id: 'problem', label: '문제', icon: '📋' }];
-            prob.solutions.forEach((sol, i) => {
-                tabs.push({ id: 'approach-' + i, label: sol.approach, icon: icons[i] || '📌' });
-            });
-            if (prob.library) {
-                tabs.push({ id: 'library', label: '더 알아보기', icon: '📦' });
-            }
-            return tabs;
-        }
-        // 레거시: 기존 4탭 구조
         return [
             { id: 'problem', label: '문제', icon: '📋' },
             { id: 'think', label: '생각해볼것', icon: '💡' },
@@ -86,36 +72,24 @@ const arrayTopic = {
         if (tabId === 'sim') contentDiv.className = 'sim-tab-content';
         container.appendChild(contentDiv);
 
-        // 접근법 기반 탭 or 레거시 탭
-        if (tabId.startsWith('approach-')) {
-            const idx = parseInt(tabId.split('-')[1]);
-            self._renderApproachContent(contentDiv, prob, idx);
-        } else if (tabId === 'library') {
-            self._renderLibraryTab(contentDiv, prob);
-        } else {
-            switch (tabId) {
-                case 'problem': self._renderProblemTab(contentDiv, prob); break;
-                case 'think':   self._renderThinkTab(contentDiv, prob); break;
-                case 'sim':     if (meta.vizMethod) self[meta.vizMethod](contentDiv); break;
-                case 'code':    self._renderCodeTab(contentDiv, prob); break;
-            }
+        switch (tabId) {
+            case 'problem': self._renderProblemTab(contentDiv, prob); break;
+            case 'think':   self._renderThinkTab(contentDiv, prob); break;
+            case 'sim':     if (meta.vizMethod) self[meta.vizMethod](contentDiv); break;
+            case 'code':    self._renderCodeTab(contentDiv, prob); break;
         }
 
         // 다음 탭 이동 버튼
-        const allTabs = self.getProblemTabs(problemId);
-        const curIdx = allTabs.findIndex(t => t.id === tabId);
-        if (curIdx >= 0 && curIdx < allTabs.length - 1) {
-            const nextTab = allTabs[curIdx + 1];
-            // CTA 텍스트 결정
-            let ctaText = '다음 단계로';
-            if (tabId === 'problem') ctaText = '문제를 이해했다면';
-            else if (tabId.startsWith('approach-')) ctaText = '이 접근법을 이해했다면';
-            else if (tabId === 'think') ctaText = '힌트를 모두 확인했다면';
-            else if (tabId === 'sim') ctaText = '동작 원리를 파악했다면';
-            const nextDiv = document.createElement('div');
+        var tabOrder = ['problem', 'think', 'sim', 'code'];
+        var tabLabels = { problem: '문제', think: '생각해볼것', sim: '시뮬레이션', code: '코드' };
+        var ctaTexts = { problem: '문제를 이해했다면', think: '힌트를 모두 확인했다면', sim: '동작 원리를 파악했다면' };
+        var curIdx = tabOrder.indexOf(tabId);
+        if (curIdx >= 0 && curIdx < tabOrder.length - 1) {
+            var nextId = tabOrder[curIdx + 1];
+            var nextDiv = document.createElement('div');
             nextDiv.className = 'flow-next';
-            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaText + ' → ' + nextTab.label + ' →</button>';
-            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextTab.id); });
+            nextDiv.innerHTML = '<button class="flow-next-btn">' + ctaTexts[tabId] + ' → ' + tabLabels[nextId] + ' →</button>';
+            nextDiv.querySelector('button').addEventListener('click', function() { window._switchToTab(nextId); });
             container.appendChild(nextDiv);
         }
     },
@@ -227,321 +201,6 @@ const arrayTopic = {
             if (window.hljs) hljs.highlightElement(codeEl);
         });
         contentEl.appendChild(wrapper);
-    },
-
-    // ===== 접근법 통합 렌더러 (힌트 + 시뮬레이션 + 코드 + 한계/비교) =====
-    _renderApproachContent(contentEl, prob, approachIdx) {
-        const sol = prob.solutions[approachIdx];
-        const self = this;
-
-        // 접근법 설명 + 복잡도 뱃지
-        const descDiv = document.createElement('div');
-        descDiv.className = 'approach-desc-header';
-        descDiv.innerHTML =
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;flex-wrap:wrap;">' +
-            '<span class="approach-meta-badge time">⏱ ' + sol.timeComplexity + '</span>' +
-            '<span class="approach-meta-badge space">💾 ' + sol.spaceComplexity + '</span>' +
-            '</div>' +
-            '<p style="color:var(--text2);font-size:0.95rem;line-height:1.6;margin:0;">' + sol.description + '</p>';
-        contentEl.appendChild(descDiv);
-
-        // 1) 💡 생각해보기
-        if (sol.hints && sol.hints.length > 0) {
-            var section1 = document.createElement('div');
-            section1.className = 'approach-flow-section';
-            section1.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">💡</span>생각해보기</div>';
-            self._renderHints(section1, sol.hints);
-            contentEl.appendChild(section1);
-        }
-
-        // 2) 📊 시뮬레이션
-        if (sol.vizMethod) {
-            var section2 = document.createElement('div');
-            section2.className = 'approach-flow-section';
-            section2.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">📊</span>시뮬레이션</div>';
-            if (sol.simIntro) {
-                var intro = document.createElement('p');
-                intro.style.cssText = 'color:var(--text2);font-size:0.9rem;margin:0 0 1rem;';
-                intro.textContent = sol.simIntro;
-                section2.appendChild(intro);
-            }
-            var simDiv = document.createElement('div');
-            section2.appendChild(simDiv);
-            self[sol.vizMethod](simDiv);
-            contentEl.appendChild(section2);
-        }
-
-        // 3) 💻 코드
-        var section3 = document.createElement('div');
-        section3.className = 'approach-flow-section';
-        section3.innerHTML = '<div class="approach-flow-title"><span class="approach-flow-icon">💻</span>코드</div>';
-        self._renderSingleSolutionCode(section3, sol, prob);
-        contentEl.appendChild(section3);
-
-        // 4) ⚠️ 한계 or ✅ 비교
-        if (sol.limitation) {
-            var limitDiv = document.createElement('div');
-            limitDiv.className = 'approach-callout limitation';
-            limitDiv.innerHTML = '<div class="approach-callout-icon">⚠️</div><div class="approach-callout-body"><div class="approach-callout-title">이 방법의 한계</div>' + sol.limitation + '</div>';
-            contentEl.appendChild(limitDiv);
-        }
-        if (sol.comparison) {
-            var compDiv = document.createElement('div');
-            compDiv.className = 'approach-callout comparison';
-            compDiv.innerHTML = '<div class="approach-callout-icon">✅</div><div class="approach-callout-body"><div class="approach-callout-title">개선 결과</div>' + sol.comparison + '</div>';
-            contentEl.appendChild(compDiv);
-        }
-    },
-
-    // ===== 힌트 렌더러 (접근법별 힌트 배열 렌더링) =====
-    _renderHints(contentEl, hints) {
-        var guide = document.createElement('div');
-        guide.className = 'hint-steps-guide';
-        guide.textContent = '단계별로 눌러서 힌트를 확인하세요';
-        contentEl.appendChild(guide);
-
-        var hintsDiv = document.createElement('div');
-        hintsDiv.className = 'hint-steps';
-        var openedState = {};
-
-        hints.forEach(function(hint, idx) {
-            var step = document.createElement('div');
-            step.className = 'hint-step' + (idx > 0 ? ' locked' : '');
-            step.innerHTML =
-                '<div class="hint-step-header">' +
-                '<span class="hint-step-num">' + (idx + 1) + '</span>' +
-                '<span class="hint-step-title">' + hint.title + '</span>' +
-                '<span class="hint-step-toggle">▾</span></div>' +
-                '<div class="hint-step-body">' + hint.content + '</div>';
-            if (hint.viz) {
-                var vizArea = document.createElement('div');
-                vizArea.className = 'hint-viz-area';
-                step.querySelector('.hint-step-body').appendChild(vizArea);
-            }
-            step.querySelector('.hint-step-header').addEventListener('click', function() {
-                if (step.classList.contains('locked')) return;
-                var wasOpened = step.classList.contains('opened');
-                step.classList.toggle('opened');
-                step.querySelector('.hint-step-toggle').textContent = step.classList.contains('opened') ? '▴' : '▾';
-                if (!openedState[idx]) {
-                    openedState[idx] = true;
-                    if (idx + 1 < hints.length) {
-                        var nextStep = hintsDiv.children[idx + 1];
-                        if (nextStep) nextStep.classList.remove('locked');
-                    }
-                }
-                if (hint.viz) {
-                    var va = step.querySelector('.hint-viz-area');
-                    if (!wasOpened) {
-                        if (step._vizCtrl) { step._vizCtrl.destroy(); }
-                        va.innerHTML = '';
-                        step._vizCtrl = hint.viz(va);
-                    } else {
-                        if (step._vizCtrl) { step._vizCtrl.stop(); }
-                    }
-                }
-            });
-            hintsDiv.appendChild(step);
-        });
-        contentEl.appendChild(hintsDiv);
-
-        if (window.hljs) {
-            hintsDiv.querySelectorAll('pre code').forEach(function(codeEl) {
-                hljs.highlightElement(codeEl);
-                var lines = codeEl.innerHTML.split('\n');
-                codeEl.innerHTML = lines.map(function(line, i) {
-                    return '<div class="code-line" style="--i:' + i + '">' + (line || '&nbsp;') + '</div>';
-                }).join('');
-            });
-        }
-    },
-
-    // ===== 단일 접근법 코드 렌더러 =====
-    _renderSingleSolutionCode(contentEl, sol, prob) {
-        var isLC = prob.link.includes('leetcode');
-        var wrapper = document.createElement('div');
-        var langs = Object.keys(sol.templates);
-        var langNames = { python: 'Python', cpp: 'C++' };
-        var currentLang = langs[0] || 'python';
-        var currentStep = -1;
-
-        // 컨트롤 바: 언어 셀렉터 + 스텝 컨트롤 (오른쪽 상단)
-        var controls = document.createElement('div');
-        controls.style.cssText = 'display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;';
-        var stepBtnHTML = '';
-        if (sol.codeSteps) {
-            stepBtnHTML =
-                '<div style="display:flex;gap:6px;align-items:center;margin-left:auto;">' +
-                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← 이전</button>' +
-                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">시작 전</span>' +
-                '<button class="btn btn-primary code-step-btn cs-next pulse-hint" style="font-size:0.8rem;padding:4px 10px;">시작 →</button></div>';
-        }
-        controls.innerHTML =
-            '<select class="lang-select" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;background:var(--bg2);color:var(--text);font-family:inherit;">' +
-            langs.map(function(l) { return '<option value="' + l + '">' + (langNames[l] || l) + '</option>'; }).join('') +
-            '</select>' + stepBtnHTML;
-        wrapper.appendChild(controls);
-        var select = controls.querySelector('.lang-select');
-
-        var stepDesc;
-        var topPrev, topNext, topCounter, botPrev, botNext, botCounter;
-        if (sol.codeSteps) {
-            topPrev = controls.querySelector('.cs-prev');
-            topNext = controls.querySelector('.cs-next');
-            topCounter = controls.querySelector('.code-step-counter');
-
-            stepDesc = document.createElement('div');
-            stepDesc.className = 'code-step-desc';
-            stepDesc.textContent = '▶ 다음 버튼을 눌러 코드를 단계별로 확인하세요';
-            wrapper.appendChild(stepDesc);
-        }
-
-        // 코드 블록 (macOS 에디터 스타일)
-        var codeBlock = document.createElement('div');
-        codeBlock.className = 'code-block';
-        codeBlock.innerHTML =
-            '<div class="code-block-header">' +
-            '<div class="code-block-dots"><span></span><span></span><span></span></div>' +
-            '<span class="code-block-title">solution.py</span>' +
-            '</div>' +
-            '<pre><code class="language-python"></code></pre>';
-        wrapper.appendChild(codeBlock);
-
-        // 스텝 컨트롤 — 오른쪽 하단 (sticky, 같은 작은 크기)
-        if (sol.codeSteps) {
-            var botCtrl = document.createElement('div');
-            botCtrl.style.cssText = 'display:flex;gap:6px;align-items:center;justify-content:flex-end;position:sticky;bottom:12px;z-index:100;margin-top:12px;padding:8px 0;';
-            botCtrl.innerHTML =
-                '<button class="btn code-step-btn cs-prev" disabled style="font-size:0.8rem;padding:4px 10px;">← 이전</button>' +
-                '<span class="code-step-counter" style="font-size:0.82rem;font-weight:600;color:var(--accent);min-width:50px;text-align:center;">시작 전</span>' +
-                '<button class="btn btn-primary code-step-btn cs-next" style="font-size:0.8rem;padding:4px 10px;">다음 →</button>';
-            wrapper.appendChild(botCtrl);
-
-            botPrev = botCtrl.querySelector('.cs-prev');
-            botNext = botCtrl.querySelector('.cs-next');
-            botCounter = botCtrl.querySelector('.code-step-counter');
-        }
-        var codeEl = codeBlock.querySelector('code');
-        var codeTitle = codeBlock.querySelector('.code-block-title');
-
-        function langClass(l) { return l === 'cpp' ? 'cpp' : l; }
-        function getSteps() { return sol.codeSteps ? (sol.codeSteps[currentLang] || []) : []; }
-
-        function highlightNewLines(codeElm, newLineNums) {
-            if (!newLineNums || !newLineNums.length) return;
-            var html = codeElm.innerHTML;
-            var lines = html.split('\n');
-            codeElm.innerHTML = lines.map(function(line, i) {
-                return newLineNums.indexOf(i + 1) !== -1 ? '<mark class="code-line-new">' + line + '</mark>' : line;
-            }).join('\n');
-        }
-
-        function render() {
-            var titleMap = { python: 'solution.py', cpp: 'solution.cpp' };
-            codeEl.className = 'language-' + langClass(currentLang);
-            codeTitle.textContent = titleMap[currentLang] || 'solution';
-
-            var steps = getSteps();
-
-            if (steps.length > 0 && currentStep >= 0 && currentStep < steps.length) {
-                var step = steps[currentStep];
-                // 누적 코드 빌드
-                var fragments = steps.slice(0, currentStep + 1).filter(function(s) { return s.code; }).map(function(s) { return s.code; });
-                var accumulated = fragments.join('\n\n');
-                codeEl.textContent = accumulated;
-                codeEl.removeAttribute('data-highlighted');
-                if (window.hljs) hljs.highlightElement(codeEl);
-                // 새 라인 하이라이트
-                if (step.code) {
-                    var prevFrags = steps.slice(0, currentStep).filter(function(s) { return s.code; }).map(function(s) { return s.code; });
-                    var prevAcc = prevFrags.join('\n\n');
-                    var prevCount = prevAcc ? prevAcc.split('\n').length : 0;
-                    var totalCount = accumulated.split('\n').length;
-                    var startNew = prevCount > 0 ? prevCount + 2 : 1;
-                    var newLines = [];
-                    for (var ln = startNew; ln <= totalCount; ln++) newLines.push(ln);
-                    highlightNewLines(codeEl, newLines);
-                }
-                if (stepDesc) {
-                    stepDesc.innerHTML = '<span class="step-desc-title">' + step.title + '</span><span class="step-desc-body">' + step.desc.replace(/\n/g, '<br>') + '</span>';
-                    stepDesc.style.display = 'block';
-                }
-            } else {
-                codeEl.textContent = sol.templates[currentLang] || '';
-                codeEl.removeAttribute('data-highlighted');
-                if (window.hljs) hljs.highlightElement(codeEl);
-                if (stepDesc) {
-                    if (currentStep < 0 && steps.length > 0) {
-                        stepDesc.textContent = '▶ 다음 버튼을 눌러 코드를 단계별로 확인하세요';
-                    } else if (steps.length === 0) {
-                        stepDesc.style.display = 'none';
-                    }
-                }
-            }
-
-            // 스텝 컨트롤 상태 업데이트 (위/아래 양쪽 동기화)
-            if (sol.codeSteps) {
-                [
-                    [topPrev, topNext, topCounter],
-                    [botPrev, botNext, botCounter]
-                ].forEach(function(trio) {
-                    if (!trio[0]) return;
-                    trio[0].disabled = currentStep < 0;
-                    trio[1].disabled = currentStep >= steps.length - 1;
-                    if (currentStep < 0) {
-                        trio[2].textContent = '시작 전';
-                        trio[1].textContent = '시작 →';
-                    } else {
-                        trio[2].textContent = 'Step ' + (currentStep + 1) + '/' + steps.length;
-                        trio[1].textContent = '다음 →';
-                    }
-                });
-            }
-        }
-
-        // 이벤트
-        select.addEventListener('change', function() {
-            currentLang = this.value;
-            currentStep = -1;
-            render();
-        });
-        if (sol.codeSteps) {
-            function doPrev() { if (currentStep > -1) { currentStep--; render(); } }
-            function doNext() {
-                topNext.classList.remove('pulse-hint');
-                botNext.classList.remove('pulse-hint');
-                var steps = getSteps();
-                if (currentStep < steps.length - 1) { currentStep++; render(); }
-            }
-            topPrev.addEventListener('click', doPrev);
-            topNext.addEventListener('click', doNext);
-            botPrev.addEventListener('click', doPrev);
-            botNext.addEventListener('click', doNext);
-        }
-
-        render();
-        contentEl.appendChild(wrapper);
-    },
-
-    // ===== 라이브러리/모듈 탭 =====
-    _renderLibraryTab(contentEl, prob) {
-        if (!prob.library) {
-            contentEl.innerHTML = '<p>이 문제에 대한 라이브러리 정보가 아직 없습니다.</p>';
-            return;
-        }
-        var lib = prob.library;
-        var section = document.createElement('div');
-        section.className = 'approach-flow-section';
-        section.innerHTML =
-            '<div class="approach-flow-title"><span class="approach-flow-icon">📦</span>' + lib.title + '</div>' +
-            '<p style="color:var(--text2);line-height:1.7;margin-bottom:1rem;">' + lib.description + '</p>' +
-            '<div class="code-block"><div class="code-block-header"><div class="code-block-dots"><span></span><span></span><span></span></div><span class="code-block-title">module.py</span></div>' +
-            '<pre><code class="language-python">' + lib.code + '</code></pre></div>' +
-            (lib.note ? '<div class="approach-callout comparison" style="margin-top:1rem;"><div class="approach-callout-icon">💡</div><div class="approach-callout-body">' + lib.note + '</div></div>' : '');
-        contentEl.appendChild(section);
-        contentEl.querySelectorAll('pre code').forEach(function(codeEl) {
-            if (window.hljs) hljs.highlightElement(codeEl);
-        });
     },
 
     // ===== 개념 설명 탭 =====
@@ -2601,6 +2260,12 @@ int main() {
             `,
             inputDefault: 0,
             solve() { return '7 35'; },
+            hints: [
+                { title: '문제 이해: 뭘 구해야 할까?', content: '<div class="hint-key">💡 N개의 정수 중에서 가장 작은 수와 가장 큰 수를 찾으면 됩니다!</div><p>예시: [20, 10, 35, 30, 7] → 최솟값 <strong>7</strong>, 최댓값 <strong>35</strong></p><p>배열 전체를 한 번 살펴보면서 두 값을 동시에 찾을 수 있을까요?</p>' },
+                { title: '초기값은 어떻게 정할까?', content: '<div class="hint-key">🤔 비교를 시작하려면 기준이 필요해요!</div><p>첫 번째 원소를 <strong>최솟값이자 최댓값의 초기값</strong>으로 설정합니다.</p><p>아직 다른 수를 보지 않았으니, 첫 번째 수가 현재까지의 최소이자 최대인 것이 맞습니다.</p><span class="lang-py"><pre><code class="language-python">min_val = nums[0]  # 초기 최솟값\nmax_val = nums[0]  # 초기 최댓값</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">int minVal = nums[0]; // 초기 최솟값\nint maxVal = nums[0]; // 초기 최댓값</code></pre></span>' },
+                { title: '순회하며 비교!', content: '<div class="hint-key">🔄 두 번째 원소부터 끝까지 하나씩 비교합니다</div><p>각 원소를 볼 때마다 두 가지를 확인합니다:</p><ul><li>현재 최솟값보다 <strong>작으면</strong> → 최솟값 갱신</li><li>현재 최댓값보다 <strong>크면</strong> → 최댓값 갱신</li></ul><p>이렇게 하면 배열을 <strong>딱 한 번</strong>만 순회해서 O(n)에 해결!</p>' },
+                { title: '더 간단한 방법도 있다!', content: '<div class="hint-key">💡 대부분의 언어에 최솟값/최댓값을 구하는 내장 함수가 있습니다!</div><span class="lang-py"><p>Python: <code>min()</code>과 <code>max()</code> — 리스트를 넣으면 바로 최솟값/최댓값을 반환합니다.</p></span><span class="lang-cpp"><p>C++: <code>*min_element()</code>과 <code>*max_element()</code> — <code>&lt;algorithm&gt;</code> 헤더에 있습니다.</p></span><p>내장 함수도 내부적으로는 배열을 한 번 순회하면서 비교합니다. 시간 복잡도는 동일하게 <strong>O(n)</strong>이지만, 코드가 훨씬 짧고 가독성이 좋습니다!</p>' }
+            ],
             templates: {
                 python: `import sys
 input = sys.stdin.readline
@@ -2739,6 +2404,216 @@ int main() {
             `,
             inputDefault: 0,
             solve() { return '[0, 1]'; },
+            hints: [
+                { title: '처음 생각: 이중 for문', content: '<div class="hint-key">💡 가장 단순한 방법: 모든 쌍을 전부 확인!</div><p>배열의 모든 두 수 조합을 하나씩 비교하면 됩니다.</p><span class="lang-py"><pre><code class="language-python">for i in range(len(nums)):\n    for j in range(i+1, len(nums)):\n        if nums[i] + nums[j] == target:\n            return [i, j]</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">for (int i = 0; i < nums.size(); i++)\n    for (int j = i+1; j < nums.size(); j++)\n        if (nums[i] + nums[j] == target)\n            return {i, j};</code></pre></span>' },
+                {
+                    title: '직접 해보기 — 브루트포스로 얼마나 걸릴까?',
+                    content: '<div class="hint-key">🔍 Brute Force로 직접 찾아보자!</div><div class="hint-sub">탭하면서 한 쌍씩 비교해보세요</div>',
+                    viz: function(container) {
+                        var nums = [1, 3, 4, 9, 2, 7], target = 9;
+                        container.setAttribute('data-clickable', '');
+                        container.innerHTML =
+                            '<div class="hint-viz-label">nums = [1, 3, 4, 9, 2, 7], target = 9</div>' +
+                            '<div class="hint-viz-cells"></div>' +
+                            '<div class="hint-viz-msg"></div>' +
+                            '<div class="hint-viz-tap">👆 탭하여 다음 비교</div>' +
+                            '<div class="hint-viz-replay" style="display:none"><button>▶ 처음부터</button></div>';
+                        var cellsEl = container.querySelector('.hint-viz-cells');
+                        var msgEl = container.querySelector('.hint-viz-msg');
+                        var tapEl = container.querySelector('.hint-viz-tap');
+                        var replayEl = container.querySelector('.hint-viz-replay');
+                        nums.forEach(function(v, i) {
+                            var cell = document.createElement('div');
+                            cell.className = 'hint-viz-cell';
+                            cell.dataset.idx = i;
+                            cell.innerHTML = '<div class="viz-idx">' + i + '</div><div class="viz-val">' + v + '</div>';
+                            cellsEl.appendChild(cell);
+                        });
+                        function getCell(i) { return cellsEl.querySelector('[data-idx="' + i + '"]'); }
+                        function clearCells() {
+                            cellsEl.querySelectorAll('.hint-viz-cell').forEach(function(c) { c.className = 'hint-viz-cell'; });
+                        }
+                        var pairs = [];
+                        for (var i = 0; i < nums.length; i++) {
+                            for (var j = i + 1; j < nums.length; j++) {
+                                pairs.push([i, j]);
+                                if (nums[i] + nums[j] === target) { i = nums.length; break; }
+                            }
+                        }
+                        var si = 0, done = false, timer = null;
+                        function advance() {
+                            if (done) return;
+                            if (si >= pairs.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; return; }
+                            var pi = pairs[si][0], pj = pairs[si][1];
+                            var sum = nums[pi] + nums[pj];
+                            var isMatch = sum === target;
+                            var c = si + 1;
+                            clearCells();
+                            getCell(pi).classList.add('comparing');
+                            getCell(pj).classList.add('comparing');
+                            msgEl.innerHTML = '<span style="color:var(--text3)">#' + c + '</span> i=' + pi + ', j=' + pj + ': <strong>' + nums[pi] + ' + ' + nums[pj] + ' = ' + sum + '</strong>';
+                            clearTimeout(timer);
+                            timer = setTimeout(function() {
+                                if (isMatch) {
+                                    getCell(pi).classList.remove('comparing'); getCell(pj).classList.remove('comparing');
+                                    getCell(pi).classList.add('matched'); getCell(pj).classList.add('matched');
+                                    msgEl.innerHTML = '<span class="viz-result">✅ 정답! [' + pi + ', ' + pj + '] — ' + c + '번 비교</span>';
+                                    done = true; tapEl.style.display = 'none'; replayEl.style.display = '';
+                                } else {
+                                    getCell(pi).classList.remove('comparing'); getCell(pj).classList.remove('comparing');
+                                    getCell(pi).classList.add('mismatch'); getCell(pj).classList.add('mismatch');
+                                    msgEl.innerHTML += ' ❌';
+                                }
+                            }, 400);
+                            si++;
+                        }
+                        function reset() {
+                            clearTimeout(timer); si = 0; done = false;
+                            clearCells(); msgEl.innerHTML = '';
+                            tapEl.style.display = ''; replayEl.style.display = 'none';
+                        }
+                        container.addEventListener('click', function(e) {
+                            if (e.target.closest('.hint-viz-replay')) return;
+                            advance();
+                        });
+                        replayEl.querySelector('button').addEventListener('click', function() { reset(); });
+                        return {
+                            stop: function() { clearTimeout(timer); },
+                            reset: function() { reset(); },
+                            play: function() {},
+                            destroy: function() { clearTimeout(timer); }
+                        };
+                    }
+                },
+                { title: '문제 발견! 너무 느리다', content: '<p>n이 <strong>10,000</strong>이면 약 <strong>5천만 번</strong> 비교! 😱</p><p>매번 나머지 수를 전부 훑어야 하니 시간 초과가 발생합니다.</p><div class="hint-key">💡 "이미 본 수를 기억해둘 수 없을까?"</div><p>핵심 관찰: 숫자 하나를 볼 때마다 <strong>target - 그 수 = 짝꿍</strong>을 계산해서,<br>이미 본 수 중에 짝꿍이 있는지 <strong>해시맵으로 O(1)에 확인</strong>하면 끝!</p>' },
+                {
+                    title: '해시맵으로 한번에!',
+                    content: '<div class="hint-key">✨ 해시맵으로 "짝꿍" 찾기</div><div class="hint-sub">각 수마다 짝꿍이 이미 나왔는지 즉시 확인!<br>브루트포스 15번 vs 해시맵 몇 번? 탭하며 비교!</div>',
+                    viz: function(container) {
+                        var nums = [1, 3, 4, 9, 2, 7], target = 9;
+                        container.setAttribute('data-clickable', '');
+                        container.innerHTML =
+                            '<div class="hint-viz-label">nums = [1, 3, 4, 9, 2, 7], target = 9</div>' +
+                            '<div class="hint-viz-split">' +
+                            '  <div><div class="hint-viz-label" style="margin-bottom:4px">배열</div><div class="hint-viz-cells"></div></div>' +
+                            '  <div><div class="hint-viz-label" style="margin-bottom:4px">seen { }</div><div class="hint-viz-hashmap"></div></div>' +
+                            '</div>' +
+                            '<div class="hint-viz-msg"></div>' +
+                            '<div class="hint-viz-tap">👆 탭하여 다음 단계</div>' +
+                            '<div class="hint-viz-replay" style="display:none"><button>▶ 처음부터</button></div>';
+                        var cellsEl = container.querySelector('.hint-viz-cells');
+                        var hmEl = container.querySelector('.hint-viz-hashmap');
+                        var msgEl = container.querySelector('.hint-viz-msg');
+                        var tapEl = container.querySelector('.hint-viz-tap');
+                        var replayEl = container.querySelector('.hint-viz-replay');
+                        nums.forEach(function(v, i) {
+                            var cell = document.createElement('div');
+                            cell.className = 'hint-viz-cell';
+                            cell.dataset.idx = i;
+                            cell.innerHTML = '<div class="viz-idx">' + i + '</div><div class="viz-val">' + v + '</div>';
+                            cellsEl.appendChild(cell);
+                        });
+                        function getCell(i) { return cellsEl.querySelector('[data-idx="' + i + '"]'); }
+                        function clearCells() {
+                            cellsEl.querySelectorAll('.hint-viz-cell').forEach(function(c) { c.className = 'hint-viz-cell'; });
+                        }
+                        function addHmRow(key, val) {
+                            var row = document.createElement('div');
+                            row.className = 'hm-row';
+                            row.dataset.key = key;
+                            row.innerHTML = '<span class="hm-key">' + key + '</span><span class="hm-val">→ ' + val + '</span>';
+                            hmEl.appendChild(row);
+                        }
+                        function clearHmHighlight() {
+                            hmEl.querySelectorAll('.hm-row').forEach(function(r) { r.classList.remove('hm-found', 'hm-miss'); });
+                        }
+                        function highlightHmRow(key, found) {
+                            clearHmHighlight();
+                            if (found) {
+                                var row = hmEl.querySelector('[data-key="' + key + '"]');
+                                if (row) row.classList.add('hm-found');
+                            } else {
+                                hmEl.querySelectorAll('.hm-row').forEach(function(r) { r.classList.add('hm-miss'); });
+                            }
+                        }
+                        var steps = [], seen = {}, foundI = -1, foundJ = -1;
+                        for (var idx = 0; idx < nums.length; idx++) {
+                            (function(i) {
+                                var num = nums[i], comp = target - num;
+                                if (seen.hasOwnProperty(comp)) {
+                                    foundI = seen[comp]; foundJ = i;
+                                    steps.push(function() {
+                                        clearCells(); getCell(i).classList.add('current');
+                                        highlightHmRow(comp, true);
+                                        msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… ✨ <strong>있다!</strong>';
+                                    });
+                                    steps.push(function() {
+                                        clearHmHighlight();
+                                        getCell(foundI).classList.add('matched');
+                                        getCell(i).classList.remove('current'); getCell(i).classList.add('matched');
+                                        msgEl.innerHTML = '<span class="viz-result">✅ 정답! [' + foundI + ', ' + i + '] — 딱 ' + (i + 1) + '번 보고 끝! (브루트포스는 15번)</span>';
+                                    });
+                                } else {
+                                    steps.push(function() {
+                                        clearCells(); getCell(i).classList.add('current');
+                                        highlightHmRow(comp, false);
+                                        msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… 없음';
+                                    });
+                                    steps.push(function() {
+                                        clearHmHighlight();
+                                        addHmRow(num, i);
+                                        msgEl.innerHTML = num + '을 seen에 기억해두자 → seen[' + num + '] = ' + i;
+                                    });
+                                    seen[num] = i;
+                                }
+                                if (foundJ >= 0) return;
+                            })(idx);
+                            if (foundJ >= 0) break;
+                        }
+                        var si = 0, done = false;
+                        function advance() {
+                            if (done) return;
+                            if (si >= steps.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; return; }
+                            steps[si]();
+                            si++;
+                            if (si >= steps.length) { done = true; tapEl.style.display = 'none'; replayEl.style.display = ''; }
+                        }
+                        function reset() {
+                            si = 0; done = false;
+                            clearCells(); hmEl.innerHTML = ''; msgEl.innerHTML = '';
+                            tapEl.style.display = ''; replayEl.style.display = 'none';
+                            steps = []; seen = {}; foundI = -1; foundJ = -1;
+                            for (var idx2 = 0; idx2 < nums.length; idx2++) {
+                                (function(i) {
+                                    var num = nums[i], comp = target - num;
+                                    if (seen.hasOwnProperty(comp)) {
+                                        foundI = seen[comp]; foundJ = i;
+                                        steps.push(function() { clearCells(); getCell(i).classList.add('current'); highlightHmRow(comp, true); msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… ✨ <strong>있다!</strong>'; });
+                                        steps.push(function() { clearHmHighlight(); getCell(foundI).classList.add('matched'); getCell(i).classList.remove('current'); getCell(i).classList.add('matched'); msgEl.innerHTML = '<span class="viz-result">✅ 정답! [' + foundI + ', ' + i + '] — 딱 ' + (i + 1) + '번 보고 끝! (브루트포스는 15번)</span>'; });
+                                    } else {
+                                        steps.push(function() { clearCells(); getCell(i).classList.add('current'); highlightHmRow(comp, false); msgEl.innerHTML = '<strong>' + num + '</strong>의 짝꿍 = ' + target + ' - ' + num + ' = <strong>' + comp + '</strong> → 🔍 seen에서 찾는다… 없음'; });
+                                        steps.push(function() { clearHmHighlight(); addHmRow(num, i); msgEl.innerHTML = num + '을 seen에 기억해두자 → seen[' + num + '] = ' + i; });
+                                        seen[num] = i;
+                                    }
+                                    if (foundJ >= 0) return;
+                                })(idx2);
+                                if (foundJ >= 0) break;
+                            }
+                        }
+                        container.addEventListener('click', function(e) {
+                            if (e.target.closest('.hint-viz-replay')) return;
+                            advance();
+                        });
+                        replayEl.querySelector('button').addEventListener('click', function() { reset(); });
+                        return {
+                            stop: function() {},
+                            reset: function() { reset(); },
+                            play: function() {},
+                            destroy: function() {}
+                        };
+                    }
+                }
+            ],
             templates: {
                 python: `class Solution:
     def twoSum(self, nums, target):
