@@ -805,6 +805,32 @@ sort(s.begin(), s.end())
                         <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Number↔string conversion, reverse, sort</p>
                     </div>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Method Playground</div>
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;flex-wrap:wrap;">
+                        <label style="font-size:0.9rem;font-weight:600;color:var(--text);">String:</label>
+                        <input type="text" id="str-concept-method-input" value="Hello, World! 123"
+                            style="width:240px;padding:8px 12px;font-size:1rem;font-weight:600;border:2px solid var(--accent);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Fira Code',monospace;">
+                    </div>
+                    <div class="concept-demo-btns" id="str-concept-method-btns" style="flex-wrap:wrap;gap:6px;">
+                        <button class="concept-demo-btn" data-method="upper">upper()</button>
+                        <button class="concept-demo-btn" data-method="lower">lower()</button>
+                        <button class="concept-demo-btn" data-method="find">find('o')</button>
+                        <button class="concept-demo-btn" data-method="count">count('l')</button>
+                        <button class="concept-demo-btn" data-method="replace">replace('l','★')</button>
+                        <button class="concept-demo-btn" data-method="split">split(',')</button>
+                        <button class="concept-demo-btn" data-method="strip">strip()</button>
+                        <button class="concept-demo-btn" data-method="isalpha">isalpha()</button>
+                        <button class="concept-demo-btn" data-method="reverse">reverse</button>
+                        <button class="concept-demo-btn" data-method="sorted">sorted()</button>
+                    </div>
+                    <div class="concept-demo-body" style="flex-direction:column;gap:12px;margin-top:12px;">
+                        <div id="str-concept-method-before" style="display:none;"></div>
+                        <div id="str-concept-method-arrow" style="display:none;font-size:1.1rem;text-align:center;color:var(--accent);font-weight:700;"></div>
+                        <div id="str-concept-method-after" style="display:none;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="str-concept-demo4-msg">👆 Click a method button to see how the string transforms!</div>
+                </div>
             </div>
 
         `;
@@ -1045,6 +1071,131 @@ sort(s.begin(), s.end())
             renderCmpBoxes(input2.value, boxes2);
 
             container.querySelector('#str-concept-cmp-btn').addEventListener('click', runComparison);
+        }
+
+        // --- Demo 4: Method Playground ---
+        {
+            var methodInput = container.querySelector('#str-concept-method-input');
+            var beforeEl = container.querySelector('#str-concept-method-before');
+            var arrowEl = container.querySelector('#str-concept-method-arrow');
+            var afterEl = container.querySelector('#str-concept-method-after');
+            var msgEl4 = container.querySelector('#str-concept-demo4-msg');
+
+            function renderCharBoxes(targetEl, str, highlights) {
+                targetEl.style.display = 'flex';
+                targetEl.style.cssText = 'display:flex;gap:3px;flex-wrap:wrap;justify-content:center;';
+                targetEl.innerHTML = '';
+                for (var i = 0; i < str.length; i++) {
+                    var box = document.createElement('span');
+                    var ch = str[i] === ' ' ? '␣' : str[i];
+                    var hl = highlights && highlights.indexOf(i) !== -1;
+                    box.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:30px;height:34px;border-radius:6px;font-weight:700;font-size:0.95rem;font-family:"Fira Code",monospace;' +
+                        (hl ? 'background:var(--accent);color:white;' : 'background:var(--bg2);color:var(--text);border:1px solid var(--border);');
+                    box.textContent = ch;
+                    targetEl.appendChild(box);
+                }
+            }
+
+            function renderResultBoxes(targetEl, parts, colors) {
+                targetEl.style.display = 'flex';
+                targetEl.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;';
+                targetEl.innerHTML = '';
+                for (var i = 0; i < parts.length; i++) {
+                    var chip = document.createElement('span');
+                    chip.style.cssText = 'display:inline-flex;align-items:center;padding:6px 12px;border-radius:8px;font-weight:600;font-size:0.9rem;font-family:"Fira Code",monospace;' +
+                        'background:' + (colors && colors[i] ? colors[i] : 'rgba(0,184,148,0.15)') + ';color:var(--text);';
+                    chip.textContent = parts[i];
+                    targetEl.appendChild(chip);
+                }
+            }
+
+            function showResult(methodLabel, codeStr, beforeStr, result, highlights) {
+                renderCharBoxes(beforeEl, beforeStr, highlights || []);
+                arrowEl.style.display = 'block';
+                arrowEl.innerHTML = '⬇️ <code style="font-size:0.85rem;">' + codeStr + '</code>';
+                if (typeof result === 'string') {
+                    renderCharBoxes(afterEl, result, []);
+                } else if (Array.isArray(result)) {
+                    renderResultBoxes(afterEl, result);
+                } else {
+                    afterEl.style.display = 'flex';
+                    afterEl.style.cssText = 'display:flex;justify-content:center;';
+                    afterEl.innerHTML = '<span style="padding:8px 16px;background:rgba(0,184,148,0.15);border-radius:8px;font-weight:700;font-size:1.1rem;color:var(--green);">' + result + '</span>';
+                }
+                msgEl4.textContent = methodLabel;
+            }
+
+            container.querySelector('#str-concept-method-btns').addEventListener('click', function(e) {
+                var btn = e.target.closest('[data-method]');
+                if (!btn) return;
+                var s = methodInput.value;
+                var method = btn.dataset.method;
+
+                switch (method) {
+                    case 'upper':
+                        showResult('Converted to uppercase! Only lowercase letters change.', 's.upper()', s, s.toUpperCase());
+                        break;
+                    case 'lower':
+                        showResult('Converted to lowercase! Only uppercase letters change.', 's.lower()', s, s.toLowerCase());
+                        break;
+                    case 'find': {
+                        var idx = s.indexOf('o');
+                        var hl = idx >= 0 ? [idx] : [];
+                        showResult(idx >= 0 ? 'Found \'o\' at index ' + idx + '!' : '\'o\' not found → returns -1', "s.find('o')", s, idx, hl);
+                        break;
+                    }
+                    case 'count': {
+                        var cnt = 0;
+                        var cntHl = [];
+                        for (var ci = 0; ci < s.length; ci++) {
+                            if (s[ci] === 'l') { cnt++; cntHl.push(ci); }
+                        }
+                        showResult('\'l\' appears ' + cnt + ' time(s)!', "s.count('l')", s, cnt, cntHl);
+                        break;
+                    }
+                    case 'replace':
+                        showResult('All \'l\' replaced with \'★\'!', "s.replace('l','★')", s, s.replace(/l/g, '★'));
+                        break;
+                    case 'split': {
+                        var parts = s.split(',');
+                        renderCharBoxes(beforeEl, s, []);
+                        arrowEl.style.display = 'block';
+                        arrowEl.innerHTML = "⬇️ <code style=\"font-size:0.85rem;\">s.split(',')</code>";
+                        renderResultBoxes(afterEl, parts.map(function(p) { return '"' + p.trim() + '"'; }));
+                        msgEl4.textContent = 'Split into ' + parts.length + ' pieces by comma!';
+                        break;
+                    }
+                    case 'strip':
+                        showResult('Leading/trailing whitespace removed! Inner spaces stay.', 's.strip()', s, s.trim());
+                        break;
+                    case 'isalpha': {
+                        var alphaHl = [];
+                        var nonAlpha = [];
+                        for (var ai = 0; ai < s.length; ai++) {
+                            if (/[a-zA-Z]/.test(s[ai])) alphaHl.push(ai);
+                            else nonAlpha.push(ai);
+                        }
+                        var allAlpha = nonAlpha.length === 0 && s.length > 0;
+                        renderCharBoxes(beforeEl, s, alphaHl);
+                        arrowEl.style.display = 'block';
+                        arrowEl.innerHTML = '⬇️ <code style="font-size:0.85rem;">s.isalpha()</code>';
+                        afterEl.style.display = 'flex';
+                        afterEl.style.cssText = 'display:flex;justify-content:center;';
+                        afterEl.innerHTML = '<span style="padding:8px 16px;border-radius:8px;font-weight:700;font-size:1.1rem;' +
+                            (allAlpha ? 'background:rgba(0,184,148,0.15);color:var(--green);">True ✅' : 'background:rgba(255,118,117,0.15);color:var(--red);">False ❌') + '</span>';
+                        msgEl4.textContent = allAlpha ? 'All alphabetic — True!' : nonAlpha.length + ' non-alpha character(s) found — False!';
+                        break;
+                    }
+                    case 'reverse':
+                        showResult('String reversed! Useful for palindrome checks.', 's[::-1]', s, s.split('').reverse().join(''));
+                        break;
+                    case 'sorted': {
+                        var sorted = s.split('').sort().join('');
+                        showResult('All characters sorted by ASCII order! (space→digits→uppercase→lowercase)', 'sorted(s)', s, sorted);
+                        break;
+                    }
+                }
+            });
         }
 
     },
