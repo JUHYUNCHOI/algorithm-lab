@@ -218,6 +218,59 @@ var dpTopic = {
                     </div>
                 </div>
 
+                <div style="margin:1rem 0;font-size:0.85rem;color:var(--text2);">
+                    <strong>References:</strong>
+                    <a href="https://en.wikipedia.org/wiki/Dynamic_programming" target="_blank" style="color:var(--accent);text-decoration:underline;">Wikipedia: Dynamic Programming ↗</a> ·
+                    <a href="https://en.wikipedia.org/wiki/Overlapping_subproblems" target="_blank" style="color:var(--accent);text-decoration:underline;">Overlapping Subproblems ↗</a> ·
+                    <a href="https://en.wikipedia.org/wiki/Optimal_substructure" target="_blank" style="color:var(--accent);text-decoration:underline;">Optimal Substructure ↗</a> ·
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/functools.html#functools.lru_cache" target="_blank" style="color:var(--accent);text-decoration:underline;">Python functools.lru_cache ↗</a></span>
+                    <span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="color:var(--accent);text-decoration:underline;">C++ unordered_map ↗</a></span>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Fibonacci Call Tree: See the Overlap!</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">When you call fib(N) recursively, the same values are called multiple times. Nodes in <strong style="color:var(--red);">red</strong> are duplicate calls!</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">N:
+                            <input type="number" id="dp-demo-calltree-input" value="5" min="3" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-calltree-go">Show Call Tree</button>
+                        <button class="concept-demo-btn green" id="dp-demo-calltree-reset" style="display:none;">Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="dp-demo-calltree-viz" style="overflow-x:auto;padding:10px 0;"></div>
+                        <div id="dp-demo-calltree-stats" style="text-align:center;font-size:0.9rem;color:var(--text2);margin-top:8px;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-calltree-msg">Overlapping subproblems: the same fib(k) is called multiple times. DP eliminates this redundancy!</div>
+                </div>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Recursion vs DP: See the Difference!</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Compare how many function calls <strong>plain recursion</strong> makes vs <strong>DP (memoization)</strong> for the same fib(N).</p>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                        <label style="font-weight:600;font-size:0.9rem;">N:
+                            <input type="number" id="dp-demo-recvsdp-input" value="5" min="3" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">
+                        </label>
+                        <button class="concept-demo-btn" id="dp-demo-recvsdp-rec" style="background:var(--red);color:white;">Solve with Recursion</button>
+                        <button class="concept-demo-btn" id="dp-demo-recvsdp-dp" style="background:var(--green);color:white;">Solve with DP</button>
+                        <button class="concept-demo-btn green" id="dp-demo-recvsdp-reset" style="display:none;">Reset</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start;">
+                            <div style="flex:1;min-width:200px;">
+                                <div style="font-weight:600;margin-bottom:6px;font-size:0.9rem;">Call Log</div>
+                                <div id="dp-demo-recvsdp-log" style="font-size:0.8rem;color:var(--text2);max-height:180px;overflow-y:auto;padding:8px 10px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);min-height:60px;"></div>
+                            </div>
+                            <div style="flex:0 0 auto;min-width:140px;text-align:center;">
+                                <div style="font-weight:600;margin-bottom:6px;font-size:0.9rem;">Memo Table</div>
+                                <div id="dp-demo-recvsdp-memo" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;min-height:44px;"></div>
+                            </div>
+                        </div>
+                        <div id="dp-demo-recvsdp-counter" style="text-align:center;font-size:1rem;font-weight:700;margin-top:12px;min-height:1.5em;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="dp-demo-recvsdp-msg">Recursion: repeats the same computation. DP: compute once, store, and reuse — drastically fewer calls!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -843,6 +896,224 @@ int fib(int n) {
                 card.appendChild(optWrap);
                 quizCards.appendChild(card);
             });
+        }
+
+        // === Demo 5: Fibonacci Call Tree (Overlapping Subproblems) ===
+        {
+            var ctGoBtn = container.querySelector('#dp-demo-calltree-go');
+            var ctResetBtn = container.querySelector('#dp-demo-calltree-reset');
+            var ctInput = container.querySelector('#dp-demo-calltree-input');
+            var ctViz = container.querySelector('#dp-demo-calltree-viz');
+            var ctStats = container.querySelector('#dp-demo-calltree-stats');
+            var ctMsg = container.querySelector('#dp-demo-calltree-msg');
+
+            function buildTree(n) {
+                if (n <= 1) return { val: n, left: null, right: null };
+                return { val: n, left: buildTree(n - 1), right: buildTree(n - 2) };
+            }
+
+            function countCalls(node, counts) {
+                if (!node) return;
+                counts[node.val] = (counts[node.val] || 0) + 1;
+                countCalls(node.left, counts);
+                countCalls(node.right, counts);
+            }
+
+            function totalNodes(node) {
+                if (!node) return 0;
+                return 1 + totalNodes(node.left) + totalNodes(node.right);
+            }
+
+            function renderTree(node, counts, depth) {
+                if (!node) return '';
+                var isDup = counts[node.val] > 1;
+                var bg = isDup ? 'var(--red)' : 'var(--green)';
+                var glow = isDup ? 'box-shadow:0 0 8px var(--red);' : '';
+                var label = isDup ? ' title="Duplicate! Called ' + counts[node.val] + ' times"' : '';
+                var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">';
+                html += '<div' + label + ' style="display:inline-flex;align-items:center;justify-content:center;width:' + (depth > 4 ? 32 : 38) + 'px;height:' + (depth > 4 ? 32 : 38) + 'px;border-radius:50%;background:' + bg + ';color:white;font-weight:700;font-size:' + (depth > 4 ? '0.7' : '0.8') + 'rem;' + glow + 'cursor:default;">f(' + node.val + ')</div>';
+                if (node.left || node.right) {
+                    html += '<div style="width:1px;height:8px;background:var(--border);"></div>';
+                    html += '<div style="display:flex;gap:' + Math.max(2, 12 - depth * 2) + 'px;">';
+                    if (node.left) html += renderTree(node.left, counts, depth + 1);
+                    if (node.right) html += renderTree(node.right, counts, depth + 1);
+                    html += '</div>';
+                }
+                html += '</div>';
+                return html;
+            }
+
+            if (ctGoBtn) ctGoBtn.addEventListener('click', function() {
+                ctGoBtn.style.display = 'none';
+                ctResetBtn.style.display = '';
+                var n = Math.max(3, Math.min(7, parseInt(ctInput.value) || 5));
+                var tree = buildTree(n);
+                var counts = {};
+                countCalls(tree, counts);
+                var total = totalNodes(tree);
+                var dupCount = 0;
+                for (var k in counts) if (counts[k] > 1) dupCount += (counts[k] - 1);
+                ctViz.innerHTML = renderTree(tree, counts, 0);
+                ctStats.innerHTML = 'Total <strong>' + total + '</strong> calls, <strong style="color:var(--red);">' + dupCount + '</strong> are duplicates! With DP, only <strong style="color:var(--green);">' + (n + 1) + '</strong> calls needed.';
+                ctMsg.textContent = 'Red nodes are duplicate calls. As N grows, redundancy explodes!';
+            });
+
+            if (ctResetBtn) ctResetBtn.addEventListener('click', function() {
+                ctGoBtn.style.display = '';
+                ctResetBtn.style.display = 'none';
+                ctViz.innerHTML = '';
+                ctStats.innerHTML = '';
+                ctMsg.textContent = 'Overlapping subproblems: the same fib(k) is called multiple times. DP eliminates this redundancy!';
+            });
+        }
+
+        // === Demo 6: Recursion vs DP duplicate elimination ===
+        {
+            var rvdRecBtn = container.querySelector('#dp-demo-recvsdp-rec');
+            var rvdDpBtn = container.querySelector('#dp-demo-recvsdp-dp');
+            var rvdResetBtn = container.querySelector('#dp-demo-recvsdp-reset');
+            var rvdInput = container.querySelector('#dp-demo-recvsdp-input');
+            var rvdLog = container.querySelector('#dp-demo-recvsdp-log');
+            var rvdMemo = container.querySelector('#dp-demo-recvsdp-memo');
+            var rvdCounter = container.querySelector('#dp-demo-recvsdp-counter');
+            var rvdMsg = container.querySelector('#dp-demo-recvsdp-msg');
+            var rvdTimer = null;
+
+            function rvdMemoCell(i, val, state) {
+                var bg = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : 'var(--bg2)');
+                var border = state === 'active' ? 'var(--yellow)' : (state === 'done' ? 'var(--green)' : 'var(--border)');
+                var color = (state === 'active' || state === 'done') ? 'white' : 'var(--text3)';
+                var shadow = state === 'active' ? 'box-shadow:0 0 8px var(--yellow)50;transform:scale(1.08);' : '';
+                return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;height:44px;border-radius:8px;border:2px solid ' + border + ';background:' + bg + ';color:' + color + ';font-weight:700;font-size:0.8rem;transition:all 0.3s;' + shadow + '"><div style="font-size:0.6rem;opacity:0.7;">[' + i + ']</div>' + (val !== undefined ? val : '?') + '</div>';
+            }
+
+            function rvdRenderMemo(n, memo, activeIdx) {
+                var html = '';
+                for (var i = 0; i <= n; i++) {
+                    var state = (i === activeIdx) ? 'active' : (memo[i] !== undefined ? 'done' : 'empty');
+                    html += rvdMemoCell(i, memo[i], state);
+                }
+                rvdMemo.innerHTML = html;
+            }
+
+            function rvdReset() {
+                if (rvdTimer) clearTimeout(rvdTimer);
+                rvdTimer = null;
+                rvdRecBtn.style.display = '';
+                rvdDpBtn.style.display = '';
+                rvdResetBtn.style.display = 'none';
+                rvdLog.innerHTML = '';
+                rvdMemo.innerHTML = '';
+                rvdCounter.innerHTML = '';
+                rvdMsg.textContent = 'Recursion: repeats the same computation. DP: compute once, store, and reuse — drastically fewer calls!';
+            }
+
+            function rvdTraceRecursive(n) {
+                var calls = [];
+                function fib(x, depth) {
+                    var indent = '';
+                    for (var d = 0; d < depth; d++) indent += '&nbsp;&nbsp;';
+                    if (x <= 1) {
+                        calls.push({ text: indent + 'fib(' + x + ') = ' + x + ' <span style="color:var(--green);">(base)</span>', val: x, idx: x, isDup: false });
+                        return x;
+                    }
+                    calls.push({ text: indent + 'fib(' + x + ') called...', val: undefined, idx: x, isDup: false, isCall: true });
+                    var a = fib(x - 1, depth + 1);
+                    var b = fib(x - 2, depth + 1);
+                    calls.push({ text: indent + 'fib(' + x + ') = ' + a + ' + ' + b + ' = <strong>' + (a + b) + '</strong>', val: a + b, idx: x, isDup: false });
+                    return a + b;
+                }
+                fib(n, 0);
+                var seen = {};
+                for (var i = 0; i < calls.length; i++) {
+                    if (calls[i].isCall) {
+                        if (seen[calls[i].idx]) calls[i].isDup = true;
+                        seen[calls[i].idx] = true;
+                    }
+                }
+                return calls;
+            }
+
+            function rvdTraceDP(n) {
+                var calls = [];
+                var memo = {};
+                function fib(x, depth) {
+                    var indent = '';
+                    for (var d = 0; d < depth; d++) indent += '&nbsp;&nbsp;';
+                    if (memo[x] !== undefined) {
+                        calls.push({ text: indent + 'fib(' + x + ') → memo[' + x + '] = ' + memo[x] + ' <span style="color:var(--accent);font-weight:600;">cached!</span>', val: memo[x], idx: x, isMemo: true });
+                        return memo[x];
+                    }
+                    if (x <= 1) {
+                        memo[x] = x;
+                        calls.push({ text: indent + 'fib(' + x + ') = ' + x + ' <span style="color:var(--green);">(base) → stored</span>', val: x, idx: x, save: true });
+                        return x;
+                    }
+                    calls.push({ text: indent + 'fib(' + x + ') called...', val: undefined, idx: x, isCall: true });
+                    var a = fib(x - 1, depth + 1);
+                    var b = fib(x - 2, depth + 1);
+                    memo[x] = a + b;
+                    calls.push({ text: indent + 'fib(' + x + ') = ' + a + ' + ' + b + ' = <strong>' + (a + b) + '</strong> → <span style="color:var(--green);">stored!</span>', val: a + b, idx: x, save: true });
+                    return a + b;
+                }
+                fib(n, 0);
+                return { calls: calls, memo: memo };
+            }
+
+            function rvdAnimate(steps, isDP) {
+                rvdRecBtn.style.display = 'none';
+                rvdDpBtn.style.display = 'none';
+                rvdResetBtn.style.display = '';
+                rvdLog.innerHTML = '';
+                rvdMemo.innerHTML = '';
+                var n = Math.max(3, Math.min(7, parseInt(rvdInput.value) || 5));
+                var memoState = {};
+                if (isDP) rvdRenderMemo(n, memoState);
+                var callCount = 0;
+                var idx = 0;
+
+                var traceData = isDP ? rvdTraceDP(n) : { calls: rvdTraceRecursive(n) };
+                var allCalls = traceData.calls || traceData;
+
+                function tick() {
+                    if (idx >= allCalls.length) {
+                        var label = isDP ? 'DP (Memoization)' : 'Plain Recursion';
+                        rvdCounter.innerHTML = label + ': <strong>' + callCount + '</strong> total calls';
+                        if (isDP) {
+                            rvdMsg.innerHTML = 'DP retrieves stored values instantly, so <strong style="color:var(--green);">the number of calls is drastically reduced</strong>!';
+                        } else {
+                            rvdMsg.innerHTML = 'The same values are computed multiple times. Now click <strong>"Solve with DP"</strong> to compare!';
+                            rvdRecBtn.style.display = 'none';
+                            rvdDpBtn.style.display = '';
+                        }
+                        return;
+                    }
+                    var step = allCalls[idx];
+                    callCount++;
+                    var color = step.isDup ? 'color:var(--red);' : (step.isMemo ? 'color:var(--accent);' : '');
+                    var dupTag = step.isDup ? ' <span style="color:var(--red);font-weight:600;">← duplicate!</span>' : '';
+                    rvdLog.innerHTML += '<div style="' + color + '">' + step.text + dupTag + '</div>';
+                    rvdLog.scrollTop = rvdLog.scrollHeight;
+
+                    if (isDP && (step.save || step.isMemo) && step.val !== undefined) {
+                        memoState[step.idx] = step.val;
+                        rvdRenderMemo(n, memoState, step.isMemo ? undefined : step.idx);
+                    }
+
+                    rvdCounter.innerHTML = (isDP ? 'DP' : 'Recursion') + ': call <strong>#' + callCount + '</strong>';
+                    idx++;
+                    rvdTimer = setTimeout(tick, 350);
+                }
+                tick();
+            }
+
+            if (rvdRecBtn) rvdRecBtn.addEventListener('click', function() {
+                rvdAnimate(null, false);
+            });
+            if (rvdDpBtn) rvdDpBtn.addEventListener('click', function() {
+                rvdAnimate(null, true);
+            });
+            if (rvdResetBtn) rvdResetBtn.addEventListener('click', rvdReset);
         }
     },
 
@@ -2312,7 +2583,7 @@ int fib(int n) {
 `,
             hints: [
                 { title: 'First intuition', content: 'The problem says "count the base operations." So let us just run the recursive code as-is. We count each time <code>return 1</code> executes in <code>fib(n)</code>. For the DP side, we count each time <code>f[i] = f[i-1] + f[i-2]</code> executes.' },
-                { title: 'But there\'s a problem with this', content: 'Wait, do we really need a separate counter for the recursion? If you think about it, the number of times <code>return 1</code> executes equals <strong>fib(n) itself</strong>! The number of leaf nodes reached = fib(n). So we do not need a separate counter at all.' },
+                { title: 'But there\'s a problem with this', content: 'Wait, do we really need a separate counter for the recursion? If you think about it, the number of times <code>return 1</code> executes equals <strong>fib(n) itself</strong>! The number of leaf nodes reached = fib(n). So we do not need a separate counter at all.<br><br><div style="display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;padding:10px;background:var(--bg2);border-radius:10px;"><div style="text-align:center;"><div style="font-size:0.8rem;color:var(--text3);">Recursive ops</div><div style="font-size:1.3rem;font-weight:700;color:var(--red);">fib(n)</div></div><div style="font-size:1.2rem;color:var(--text3);">vs</div><div style="text-align:center;"><div style="font-size:0.8rem;color:var(--text3);">DP ops</div><div style="font-size:1.3rem;font-weight:700;color:var(--green);">n − 2</div></div></div>' },
                 { title: 'What if we try this?', content: 'The DP side is even simpler. The loop runs from <code>i = 3</code> to <code>i = n</code> executing <code>f[i] = f[i-1] + f[i-2]</code>, so the total count is simply <strong>n - 2</strong>. Nothing else to compute!<br><br>Summary:<br>- Recursive base operations = <code>fib(n)</code> value<br>- DP base operations = <code>n - 2</code>' },
                 { title: 'In Python/C++!', content: '<span class="lang-py">Just implement <code>fib(n)</code> recursively in Python. Since n is at most 40, recursion finishes within the time limit. No need for <code>sys.setrecursionlimit</code> here.</span><span class="lang-cpp">In C++, <code>fib(40)</code> is about 100 million, so you must use <code>long long</code> to avoid overflow. Using <code>int</code> may cause wrong answers!</span>' }
             ],
@@ -2376,7 +2647,7 @@ w(50, 50, 50) = 1048576</pre></div>
             hints: [
                 { title: 'First intuition', content: 'The problem already gives us the recursive function code, so we just implement it directly! Translate the conditions as-is:<br>- If any of a, b, c &le; 0, return 1<br>- If any &gt; 20, return w(20, 20, 20)<br>- If a &lt; b &lt; c, w(a,b,c-1) + w(a,b-1,c-1) - w(a,b-1,c)<br>- Otherwise: w(a-1,b,c) + w(a-1,b-1,c) + w(a-1,b,c-1) - w(a-1,b-1,c-1)' },
                 { title: 'But there\'s a problem with this', content: 'If we just run the recursion as-is, the same (a, b, c) combinations are called countless times. For example, computing w(2,2,2) calls w(1,1,2), w(1,2,1), etc. multiple times. Even if the input is w(50,50,50), it gets substituted to w(20,20,20), but internally there is still massive redundancy. <strong>Recomputing already computed values is wasteful</strong>!' },
-                { title: 'What if we try this?', content: 'Store the result of w(a,b,c) once computed, and return it directly on subsequent calls \u2014 this is <strong>memoization</strong>!<br><br>Store results in <code>dp[a][b][c]</code>. Since a, b, c range from 0 to 20, a <code>dp[21][21][21]</code> array is sufficient. Just add one line at the function start to check "already computed?" and you are done!' },
+                { title: 'What if we try this?', content: 'Store the result of w(a,b,c) once computed, and return it directly on subsequent calls \u2014 this is <strong>memoization</strong>!<br><br>Store results in <code>dp[a][b][c]</code>. Since a, b, c range from 0 to 20, a <code>dp[21][21][21]</code> array is sufficient. Just add one line at the function start to check "already computed?" and you are done!<br><br><div style="display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;padding:10px;background:var(--bg2);border-radius:10px;font-size:0.85rem;"><div style="padding:6px 10px;border-radius:8px;background:var(--yellow);color:white;font-weight:600;">w(2,2,2) call</div><div>\u2192</div><div style="padding:6px 10px;border-radius:8px;background:var(--accent);color:white;">Store in dp</div><div>\u2192</div><div style="padding:6px 10px;border-radius:8px;background:var(--yellow);color:white;font-weight:600;">w(2,2,2) again</div><div>\u2192</div><div style="padding:6px 10px;border-radius:8px;background:var(--green);color:white;font-weight:600;">Return from dp!</div></div>' },
                 { title: 'In Python/C++!', content: '<span class="lang-py">Python makes memoization easy with a dictionary. Use the <code>(a,b,c)</code> tuple as a key \u2014 no separate visited array needed:<br><code>if (a,b,c) in dp: return dp[(a,b,c)]</code></span><span class="lang-cpp">In C++, declare a 3D array <code>dp[21][21][21]</code> and <code>visited[21][21][21]</code>. If visited is true, return the dp value directly. Use <code>printf("w(%d, %d, %d) = %d\\n", ...)</code> for the output format.</span>' }
             ],
             inputLabel: 'Value of a',
@@ -2446,7 +2717,7 @@ w(50, 50, 50) = 1048576</pre></div>
 `,
             hints: [
                 { title: 'First intuition', content: 'With three operations (\u00f73, \u00f72, -1), would a greedy approach of "divide by the largest possible number" be fast enough? For example, divide by 3 if possible, otherwise by 2, and subtract 1 if neither works.' },
-                { title: 'But there\'s a problem with this', content: 'Think about 10.<br>Greedy: 10 \u2192 5(-1) \u2192 4(-1) \u2192 2(\u00f72) \u2192 1(\u00f72) = <strong>4 steps</strong><br>Optimal: 10 \u2192 9(-1) \u2192 3(\u00f73) \u2192 1(\u00f73) = <strong>3 steps</strong><br><br>Dividing by the largest number is not always best! Sometimes subtracting 1 to make it a multiple of 3 is better. We must consider all cases.' },
+                { title: 'But there\'s a problem with this', content: 'Think about 10.<br><div style="display:flex;flex-direction:column;gap:6px;padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.85rem;"><div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;"><span style="font-weight:600;color:var(--red);">Greedy:</span><span style="padding:3px 8px;border-radius:6px;background:var(--red);color:white;font-weight:600;">10</span><span>\u2192-1\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--text);">5</span><span>\u2192-1\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--text);">4</span><span>\u2192\u00f72\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--text);">2</span><span>\u2192\u00f72\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--red);color:white;">1</span><span style="font-weight:600;color:var(--red);">= 4 steps</span></div><div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;"><span style="font-weight:600;color:var(--green);">Optimal:</span><span style="padding:3px 8px;border-radius:6px;background:var(--green);color:white;font-weight:600;">10</span><span>\u2192-1\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--text);">9</span><span>\u2192\u00f73\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--bg3);color:var(--text);">3</span><span>\u2192\u00f73\u2192</span><span style="padding:3px 8px;border-radius:6px;background:var(--green);color:white;">1</span><span style="font-weight:600;color:var(--green);">= 3 steps</span></div></div>Dividing by the largest number is not always best! Sometimes subtracting 1 to make it a multiple of 3 is better. We must consider all cases.' },
                 { title: 'What if we try this?', content: 'Define <code>dp[i]</code> = minimum operations to reduce integer i to 1. dp[1] = 0 (already 1).<br><br>Try all three operations from i and pick the minimum:<br>- Subtract 1: <code>dp[i] = dp[i-1] + 1</code><br>- Divide by 2 (when possible): <code>dp[i] = min(dp[i], dp[i/2] + 1)</code><br>- Divide by 3 (when possible): <code>dp[i] = min(dp[i], dp[i/3] + 1)</code><br><br>Fill from i = 2 to N in order (Bottom-Up).' },
                 { title: 'In Python/C++!', content: '<span class="lang-py">Create a list <code>dp = [0] * (n + 1)</code> in Python and iterate with <code>range(2, n + 1)</code>. Use <code>//</code> for integer division.</span><span class="lang-cpp">In C++, since N can be up to 10<sup>6</sup>, declare a global array <code>int dp[1000001]</code>. Use <code>min()</code> from the <code>algorithm</code> header.</span>' }
             ],
@@ -2508,7 +2779,7 @@ w(50, 50, 50) = 1048576</pre></div>
             hints: [
                 { title: 'First intuition', content: 'The available tiles are "1" (length 1) and "00" (length 2). We need to build a sequence of length N... should we try all combinations? From using N tiles of length 1, to using as many "00" tiles as possible.' },
                 { title: 'But there\'s a problem with this', content: 'N can be up to <strong>1,000,000</strong>! Trying to count all combinations means an enormous number of cases. But wait, what if we focus on the <strong>last tile placed</strong>?<br><br>If the last tile of a length-N sequence is:<br>- A "1" tile \u2192 the rest is a length N-1 sequence<br>- A "00" tile \u2192 the rest is a length N-2 sequence<br><br>Does this look familiar?' },
-                { title: 'What if we try this?', content: 'This is exactly the <strong>Fibonacci</strong> structure!<br><br>Define <code>dp[i]</code> = number of sequences of length i:<br><code>dp[i] = dp[i-1] + dp[i-2]</code><br><br>Initial values: dp[1] = 1 (just "1"), dp[2] = 2 ("11", "00")<br><br>Do not forget to take <strong>modulo 15746</strong> at every step! Without it, the numbers grow astronomically.' },
+                { title: 'What if we try this?', content: 'This is exactly the <strong>Fibonacci</strong> structure!<br><br>Define <code>dp[i]</code> = number of sequences of length i:<br><code>dp[i] = dp[i-1] + dp[i-2]</code><br><br><div style="display:flex;gap:4px;align-items:flex-end;justify-content:center;flex-wrap:wrap;padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;"><div style="text-align:center;"><div style="font-size:0.65rem;color:var(--text3);">dp[1]</div><div style="padding:4px 10px;border-radius:6px;background:var(--accent);color:white;font-weight:600;">1</div></div><div style="text-align:center;"><div style="font-size:0.65rem;color:var(--text3);">dp[2]</div><div style="padding:4px 10px;border-radius:6px;background:var(--accent);color:white;font-weight:600;">2</div></div><div style="text-align:center;"><div style="font-size:0.65rem;color:var(--text3);">dp[3]</div><div style="padding:4px 10px;border-radius:6px;background:var(--green);color:white;font-weight:600;">3</div></div><div style="text-align:center;"><div style="font-size:0.65rem;color:var(--text3);">dp[4]</div><div style="padding:4px 10px;border-radius:6px;background:var(--green);color:white;font-weight:600;">5</div></div><div style="text-align:center;"><div style="font-size:0.65rem;color:var(--text3);">dp[5]</div><div style="padding:4px 10px;border-radius:6px;background:var(--green);color:white;font-weight:600;">8</div></div></div>Initial values: dp[1] = 1 (just "1"), dp[2] = 2 ("11", "00")<br><br>Do not forget to take <strong>modulo 15746</strong> at every step! Without it, the numbers grow astronomically.' },
                 { title: 'In Python/C++!', content: 'With N up to 1 million, you could use an array, but since only the last two values are needed, you can do it in <strong>O(1) space with just 2 variables</strong>.<br><span class="lang-py">Start with <code>a, b = 1, 2</code> and repeat <code>a, b = b, (a + b) % 15746</code>.</span><span class="lang-cpp">Start with <code>int a = 1, b = 2;</code> and repeat <code>int t = (a + b) % 15746; a = b; b = t;</code>.</span>' }
             ],
             inputLabel: 'Length N',
@@ -2574,7 +2845,7 @@ w(50, 50, 50) = 1048576</pre></div>
             hints: [
                 { title: 'First intuition', content: 'With only 6 stairs, should we try all combinations of steps? Pick only those satisfying "no 3 consecutive" + "must step on last" and find the maximum sum. For example, stepping on stairs 1,2,4,6 or 1,3,5,6... and so on.' },
                 { title: 'But there\'s a problem with this', content: 'With N up to 300, the combinations explode \u2014 brute force is impossible. Instead, think of it this way: when stepping on stair i, there are only <strong>two cases depending on whether you stepped on i-1</strong>:<br><br>Case 1: <strong>2-step jump from i-2</strong> (skipped i-1)<br>Case 2: <strong>1-step from i-1</strong> (then i-2 must be skipped to avoid 3 consecutive)' },
-                { title: 'What if we try this?', content: 'Define <code>dp[i]</code> = max score when stepping on stair i:<br><br>- Case 1: i-2 \u2192 i: <code>dp[i-2] + score[i]</code><br>- Case 2: i-3 \u2192 i-1 \u2192 i: <code>dp[i-3] + score[i-1] + score[i]</code><br><br><code>dp[i] = max(Case 1, Case 2)</code><br><br>Just manually fill 3 initial values:<br>dp[1] = score[1], dp[2] = score[1]+score[2], dp[3] = max(score[1], score[2])+score[3]' },
+                { title: 'What if we try this?', content: 'Define <code>dp[i]</code> = max score when stepping on stair i:<br><br><div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.85rem;"><div style="text-align:center;border:1.5px solid var(--accent);border-radius:8px;padding:8px 12px;"><div style="font-weight:600;color:var(--accent);margin-bottom:4px;">Case 1: 2-step jump</div><div style="display:flex;gap:4px;align-items:center;"><span style="padding:3px 8px;border-radius:6px;background:var(--accent);color:white;">i-2</span><span style="color:var(--text3);">\u00b7\u00b7\u00b7</span><span style="padding:3px 8px;border-radius:6px;background:var(--yellow);color:white;">i</span></div><div style="margin-top:4px;font-size:0.8rem;"><code>dp[i-2] + s[i]</code></div></div><div style="text-align:center;border:1.5px solid var(--green);border-radius:8px;padding:8px 12px;"><div style="font-weight:600;color:var(--green);margin-bottom:4px;">Case 2: 1+1 steps</div><div style="display:flex;gap:4px;align-items:center;"><span style="padding:3px 8px;border-radius:6px;background:var(--green);color:white;">i-3</span><span style="color:var(--text3);">\u00b7</span><span style="padding:3px 8px;border-radius:6px;background:var(--green);color:white;">i-1</span><span style="padding:3px 8px;border-radius:6px;background:var(--yellow);color:white;">i</span></div><div style="margin-top:4px;font-size:0.8rem;"><code>dp[i-3] + s[i-1] + s[i]</code></div></div></div><code>dp[i] = max(Case 1, Case 2)</code><br><br>Just manually fill 3 initial values:<br>dp[1] = score[1], dp[2] = score[1]+score[2], dp[3] = max(score[1], score[2])+score[3]' },
                 { title: 'In Python/C++!', content: '1-indexed implementation aligns perfectly with the recurrence.<br><span class="lang-py"><code>scores = [0] + [int(input()) for _ in range(n)]</code> pads index 0 so indices stay clean.</span><span class="lang-cpp">Declare <code>int score[301], dp[301];</code> globally and read input starting from index 1. Use <code>max()</code> from <code>&lt;algorithm&gt;</code>.</span>' }
             ],
             inputLabel: 'Number of stairs N',
@@ -2644,7 +2915,7 @@ w(50, 50, 50) = 1048576</pre></div>
             hints: [
                 { title: 'First intuition', content: 'This looks similar to "Climbing Stairs"! The no-3-consecutive condition is the same, so cannot we solve it the same way? Set dp[i] = max amount up to the i-th glass, and look at two cases just like Climbing Stairs...' },
                 { title: 'But there\'s a problem with this', content: 'Wait, there is a <strong>critical difference</strong> from Climbing Stairs! In Climbing Stairs, you "must step on the last stair," but with wine, <strong>you can skip the i-th glass entirely</strong>.<br><br>Because of this difference, the "skip glass i" case is added. If you use the Climbing Stairs recurrence as-is, you will miss this case and get wrong answers!' },
-                { title: 'What if we try this?', content: 'Define <code>dp[i]</code> = max amount when <strong>considering</strong> glasses 1 through i (you may or may not drink glass i!). This gives 3 cases:<br><br>Case 1: <strong>Skip</strong> glass i: <code>dp[i-1]</code><br>Case 2: Drink only glass i (skip i-1): <code>dp[i-2] + wine[i]</code><br>Case 3: Drink i-1 and i consecutively: <code>dp[i-3] + wine[i-1] + wine[i]</code><br><br><code>dp[i] = max(Case 1, Case 2, Case 3)</code><br><br>Compared to Climbing Stairs, Case 1 (skip) is the added case!' },
+                { title: 'What if we try this?', content: 'Define <code>dp[i]</code> = max amount when <strong>considering</strong> glasses 1 through i (you may or may not drink glass i!). This gives 3 cases:<br><br><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.8rem;"><div style="border:1.5px solid var(--text3);border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-weight:600;margin-bottom:3px;">Case 1: Skip</div><span style="padding:2px 6px;border-radius:4px;background:var(--bg3);color:var(--text3);">i</span><div style="margin-top:3px;"><code>dp[i-1]</code></div></div><div style="border:1.5px solid var(--accent);border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-weight:600;margin-bottom:3px;">Case 2: One</div><span style="padding:2px 6px;border-radius:4px;background:var(--bg3);color:var(--text3);">i-1</span> <span style="padding:2px 6px;border-radius:4px;background:var(--accent);color:white;">i</span><div style="margin-top:3px;"><code>dp[i-2]+w[i]</code></div></div><div style="border:1.5px solid var(--green);border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-weight:600;margin-bottom:3px;">Case 3: Two</div><span style="padding:2px 6px;border-radius:4px;background:var(--green);color:white;">i-1</span> <span style="padding:2px 6px;border-radius:4px;background:var(--green);color:white;">i</span><div style="margin-top:3px;"><code>dp[i-3]+w[i-1]+w[i]</code></div></div></div><code>dp[i] = max(Case 1, Case 2, Case 3)</code><br><br>Compared to Climbing Stairs, Case 1 (skip) is the added case!' },
                 { title: 'In Python/C++!', content: '<span class="lang-py"><code>dp[i] = max(dp[i-1], dp[i-2] + wine[i], dp[i-3] + wine[i-1] + wine[i])</code> fits cleanly in one line. Be careful with initial values to avoid index errors when n is 1 or 2.</span><span class="lang-cpp">Use an initializer list: <code>max({dp[i-1], dp[i-2]+wine[i], dp[i-3]+wine[i-1]+wine[i]})</code> to compare all 3. Requires the <code>&lt;algorithm&gt;</code> header.</span>' }
             ],
             inputLabel: 'Number of glasses n',

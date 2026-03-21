@@ -150,6 +150,29 @@ const binarySearchTopic = {
                     Open the middle of the remaining half again... repeat and you'll find it quickly!<br><br>
                     This is exactly <strong>binary search</strong>. It's extremely fast because it <strong>discards half</strong> each time.
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Find a Value with Binary Search</div>
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">
+                        Follow each step of binary search on a sorted array to find the target.<br>
+                        Watch how <strong>half the elements are eliminated</strong> at every step!
+                    </p>
+                    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+                        <label style="font-weight:600;font-size:0.9rem;">Array:
+                            <input type="text" id="bs-demo-intro-arr" value="2, 5, 8, 12, 16, 23, 38, 56, 72, 91" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:260px;">
+                        </label>
+                        <label style="font-weight:600;font-size:0.9rem;">target:
+                            <input type="number" id="bs-demo-intro-target" value="23" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;">
+                        </label>
+                    </div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bs-demo-intro-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-intro-reset">Reset ↺</button>
+                    </div>
+                    <div id="bs-demo-intro-arr-viz" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                    <div id="bs-demo-intro-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
+                    <div id="bs-demo-intro-log" style="padding:12px;background:var(--bg);border-radius:8px;font-size:0.88rem;line-height:1.7;min-height:40px;max-height:220px;overflow-y:auto;"></div>
+                    <div class="concept-demo-msg" id="bs-demo-intro-msg">👆 Press Step to see how binary search halves the search range at each step!</div>
+                </div>
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Binary search basic code
 def binary_search(arr, target):
     lo, hi = 0, len(arr) - 1
@@ -376,6 +399,129 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ── Demo 0: Basic Binary Search Experience (Section 1) ──
+        (function() {
+            var introArrInput = container.querySelector('#bs-demo-intro-arr');
+            var introTargetInput = container.querySelector('#bs-demo-intro-target');
+            var introStepBtn = container.querySelector('#bs-demo-intro-step');
+            var introResetBtn = container.querySelector('#bs-demo-intro-reset');
+            var introArrViz = container.querySelector('#bs-demo-intro-arr-viz');
+            var introPointers = container.querySelector('#bs-demo-intro-pointers');
+            var introLog = container.querySelector('#bs-demo-intro-log');
+            var introMsg = container.querySelector('#bs-demo-intro-msg');
+            if (!introStepBtn) return;
+
+            var introState = { arr: [], steps: [], stepIdx: -1, logLines: [], target: 23 };
+
+            function parseArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+            }
+
+            function introCell(v, i, style) {
+                return '<div style="width:44px;text-align:center;padding:7px 3px;border-radius:8px;font-weight:600;font-size:0.88rem;transition:all 0.3s;' + style + '"><div>' + v + '</div><div style="font-size:0.65rem;color:var(--text3);">[' + i + ']</div></div>';
+            }
+
+            function renderIntroArr(arr, lo, hi, mid, foundIdx) {
+                introArrViz.innerHTML = arr.map(function(v, i) {
+                    if (foundIdx === i) return introCell(v, i, 'background:var(--green);color:white;box-shadow:0 0 10px var(--green);');
+                    if (i === mid) return introCell(v, i, 'background:var(--yellow);color:#333;box-shadow:0 0 8px var(--yellow);');
+                    if (i >= lo && i <= hi) return introCell(v, i, 'background:var(--accent)15;border:2px solid var(--accent);');
+                    return introCell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.5;');
+                }).join('');
+            }
+
+            function buildIntroSteps() {
+                var arr = parseArr(introArrInput.value);
+                if (arr.length < 2) { introMsg.textContent = 'Please enter at least 2 numbers in the array!'; return; }
+                arr.sort(function(a, b) { return a - b; });
+                var target = parseInt(introTargetInput.value);
+                if (isNaN(target)) { introMsg.textContent = 'Please enter a number for target!'; return; }
+
+                introState.arr = arr;
+                introState.target = target;
+                introState.steps = [];
+                introState.stepIdx = -1;
+                introState.logLines = [];
+
+                var lo = 0, hi = arr.length - 1;
+                var round = 0;
+                while (lo <= hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    round++;
+                    if (arr[mid] === target) {
+                        introState.steps.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
+                        break;
+                    } else if (arr[mid] < target) {
+                        introState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, dir: 'right', newLo: mid + 1, newHi: hi, eliminated: mid - lo + 1 });
+                        lo = mid + 1;
+                    } else {
+                        introState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, dir: 'left', newLo: lo, newHi: mid - 1, eliminated: hi - mid + 1 });
+                        hi = mid - 1;
+                    }
+                }
+                if (!introState.steps.length || !introState.steps[introState.steps.length - 1].found) {
+                    introState.steps.push({ failed: true, round: round + 1 });
+                }
+
+                renderIntroArr(arr, 0, arr.length - 1, -1, -1);
+                introPointers.innerHTML = 'lo=0, hi=' + (arr.length - 1) + ' — Starting with the full range';
+                introLog.innerHTML = '';
+                introMsg.textContent = 'Press Step to search for target=' + target + '! (' + introState.steps.length + ' steps)';
+            }
+
+            function introStep() {
+                if (introState.steps.length === 0 || introState.stepIdx >= introState.steps.length - 1) {
+                    buildIntroSteps();
+                    return;
+                }
+                introState.stepIdx++;
+                var s = introState.steps[introState.stepIdx];
+                var arr = introState.arr;
+                var target = introState.target;
+
+                if (s.failed) {
+                    renderIntroArr(arr, 0, 0, -1, -1);
+                    introPointers.innerHTML = '<strong style="color:var(--red);">lo > hi — Search range exhausted!</strong>';
+                    introState.logLines.push('<span style="color:var(--red);font-weight:700;">Result: ' + target + ' is not in the array!</span>');
+                    introMsg.innerHTML = '<strong style="color:var(--red);">Binary search complete — value not found.</strong>';
+                } else if (s.found) {
+                    renderIntroArr(arr, s.lo, s.hi, -1, s.mid);
+                    introPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    introState.logLines.push('<span style="color:var(--green);font-weight:700;">Round ' + s.round + ': arr[' + s.mid + ']=' + arr[s.mid] + ' == ' + target + ' — Found it! 🎉</span>');
+                    introMsg.innerHTML = '<strong style="color:var(--green);">Found in just ' + s.round + ' step(s)!</strong> Out of ' + arr.length + ' elements, halving narrowed it down quickly.';
+                } else {
+                    renderIntroArr(arr, s.lo, s.hi, s.mid, -1);
+                    introPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    var dirText = s.dir === 'right'
+                        ? arr[s.mid] + ' < ' + target + ' — Discard left half (' + s.eliminated + ' elements)!'
+                        : arr[s.mid] + ' > ' + target + ' — Discard right half (' + s.eliminated + ' elements)!';
+                    introState.logLines.push('Round ' + s.round + ': arr[' + s.mid + ']=' + dirText + ' → range [' + s.newLo + '~' + s.newHi + ']');
+                    var remaining = s.newHi - s.newLo + 1;
+                    introMsg.textContent = s.eliminated + ' eliminated at once! Remaining range: ' + remaining + ' elements. Press Step to continue.';
+                }
+                introLog.innerHTML = introState.logLines.join('<br>');
+                introLog.scrollTop = introLog.scrollHeight;
+            }
+
+            function introReset() {
+                var arr = parseArr(introArrInput.value);
+                if (arr.length < 2) arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+                arr.sort(function(a, b) { return a - b; });
+                introState = { arr: arr, steps: [], stepIdx: -1, logLines: [], target: parseInt(introTargetInput.value) || 23 };
+                renderIntroArr(arr, 0, arr.length - 1, -1, -1);
+                introPointers.innerHTML = '';
+                introLog.innerHTML = '';
+                introMsg.textContent = 'Press Step to see how binary search halves the search range at each step!';
+            }
+
+            var defaultArr = parseArr(introArrInput.value);
+            defaultArr.sort(function(a, b) { return a - b; });
+            introState.arr = defaultArr;
+            renderIntroArr(defaultArr, 0, defaultArr.length - 1, -1, -1);
+            introStepBtn.addEventListener('click', introStep);
+            introResetBtn.addEventListener('click', introReset);
+        })();
 
         // ── Demo 1: Search Failure Experience ──
         (function() {

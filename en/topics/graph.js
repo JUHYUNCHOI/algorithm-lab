@@ -443,6 +443,33 @@ var graphTopic = {
                 </tbody>\
                 </table>\
                 </div>\
+\
+                <div class="concept-demo" style="margin-top:1.5rem;">\
+                    <div class="concept-demo-title">Try it — DFS vs BFS on the Same Graph</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Run DFS and BFS on the same graph. Compare how the traversal order differs!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-cmp-dfs" style="background:var(--accent);">Run DFS</button>\
+                        <button class="concept-demo-btn" id="graph-demo-cmp-bfs" style="background:#00b894;">Run BFS</button>\
+                        <button class="concept-demo-btn" id="graph-demo-cmp-reset" style="background:var(--bg2);color:var(--text2);">Reset</button>\
+                        <span id="graph-demo-cmp-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div style="flex:1;min-width:240px;">\
+                                <svg id="graph-demo-cmp-svg" width="320" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--text);" id="graph-demo-cmp-ds-label">Data Structure</div>\
+                                <div id="graph-demo-cmp-ds" style="display:flex;gap:4px;flex-wrap:wrap;min-height:36px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></div>\
+                                <div style="font-weight:600;margin:10px 0 6px;color:var(--text);">Visit Order</div>\
+                                <div id="graph-demo-cmp-order" style="display:flex;gap:6px;flex-wrap:wrap;min-height:32px;"></div>\
+                                <div id="graph-demo-cmp-result" style="margin-top:12px;padding:10px 14px;border-radius:8px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);font-size:0.88rem;display:none;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-cmp-msg">Graph: 1-2, 1-3, 2-4, 3-5, 4-6. Click "Run DFS" or "Run BFS" to compare traversal orders on the same graph!</div>\
+                </div>\
+\
                 <div class="think-box" style="margin-top:1.2rem;">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -990,6 +1017,161 @@ var graphTopic = {
                 stepBtn.disabled = false;
                 reset();
             });
+            reset();
+        })();
+
+        // ========== Demo: DFS vs BFS Comparison Demo ==========
+        (function() {
+            var adj = {1:[2,3], 2:[1,4], 3:[1,5], 4:[2,6], 5:[3], 6:[4]};
+            var positions = [{x:160,y:25},{x:70,y:90},{x:250,y:90},{x:40,y:175},{x:250,y:175},{x:130,y:175}];
+            var edgeList = [[1,2],[1,3],[2,4],[3,5],[4,6]];
+            var nodeLabels = [1,2,3,4,5,6];
+
+            var svgEl = container.querySelector('#graph-demo-cmp-svg');
+            var dsEl = container.querySelector('#graph-demo-cmp-ds');
+            var dsLabel = container.querySelector('#graph-demo-cmp-ds-label');
+            var orderEl = container.querySelector('#graph-demo-cmp-order');
+            var resultEl = container.querySelector('#graph-demo-cmp-result');
+            var dfsBtn = container.querySelector('#graph-demo-cmp-dfs');
+            var bfsBtn = container.querySelector('#graph-demo-cmp-bfs');
+            var resetBtn = container.querySelector('#graph-demo-cmp-reset');
+            var counterEl = container.querySelector('#graph-demo-cmp-counter');
+            var msgEl = container.querySelector('#graph-demo-cmp-msg');
+
+            var steps, stepIdx, mode, autoTimer, dfsResult, bfsResult;
+
+            function buildDfsSteps() {
+                steps = []; mode = 'DFS'; dsLabel.textContent = 'Stack';
+                var vis = {}, stk = [1], ord = [];
+                vis[1] = true;
+                steps.push({node:1, ds:[1], order:[], desc:'DFS start: push vertex 1 onto the stack and mark as visited.', highlight:1, visited:{}});
+                while (stk.length > 0) {
+                    var v = stk.pop();
+                    ord.push(v);
+                    var visSnap = {}; for (var k in vis) visSnap[k]=true; ord.forEach(function(o){visSnap[o]=true;});
+                    steps.push({node:v, ds:stk.slice(), order:ord.slice(), desc:'Pop ' + v + ' from stack. Visit order: ' + ord.join(' → '), highlight:v, visited:visSnap});
+                    var neighbors = adj[v].slice().sort(function(a,b){return b-a;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            stk.push(u);
+                            var visSnap2 = {}; for (var k in vis) visSnap2[k]=true;
+                            steps.push({node:u, ds:stk.slice(), order:ord.slice(), desc:'Push neighbor ' + u + ' of ' + v + ' onto the stack.', highlight:u, visited:visSnap2});
+                        }
+                    });
+                }
+                steps.push({node:null, ds:[], order:ord.slice(), desc:'DFS complete! Visit order: ' + ord.join(' → '), highlight:null, visited:vis});
+                dfsResult = ord.slice();
+            }
+
+            function buildBfsSteps() {
+                steps = []; mode = 'BFS'; dsLabel.textContent = 'Queue';
+                var vis = {}, queue = [1], ord = [];
+                vis[1] = true;
+                steps.push({node:1, ds:[1], order:[], desc:'BFS start: enqueue vertex 1 and mark as visited.', highlight:1, visited:{}});
+                while (queue.length > 0) {
+                    var v = queue.shift();
+                    ord.push(v);
+                    var visSnap = {}; for (var k in vis) visSnap[k]=true; ord.forEach(function(o){visSnap[o]=true;});
+                    steps.push({node:v, ds:queue.slice(), order:ord.slice(), desc:'Dequeue ' + v + '. Visit order: ' + ord.join(' → '), highlight:v, visited:visSnap});
+                    var neighbors = adj[v].slice().sort(function(a,b){return a-b;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            queue.push(u);
+                            var visSnap2 = {}; for (var k in vis) visSnap2[k]=true;
+                            steps.push({node:u, ds:queue.slice(), order:ord.slice(), desc:'Enqueue neighbor ' + u + ' of ' + v + '.', highlight:u, visited:visSnap2});
+                        }
+                    });
+                }
+                steps.push({node:null, ds:[], order:ord.slice(), desc:'BFS complete! Visit order: ' + ord.join(' → '), highlight:null, visited:vis});
+                bfsResult = ord.slice();
+            }
+
+            function renderCmpGraph(step) {
+                var html = '';
+                edgeList.forEach(function(e) {
+                    var a = e[0]-1, b = e[1]-1;
+                    html += '<line x1="'+positions[a].x+'" y1="'+positions[a].y+'" x2="'+positions[b].x+'" y2="'+positions[b].y+'" stroke="var(--bg3)" stroke-width="2.5"/>';
+                });
+                for (var i = 0; i < nodeLabels.length; i++) {
+                    var nd = nodeLabels[i];
+                    var fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                    if (step && step.visited && step.visited[nd]) {
+                        fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white';
+                    }
+                    if (step && step.highlight === nd) {
+                        fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333';
+                    }
+                    html += '<circle cx="'+positions[i].x+'" cy="'+positions[i].y+'" r="22" fill="'+fill+'" stroke="'+stroke+'" stroke-width="3"/>';
+                    html += '<text x="'+positions[i].x+'" y="'+(positions[i].y+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="'+txtColor+'">'+nd+'</text>';
+                }
+                svgEl.innerHTML = html;
+
+                dsEl.innerHTML = '';
+                if (step && step.ds && step.ds.length > 0) {
+                    step.ds.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:5px 12px;background:' + (mode === 'DFS' ? 'var(--accent)' : '#00b894') + ';color:white;border-radius:6px;font-weight:700;font-size:0.88rem;';
+                        div.textContent = nd;
+                        dsEl.appendChild(div);
+                    });
+                } else {
+                    dsEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">Empty</span>';
+                }
+
+                orderEl.innerHTML = '';
+                if (step && step.order) {
+                    step.order.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'width:30px;height:30px;border-radius:50%;background:' + (mode === 'DFS' ? 'var(--accent)' : '#00b894') + ';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;';
+                        div.textContent = nd;
+                        orderEl.appendChild(div);
+                    });
+                }
+            }
+
+            function showResult() {
+                if (dfsResult && bfsResult) {
+                    resultEl.style.display = 'block';
+                    resultEl.innerHTML = '<strong>Comparison</strong><br><span style="color:var(--accent);font-weight:600;">DFS:</span> ' + dfsResult.join(' → ') + '<br><span style="color:#00b894;font-weight:600;">BFS:</span> ' + bfsResult.join(' → ') + '<br><span style="font-size:0.85rem;color:var(--text2);margin-top:4px;display:inline-block;">Same graph, different traversal orders!</span>';
+                }
+            }
+
+            function runAuto() {
+                if (autoTimer) clearInterval(autoTimer);
+                stepIdx = -1;
+                dfsBtn.disabled = true; bfsBtn.disabled = true;
+                autoTimer = setInterval(function() {
+                    stepIdx++;
+                    if (stepIdx >= steps.length) {
+                        clearInterval(autoTimer);
+                        dfsBtn.disabled = false; bfsBtn.disabled = false;
+                        showResult();
+                        return;
+                    }
+                    var s = steps[stepIdx];
+                    renderCmpGraph(s);
+                    counterEl.textContent = (stepIdx + 1) + ' / ' + steps.length;
+                    msgEl.textContent = s.desc;
+                }, 600);
+            }
+
+            function reset() {
+                if (autoTimer) clearInterval(autoTimer);
+                steps = []; stepIdx = -1; mode = '';
+                dfsResult = null; bfsResult = null;
+                dsLabel.textContent = 'Data Structure';
+                resultEl.style.display = 'none';
+                renderCmpGraph(null);
+                counterEl.textContent = '';
+                msgEl.textContent = 'Graph: 1-2, 1-3, 2-4, 3-5, 4-6. Click "Run DFS" or "Run BFS" to compare traversal orders on the same graph!';
+                dfsBtn.disabled = false; bfsBtn.disabled = false;
+            }
+
+            dfsBtn.addEventListener('click', function() { buildDfsSteps(); runAuto(); });
+            bfsBtn.addEventListener('click', function() { buildBfsSteps(); runAuto(); });
+            resetBtn.addEventListener('click', reset);
             reset();
         })();
 

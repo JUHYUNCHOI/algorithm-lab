@@ -299,7 +299,31 @@ var priorityQueueTopic = {
                 </div>\
             </div>\
 \
-            <span class="lang-py"><div class="concept-section">\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">4</span> <span class="lang-py">파이썬의 heapq</span><span class="lang-cpp">C++의 priority_queue</span> 사용법</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 최소 힙 vs 최대 힙</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">숫자를 push하고, 최소 힙 / 최대 힙에서 pop하면 어떤 순서로 나오는지 비교하세요!</p>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">\
+                            <input type="text" id="pq-s4-input" value="5,1,8,3" placeholder="쉼표 구분" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
+                            <button class="concept-demo-btn" id="pq-s4-go">Push 후 전부 Pop</button>\
+                        </div>\
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:140px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">최소 힙 (Min)</div>\
+                                <div id="pq-s4-min" style="font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:140px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">최대 힙 (Max)</div>\
+                                <div id="pq-s4-max" style="font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-s4-msg"><span class="lang-py">Python heapq는 기본 최소 힙. 최대 힙은 -1 곱하기 트릭!</span><span class="lang-cpp">C++ priority_queue는 기본 최대 힙. 최소 힙은 greater&lt;&gt; 사용!</span></div>\
+                </div>\
+            </div>\
+            <span class="lang-py"><div class="concept-section" style="margin-top:0;">\
                 <div class="concept-section-title"><span class="section-num">4</span> 파이썬의 heapq 사용법</div>\
                 <div style="margin:0.5rem 0 0.8rem;">\
                     <a href="https://docs.python.org/3/library/heapq.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: heapq ↗</a>\
@@ -494,6 +518,29 @@ var priorityQueueTopic = {
             }
             if (heap.length <= 1) arrEl.innerHTML = '<span style="color:var(--text3);">비어있음</span>';
         }
+
+        // ===== 섹션 4 데모: 최소 힙 vs 최대 힙 =====
+        (function() {
+            var inputEl = container.querySelector('#pq-s4-input');
+            var minEl = container.querySelector('#pq-s4-min');
+            var maxEl = container.querySelector('#pq-s4-max');
+            var goBtn = container.querySelector('#pq-s4-go');
+            if (!goBtn) return;
+            goBtn.addEventListener('click', function() {
+                var vals = inputEl.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+                if (!vals.length) return;
+                var sorted = vals.slice().sort(function(a,b) { return a-b; });
+                var rSorted = vals.slice().sort(function(a,b) { return b-a; });
+                var minBoxes = sorted.map(function(v,i) {
+                    return '<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--green);color:#fff;font-weight:700;font-size:0.9rem;">' + v + '</span>';
+                }).join(' → ');
+                var maxBoxes = rSorted.map(function(v,i) {
+                    return '<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;font-size:0.9rem;">' + v + '</span>';
+                }).join(' → ');
+                minEl.innerHTML = 'Pop 순서: ' + minBoxes;
+                maxEl.innerHTML = 'Pop 순서: ' + maxBoxes;
+            });
+        })();
 
         // ===== Demo 1: 큐 vs 우선순위 큐 =====
         {

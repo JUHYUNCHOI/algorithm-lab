@@ -157,6 +157,19 @@ var divideConquerTopic = {
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 이진 탐색 (분할정복의 가장 간단한 예)\ndef binary_search(arr, target, lo, hi):\n    if lo > hi:\n        return -1                    # 기저 조건: 찾을 범위 없음\n    mid = (lo + hi) // 2\n    if arr[mid] == target:\n        return mid                   # 찾았다!\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, hi)  # 오른쪽 절반\n    else:\n        return binary_search(arr, target, lo, mid - 1)  # 왼쪽 절반</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 이진 탐색 (분할정복의 가장 간단한 예)\nint binary_search(vector&lt;int&gt;&amp; arr, int target, int lo, int hi) {\n    if (lo &gt; hi)\n        return -1;                   // 기저 조건: 찾을 범위 없음\n    int mid = (lo + hi) / 2;\n    if (arr[mid] == target)\n        return mid;                  // 찾았다!\n    else if (arr[mid] &lt; target)\n        return binary_search(arr, target, mid + 1, hi);  // 오른쪽 절반\n    else\n        return binary_search(arr, target, lo, mid - 1);  // 왼쪽 절반\n}</code></pre></div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 종이 반으로 접기 — 분할정복의 핵심</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-fold-btn">✂️ 반으로 나누기</button>\
+                        <button class="concept-demo-btn green" id="dc-inline-fold-reset">↺ 처음으로</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-fold-viz" style="display:flex;gap:4px;flex-wrap:wrap;align-items:flex-end;min-height:60px;"></div>\
+                        <div id="dc-inline-fold-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 "반으로 나누기"를 계속 눌러보세요! 큰 종이가 어떻게 작아지는지 확인하세요.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -213,6 +226,19 @@ var divideConquerTopic = {
 \
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 합병 정렬 (Merge Sort) — 분할정복의 대표 예시\ndef merge_sort(arr):\n    if len(arr) <= 1:       # 기저 조건\n        return arr\n\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])    # 1. 왼쪽 절반 정렬\n    right = merge_sort(arr[mid:])   # 1. 오른쪽 절반 정렬\n    return merge(left, right)       # 3. 합치기\n\ndef merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// 합병 정렬 (Merge Sort) — 분할정복의 대표 예시\n#include &lt;vector&gt;\nusing namespace std;\n\nvector&lt;int&gt; merge(vector&lt;int&gt;&amp; left, vector&lt;int&gt;&amp; right) {\n    vector&lt;int&gt; result;\n    int i = 0, j = 0;\n    while (i &lt; left.size() &amp;&amp; j &lt; right.size()) {\n        if (left[i] &lt;= right[j])\n            result.push_back(left[i++]);\n        else\n            result.push_back(right[j++]);\n    }\n    while (i &lt; left.size()) result.push_back(left[i++]);   // 왼쪽 나머지\n    while (j &lt; right.size()) result.push_back(right[j++]); // 오른쪽 나머지\n    return result;\n}\n\nvector&lt;int&gt; merge_sort(vector&lt;int&gt; arr) {\n    if (arr.size() &lt;= 1) return arr;  // 기저 조건\n\n    int mid = arr.size() / 2;\n    // vector 슬라이싱 (Python arr[:mid], arr[mid:]에 대응)\n    vector&lt;int&gt; left(arr.begin(), arr.begin() + mid);   // 1. 왼쪽 절반\n    vector&lt;int&gt; right(arr.begin() + mid, arr.end());     // 1. 오른쪽 절반\n    left = merge_sort(left);    // 2. 왼쪽 정렬\n    right = merge_sort(right);  // 2. 오른쪽 정렬\n    return merge(left, right);  // 3. 합치기\n}</code></pre></div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 3단계 체험 — [6, 2, 8, 1]을 합병 정렬</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-3step-btn">다음 단계 ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-inline-3step-reset">↺ 처음으로</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-3step-viz" style="text-align:center;min-height:80px;font-family:monospace;line-height:2;"></div>\
+                        <div id="dc-inline-3step-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 "다음 단계"를 눌러 나누기 → 풀기 → 합치기 과정을 확인하세요!</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -274,6 +300,19 @@ var divideConquerTopic = {
                     • <strong>DP</strong>: 부분 문제가 서로 <span style="color:var(--green)">겹침</span> → 저장해서 재사용해야 빠름<br>\
                     예) 합병 정렬: 왼쪽/오른쪽 독립 → <strong>분할정복</strong> | 피보나치: F(3)을 여러 번 계산 → <strong>DP</strong><br>\
                     <a href="https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: 마스터 정리 (Master Theorem) ↗</a> — 분할정복의 시간 복잡도를 쉽게 구하는 공식\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 겹침 여부 비교 — 한눈에 보기</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-cmp-dc">분할정복 (합병정렬)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-cmp-dp">DP (피보나치)</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-cmp-viz" style="font-family:monospace;font-size:0.85rem;line-height:1.8;min-height:80px;overflow-x:auto;white-space:pre;"></div>\
+                        <div id="dc-inline-cmp-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 버튼을 눌러 호출 구조를 비교하세요! 겹치는 부분이 있는지 확인!</div>\
                 </div>\
 \
                 <div class="think-box">\
@@ -342,6 +381,21 @@ var divideConquerTopic = {
                     </div>\
                 </div>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 패턴 시각화 — 분할 방식 비교</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-pat-half">2등분 (이진탐색)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-pat-quad">4등분 (쿼드트리)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-pat-nine">9등분 (종이의 개수)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-pat-exp">지수 반분 (거듭제곱)</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-pat-viz" style="display:flex;justify-content:center;align-items:center;min-height:110px;gap:12px;flex-wrap:wrap;"></div>\
+                        <div id="dc-inline-pat-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 각 패턴 버튼을 눌러 분할 방식의 차이를 비교하세요!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -393,6 +447,20 @@ var divideConquerTopic = {
                         <h3>③ 합치는 방법 정하기</h3>\
                         <p>작은 문제의 결과를 어떻게 합칠지 정합니다. <strong>더하기? 곱하기? 최댓값?</strong> 문제마다 다릅니다.</p>\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 3단계 체험 — "배열 최대값" 문제를 분할정복으로</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-solve-btn">다음 ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-inline-solve-reset">↺ 처음으로</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-solve-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="dc-inline-solve-tree" style="font-family:monospace;font-size:0.85rem;line-height:2;min-height:60px;overflow-x:auto;white-space:pre;"></div>\
+                        <div id="dc-inline-solve-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 "다음"을 눌러 ① 기저조건 ② 나누기 ③ 합치기의 3단계를 체험하세요!</div>\
                 </div>\
 \
                 <div class="think-box">\
@@ -532,6 +600,190 @@ var divideConquerTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== 인라인 데모 §1: 종이 접기 ======
+        (function() {
+            var foldBtn = container.querySelector('#dc-inline-fold-btn');
+            var foldReset = container.querySelector('#dc-inline-fold-reset');
+            var foldViz = container.querySelector('#dc-inline-fold-viz');
+            var foldMsg = container.querySelector('#dc-inline-fold-msg');
+            if (!foldBtn) return;
+            var pieces = [1]; // 조각 수 배열
+            var step = 0;
+            function render() {
+                foldViz.innerHTML = '';
+                var w = Math.max(120 / pieces.length, 24);
+                pieces.forEach(function(_, i) {
+                    var box = document.createElement('div');
+                    box.style.cssText = 'width:' + w + 'px;height:50px;border:2px solid var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--accent);font-weight:700;background:var(--accent)10;transition:all 0.3s;';
+                    box.textContent = (i + 1);
+                    foldViz.appendChild(box);
+                });
+                if (step === 0) foldMsg.innerHTML = '<strong>시작</strong>: 종이 1장. 이제 반으로 나눠봅시다!';
+                else if (pieces.length >= 16) foldMsg.innerHTML = '<strong>기저 조건 도달!</strong> 더 이상 나눌 수 없을 만큼 작아졌습니다. 이것이 분할정복의 "기저 조건"입니다.';
+                else foldMsg.innerHTML = '<strong>' + step + '번 분할</strong>: ' + pieces.length + '조각이 되었습니다. 매번 2배씩 늘어나는 걸 확인하세요!';
+            }
+            render();
+            foldBtn.addEventListener('click', function() {
+                if (pieces.length >= 16) return;
+                step++;
+                var newPieces = [];
+                for (var i = 0; i < pieces.length * 2; i++) newPieces.push(1);
+                pieces = newPieces;
+                render();
+            });
+            foldReset.addEventListener('click', function() {
+                pieces = [1]; step = 0; render();
+            });
+        })();
+
+        // ====== 인라인 데모 §2: 3단계 체험 ======
+        (function() {
+            var stepBtn = container.querySelector('#dc-inline-3step-btn');
+            var resetBtn = container.querySelector('#dc-inline-3step-reset');
+            var vizEl = container.querySelector('#dc-inline-3step-viz');
+            var msgEl = container.querySelector('#dc-inline-3step-msg');
+            if (!stepBtn) return;
+            var frames = [
+                { viz: '<span style="padding:6px 14px;background:var(--accent)15;border:2px solid var(--accent);border-radius:8px;font-size:1rem;">[6, 2, 8, 1]</span>', msg: '<strong>시작</strong>: 정렬되지 않은 배열 [6, 2, 8, 1]' },
+                { viz: '<span style="padding:6px 14px;background:var(--red)15;border:2px solid var(--red);border-radius:8px;">[6, 2]</span> <span style="font-size:1.2rem;color:var(--red);">✂️</span> <span style="padding:6px 14px;background:var(--red)15;border:2px solid var(--red);border-radius:8px;">[8, 1]</span>', msg: '<strong>1단계 나누기(Divide)</strong>: 반으로 쪼갭니다 → [6,2]와 [8,1]' },
+                { viz: '<span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[6]</span> <span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[2]</span> &nbsp;&nbsp; <span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[8]</span> <span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[1]</span>', msg: '<strong>계속 나누기</strong>: 더 이상 나눌 수 없을 때까지! 크기 1이면 기저 조건.' },
+                { viz: '<span style="padding:6px 14px;background:var(--green)15;border:2px solid var(--green);border-radius:8px;">[2, 6]</span> &nbsp;&nbsp; <span style="padding:6px 14px;background:var(--green)15;border:2px solid var(--green);border-radius:8px;">[1, 8]</span>', msg: '<strong>2단계 풀기(Conquer)</strong>: 각 쌍을 비교해서 정렬! 2<6, 1<8' },
+                { viz: '<span style="padding:6px 14px;background:var(--green)15;border:2px solid var(--green);border-radius:8px;font-size:1rem;box-shadow:0 0 10px var(--green)40;">[1, 2, 6, 8]</span>', msg: '<strong>3단계 합치기(Combine)</strong>: 정렬된 [2,6]과 [1,8]을 합쳐서 최종 결과!' }
+            ];
+            var idx = 0;
+            function render() {
+                vizEl.innerHTML = frames[idx].viz;
+                msgEl.innerHTML = frames[idx].msg;
+                stepBtn.disabled = idx >= frames.length - 1;
+            }
+            render();
+            stepBtn.addEventListener('click', function() {
+                if (idx < frames.length - 1) { idx++; render(); }
+            });
+            resetBtn.addEventListener('click', function() { idx = 0; render(); });
+        })();
+
+        // ====== 인라인 데모 §3: 겹침 비교 ======
+        (function() {
+            var dcBtn = container.querySelector('#dc-inline-cmp-dc');
+            var dpBtn = container.querySelector('#dc-inline-cmp-dp');
+            var vizEl = container.querySelector('#dc-inline-cmp-viz');
+            var msgEl = container.querySelector('#dc-inline-cmp-msg');
+            if (!dcBtn) return;
+            dcBtn.addEventListener('click', function() {
+                vizEl.innerHTML =
+                    '<div style="white-space:pre;font-size:0.8rem;line-height:1.7;">       <span style="background:var(--accent)20;padding:2px 6px;border-radius:4px;">sort([5,3,1,4])</span>\n' +
+                    '       /           \\\n' +
+                    '  <span style="background:#e1705520;padding:2px 6px;border-radius:4px;">sort([5,3])</span>    <span style="background:#00b89420;padding:2px 6px;border-radius:4px;">sort([1,4])</span>\n' +
+                    '   /    \\       /    \\\n' +
+                    ' <span style="background:#fdcb6e40;padding:2px 6px;border-radius:4px;">[5]</span>   <span style="background:#fdcb6e40;padding:2px 6px;border-radius:4px;">[3]</span>    <span style="background:#0984e340;padding:2px 6px;border-radius:4px;">[1]</span>   <span style="background:#0984e340;padding:2px 6px;border-radius:4px;">[4]</span></div>';
+                msgEl.innerHTML = '<span style="color:var(--accent);font-weight:600;">겹치는 부분 문제 없음!</span> 각 조각은 서로 독립적 → <strong>분할정복</strong>에 적합';
+            });
+            dpBtn.addEventListener('click', function() {
+                vizEl.innerHTML =
+                    '<div style="white-space:pre;font-size:0.8rem;line-height:1.7;">         <span style="background:var(--accent)20;padding:2px 6px;border-radius:4px;">F(5)</span>\n' +
+                    '        /     \\\n' +
+                    '     <span style="background:#e1705520;padding:2px 6px;border-radius:4px;">F(4)</span>    <span style="background:#00b89420;padding:2px 6px;border-radius:4px;">F(3)</span>\n' +
+                    '     /  \\    /  \\\n' +
+                    '  <span style="background:#00b89420;padding:2px 6px;border-radius:4px;">F(3)</span> <span style="background:var(--red)20;padding:2px 6px;border-radius:4px;border:1px dashed var(--red);">F(2)</span> <span style="background:var(--red)20;padding:2px 6px;border-radius:4px;border:1px dashed var(--red);">F(2)</span> <span style="background:#fdcb6e40;padding:2px 6px;border-radius:4px;">F(1)</span></div>';
+                msgEl.innerHTML = '<span style="color:var(--red);font-weight:600;">F(3), F(2)가 반복 계산됨!</span> 부분 문제가 겹침 → <strong>DP</strong>로 저장해서 재사용해야 효율적';
+            });
+        })();
+
+        // ====== 인라인 데모 §4: 패턴 시각화 ======
+        (function() {
+            var halfBtn = container.querySelector('#dc-inline-pat-half');
+            var quadBtn = container.querySelector('#dc-inline-pat-quad');
+            var nineBtn = container.querySelector('#dc-inline-pat-nine');
+            var expBtn = container.querySelector('#dc-inline-pat-exp');
+            var vizEl = container.querySelector('#dc-inline-pat-viz');
+            var msgEl = container.querySelector('#dc-inline-pat-msg');
+            if (!halfBtn) return;
+            function makeBar(w, h, color, label) {
+                return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:' + w + 'px;height:' + h + 'px;border:2px solid ' + color + ';border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:' + color + ';font-weight:600;background:' + color + '10;">' + label + '</div></div>';
+            }
+            function makeGrid(rows, cols, size, color) {
+                var html = '<div style="display:grid;grid-template-columns:repeat(' + cols + ',' + size + 'px);gap:2px;">';
+                for (var i = 0; i < rows * cols; i++) {
+                    html += '<div style="width:' + size + 'px;height:' + size + 'px;border:2px solid ' + color + ';border-radius:4px;background:' + color + '10;"></div>';
+                }
+                return html + '</div>';
+            }
+            halfBtn.addEventListener('click', function() {
+                vizEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;">' +
+                    makeBar(160, 40, 'var(--accent)', '전체 배열') +
+                    '<span style="font-size:1.5rem;color:var(--red);">→</span>' +
+                    makeBar(75, 40, 'var(--green)', '왼쪽') + makeBar(75, 40, '#e17055', '오른쪽') + '</div>';
+                msgEl.innerHTML = '<strong>2등분</strong>: 배열을 절반으로 나눕니다. 이진탐색, 합병정렬의 패턴. T(n) = 2T(n/2) + O(n)';
+            });
+            quadBtn.addEventListener('click', function() {
+                vizEl.innerHTML = '<div style="display:flex;align-items:center;gap:14px;">' +
+                    makeGrid(1, 1, 80, 'var(--accent)') +
+                    '<span style="font-size:1.5rem;color:var(--red);">→</span>' +
+                    makeGrid(2, 2, 36, 'var(--green)') + '</div>';
+                msgEl.innerHTML = '<strong>4등분</strong>: 2D 영역을 4조각으로. 색종이(2630), 쿼드트리(1992)의 패턴. T(n) = 4T(n/2) + O(n²)';
+            });
+            nineBtn.addEventListener('click', function() {
+                vizEl.innerHTML = '<div style="display:flex;align-items:center;gap:14px;">' +
+                    makeGrid(1, 1, 80, 'var(--accent)') +
+                    '<span style="font-size:1.5rem;color:var(--red);">→</span>' +
+                    makeGrid(3, 3, 24, '#e17055') + '</div>';
+                msgEl.innerHTML = '<strong>9등분</strong>: 2D 영역을 9조각으로. 종이의 개수(1780)의 패턴. T(n) = 9T(n/3) + O(n²)';
+            });
+            expBtn.addEventListener('click', function() {
+                vizEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-family:monospace;font-size:0.95rem;">' +
+                    '<span style="padding:6px 14px;background:#6c5ce720;border:2px solid #6c5ce7;border-radius:8px;">a<sup>8</sup></span>' +
+                    '<span style="color:var(--red);font-size:1.2rem;">→</span>' +
+                    '<span style="padding:6px 14px;background:#6c5ce720;border:2px solid #6c5ce7;border-radius:8px;">(a<sup>4</sup>)²</span>' +
+                    '<span style="color:var(--red);font-size:1.2rem;">→</span>' +
+                    '<span style="padding:6px 14px;background:#6c5ce720;border:2px solid #6c5ce7;border-radius:8px;">((a²)²)²</span>' +
+                    '<span style="color:var(--green);font-size:1.2rem;font-weight:700;"> = 3번!</span></div>';
+                msgEl.innerHTML = '<strong>지수 반분</strong>: 지수를 반으로 나눠 곱셈 횟수를 O(log n)으로 줄입니다. 빠른 거듭제곱(1629)의 패턴.';
+            });
+        })();
+
+        // ====== 인라인 데모 §5: 3단계 풀기 체험 ======
+        (function() {
+            var stepBtn = container.querySelector('#dc-inline-solve-btn');
+            var resetBtn = container.querySelector('#dc-inline-solve-reset');
+            var arrEl = container.querySelector('#dc-inline-solve-arr');
+            var treeEl = container.querySelector('#dc-inline-solve-tree');
+            var msgEl = container.querySelector('#dc-inline-solve-msg');
+            if (!stepBtn) return;
+            var data = [3, 7, 1, 9, 4, 6];
+            var frames = [
+                { hl: [], tree: '', msg: '<strong>문제</strong>: 배열 [3,7,1,9,4,6]에서 최대값을 분할정복으로 찾자!' },
+                { hl: [0,1,2], tree: '① 기저 조건: 원소가 1개면 그 자체가 최대값', msg: '<strong>① 기저 조건 정하기</strong>: 배열 크기가 1이면 → 그 값이 답!' },
+                { hl: [0,1,2,3,4,5], tree: '② 나누기: [3,7,1] | [9,4,6]', msg: '<strong>② 나누기</strong>: 배열을 반으로 나눕니다. 왼쪽 [3,7,1], 오른쪽 [9,4,6]' },
+                { hl: [0,1,2], tree: '② 나누기: [3,7,1] | [9,4,6]\n   왼쪽: max([3,7,1]) → [3] | [7,1] → [7] | [1]', msg: '<strong>왼쪽 재귀</strong>: [3,7,1]을 또 나누고... 기저 조건에 도달!' },
+                { hl: [0,1,2], tree: '② 나누기: [3,7,1] | [9,4,6]\n   왼쪽: max([3,7,1]) → max(3, max(7,1)) → max(3, 7) = 7', msg: '<strong>왼쪽 결과</strong>: max(7,1)=7, max(3,7)=<span style="color:var(--green);font-weight:700;">7</span>' },
+                { hl: [3,4,5], tree: '② 나누기: [3,7,1] | [9,4,6]\n   왼쪽 = 7\n   오른쪽: max([9,4,6]) → max(9, max(4,6)) → max(9, 6) = 9', msg: '<strong>오른쪽 결과</strong>: max(4,6)=6, max(9,6)=<span style="color:var(--green);font-weight:700;">9</span>' },
+                { hl: [3], tree: '③ 합치기: max(왼쪽=7, 오른쪽=9) = 9', msg: '<strong>③ 합치기</strong>: max(7, 9) = <span style="color:var(--green);font-weight:700;font-size:1.1rem;">9</span> 가 최종 답!' }
+            ];
+            var idx = 0;
+            function render() {
+                arrEl.innerHTML = '';
+                data.forEach(function(v, i) {
+                    var box = document.createElement('div');
+                    box.className = 'str-char-box';
+                    box.innerHTML = '<div class="str-char-val">' + v + '</div>';
+                    if (frames[idx].hl.indexOf(i) >= 0) {
+                        box.style.borderColor = 'var(--yellow)';
+                        box.style.boxShadow = '0 0 6px var(--yellow)';
+                    }
+                    arrEl.appendChild(box);
+                });
+                treeEl.innerHTML = frames[idx].tree;
+                msgEl.innerHTML = frames[idx].msg;
+                stepBtn.disabled = idx >= frames.length - 1;
+            }
+            render();
+            stepBtn.addEventListener('click', function() {
+                if (idx < frames.length - 1) { idx++; render(); }
+            });
+            resetBtn.addEventListener('click', function() { idx = 0; render(); });
+        })();
 
         // ====== 데모 1: 이진 탐색 ======
         (function() {
@@ -2635,7 +2887,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: '종이를 보고 "흰색 몇 개, 파란색 몇 개"를 세야 하니까, 일단 <strong>모든 칸을 하나하나 확인</strong>하면 되지 않을까?<br><br>근데 잠깐 — 문제를 다시 읽어보면, 단순히 칸 수를 세는 게 아니라 <strong>"같은 색으로 이루어진 색종이 조각의 수"</strong>를 세는 거야. 즉, 영역 전체가 같은 색이어야 하나의 색종이로 인정된다는 뜻이야.' },
-                { title: '근데 이러면 문제가 있어', content: '그럼 "이 영역이 전부 같은 색인지" 어떻게 판단할까?<br><br>전체 종이가 같은 색이면 끝이지만, 아니면? 문제 규칙을 보면 <strong>4등분</strong>해서 각 부분을 다시 확인하라고 해. 이게 바로 <strong>분할정복</strong>이야!<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;margin-top:8px;font-size:0.9rem;">전체 확인 → 안 되면 4등분 → 각 부분 확인 → 안 되면 또 4등분 → ... → 1×1이면 무조건 카운트</div>' },
+                { title: '근데 이러면 문제가 있어', content: '그럼 "이 영역이 전부 같은 색인지" 어떻게 판단할까?<br><br>전체 종이가 같은 색이면 끝이지만, 아니면? 문제 규칙을 보면 <strong>4등분</strong>해서 각 부분을 다시 확인하라고 해. 이게 바로 <strong>분할정복</strong>이야!<br><br><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0;"><div style="display:grid;grid-template-columns:repeat(4,22px);gap:2px;"><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--accent)30;border:1px solid var(--accent);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div><div style="width:22px;height:22px;background:var(--green)30;border:1px solid var(--green);border-radius:3px;"></div></div><span style="font-size:1.3rem;color:var(--red);">→</span><div style="display:grid;grid-template-columns:repeat(2,48px);gap:6px;"><div style="width:48px;height:48px;border:2px solid var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text2);">혼합</div><div style="width:48px;height:48px;border:2px solid var(--green);border-radius:4px;background:var(--green)15;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--green);font-weight:600;">파랑!</div><div style="width:48px;height:48px;border:2px solid var(--accent);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--text2);">혼합</div><div style="width:48px;height:48px;border:2px solid var(--green);border-radius:4px;background:var(--green)15;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--green);font-weight:600;">파랑!</div></div></div><div style="background:var(--bg2);padding:12px;border-radius:8px;margin-top:8px;font-size:0.9rem;">전체 확인 → 안 되면 4등분 → 각 부분 확인 → 안 되면 또 4등분 → ... → 1×1이면 무조건 카운트</div>' },
                 { title: '이렇게 하면 어떨까?', content: '<code>solve(r, c, size)</code> 함수를 만들자:<br><br>① (r,c)부터 size×size 영역의 모든 칸이 같은 색인지 확인<br>② 같으면 → 해당 색 카운트 +1, 끝!<br>③ 다르면 → <code>half = size / 2</code>로 4등분해서 각각 재귀 호출<br><br><strong>기저 조건</strong>: 영역이 1×1이면 무조건 그 칸의 색을 카운트해. 더 나눌 수 없으니까!<br><br>시간복잡도는 매 단계마다 모든 칸을 확인하고, 깊이가 log₂N이니까 <strong>O(N² log N)</strong>이야.' }
             ],
             templates: {
@@ -2682,7 +2934,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: '앞에서 풀었던 색종이 만들기(2630)랑 비슷하지 않아? 영역이 전부 같은 값이면 그 값을 쓰고, 아니면 4등분하는 구조!<br><br>근데 이번에는 카운트가 아니라 <strong>문자열로 표현</strong>해야 해. "압축 결과"를 문자열로 만들어서 반환하는 거지.' },
-                { title: '근데 이러면 문제가 있어', content: '카운트는 전역 변수 하나로 됐는데, 문자열은 어떻게 합칠까?<br><br>핵심은 <strong>재귀 함수가 문자열을 반환</strong>하게 만드는 거야:<br>• 모두 같으면 → 그 값("0" 또는 "1") 반환<br>• 다르면 → 4등분한 결과를 <strong>괄호로 감싸서</strong> 반환<br><br>순서는 <strong>좌상 → 우상 → 좌하 → 우하</strong>야. 이걸 잘못하면 틀리니까 주의!' },
+                { title: '근데 이러면 문제가 있어', content: '카운트는 전역 변수 하나로 됐는데, 문자열은 어떻게 합칠까?<br><br>핵심은 <strong>재귀 함수가 문자열을 반환</strong>하게 만드는 거야:<br>• 모두 같으면 → 그 값("0" 또는 "1") 반환<br>• 다르면 → 4등분한 결과를 <strong>괄호로 감싸서</strong> 반환<br><br><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;"><div style="display:grid;grid-template-columns:repeat(2,28px);gap:2px;border:2px solid var(--accent);border-radius:4px;padding:4px;"><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;font-weight:700;border-radius:3px;background:var(--green)20;color:var(--green);">①</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;font-weight:700;border-radius:3px;background:#e1705520;color:#e17055;">②</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;font-weight:700;border-radius:3px;background:#0984e320;color:#0984e3;">③</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;font-weight:700;border-radius:3px;background:#fdcb6e40;color:#e17055;">④</div></div><span style="color:var(--text2);font-size:0.85rem;">= <code>(①②③④)</code></span></div>순서는 <strong>좌상① → 우상② → 좌하③ → 우하④</strong>야. 이걸 잘못하면 틀리니까 주의!' },
                 { title: '이렇게 하면 어떨까?', content: '함수 구조는 이렇게:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;"><code>solve(r, c, size)</code>:<br>① 영역 전체 같은 값? → 그 값 반환<br>② 아니면 → <code>"(" + solve(좌상) + solve(우상) + solve(좌하) + solve(우하) + ")"</code></div><br>색종이 문제에서 "카운트 +1"이 "문자열 반환"으로 바뀌고, "재귀 호출"이 "문자열 이어붙이기"로 바뀐 것뿐이야. 구조는 완전히 동일해!' }
             ],
             templates: {
@@ -2729,7 +2981,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: '색종이 만들기(2630)랑 구조가 거의 같아 보여! 영역이 전부 같은 값이면 카운트하고, 아니면 나눠서 재귀 호출하면 되겠지?<br><br>근데 한 가지 다른 점이 있어 — 이번에는 값이 2가지(흰/파)가 아니라 <strong>3가지(-1, 0, 1)</strong>야. 카운터도 3개 필요해.' },
-                { title: '근데 이러면 문제가 있어', content: '색종이는 4등분(2×2)이었는데, 이 문제는 N이 3의 거듭제곱이야. 4등분하면 안 맞아!<br><br>N = 3<sup>k</sup> 형태이니까 <strong>9등분(3×3)</strong>으로 나눠야 해. <code>third = size / 3</code>으로 나누고, 3×3 = <strong>9번</strong> 재귀 호출하는 거야.<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">4등분(2×2) → <code>half = size/2</code>, 4번 호출<br>9등분(3×3) → <code>third = size/3</code>, 9번 호출</div>' },
+                { title: '근데 이러면 문제가 있어', content: '색종이는 4등분(2×2)이었는데, 이 문제는 N이 3의 거듭제곱이야. 4등분하면 안 맞아!<br><br>N = 3<sup>k</sup> 형태이니까 <strong>9등분(3×3)</strong>으로 나눠야 해. <code>third = size / 3</code>으로 나누고, 3×3 = <strong>9번</strong> 재귀 호출하는 거야.<br><br><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:10px 0;"><div style="text-align:center;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:4px;">색종이 (4등분)</div><div style="display:grid;grid-template-columns:repeat(2,28px);gap:2px;"><div style="width:28px;height:28px;border:2px solid var(--accent);border-radius:3px;background:var(--accent)10;"></div><div style="width:28px;height:28px;border:2px solid var(--accent);border-radius:3px;background:var(--accent)10;"></div><div style="width:28px;height:28px;border:2px solid var(--accent);border-radius:3px;background:var(--accent)10;"></div><div style="width:28px;height:28px;border:2px solid var(--accent);border-radius:3px;background:var(--accent)10;"></div></div></div><div style="text-align:center;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:4px;">이 문제 (9등분)</div><div style="display:grid;grid-template-columns:repeat(3,22px);gap:2px;"><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div><div style="width:22px;height:22px;border:2px solid #e17055;border-radius:3px;background:#e1705510;"></div></div></div></div><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">4등분(2×2) → <code>half = size/2</code>, 4번 호출<br>9등분(3×3) → <code>third = size/3</code>, 9번 호출</div>' },
                 { title: '이렇게 하면 어떨까?', content: '색종이 코드에서 바꿀 부분만 정리하면:<br><br>① <code>half = size // 2</code> → <code>third = size // 3</code><br>② 2중 반복 (0, half) → 2중 반복 <code>range(3)</code><br>③ 카운터: 흰/파 2개 → -1, 0, 1 3개<br><br>N이 최대 2187(= 3<sup>7</sup>)이라 재귀 깊이는 최대 7 — 스택 오버플로우 걱정은 없어!<br><br><span class="lang-py">Python에서는 <code>cnt = {-1: 0, 0: 0, 1: 0}</code> 딕셔너리로 세면 깔끔해.</span><span class="lang-cpp">C++에서는 <code>cnt[first + 1]++</code>로 인덱스 매핑하면 돼 (-1→0, 0→1, 1→2).</span>' }
             ],
             templates: {
@@ -2778,7 +3030,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: 'A를 B번 곱하면 되니까, 반복문으로 A를 B번 곱하면 되지 않을까?<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;"><code>result = 1</code><br><code>for i in range(B): result = result * A % C</code></div><br>간단해 보이지?' },
-                { title: '근데 이러면 문제가 있어', content: 'B가 최대 <strong>2,147,483,647</strong>(약 21억)이야! 반복문 21억 번이면 시간 초과 확정이야.<br><br>그런데 한 가지 수학적 성질을 떠올려봐:<br>• A<sup>8</sup> = A × A × A × A × A × A × A × A (8번 곱셈)<br>• A<sup>8</sup> = (A<sup>4</sup>)<sup>2</sup> = ((A<sup>2</sup>)<sup>2</sup>)<sup>2</sup> (<strong>3번</strong> 곱셈!)<br><br>지수를 <strong>반으로 나누면</strong> 곱셈 횟수가 확 줄어들어!' },
+                { title: '근데 이러면 문제가 있어', content: 'B가 최대 <strong>2,147,483,647</strong>(약 21억)이야! 반복문 21억 번이면 시간 초과 확정이야.<br><br>그런데 한 가지 수학적 성질을 떠올려봐:<br><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;"><div style="padding:6px 10px;background:var(--red)15;border:1.5px solid var(--red);border-radius:6px;font-size:0.85rem;font-family:monospace;">A×A×A×A×A×A×A×A <span style="color:var(--red);font-weight:700;">8번</span></div><span style="font-size:1.2rem;color:var(--text2);">vs</span><div style="padding:6px 10px;background:var(--green)15;border:1.5px solid var(--green);border-radius:6px;font-size:0.85rem;font-family:monospace;">((A²)²)² <span style="color:var(--green);font-weight:700;">3번!</span></div></div>지수를 <strong>반으로 나누면</strong> 곱셈 횟수가 확 줄어들어!' },
                 { title: '이렇게 하면 어떨까?', content: '<strong>분할정복 거듭제곱</strong>: 지수를 반씩 나누면 O(log B)에 끝나!<br><br>• B가 짝수: A<sup>B</sup> = (A<sup>B/2</sup>)² mod C<br>• B가 홀수: A<sup>B</sup> = (A<sup>B/2</sup>)² × A mod C<br><br>21억이어도 log₂(21억) ≈ <strong>31번</strong>이면 끝이야!<br><br><span class="lang-cpp">C++에서는 중간 곱셈에서 오버플로우가 날 수 있어 — <code>long long</code> 필수!</span><span class="lang-py">Python은 큰 수를 자동 처리하니까 오버플로우 걱정 없어. 내장 <code>pow(A, B, C)</code>도 같은 원리야!</span>' }
             ],
             templates: {
@@ -2825,7 +3077,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: '이항 계수 C(N, K) = N! / (K! × (N-K)!) 이니까, 팩토리얼을 구해서 나누면 되지 않을까?<br><br>N!까지 미리 계산해두면 분자(N!)와 분모(K! × (N-K)!)를 바로 구할 수 있어.' },
-                { title: '근데 이러면 문제가 있어', content: 'N이 최대 <strong>400만</strong>이야. 400만 팩토리얼은 천문학적인 숫자라 직접 나눌 수 없어.<br><br>그래서 1,000,000,007로 나눈 나머지를 구하라는 건데... <strong>모듈러 연산에서는 나눗셈을 직접 할 수 없어!</strong><br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">(a / b) % p ≠ (a % p) / (b % p) ← 이게 안 돼!</div><br>나눗셈을 어떻게 처리하지?' },
+                { title: '근데 이러면 문제가 있어', content: 'N이 최대 <strong>400만</strong>이야. 400만 팩토리얼은 천문학적인 숫자라 직접 나눌 수 없어.<br><br>그래서 1,000,000,007로 나눈 나머지를 구하라는 건데... <strong>모듈러 연산에서는 나눗셈을 직접 할 수 없어!</strong><br><br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;"><div style="padding:8px 12px;background:var(--green)15;border:1.5px solid var(--green);border-radius:8px;font-size:0.85rem;text-align:center;"><div style="color:var(--green);font-weight:600;margin-bottom:4px;">덧셈/곱셈 OK</div><code>(a+b)%p = (a%p+b%p)%p</code></div><div style="padding:8px 12px;background:var(--red)15;border:1.5px solid var(--red);border-radius:8px;font-size:0.85rem;text-align:center;"><div style="color:var(--red);font-weight:600;margin-bottom:4px;">나눗셈 NO!</div><code>(a/b)%p ≠ (a%p)/(b%p)</code></div></div>나눗셈을 어떻게 처리하지?' },
                 { title: '이렇게 하면 어떨까?', content: '<strong>페르마 소정리</strong>가 여기서 등장해!<br><br>p가 소수일 때: <strong>a<sup>-1</sup> ≡ a<sup>(p-2)</sup> mod p</strong><br><br>즉, 나눗셈을 <strong>거듭제곱(곱셈)</strong>으로 바꿀 수 있어!<br><br>C(N,K) mod p = N! × (K!)<sup>(p-2)</sup> × ((N-K)!)<sup>(p-2)</sup> mod p<br><br>구현 3단계:<br>① 팩토리얼 배열 미리 계산 (0! ~ N!)<br>② 앞에서 배운 <strong>분할정복 거듭제곱</strong>으로 역원 계산<br>③ 세 값을 곱하면 끝!<br><br>1629번(곱셈)의 거듭제곱 코드를 여기서 그대로 재사용할 수 있어.' }
             ],
             templates: {
@@ -2873,7 +3125,7 @@ var divideConquerTopic = {
     <ul><li>1 ≤ N, M, K ≤ 100</li><li>행렬 원소의 절댓값 ≤ 100</li><li>결과 행렬 원소의 절댓값 ≤ 2<sup>31</sup></li></ul>
 `,
             hints: [
-                { title: '처음 떠오르는 방법', content: '행렬 곱셈의 규칙을 떠올려보자. C[i][j]를 구하려면 <strong>A의 i행</strong>과 <strong>B의 j열</strong>을 쭉 곱해서 더하면 돼.<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">C[i][j] = A[i][0]×B[0][j] + A[i][1]×B[1][j] + ... + A[i][M-1]×B[M-1][j]</div><br>이건 <strong>내적(dot product)</strong>이야!' },
+                { title: '처음 떠오르는 방법', content: '행렬 곱셈의 규칙을 떠올려보자. C[i][j]를 구하려면 <strong>A의 i행</strong>과 <strong>B의 j열</strong>을 쭉 곱해서 더하면 돼.<br><br><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;"><div style="display:grid;grid-template-columns:repeat(2,28px);gap:2px;border:2px solid var(--accent);border-radius:4px;padding:4px;"><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;background:var(--yellow)30;border-radius:3px;font-weight:700;">a</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;background:var(--yellow)30;border-radius:3px;font-weight:700;">b</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">c</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">d</div></div><span style="font-size:1rem;">×</span><div style="display:grid;grid-template-columns:repeat(2,28px);gap:2px;border:2px solid var(--green);border-radius:4px;padding:4px;"><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;background:var(--green)20;border-radius:3px;font-weight:700;">e</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">f</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;background:var(--green)20;border-radius:3px;font-weight:700;">g</div><div style="width:28px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">h</div></div><span style="font-size:1rem;">=</span><div style="display:grid;grid-template-columns:repeat(2,48px);gap:2px;border:2px solid var(--text2);border-radius:4px;padding:4px;"><div style="width:48px;height:28px;text-align:center;line-height:28px;font-size:0.65rem;background:var(--yellow)15;border-radius:3px;font-weight:600;">ae+bg</div><div style="width:48px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">...</div><div style="width:48px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">...</div><div style="width:48px;height:28px;text-align:center;line-height:28px;font-size:0.7rem;border-radius:3px;">...</div></div></div>이건 <strong>내적(dot product)</strong>이야! A의 <span style="color:var(--yellow);font-weight:600;">i행</span>과 B의 <span style="color:var(--green);font-weight:600;">j열</span>을 곱해서 합산.' },
                 { title: '근데 이러면 문제가 있어', content: '결과 행렬 C의 크기가 N×K이고, 각 원소를 구하려면 M번 곱해야 하니까 <strong>3중 반복문</strong>이 필요해:<br><br>• 바깥: i = 0~N-1 (C의 행)<br>• 중간: j = 0~K-1 (C의 열)<br>• 안쪽: k = 0~M-1 (내적 합산)<br><br>N, M, K ≤ 100이니까 최대 100만 번 — 이 문제에서는 충분해!<br><br>⚠️ 주의: A가 N×<strong>M</strong>이고 B가 <strong>M</strong>×K여야 곱셈이 가능해. A의 열 수 = B의 행 수!' },
                 { title: '이렇게 하면 어떨까?', content: '이 문제 자체는 분할정복이 아니라 기본 행렬 곱셈이야. 하지만 이게 <strong>행렬 거듭제곱의 기초</strong>가 돼!<br><br>숫자 곱셈을 함수로 만들 듯이, 행렬 곱셈도 <code>mat_mul(A, B)</code> 함수로 만들어두면 나중에 행렬 거듭제곱(10830번)에서 그대로 재사용할 수 있어.<br><br><span class="lang-py">Python에서는 리스트 컴프리헨션으로 깔끔하게 초기화: <code>C = [[0]*K for _ in range(N)]</code></span><span class="lang-cpp">C++에서는 <code>int C[100][100] = {};</code>로 0 초기화하면 돼.</span>' }
             ],
@@ -2925,7 +3177,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: 'A를 B번 곱하면 되니까, 반복문으로 행렬을 B번 곱하면?<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">result = 단위행렬<br>for i in range(B): result = mat_mul(result, A)</div><br>2740번에서 만든 행렬 곱셈 함수를 재사용하면 될 것 같아!' },
-                { title: '근데 이러면 문제가 있어', content: 'B가 최대 <strong>1000억</strong>(10<sup>11</sup>)이야! 행렬 곱셈을 1000억 번 반복하면 당연히 시간 초과야.<br><br>그런데... 이거 어디서 본 패턴 아니야?<br><br>1629번(곱셈)에서 <strong>숫자</strong>를 B번 곱하는 걸 분할정복으로 O(log B)에 풀었잖아! <strong>숫자 대신 행렬을 곱하면</strong> 똑같은 원리로 풀 수 있어!' },
+                { title: '근데 이러면 문제가 있어', content: 'B가 최대 <strong>1000억</strong>(10<sup>11</sup>)이야! 행렬 곱셈을 1000억 번 반복하면 당연히 시간 초과야.<br><br>그런데... 이거 어디서 본 패턴 아니야?<br><br><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;font-family:monospace;font-size:0.9rem;"><div style="padding:6px 10px;background:var(--accent)15;border:1.5px solid var(--accent);border-radius:6px;">숫자: a<sup>B</sup></div><span style="color:var(--text2);">→</span><div style="padding:6px 10px;background:var(--accent)15;border:1.5px solid var(--accent);border-radius:6px;">(a<sup>B/2</sup>)²</div><span style="font-size:1.2rem;color:var(--text2);">||</span><div style="padding:6px 10px;background:var(--green)15;border:1.5px solid var(--green);border-radius:6px;">행렬: A<sup>B</sup></div><span style="color:var(--text2);">→</span><div style="padding:6px 10px;background:var(--green)15;border:1.5px solid var(--green);border-radius:6px;">(A<sup>B/2</sup>)²</div></div>1629번(곱셈)에서 <strong>숫자</strong>를 B번 곱하는 걸 분할정복으로 O(log B)에 풀었잖아! <strong>숫자 대신 행렬을 곱하면</strong> 똑같은 원리로 풀 수 있어!' },
                 { title: '이렇게 하면 어떨까?', content: '1629번 코드에서 바꿀 부분:<br><br>• <code>half * half</code> → <code>mat_mul(half, half)</code><br>• <code>result * a</code> → <code>mat_mul(result, A)</code><br>• 기저: B=1이면 A 자체를 반환 (각 원소 mod 처리!)<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">숫자 거듭제곱: 곱하기 연산자 *<br>행렬 거듭제곱: 행렬 곱셈 함수 mat_mul<br>구조는 <strong>완전히 동일</strong>!</div><br>행렬 곱셈할 때 매번 <strong>mod 1000</strong>을 해줘야 오버플로우를 방지할 수 있어.' }
             ],
             templates: {
@@ -2972,7 +3224,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: '피보나치 수를 구하는 건 간단하지! 반복문으로 F(0), F(1), F(2), ... 순서대로 구하면 돼:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">a, b = 0, 1<br>for i in range(n): a, b = b, a + b</div><br>O(n)이면 충분하지 않을까?' },
-                { title: '근데 이러면 문제가 있어', content: 'n이 최대 <strong>10<sup>18</sup></strong>(100경)이야! 반복문 10<sup>18</sup>번은 절대 불가능해.<br><br>O(log n)으로 풀어야 하는데, 피보나치에 분할정복을 어떻게 적용하지?<br><br>여기서 핵심 아이디어가 등장해 — <strong>피보나치 점화식을 행렬로 표현</strong>할 수 있어:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">[[F(n+1), F(n)], [F(n), F(n-1)]] = [[1,1],[1,0]]<sup>n</sup></div><br>행렬 거듭제곱은 O(log n)에 할 수 있으니까!' },
+                { title: '근데 이러면 문제가 있어', content: 'n이 최대 <strong>10<sup>18</sup></strong>(100경)이야! 반복문 10<sup>18</sup>번은 절대 불가능해.<br><br>O(log n)으로 풀어야 하는데, 피보나치에 분할정복을 어떻게 적용하지?<br><br>여기서 핵심 아이디어가 등장해 — <strong>피보나치 점화식을 행렬로 표현</strong>할 수 있어:<br><br><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;"><div style="display:grid;grid-template-columns:repeat(2,45px);gap:2px;border:2px solid var(--accent);border-radius:6px;padding:4px;"><div style="width:45px;height:28px;text-align:center;line-height:28px;font-size:0.75rem;font-weight:700;background:var(--accent)15;border-radius:3px;">F(n+1)</div><div style="width:45px;height:28px;text-align:center;line-height:28px;font-size:0.75rem;font-weight:700;background:var(--green)15;border-radius:3px;color:var(--green);">F(n)</div><div style="width:45px;height:28px;text-align:center;line-height:28px;font-size:0.75rem;font-weight:700;background:var(--green)15;border-radius:3px;color:var(--green);">F(n)</div><div style="width:45px;height:28px;text-align:center;line-height:28px;font-size:0.75rem;background:var(--accent)15;border-radius:3px;">F(n-1)</div></div><span style="font-size:1rem;font-weight:700;">=</span><div style="display:grid;grid-template-columns:repeat(2,22px);gap:2px;border:2px solid #0984e3;border-radius:6px;padding:4px;"><div style="width:22px;height:22px;text-align:center;line-height:22px;font-size:0.8rem;font-weight:700;background:#0984e315;border-radius:3px;">1</div><div style="width:22px;height:22px;text-align:center;line-height:22px;font-size:0.8rem;font-weight:700;background:#0984e315;border-radius:3px;">1</div><div style="width:22px;height:22px;text-align:center;line-height:22px;font-size:0.8rem;font-weight:700;background:#0984e315;border-radius:3px;">1</div><div style="width:22px;height:22px;text-align:center;line-height:22px;font-size:0.8rem;font-weight:700;background:#0984e315;border-radius:3px;">0</div></div><sup style="font-size:0.9rem;font-weight:700;color:#0984e3;">n</sup></div>행렬 거듭제곱은 O(log n)에 할 수 있으니까!' },
                 { title: '이렇게 하면 어떨까?', content: '10830번(행렬 제곱) 코드를 <strong>2×2 행렬</strong>에 맞게 재사용하면 끝!<br><br>① 기본 행렬: <code>base = [[1,1],[1,0]]</code><br>② <code>mat_pow(base, n)</code>으로 O(log n)에 거듭제곱<br>③ 결과 행렬의 <strong>[0][1]</strong>이 F(n)!<br><br>2×2 고정 크기라 행렬 곱셈을 직접 전개하면 반복문보다 빨라.<br><br>⚠️ 예외 처리: n=0이면 0, n=1이면 1을 바로 출력해야 해. 행렬 거듭제곱은 n &gt; 1일 때만 사용!' }
             ],
             templates: {
@@ -3021,7 +3273,7 @@ var divideConquerTopic = {
 `,
             hints: [
                 { title: '처음 떠오르는 방법', content: '모든 막대를 시작점으로 해서, 양쪽으로 확장하며 최대 넓이를 구하면 되지 않을까?<br><br>각 막대 i에 대해 높이가 h[i] 이상인 연속 구간을 찾으면 넓이 = h[i] × 구간 길이.<br><br>모든 막대에 대해 해보면 최대값을 찾을 수 있어!' },
-                { title: '근데 이러면 문제가 있어', content: '각 막대마다 양쪽을 탐색하면 최악의 경우 O(n²)이야. n이 최대 <strong>100,000</strong>이니까 시간 초과!<br><br>여기서 분할정복 아이디어를 떠올려보자. 배열을 반으로 나누면 최대 직사각형은 <strong>세 가지 경우</strong> 중 하나야:<br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">① 왼쪽 절반에만 있다<br>② 오른쪽 절반에만 있다<br>③ 가운데를 걸쳐 있다</div><br>①②는 재귀로 풀 수 있는데, ③은 어떻게 구하지?' },
+                { title: '근데 이러면 문제가 있어', content: '각 막대마다 양쪽을 탐색하면 최악의 경우 O(n²)이야. n이 최대 <strong>100,000</strong>이니까 시간 초과!<br><br>여기서 분할정복 아이디어를 떠올려보자. 배열을 반으로 나누면 최대 직사각형은 <strong>세 가지 경우</strong> 중 하나야:<br><br><div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;"><div style="flex:1;min-width:80px;padding:8px;border:2px solid var(--accent);border-radius:8px;text-align:center;background:var(--accent)08;"><div style="display:flex;gap:2px;justify-content:center;margin-bottom:6px;"><div style="width:14px;height:20px;background:var(--accent)40;border-radius:2px;"></div><div style="width:14px;height:30px;background:var(--accent)40;border-radius:2px;"></div></div><div style="font-size:0.7rem;font-weight:600;color:var(--accent);">① 왼쪽</div></div><div style="flex:1;min-width:80px;padding:8px;border:2px solid var(--green);border-radius:8px;text-align:center;background:var(--green)08;"><div style="display:flex;gap:2px;justify-content:center;margin-bottom:6px;"><div style="width:14px;height:25px;background:var(--green)40;border-radius:2px;"></div><div style="width:14px;height:35px;background:var(--green)40;border-radius:2px;"></div></div><div style="font-size:0.7rem;font-weight:600;color:var(--green);">② 오른쪽</div></div><div style="flex:1;min-width:100px;padding:8px;border:2px solid var(--yellow);border-radius:8px;text-align:center;background:var(--yellow)08;"><div style="display:flex;gap:2px;justify-content:center;margin-bottom:6px;"><div style="width:14px;height:20px;background:var(--accent)30;border-radius:2px;"></div><div style="width:14px;height:30px;background:var(--yellow)60;border-radius:2px;"></div><div style="width:14px;height:25px;background:var(--yellow)60;border-radius:2px;"></div><div style="width:14px;height:35px;background:var(--green)30;border-radius:2px;"></div></div><div style="font-size:0.7rem;font-weight:600;color:var(--yellow);">③ 걸치는 경우</div></div></div>①②는 재귀로 풀 수 있는데, ③은 어떻게 구하지?' },
                 { title: '이렇게 하면 어떨까?', content: '③ 가운데 걸치는 경우: 중앙 두 막대에서 시작해서 <strong>높이가 더 높은 쪽으로 한 칸씩 확장</strong>해!<br><br>확장할 때마다 최소 높이를 갱신하고, 넓이 = 최소 높이 × 너비를 계산해서 최대값을 추적해.<br><br>왜 높은 쪽으로? 넓이를 최대화하려면 높이를 최대한 유지하면서 넓혀야 하니까!<br><br>시간복잡도: T(n) = 2T(n/2) + O(n) → <strong>O(n log n)</strong><br><br><span class="lang-cpp">⚠️ C++에서는 높이 × 너비가 int 범위를 넘을 수 있어 — <code>long long</code> 필수!</span><span class="lang-py">Python은 큰 수를 자동 처리하니까 따로 신경 쓸 필요 없어.</span>' }
             ],
             templates: {

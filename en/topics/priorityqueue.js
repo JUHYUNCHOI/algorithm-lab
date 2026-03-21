@@ -299,7 +299,31 @@ var priorityQueueTopic = {
                 </div>\
             </div>\
 \
-            <span class="lang-py"><div class="concept-section">\
+            <div class="concept-section">\
+                <div class="concept-section-title"><span class="section-num">4</span> <span class="lang-py">Python heapq</span><span class="lang-cpp">C++ priority_queue</span> Usage</div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try it — Min Heap vs Max Heap</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Push numbers and compare pop order for min heap vs max heap!</p>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">\
+                            <input type="text" id="pq-s4-input" value="5,1,8,3" placeholder="comma separated" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:120px;background:var(--card);color:var(--text);">\
+                            <button class="concept-demo-btn" id="pq-s4-go">Push then Pop All</button>\
+                        </div>\
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:140px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">Min Heap</div>\
+                                <div id="pq-s4-min" style="font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:140px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">Max Heap</div>\
+                                <div id="pq-s4-max" style="font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="pq-s4-msg"><span class="lang-py">Python heapq is a min heap by default. For max heap, multiply by -1!</span><span class="lang-cpp">C++ priority_queue is a max heap by default. Use greater&lt;&gt; for min heap!</span></div>\
+                </div>\
+            </div>\
+            <span class="lang-py"><div class="concept-section" style="margin-top:0;">\
                 <div class="concept-section-title"><span class="section-num">4</span> Using Python heapq</div>\
                 <div style="margin:0.5rem 0 0.8rem;">\
                     <a href="https://docs.python.org/3/library/heapq.html" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: heapq ↗</a>\
@@ -494,6 +518,29 @@ var priorityQueueTopic = {
             }
             if (heap.length <= 1) arrEl.innerHTML = '<span style="color:var(--text3);">Empty</span>';
         }
+
+        // ===== Section 4 demo: Min Heap vs Max Heap =====
+        (function() {
+            var inputEl = container.querySelector('#pq-s4-input');
+            var minEl = container.querySelector('#pq-s4-min');
+            var maxEl = container.querySelector('#pq-s4-max');
+            var goBtn = container.querySelector('#pq-s4-go');
+            if (!goBtn) return;
+            goBtn.addEventListener('click', function() {
+                var vals = inputEl.value.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+                if (!vals.length) return;
+                var sorted = vals.slice().sort(function(a,b) { return a-b; });
+                var rSorted = vals.slice().sort(function(a,b) { return b-a; });
+                var minBoxes = sorted.map(function(v) {
+                    return '<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--green);color:#fff;font-weight:700;font-size:0.9rem;">' + v + '</span>';
+                }).join(' → ');
+                var maxBoxes = rSorted.map(function(v) {
+                    return '<span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;font-size:0.9rem;">' + v + '</span>';
+                }).join(' → ');
+                minEl.innerHTML = 'Pop order: ' + minBoxes;
+                maxEl.innerHTML = 'Pop order: ' + maxBoxes;
+            });
+        })();
 
         // ===== Demo 1: Queue vs Priority Queue =====
         {

@@ -184,6 +184,23 @@ var shortestPathTopic = {
                     </div>\
                 </div>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — BFS hop count vs weighted sum</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">See how BFS (edge count) and weighted sum differ on the same graph!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s1-graph" style="display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap;min-height:60px;"></div>\
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:12px;">\
+                            <div id="sp-demo-s1-bfs" style="flex:1;min-width:160px;padding:10px;border-radius:var(--radius);background:var(--bg);"></div>\
+                            <div id="sp-demo-s1-wt" style="flex:1;min-width:160px;padding:10px;border-radius:var(--radius);background:var(--bg);"></div>\
+                        </div>\
+                    </div>\
+                    <div style="margin-top:8px;">\
+                        <button class="concept-demo-btn" id="sp-demo-s1-path1">Path 1: A→B→D</button>\
+                        <button class="concept-demo-btn" id="sp-demo-s1-path2">Path 2: A→C→D</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-s1-msg">Click a button to compare two paths! BFS only counts edges and ignores weights.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -286,6 +303,18 @@ var shortestPathTopic = {
 \n    }\
 \n}</code></pre>\
                 </div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Relaxation condition</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Click an edge to check <code>dist[u] + w &lt; dist[v]</code> and update distances!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s2-dist" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s2-edges" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s2-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div style="margin-top:8px;"><button class="concept-demo-btn green" id="sp-demo-s2-reset">↺ Reset</button></div>\
+                    <div class="concept-demo-msg" id="sp-demo-s2-msg">Click edge buttons to try relaxation! If a shorter path is found, the distance is updated.</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -402,6 +431,20 @@ var shortestPathTopic = {
 \n}</code></pre>\
                 </div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Confirmed range per iteration</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Click "Next Iteration" to see how the i-th iteration confirms shortest paths using at most i edges!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s3-nodes" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s3-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div style="margin-top:8px;">\
+                        <button class="concept-demo-btn" id="sp-demo-s3-next">▶ Next Iteration</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-s3-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-s3-msg">Each iteration scans all edges once to update distances. After V-1 iterations, all paths are confirmed!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -476,6 +519,20 @@ var shortestPathTopic = {
 \n            if (dp[i][k] != INF &amp;&amp; dp[k][j] != INF)\
 \n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);</code></pre>\
                 </div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Shorten distances by adding intermediate vertices</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Add intermediate vertex K one by one and watch dp[i][j] decrease!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s4-table" style="overflow-x:auto;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s4-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div style="margin-top:8px;">\
+                        <button class="concept-demo-btn" id="sp-demo-s4-next">▶ Add Next Intermediate</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-s4-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-s4-msg">Adding intermediates reveals cases where going via another vertex is cheaper than the direct path!</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -603,6 +660,190 @@ var shortestPathTopic = {
         container.querySelectorAll('pre code').forEach(function(el) {
             if (window.hljs) hljs.highlightElement(el);
         });
+
+        // ====== Section 1 demo: BFS hop count vs weighted sum ======
+        (function() {
+            var graphEl = container.querySelector('#sp-demo-s1-graph');
+            var bfsEl = container.querySelector('#sp-demo-s1-bfs');
+            var wtEl = container.querySelector('#sp-demo-s1-wt');
+            var msgEl = container.querySelector('#sp-demo-s1-msg');
+            if (!graphEl) return;
+            var nodeStyle = 'display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);font-weight:600;font-size:0.95rem;';
+            var edgeStyle = 'font-size:0.8rem;color:var(--text2);';
+            graphEl.innerHTML = '<span style="' + nodeStyle + '">A</span>' +
+                '<span style="' + edgeStyle + '">—<strong>1</strong>→</span><span style="' + nodeStyle + '">B</span>' +
+                '<span style="' + edgeStyle + '">—<strong>7</strong>→</span><span style="' + nodeStyle + '">D</span>' +
+                '<br><span style="' + nodeStyle + '">A</span>' +
+                '<span style="' + edgeStyle + '">—<strong>3</strong>→</span><span style="' + nodeStyle + '">C</span>' +
+                '<span style="' + edgeStyle + '">—<strong>2</strong>→</span><span style="' + nodeStyle + '">D</span>';
+            bfsEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">BFS (edge count)</div><div style="font-size:0.85rem;color:var(--text2);">Select a path</div>';
+            wtEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">Weighted sum</div><div style="font-size:0.85rem;color:var(--text2);">Select a path</div>';
+            container.querySelector('#sp-demo-s1-path1').addEventListener('click', function() {
+                bfsEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">BFS (edge count)</div><div>A→B→D = <strong>2 hops</strong></div>';
+                wtEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">Weighted sum</div><div>1 + 7 = <strong style="color:var(--red);">8</strong></div>';
+                msgEl.textContent = 'BFS says 2 hops! But the weighted cost is 8 — expensive. Try the other path!';
+            });
+            container.querySelector('#sp-demo-s1-path2').addEventListener('click', function() {
+                bfsEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">BFS (edge count)</div><div>A→C→D = <strong>2 hops</strong></div>';
+                wtEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">Weighted sum</div><div>3 + 2 = <strong style="color:var(--green);">5</strong></div>';
+                msgEl.textContent = 'BFS also says 2 hops, but the weight sum is only 5 — cheaper! BFS cannot tell the difference.';
+            });
+        })();
+
+        // ====== Section 2 demo: Relaxation condition ======
+        (function() {
+            var distEl = container.querySelector('#sp-demo-s2-dist');
+            var edgesEl = container.querySelector('#sp-demo-s2-edges');
+            var logEl = container.querySelector('#sp-demo-s2-log');
+            if (!distEl) return;
+            var nodes = ['A','B','C','D'];
+            var edges = [['A','B',1],['A','C',4],['B','C',2],['B','D',6],['C','D',1]];
+            var dist;
+            function reset() {
+                dist = {A:0, B:Infinity, C:Infinity, D:Infinity};
+                render();
+                logEl.textContent = 'Click an edge to try relaxation!';
+            }
+            function render() {
+                distEl.innerHTML = nodes.map(function(n) {
+                    var v = dist[n] === Infinity ? '∞' : dist[n];
+                    var bg = dist[n] === Infinity ? 'var(--bg2)' : 'var(--green)';
+                    var c = dist[n] === Infinity ? 'var(--text2)' : '#fff';
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.75rem;color:var(--text2);">dist[' + n + ']</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:' + bg + ';color:' + c + ';font-weight:700;">' + v + '</span></div>';
+                }).join('');
+                edgesEl.innerHTML = edges.map(function(e, i) {
+                    return '<button class="concept-demo-btn sp-s2-edge" data-idx="' + i + '" style="font-size:0.8rem;">' + e[0] + '→' + e[1] + ' (w=' + e[2] + ')</button>';
+                }).join('');
+                edgesEl.querySelectorAll('.sp-s2-edge').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var idx = parseInt(btn.getAttribute('data-idx'));
+                        var e = edges[idx];
+                        var u = e[0], v = e[1], w = e[2];
+                        if (dist[u] === Infinity) {
+                            logEl.innerHTML = '<strong>' + u + '→' + v + '</strong>: dist[' + u + '] = ∞, cannot relax!';
+                        } else if (dist[u] + w < dist[v]) {
+                            var old = dist[v] === Infinity ? '∞' : dist[v];
+                            dist[v] = dist[u] + w;
+                            logEl.innerHTML = '<strong>' + u + '→' + v + '</strong>: dist[' + u + '](' + dist[u] + ') + ' + w + ' = ' + (dist[u]) + ' < ' + old + ' → <span style="color:var(--green);">dist[' + v + '] = ' + dist[v] + ' updated!</span>';
+                            render();
+                        } else {
+                            logEl.innerHTML = '<strong>' + u + '→' + v + '</strong>: dist[' + u + '](' + dist[u] + ') + ' + w + ' = ' + (dist[u]+w) + ' ≥ dist[' + v + '](' + dist[v] + ') → no update needed.';
+                        }
+                    });
+                });
+            }
+            reset();
+            container.querySelector('#sp-demo-s2-reset').addEventListener('click', reset);
+        })();
+
+        // ====== Section 3 demo: Bellman-Ford iterations ======
+        (function() {
+            var nodesEl = container.querySelector('#sp-demo-s3-nodes');
+            var logEl = container.querySelector('#sp-demo-s3-log');
+            if (!nodesEl) return;
+            var nodes = ['S','A','B','C'];
+            var edges = [['S','A',3],['S','B',7],['A','B',2],['A','C',5],['B','C',1]];
+            var dist, round;
+            function reset() {
+                dist = {S:0, A:Infinity, B:Infinity, C:Infinity};
+                round = 0;
+                render();
+                logEl.textContent = 'No iterations yet. Click "Next Iteration"!';
+            }
+            function render() {
+                nodesEl.innerHTML = nodes.map(function(n) {
+                    var v = dist[n] === Infinity ? '∞' : dist[n];
+                    var confirmed = (n === 'S') || (round > 0 && dist[n] !== Infinity);
+                    var bg = confirmed ? 'var(--green)' : 'var(--bg2)';
+                    var c = confirmed ? '#fff' : 'var(--text2)';
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.75rem;color:var(--text2);">' + n + '</span><span style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;background:' + bg + ';color:' + c + ';font-weight:700;font-size:1.1rem;">' + v + '</span></div>';
+                }).join('');
+            }
+            function doRound() {
+                if (round >= nodes.length - 1) {
+                    logEl.textContent = 'V-1 = ' + (nodes.length - 1) + ' iterations complete! All shortest distances are confirmed.';
+                    return;
+                }
+                round++;
+                var changed = [];
+                edges.forEach(function(e) {
+                    var u = e[0], v = e[1], w = e[2];
+                    if (dist[u] !== Infinity && dist[u] + w < dist[v]) {
+                        dist[v] = dist[u] + w;
+                        changed.push(v + '=' + dist[v]);
+                    }
+                });
+                render();
+                if (changed.length > 0) {
+                    logEl.innerHTML = 'Iteration ' + round + ': Paths with ≤' + round + ' edges confirmed! Updated: ' + changed.join(', ');
+                } else {
+                    logEl.innerHTML = 'Iteration ' + round + ': No updates. Already confirmed!';
+                }
+            }
+            reset();
+            container.querySelector('#sp-demo-s3-next').addEventListener('click', doRound);
+            container.querySelector('#sp-demo-s3-reset').addEventListener('click', reset);
+        })();
+
+        // ====== Section 4 demo: Floyd-Warshall intermediates ======
+        (function() {
+            var tableEl = container.querySelector('#sp-demo-s4-table');
+            var logEl = container.querySelector('#sp-demo-s4-log');
+            if (!tableEl) return;
+            var N = ['1','2','3'];
+            var INF = Infinity;
+            var initDist = [[0,4,INF],[INF,0,1],[2,INF,0]];
+            var dp, kIdx;
+            function reset() {
+                dp = initDist.map(function(r) { return r.slice(); });
+                kIdx = 0;
+                renderTable([]);
+                logEl.textContent = 'No intermediates added yet. Click "Add Next Intermediate"!';
+            }
+            function renderTable(highlights) {
+                var html = '<table style="border-collapse:collapse;font-size:0.85rem;"><tr><th style="padding:6px 10px;border:1px solid var(--border);background:var(--bg2);">→</th>';
+                N.forEach(function(n) { html += '<th style="padding:6px 10px;border:1px solid var(--border);background:var(--bg2);">' + n + '</th>'; });
+                html += '</tr>';
+                for (var i = 0; i < N.length; i++) {
+                    html += '<tr><th style="padding:6px 10px;border:1px solid var(--border);background:var(--bg2);">' + N[i] + '</th>';
+                    for (var j = 0; j < N.length; j++) {
+                        var v = dp[i][j] === Infinity ? '∞' : dp[i][j];
+                        var hl = highlights.some(function(h) { return h[0]===i && h[1]===j; });
+                        var bg = hl ? 'var(--yellow)' : 'var(--bg)';
+                        html += '<td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-weight:' + (hl?'700':'400') + ';background:' + bg + ';">' + v + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+                tableEl.innerHTML = html;
+            }
+            function addVia() {
+                if (kIdx >= N.length) {
+                    logEl.textContent = 'All intermediates (' + N.join(',') + ') added! All-pairs shortest distances complete!';
+                    return;
+                }
+                var k = kIdx;
+                var changed = [];
+                for (var i = 0; i < N.length; i++) {
+                    for (var j = 0; j < N.length; j++) {
+                        if (dp[i][k] !== Infinity && dp[k][j] !== Infinity && dp[i][k] + dp[k][j] < dp[i][j]) {
+                            dp[i][j] = dp[i][k] + dp[k][j];
+                            changed.push([i, j]);
+                        }
+                    }
+                }
+                kIdx++;
+                renderTable(changed);
+                if (changed.length > 0) {
+                    logEl.innerHTML = 'Intermediate <strong>' + N[k] + '</strong> added! ' + changed.map(function(c) { return N[c[0]] + '→' + N[c[1]] + '=' + dp[c[0]][c[1]]; }).join(', ') + ' updated!';
+                } else {
+                    logEl.innerHTML = 'Intermediate <strong>' + N[k] + '</strong> added! No updates.';
+                }
+            }
+            reset();
+            container.querySelector('#sp-demo-s4-next').addEventListener('click', addVia);
+            container.querySelector('#sp-demo-s4-reset').addEventListener('click', reset);
+        })();
 
         // ====== Demo 1: BFS vs Dijkstra ======
         (function() {

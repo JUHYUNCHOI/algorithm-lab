@@ -254,6 +254,30 @@ var trieTopic = {
                     • <strong>트라이</strong>: 둘 다 빠름! 접두사 검색이 필요하면 트라이가 정답<br><br>\
                     <strong>언제 트라이를 쓰나?</strong> 자동완성, 접두사 매칭, 사전순 탐색, 문자열 집합에서 접두사 관계 확인\
                 </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 정확 검색 vs 접두사 검색</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">검색어를 입력하고 정확 검색(해시맵 OK)과 접두사 검색(트라이 필요)의 차이를 확인하세요!</p>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">\
+                            <input type="text" id="trie-s2-input" value="app" placeholder="검색어" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:100px;background:var(--card);color:var(--text);">\
+                            <button class="concept-demo-btn" id="trie-s2-exact">정확 검색</button>\
+                            <button class="concept-demo-btn" id="trie-s2-prefix">접두사 검색</button>\
+                        </div>\
+                        <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px;">저장된 단어: apple, app, application, apt, bat, ball, banana</div>\
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:150px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">해시맵 (Set)</div>\
+                                <div id="trie-s2-hash" style="font-size:0.85rem;color:var(--text2);min-height:2em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:150px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">트라이 (Trie)</div>\
+                                <div id="trie-s2-trie" style="font-size:0.85rem;color:var(--text2);min-height:2em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-s2-msg">정확 검색은 둘 다 빠르지만, 접두사 검색은 트라이만 효율적입니다!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -431,6 +455,37 @@ var trieTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== 섹션 2 데모: 정확 검색 vs 접두사 검색 ======
+        (function() {
+            var inputEl = container.querySelector('#trie-s2-input');
+            var hashEl = container.querySelector('#trie-s2-hash');
+            var trieEl = container.querySelector('#trie-s2-trie');
+            var msgEl = container.querySelector('#trie-s2-msg');
+            if (!inputEl) return;
+            var words = ['apple','app','application','apt','bat','ball','banana'];
+            var wordSet = {};
+            words.forEach(function(w) { wordSet[w] = true; });
+            container.querySelector('#trie-s2-exact').addEventListener('click', function() {
+                var q = inputEl.value.trim().toLowerCase();
+                if (wordSet[q]) {
+                    hashEl.innerHTML = '<span style="color:var(--green);font-weight:600;">O(L) — 찾음!</span> "' + q + '" 존재.';
+                    trieEl.innerHTML = '<span style="color:var(--green);font-weight:600;">O(L) — 찾음!</span> "' + q + '" 존재.';
+                    msgEl.textContent = '정확 검색은 해시맵도 트라이도 O(L)로 빠릅니다!';
+                } else {
+                    hashEl.innerHTML = '<span style="color:var(--red);">O(L) — 없음.</span>';
+                    trieEl.innerHTML = '<span style="color:var(--red);">O(L) — 없음.</span>';
+                    msgEl.textContent = '둘 다 빠르게 "없음"을 알 수 있습니다.';
+                }
+            });
+            container.querySelector('#trie-s2-prefix').addEventListener('click', function() {
+                var q = inputEl.value.trim().toLowerCase();
+                var matches = words.filter(function(w) { return w.indexOf(q) === 0; });
+                hashEl.innerHTML = '<span style="color:var(--red);font-weight:600;">O(N×L)</span> — 전부 확인해야 함!<br>7개 단어 모두 startsWith 체크';
+                trieEl.innerHTML = '<span style="color:var(--green);font-weight:600;">O(' + q.length + ' + ' + matches.length + ')</span> — ' + q.length + '글자 이동 후 결과만 수집!<br>결과: ' + (matches.length ? matches.join(', ') : '없음');
+                msgEl.textContent = '접두사 검색에서 트라이가 압도적으로 유리합니다! 데이터가 많을수록 차이가 커져요.';
+            });
+        })();
 
         // ===== Trie data structure shared across demos =====
         function TrieNode() { this.children = {}; this.isEnd = false; }

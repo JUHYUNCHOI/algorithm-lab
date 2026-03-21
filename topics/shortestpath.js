@@ -184,6 +184,23 @@ var shortestPathTopic = {
                     </div>\
                 </div>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — BFS 홉 수 vs 가중치 합</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">같은 그래프에서 BFS(간선 수)와 가중치 합이 어떻게 다른지 확인하세요!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s1-graph" style="display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap;min-height:60px;"></div>\
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:12px;">\
+                            <div id="sp-demo-s1-bfs" style="flex:1;min-width:160px;padding:10px;border-radius:var(--radius);background:var(--bg);"></div>\
+                            <div id="sp-demo-s1-wt" style="flex:1;min-width:160px;padding:10px;border-radius:var(--radius);background:var(--bg);"></div>\
+                        </div>\
+                    </div>\
+                    <div style="margin-top:8px;">\
+                        <button class="concept-demo-btn" id="sp-demo-s1-path1">경로 1: A→B→D</button>\
+                        <button class="concept-demo-btn" id="sp-demo-s1-path2">경로 2: A→C→D</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-s1-msg">버튼을 눌러 두 경로를 비교하세요! BFS는 간선 수만 세고, 가중치를 무시합니다.</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -286,6 +303,18 @@ var shortestPathTopic = {
 \n    }\
 \n}</code></pre>\
                 </div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 완화(Relaxation) 조건 체험</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">간선을 클릭하면 <code>dist[u] + w &lt; dist[v]</code> 조건을 확인하고 거리를 갱신합니다!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s2-dist" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s2-edges" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s2-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div style="margin-top:8px;"><button class="concept-demo-btn green" id="sp-demo-s2-reset">↺ 초기화</button></div>\
+                    <div class="concept-demo-msg" id="sp-demo-s2-msg">간선 버튼을 클릭해서 완화(relaxation)를 시도하세요! 더 짧은 경로를 발견하면 거리가 갱신됩니다.</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -402,6 +431,20 @@ var shortestPathTopic = {
 \n}</code></pre>\
                 </div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 반복 횟수별 확정 범위</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">"다음 반복"을 누르면 i번째 반복 후 간선 i개 이하인 최단 경로가 확정되는 모습을 봅니다!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s3-nodes" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s3-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div style="margin-top:8px;">\
+                        <button class="concept-demo-btn" id="sp-demo-s3-next">▶ 다음 반복</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-s3-reset">↺ 초기화</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-s3-msg">각 반복마다 모든 간선을 한 번씩 확인하여 거리를 갱신합니다. V-1번이면 모든 경로가 확정!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -476,6 +519,20 @@ var shortestPathTopic = {
 \n            if (dp[i][k] != INF &amp;&amp; dp[k][j] != INF)\
 \n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);</code></pre>\
                 </div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">직접 해보기 — 경유지 추가로 거리 단축</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">경유지 K를 하나씩 추가하면서, dp[i][j]가 어떻게 줄어드는지 확인하세요!</p>\
+                    <div class="concept-demo-body">\
+                        <div id="sp-demo-s4-table" style="overflow-x:auto;margin-bottom:8px;"></div>\
+                        <div id="sp-demo-s4-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>\
+                    </div>\
+                    <div style="margin-top:8px;">\
+                        <button class="concept-demo-btn" id="sp-demo-s4-next">▶ 다음 경유지 추가</button>\
+                        <button class="concept-demo-btn green" id="sp-demo-s4-reset">↺ 초기화</button>\
+                    </div>\
+                    <div class="concept-demo-msg" id="sp-demo-s4-msg">경유지를 하나씩 추가하면 "직접 가는 것보다 돌아가는 게 빠른 경우"가 발견됩니다!</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -603,6 +660,190 @@ var shortestPathTopic = {
         container.querySelectorAll('pre code').forEach(function(el) {
             if (window.hljs) hljs.highlightElement(el);
         });
+
+        // ====== 섹션 1 데모: BFS 홉 수 vs 가중치 합 ======
+        (function() {
+            var graphEl = container.querySelector('#sp-demo-s1-graph');
+            var bfsEl = container.querySelector('#sp-demo-s1-bfs');
+            var wtEl = container.querySelector('#sp-demo-s1-wt');
+            var msgEl = container.querySelector('#sp-demo-s1-msg');
+            if (!graphEl) return;
+            var nodeStyle = 'display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);font-weight:600;font-size:0.95rem;';
+            var edgeStyle = 'font-size:0.8rem;color:var(--text2);';
+            graphEl.innerHTML = '<span style="' + nodeStyle + '">A</span>' +
+                '<span style="' + edgeStyle + '">—<strong>1</strong>→</span><span style="' + nodeStyle + '">B</span>' +
+                '<span style="' + edgeStyle + '">—<strong>7</strong>→</span><span style="' + nodeStyle + '">D</span>' +
+                '<br><span style="' + nodeStyle + '">A</span>' +
+                '<span style="' + edgeStyle + '">—<strong>3</strong>→</span><span style="' + nodeStyle + '">C</span>' +
+                '<span style="' + edgeStyle + '">—<strong>2</strong>→</span><span style="' + nodeStyle + '">D</span>';
+            bfsEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">BFS (간선 수)</div><div style="font-size:0.85rem;color:var(--text2);">경로를 선택하세요</div>';
+            wtEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">가중치 합</div><div style="font-size:0.85rem;color:var(--text2);">경로를 선택하세요</div>';
+            container.querySelector('#sp-demo-s1-path1').addEventListener('click', function() {
+                bfsEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">BFS (간선 수)</div><div>A→B→D = <strong>2칸</strong></div>';
+                wtEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">가중치 합</div><div>1 + 7 = <strong style="color:var(--red);">8</strong></div>';
+                msgEl.textContent = 'BFS는 2칸! 하지만 가중치 합은 8로 비쌉니다. 다른 경로도 확인해보세요!';
+            });
+            container.querySelector('#sp-demo-s1-path2').addEventListener('click', function() {
+                bfsEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">BFS (간선 수)</div><div>A→C→D = <strong>2칸</strong></div>';
+                wtEl.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">가중치 합</div><div>3 + 2 = <strong style="color:var(--green);">5</strong></div>';
+                msgEl.textContent = 'BFS도 2칸으로 같은데, 가중치 합은 5로 더 싸다! BFS는 이 차이를 구분 못합니다.';
+            });
+        })();
+
+        // ====== 섹션 2 데모: 완화 조건 체험 ======
+        (function() {
+            var distEl = container.querySelector('#sp-demo-s2-dist');
+            var edgesEl = container.querySelector('#sp-demo-s2-edges');
+            var logEl = container.querySelector('#sp-demo-s2-log');
+            if (!distEl) return;
+            var nodes = ['A','B','C','D'];
+            var edges = [['A','B',1],['A','C',4],['B','C',2],['B','D',6],['C','D',1]];
+            var dist;
+            function reset() {
+                dist = {A:0, B:Infinity, C:Infinity, D:Infinity};
+                render();
+                logEl.textContent = '간선을 클릭해서 완화를 시도하세요!';
+            }
+            function render() {
+                distEl.innerHTML = nodes.map(function(n) {
+                    var v = dist[n] === Infinity ? '∞' : dist[n];
+                    var bg = dist[n] === Infinity ? 'var(--bg2)' : 'var(--green)';
+                    var c = dist[n] === Infinity ? 'var(--text2)' : '#fff';
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.75rem;color:var(--text2);">dist[' + n + ']</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:' + bg + ';color:' + c + ';font-weight:700;">' + v + '</span></div>';
+                }).join('');
+                edgesEl.innerHTML = edges.map(function(e, i) {
+                    return '<button class="concept-demo-btn sp-s2-edge" data-idx="' + i + '" style="font-size:0.8rem;">' + e[0] + '→' + e[1] + ' (w=' + e[2] + ')</button>';
+                }).join('');
+                edgesEl.querySelectorAll('.sp-s2-edge').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var idx = parseInt(btn.getAttribute('data-idx'));
+                        var e = edges[idx];
+                        var u = e[0], v = e[1], w = e[2];
+                        if (dist[u] === Infinity) {
+                            logEl.innerHTML = '<strong>' + u + '→' + v + '</strong>: dist[' + u + '] = ∞이므로 완화 불가!';
+                        } else if (dist[u] + w < dist[v]) {
+                            var old = dist[v] === Infinity ? '∞' : dist[v];
+                            dist[v] = dist[u] + w;
+                            logEl.innerHTML = '<strong>' + u + '→' + v + '</strong>: dist[' + u + '](' + dist[u] + ') + ' + w + ' = ' + (dist[u]) + ' < ' + old + ' → <span style="color:var(--green);">dist[' + v + '] = ' + dist[v] + '으로 갱신!</span>';
+                            render();
+                        } else {
+                            logEl.innerHTML = '<strong>' + u + '→' + v + '</strong>: dist[' + u + '](' + dist[u] + ') + ' + w + ' = ' + (dist[u]+w) + ' ≥ dist[' + v + '](' + dist[v] + ') → 갱신 불필요.';
+                        }
+                    });
+                });
+            }
+            reset();
+            container.querySelector('#sp-demo-s2-reset').addEventListener('click', reset);
+        })();
+
+        // ====== 섹션 3 데모: 벨만-포드 반복 횟수별 확정 ======
+        (function() {
+            var nodesEl = container.querySelector('#sp-demo-s3-nodes');
+            var logEl = container.querySelector('#sp-demo-s3-log');
+            if (!nodesEl) return;
+            var nodes = ['S','A','B','C'];
+            var edges = [['S','A',3],['S','B',7],['A','B',2],['A','C',5],['B','C',1]];
+            var dist, round;
+            function reset() {
+                dist = {S:0, A:Infinity, B:Infinity, C:Infinity};
+                round = 0;
+                render();
+                logEl.textContent = '아직 반복 전입니다. "다음 반복"을 눌러보세요!';
+            }
+            function render() {
+                nodesEl.innerHTML = nodes.map(function(n) {
+                    var v = dist[n] === Infinity ? '∞' : dist[n];
+                    var confirmed = (n === 'S') || (round > 0 && dist[n] !== Infinity);
+                    var bg = confirmed ? 'var(--green)' : 'var(--bg2)';
+                    var c = confirmed ? '#fff' : 'var(--text2)';
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.75rem;color:var(--text2);">' + n + '</span><span style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px;background:' + bg + ';color:' + c + ';font-weight:700;font-size:1.1rem;">' + v + '</span></div>';
+                }).join('');
+            }
+            function doRound() {
+                if (round >= nodes.length - 1) {
+                    logEl.textContent = 'V-1 = ' + (nodes.length - 1) + '번 반복 완료! 모든 최단 거리가 확정되었습니다.';
+                    return;
+                }
+                round++;
+                var changed = [];
+                edges.forEach(function(e) {
+                    var u = e[0], v = e[1], w = e[2];
+                    if (dist[u] !== Infinity && dist[u] + w < dist[v]) {
+                        dist[v] = dist[u] + w;
+                        changed.push(v + '=' + dist[v]);
+                    }
+                });
+                render();
+                if (changed.length > 0) {
+                    logEl.innerHTML = '반복 ' + round + ': 간선 ' + round + '개 이하 최단 경로 확정! 갱신: ' + changed.join(', ');
+                } else {
+                    logEl.innerHTML = '반복 ' + round + ': 갱신 없음. 이미 모두 확정!';
+                }
+            }
+            reset();
+            container.querySelector('#sp-demo-s3-next').addEventListener('click', doRound);
+            container.querySelector('#sp-demo-s3-reset').addEventListener('click', reset);
+        })();
+
+        // ====== 섹션 4 데모: 플로이드-워셜 경유지 ======
+        (function() {
+            var tableEl = container.querySelector('#sp-demo-s4-table');
+            var logEl = container.querySelector('#sp-demo-s4-log');
+            if (!tableEl) return;
+            var N = ['1','2','3'];
+            var INF = Infinity;
+            var initDist = [[0,4,INF],[INF,0,1],[2,INF,0]];
+            var dp, kIdx;
+            function reset() {
+                dp = initDist.map(function(r) { return r.slice(); });
+                kIdx = 0;
+                renderTable([]);
+                logEl.textContent = '아직 경유지를 추가하지 않았습니다. "다음 경유지 추가"를 눌러보세요!';
+            }
+            function renderTable(highlights) {
+                var html = '<table style="border-collapse:collapse;font-size:0.85rem;"><tr><th style="padding:6px 10px;border:1px solid var(--border);background:var(--bg2);">→</th>';
+                N.forEach(function(n) { html += '<th style="padding:6px 10px;border:1px solid var(--border);background:var(--bg2);">' + n + '</th>'; });
+                html += '</tr>';
+                for (var i = 0; i < N.length; i++) {
+                    html += '<tr><th style="padding:6px 10px;border:1px solid var(--border);background:var(--bg2);">' + N[i] + '</th>';
+                    for (var j = 0; j < N.length; j++) {
+                        var v = dp[i][j] === Infinity ? '∞' : dp[i][j];
+                        var hl = highlights.some(function(h) { return h[0]===i && h[1]===j; });
+                        var bg = hl ? 'var(--yellow)' : 'var(--bg)';
+                        html += '<td style="padding:6px 10px;border:1px solid var(--border);text-align:center;font-weight:' + (hl?'700':'400') + ';background:' + bg + ';">' + v + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+                tableEl.innerHTML = html;
+            }
+            function addVia() {
+                if (kIdx >= N.length) {
+                    logEl.textContent = '모든 경유지(' + N.join(',') + ')를 추가했습니다! 모든 쌍 최단거리가 완성!';
+                    return;
+                }
+                var k = kIdx;
+                var changed = [];
+                for (var i = 0; i < N.length; i++) {
+                    for (var j = 0; j < N.length; j++) {
+                        if (dp[i][k] !== Infinity && dp[k][j] !== Infinity && dp[i][k] + dp[k][j] < dp[i][j]) {
+                            dp[i][j] = dp[i][k] + dp[k][j];
+                            changed.push([i, j]);
+                        }
+                    }
+                }
+                kIdx++;
+                renderTable(changed);
+                if (changed.length > 0) {
+                    logEl.innerHTML = '경유지 <strong>' + N[k] + '</strong> 추가! ' + changed.map(function(c) { return N[c[0]] + '→' + N[c[1]] + '=' + dp[c[0]][c[1]]; }).join(', ') + ' 갱신됨!';
+                } else {
+                    logEl.innerHTML = '경유지 <strong>' + N[k] + '</strong> 추가! 갱신 없음.';
+                }
+            }
+            reset();
+            container.querySelector('#sp-demo-s4-next').addEventListener('click', addVia);
+            container.querySelector('#sp-demo-s4-reset').addEventListener('click', reset);
+        })();
 
         // ====== 데모 1: BFS vs 다익스트라 ======
         (function() {

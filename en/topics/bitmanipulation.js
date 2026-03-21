@@ -215,6 +215,26 @@ int main() {
     cout &lt;&lt; bitset&lt;4&gt;(10) &lt;&lt; endl;   // 1010 — 4 digits
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Decimal ↔ Binary Converter</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Enter a decimal number to see its binary, or click bits to toggle them!</p>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                            <div style="display:flex;flex-direction:column;gap:4px;">
+                                <label style="font-size:0.75rem;color:var(--text2);">Decimal</label>
+                                <input type="number" id="bit-s1-dec" value="10" min="0" max="255" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:80px;background:var(--card);color:var(--text);">
+                            </div>
+                            <span style="font-size:1.2rem;color:var(--accent);font-weight:700;">⇄</span>
+                            <div style="display:flex;flex-direction:column;gap:4px;">
+                                <label style="font-size:0.75rem;color:var(--text2);">Binary (8-bit)</label>
+                                <div id="bit-s1-bits" style="display:flex;gap:2px;"></div>
+                            </div>
+                        </div>
+                        <div id="bit-s1-calc" style="margin-top:8px;font-size:0.85rem;color:var(--text2);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-s1-msg">Change the decimal or click bits to see the conversion process!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -317,6 +337,18 @@ int main() {
     cout &lt;&lt; (16 >> 2) &lt;&lt; endl;  // 4  (shift 16 right by 2 → 16÷4)
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Bit Operation Quiz</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Guess the result of the bit operation!</p>
+                    <div class="concept-demo-body">
+                        <div id="bit-s2-quiz" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;"></div>
+                        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;" id="bit-s2-choices"></div>
+                        <div id="bit-s2-feedback" style="margin-top:8px;text-align:center;font-size:0.9rem;min-height:1.5em;"></div>
+                    </div>
+                    <div style="margin-top:8px;text-align:center;"><button class="concept-demo-btn" id="bit-s2-new">🎲 New Problem</button></div>
+                    <div class="concept-demo-msg" id="bit-s2-msg">Pick the correct answer to see a bit-by-bit explanation!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -421,6 +453,30 @@ int main() {
     int ALL = (1 &lt;&lt; 5) - 1;  // 0b11111 = 31
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Bitmask Operations</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Add, remove, or toggle elements in a set and see the bitmask change!</p>
+                    <div class="concept-demo-body">
+                        <div style="margin-bottom:8px;font-size:0.85rem;">Current set: <strong id="bit-s3-set">{}</strong> = <code id="bit-s3-bin">00000</code> = <strong id="bit-s3-dec">0</strong></div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;" id="bit-s3-elems"></div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <select id="bit-s3-op" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;background:var(--card);color:var(--text);">
+                                <option value="add">Add (OR)</option>
+                                <option value="remove">Remove (AND ~)</option>
+                                <option value="toggle">Toggle (XOR)</option>
+                                <option value="check">Check (AND)</option>
+                            </select>
+                            <select id="bit-s3-idx" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;background:var(--card);color:var(--text);">
+                                <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>
+                            </select>
+                            <button class="concept-demo-btn" id="bit-s3-go">Run</button>
+                            <button class="concept-demo-btn green" id="bit-s3-reset">↺</button>
+                        </div>
+                        <div id="bit-s3-log" style="margin-top:8px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-s3-msg">Choose an operation and element index, then click "Run"!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -527,6 +583,23 @@ int main() {
     cout &lt;&lt; bitset&lt;5&gt;(n & (n - 1)) &lt;&lt; endl;  // 10100 → 20 (lowest 1 bit removed!)
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — XOR Properties</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">XOR two numbers and see what happens. Try the same number twice!</p>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+                            <input type="number" id="bit-s4-a" value="7" min="0" max="255" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:60px;background:var(--card);color:var(--text);">
+                            <span style="font-weight:700;color:var(--yellow);">^</span>
+                            <input type="number" id="bit-s4-b" value="7" min="0" max="255" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:60px;background:var(--card);color:var(--text);">
+                            <span style="font-weight:700;">=</span>
+                            <span id="bit-s4-result" style="font-weight:700;font-size:1.1rem;color:var(--accent);"></span>
+                            <button class="concept-demo-btn" id="bit-s4-calc">Calculate</button>
+                        </div>
+                        <div id="bit-s4-detail" style="font-size:0.85rem;color:var(--text2);font-family:monospace;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="bit-s4-msg">Try same numbers (7^7) → 0! Then try different numbers!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -638,6 +711,135 @@ int main() {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== Section 1 demo: Decimal ↔ Binary converter ======
+        (function() {
+            var decInput = container.querySelector('#bit-s1-dec');
+            var bitsEl = container.querySelector('#bit-s1-bits');
+            var calcEl = container.querySelector('#bit-s1-calc');
+            if (!decInput) return;
+            function pad8(n) { var s = n.toString(2); while (s.length < 8) s = '0' + s; return s; }
+            function render(val) {
+                var bin = pad8(val);
+                bitsEl.innerHTML = '';
+                for (var i = 0; i < 8; i++) {
+                    var b = document.createElement('span');
+                    b.textContent = bin[i];
+                    b.setAttribute('data-i', i);
+                    b.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;cursor:pointer;font-weight:700;font-size:0.95rem;' +
+                        (bin[i]==='1' ? 'background:var(--accent);color:#fff;' : 'background:var(--bg2);color:var(--text2);');
+                    b.addEventListener('click', function() {
+                        var idx = parseInt(this.getAttribute('data-i'));
+                        var cur = pad8(parseInt(decInput.value) || 0);
+                        var arr = cur.split('');
+                        arr[idx] = arr[idx] === '1' ? '0' : '1';
+                        var nv = parseInt(arr.join(''), 2);
+                        decInput.value = nv;
+                        render(nv);
+                    });
+                    bitsEl.appendChild(b);
+                }
+                var parts = [];
+                for (var j = 0; j < 8; j++) {
+                    if (bin[j] === '1') parts.push('2^' + (7-j) + '(' + Math.pow(2,7-j) + ')');
+                }
+                calcEl.textContent = parts.length ? parts.join(' + ') + ' = ' + val : '0';
+            }
+            render(parseInt(decInput.value) || 0);
+            decInput.addEventListener('input', function() { render(Math.min(255, Math.max(0, parseInt(this.value) || 0))); });
+        })();
+
+        // ====== Section 2 demo: Bit operation quiz ======
+        (function() {
+            var quizEl = container.querySelector('#bit-s2-quiz');
+            var choicesEl = container.querySelector('#bit-s2-choices');
+            var feedbackEl = container.querySelector('#bit-s2-feedback');
+            var newBtn = container.querySelector('#bit-s2-new');
+            if (!quizEl) return;
+            var ops = ['&', '|', '^'];
+            var opNames = {'&':'AND','|':'OR','^':'XOR'};
+            function genQuiz() {
+                var a = Math.floor(Math.random()*14)+1;
+                var b = Math.floor(Math.random()*14)+1;
+                var op = ops[Math.floor(Math.random()*3)];
+                var ans;
+                if (op==='&') ans=a&b; else if (op==='|') ans=a|b; else ans=a^b;
+                quizEl.textContent = a + ' ' + op + ' ' + b + ' = ?';
+                var wrong = new Set([ans]);
+                while (wrong.size < 4) wrong.add(Math.floor(Math.random()*16));
+                var choices = Array.from(wrong);
+                choices.sort(function() { return Math.random()-0.5; });
+                choicesEl.innerHTML = '';
+                feedbackEl.textContent = '';
+                choices.forEach(function(c) {
+                    var btn = document.createElement('button');
+                    btn.className = 'concept-demo-btn';
+                    btn.textContent = c;
+                    btn.style.minWidth = '44px';
+                    btn.addEventListener('click', function() {
+                        if (c === ans) {
+                            function pad4(n) { var s = n.toString(2); while (s.length<4) s='0'+s; return s; }
+                            feedbackEl.innerHTML = '<span style="color:var(--green);font-weight:700;">Correct!</span> ' + pad4(a) + ' ' + opNames[op] + ' ' + pad4(b) + ' = ' + pad4(ans) + ' (' + ans + ')';
+                        } else {
+                            feedbackEl.innerHTML = '<span style="color:var(--red);">Wrong!</span> The answer is <strong>' + ans + '</strong>.';
+                        }
+                    });
+                    choicesEl.appendChild(btn);
+                });
+            }
+            genQuiz();
+            newBtn.addEventListener('click', genQuiz);
+        })();
+
+        // ====== Section 3 demo: Bitmask operations ======
+        (function() {
+            var setEl = container.querySelector('#bit-s3-set');
+            var binEl = container.querySelector('#bit-s3-bin');
+            var decEl = container.querySelector('#bit-s3-dec');
+            var logEl = container.querySelector('#bit-s3-log');
+            if (!setEl) return;
+            var S = 0;
+            function render() {
+                var elems = [];
+                for (var i = 0; i < 5; i++) if (S & (1 << i)) elems.push(i);
+                setEl.textContent = '{' + elems.join(', ') + '}';
+                var b = S.toString(2); while (b.length < 5) b = '0' + b;
+                binEl.textContent = b;
+                decEl.textContent = S;
+            }
+            render();
+            container.querySelector('#bit-s3-go').addEventListener('click', function() {
+                var op = container.querySelector('#bit-s3-op').value;
+                var idx = parseInt(container.querySelector('#bit-s3-idx').value);
+                if (op === 'add') { S = S | (1 << idx); logEl.innerHTML = 'S | (1<<' + idx + ') — element ' + idx + ' added!'; }
+                else if (op === 'remove') { S = S & ~(1 << idx); logEl.innerHTML = 'S & ~(1<<' + idx + ') — element ' + idx + ' removed!'; }
+                else if (op === 'toggle') { S = S ^ (1 << idx); logEl.innerHTML = 'S ^ (1<<' + idx + ') — element ' + idx + ' toggled!'; }
+                else { logEl.innerHTML = 'S & (1<<' + idx + ') = ' + (S & (1<<idx)) + ' — element ' + idx + (S & (1<<idx) ? ' exists!' : ' not found!'); return; }
+                render();
+            });
+            container.querySelector('#bit-s3-reset').addEventListener('click', function() { S = 0; render(); logEl.textContent = ''; });
+        })();
+
+        // ====== Section 4 demo: XOR properties ======
+        (function() {
+            var aInput = container.querySelector('#bit-s4-a');
+            var bInput = container.querySelector('#bit-s4-b');
+            var resultEl = container.querySelector('#bit-s4-result');
+            var detailEl = container.querySelector('#bit-s4-detail');
+            var calcBtn = container.querySelector('#bit-s4-calc');
+            if (!calcBtn) return;
+            function doCalc() {
+                var a = parseInt(aInput.value) || 0;
+                var b = parseInt(bInput.value) || 0;
+                var r = a ^ b;
+                resultEl.textContent = r;
+                function pad8(n) { var s = n.toString(2); while (s.length < 8) s = '0' + s; return s; }
+                detailEl.innerHTML = '  ' + pad8(a) + '  (' + a + ')<br>^ ' + pad8(b) + '  (' + b + ')<br>= ' + pad8(r) + '  (' + r + ')' +
+                    (a === b ? '<br><span style="color:var(--green);">Same numbers XOR → 0!</span>' : '');
+            }
+            doCalc();
+            calcBtn.addEventListener('click', doCalc);
+        })();
 
         // ====== Demo 1: Binary Conversion ======
         (function() {

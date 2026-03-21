@@ -436,6 +436,21 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
                     <strong>💡 Think about it:</strong> Merge Sort is always O(n log n)!
                     It's stable even in the worst case, but the downside is it requires O(n) extra memory.
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Merge Sort Mini Demo</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        Follow along step by step as array [38, 27, 43, 3, 9, 82, 10] gets <strong>split in half → merged</strong>!<br>
+                        The key is comparing front elements of two arrays and picking the smaller one.
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-merge-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-merge-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-merge-viz" style="min-height:60px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-merge-msg">▶ Press Step to start Merge Sort!</div>
+                </div>
             </div>
 
             <div class="concept-section">
@@ -509,6 +524,21 @@ sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                     But knowing how sorting algorithms work lets you <strong>customize sort criteria</strong><span class="lang-py"> (<code>key</code>, <code>lambda</code>)</span><span class="lang-cpp"> (comparator functions, lambdas)</span>
                     with ease.
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Quick Sort Mini Demo</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        Follow along step by step as array [38, 27, 43, 3, 9, 82, 10] gets partitioned: <strong>pick a pivot</strong>, send smaller elements left and larger elements right!
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-quick-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-quick-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-quick-viz" style="min-height:60px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-quick-msg">▶ Press Step to start Quick Sort!</div>
+                </div>
+
                 <div class="concept-demo">
                     <div class="concept-demo-title">Merge Sort vs Quick Sort — What's the Difference?</div>
                     <div style="margin-top:1rem;overflow-x:auto;">
@@ -1274,6 +1304,314 @@ sort(words.begin(), words.end(),
             container.querySelector('#sort-demo-race-reset').addEventListener('click', raceReset);
             raceReset();
         }
+
+        // ── Merge Sort Mini Demo ──
+        {
+            var mergeInitArr = [38, 27, 43, 3, 9, 82, 10];
+            var mergeSteps = [];
+            var mergeStepIdx = -1;
+            var mergeVizEl = container.querySelector('#sort-demo-merge-viz');
+            var mergeMsg = container.querySelector('#sort-demo-merge-msg');
+            var mergeStepBtn = container.querySelector('#sort-demo-merge-step');
+
+            function mergeBuildSteps() {
+                mergeSteps = [];
+                var arr = mergeInitArr.slice();
+
+                mergeSteps.push({ groups: [arr.slice()], desc: 'Initial array: [' + arr.join(', ') + ']. Starting Merge Sort!', highlights: {} });
+
+                var levels = [[arr.slice()]];
+                while (true) {
+                    var prev = levels[levels.length - 1];
+                    var next = [];
+                    var didSplit = false;
+                    for (var gi = 0; gi < prev.length; gi++) {
+                        if (prev[gi].length > 1) {
+                            var mid = Math.floor(prev[gi].length / 2);
+                            next.push(prev[gi].slice(0, mid));
+                            next.push(prev[gi].slice(mid));
+                            didSplit = true;
+                        } else {
+                            next.push(prev[gi].slice());
+                        }
+                    }
+                    if (!didSplit) break;
+                    levels.push(next);
+                    mergeSteps.push({ groups: next.map(function(g) { return g.slice(); }), desc: 'Split! Divide each group in half \u2192 ' + next.map(function(g) { return '[' + g.join(',') + ']'; }).join(' '), highlights: {} });
+                }
+
+                var currentGroups = levels[levels.length - 1].map(function(g) { return g.slice(); });
+
+                function mergeTwo(a, b) {
+                    var result = [];
+                    var i = 0, j = 0;
+                    var compSteps = [];
+                    while (i < a.length && j < b.length) {
+                        compSteps.push({ left: a.slice(), right: b.slice(), li: i, ri: j, result: result.slice(), pick: a[i] <= b[j] ? 'left' : 'right' });
+                        if (a[i] <= b[j]) {
+                            result.push(a[i]); i++;
+                        } else {
+                            result.push(b[j]); j++;
+                        }
+                    }
+                    while (i < a.length) { result.push(a[i]); i++; }
+                    while (j < b.length) { result.push(b[j]); j++; }
+                    return { result: result, compSteps: compSteps };
+                }
+
+                while (currentGroups.length > 1) {
+                    var nextGroups = [];
+                    for (var gi = 0; gi < currentGroups.length; gi += 2) {
+                        if (gi + 1 < currentGroups.length) {
+                            var a = currentGroups[gi], b = currentGroups[gi + 1];
+                            mergeSteps.push({
+                                groups: currentGroups.map(function(g) { return g.slice(); }),
+                                desc: 'Merge: comparing [' + a.join(',') + '] and [' + b.join(',') + ']',
+                                highlights: { merging: [gi, gi + 1] }
+                            });
+                            var mr = mergeTwo(a, b);
+                            for (var ci = 0; ci < mr.compSteps.length; ci++) {
+                                var cs = mr.compSteps[ci];
+                                var pickDesc = cs.pick === 'left'
+                                    ? cs.left[cs.li] + ' \u2264 ' + cs.right[cs.ri] + ' \u2192 pick left(' + cs.left[cs.li] + ')'
+                                    : cs.right[cs.ri] + ' < ' + cs.left[cs.li] + ' \u2192 pick right(' + cs.right[cs.ri] + ')';
+                                mergeSteps.push({
+                                    mergeDetail: { left: cs.left, right: cs.right, li: cs.li, ri: cs.ri, result: cs.result, pick: cs.pick },
+                                    desc: 'Compare: ' + pickDesc,
+                                    highlights: {}
+                                });
+                            }
+                            nextGroups.push(mr.result);
+                            var afterMerge = nextGroups.slice();
+                            for (var ri = gi + 2; ri < currentGroups.length; ri++) afterMerge.push(currentGroups[ri].slice());
+                            mergeSteps.push({
+                                groups: afterMerge.map(function(g) { return g.slice(); }),
+                                desc: 'Merge complete! \u2192 [' + mr.result.join(', ') + ']',
+                                highlights: { justMerged: [nextGroups.length - 1] }
+                            });
+                        } else {
+                            nextGroups.push(currentGroups[gi].slice());
+                        }
+                    }
+                    currentGroups = nextGroups;
+                }
+                mergeSteps.push({ groups: [currentGroups[0].slice()], desc: 'Sorted! [' + currentGroups[0].join(', ') + '] \u2014 O(n log n) time, O(n) extra memory', highlights: { done: true } });
+            }
+
+            function renderMergeViz(step) {
+                if (!step) { mergeVizEl.innerHTML = ''; return; }
+                if (step.mergeDetail) {
+                    var d = step.mergeDetail;
+                    var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">';
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--accent);font-weight:700;min-width:32px;">Left</span>';
+                    for (var i = 0; i < d.left.length; i++) {
+                        var ex = i < d.li ? 'opacity:0.3;' : '';
+                        if (i === d.li) ex = 'border-color:var(--accent);box-shadow:0 0 8px var(--accent);';
+                        html += '<div class="str-char-box" style="' + ex + '">' + d.left[i] + '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--yellow);font-weight:700;min-width:32px;">Right</span>';
+                    for (var j = 0; j < d.right.length; j++) {
+                        var ex2 = j < d.ri ? 'opacity:0.3;' : '';
+                        if (j === d.ri) ex2 = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                        html += '<div class="str-char-box" style="' + ex2 + '">' + d.right[j] + '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--green);font-weight:700;min-width:32px;">Result</span>';
+                    for (var r = 0; r < d.result.length; r++) {
+                        html += '<div class="str-char-box matched">' + d.result[r] + '</div>';
+                    }
+                    var pickedVal = d.pick === 'left' ? d.left[d.li] : d.right[d.ri];
+                    html += '<div class="str-char-box" style="border-color:var(--green);box-shadow:0 0 10px var(--green);background:rgba(0,184,148,0.15);">' + pickedVal + '</div>';
+                    html += '</div></div>';
+                    mergeVizEl.innerHTML = html;
+                    return;
+                }
+                var groups = step.groups;
+                var hl = step.highlights || {};
+                var html2 = '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;">';
+                for (var gi = 0; gi < groups.length; gi++) {
+                    var gStyle = 'display:flex;gap:4px;padding:6px 10px;border-radius:8px;border:2px solid var(--bg3);';
+                    if (hl.merging && hl.merging.indexOf(gi) >= 0) gStyle += 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    if (hl.justMerged && hl.justMerged.indexOf(gi) >= 0) gStyle += 'border-color:var(--green);box-shadow:0 0 10px var(--green);';
+                    if (hl.done) gStyle += 'border-color:var(--green);box-shadow:0 0 10px var(--green);';
+                    html2 += '<div style="' + gStyle + '">';
+                    for (var ei = 0; ei < groups[gi].length; ei++) {
+                        var ecls = 'str-char-box';
+                        if (hl.done) ecls += ' matched';
+                        html2 += '<div class="' + ecls + '">' + groups[gi][ei] + '</div>';
+                    }
+                    html2 += '</div>';
+                    if (gi < groups.length - 1 && !hl.done) html2 += '<span style="color:var(--text3);font-size:0.8rem;"></span>';
+                }
+                html2 += '</div>';
+                mergeVizEl.innerHTML = html2;
+            }
+
+            function mergeStep() {
+                if (mergeStepIdx >= mergeSteps.length - 1) return;
+                mergeStepIdx++;
+                var s = mergeSteps[mergeStepIdx];
+                mergeMsg.textContent = s.desc;
+                renderMergeViz(s);
+            }
+
+            function mergeReset() {
+                mergeStepIdx = -1;
+                mergeMsg.textContent = '\u25B6 Press Step to start Merge Sort!';
+                mergeVizEl.innerHTML = '';
+            }
+
+            mergeBuildSteps();
+            mergeStepBtn.addEventListener('click', mergeStep);
+            container.querySelector('#sort-demo-merge-reset').addEventListener('click', mergeReset);
+        }
+
+        // ── Quick Sort Mini Demo ──
+        {
+            var quickInitArr = [38, 27, 43, 3, 9, 82, 10];
+            var quickSteps = [];
+            var quickStepIdx = -1;
+            var quickVizEl = container.querySelector('#sort-demo-quick-viz');
+            var quickMsg = container.querySelector('#sort-demo-quick-msg');
+            var quickStepBtn = container.querySelector('#sort-demo-quick-step');
+
+            function quickBuildSteps() {
+                quickSteps = [];
+                var arr = quickInitArr.slice();
+
+                quickSteps.push({ arr: arr.slice(), desc: 'Initial array: [' + arr.join(', ') + ']. Starting Quick Sort!', highlights: {} });
+
+                function qsort(a, depth, label) {
+                    if (a.length <= 1) {
+                        if (a.length === 1) {
+                            quickSteps.push({ partition: { sub: a.slice(), pivot: -1, left: [], right: [], equal: a.slice(), phase: 'base' }, desc: label + '[' + a[0] + '] \u2014 a single element is already sorted!', highlights: {} });
+                        }
+                        return a.slice();
+                    }
+                    var pivotIdx = Math.floor(a.length / 2);
+                    var pivot = a[pivotIdx];
+                    quickSteps.push({ partition: { sub: a.slice(), pivot: pivot, pivotIdx: pivotIdx, left: [], right: [], equal: [], phase: 'choose' }, desc: label + 'Array [' + a.join(', ') + ']: choose pivot = ' + pivot + ' (middle element).', highlights: {} });
+
+                    var left = [], equal = [], right = [];
+                    for (var i = 0; i < a.length; i++) {
+                        var side = a[i] < pivot ? 'left' : (a[i] > pivot ? 'right' : 'equal');
+                        if (side === 'left') left.push(a[i]);
+                        else if (side === 'right') right.push(a[i]);
+                        else equal.push(a[i]);
+                        quickSteps.push({
+                            partition: { sub: a.slice(), pivot: pivot, scanIdx: i, left: left.slice(), right: right.slice(), equal: equal.slice(), phase: 'scan' },
+                            desc: a[i] + (side === 'left' ? ' < ' + pivot + ' \u2192 goes left' : (side === 'right' ? ' > ' + pivot + ' \u2192 goes right' : ' == ' + pivot + ' \u2192 pivot group')),
+                            highlights: {}
+                        });
+                    }
+                    quickSteps.push({
+                        partition: { sub: a.slice(), pivot: pivot, left: left.slice(), right: right.slice(), equal: equal.slice(), phase: 'partitioned' },
+                        desc: 'Partition done! Left[' + left.join(',') + '] | Pivot[' + equal.join(',') + '] | Right[' + right.join(',') + ']',
+                        highlights: {}
+                    });
+
+                    var sortedLeft = qsort(left, depth + 1, 'Left part: ');
+                    var sortedRight = qsort(right, depth + 1, 'Right part: ');
+                    var merged = sortedLeft.concat(equal).concat(sortedRight);
+                    quickSteps.push({
+                        partition: { result: merged.slice(), phase: 'combined' },
+                        desc: 'Combine: [' + sortedLeft.join(',') + '] + [' + equal.join(',') + '] + [' + sortedRight.join(',') + '] = [' + merged.join(', ') + ']',
+                        highlights: {}
+                    });
+                    return merged;
+                }
+
+                qsort(arr, 0, '');
+                quickSteps.push({ arr: quickInitArr.slice().sort(function(a,b){return a-b;}), desc: 'Sorted! [' + quickInitArr.slice().sort(function(a,b){return a-b;}).join(', ') + '] \u2014 Average O(n log n)', highlights: { done: true } });
+            }
+
+            function renderQuickViz(step) {
+                if (!step) { quickVizEl.innerHTML = ''; return; }
+                if (step.partition) {
+                    var p = step.partition;
+                    var html = '';
+                    if (p.phase === 'base') {
+                        html = '<div style="display:flex;justify-content:center;"><div class="str-char-box matched">' + p.equal[0] + '</div></div>';
+                    } else if (p.phase === 'choose') {
+                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                        for (var i = 0; i < p.sub.length; i++) {
+                            var ex = i === p.pivotIdx ? 'border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);' : '';
+                            var lbl = i === p.pivotIdx ? '<div style="font-size:0.6rem;color:var(--yellow);margin-top:2px;font-weight:700;">pivot</div>' : '';
+                            html += '<div style="display:flex;flex-direction:column;align-items:center;"><div class="str-char-box" style="' + ex + '">' + p.sub[i] + '</div>' + lbl + '</div>';
+                        }
+                        html += '</div>';
+                    } else if (p.phase === 'scan') {
+                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                        for (var i = 0; i < p.sub.length; i++) {
+                            var ex = '';
+                            if (i === p.scanIdx) ex = 'border-color:var(--accent);box-shadow:0 0 10px var(--accent);transform:scale(1.1);';
+                            else if (i < p.scanIdx) ex = 'opacity:0.4;';
+                            html += '<div class="str-char-box" style="' + ex + '">' + p.sub[i] + '</div>';
+                        }
+                        html += '</div>';
+                        html += '<div style="display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap;">';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:4px;">Left (&lt;' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--accent);border-radius:8px;">';
+                        p.left.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;">' + v + '</div>'; });
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--yellow);font-weight:700;margin-bottom:4px;">Pivot (=' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--yellow);border-radius:8px;">';
+                        p.equal.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;border-color:var(--yellow);">' + v + '</div>'; });
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:4px;">Right (&gt;' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--red, #e17055);border-radius:8px;">';
+                        p.right.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;">' + v + '</div>'; });
+                        html += '</div></div></div>';
+                    } else if (p.phase === 'partitioned') {
+                        html = '<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:4px;">Left</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--accent);border-radius:8px;min-height:36px;">';
+                        p.left.forEach(function(v) { html += '<div class="str-char-box">' + v + '</div>'; });
+                        if (!p.left.length) html += '<span style="color:var(--text3);font-size:0.8rem;">empty</span>';
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--yellow);font-weight:700;margin-bottom:4px;">Pivot</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--yellow);border-radius:8px;box-shadow:0 0 8px var(--yellow);">';
+                        p.equal.forEach(function(v) { html += '<div class="str-char-box" style="border-color:var(--yellow);box-shadow:0 0 6px var(--yellow);">' + v + '</div>'; });
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:4px;">Right</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--red, #e17055);border-radius:8px;min-height:36px;">';
+                        p.right.forEach(function(v) { html += '<div class="str-char-box">' + v + '</div>'; });
+                        if (!p.right.length) html += '<span style="color:var(--text3);font-size:0.8rem;">empty</span>';
+                        html += '</div></div></div>';
+                    } else if (p.phase === 'combined') {
+                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                        p.result.forEach(function(v) { html += '<div class="str-char-box matched">' + v + '</div>'; });
+                        html += '</div>';
+                    }
+                    quickVizEl.innerHTML = html;
+                    return;
+                }
+                var arr = step.arr;
+                var hl = step.highlights || {};
+                var html3 = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                for (var i = 0; i < arr.length; i++) {
+                    var cls = 'str-char-box';
+                    var ex = '';
+                    if (hl.done) { cls += ' matched'; ex = 'box-shadow:0 0 10px var(--green);'; }
+                    html3 += '<div class="' + cls + '" style="' + ex + '">' + arr[i] + '</div>';
+                }
+                html3 += '</div>';
+                quickVizEl.innerHTML = html3;
+            }
+
+            function quickStep() {
+                if (quickStepIdx >= quickSteps.length - 1) return;
+                quickStepIdx++;
+                var s = quickSteps[quickStepIdx];
+                quickMsg.textContent = s.desc;
+                renderQuickViz(s);
+            }
+
+            function quickReset() {
+                quickStepIdx = -1;
+                quickMsg.textContent = '\u25B6 Press Step to start Quick Sort!';
+                quickVizEl.innerHTML = '';
+            }
+
+            quickBuildSteps();
+            quickStepBtn.addEventListener('click', quickStep);
+            container.querySelector('#sort-demo-quick-reset').addEventListener('click', quickReset);
+        }
     },
 
     // ===== Visualization =====
@@ -2003,10 +2341,10 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: 'First thought', content: 'We need to find the top k students. What if we just line up the scores from highest to lowest?<br><strong>Sort in descending order</strong> and the highest score will be at the front!' },
-                { title: 'Where to look after sorting?', content: 'After sorting in descending order, the k-th element is the lowest score among prize winners \u2014 the <strong>cutline</strong>.<br>Since array indices start at 0, the answer is <code>arr[k-1]</code>!<br>Example: [100, 98, 93, 85, 76] with k=2 \u2192 arr[1] = 98' },
-                { title: 'Ascending order works too!', content: 'What if you sorted in ascending order? Just look at the k-th element from the end!<br><span class="lang-py"><code>arr[N-k]</code> or <code>arr[-k]</code> (Python negative index)</span><span class="lang-cpp"><code>arr[N-k]</code> gives the answer</span>' },
-                { title: 'Time complexity', content: 'Since N \u2264 1,000, any sort works fine. Built-in sort is O(N log N), more than enough.' }
+                { title: 'First thought', content: 'We need to find the top k students. What if we just line up the scores from highest to lowest?<br><strong>Sort in descending order</strong> and the highest score will be at the front!<div style="display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">100</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">76</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">85</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">93</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">98</div></div><div style="text-align:center;margin:8px 0;font-size:1.2rem;">\u2193 Descending sort</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;font-size:0.9rem;">100</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;font-size:0.9rem;">98</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">93</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">85</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">76</div></div>' },
+                { title: 'Where to look after sorting?', content: 'After sorting in descending order, the k-th element is the lowest score among prize winners \u2014 the <strong>cutline</strong>.<br>Since array indices start at 0, the answer is <code>arr[k-1]</code>!<div style="display:flex;gap:6px;justify-content:center;margin-top:12px;align-items:flex-end;flex-wrap:wrap;"><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[0]</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">100</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--yellow);font-weight:700;">[k-1] \u2190 cutline!</div><div style="padding:6px 14px;border-radius:8px;border:2px solid var(--yellow);box-shadow:0 0 8px var(--yellow);font-weight:700;">98</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[2]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">93</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[3]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">85</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[4]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">76</div></div></div>' },
+                { title: 'Ascending order works too!', content: 'What if you sorted in ascending order? Just look at the k-th element from the end!<br><span class="lang-py"><code>arr[N-k]</code> or <code>arr[-k]</code> (Python negative index)</span><span class="lang-cpp"><code>arr[N-k]</code> gives the answer</span><div style="display:flex;gap:6px;justify-content:center;margin-top:12px;align-items:flex-end;flex-wrap:wrap;"><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[0]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">76</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[1]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">85</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[2]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">93</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--yellow);font-weight:700;"><span class="lang-py">[-k]</span><span class="lang-cpp">[N-k]</span> \u2190 cutline!</div><div style="padding:6px 14px;border-radius:8px;border:2px solid var(--yellow);box-shadow:0 0 8px var(--yellow);font-weight:700;">98</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[4]</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">100</div></div></div>' },
+                { title: 'Time complexity', content: 'Since N \u2264 1,000, any sort works fine. Built-in sort is O(N log N), more than enough.<div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">Method</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">Time</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">N=1000</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">O(n\u00B2) sort</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n\u00B2)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">1,000,000 \u2705</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);"><span class="lang-py">sort()</span><span class="lang-cpp">sort()</span></td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">~10,000 \u2705\u2705</td></tr></table></div>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)  # Sort descending\nprint(scores[k - 1])  # k-th element is the cutline`,
@@ -2081,9 +2419,9 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: 'The simplest approach', content: 'Use any sorting algorithm you know! Selection Sort, Insertion Sort, Bubble Sort — anything works.<br>Since N &le; 1,000, even O(n&sup2;) fits within the time limit. A great practice problem for implementing sorts yourself!' },
-                { title: 'Faster sort is possible', content: 'Instead of implementing yourself, built-in sort gives you O(n log n) — much faster.<br><span class="lang-py">Python: <code>sorted()</code> or <code>.sort()</code> uses O(n log n) Timsort.</span><span class="lang-cpp">C++: <code>sort()</code> uses O(n log n) IntroSort. Requires <code>&lt;algorithm&gt;</code> header!</span>' },
-                { title: 'I/O optimization', content: 'Sort is correct but getting TLE? I/O might be the bottleneck!<br><span class="lang-py">Python: Use <code>sys.stdin.readline</code> for fast input + <code>"\\n".join()</code> for batch output</span><span class="lang-cpp">C++: Use <code>ios::sync_with_stdio(false)</code> and <code>cin.tie(nullptr)</code> for fast I/O</span>' }
+                { title: 'The simplest approach', content: 'Use any sorting algorithm you know! Selection Sort, Insertion Sort, Bubble Sort \u2014 anything works.<br>Since N &le; 1,000, even O(n&sup2;) fits within the time limit. A great practice problem for implementing sorts yourself!<div style="display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">5</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">2</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">3</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">4</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">1</div></div><div style="text-align:center;margin:6px 0;font-size:1.2rem;">\u2193 Any sort!</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">1</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">2</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">3</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">4</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">5</div></div>' },
+                { title: 'Faster sort is possible', content: 'Instead of implementing yourself, built-in sort gives you O(n log n) \u2014 much faster.<br><span class="lang-py">Python: <code>sorted()</code> or <code>.sort()</code> uses O(n log n) Timsort.</span><span class="lang-cpp">C++: <code>sort()</code> uses O(n log n) IntroSort. Requires <code>&lt;algorithm&gt;</code> header!</span><div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">Method</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">Time</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">Recommended?</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">Manual (O(n\u00B2))</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n\u00B2)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">For practice \u270F\uFE0F</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);"><span class="lang-py">sort()</span><span class="lang-cpp">sort()</span></td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">Best for real use \u2705</td></tr></table></div>' },
+                { title: 'I/O optimization', content: 'Sort is correct but getting TLE? I/O might be the bottleneck!<br><span class="lang-py">Python: Use <code>sys.stdin.readline</code> for fast input + <code>"\\n".join()</code> for batch output<div style="margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:0.85rem;font-family:monospace;"><span style="color:var(--green);">import</span> sys<br>input = sys.stdin.readline &nbsp; <span style="color:var(--text3);"># Fast input!</span><br>print(<span style="color:var(--yellow);">\'\\n\'</span>.join(map(str, arr))) &nbsp; <span style="color:var(--text3);"># Batch output!</span></div></span><span class="lang-cpp">C++: Use <code>ios::sync_with_stdio(false)</code> and <code>cin.tie(nullptr)</code> for fast I/O<div style="margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:0.85rem;font-family:monospace;"><span style="color:var(--green);">ios</span>::sync_with_stdio(<span style="color:var(--red);">false</span>);<br>cin.tie(<span style="color:var(--red);">nullptr</span>); &nbsp; <span style="color:var(--text3);">// Fast I/O!</span></div></span>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()\nprint('\\n'.join(map(str, arr)))`,

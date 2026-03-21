@@ -157,6 +157,19 @@ var divideConquerTopic = {
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Binary search (simplest example of divide and conquer)\ndef binary_search(arr, target, lo, hi):\n    if lo > hi:\n        return -1                    # Base case: no range to search\n    mid = (lo + hi) // 2\n    if arr[mid] == target:\n        return mid                   # Found it!\n    elif arr[mid] < target:\n        return binary_search(arr, target, mid + 1, hi)  # Right half\n    else:\n        return binary_search(arr, target, lo, mid - 1)  # Left half</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Binary search (simplest example of divide and conquer)\nint binary_search(vector&lt;int&gt;&amp; arr, int target, int lo, int hi) {\n    if (lo &gt; hi)\n        return -1;                   // Base case: no range to search\n    int mid = (lo + hi) / 2;\n    if (arr[mid] == target)\n        return mid;                  // Found it!\n    else if (arr[mid] &lt; target)\n        return binary_search(arr, target, mid + 1, hi);  // Right half\n    else\n        return binary_search(arr, target, lo, mid - 1);  // Left half\n}</code></pre></div></span>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Paper Folding — The Core of Divide and Conquer</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-fold-btn">✂️ Split in Half</button>\
+                        <button class="concept-demo-btn green" id="dc-inline-fold-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-fold-viz" style="display:flex;gap:4px;flex-wrap:wrap;align-items:flex-end;min-height:60px;"></div>\
+                        <div id="dc-inline-fold-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 Keep clicking "Split in Half" to see the paper getting smaller!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -213,6 +226,19 @@ var divideConquerTopic = {
 \
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># Merge Sort — the classic divide and conquer example\ndef merge_sort(arr):\n    if len(arr) <= 1:       # Base case\n        return arr\n\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])    # 1. Sort left half\n    right = merge_sort(arr[mid:])   # 1. Sort right half\n    return merge(left, right)       # 3. Combine\n\ndef merge(left, right):\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result</code></pre></div></span>\
                 <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">// Merge Sort — the classic divide and conquer example\n#include &lt;vector&gt;\nusing namespace std;\n\nvector&lt;int&gt; merge(vector&lt;int&gt;&amp; left, vector&lt;int&gt;&amp; right) {\n    vector&lt;int&gt; result;\n    int i = 0, j = 0;\n    while (i &lt; left.size() &amp;&amp; j &lt; right.size()) {\n        if (left[i] &lt;= right[j])\n            result.push_back(left[i++]);\n        else\n            result.push_back(right[j++]);\n    }\n    while (i &lt; left.size()) result.push_back(left[i++]);   // Remaining left\n    while (j &lt; right.size()) result.push_back(right[j++]); // Remaining right\n    return result;\n}\n\nvector&lt;int&gt; merge_sort(vector&lt;int&gt; arr) {\n    if (arr.size() &lt;= 1) return arr;  // Base case\n\n    int mid = arr.size() / 2;\n    // Vector slicing (corresponds to Python arr[:mid], arr[mid:])\n    vector&lt;int&gt; left(arr.begin(), arr.begin() + mid);   // 1. Left half\n    vector&lt;int&gt; right(arr.begin() + mid, arr.end());     // 1. Right half\n    left = merge_sort(left);    // 2. Sort left\n    right = merge_sort(right);  // 2. Sort right\n    return merge(left, right);  // 3. Combine\n}</code></pre></div></span>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 3-Step Experience — Merge Sort [6, 2, 8, 1]</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-3step-btn">Next Step ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-inline-3step-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-3step-viz" style="text-align:center;min-height:80px;font-family:monospace;line-height:2;"></div>\
+                        <div id="dc-inline-3step-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 Click "Next Step" to see Divide → Conquer → Combine in action!</div>\
+                </div>\
 \
                 <div class="think-box">\
                     <div class="think-box-question">\
@@ -274,6 +300,19 @@ var divideConquerTopic = {
                     • <strong>DP</strong>: Subproblems <span style="color:var(--green)">overlap</span> — store and reuse for speed<br>\
                     Example: Merge sort: left/right are independent → <strong>Divide & Conquer</strong> | Fibonacci: F(3) computed multiple times → <strong>DP</strong><br>\
                     <a href="https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Wikipedia: Master Theorem ↗</a> — A formula to easily compute the time complexity of divide and conquer\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Overlap Comparison — See the Difference</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-cmp-dc">Divide & Conquer (Merge Sort)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-cmp-dp">DP (Fibonacci)</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-cmp-viz" style="font-family:monospace;font-size:0.85rem;line-height:1.8;min-height:80px;overflow-x:auto;white-space:pre;"></div>\
+                        <div id="dc-inline-cmp-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 Click each button to compare the call structure! Check for overlapping subproblems.</div>\
                 </div>\
 \
                 <div class="think-box">\
@@ -342,6 +381,21 @@ var divideConquerTopic = {
                     </div>\
                 </div>\
 \
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 Pattern Visualization — Compare Division Styles</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-pat-half">Halving (Binary Search)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-pat-quad">Quadrants (Quadtree)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-pat-nine">9-Partition (Paper Count)</button>\
+                        <button class="concept-demo-btn" id="dc-inline-pat-exp">Exponent Halving</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-pat-viz" style="display:flex;justify-content:center;align-items:center;min-height:110px;gap:12px;flex-wrap:wrap;"></div>\
+                        <div id="dc-inline-pat-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 Click each pattern button to compare different division strategies!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -393,6 +447,20 @@ var divideConquerTopic = {
                         <h3>Step 3: Define the Combine Method</h3>\
                         <p>Decide how to combine the results of subproblems. <strong>Addition? Multiplication? Maximum?</strong> It varies by problem.</p>\
                     </div>\
+                </div>\
+\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">🎮 3-Step Experience — Find Max in Array by D&C</div>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="dc-inline-solve-btn">Next ▶</button>\
+                        <button class="concept-demo-btn green" id="dc-inline-solve-reset">↺ Reset</button>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div id="dc-inline-solve-arr" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>\
+                        <div id="dc-inline-solve-tree" style="font-family:monospace;font-size:0.85rem;line-height:2;min-height:60px;overflow-x:auto;white-space:pre;"></div>\
+                        <div id="dc-inline-solve-msg" style="margin-top:10px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--text);min-height:1.5em;"></div>\
+                    </div>\
+                    <div class="concept-demo-msg">👆 Click "Next" to experience the 3 steps: Base Case, Divide, Combine!</div>\
                 </div>\
 \
                 <div class="think-box">\

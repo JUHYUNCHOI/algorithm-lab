@@ -223,6 +223,25 @@ void union_(int a, int b) {
                     <span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/algorithm/iota" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: iota (fill with sequential values) ↗</a></span>
                     <span class="lang-cpp"><p style="font-size:0.85rem;color:var(--text2);margin-top:4px;"><code>std::iota()</code> &mdash; A function in the &lt;numeric&gt; header that fills an array with sequential values 0, 1, 2, ...</p></span>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Watch the parent array change</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Select two nodes and run union to see how the parent array updates!</p>
+                    <div class="concept-demo-body">
+                        <div id="uf-s1-parent" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+                            <span style="font-size:0.85rem;">union(</span>
+                            <select id="uf-s1-a" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option></select>
+                            <span>,</span>
+                            <select id="uf-s1-b" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
+                            <span>)</span>
+                            <button class="concept-demo-btn" id="uf-s1-go">Run</button>
+                            <button class="concept-demo-btn green" id="uf-s1-reset">↺</button>
+                        </div>
+                        <div id="uf-s1-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-s1-msg">Running union(1, 2) sets parent[2] = 1. Try it yourself!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -317,6 +336,29 @@ void union_(int a, int b) {
     if (rnk[a] == rnk[b]) rnk[a]++;
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Path compression before vs after</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Build a chain and run find to compare parent arrays before and after path compression!</p>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-weight:600;margin-bottom:6px;">Without compression</div>
+                                <div id="uf-s2-before" style="font-family:monospace;font-size:0.85rem;color:var(--text2);min-height:3em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-weight:600;margin-bottom:6px;">After compression</div>
+                                <div id="uf-s2-after" style="font-family:monospace;font-size:0.85rem;color:var(--text2);min-height:3em;"></div>
+                            </div>
+                        </div>
+                        <div id="uf-s2-log" style="margin-top:8px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <button class="concept-demo-btn" id="uf-s2-run">Run find(5)!</button>
+                        <button class="concept-demo-btn green" id="uf-s2-reset">↺</button>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-s2-msg">Click "Run find(5)!" to see path compression in action!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -402,6 +444,28 @@ for (auto&amp; [u, v, w] : edges) {
 
 cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try It — Check if nodes are in the same group</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Union groups together, then use find to check representatives!</p>
+                    <div class="concept-demo-body">
+                        <div id="uf-s3-parent" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+                            <button class="concept-demo-btn" id="uf-s3-u12">union(1,2)</button>
+                            <button class="concept-demo-btn" id="uf-s3-u34">union(3,4)</button>
+                            <button class="concept-demo-btn" id="uf-s3-u23">union(2,3)</button>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                            <span style="font-size:0.85rem;">find(</span>
+                            <select id="uf-s3-q" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+                            <span>)</span>
+                            <button class="concept-demo-btn" id="uf-s3-find">Find</button>
+                            <button class="concept-demo-btn green" id="uf-s3-reset">↺</button>
+                        </div>
+                        <div id="uf-s3-log" style="margin-top:8px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-s3-msg">Use union buttons to merge groups, then find to check representatives!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -502,6 +566,82 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== Section 1 demo: parent array changes ======
+        (function() {
+            var parentEl = container.querySelector('#uf-s1-parent');
+            var logEl = container.querySelector('#uf-s1-log');
+            if (!parentEl) return;
+            var p;
+            function reset() { p = [0,1,2,3,4]; render(); logEl.textContent = 'Select two nodes and click "Run"!'; }
+            function find(x) { while (p[x] !== x) x = p[x]; return x; }
+            function render() {
+                parentEl.innerHTML = p.map(function(v,i) {
+                    var isRoot = p[i] === i;
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.7rem;color:var(--text2);">p[' + i + ']</span><span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;font-weight:700;background:' + (isRoot?'var(--accent)':'var(--bg2)') + ';color:' + (isRoot?'#fff':'var(--text)') + ';">' + v + '</span></div>';
+                }).join('');
+            }
+            reset();
+            container.querySelector('#uf-s1-go').addEventListener('click', function() {
+                var a = parseInt(container.querySelector('#uf-s1-a').value);
+                var b = parseInt(container.querySelector('#uf-s1-b').value);
+                var ra = find(a), rb = find(b);
+                if (ra === rb) { logEl.textContent = 'find(' + a + ')=' + ra + ', find(' + b + ')=' + rb + ' — already same group!'; return; }
+                p[rb] = ra;
+                render();
+                logEl.innerHTML = 'union(' + a + ',' + b + '): find(' + a + ')=' + ra + ', find(' + b + ')=' + rb + ' — <strong>parent[' + rb + '] = ' + ra + '</strong> updated!';
+            });
+            container.querySelector('#uf-s1-reset').addEventListener('click', reset);
+        })();
+
+        // ====== Section 2 demo: path compression before vs after ======
+        (function() {
+            var beforeEl = container.querySelector('#uf-s2-before');
+            var afterEl = container.querySelector('#uf-s2-after');
+            var logEl = container.querySelector('#uf-s2-log');
+            if (!beforeEl) return;
+            function showChain() {
+                beforeEl.innerHTML = 'parent: [_, 1, 1, 2, 3, 4]<br>chain: 5→4→3→2→1';
+                afterEl.innerHTML = '<span style="color:var(--text2);">Not run yet</span>';
+                logEl.textContent = 'Click "Run find(5)!"';
+            }
+            showChain();
+            container.querySelector('#uf-s2-run').addEventListener('click', function() {
+                beforeEl.innerHTML = 'parent: [_, 1, 1, 2, 3, 4]<br>find(5): 5→4→3→2→1 (<strong>4 hops</strong>)';
+                afterEl.innerHTML = 'parent: [_, 1, 1, <span style="color:var(--green);font-weight:700;">1</span>, <span style="color:var(--green);font-weight:700;">1</span>, <span style="color:var(--green);font-weight:700;">1</span>]<br>next find(5): 5→1 (<strong style="color:var(--green);">1 hop</strong>!)';
+                logEl.innerHTML = 'Path compression makes 3, 4, 5 all <strong>point directly to 1</strong>! Next find is much faster.';
+            });
+            container.querySelector('#uf-s2-reset').addEventListener('click', showChain);
+        })();
+
+        // ====== Section 3 demo: find to check same group ======
+        (function() {
+            var parentEl = container.querySelector('#uf-s3-parent');
+            var logEl = container.querySelector('#uf-s3-log');
+            if (!parentEl) return;
+            var p;
+            function reset() { p = [0,1,2,3,4]; render(); logEl.textContent = 'Click union buttons to merge groups!'; }
+            function find(x) { if (p[x]!==x) p[x]=find(p[x]); return p[x]; }
+            function union(a,b) { var ra=find(a),rb=find(b); if(ra!==rb) p[rb]=ra; }
+            function render() {
+                parentEl.innerHTML = p.map(function(v,i) {
+                    if (i===0) return '';
+                    var colors = ['','var(--accent)','var(--green)','var(--yellow)','var(--red)'];
+                    var root = find(i);
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.7rem;color:var(--text2);">' + i + '</span><span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;font-weight:700;border:2px solid ' + colors[root] + ';color:var(--text);">p=' + v + '</span></div>';
+                }).join('');
+            }
+            reset();
+            container.querySelector('#uf-s3-u12').addEventListener('click', function() { union(1,2); render(); logEl.textContent = 'union(1,2) done! Nodes 1 and 2 are in the same group.'; });
+            container.querySelector('#uf-s3-u34').addEventListener('click', function() { union(3,4); render(); logEl.textContent = 'union(3,4) done! Nodes 3 and 4 are in the same group.'; });
+            container.querySelector('#uf-s3-u23').addEventListener('click', function() { union(2,3); render(); logEl.textContent = 'union(2,3) done! Now 1,2,3,4 are all in the same group!'; });
+            container.querySelector('#uf-s3-find').addEventListener('click', function() {
+                var q = parseInt(container.querySelector('#uf-s3-q').value);
+                var r = find(q);
+                logEl.innerHTML = 'find(' + q + ') = <strong>' + r + '</strong> — the representative (root) of node ' + q + ' is ' + r + '!';
+            });
+            container.querySelector('#uf-s3-reset').addEventListener('click', reset);
+        })();
 
         // ====== Demo 1: Union & Find Experience ======
         (function() {

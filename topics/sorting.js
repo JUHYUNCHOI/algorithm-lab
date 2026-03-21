@@ -436,6 +436,21 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
                     <strong>💡 생각해보기:</strong> 병합 정렬은 항상 O(n log n)입니다!
                     최악의 경우에도 안정적이지만, 추가 메모리 O(n)이 필요하다는 단점이 있습니다.
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">병합 정렬 미니 데모</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        배열 [38, 27, 43, 3, 9, 82, 10]을 <strong>반으로 나누고 → 합치는</strong> 과정을 한 스텝씩 따라가 보세요!<br>
+                        합칠 때 두 배열의 앞 원소를 비교해서 작은 쪽을 먼저 넣는 것이 핵심입니다.
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-merge-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-merge-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-merge-viz" style="min-height:60px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-merge-msg">▶ Step을 눌러 병합 정렬을 시작하세요!</div>
+                </div>
             </div>
 
             <div class="concept-section">
@@ -509,6 +524,21 @@ sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                     하지만 정렬 알고리즘의 원리를 알면 <strong>정렬 기준 커스터마이즈</strong><span class="lang-py">(<code>key</code>, <code>lambda</code>)</span><span class="lang-cpp">(비교 함수, 람다)</span>를
                     자유자재로 활용할 수 있습니다.
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">퀵 정렬 미니 데모</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        배열 [38, 27, 43, 3, 9, 82, 10]에서 <strong>피벗을 선택</strong>하고, 피벗보다 작은 것은 왼쪽, 큰 것은 오른쪽으로 보내는 과정을 한 스텝씩 따라가 보세요!
+                    </p>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="sort-demo-quick-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-quick-reset">Reset ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-quick-viz" style="min-height:60px;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-quick-msg">▶ Step을 눌러 퀵 정렬을 시작하세요!</div>
+                </div>
+
                 <div class="concept-demo">
                     <div class="concept-demo-title">병합 정렬 vs 퀵 정렬, 뭐가 다를까?</div>
                     <div style="margin-top:1rem;overflow-x:auto;">
@@ -1285,6 +1315,329 @@ sort(words.begin(), words.end(),
             container.querySelector('#sort-demo-race-reset').addEventListener('click', raceReset);
             raceReset();
         }
+
+        // ── 병합 정렬 미니 데모 ──
+        {
+            var mergeInitArr = [38, 27, 43, 3, 9, 82, 10];
+            var mergeSteps = [];
+            var mergeStepIdx = -1;
+            var mergeVizEl = container.querySelector('#sort-demo-merge-viz');
+            var mergeMsg = container.querySelector('#sort-demo-merge-msg');
+            var mergeStepBtn = container.querySelector('#sort-demo-merge-step');
+
+            function mergeBuildSteps() {
+                mergeSteps = [];
+                var arr = mergeInitArr.slice();
+                // Build a tree of splits and merges
+                // We'll precompute all visual states
+                // State: array of groups, each group is an array of numbers
+                // Step types: 'init', 'split', 'compare', 'pick', 'merged'
+
+                // Show initial
+                mergeSteps.push({ groups: [arr.slice()], desc: '초기 배열: [' + arr.join(', ') + ']. 병합 정렬을 시작합니다!', highlights: {} });
+
+                // Split phase — show each level of splitting
+                var levels = [[arr.slice()]];
+                while (true) {
+                    var prev = levels[levels.length - 1];
+                    var next = [];
+                    var didSplit = false;
+                    for (var gi = 0; gi < prev.length; gi++) {
+                        if (prev[gi].length > 1) {
+                            var mid = Math.floor(prev[gi].length / 2);
+                            next.push(prev[gi].slice(0, mid));
+                            next.push(prev[gi].slice(mid));
+                            didSplit = true;
+                        } else {
+                            next.push(prev[gi].slice());
+                        }
+                    }
+                    if (!didSplit) break;
+                    levels.push(next);
+                    mergeSteps.push({ groups: next.map(function(g) { return g.slice(); }), desc: '분할! 각 그룹을 반으로 나눕니다 → ' + next.map(function(g) { return '[' + g.join(',') + ']'; }).join(' '), highlights: {} });
+                }
+
+                // Merge phase — merge pairs bottom-up
+                var currentGroups = levels[levels.length - 1].map(function(g) { return g.slice(); });
+
+                function mergeTwo(a, b) {
+                    var result = [];
+                    var i = 0, j = 0;
+                    var compSteps = [];
+                    while (i < a.length && j < b.length) {
+                        compSteps.push({ left: a.slice(), right: b.slice(), li: i, ri: j, result: result.slice(), pick: a[i] <= b[j] ? 'left' : 'right' });
+                        if (a[i] <= b[j]) {
+                            result.push(a[i]); i++;
+                        } else {
+                            result.push(b[j]); j++;
+                        }
+                    }
+                    while (i < a.length) { result.push(a[i]); i++; }
+                    while (j < b.length) { result.push(b[j]); j++; }
+                    return { result: result, compSteps: compSteps };
+                }
+
+                while (currentGroups.length > 1) {
+                    var nextGroups = [];
+                    for (var gi = 0; gi < currentGroups.length; gi += 2) {
+                        if (gi + 1 < currentGroups.length) {
+                            var a = currentGroups[gi], b = currentGroups[gi + 1];
+                            mergeSteps.push({
+                                groups: currentGroups.map(function(g) { return g.slice(); }),
+                                desc: '합치기: [' + a.join(',') + '] 와 [' + b.join(',') + '] 을 비교하며 합칩니다.',
+                                highlights: { merging: [gi, gi + 1] }
+                            });
+                            var mr = mergeTwo(a, b);
+                            // Show each comparison step
+                            for (var ci = 0; ci < mr.compSteps.length; ci++) {
+                                var cs = mr.compSteps[ci];
+                                var pickDesc = cs.pick === 'left'
+                                    ? cs.left[cs.li] + ' ≤ ' + cs.right[cs.ri] + ' → 왼쪽(' + cs.left[cs.li] + ')을 결과에 추가'
+                                    : cs.right[cs.ri] + ' < ' + cs.left[cs.li] + ' → 오른쪽(' + cs.right[cs.ri] + ')을 결과에 추가';
+                                mergeSteps.push({
+                                    mergeDetail: { left: cs.left, right: cs.right, li: cs.li, ri: cs.ri, result: cs.result, pick: cs.pick },
+                                    desc: '비교: ' + pickDesc,
+                                    highlights: {}
+                                });
+                            }
+                            nextGroups.push(mr.result);
+                            // Show merged result
+                            var afterMerge = nextGroups.slice();
+                            for (var ri = gi + 2; ri < currentGroups.length; ri++) afterMerge.push(currentGroups[ri].slice());
+                            mergeSteps.push({
+                                groups: afterMerge.map(function(g) { return g.slice(); }),
+                                desc: '합치기 완료! → [' + mr.result.join(', ') + ']',
+                                highlights: { justMerged: [nextGroups.length - 1] }
+                            });
+                        } else {
+                            nextGroups.push(currentGroups[gi].slice());
+                        }
+                    }
+                    currentGroups = nextGroups;
+                }
+                mergeSteps.push({ groups: [currentGroups[0].slice()], desc: '정렬 완료! [' + currentGroups[0].join(', ') + '] — O(n log n) 시간, O(n) 추가 메모리', highlights: { done: true } });
+            }
+
+            function renderMergeViz(step) {
+                if (!step) { mergeVizEl.innerHTML = ''; return; }
+                if (step.mergeDetail) {
+                    var d = step.mergeDetail;
+                    var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">';
+                    // Left array
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--accent);font-weight:700;min-width:32px;">왼쪽</span>';
+                    for (var i = 0; i < d.left.length; i++) {
+                        var cls = 'str-char-box';
+                        var ex = i < d.li ? 'opacity:0.3;' : '';
+                        if (i === d.li) ex = 'border-color:var(--accent);box-shadow:0 0 8px var(--accent);';
+                        html += '<div class="' + cls + '" style="' + ex + '">' + d.left[i] + '</div>';
+                    }
+                    html += '</div>';
+                    // Right array
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--yellow);font-weight:700;min-width:32px;">오른쪽</span>';
+                    for (var j = 0; j < d.right.length; j++) {
+                        var cls2 = 'str-char-box';
+                        var ex2 = j < d.ri ? 'opacity:0.3;' : '';
+                        if (j === d.ri) ex2 = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                        html += '<div class="' + cls2 + '" style="' + ex2 + '">' + d.right[j] + '</div>';
+                    }
+                    html += '</div>';
+                    // Result so far
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--green);font-weight:700;min-width:32px;">결과</span>';
+                    for (var r = 0; r < d.result.length; r++) {
+                        html += '<div class="str-char-box matched">' + d.result[r] + '</div>';
+                    }
+                    var pickedVal = d.pick === 'left' ? d.left[d.li] : d.right[d.ri];
+                    html += '<div class="str-char-box" style="border-color:var(--green);box-shadow:0 0 10px var(--green);background:rgba(0,184,148,0.15);">' + pickedVal + '</div>';
+                    html += '</div></div>';
+                    mergeVizEl.innerHTML = html;
+                    return;
+                }
+                var groups = step.groups;
+                var hl = step.highlights || {};
+                var html2 = '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;">';
+                for (var gi = 0; gi < groups.length; gi++) {
+                    var gStyle = 'display:flex;gap:4px;padding:6px 10px;border-radius:8px;border:2px solid var(--bg3);';
+                    if (hl.merging && hl.merging.indexOf(gi) >= 0) gStyle += 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    if (hl.justMerged && hl.justMerged.indexOf(gi) >= 0) gStyle += 'border-color:var(--green);box-shadow:0 0 10px var(--green);';
+                    if (hl.done) gStyle += 'border-color:var(--green);box-shadow:0 0 10px var(--green);';
+                    html2 += '<div style="' + gStyle + '">';
+                    for (var ei = 0; ei < groups[gi].length; ei++) {
+                        var ecls = 'str-char-box';
+                        if (hl.done) ecls += ' matched';
+                        html2 += '<div class="' + ecls + '">' + groups[gi][ei] + '</div>';
+                    }
+                    html2 += '</div>';
+                    if (gi < groups.length - 1 && !hl.done) html2 += '<span style="color:var(--text3);font-size:0.8rem;"></span>';
+                }
+                html2 += '</div>';
+                mergeVizEl.innerHTML = html2;
+            }
+
+            function mergeStep() {
+                if (mergeStepIdx >= mergeSteps.length - 1) return;
+                mergeStepIdx++;
+                var s = mergeSteps[mergeStepIdx];
+                mergeMsg.textContent = s.desc;
+                renderMergeViz(s);
+            }
+
+            function mergeReset() {
+                mergeStepIdx = -1;
+                mergeMsg.textContent = '▶ Step을 눌러 병합 정렬을 시작하세요!';
+                mergeVizEl.innerHTML = '';
+            }
+
+            mergeBuildSteps();
+            mergeStepBtn.addEventListener('click', mergeStep);
+            container.querySelector('#sort-demo-merge-reset').addEventListener('click', mergeReset);
+        }
+
+        // ── 퀵 정렬 미니 데모 ──
+        {
+            var quickInitArr = [38, 27, 43, 3, 9, 82, 10];
+            var quickSteps = [];
+            var quickStepIdx = -1;
+            var quickVizEl = container.querySelector('#sort-demo-quick-viz');
+            var quickMsg = container.querySelector('#sort-demo-quick-msg');
+            var quickStepBtn = container.querySelector('#sort-demo-quick-step');
+
+            function quickBuildSteps() {
+                quickSteps = [];
+                var arr = quickInitArr.slice();
+
+                quickSteps.push({ arr: arr.slice(), desc: '초기 배열: [' + arr.join(', ') + ']. 퀵 정렬을 시작합니다!', highlights: {} });
+
+                function qsort(a, depth, label) {
+                    if (a.length <= 1) {
+                        if (a.length === 1) {
+                            quickSteps.push({ partition: { sub: a.slice(), pivot: -1, left: [], right: [], equal: a.slice(), phase: 'base' }, desc: label + '[' + a[0] + '] — 원소 1개는 이미 정렬되어 있습니다!', highlights: {} });
+                        }
+                        return a.slice();
+                    }
+                    var pivotIdx = Math.floor(a.length / 2);
+                    var pivot = a[pivotIdx];
+                    quickSteps.push({ partition: { sub: a.slice(), pivot: pivot, pivotIdx: pivotIdx, left: [], right: [], equal: [], phase: 'choose' }, desc: label + '배열 [' + a.join(', ') + ']에서 피벗 = ' + pivot + ' (중간값) 을 선택합니다.', highlights: {} });
+
+                    var left = [], equal = [], right = [];
+                    for (var i = 0; i < a.length; i++) {
+                        var side = a[i] < pivot ? 'left' : (a[i] > pivot ? 'right' : 'equal');
+                        if (side === 'left') left.push(a[i]);
+                        else if (side === 'right') right.push(a[i]);
+                        else equal.push(a[i]);
+                        quickSteps.push({
+                            partition: { sub: a.slice(), pivot: pivot, scanIdx: i, left: left.slice(), right: right.slice(), equal: equal.slice(), phase: 'scan' },
+                            desc: a[i] + (side === 'left' ? ' < ' + pivot + ' → 왼쪽으로' : (side === 'right' ? ' > ' + pivot + ' → 오른쪽으로' : ' == ' + pivot + ' → 피벗 그룹으로')),
+                            highlights: {}
+                        });
+                    }
+                    quickSteps.push({
+                        partition: { sub: a.slice(), pivot: pivot, left: left.slice(), right: right.slice(), equal: equal.slice(), phase: 'partitioned' },
+                        desc: '파티션 완료! 왼쪽[' + left.join(',') + '] | 피벗[' + equal.join(',') + '] | 오른쪽[' + right.join(',') + ']',
+                        highlights: {}
+                    });
+
+                    var sortedLeft = qsort(left, depth + 1, '왼쪽 부분: ');
+                    var sortedRight = qsort(right, depth + 1, '오른쪽 부분: ');
+                    var merged = sortedLeft.concat(equal).concat(sortedRight);
+                    quickSteps.push({
+                        partition: { result: merged.slice(), phase: 'combined' },
+                        desc: '결합: [' + sortedLeft.join(',') + '] + [' + equal.join(',') + '] + [' + sortedRight.join(',') + '] = [' + merged.join(', ') + ']',
+                        highlights: {}
+                    });
+                    return merged;
+                }
+
+                qsort(arr, 0, '');
+                quickSteps.push({ arr: quickInitArr.slice().sort(function(a,b){return a-b;}), desc: '정렬 완료! [' + quickInitArr.slice().sort(function(a,b){return a-b;}).join(', ') + '] — 평균 O(n log n)', highlights: { done: true } });
+            }
+
+            function renderQuickViz(step) {
+                if (!step) { quickVizEl.innerHTML = ''; return; }
+                if (step.partition) {
+                    var p = step.partition;
+                    var html = '';
+                    if (p.phase === 'base') {
+                        html = '<div style="display:flex;justify-content:center;"><div class="str-char-box matched">' + p.equal[0] + '</div></div>';
+                    } else if (p.phase === 'choose') {
+                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                        for (var i = 0; i < p.sub.length; i++) {
+                            var ex = i === p.pivotIdx ? 'border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);' : '';
+                            var lbl = i === p.pivotIdx ? '<div style="font-size:0.6rem;color:var(--yellow);margin-top:2px;font-weight:700;">pivot</div>' : '';
+                            html += '<div style="display:flex;flex-direction:column;align-items:center;"><div class="str-char-box" style="' + ex + '">' + p.sub[i] + '</div>' + lbl + '</div>';
+                        }
+                        html += '</div>';
+                    } else if (p.phase === 'scan') {
+                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                        for (var i = 0; i < p.sub.length; i++) {
+                            var ex = '';
+                            if (i === p.scanIdx) ex = 'border-color:var(--accent);box-shadow:0 0 10px var(--accent);transform:scale(1.1);';
+                            else if (i < p.scanIdx) ex = 'opacity:0.4;';
+                            html += '<div class="str-char-box" style="' + ex + '">' + p.sub[i] + '</div>';
+                        }
+                        html += '</div>';
+                        html += '<div style="display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap;">';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:4px;">왼쪽 (&lt;' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--accent);border-radius:8px;">';
+                        p.left.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;">' + v + '</div>'; });
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--yellow);font-weight:700;margin-bottom:4px;">피벗 (=' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--yellow);border-radius:8px;">';
+                        p.equal.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;border-color:var(--yellow);">' + v + '</div>'; });
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:4px;">오른쪽 (&gt;' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--red, #e17055);border-radius:8px;">';
+                        p.right.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;">' + v + '</div>'; });
+                        html += '</div></div></div>';
+                    } else if (p.phase === 'partitioned') {
+                        html = '<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:4px;">왼쪽</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--accent);border-radius:8px;min-height:36px;">';
+                        p.left.forEach(function(v) { html += '<div class="str-char-box">' + v + '</div>'; });
+                        if (!p.left.length) html += '<span style="color:var(--text3);font-size:0.8rem;">비어있음</span>';
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--yellow);font-weight:700;margin-bottom:4px;">피벗</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--yellow);border-radius:8px;box-shadow:0 0 8px var(--yellow);">';
+                        p.equal.forEach(function(v) { html += '<div class="str-char-box" style="border-color:var(--yellow);box-shadow:0 0 6px var(--yellow);">' + v + '</div>'; });
+                        html += '</div></div>';
+                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:4px;">오른쪽</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--red, #e17055);border-radius:8px;min-height:36px;">';
+                        p.right.forEach(function(v) { html += '<div class="str-char-box">' + v + '</div>'; });
+                        if (!p.right.length) html += '<span style="color:var(--text3);font-size:0.8rem;">비어있음</span>';
+                        html += '</div></div></div>';
+                    } else if (p.phase === 'combined') {
+                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                        p.result.forEach(function(v) { html += '<div class="str-char-box matched">' + v + '</div>'; });
+                        html += '</div>';
+                    }
+                    quickVizEl.innerHTML = html;
+                    return;
+                }
+                // Final sorted or initial
+                var arr = step.arr;
+                var hl = step.highlights || {};
+                var html3 = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
+                for (var i = 0; i < arr.length; i++) {
+                    var cls = 'str-char-box';
+                    var ex = '';
+                    if (hl.done) { cls += ' matched'; ex = 'box-shadow:0 0 10px var(--green);'; }
+                    html3 += '<div class="' + cls + '" style="' + ex + '">' + arr[i] + '</div>';
+                }
+                html3 += '</div>';
+                quickVizEl.innerHTML = html3;
+            }
+
+            function quickStep() {
+                if (quickStepIdx >= quickSteps.length - 1) return;
+                quickStepIdx++;
+                var s = quickSteps[quickStepIdx];
+                quickMsg.textContent = s.desc;
+                renderQuickViz(s);
+            }
+
+            function quickReset() {
+                quickStepIdx = -1;
+                quickMsg.textContent = '▶ Step을 눌러 퀵 정렬을 시작하세요!';
+                quickVizEl.innerHTML = '';
+            }
+
+            quickBuildSteps();
+            quickStepBtn.addEventListener('click', quickStep);
+            container.querySelector('#sort-demo-quick-reset').addEventListener('click', quickReset);
+        }
     },
 
     // ===== 시각화 =====
@@ -2024,10 +2377,10 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: '가장 먼저 떠오르는 방법', content: '상위 k명을 찾아야 하니까, 일단 점수를 큰 순서대로 나열하면 되지 않을까요?<br><strong>내림차순 정렬</strong>하면 가장 높은 점수가 맨 앞에 오겠죠!' },
-                { title: '정렬 후 어디를 보면 될까?', content: '내림차순으로 정렬하면 앞에서 k번째가 상을 받는 사람 중 가장 낮은 점수, 즉 <strong>커트라인</strong>이에요.<br>배열 인덱스는 0부터 시작하니까 <code>arr[k-1]</code>이 답입니다!<br>예: [100, 98, 93, 85, 76]에서 k=2이면 arr[1] = 98' },
-                { title: '오름차순으로도 가능!', content: '오름차순 정렬을 했다면? 뒤에서 k번째를 보면 돼요!<br><span class="lang-py"><code>arr[N-k]</code> 또는 <code>arr[-k]</code> (Python 음수 인덱스)</span><span class="lang-cpp"><code>arr[N-k]</code>를 출력하면 됩니다</span>' },
-                { title: '시간 복잡도', content: 'N \u2264 1,000이므로 어떤 정렬을 써도 충분해요. 내장 sort는 O(N log N)이라 넉넉합니다.' }
+                { title: '가장 먼저 떠오르는 방법', content: '상위 k명을 찾아야 하니까, 일단 점수를 큰 순서대로 나열하면 되지 않을까요?<br><strong>내림차순 정렬</strong>하면 가장 높은 점수가 맨 앞에 오겠죠!<div style="display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">100</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">76</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">85</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">93</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">98</div></div><div style="text-align:center;margin:8px 0;font-size:1.2rem;">↓ 내림차순 정렬</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;font-size:0.9rem;">100</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;font-size:0.9rem;">98</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">93</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">85</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;font-size:0.9rem;">76</div></div>' },
+                { title: '정렬 후 어디를 보면 될까?', content: '내림차순으로 정렬하면 앞에서 k번째가 상을 받는 사람 중 가장 낮은 점수, 즉 <strong>커트라인</strong>이에요.<br>배열 인덱스는 0부터 시작하니까 <code>arr[k-1]</code>이 답입니다!<div style="display:flex;gap:6px;justify-content:center;margin-top:12px;align-items:flex-end;flex-wrap:wrap;"><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[0]</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">100</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--yellow);font-weight:700;">[k-1] ← 커트라인!</div><div style="padding:6px 14px;border-radius:8px;border:2px solid var(--yellow);box-shadow:0 0 8px var(--yellow);font-weight:700;">98</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[2]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">93</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[3]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">85</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[4]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">76</div></div></div>' },
+                { title: '오름차순으로도 가능!', content: '오름차순 정렬을 했다면? 뒤에서 k번째를 보면 돼요!<br><span class="lang-py"><code>arr[N-k]</code> 또는 <code>arr[-k]</code> (Python 음수 인덱스)</span><span class="lang-cpp"><code>arr[N-k]</code>를 출력하면 됩니다</span><div style="display:flex;gap:6px;justify-content:center;margin-top:12px;align-items:flex-end;flex-wrap:wrap;"><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[0]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">76</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[1]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">85</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[2]</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">93</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--yellow);font-weight:700;"><span class="lang-py">[-k]</span><span class="lang-cpp">[N-k]</span> ← 커트라인!</div><div style="padding:6px 14px;border-radius:8px;border:2px solid var(--yellow);box-shadow:0 0 8px var(--yellow);font-weight:700;">98</div></div><div style="display:flex;flex-direction:column;align-items:center;"><div style="font-size:0.65rem;color:var(--text3);">[4]</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">100</div></div></div>' },
+                { title: '시간 복잡도', content: 'N \u2264 1,000이므로 어떤 정렬을 써도 충분해요. 내장 sort는 O(N log N)이라 넉넉합니다.<div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">방법</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">시간</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">N=1000</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">O(n²) 정렬</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n²)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">1,000,000 ✅</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);"><span class="lang-py">sort()</span><span class="lang-cpp">sort()</span></td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">~10,000 ✅✅</td></tr></table></div>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)  # 내림차순 정렬\nprint(scores[k - 1])  # k번째가 커트라인`,
@@ -2102,9 +2455,9 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: '가장 단순한 방법', content: '아는 정렬 아무거나 쓰면 돼요! 선택 정렬, 삽입 정렬, 버블 정렬 — 뭘 쓰든 OK.<br>N &le; 1,000이라서 O(n&sup2;)도 시간 안에 충분히 들어와요. 직접 구현해보는 좋은 연습 문제!' },
-                { title: '더 빠른 정렬도 가능', content: '직접 구현 대신 내장 정렬을 쓰면 O(n log n)으로 훨씬 빨라요.<br><span class="lang-py">Python: <code>sorted()</code>나 <code>.sort()</code>는 O(n log n) Timsort를 사용합니다.</span><span class="lang-cpp">C++: <code>sort()</code>는 O(n log n) IntroSort를 사용합니다. <code>&lt;algorithm&gt;</code> 헤더 필요!</span>' },
-                { title: '입출력 최적화', content: '정렬은 맞는데 시간 초과? 입출력이 병목일 수 있어요!<br><span class="lang-py">Python: <code>sys.stdin.readline</code>으로 빠른 입력 + <code>"\\n".join()</code>으로 한 번에 출력</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 빠른 입출력</span>' }
+                { title: '가장 단순한 방법', content: '아는 정렬 아무거나 쓰면 돼요! 선택 정렬, 삽입 정렬, 버블 정렬 — 뭘 쓰든 OK.<br>N &le; 1,000이라서 O(n&sup2;)도 시간 안에 충분히 들어와요. 직접 구현해보는 좋은 연습 문제!<div style="display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">5</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">2</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">3</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">4</div><div style="padding:6px 14px;border-radius:8px;background:var(--bg2);font-weight:700;">1</div></div><div style="text-align:center;margin:6px 0;font-size:1.2rem;">↓ 아무 정렬이나!</div><div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;"><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">1</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">2</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">3</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">4</div><div style="padding:6px 14px;border-radius:8px;background:var(--green);color:white;font-weight:700;">5</div></div>' },
+                { title: '더 빠른 정렬도 가능', content: '직접 구현 대신 내장 정렬을 쓰면 O(n log n)으로 훨씬 빨라요.<br><span class="lang-py">Python: <code>sorted()</code>나 <code>.sort()</code>는 O(n log n) Timsort를 사용합니다.</span><span class="lang-cpp">C++: <code>sort()</code>는 O(n log n) IntroSort를 사용합니다. <code>&lt;algorithm&gt;</code> 헤더 필요!</span><div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">방법</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">시간</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">추천?</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">직접 구현 (O(n²))</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n²)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">연습용 ✏️</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);"><span class="lang-py">sort()</span><span class="lang-cpp">sort()</span></td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">실전 추천 ✅</td></tr></table></div>' },
+                { title: '입출력 최적화', content: '정렬은 맞는데 시간 초과? 입출력이 병목일 수 있어요!<br><span class="lang-py">Python: <code>sys.stdin.readline</code>으로 빠른 입력 + <code>"\\n".join()</code>으로 한 번에 출력<div style="margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:0.85rem;font-family:monospace;"><span style="color:var(--green);">import</span> sys<br>input = sys.stdin.readline &nbsp; <span style="color:var(--text3);"># 빠른 입력!</span><br>print(<span style="color:var(--yellow);">\'\\n\'</span>.join(map(str, arr))) &nbsp; <span style="color:var(--text3);"># 한 번에 출력!</span></div></span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 빠른 입출력<div style="margin-top:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;font-size:0.85rem;font-family:monospace;"><span style="color:var(--green);">ios</span>::sync_with_stdio(<span style="color:var(--red);">false</span>);<br>cin.tie(<span style="color:var(--red);">nullptr</span>); &nbsp; <span style="color:var(--text3);">// 빠른 입출력!</span></div></span>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]\narr.sort()\nprint('\\n'.join(map(str, arr)))`,
@@ -2157,9 +2510,9 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: '좌표 정렬 = 비교 기준이 2개', content: 'x좌표 먼저 비교하고, 같으면 y좌표를 비교해야 해요. 비교 함수를 직접 만들어야 할까?' },
-                { title: '튜플/pair 정렬의 마법', content: '직접 비교 함수를 만들 필요 없어요!<br><span class="lang-py">Python: <code>(x, y)</code> 튜플을 정렬하면 자동으로 x 우선, y 차선으로 정렬돼요. 그냥 <code>coords.sort()</code> 한 줄이면 끝!</span><span class="lang-cpp">C++: <code>pair&lt;int,int&gt;</code>를 <code>sort()</code>하면 first 기준 정렬, 같으면 second 기준으로 자동 정렬돼요!</span>' },
-                { title: '입출력이 핵심', content: 'N이 최대 100,000이므로 빠른 입출력이 필수예요. 느린 입출력을 쓰면 정답인데도 시간 초과!<br><span class="lang-py">Python: <code>sys.stdin.readline</code>으로 빠른 입력</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 빠른 입출력</span>' }
+                { title: '좌표 정렬 = 비교 기준이 2개', content: 'x좌표 먼저 비교하고, 같으면 y좌표를 비교해야 해요. 비교 함수를 직접 만들어야 할까?<div style="margin-top:12px;overflow-x:auto;"><table style="border-collapse:collapse;font-size:0.85rem;margin:0 auto;"><tr style="background:var(--bg2);"><th style="padding:6px 12px;border:1px solid var(--bg3);">좌표</th><th style="padding:6px 12px;border:1px solid var(--bg3);">1차 비교 (x)</th><th style="padding:6px 12px;border:1px solid var(--bg3);">2차 비교 (y)</th></tr><tr><td style="padding:6px 12px;border:1px solid var(--bg3);text-align:center;">(1, -1) vs (1, 1)</td><td style="padding:6px 12px;border:1px solid var(--bg3);text-align:center;">x = x → 같다!</td><td style="padding:6px 12px;border:1px solid var(--bg3);text-align:center;color:var(--green);">-1 < 1 → (1,-1) 먼저</td></tr><tr><td style="padding:6px 12px;border:1px solid var(--bg3);text-align:center;">(1, 1) vs (3, 3)</td><td style="padding:6px 12px;border:1px solid var(--bg3);text-align:center;color:var(--green);">1 < 3 → (1,1) 먼저</td><td style="padding:6px 12px;border:1px solid var(--bg3);text-align:center;color:var(--text3);">비교 불필요</td></tr></table></div>' },
+                { title: '튜플/pair 정렬의 마법', content: '직접 비교 함수를 만들 필요 없어요!<br><span class="lang-py">Python: <code>(x, y)</code> 튜플을 정렬하면 자동으로 x 우선, y 차선으로 정렬돼요. 그냥 <code>coords.sort()</code> 한 줄이면 끝!</span><span class="lang-cpp">C++: <code>pair&lt;int,int&gt;</code>를 <code>sort()</code>하면 first 기준 정렬, 같으면 second 기준으로 자동 정렬돼요!</span><div style="display:flex;gap:8px;justify-content:center;margin-top:12px;align-items:center;flex-wrap:wrap;"><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;">(3,4)</div><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;">(1,1)</div><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;">(1,-1)</div><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;">(2,2)</div><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;">(3,3)</div></div><div style="text-align:center;margin:6px 0;font-size:1.1rem;"><span class="lang-py">↓ coords.sort()</span><span class="lang-cpp">↓ sort(coords.begin(), coords.end())</span></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><div style="padding:6px 12px;border-radius:8px;background:var(--green);color:white;font-size:0.85rem;">(1,-1)</div><div style="padding:6px 12px;border-radius:8px;background:var(--green);color:white;font-size:0.85rem;">(1,1)</div><div style="padding:6px 12px;border-radius:8px;background:var(--green);color:white;font-size:0.85rem;">(2,2)</div><div style="padding:6px 12px;border-radius:8px;background:var(--green);color:white;font-size:0.85rem;">(3,3)</div><div style="padding:6px 12px;border-radius:8px;background:var(--green);color:white;font-size:0.85rem;">(3,4)</div></div>' },
+                { title: '입출력이 핵심', content: 'N이 최대 100,000이므로 빠른 입출력이 필수예요. 느린 입출력을 쓰면 정답인데도 시간 초과!<br><span class="lang-py">Python: <code>sys.stdin.readline</code>으로 빠른 입력</span><span class="lang-cpp">C++: <code>ios::sync_with_stdio(false)</code>와 <code>cin.tie(nullptr)</code>로 빠른 입출력</span><div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">입출력 방법</th><th style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">속도</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);"><span class="lang-py"><code>input()</code></span><span class="lang-cpp"><code>cin</code> (동기화 해제 안 함)</span></td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--red);">느림 ❌</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);"><span class="lang-py"><code>sys.stdin.readline</code></span><span class="lang-cpp"><code>scanf</code> 또는 동기화 해제</span></td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">빠름 ✅</td></tr></table></div>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))\n\ncoords.sort()  # 튜플은 자동으로 (x, y) 순 정렬!\n\noutput = []\nfor x, y in coords:\n    output.append(f"{x} {y}")\nprint('\\n'.join(output))`,
@@ -2213,9 +2566,9 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: '처음 생각: 하나씩 비교?', content: '모든 구간 쌍을 하나씩 비교하면 겹치는지 알 수 있어요. 하지만 구간이 n개면 비교 횟수가 O(n&sup2;)... 구간이 10,000개면 1억 번 비교!' },
-                { title: '정렬하면 쉬워진다!', content: '<strong>시작점 기준으로 정렬</strong>하면, 겹치는 구간은 반드시 연속으로 나열돼요. 그러면 앞에서부터 한 번만 스캔하면서 합치면 끝! 정렬 O(n log n) + 순회 O(n) = <strong>O(n log n)</strong>' },
-                { title: '합치기 로직', content: '현재 구간의 끝 &ge; 다음 구간의 시작이면 겹치니까 합쳐요 → <code>끝 = max(현재 끝, 다음 끝)</code>.<br>겹치지 않으면? 새 구간을 결과에 추가하고 다음으로 넘어가면 돼요.' }
+                { title: '처음 생각: 하나씩 비교?', content: '모든 구간 쌍을 하나씩 비교하면 겹치는지 알 수 있어요. 하지만 구간이 n개면 비교 횟수가 O(n&sup2;)... 구간이 10,000개면 1억 번 비교!<div style="margin-top:10px;overflow-x:auto;"><table style="border-collapse:collapse;font-size:0.85rem;margin:0 auto;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;border:1px solid var(--bg3);">방법</th><th style="padding:6px 10px;border:1px solid var(--bg3);">비교 횟수</th><th style="padding:6px 10px;border:1px solid var(--bg3);">n=10,000</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">모든 쌍 비교</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n²)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--red);">~1억 ❌</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">정렬 후 순회</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">~13만 ✅</td></tr></table></div>' },
+                { title: '정렬하면 쉬워진다!', content: '<strong>시작점 기준으로 정렬</strong>하면, 겹치는 구간은 반드시 연속으로 나열돼요. 그러면 앞에서부터 한 번만 스캔하면서 합치면 끝!<div style="margin-top:12px;"><div style="font-size:0.8rem;color:var(--text2);margin-bottom:4px;">정렬 전: 순서가 뒤죽박죽</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[1,3]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[2,6]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[15,18]</div></div><div style="font-size:0.8rem;color:var(--green);margin-bottom:4px;">정렬 후: 겹치는 구간이 나란히!</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[1,3]</div><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[2,6]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[15,18]</div></div></div>' },
+                { title: '합치기 로직', content: '현재 구간의 끝 &ge; 다음 구간의 시작이면 겹치니까 합쳐요 → <code>끝 = max(현재 끝, 다음 끝)</code>.<br>겹치지 않으면? 새 구간을 결과에 추가하고 다음으로 넘어가면 돼요.<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[1,3]</div><div style="font-size:0.85rem;">+</div><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[2,6]</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--text2);">3 &ge; 2 겹침!</div><div style="font-size:1rem;">→</div><div style="padding:4px 10px;border-radius:6px;background:var(--green);color:white;font-size:0.85rem;">[1, max(3,6)] = [1,6]</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--accent);font-size:0.85rem;">[1,6]</div><div style="font-size:0.85rem;">+</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--text2);">6 < 8 안 겹침</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--accent);">새 구간 추가</div></div></div>' }
             ],
             templates: {
                 python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # 시작점 기준 정렬\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # 겹침!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
@@ -2269,9 +2622,9 @@ sort(words.begin(), words.end(),
                 </ul>
             `,
             hints: [
-                { title: '나이순 정렬인데, 같은 나이는?', content: '나이 기준으로 정렬하는 건 쉬워요. 그런데 문제를 잘 보면 — 같은 나이일 때 <strong>먼저 가입한 사람이 앞</strong>에 와야 해요. 즉, 같은 나이면 입력 순서를 유지해야 해요. 이런 정렬을 <strong>"안정 정렬(stable sort)"</strong>이라고 해요.' },
-                { title: '안정 정렬 활용', content: '나이만 기준(key)으로 정렬하면, 안정 정렬 덕분에 같은 나이끼리는 원래 순서가 유지돼요!<br><span class="lang-py">Python: <code>sorted()</code>와 <code>.sort()</code>는 기본이 안정 정렬(TimSort)! <code>key=lambda x: int(x.split()[0])</code>이면 끝.</span><span class="lang-cpp">C++: <code>stable_sort()</code>를 사용하면 돼요. 주의: <code>sort()</code>는 불안정 정렬이라 같은 나이 순서가 바뀔 수 있어요!</span>' },
-                { title: '시간 복잡도', content: 'O(n log n)이면 충분해요. N &le; 100,000이므로 넉넉합니다.' }
+                { title: '나이순 정렬인데, 같은 나이는?', content: '나이 기준으로 정렬하는 건 쉬워요. 그런데 문제를 잘 보면 — 같은 나이일 때 <strong>먼저 가입한 사람이 앞</strong>에 와야 해요. 즉, 같은 나이면 입력 순서를 유지해야 해요. 이런 정렬을 <strong>"안정 정렬(stable sort)"</strong>이라고 해요.<div style="margin-top:12px;"><div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px;">입력 순서 (가입 순):</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;"><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;"><strong>21</strong> Junkyu <span style="font-size:0.7rem;color:var(--text3);">①</span></div><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;"><strong>21</strong> Dohyun <span style="font-size:0.7rem;color:var(--text3);">②</span></div><div style="padding:6px 12px;border-radius:8px;background:var(--bg2);font-size:0.85rem;"><strong>20</strong> Sunyoung</div></div><div style="font-size:0.8rem;color:var(--green);margin-bottom:6px;">정렬 후 (같은 나이 21: 가입 순 유지!)</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><div style="padding:6px 12px;border-radius:8px;background:var(--green);color:white;font-size:0.85rem;"><strong>20</strong> Sunyoung</div><div style="padding:6px 12px;border-radius:8px;border:2px solid var(--yellow);font-size:0.85rem;"><strong>21</strong> Junkyu <span style="font-size:0.7rem;color:var(--yellow);">①</span></div><div style="padding:6px 12px;border-radius:8px;border:2px solid var(--yellow);font-size:0.85rem;"><strong>21</strong> Dohyun <span style="font-size:0.7rem;color:var(--yellow);">②</span></div></div></div>' },
+                { title: '안정 정렬 활용', content: '나이만 기준(key)으로 정렬하면, 안정 정렬 덕분에 같은 나이끼리는 원래 순서가 유지돼요!<br><span class="lang-py">Python: <code>sorted()</code>와 <code>.sort()</code>는 기본이 안정 정렬(TimSort)! <code>key=lambda x: int(x.split()[0])</code>이면 끝.</span><span class="lang-cpp">C++: <code>stable_sort()</code>를 사용하면 돼요. 주의: <code>sort()</code>는 불안정 정렬이라 같은 나이 순서가 바뀔 수 있어요!</span><div style="margin-top:10px;overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">언어</th><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">안정 정렬?</th><th style="padding:6px 10px;text-align:left;border:1px solid var(--bg3);">사용법</th></tr><tr class="lang-py"><td style="padding:6px 10px;border:1px solid var(--bg3);">Python</td><td style="padding:6px 10px;border:1px solid var(--bg3);color:var(--green);">✅ 기본 안정</td><td style="padding:6px 10px;border:1px solid var(--bg3);"><code>sort(key=lambda x: x[0])</code></td></tr><tr class="lang-cpp"><td style="padding:6px 10px;border:1px solid var(--bg3);">C++</td><td style="padding:6px 10px;border:1px solid var(--bg3);color:var(--red);">sort() ❌ 불안정</td><td style="padding:6px 10px;border:1px solid var(--bg3);"><code>stable_sort()</code> 필수!</td></tr></table></div>' },
+                { title: '시간 복잡도', content: 'O(n log n)이면 충분해요. N &le; 100,000이므로 넉넉합니다.<div style="margin-top:8px;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:6px;font-size:0.85rem;line-height:1.7;">핵심: 나이만 key로 주고 이름은 key에 포함하지 않는 것이 포인트! 안정 정렬이 같은 key에 대해 입력 순서를 자동으로 유지해줍니다.</div>' }
             ],
             templates: {
                 python: `import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))\n\n# Python sort는 안정 정렬 → 나이만 기준으로 정렬해도 입력 순서 유지\nmembers.sort(key=lambda x: x[0])\n\nfor age, name in members:\n    print(age, name)`,

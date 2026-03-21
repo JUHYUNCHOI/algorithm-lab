@@ -254,6 +254,30 @@ var trieTopic = {
                     • <strong>Trie</strong>: Both are fast! When prefix search is needed, Trie is the answer<br><br>\
                     <strong>When to use a Trie?</strong> Autocomplete, prefix matching, lexicographic traversal, checking prefix relationships in a set of strings\
                 </div>\
+                <div class="concept-demo">\
+                    <div class="concept-demo-title">Try It — Exact search vs Prefix search</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">Enter a query and compare exact search (hash is fine) vs prefix search (trie needed)!</p>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">\
+                            <input type="text" id="trie-s2-input" value="app" placeholder="Query" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:100px;background:var(--card);color:var(--text);">\
+                            <button class="concept-demo-btn" id="trie-s2-exact">Exact Search</button>\
+                            <button class="concept-demo-btn" id="trie-s2-prefix">Prefix Search</button>\
+                        </div>\
+                        <div style="font-size:0.8rem;color:var(--text2);margin-bottom:6px;">Stored words: apple, app, application, apt, bat, ball, banana</div>\
+                        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">\
+                            <div style="flex:1;min-width:150px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">Hash Set</div>\
+                                <div id="trie-s2-hash" style="font-size:0.85rem;color:var(--text2);min-height:2em;"></div>\
+                            </div>\
+                            <div style="flex:1;min-width:150px;">\
+                                <div style="font-weight:600;font-size:0.85rem;margin-bottom:4px;">Trie</div>\
+                                <div id="trie-s2-trie" style="font-size:0.85rem;color:var(--text2);min-height:2em;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="trie-s2-msg">Exact search is fast for both, but prefix search is only efficient with a trie!</div>\
+                </div>\
+\
                 <div class="think-box">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -431,6 +455,37 @@ var trieTopic = {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== Section 2 demo: Exact vs Prefix search ======
+        (function() {
+            var inputEl = container.querySelector('#trie-s2-input');
+            var hashEl = container.querySelector('#trie-s2-hash');
+            var trieEl = container.querySelector('#trie-s2-trie');
+            var msgEl = container.querySelector('#trie-s2-msg');
+            if (!inputEl) return;
+            var words = ['apple','app','application','apt','bat','ball','banana'];
+            var wordSet = {};
+            words.forEach(function(w) { wordSet[w] = true; });
+            container.querySelector('#trie-s2-exact').addEventListener('click', function() {
+                var q = inputEl.value.trim().toLowerCase();
+                if (wordSet[q]) {
+                    hashEl.innerHTML = '<span style="color:var(--green);font-weight:600;">O(L) — Found!</span> "' + q + '" exists.';
+                    trieEl.innerHTML = '<span style="color:var(--green);font-weight:600;">O(L) — Found!</span> "' + q + '" exists.';
+                    msgEl.textContent = 'Exact search is O(L) for both hash set and trie!';
+                } else {
+                    hashEl.innerHTML = '<span style="color:var(--red);">O(L) — Not found.</span>';
+                    trieEl.innerHTML = '<span style="color:var(--red);">O(L) — Not found.</span>';
+                    msgEl.textContent = 'Both quickly determine the word does not exist.';
+                }
+            });
+            container.querySelector('#trie-s2-prefix').addEventListener('click', function() {
+                var q = inputEl.value.trim().toLowerCase();
+                var matches = words.filter(function(w) { return w.indexOf(q) === 0; });
+                hashEl.innerHTML = '<span style="color:var(--red);font-weight:600;">O(N*L)</span> — Must check all entries!<br>Check all 7 words with startsWith';
+                trieEl.innerHTML = '<span style="color:var(--green);font-weight:600;">O(' + q.length + ' + ' + matches.length + ')</span> — Traverse ' + q.length + ' chars, then collect!<br>Results: ' + (matches.length ? matches.join(', ') : 'none');
+                msgEl.textContent = 'For prefix search, trie wins by a huge margin! The more data, the bigger the gap.';
+            });
+        })();
 
         // ===== Trie data structure shared across demos =====
         function TrieNode() { this.children = {}; this.isEnd = false; }

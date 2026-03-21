@@ -223,6 +223,25 @@ void union_(int a, int b) {
                     <span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/algorithm/iota" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: iota (순차 값 채우기) ↗</a></span>
                     <span class="lang-cpp"><p style="font-size:0.85rem;color:var(--text2);margin-top:4px;"><code>std::iota()</code> &mdash; &lt;numeric&gt; 헤더에 있는 함수로, 배열을 0, 1, 2, ... 순차 값으로 채웁니다.</p></span>
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — parent 배열 변화 관찰</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">두 노드를 선택하고 union을 실행하면 parent 배열이 어떻게 바뀌는지 확인하세요!</p>
+                    <div class="concept-demo-body">
+                        <div id="uf-s1-parent" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+                            <span style="font-size:0.85rem;">union(</span>
+                            <select id="uf-s1-a" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option></select>
+                            <span>,</span>
+                            <select id="uf-s1-b" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
+                            <span>)</span>
+                            <button class="concept-demo-btn" id="uf-s1-go">실행</button>
+                            <button class="concept-demo-btn green" id="uf-s1-reset">↺</button>
+                        </div>
+                        <div id="uf-s1-log" style="font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-s1-msg">union(1, 2)를 실행하면 parent[2] = 1로 바뀝니다. 직접 확인해보세요!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -317,6 +336,29 @@ void union_(int a, int b) {
     if (rnk[a] == rnk[b]) rnk[a]++;
 }</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — 경로 압축 전 vs 후</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">체인을 만들고 find를 실행하면 경로 압축 전후의 parent 변화를 비교합니다!</p>
+                    <div class="concept-demo-body">
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-weight:600;margin-bottom:6px;">경로 압축 없이</div>
+                                <div id="uf-s2-before" style="font-family:monospace;font-size:0.85rem;color:var(--text2);min-height:3em;"></div>
+                            </div>
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-weight:600;margin-bottom:6px;">경로 압축 후</div>
+                                <div id="uf-s2-after" style="font-family:monospace;font-size:0.85rem;color:var(--text2);min-height:3em;"></div>
+                            </div>
+                        </div>
+                        <div id="uf-s2-log" style="margin-top:8px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <button class="concept-demo-btn" id="uf-s2-run">find(5) 실행!</button>
+                        <button class="concept-demo-btn green" id="uf-s2-reset">↺</button>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-s2-msg">"find(5) 실행!"을 눌러 경로 압축의 효과를 확인하세요!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -402,6 +444,28 @@ for (auto&amp; [u, v, w] : edges) {
 
 cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
                 </div></span>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">직접 해보기 — find로 같은 그룹인지 확인</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">union 후 두 노드가 같은 그룹인지 find로 확인해보세요!</p>
+                    <div class="concept-demo-body">
+                        <div id="uf-s3-parent" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+                            <button class="concept-demo-btn" id="uf-s3-u12">union(1,2)</button>
+                            <button class="concept-demo-btn" id="uf-s3-u34">union(3,4)</button>
+                            <button class="concept-demo-btn" id="uf-s3-u23">union(2,3)</button>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                            <span style="font-size:0.85rem;">find(</span>
+                            <select id="uf-s3-q" style="padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+                            <span>)</span>
+                            <button class="concept-demo-btn" id="uf-s3-find">찾기</button>
+                            <button class="concept-demo-btn green" id="uf-s3-reset">↺</button>
+                        </div>
+                        <div id="uf-s3-log" style="margin-top:8px;font-size:0.85rem;padding:8px 12px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);border-radius:0 8px 8px 0;min-height:1.5em;color:var(--text);"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="uf-s3-msg">union 버튼으로 그룹을 합치고, find로 대표를 확인하세요!</div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -502,6 +566,82 @@ cout &lt;&lt; mst_cost &lt;&lt; endl;</code></pre>
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ====== 섹션 1 데모: parent 배열 변화 ======
+        (function() {
+            var parentEl = container.querySelector('#uf-s1-parent');
+            var logEl = container.querySelector('#uf-s1-log');
+            if (!parentEl) return;
+            var p;
+            function reset() { p = [0,1,2,3,4]; render(); logEl.textContent = '두 노드를 선택하고 "실행"을 눌러보세요!'; }
+            function find(x) { while (p[x] !== x) x = p[x]; return x; }
+            function render() {
+                parentEl.innerHTML = p.map(function(v,i) {
+                    var isRoot = p[i] === i;
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.7rem;color:var(--text2);">p[' + i + ']</span><span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;font-weight:700;background:' + (isRoot?'var(--accent)':'var(--bg2)') + ';color:' + (isRoot?'#fff':'var(--text)') + ';">' + v + '</span></div>';
+                }).join('');
+            }
+            reset();
+            container.querySelector('#uf-s1-go').addEventListener('click', function() {
+                var a = parseInt(container.querySelector('#uf-s1-a').value);
+                var b = parseInt(container.querySelector('#uf-s1-b').value);
+                var ra = find(a), rb = find(b);
+                if (ra === rb) { logEl.textContent = 'find(' + a + ')=' + ra + ', find(' + b + ')=' + rb + ' → 이미 같은 그룹!'; return; }
+                p[rb] = ra;
+                render();
+                logEl.innerHTML = 'union(' + a + ',' + b + '): find(' + a + ')=' + ra + ', find(' + b + ')=' + rb + ' → <strong>parent[' + rb + '] = ' + ra + '</strong>으로 변경!';
+            });
+            container.querySelector('#uf-s1-reset').addEventListener('click', reset);
+        })();
+
+        // ====== 섹션 2 데모: 경로 압축 전 vs 후 ======
+        (function() {
+            var beforeEl = container.querySelector('#uf-s2-before');
+            var afterEl = container.querySelector('#uf-s2-after');
+            var logEl = container.querySelector('#uf-s2-log');
+            if (!beforeEl) return;
+            function showChain() {
+                beforeEl.innerHTML = 'parent: [_, 1, 1, 2, 3, 4]<br>체인: 5→4→3→2→1';
+                afterEl.innerHTML = '<span style="color:var(--text2);">아직 실행 전</span>';
+                logEl.textContent = '"find(5) 실행!"을 눌러보세요!';
+            }
+            showChain();
+            container.querySelector('#uf-s2-run').addEventListener('click', function() {
+                beforeEl.innerHTML = 'parent: [_, 1, 1, 2, 3, 4]<br>find(5): 5→4→3→2→1 (<strong>4번</strong> 이동)';
+                afterEl.innerHTML = 'parent: [_, 1, 1, <span style="color:var(--green);font-weight:700;">1</span>, <span style="color:var(--green);font-weight:700;">1</span>, <span style="color:var(--green);font-weight:700;">1</span>]<br>다음 find(5): 5→1 (<strong style="color:var(--green);">1번</strong> 이동!)';
+                logEl.innerHTML = '경로 압축으로 3, 4, 5 모두 <strong>직접 1을 가리키게</strong> 됩니다! 다음 find가 훨씬 빨라요.';
+            });
+            container.querySelector('#uf-s2-reset').addEventListener('click', showChain);
+        })();
+
+        // ====== 섹션 3 데모: find로 같은 그룹 확인 ======
+        (function() {
+            var parentEl = container.querySelector('#uf-s3-parent');
+            var logEl = container.querySelector('#uf-s3-log');
+            if (!parentEl) return;
+            var p;
+            function reset() { p = [0,1,2,3,4]; render(); logEl.textContent = 'union 버튼을 눌러 그룹을 합치세요!'; }
+            function find(x) { if (p[x]!==x) p[x]=find(p[x]); return p[x]; }
+            function union(a,b) { var ra=find(a),rb=find(b); if(ra!==rb) p[rb]=ra; }
+            function render() {
+                parentEl.innerHTML = p.map(function(v,i) {
+                    if (i===0) return '';
+                    var colors = ['','var(--accent)','var(--green)','var(--yellow)','var(--red)'];
+                    var root = find(i);
+                    return '<div style="display:inline-flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.7rem;color:var(--text2);">' + i + '</span><span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;font-weight:700;border:2px solid ' + colors[root] + ';color:var(--text);">p=' + v + '</span></div>';
+                }).join('');
+            }
+            reset();
+            container.querySelector('#uf-s3-u12').addEventListener('click', function() { union(1,2); render(); logEl.textContent = 'union(1,2) 완료! 노드 1과 2는 같은 그룹.'; });
+            container.querySelector('#uf-s3-u34').addEventListener('click', function() { union(3,4); render(); logEl.textContent = 'union(3,4) 완료! 노드 3과 4는 같은 그룹.'; });
+            container.querySelector('#uf-s3-u23').addEventListener('click', function() { union(2,3); render(); logEl.textContent = 'union(2,3) 완료! 이제 1,2,3,4 모두 같은 그룹!'; });
+            container.querySelector('#uf-s3-find').addEventListener('click', function() {
+                var q = parseInt(container.querySelector('#uf-s3-q').value);
+                var r = find(q);
+                logEl.innerHTML = 'find(' + q + ') = <strong>' + r + '</strong> — 노드 ' + q + '의 대표(루트)는 ' + r + '입니다!';
+            });
+            container.querySelector('#uf-s3-reset').addEventListener('click', reset);
+        })();
 
         // ====== 데모 1: Union & Find 체험 ======
         (function() {

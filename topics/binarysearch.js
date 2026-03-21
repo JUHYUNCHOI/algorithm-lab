@@ -150,6 +150,29 @@ const binarySearchTopic = {
                     다시 남은 절반의 중간을 펴고... 이것을 반복하면 금방 찾습니다!<br><br>
                     이것이 바로 <strong>이분 탐색</strong>입니다. 매번 <strong>절반을 버리기</strong> 때문에 매우 빠릅니다.
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 이분 탐색으로 값 찾기</div>
+                    <p style="color:var(--text2);font-size:0.9rem;margin-bottom:12px;">
+                        정렬된 배열에서 target을 찾는 과정을 한 스텝씩 따라가 보세요.<br>
+                        매 스텝마다 <strong>절반이 버려지는 것</strong>을 눈으로 확인할 수 있습니다!
+                    </p>
+                    <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+                        <label style="font-weight:600;font-size:0.9rem;">배열:
+                            <input type="text" id="bs-demo-intro-arr" value="2, 5, 8, 12, 16, 23, 38, 56, 72, 91" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:260px;">
+                        </label>
+                        <label style="font-weight:600;font-size:0.9rem;">target:
+                            <input type="number" id="bs-demo-intro-target" value="23" style="padding:5px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;width:70px;">
+                        </label>
+                    </div>
+                    <div class="concept-demo-btns">
+                        <button class="concept-demo-btn" id="bs-demo-intro-step">Step ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-intro-reset">Reset ↺</button>
+                    </div>
+                    <div id="bs-demo-intro-arr-viz" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
+                    <div id="bs-demo-intro-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
+                    <div id="bs-demo-intro-log" style="padding:12px;background:var(--bg);border-radius:8px;font-size:0.88rem;line-height:1.7;min-height:40px;max-height:220px;overflow-y:auto;"></div>
+                    <div class="concept-demo-msg" id="bs-demo-intro-msg">👆 Step을 눌러 이분 탐색이 절반씩 버리며 찾아가는 과정을 확인하세요!</div>
+                </div>
                 <span class="lang-py"><div class="code-block"><pre><code class="language-python"># 이분 탐색 기본 코드
 def binary_search(arr, target):
     lo, hi = 0, len(arr) - 1
@@ -376,6 +399,129 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             });
         });
         container.querySelectorAll('pre code').forEach(function(el) { if (window.hljs) hljs.highlightElement(el); });
+
+        // ── Demo 0: 이분 탐색 기본 체험 (섹션 1) ──
+        (function() {
+            var introArrInput = container.querySelector('#bs-demo-intro-arr');
+            var introTargetInput = container.querySelector('#bs-demo-intro-target');
+            var introStepBtn = container.querySelector('#bs-demo-intro-step');
+            var introResetBtn = container.querySelector('#bs-demo-intro-reset');
+            var introArrViz = container.querySelector('#bs-demo-intro-arr-viz');
+            var introPointers = container.querySelector('#bs-demo-intro-pointers');
+            var introLog = container.querySelector('#bs-demo-intro-log');
+            var introMsg = container.querySelector('#bs-demo-intro-msg');
+            if (!introStepBtn) return;
+
+            var introState = { arr: [], steps: [], stepIdx: -1, logLines: [], target: 23 };
+
+            function parseArr(str) {
+                return str.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+            }
+
+            function introCell(v, i, style) {
+                return '<div style="width:44px;text-align:center;padding:7px 3px;border-radius:8px;font-weight:600;font-size:0.88rem;transition:all 0.3s;' + style + '"><div>' + v + '</div><div style="font-size:0.65rem;color:var(--text3);">[' + i + ']</div></div>';
+            }
+
+            function renderIntroArr(arr, lo, hi, mid, foundIdx) {
+                introArrViz.innerHTML = arr.map(function(v, i) {
+                    if (foundIdx === i) return introCell(v, i, 'background:var(--green);color:white;box-shadow:0 0 10px var(--green);');
+                    if (i === mid) return introCell(v, i, 'background:var(--yellow);color:#333;box-shadow:0 0 8px var(--yellow);');
+                    if (i >= lo && i <= hi) return introCell(v, i, 'background:var(--accent)15;border:2px solid var(--accent);');
+                    return introCell(v, i, 'background:var(--bg2);color:var(--text3);opacity:0.5;');
+                }).join('');
+            }
+
+            function buildIntroSteps() {
+                var arr = parseArr(introArrInput.value);
+                if (arr.length < 2) { introMsg.textContent = '배열에 최소 2개 이상의 숫자를 입력하세요!'; return; }
+                arr.sort(function(a, b) { return a - b; });
+                var target = parseInt(introTargetInput.value);
+                if (isNaN(target)) { introMsg.textContent = 'target에 숫자를 입력하세요!'; return; }
+
+                introState.arr = arr;
+                introState.target = target;
+                introState.steps = [];
+                introState.stepIdx = -1;
+                introState.logLines = [];
+
+                var lo = 0, hi = arr.length - 1;
+                var round = 0;
+                while (lo <= hi) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    round++;
+                    if (arr[mid] === target) {
+                        introState.steps.push({ lo: lo, hi: hi, mid: mid, found: true, round: round });
+                        break;
+                    } else if (arr[mid] < target) {
+                        introState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, dir: 'right', newLo: mid + 1, newHi: hi, eliminated: mid - lo + 1 });
+                        lo = mid + 1;
+                    } else {
+                        introState.steps.push({ lo: lo, hi: hi, mid: mid, found: false, round: round, dir: 'left', newLo: lo, newHi: mid - 1, eliminated: hi - mid + 1 });
+                        hi = mid - 1;
+                    }
+                }
+                if (!introState.steps.length || !introState.steps[introState.steps.length - 1].found) {
+                    introState.steps.push({ failed: true, round: round + 1 });
+                }
+
+                renderIntroArr(arr, 0, arr.length - 1, -1, -1);
+                introPointers.innerHTML = 'lo=0, hi=' + (arr.length - 1) + ' — 전체 범위에서 시작합니다';
+                introLog.innerHTML = '';
+                introMsg.textContent = 'Step을 눌러 target=' + target + ' 탐색을 시작하세요! (' + introState.steps.length + '단계)';
+            }
+
+            function introStep() {
+                if (introState.steps.length === 0 || introState.stepIdx >= introState.steps.length - 1) {
+                    buildIntroSteps();
+                    return;
+                }
+                introState.stepIdx++;
+                var s = introState.steps[introState.stepIdx];
+                var arr = introState.arr;
+                var target = introState.target;
+
+                if (s.failed) {
+                    renderIntroArr(arr, 0, 0, -1, -1);
+                    introPointers.innerHTML = '<strong style="color:var(--red);">lo > hi → 탐색 범위 소진!</strong>';
+                    introState.logLines.push('<span style="color:var(--red);font-weight:700;">결과: ' + target + '은(는) 배열에 없습니다!</span>');
+                    introMsg.innerHTML = '<strong style="color:var(--red);">이분 탐색 완료 — 값을 찾지 못했습니다.</strong>';
+                } else if (s.found) {
+                    renderIntroArr(arr, s.lo, s.hi, -1, s.mid);
+                    introPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    introState.logLines.push('<span style="color:var(--green);font-weight:700;">' + s.round + '회차: arr[' + s.mid + ']=' + arr[s.mid] + ' == ' + target + ' → 찾았습니다! 🎉</span>');
+                    introMsg.innerHTML = '<strong style="color:var(--green);">단 ' + s.round + '번 만에 찾았습니다!</strong> ' + arr.length + '개 중 절반씩 버려가며 빠르게 도착했습니다.';
+                } else {
+                    renderIntroArr(arr, s.lo, s.hi, s.mid, -1);
+                    introPointers.innerHTML = 'lo=' + s.lo + ', hi=' + s.hi + ', <strong>mid=' + s.mid + '</strong>';
+                    var dirText = s.dir === 'right'
+                        ? arr[s.mid] + ' < ' + target + ' → mid 왼쪽 절반(' + s.eliminated + '개)을 버립니다!'
+                        : arr[s.mid] + ' > ' + target + ' → mid 오른쪽 절반(' + s.eliminated + '개)을 버립니다!';
+                    introState.logLines.push(s.round + '회차: arr[' + s.mid + ']=' + dirText + ' → 범위 [' + s.newLo + '~' + s.newHi + ']');
+                    var remaining = s.newHi - s.newLo + 1;
+                    introMsg.textContent = s.eliminated + '개를 한 번에 제거! 남은 범위: ' + remaining + '개. Step을 눌러 계속하세요.';
+                }
+                introLog.innerHTML = introState.logLines.join('<br>');
+                introLog.scrollTop = introLog.scrollHeight;
+            }
+
+            function introReset() {
+                var arr = parseArr(introArrInput.value);
+                if (arr.length < 2) arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+                arr.sort(function(a, b) { return a - b; });
+                introState = { arr: arr, steps: [], stepIdx: -1, logLines: [], target: parseInt(introTargetInput.value) || 23 };
+                renderIntroArr(arr, 0, arr.length - 1, -1, -1);
+                introPointers.innerHTML = '';
+                introLog.innerHTML = '';
+                introMsg.textContent = 'Step을 눌러 이분 탐색이 절반씩 버리며 찾아가는 과정을 확인하세요!';
+            }
+
+            var defaultArr = parseArr(introArrInput.value);
+            defaultArr.sort(function(a, b) { return a - b; });
+            introState.arr = defaultArr;
+            renderIntroArr(defaultArr, 0, defaultArr.length - 1, -1, -1);
+            introStepBtn.addEventListener('click', introStep);
+            introResetBtn.addEventListener('click', introReset);
+        })();
 
         // ── Demo 1: 탐색 실패 체험 ──
         (function() {

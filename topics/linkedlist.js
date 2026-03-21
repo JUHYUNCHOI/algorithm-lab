@@ -849,7 +849,7 @@ ListNode* middleNode(ListNode* head) {
             if (current >= total - 1) return;
             current++;
             updateUI();
-            setTimeout(function() { steps[current].action(); }, actionDelay);
+            setTimeout(function() { steps[current].action('forward'); }, actionDelay);
         });
         prevBtn.addEventListener('click', function() {
             if (current < 0) return;
@@ -857,7 +857,7 @@ ListNode* middleNode(ListNode* head) {
             updateUI();
             setTimeout(function() {
                 if (current >= 0) {
-                    steps[current].action();
+                    steps[current].action('backward');
                 }
             }, actionDelay);
         });
@@ -890,11 +890,16 @@ ListNode* middleNode(ListNode* head) {
             '<label style="font-weight:600;">노드 값: <input type="text" id="ll-rev-input" value="' + DEFAULT_VALUES.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:200px;"></label>' +
             '<button class="btn btn-primary" id="ll-rev-reset">🔄</button>' +
             '</div>' +
-            '<div id="ll-nodes-rev" style="display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;min-height:80px;padding:20px 0;"></div>' +
+            '<div id="ll-rev-wrap" style="position:relative;min-height:80px;padding:20px 0;">' +
+            '<div id="ll-nodes-rev" style="display:flex;align-items:center;gap:0;justify-content:center;flex-wrap:wrap;"></div>' +
+            '<div id="ll-rev-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
+            '</div>' +
             '</div>';
         container.innerHTML = self._createStepDesc('-rev') + vizHTML + self._createStepControls('-rev');
 
         var nodesEl = container.querySelector('#ll-nodes-rev');
+        var wrapEl = container.querySelector('#ll-rev-wrap');
+        var flyEl = container.querySelector('#ll-rev-fly');
         var descEl = container.querySelector('#viz-step-desc-rev');
 
         function renderNodes(nodes, prevIdx, currIdx, newHead) {
@@ -908,16 +913,74 @@ ListNode* middleNode(ListNode* head) {
                 if (isP) labels.push('prev');
                 if (isC) labels.push('curr');
                 if (i === newHead) labels.push('new head');
-                html += '<div style="display:flex;align-items:center;">';
-                html += self._nodeBox(n.val, labels, cls.trim());
+                html += '<div id="ll-rev-pair-' + i + '" style="display:flex;align-items:center;">';
+                html += '<div id="ll-rev-node-' + i + '" class="str-char-box' + (cls ? ' ' + cls : '') + '" style="min-width:44px;text-align:center;font-weight:600;font-size:1.05rem;position:relative;">' +
+                    (labels.length ? '<div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:0.7rem;white-space:nowrap;font-weight:600;color:var(--accent);">' + labels.join(',') + '</div>' : '') +
+                    n.val + '</div>';
                 if (n.nextIdx >= 0) {
-                    html += '<span style="font-size:1.2rem;color:var(--text-secondary);margin:0 2px;">&rarr;</span>';
+                    html += '<span id="ll-rev-arrow-' + i + '" style="font-size:1.2rem;color:var(--text-secondary);margin:0 2px;">&rarr;</span>';
                 } else {
-                    html += '<span style="font-size:0.85rem;color:var(--text-secondary);margin:0 4px;">&rarr; None</span>';
+                    html += '<span id="ll-rev-arrow-' + i + '" style="font-size:0.85rem;color:var(--text-secondary);margin:0 4px;">&rarr; None</span>';
                 }
                 html += '</div>';
             }
             nodesEl.innerHTML = html;
+        }
+
+        // Ghost animation: shows a curved arrow from curr node flying back to prev node
+        function animatePointerFlip(currNodeIdx, prevNodeIdx, onDone) {
+            var currEl = container.querySelector('#ll-rev-node-' + currNodeIdx);
+            var prevEl = prevNodeIdx >= 0 ? container.querySelector('#ll-rev-node-' + prevNodeIdx) : null;
+            if (!currEl) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var currRect = currEl.getBoundingClientRect();
+
+            // Create ghost arrow element showing the pointer reversal
+            var ghost = document.createElement('div');
+            ghost.textContent = '↩';
+            ghost.style.cssText = 'position:absolute;z-index:20;font-size:1.6rem;font-weight:700;' +
+                'left:' + (currRect.left - wrapRect.left + currRect.width / 2 - 12) + 'px;' +
+                'top:' + (currRect.top - wrapRect.top - 8) + 'px;' +
+                'color:var(--accent);opacity:0;transform:scale(0.5);' +
+                'transition:all 0.45s cubic-bezier(.4,0,.2,1);';
+            flyEl.appendChild(ghost);
+
+            // If there's a prev node, also create a flying ghost of the value
+            var valueGhost = null;
+            if (prevEl) {
+                var prevRect = prevEl.getBoundingClientRect();
+                valueGhost = document.createElement('div');
+                valueGhost.className = 'str-char-box comparing';
+                valueGhost.textContent = currEl.textContent.trim();
+                valueGhost.style.cssText = 'position:absolute;z-index:21;min-width:44px;text-align:center;font-weight:600;font-size:1.05rem;' +
+                    'left:' + (currRect.left - wrapRect.left) + 'px;' +
+                    'top:' + (currRect.top - wrapRect.top) + 'px;' +
+                    'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s;' +
+                    'transform:scale(1.15);';
+                flyEl.appendChild(valueGhost);
+                currEl.style.opacity = '0.2';
+            }
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    // Animate the arrow appearing
+                    ghost.style.opacity = '1';
+                    ghost.style.transform = 'scale(1)';
+                    ghost.style.top = (currRect.top - wrapRect.top - 28) + 'px';
+
+                    // Animate value ghost settling back (slight bounce)
+                    if (valueGhost) {
+                        valueGhost.style.transform = 'scale(1)';
+                    }
+                });
+            });
+
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (valueGhost && valueGhost.parentNode) valueGhost.parentNode.removeChild(valueGhost);
+                if (currEl) currEl.style.opacity = '';
+                if (onDone) onDone();
+            }, 550);
         }
 
         function buildSteps(values) {
@@ -927,7 +990,8 @@ ListNode* middleNode(ListNode* head) {
             // Initial state
             states.push({
                 nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: -1, currIdx: 0, newHead: -1,
-                desc: '초기 상태: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + ').'
+                desc: '초기 상태: ' + values.join(' &rarr; ') + ' &rarr; None. prev = None, curr = head(' + values[0] + ').',
+                animInfo: null
             });
 
             // Step through reversal
@@ -940,21 +1004,26 @@ ListNode* middleNode(ListNode* head) {
                 simCurr = snext;
                 states.push({
                     nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: simCurr, newHead: -1,
-                    desc: 'curr(' + values[sc] + ').next를 prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + '로 바꿉니다. prev=' + values[sc] + ', curr=' + (snext >= 0 ? values[snext] : 'None') + '으로 이동.'
+                    desc: 'curr(' + values[sc] + ').next를 prev' + (sp >= 0 ? '(' + values[sp] + ')' : '(None)') + '로 바꿉니다. prev=' + values[sc] + ', curr=' + (snext >= 0 ? values[snext] : 'None') + '으로 이동.',
+                    animInfo: { currNode: sc, prevNode: sp }
                 });
             }
             var reversed = values.slice().reverse();
             states.push({
                 nodes: JSON.parse(JSON.stringify(simNodes)), prevIdx: simPrev, currIdx: -1, newHead: simPrev,
-                desc: 'curr = None이므로 반복 종료! prev(' + values[simPrev] + ')가 새로운 head입니다. 결과: ' + reversed.join(' &rarr; ') + ' &rarr; None &#10003;'
+                desc: 'curr = None이므로 반복 종료! prev(' + values[simPrev] + ')가 새로운 head입니다. 결과: ' + reversed.join(' &rarr; ') + ' &rarr; None &#10003;',
+                animInfo: null
             });
 
             return states.map(function(st) {
                 return {
                     description: st.desc,
-                    action: function() {
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
                         renderNodes(st.nodes, st.prevIdx, st.currIdx, st.newHead);
-                        descEl.innerHTML = st.desc;
+                        if (dir === 'forward' && st.animInfo) {
+                            animatePointerFlip(st.animInfo.currNode, st.animInfo.prevNode);
+                        }
                     }
                 };
             });
@@ -965,6 +1034,7 @@ ListNode* middleNode(ListNode* head) {
             var values = raw.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
             if (values.length < 2) values = DEFAULT_VALUES.slice();
             nodesEl.innerHTML = '';
+            flyEl.innerHTML = '';
             descEl.innerHTML = '';
             self._clearVizState();
             var steps = buildSteps(values);
@@ -987,6 +1057,7 @@ ListNode* middleNode(ListNode* head) {
             '<label style="font-weight:600;">List 2: <input type="text" id="ll-merge-input2" value="' + DEFAULT_LIST2.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:160px;"></label>' +
             '<button class="btn btn-primary" id="ll-merge-reset">🔄</button>' +
             '</div>' +
+            '<div id="ll-merge-wrap" style="position:relative;">' +
             '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
             '<div style="flex:1;min-width:200px;">' +
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">list1</div>' +
@@ -998,63 +1069,115 @@ ListNode* middleNode(ListNode* head) {
             '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">병합 결과</div>' +
             '<div id="ll-result-merge" style="display:flex;gap:4px;flex-wrap:wrap;min-height:40px;"></div>' +
             '</div></div>' +
+            '<div id="ll-merge-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
+            '</div>' +
             '</div>';
         container.innerHTML = self._createStepDesc('-merge') + vizHTML + self._createStepControls('-merge');
 
         var list1El = container.querySelector('#ll-list1-merge');
         var list2El = container.querySelector('#ll-list2-merge');
         var resultEl = container.querySelector('#ll-result-merge');
+        var wrapEl = container.querySelector('#ll-merge-wrap');
+        var flyEl = container.querySelector('#ll-merge-fly');
         var descEl = container.querySelector('#viz-step-desc-merge');
+
+        function renderLists(list1, list2, st) {
+            list1El.innerHTML = list1.map(function(v, i) {
+                var cls = i === st.i1 ? ' comparing' : (i < st.i1 ? ' matched' : '');
+                return '<div id="ll-merge-l1-' + i + '" class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
+            }).join('');
+            list2El.innerHTML = list2.map(function(v, i) {
+                var cls = i === st.i2 ? ' comparing' : (i < st.i2 ? ' matched' : '');
+                return '<div id="ll-merge-l2-' + i + '" class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
+            }).join('');
+            resultEl.innerHTML = st.result.map(function(v, i) {
+                return '<div id="ll-merge-res-' + i + '" class="str-char-box matched" style="width:36px;text-align:center;">' + v + '</div>';
+            }).join('');
+        }
+
+        function animateMergeMove(srcId, destIdx, value, onDone) {
+            var srcEl = container.querySelector('#' + srcId);
+            var destEl = container.querySelector('#ll-merge-res-' + destIdx);
+            if (!srcEl || !destEl) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var srcRect = srcEl.getBoundingClientRect();
+            var destRect = destEl.getBoundingClientRect();
+
+            srcEl.style.opacity = '0.15';
+            destEl.style.opacity = '0.15';
+
+            var ghost = document.createElement('div');
+            ghost.className = 'str-char-box comparing';
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;width:36px;text-align:center;font-weight:600;' +
+                'left:' + (srcRect.left - wrapRect.left) + 'px;' +
+                'top:' + (srcRect.top - wrapRect.top) + 'px;' +
+                'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s;' +
+                'transform:scale(1.15);';
+            flyEl.appendChild(ghost);
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    ghost.style.left = (destRect.left - wrapRect.left) + 'px';
+                    ghost.style.top = (destRect.top - wrapRect.top) + 'px';
+                    ghost.style.transform = 'scale(1)';
+                });
+            });
+
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (srcEl) srcEl.style.opacity = '';
+                if (destEl) destEl.style.opacity = '';
+                if (onDone) onDone();
+            }, 550);
+        }
 
         function buildSteps(list1, list2) {
             var states = [];
             var i1 = 0, i2 = 0, result = [];
-            states.push({ i1: 0, i2: 0, result: [], desc: 'dummy 노드를 만들고 두 리스트를 비교하며 병합합니다.' });
+            states.push({ i1: 0, i2: 0, result: [], desc: 'dummy 노드를 만들고 두 리스트를 비교하며 병합합니다.', animInfo: null });
 
             while (i1 < list1.length && i2 < list2.length) {
                 if (list1[i1] <= list2[i2]) {
                     result.push(list1[i1]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &le; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list1에서 ' + list1[i1] + '을 연결합니다.' });
+                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &le; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list1에서 ' + list1[i1] + '을 연결합니다.',
+                        animInfo: { srcId: 'll-merge-l1-' + i1, destIdx: result.length - 1, value: list1[i1] } });
                     i1++;
                 } else {
                     result.push(list2[i2]);
                     states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &gt; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list2에서 ' + list2[i2] + '을 연결합니다.' });
+                        desc: 'list1[' + i1 + ']=' + list1[i1] + ' &gt; list2[' + i2 + ']=' + list2[i2] + ' &rarr; list2에서 ' + list2[i2] + '을 연결합니다.',
+                        animInfo: { srcId: 'll-merge-l2-' + i2, destIdx: result.length - 1, value: list2[i2] } });
                     i2++;
                 }
             }
             while (i1 < list1.length) {
                 result.push(list1[i1]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l1',
-                    desc: 'list2 소진! list1의 나머지 ' + list1[i1] + '을 연결합니다.' });
+                    desc: 'list2 소진! list1의 나머지 ' + list1[i1] + '을 연결합니다.',
+                    animInfo: { srcId: 'll-merge-l1-' + i1, destIdx: result.length - 1, value: list1[i1] } });
                 i1++;
             }
             while (i2 < list2.length) {
                 result.push(list2[i2]);
                 states.push({ i1: i1, i2: i2, result: result.slice(), picked: 'l2',
-                    desc: 'list1 소진! list2의 나머지 ' + list2[i2] + '을 연결합니다.' });
+                    desc: 'list1 소진! list2의 나머지 ' + list2[i2] + '을 연결합니다.',
+                    animInfo: { srcId: 'll-merge-l2-' + i2, destIdx: result.length - 1, value: list2[i2] } });
                 i2++;
             }
             states.push({ i1: i1, i2: i2, result: result.slice(),
-                desc: '병합 완료! 결과: [' + result.join(', ') + '] &#10003;' });
+                desc: '병합 완료! 결과: [' + result.join(', ') + '] &#10003;', animInfo: null });
 
             return states.map(function(st) {
                 return {
                     description: st.desc,
-                    action: function() {
-                        list1El.innerHTML = list1.map(function(v, i) {
-                            var cls = i === st.i1 ? ' comparing' : (i < st.i1 ? ' matched' : '');
-                            return '<div class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
-                        }).join('');
-                        list2El.innerHTML = list2.map(function(v, i) {
-                            var cls = i === st.i2 ? ' comparing' : (i < st.i2 ? ' matched' : '');
-                            return '<div class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
-                        }).join('');
-                        resultEl.innerHTML = st.result.map(function(v) {
-                            return '<div class="str-char-box matched" style="width:36px;text-align:center;">' + v + '</div>';
-                        }).join('');
-                        descEl.innerHTML = st.desc;
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        renderLists(list1, list2, st);
+                        if (dir === 'forward' && st.animInfo) {
+                            animateMergeMove(st.animInfo.srcId, st.animInfo.destIdx, st.animInfo.value);
+                        }
                     }
                 };
             });
@@ -1072,6 +1195,7 @@ ListNode* middleNode(ListNode* head) {
             list1El.innerHTML = '';
             list2El.innerHTML = '';
             resultEl.innerHTML = '';
+            flyEl.innerHTML = '';
             descEl.innerHTML = '';
             self._clearVizState();
             var steps = buildSteps(l1, l2);
@@ -1240,7 +1364,10 @@ ListNode* middleNode(ListNode* head) {
             '<button class="btn btn-primary" id="ll-joseph-reset">🔄</button>' +
             '</div>' +
             '<div id="ll-jos-title" style="font-weight:600;margin-bottom:8px;color:var(--text);"></div>' +
-            '<div id="ll-circle-jos" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:50px;padding:12px 0;"></div>' +
+            '<div id="ll-jos-wrap" style="position:relative;min-height:50px;padding:12px 0;">' +
+            '<div id="ll-circle-jos" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>' +
+            '<div id="ll-jos-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
+            '</div>' +
             '<div style="display:flex;gap:20px;justify-content:center;margin-top:12px;flex-wrap:wrap;">' +
             '<div style="font-weight:600;color:var(--text-secondary);">제거 순서: <span id="ll-removed-jos" style="color:var(--accent);">-</span></div>' +
             '</div>' +
@@ -1249,8 +1376,83 @@ ListNode* middleNode(ListNode* head) {
 
         var josTitleEl = container.querySelector('#ll-jos-title');
         var circleEl = container.querySelector('#ll-circle-jos');
+        var wrapEl = container.querySelector('#ll-jos-wrap');
+        var flyEl = container.querySelector('#ll-jos-fly');
         var removedEl = container.querySelector('#ll-removed-jos');
         var descEl = container.querySelector('#viz-step-desc-jos');
+
+        function renderQueue(queue, pointer) {
+            circleEl.innerHTML = queue.map(function(v, i) {
+                var cls = i === pointer ? ' comparing' : '';
+                return '<div id="ll-jos-item-' + i + '" class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
+            }).join('') || '<span style="color:var(--text-secondary);">빈 큐</span>';
+        }
+
+        // Ghost animation: element flies from front (idx 0) to back (last idx)
+        function animateJosMove(value, queueLen, onDone) {
+            var srcEl = container.querySelector('#ll-jos-item-0');
+            var destEl = container.querySelector('#ll-jos-item-' + (queueLen - 1));
+            if (!srcEl || !destEl) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var srcRect = srcEl.getBoundingClientRect();
+            var destRect = destEl.getBoundingClientRect();
+
+            var ghost = document.createElement('div');
+            ghost.className = 'str-char-box comparing';
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;width:36px;text-align:center;font-weight:600;' +
+                'left:' + (srcRect.left - wrapRect.left) + 'px;' +
+                'top:' + (srcRect.top - wrapRect.top) + 'px;' +
+                'transition:left 0.5s cubic-bezier(.4,0,.2,1),top 0.5s cubic-bezier(.4,0,.2,1),transform 0.5s;' +
+                'transform:scale(1.15);';
+            flyEl.appendChild(ghost);
+            destEl.style.opacity = '0.15';
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    ghost.style.left = (destRect.left - wrapRect.left) + 'px';
+                    ghost.style.top = (destRect.top - wrapRect.top) + 'px';
+                    ghost.style.transform = 'scale(1)';
+                });
+            });
+
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (destEl) destEl.style.opacity = '';
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        // Ghost animation: element flies up and fades out (removal)
+        function animateJosRemove(value, onDone) {
+            var srcEl = container.querySelector('#ll-jos-item-0');
+            if (!srcEl) { if (onDone) onDone(); return; }
+            var wrapRect = wrapEl.getBoundingClientRect();
+            var srcRect = srcEl.getBoundingClientRect();
+
+            var ghost = document.createElement('div');
+            ghost.className = 'str-char-box';
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;width:36px;text-align:center;font-weight:600;' +
+                'left:' + (srcRect.left - wrapRect.left) + 'px;' +
+                'top:' + (srcRect.top - wrapRect.top) + 'px;' +
+                'transition:all 0.5s cubic-bezier(.4,0,.2,1);' +
+                'background:var(--red);color:white;transform:scale(1.15);opacity:1;';
+            flyEl.appendChild(ghost);
+
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    ghost.style.top = (srcRect.top - wrapRect.top - 40) + 'px';
+                    ghost.style.opacity = '0';
+                    ghost.style.transform = 'scale(0.5)';
+                });
+            });
+
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 550);
+        }
 
         function buildSteps(N, K) {
             josTitleEl.textContent = '원형 큐 (N=' + N + ', K=' + K + ')';
@@ -1260,34 +1462,38 @@ ListNode* middleNode(ListNode* head) {
             for (var i = 1; i <= N; i++) queue.push(i);
             var removed = [];
 
-            states.push({ queue: queue.slice(), removed: [], pointer: -1, desc: '1부터 ' + N + '까지 원형으로 앉아 있습니다. K=' + K + '번째 사람을 제거합니다.' });
+            states.push({ queue: queue.slice(), removed: [], pointer: -1, desc: '1부터 ' + N + '까지 원형으로 앉아 있습니다. K=' + K + '번째 사람을 제거합니다.', animType: null });
 
             while (queue.length > 0) {
                 for (var j = 0; j < K - 1; j++) {
                     var moved = queue.shift();
                     queue.push(moved);
                     states.push({ queue: queue.slice(), removed: removed.slice(), pointer: queue.length - 1,
-                        desc: (j + 1) + '번째 이동: ' + moved + '을 뒤로 보냅니다. 큐: [' + queue.join(', ') + ']' });
+                        desc: (j + 1) + '번째 이동: ' + moved + '을 뒤로 보냅니다. 큐: [' + queue.join(', ') + ']',
+                        animType: 'move', animValue: moved, animQueueLen: queue.length });
                 }
                 var out = queue.shift();
                 removed.push(out);
                 states.push({ queue: queue.slice(), removed: removed.slice(), pointer: -1, justRemoved: out,
-                    desc: K + '번째 사람 ' + out + '을 제거! 제거 순서: &lt;' + removed.join(', ') + '&gt;' });
+                    desc: K + '번째 사람 ' + out + '을 제거! 제거 순서: &lt;' + removed.join(', ') + '&gt;',
+                    animType: 'remove', animValue: out });
             }
 
             states.push({ queue: [], removed: removed.slice(), pointer: -1,
-                desc: '완료! 요세푸스 순열: &lt;' + removed.join(', ') + '&gt; &#10003;' });
+                desc: '완료! 요세푸스 순열: &lt;' + removed.join(', ') + '&gt; &#10003;', animType: null });
 
             return states.map(function(st) {
                 return {
                     description: st.desc,
-                    action: function() {
-                        circleEl.innerHTML = st.queue.map(function(v, i) {
-                            var cls = i === st.pointer ? ' comparing' : '';
-                            return '<div class="str-char-box' + cls + '" style="width:36px;text-align:center;">' + v + '</div>';
-                        }).join('') || '<span style="color:var(--text-secondary);">빈 큐</span>';
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        renderQueue(st.queue, st.pointer);
                         removedEl.textContent = st.removed.length > 0 ? '<' + st.removed.join(', ') + '>' : '-';
-                        descEl.innerHTML = st.desc;
+                        if (dir === 'forward' && st.animType === 'move') {
+                            animateJosMove(st.animValue, st.animQueueLen);
+                        } else if (dir === 'forward' && st.animType === 'remove') {
+                            animateJosRemove(st.animValue);
+                        }
                     }
                 };
             });
@@ -1300,6 +1506,7 @@ ListNode* middleNode(ListNode* head) {
             if (isNaN(K) || K < 1) K = DEFAULT_K;
             if (N > 20) N = 20;
             circleEl.innerHTML = '';
+            flyEl.innerHTML = '';
             removedEl.textContent = '-';
             descEl.innerHTML = '';
             self._clearVizState();

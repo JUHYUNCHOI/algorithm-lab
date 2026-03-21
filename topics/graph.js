@@ -443,6 +443,33 @@ var graphTopic = {
                 </tbody>\
                 </table>\
                 </div>\
+\
+                <div class="concept-demo" style="margin-top:1.5rem;">\
+                    <div class="concept-demo-title">직접 해보기 — 같은 그래프에서 DFS vs BFS</div>\
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">같은 그래프에서 DFS와 BFS를 실행해보세요. 탐색 순서가 어떻게 달라지는지 비교해 봅시다!</p>\
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">\
+                        <button class="concept-demo-btn" id="graph-demo-cmp-dfs" style="background:var(--accent);">DFS로 탐색</button>\
+                        <button class="concept-demo-btn" id="graph-demo-cmp-bfs" style="background:#00b894;">BFS로 탐색</button>\
+                        <button class="concept-demo-btn" id="graph-demo-cmp-reset" style="background:var(--bg2);color:var(--text2);">초기화</button>\
+                        <span id="graph-demo-cmp-counter" style="font-size:0.85rem;color:var(--text2);"></span>\
+                    </div>\
+                    <div class="concept-demo-body">\
+                        <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">\
+                            <div style="flex:1;min-width:240px;">\
+                                <svg id="graph-demo-cmp-svg" width="320" height="220" style="background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></svg>\
+                            </div>\
+                            <div style="flex:1;min-width:180px;">\
+                                <div style="font-weight:600;margin-bottom:6px;color:var(--text);" id="graph-demo-cmp-ds-label">자료구조</div>\
+                                <div id="graph-demo-cmp-ds" style="display:flex;gap:4px;flex-wrap:wrap;min-height:36px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"></div>\
+                                <div style="font-weight:600;margin:10px 0 6px;color:var(--text);">방문 순서</div>\
+                                <div id="graph-demo-cmp-order" style="display:flex;gap:6px;flex-wrap:wrap;min-height:32px;"></div>\
+                                <div id="graph-demo-cmp-result" style="margin-top:12px;padding:10px 14px;border-radius:8px;background:var(--warm-bg);border-left:3px solid var(--warm-accent);font-size:0.88rem;display:none;"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <div class="concept-demo-msg" id="graph-demo-cmp-msg">그래프: 1-2, 1-3, 2-4, 3-5, 4-6. "DFS로 탐색" 또는 "BFS로 탐색" 버튼을 눌러 같은 그래프에서 탐색 순서를 비교하세요!</div>\
+                </div>\
+\
                 <div class="think-box" style="margin-top:1.2rem;">\
                     <div class="think-box-question">\
                         <span class="think-box-question-icon">Q</span>\
@@ -1002,6 +1029,161 @@ var graphTopic = {
                 stepBtn.disabled = false;
                 reset();
             });
+            reset();
+        })();
+
+        // ========== Demo: DFS vs BFS 비교 데모 ==========
+        (function() {
+            var adj = {1:[2,3], 2:[1,4], 3:[1,5], 4:[2,6], 5:[3], 6:[4]};
+            var positions = [{x:160,y:25},{x:70,y:90},{x:250,y:90},{x:40,y:175},{x:250,y:175},{x:130,y:175}];
+            var edgeList = [[1,2],[1,3],[2,4],[3,5],[4,6]];
+            var nodeLabels = [1,2,3,4,5,6];
+
+            var svgEl = container.querySelector('#graph-demo-cmp-svg');
+            var dsEl = container.querySelector('#graph-demo-cmp-ds');
+            var dsLabel = container.querySelector('#graph-demo-cmp-ds-label');
+            var orderEl = container.querySelector('#graph-demo-cmp-order');
+            var resultEl = container.querySelector('#graph-demo-cmp-result');
+            var dfsBtn = container.querySelector('#graph-demo-cmp-dfs');
+            var bfsBtn = container.querySelector('#graph-demo-cmp-bfs');
+            var resetBtn = container.querySelector('#graph-demo-cmp-reset');
+            var counterEl = container.querySelector('#graph-demo-cmp-counter');
+            var msgEl = container.querySelector('#graph-demo-cmp-msg');
+
+            var steps, stepIdx, mode, autoTimer, dfsResult, bfsResult;
+
+            function buildDfsSteps() {
+                steps = []; mode = 'DFS'; dsLabel.textContent = '스택 (Stack)';
+                var vis = {}, stk = [1], ord = [];
+                vis[1] = true;
+                steps.push({node:1, ds:[1], order:[], desc:'DFS 시작: 1번을 스택에 넣고 방문 표시합니다.', highlight:1, visited:{}});
+                while (stk.length > 0) {
+                    var v = stk.pop();
+                    ord.push(v);
+                    var visSnap = {}; for (var k in vis) visSnap[k]=true; ord.forEach(function(o){visSnap[o]=true;});
+                    steps.push({node:v, ds:stk.slice(), order:ord.slice(), desc:v + '번을 스택에서 꺼냅니다. 방문 순서: ' + ord.join(' → '), highlight:v, visited:visSnap});
+                    var neighbors = adj[v].slice().sort(function(a,b){return b-a;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            stk.push(u);
+                            var visSnap2 = {}; for (var k in vis) visSnap2[k]=true;
+                            steps.push({node:u, ds:stk.slice(), order:ord.slice(), desc:v + '의 이웃 ' + u + '번을 스택에 추가합니다.', highlight:u, visited:visSnap2});
+                        }
+                    });
+                }
+                steps.push({node:null, ds:[], order:ord.slice(), desc:'DFS 완료! 방문 순서: ' + ord.join(' → '), highlight:null, visited:vis});
+                dfsResult = ord.slice();
+            }
+
+            function buildBfsSteps() {
+                steps = []; mode = 'BFS'; dsLabel.textContent = '큐 (Queue)';
+                var vis = {}, queue = [1], ord = [];
+                vis[1] = true;
+                steps.push({node:1, ds:[1], order:[], desc:'BFS 시작: 1번을 큐에 넣고 방문 표시합니다.', highlight:1, visited:{}});
+                while (queue.length > 0) {
+                    var v = queue.shift();
+                    ord.push(v);
+                    var visSnap = {}; for (var k in vis) visSnap[k]=true; ord.forEach(function(o){visSnap[o]=true;});
+                    steps.push({node:v, ds:queue.slice(), order:ord.slice(), desc:v + '번을 큐에서 꺼냅니다. 방문 순서: ' + ord.join(' → '), highlight:v, visited:visSnap});
+                    var neighbors = adj[v].slice().sort(function(a,b){return a-b;});
+                    neighbors.forEach(function(u) {
+                        if (!vis[u]) {
+                            vis[u] = true;
+                            queue.push(u);
+                            var visSnap2 = {}; for (var k in vis) visSnap2[k]=true;
+                            steps.push({node:u, ds:queue.slice(), order:ord.slice(), desc:v + '의 이웃 ' + u + '번을 큐에 추가합니다.', highlight:u, visited:visSnap2});
+                        }
+                    });
+                }
+                steps.push({node:null, ds:[], order:ord.slice(), desc:'BFS 완료! 방문 순서: ' + ord.join(' → '), highlight:null, visited:vis});
+                bfsResult = ord.slice();
+            }
+
+            function renderCmpGraph(step) {
+                var html = '';
+                edgeList.forEach(function(e) {
+                    var a = e[0]-1, b = e[1]-1;
+                    html += '<line x1="'+positions[a].x+'" y1="'+positions[a].y+'" x2="'+positions[b].x+'" y2="'+positions[b].y+'" stroke="var(--bg3)" stroke-width="2.5"/>';
+                });
+                for (var i = 0; i < nodeLabels.length; i++) {
+                    var nd = nodeLabels[i];
+                    var fill = 'var(--card)', stroke = 'var(--bg3)', txtColor = 'var(--text)';
+                    if (step && step.visited && step.visited[nd]) {
+                        fill = 'var(--green)'; stroke = 'var(--green)'; txtColor = 'white';
+                    }
+                    if (step && step.highlight === nd) {
+                        fill = 'var(--yellow)'; stroke = 'var(--yellow)'; txtColor = '#333';
+                    }
+                    html += '<circle cx="'+positions[i].x+'" cy="'+positions[i].y+'" r="22" fill="'+fill+'" stroke="'+stroke+'" stroke-width="3"/>';
+                    html += '<text x="'+positions[i].x+'" y="'+(positions[i].y+6)+'" text-anchor="middle" font-size="15" font-weight="700" fill="'+txtColor+'">'+nd+'</text>';
+                }
+                svgEl.innerHTML = html;
+
+                dsEl.innerHTML = '';
+                if (step && step.ds && step.ds.length > 0) {
+                    step.ds.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:5px 12px;background:' + (mode === 'DFS' ? 'var(--accent)' : '#00b894') + ';color:white;border-radius:6px;font-weight:700;font-size:0.88rem;';
+                        div.textContent = nd;
+                        dsEl.appendChild(div);
+                    });
+                } else {
+                    dsEl.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">비어있음</span>';
+                }
+
+                orderEl.innerHTML = '';
+                if (step && step.order) {
+                    step.order.forEach(function(nd) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'width:30px;height:30px;border-radius:50%;background:' + (mode === 'DFS' ? 'var(--accent)' : '#00b894') + ';color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;';
+                        div.textContent = nd;
+                        orderEl.appendChild(div);
+                    });
+                }
+            }
+
+            function showResult() {
+                if (dfsResult && bfsResult) {
+                    resultEl.style.display = 'block';
+                    resultEl.innerHTML = '<strong>비교 결과</strong><br><span style="color:var(--accent);font-weight:600;">DFS:</span> ' + dfsResult.join(' → ') + '<br><span style="color:#00b894;font-weight:600;">BFS:</span> ' + bfsResult.join(' → ') + '<br><span style="font-size:0.85rem;color:var(--text2);margin-top:4px;display:inline-block;">같은 그래프인데 탐색 순서가 다릅니다!</span>';
+                }
+            }
+
+            function runAuto() {
+                if (autoTimer) clearInterval(autoTimer);
+                stepIdx = -1;
+                dfsBtn.disabled = true; bfsBtn.disabled = true;
+                autoTimer = setInterval(function() {
+                    stepIdx++;
+                    if (stepIdx >= steps.length) {
+                        clearInterval(autoTimer);
+                        dfsBtn.disabled = false; bfsBtn.disabled = false;
+                        showResult();
+                        return;
+                    }
+                    var s = steps[stepIdx];
+                    renderCmpGraph(s);
+                    counterEl.textContent = (stepIdx + 1) + ' / ' + steps.length;
+                    msgEl.textContent = s.desc;
+                }, 600);
+            }
+
+            function reset() {
+                if (autoTimer) clearInterval(autoTimer);
+                steps = []; stepIdx = -1; mode = '';
+                dfsResult = null; bfsResult = null;
+                dsLabel.textContent = '자료구조';
+                resultEl.style.display = 'none';
+                renderCmpGraph(null);
+                counterEl.textContent = '';
+                msgEl.textContent = '그래프: 1-2, 1-3, 2-4, 3-5, 4-6. "DFS로 탐색" 또는 "BFS로 탐색" 버튼을 눌러 같은 그래프에서 탐색 순서를 비교하세요!';
+                dfsBtn.disabled = false; bfsBtn.disabled = false;
+            }
+
+            dfsBtn.addEventListener('click', function() { buildDfsSteps(); runAuto(); });
+            bfsBtn.addEventListener('click', function() { buildBfsSteps(); runAuto(); });
+            resetBtn.addEventListener('click', reset);
             reset();
         })();
 
@@ -2511,8 +2693,8 @@ var graphTopic = {
                     <li>1 ≤ 연결 수 ≤ 100 × 99 / 2</li>
                 </ul>`,
             hints: [
-                { title: '처음 떠오르는 방법', content: '1번 컴퓨터에서 바이러스가 퍼지니까... 1번과 연결된 컴퓨터를 찾고, 그 컴퓨터와 연결된 컴퓨터도 찾고... 이걸 반복하면 되지 않을까?<br><br>맞아요! <strong>"연결된 모든 컴퓨터를 찾는 것"</strong>이 핵심입니다. 이런 문제를 <strong>그래프 탐색</strong>이라고 해요.' },
-                { title: '근데 어떻게 빠짐없이 찾지?', content: '연결된 컴퓨터를 하나씩 따라가다 보면 빠뜨리거나 같은 곳을 두 번 방문할 수 있어요.<br><br>이걸 체계적으로 하는 방법이 <strong>BFS(너비 우선 탐색)</strong>와 <strong>DFS(깊이 우선 탐색)</strong>입니다!<br>둘 다 <strong>visited 배열</strong>로 이미 방문한 곳을 체크하면 중복 방문을 막을 수 있어요.' },
+                { title: '처음 떠오르는 방법', content: '1번 컴퓨터에서 바이러스가 퍼지니까... 1번과 연결된 컴퓨터를 찾고, 그 컴퓨터와 연결된 컴퓨터도 찾고... 이걸 반복하면 되지 않을까?<br><br>맞아요! <strong>"연결된 모든 컴퓨터를 찾는 것"</strong>이 핵심입니다. 이런 문제를 <strong>그래프 탐색</strong>이라고 해요.<br><br><div style="display:flex;gap:8px;align-items:center;justify-content:center;padding:10px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);flex-wrap:wrap;"><div style="width:36px;height:36px;border-radius:50%;background:var(--red);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">1</div><span style="color:var(--text2);font-size:0.9rem;">→</span><div style="width:36px;height:36px;border-radius:50%;background:var(--yellow);color:#333;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">2</div><span style="color:var(--text2);font-size:0.9rem;">→</span><div style="width:36px;height:36px;border-radius:50%;background:var(--yellow);color:#333;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">3</div><span style="color:var(--text2);font-size:0.9rem;">→</span><div style="width:36px;height:36px;border-radius:50%;background:var(--yellow);color:#333;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;">5</div><span style="color:var(--text3);font-size:0.8rem;margin-left:8px;">감염 전파!</span></div>' },
+                { title: '근데 어떻게 빠짐없이 찾지?', content: '연결된 컴퓨터를 하나씩 따라가다 보면 빠뜨리거나 같은 곳을 두 번 방문할 수 있어요.<br><br>이걸 체계적으로 하는 방법이 <strong>BFS(너비 우선 탐색)</strong>와 <strong>DFS(깊이 우선 탐색)</strong>입니다!<br>둘 다 <strong>visited 배열</strong>로 이미 방문한 곳을 체크하면 중복 방문을 막을 수 있어요.<br><br><div style="display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><span style="font-weight:600;color:var(--text);">visited:</span><span style="padding:3px 10px;background:var(--green);color:white;border-radius:4px;">T</span><span style="padding:3px 10px;background:var(--green);color:white;border-radius:4px;">T</span><span style="padding:3px 10px;background:var(--bg2);color:var(--text2);border-radius:4px;">F</span><span style="padding:3px 10px;background:var(--green);color:white;border-radius:4px;">T</span><span style="padding:3px 10px;background:var(--bg2);color:var(--text2);border-radius:4px;">F</span><span style="color:var(--text3);margin-left:6px;">← 방문한 곳 체크!</span></div>' },
                 { title: '이렇게 하면 어떨까?', content: '1번 컴퓨터를 큐에 넣고 BFS를 시작합니다:<br>1. 큐에서 컴퓨터를 꺼낸다<br>2. 그 컴퓨터와 연결된 이웃 중 방문하지 않은 것을 큐에 넣는다<br>3. 큐가 빌 때까지 반복!<br><br>방문한 컴퓨터 수에서 자기 자신(1번)을 빼면 정답이에요.' },
                 { title: '구현 팁', content: '양방향 연결이니까 인접 리스트에 양쪽 다 추가해야 해요:<br><span class="lang-py">Python: <code>graph[u].append(v)</code>와 <code>graph[v].append(u)</code> 둘 다! BFS에는 <code>deque</code>를 사용합니다.</span><span class="lang-cpp">C++: <code>graph[u].push_back(v)</code>와 <code>graph[v].push_back(u)</code> 둘 다! BFS에는 <code>queue&lt;int&gt;</code>를 사용합니다.</span>' }
             ],
@@ -2635,8 +2817,8 @@ int main() {
                     <li>1 ≤ R ≤ N</li>
                 </ul>`,
             hints: [
-                { title: '처음 떠오르는 방법', content: '시작 정점 R에서 DFS를 돌리면서, 방문할 때마다 순서를 1, 2, 3... 이렇게 매기면 되겠다!<br><br>맞아요. <code>order[v]</code> 배열에 각 정점의 방문 순서를 기록하면 됩니다. 방문하지 못한 정점은 0을 출력하면 되고요.' },
-                { title: '근데 이러면 문제가 있어', content: '문제에서 인접 정점을 <strong>오름차순</strong>으로 방문하라고 했어요. DFS를 그냥 돌리면 인접 리스트에 들어온 순서대로 방문하게 되니까, 정렬을 안 하면 순서가 달라질 수 있어요!' },
+                { title: '처음 떠오르는 방법', content: '시작 정점 R에서 DFS를 돌리면서, 방문할 때마다 순서를 1, 2, 3... 이렇게 매기면 되겠다!<br><br>맞아요. <code>order[v]</code> 배열에 각 정점의 방문 순서를 기록하면 됩니다. 방문하지 못한 정점은 0을 출력하면 되고요.<br><br><div style="display:flex;gap:4px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><span style="font-weight:600;color:var(--text);">order:</span><span style="padding:3px 8px;background:var(--green);color:white;border-radius:4px;">1</span><span style="padding:3px 8px;background:var(--green);color:white;border-radius:4px;">2</span><span style="padding:3px 8px;background:var(--green);color:white;border-radius:4px;">3</span><span style="padding:3px 8px;background:var(--green);color:white;border-radius:4px;">4</span><span style="padding:3px 8px;background:var(--bg2);color:var(--text2);border-radius:4px;">0</span><span style="color:var(--text3);margin-left:4px;">← 5번은 미방문</span></div>' },
+                { title: '근데 이러면 문제가 있어', content: '문제에서 인접 정점을 <strong>오름차순</strong>으로 방문하라고 했어요. DFS를 그냥 돌리면 인접 리스트에 들어온 순서대로 방문하게 되니까, 정렬을 안 하면 순서가 달라질 수 있어요!<br><br><div style="display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><div><span style="color:var(--red);">정렬 전:</span> [4, 2, 3]</div><span style="font-size:1.1rem;">→</span><div><span style="color:var(--green);">정렬 후:</span> [2, 3, 4]</div></div>' },
                 { title: '이렇게 하면 어떨까?', content: 'DFS 전에 각 정점의 인접 리스트를 <strong>오름차순 정렬</strong>하면 됩니다!<br><br>그러면 DFS가 자연스럽게 작은 번호부터 방문해요:<br><span class="lang-py">Python: <code>graph[i].sort()</code>로 정렬 후, 재귀 DFS에서 <code>global cnt</code>로 순서를 매깁니다.</span><span class="lang-cpp">C++: <code>sort(graph[i].begin(), graph[i].end())</code>로 정렬 후, 전역 변수 <code>cnt</code>로 순서를 매깁니다.</span>' },
                 { title: '주의할 점', content: '정점 수가 최대 100,000이므로 <span class="lang-py">Python에서는 <code>sys.setrecursionlimit(200000)</code>으로 재귀 한도를 늘려야 합니다!</span><span class="lang-cpp">C++에서는 기본 스택 크기로 충분하지만, 전역 배열을 사용하면 더 안전합니다.</span>' }
             ],
@@ -2756,7 +2938,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '24479번(깊이 우선 탐색 1)을 이미 풀었다면, 같은 방식으로 DFS를 돌리면 될 것 같아요. 방문 순서를 <code>order</code> 배열에 기록하는 건 동일하고요.' },
-                { title: '근데 이러면 문제가 있어', content: '이번에는 인접 정점을 <strong>내림차순</strong>으로 방문해야 해요! 24479번처럼 오름차순으로 정렬하면 방문 순서가 달라집니다.<br><br>결국 정렬 방향 <strong>한 줄</strong>만 바꾸면 되는 문제예요.' },
+                { title: '근데 이러면 문제가 있어', content: '이번에는 인접 정점을 <strong>내림차순</strong>으로 방문해야 해요! 24479번처럼 오름차순으로 정렬하면 방문 순서가 달라집니다.<br><br>결국 정렬 방향 <strong>한 줄</strong>만 바꾸면 되는 문제예요.<br><br><div style="display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><div><span style="color:var(--text2);">오름차순:</span> [2, 3, 4]</div><span style="font-size:1.1rem;">→</span><div><span style="color:var(--accent);font-weight:600;">내림차순:</span> [4, 3, 2]</div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '24479번 코드에서 정렬 부분만 내림차순으로 바꿉니다:<br><span class="lang-py">Python: <code>graph[i].sort(reverse=True)</code></span><span class="lang-cpp">C++: <code>sort(graph[i].rbegin(), graph[i].rend())</code></span><br><br>나머지 DFS 로직은 완전히 동일합니다!' }
             ],
             templates: {
@@ -2874,7 +3056,7 @@ int main() {
                     <li>1 ≤ R ≤ N</li>
                 </ul>`,
             hints: [
-                { title: '처음 떠오르는 방법', content: '24479번처럼 DFS로... 잠깐, 이번엔 <strong>BFS(너비 우선 탐색)</strong>로 방문 순서를 구해야 해요!<br><br>BFS는 시작 정점에서 가까운 정점부터 차례로 방문하는 방식입니다. 큐(queue)를 사용해요.' },
+                { title: '처음 떠오르는 방법', content: '24479번처럼 DFS로... 잠깐, 이번엔 <strong>BFS(너비 우선 탐색)</strong>로 방문 순서를 구해야 해요!<br><br>BFS는 시작 정점에서 가까운 정점부터 차례로 방문하는 방식입니다. 큐(queue)를 사용해요.<br><br><div style="display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><span style="font-weight:600;color:var(--text);">큐:</span><span style="padding:3px 10px;background:#00b894;color:white;border-radius:4px;">R</span><span style="color:var(--text3);">→</span><span style="padding:3px 10px;background:var(--bg2);color:var(--text);border-radius:4px;">2</span><span style="padding:3px 10px;background:var(--bg2);color:var(--text);border-radius:4px;">3</span><span style="color:var(--text3);margin-left:4px;">← 가까운 순서대로!</span></div>' },
                 { title: '근데 순서가 중요해', content: '문제에서 인접 정점을 <strong>오름차순</strong>으로 방문하라고 했으니, DFS 문제와 마찬가지로 인접 리스트를 먼저 정렬해야 합니다. 정렬 안 하면 순서가 달라져요!' },
                 { title: '이렇게 하면 어떨까?', content: '1. 인접 리스트를 오름차순 정렬<br>2. 시작 정점 R을 큐에 넣고 <code>order[R] = 1</code><br>3. 큐에서 꺼낸 정점의 이웃 중 미방문 정점을 순서대로 큐에 넣으며 방문 순서를 기록<br><br><span class="lang-py">Python: <code>deque</code>로 BFS, <code>popleft()</code>로 큐에서 꺼냅니다.</span><span class="lang-cpp">C++: <code>queue&lt;int&gt;</code>로 BFS, <code>q.front(); q.pop();</code>으로 큐에서 꺼냅니다.</span>' }
             ],
@@ -3007,7 +3189,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '24444번(너비 우선 탐색 1)을 풀었다면, 같은 BFS 로직을 그대로 쓰면 될 것 같아요. 큐에서 꺼내고 이웃을 넣고...' },
-                { title: '근데 이러면 문제가 있어', content: '이번에는 인접 정점을 <strong>내림차순</strong>으로 방문해야 합니다! 오름차순 정렬을 그대로 쓰면 방문 순서가 완전히 달라져요.<br><br>24444번 코드에서 딱 <strong>한 줄</strong>만 바꾸면 됩니다.' },
+                { title: '근데 이러면 문제가 있어', content: '이번에는 인접 정점을 <strong>내림차순</strong>으로 방문해야 합니다! 오름차순 정렬을 그대로 쓰면 방문 순서가 완전히 달라져요.<br><br>24444번 코드에서 딱 <strong>한 줄</strong>만 바꾸면 됩니다.<br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><span class="lang-py"><code>graph[i].sort()</code> → <code style="color:var(--accent);font-weight:600;">graph[i].sort(reverse=True)</code></span><span class="lang-cpp"><code>sort(g.begin(), g.end())</code> → <code style="color:var(--accent);font-weight:600;">sort(g.rbegin(), g.rend())</code></span></div>' },
                 { title: '이렇게 하면 어떨까?', content: '정렬 방향만 내림차순으로 변경하면 끝!<br><span class="lang-py">Python: <code>graph[i].sort(reverse=True)</code></span><span class="lang-cpp">C++: <code>sort(graph[i].rbegin(), graph[i].rend())</code></span><br><br>BFS 로직 자체는 24444번과 완전히 동일합니다.' }
             ],
             templates: {
@@ -3148,7 +3330,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: 'DFS 결과와 BFS 결과를 각각 출력하라고 하니까, 앞에서 배운 DFS와 BFS를 둘 다 구현하면 되겠다!<br><br>인접 리스트를 만들고, 정점 번호가 작은 것부터 방문하니까 오름차순 정렬도 해야겠네요.' },
-                { title: '근데 이러면 문제가 있어', content: 'DFS를 먼저 돌리면 visited 배열이 전부 True로 채워지잖아요. 그 상태에서 BFS를 돌리면 아무 곳도 방문 못 해요!<br><br>DFS와 BFS에서 <strong>별도의 visited 배열</strong>을 사용하거나, DFS 후에 visited를 초기화해야 합니다.' },
+                { title: '근데 이러면 문제가 있어', content: 'DFS를 먼저 돌리면 visited 배열이 전부 True로 채워지잖아요. 그 상태에서 BFS를 돌리면 아무 곳도 방문 못 해요!<br><br>DFS와 BFS에서 <strong>별도의 visited 배열</strong>을 사용하거나, DFS 후에 visited를 초기화해야 합니다.<br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><div style="margin-bottom:4px;"><span style="color:var(--red);">DFS 후:</span> visited = <span style="padding:2px 6px;background:var(--green);color:white;border-radius:3px;font-size:0.8rem;">T T T T T</span> ← 전부 True!</div><div><span style="color:var(--accent);">해결:</span> visited를 <strong>초기화</strong>하거나 <strong>별도 배열</strong> 사용</div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '1. 인접 리스트를 오름차순 정렬<br>2. DFS(재귀)를 수행하며 방문 순서를 기록<br>3. visited를 초기화하고 BFS(큐)를 수행하며 방문 순서를 기록<br>4. 각 결과를 공백으로 구분하여 출력<br><br><span class="lang-py">Python: DFS는 재귀 함수, BFS는 <code>deque</code>로 구현합니다.</span><span class="lang-cpp">C++: DFS는 재귀 함수, BFS는 <code>queue</code>로 구현하고, <code>memset(vis, false, sizeof(vis))</code>로 초기화합니다.</span>' }
             ],
             templates: {
@@ -3298,7 +3480,7 @@ int main() {
                     <li>1 ≤ K ≤ 2,500</li>
                 </ul>`,
             hints: [
-                { title: '처음 떠오르는 방법', content: '배추밭을 쭉 훑으면서 배추가 있는 칸(1)을 만나면, 거기서부터 상하좌우로 연결된 배추를 전부 찾아야 해요.<br><br>이건 <strong>"연결된 덩어리가 몇 개인가?"</strong>를 묻는 문제네요! 한 덩어리에 지렁이 한 마리면 되니까요.' },
+                { title: '처음 떠오르는 방법', content: '배추밭을 쭉 훑으면서 배추가 있는 칸(1)을 만나면, 거기서부터 상하좌우로 연결된 배추를 전부 찾아야 해요.<br><br>이건 <strong>"연결된 덩어리가 몇 개인가?"</strong>를 묻는 문제네요! 한 덩어리에 지렁이 한 마리면 되니까요.<br><br><div style="display:inline-grid;grid-template-columns:repeat(5,28px);gap:2px;padding:8px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"><span style="text-align:center;padding:4px;background:var(--green);color:white;border-radius:3px;font-size:0.75rem;">1</span><span style="text-align:center;padding:4px;background:var(--green);color:white;border-radius:3px;font-size:0.75rem;">1</span><span style="text-align:center;padding:4px;background:var(--bg2);color:var(--text3);border-radius:3px;font-size:0.75rem;">0</span><span style="text-align:center;padding:4px;background:var(--accent);color:white;border-radius:3px;font-size:0.75rem;">1</span><span style="text-align:center;padding:4px;background:var(--accent);color:white;border-radius:3px;font-size:0.75rem;">1</span><span style="text-align:center;padding:4px;background:var(--bg2);color:var(--text3);border-radius:3px;font-size:0.75rem;">0</span><span style="text-align:center;padding:4px;background:var(--bg2);color:var(--text3);border-radius:3px;font-size:0.75rem;">0</span><span style="text-align:center;padding:4px;background:var(--bg2);color:var(--text3);border-radius:3px;font-size:0.75rem;">0</span><span style="text-align:center;padding:4px;background:var(--accent);color:white;border-radius:3px;font-size:0.75rem;">1</span><span style="text-align:center;padding:4px;background:var(--bg2);color:var(--text3);border-radius:3px;font-size:0.75rem;">0</span></div> <span style="font-size:0.82rem;color:var(--text2);">← 2개 덩어리 = 지렁이 2마리</span>' },
                 { title: '근데 어떻게 덩어리를 세지?', content: '격자를 (0,0)부터 쭉 돌면서 배추(1)를 만날 때마다, 그 배추와 연결된 모든 배추를 BFS/DFS로 방문 처리합니다.<br><br>BFS/DFS를 <strong>새로 시작한 횟수</strong> = 덩어리(연결 요소) 수 = 필요한 지렁이 수!' },
                 { title: '이렇게 하면 어떨까?', content: '1. 격자를 순회하며 방문하지 않은 배추(1)를 발견<br>2. 그 칸에서 BFS 시작 → 연결된 배추 모두 방문 처리<br>3. count += 1<br>4. 격자 전체를 다 돌 때까지 반복<br><br>4방향 이동: <code>dx = [0, 0, 1, -1]</code>, <code>dy = [1, -1, 0, 0]</code>' },
                 { title: '주의할 점', content: '테스트 케이스가 여러 개이므로 매번 <strong>visited 배열을 초기화</strong>해야 해요!<br><br>또한 좌표가 (x, y) 형태로 주어지므로 <code>grid[y][x] = 1</code>로 저장해야 합니다. 행(row)이 y, 열(column)이 x인 거 헷갈리지 마세요!' }
@@ -3438,7 +3620,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '1012번(유기농 배추)처럼 연결된 집 덩어리(단지)를 찾으면 되겠다! 격자를 훑으면서 집(1)을 만나면 BFS/DFS로 연결된 집을 전부 탐색하고...' },
-                { title: '근데 이러면 문제가 있어', content: '1012번과 달리 이번에는 단지의 <strong>개수</strong>뿐만 아니라, 각 단지에 속하는 <strong>집의 수</strong>도 구해야 해요!<br><br>그리고 결과를 <strong>오름차순 정렬</strong>해서 출력해야 합니다.' },
+                { title: '근데 이러면 문제가 있어', content: '1012번과 달리 이번에는 단지의 <strong>개수</strong>뿐만 아니라, 각 단지에 속하는 <strong>집의 수</strong>도 구해야 해요!<br><br>그리고 결과를 <strong>오름차순 정렬</strong>해서 출력해야 합니다.<br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><div style="margin-bottom:4px;">BFS 탐색 중 방문 칸 수를 <code>cnt</code>로 세기:</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><span style="padding:3px 10px;background:var(--accent);color:white;border-radius:4px;">단지1: 7</span><span style="padding:3px 10px;background:#00b894;color:white;border-radius:4px;">단지2: 8</span><span style="padding:3px 10px;background:var(--yellow);color:#333;border-radius:4px;">단지3: 9</span><span style="color:var(--text3);">→ 정렬: 7, 8, 9</span></div></div>' },
                 { title: '이렇게 하면 어떨까?', content: 'BFS를 돌릴 때 방문한 칸의 수를 세면 됩니다:<br>1. 격자 순회 중 방문하지 않은 집(1) 발견<br>2. BFS 시작, 방문하는 칸마다 <code>cnt += 1</code><br>3. BFS 끝나면 <code>sizes.append(cnt)</code><br>4. 모든 탐색 후 <code>sizes</code>를 오름차순 정렬하여 출력<br><br><span class="lang-py">Python: <code>sizes.sort()</code>로 정렬 후 출력</span><span class="lang-cpp">C++: <code>sort(sizes.begin(), sizes.end())</code>로 정렬 후 출력</span>' }
             ],
             templates: {
@@ -3576,7 +3758,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '미로에서 (1,1)부터 (N,M)까지 가는 <strong>최단 경로</strong>를 찾아야 해요. DFS로 모든 경로를 탐색하고 그중 가장 짧은 걸 고르면 되지 않을까?' },
-                { title: '근데 이러면 문제가 있어', content: 'DFS는 모든 가능한 경로를 탐색하니까 시간이 오래 걸려요. 미로가 100x100이면 경로 수가 엄청나게 많아질 수 있어요!<br><br>최단 거리를 구할 때는 <strong>BFS</strong>가 훨씬 효율적입니다. BFS는 가까운 곳부터 탐색하니까, 도착점에 처음 도달했을 때가 바로 최단 거리!' },
+                { title: '근데 이러면 문제가 있어', content: 'DFS는 모든 가능한 경로를 탐색하니까 시간이 오래 걸려요. 미로가 100x100이면 경로 수가 엄청나게 많아질 수 있어요!<br><br>최단 거리를 구할 때는 <strong>BFS</strong>가 훨씬 효율적입니다. BFS는 가까운 곳부터 탐색하니까, 도착점에 처음 도달했을 때가 바로 최단 거리!<br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><span style="color:var(--red);">DFS:</span> <span style="color:var(--text2);">모든 경로 탐색 → 느림</span></div><div style="display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap;"><span style="color:var(--green);font-weight:600;">BFS:</span> <span style="color:var(--text);">가까운 곳부터 → 처음 도달 = 최단!</span></div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '(0,0)에서 BFS를 시작하고, 이동할 때마다 거리를 +1씩 기록합니다:<br><code>dist[nr][nc] = dist[r][c] + 1</code><br><br>시작칸도 포함해서 세니까 <code>dist[0][0] = 1</code>로 시작하고, <code>dist[N-1][M-1]</code>이 정답입니다.' },
                 { title: '구현 팁', content: '입력이 공백 없이 붙어 있으므로 한 줄씩 읽어서 문자 단위로 파싱해야 해요:<br><span class="lang-py">Python: <code>list(map(int, input().strip()))</code>으로 각 자릿수를 리스트로 변환</span><span class="lang-cpp">C++: <code>char s[110]; scanf("%s", s);</code>로 문자열로 읽은 뒤 <code>s[j] - \'0\'</code>으로 숫자 변환</span>' }
             ],
@@ -3686,8 +3868,8 @@ int main() {
                     <li>0 ≤ K ≤ 100,000</li>
                 </ul>`,
             hints: [
-                { title: '처음 떠오르는 방법', content: '수빈이는 현재 위치 N에서 X-1, X+1, 2*X 세 가지로 이동할 수 있어요. 모든 가능한 이동을 시도해서 동생 K에 도달하면 되지 않을까?<br><br>근데 이건 어디서 많이 본 것 같지 않아요? 🤔' },
-                { title: '근데 이러면 문제가 있어', content: '무작정 모든 이동을 시도하면 같은 위치를 계속 왔다 갔다 할 수 있어요. 그리고 <strong>가장 빠른</strong> 시간을 구해야 하니까...<br><br>잠깐, 이건 <strong>그래프 문제</strong>로 바꿀 수 있어요! 각 좌표를 <strong>정점</strong>, 이동(X-1, X+1, 2X)을 <strong>간선</strong>으로 생각하면 BFS로 최단 거리를 구할 수 있습니다!' },
+                { title: '처음 떠오르는 방법', content: '수빈이는 현재 위치 N에서 X-1, X+1, 2*X 세 가지로 이동할 수 있어요. 모든 가능한 이동을 시도해서 동생 K에 도달하면 되지 않을까?<br><br>근데 이건 어디서 많이 본 것 같지 않아요?' },
+                { title: '근데 이러면 문제가 있어', content: '무작정 모든 이동을 시도하면 같은 위치를 계속 왔다 갔다 할 수 있어요. 그리고 <strong>가장 빠른</strong> 시간을 구해야 하니까...<br><br>잠깐, 이건 <strong>그래프 문제</strong>로 바꿀 수 있어요! 각 좌표를 <strong>정점</strong>, 이동(X-1, X+1, 2X)을 <strong>간선</strong>으로 생각하면 BFS로 최단 거리를 구할 수 있습니다!<br><br><div style="display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><div style="width:30px;height:30px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;">5</div><span style="color:var(--text3);">→</span><div style="padding:2px 8px;background:var(--bg2);border-radius:4px;font-size:0.8rem;">-1</div><div style="padding:2px 8px;background:var(--bg2);border-radius:4px;font-size:0.8rem;">+1</div><div style="padding:2px 8px;background:var(--yellow);color:#333;border-radius:4px;font-size:0.8rem;font-weight:600;">x2</div><span style="color:var(--text3);margin-left:4px;">← 3가지 이동 = 3개 간선</span></div>' },
                 { title: '이렇게 하면 어떨까?', content: 'N에서 BFS를 시작하고, 각 위치에서 세 방향으로 이동합니다:<br>1. X-1 (뒤로 걷기)<br>2. X+1 (앞으로 걷기)<br>3. 2*X (순간이동)<br><br>BFS이니까 K에 처음 도달했을 때가 바로 최소 시간입니다!<br>예: 5 → 10 → 9 → 18 → 17 (4초)' },
                 { title: '주의할 점', content: '위치 범위가 0~100,000이므로 <code>dist</code> 배열 크기를 100,001로 잡아야 해요.<br>이동한 위치가 0 미만이거나 100,000을 초과하면 무시해야 합니다!<br><br><span class="lang-py">Python: <code>for nx in (x-1, x+1, x*2):</code>로 세 방향 이동</span><span class="lang-cpp">C++: <code>for (int nx : {x-1, x+1, 2*x}):</code>로 세 방향 이동</span>' }
             ],
@@ -3795,7 +3977,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '나이트가 목표 칸까지 가는 <strong>최소 이동 횟수</strong>를 구해야 해요. 나이트는 L자 모양으로 8방향 이동이 가능하죠.<br><br>이전 문제(숨바꼭질)처럼 <strong>최단 거리 = BFS</strong>를 떠올려 봅시다!' },
-                { title: '근데 이러면 문제가 있어', content: '미로 탐색은 상하좌우 4방향이었는데, 나이트는 <strong>8방향</strong>이에요. 이 8방향을 어떻게 표현하지?<br><br>나이트는 가로 2 + 세로 1, 또는 가로 1 + 세로 2로 이동하니까 dx/dy 배열로 8가지 조합을 만들면 됩니다!' },
+                { title: '근데 이러면 문제가 있어', content: '미로 탐색은 상하좌우 4방향이었는데, 나이트는 <strong>8방향</strong>이에요. 이 8방향을 어떻게 표현하지?<br><br>나이트는 가로 2 + 세로 1, 또는 가로 1 + 세로 2로 이동하니까 dx/dy 배열로 8가지 조합을 만들면 됩니다!<br><br><div style="display:inline-grid;grid-template-columns:repeat(5,24px);gap:2px;padding:6px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);"><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--accent);color:white;font-size:0.7rem;border-radius:3px;font-weight:700;">N</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span><span style="text-align:center;padding:2px;background:var(--yellow);color:#333;font-size:0.7rem;border-radius:3px;">x</span><span style="text-align:center;padding:2px;font-size:0.7rem;border-radius:3px;"></span></div> <span style="font-size:0.82rem;color:var(--text2);">← 나이트 8방향</span>' },
                 { title: '이렇게 하면 어떨까?', content: '나이트의 8방향 이동:<br><code>dx = [-2, -2, -1, -1, 1, 1, 2, 2]</code><br><code>dy = [-1, 1, -2, 2, -2, 2, -1, 1]</code><br><br>시작칸에서 BFS를 돌리면, 목표칸에 처음 도달했을 때가 최소 이동 횟수입니다. 미로 탐색과 동일한 패턴이에요!' },
                 { title: '주의할 점', content: '시작 위치와 도착 위치가 같으면 0을 바로 출력해야 해요!<br><br>테스트 케이스가 여러 개이므로, 매번 <code>dist</code> 배열을 새로 초기화해야 합니다.' }
             ],
@@ -3935,7 +4117,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '익은 토마토 하나를 골라서 BFS를 돌리면... 잠깐, 익은 토마토가 <strong>여러 개</strong>일 수 있잖아! 각 토마토에서 하나씩 BFS를 돌려야 하나?' },
-                { title: '근데 이러면 문제가 있어', content: '익은 토마토마다 따로 BFS를 돌리면 비효율적이에요. 그리고 문제를 자세히 보면, 익은 토마토들이 <strong>동시에</strong> 주변을 익히잖아요!<br><br>즉, 하루에 모든 익은 토마토의 인접 칸이 동시에 익어야 합니다. 하나씩 순서대로 퍼뜨리면 답이 달라져요!' },
+                { title: '근데 이러면 문제가 있어', content: '익은 토마토마다 따로 BFS를 돌리면 비효율적이에요. 그리고 문제를 자세히 보면, 익은 토마토들이 <strong>동시에</strong> 주변을 익히잖아요!<br><br>즉, 하루에 모든 익은 토마토의 인접 칸이 동시에 익어야 합니다. 하나씩 순서대로 퍼뜨리면 답이 달라져요!<br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><span style="font-weight:600;">다중 시작점 BFS:</span><span style="padding:3px 8px;background:var(--red);color:white;border-radius:4px;">토마토A</span><span style="padding:3px 8px;background:var(--red);color:white;border-radius:4px;">토마토B</span><span style="color:var(--text3);">→ 큐에 동시에!</span></div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '<strong>다중 시작점 BFS</strong>를 사용합니다! 처음부터 모든 익은 토마토(1)를 큐에 넣고 BFS를 한 번만 돌립니다:<br><br>1. 격자를 읽으면서 값이 1인 칸을 전부 큐에 넣기 (dist = 0)<br>2. BFS: 인접한 안 익은 토마토(0)를 익히며 거리 기록<br>3. BFS 후 아직 0인 칸이 있으면 -1, 없으면 최대 거리가 정답' },
                 { title: '왜 이게 맞을까?', content: 'BFS는 거리가 가까운 칸부터 처리하니까, 모든 시작점을 동시에 넣으면 자연스럽게 "동시에 퍼지는" 효과가 나요.<br><br>시간 복잡도는 O(N*M) — 각 칸을 딱 한 번만 방문하니까 매우 효율적입니다!' }
             ],
@@ -4077,7 +4259,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '7576번(토마토 2D)을 풀었다면, 같은 다중 시작점 BFS를 쓰면 될 것 같아요. 익은 토마토를 전부 큐에 넣고 BFS를 돌리면...' },
-                { title: '근데 이러면 문제가 있어', content: '이번에는 상자가 <strong>여러 층</strong>으로 쌓여 있어요! 2D에서는 상하좌우 4방향이었는데, 3D에서는 <strong>위층/아래층</strong>까지 합쳐서 <strong>6방향</strong>으로 확장해야 합니다.<br><br>배열도 2차원에서 3차원으로 바뀌어요: <code>grid[h][r][c]</code>' },
+                { title: '근데 이러면 문제가 있어', content: '이번에는 상자가 <strong>여러 층</strong>으로 쌓여 있어요! 2D에서는 상하좌우 4방향이었는데, 3D에서는 <strong>위층/아래층</strong>까지 합쳐서 <strong>6방향</strong>으로 확장해야 합니다.<br><br>배열도 2차원에서 3차원으로 바뀌어요: <code>grid[h][r][c]</code><br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><span style="color:var(--text2);">2D: 4방향</span> <span style="padding:2px 8px;background:var(--bg2);border-radius:4px;">상하좌우</span></div><div style="display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap;"><span style="color:var(--accent);font-weight:600;">3D: 6방향</span> <span style="padding:2px 8px;background:var(--bg2);border-radius:4px;">상하좌우</span><span style="padding:2px 8px;background:var(--yellow);color:#333;border-radius:4px;font-weight:600;">+ 위층/아래층</span></div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '7576번 코드에서 두 가지만 바꿉니다:<br><br>1. 방향 배열에 위/아래 추가:<br><code>dh = [0,0,0,0,1,-1]</code> (위층 +1, 아래층 -1)<br><code>dr = [0,0,1,-1,0,0]</code><br><code>dc = [1,-1,0,0,0,0]</code><br><br>2. 큐에 <code>(h, r, c)</code> 3개 좌표를 넣기<br><br>나머지 다중 시작점 BFS 로직은 7576번과 완전히 동일합니다!' }
             ],
             templates: {
@@ -4230,7 +4412,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '1번 칸에서 주사위를 굴려서 100번 칸에 가야 해요. 주사위로 1~6칸 이동하는데, 사다리를 타면 위로 올라가고 뱀을 만나면 아래로 내려가고...<br><br>최소 주사위 굴림 횟수를 구해야 하니까 모든 경우를 다 해봐야 하나?' },
-                { title: '근데 이러면 문제가 있어', content: '무작정 모든 경우를 탐색하면 경우의 수가 너무 많아요. 잠깐, 이 문제를 <strong>그래프</strong>로 볼 수 있지 않을까?<br><br>칸 번호(1~100)를 <strong>정점</strong>, 주사위 이동(1~6)을 <strong>간선</strong>으로 생각하면, <strong>최단 거리 = BFS</strong>로 풀 수 있어요!' },
+                { title: '근데 이러면 문제가 있어', content: '무작정 모든 경우를 탐색하면 경우의 수가 너무 많아요. 잠깐, 이 문제를 <strong>그래프</strong>로 볼 수 있지 않을까?<br><br>칸 번호(1~100)를 <strong>정점</strong>, 주사위 이동(1~6)을 <strong>간선</strong>으로 생각하면, <strong>최단 거리 = BFS</strong>로 풀 수 있어요!<br><br><div style="display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><div style="padding:3px 8px;background:var(--accent);color:white;border-radius:4px;">칸3</div><span style="color:var(--text3);">→ 주사위</span><div style="padding:3px 8px;background:var(--bg2);border-radius:4px;">칸7</div><span style="color:var(--text3);">→ 사다리!</span><div style="padding:3px 8px;background:var(--green);color:white;border-radius:4px;">칸32</div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '1번 칸에서 BFS를 시작합니다:<br>1. 현재 칸에서 주사위 1~6으로 다음 칸 계산<br>2. 다음 칸에 사다리/뱀이 있으면 → 목적지로 <strong>강제 이동</strong><br>3. 아직 방문하지 않은 칸이면 큐에 넣기<br>4. 100번 칸에 도달하면 거리 출력!<br><br><span class="lang-py">Python: 사다리/뱀을 <code>dict</code>에 저장: <code>teleport[x] = y</code></span><span class="lang-cpp">C++: 배열에 저장: <code>teleport[x] = y</code> (0이면 사다리/뱀 없음)</span>' }
             ],
             templates: {
@@ -4353,7 +4535,7 @@ NO</pre></div>
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '이분 그래프란 정점을 두 그룹으로 나눌 수 있고, 같은 그룹끼리는 간선이 없는 그래프예요.<br><br>모든 가능한 2가지 분할을 시도해 보면 되지 않을까? 정점이 V개면 2^V가지 경우...' },
-                { title: '근데 이러면 문제가 있어', content: 'V가 최대 20,000이면 2^20000가지?! 이건 절대 불가능해요.<br><br>다르게 생각해 봅시다. 이분 그래프는 정점을 <strong>두 가지 색</strong>으로 칠할 수 있는 그래프예요. 인접한 정점끼리 항상 다른 색이면 이분 그래프!' },
+                { title: '근데 이러면 문제가 있어', content: 'V가 최대 20,000이면 2^20000가지?! 이건 절대 불가능해요.<br><br>다르게 생각해 봅시다. 이분 그래프는 정점을 <strong>두 가지 색</strong>으로 칠할 수 있는 그래프예요. 인접한 정점끼리 항상 다른 색이면 이분 그래프!<br><br><div style="display:flex;gap:6px;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;flex-wrap:wrap;"><div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;">A</div><span style="color:var(--text3);">—</span><div style="width:28px;height:28px;border-radius:50%;background:#00b894;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;">B</div><span style="color:var(--text3);">—</span><div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;">C</div><span style="color:var(--text3);margin-left:6px;">← 번갈아 칠하기!</span></div>' },
                 { title: '이렇게 하면 어떨까?', content: '<strong>2-coloring BFS</strong>를 사용합니다:<br>1. 시작 정점을 색 0으로 칠하기<br>2. BFS로 이웃을 색 1로, 그 이웃을 색 0으로... 번갈아 칠하기<br>3. 이미 칠해진 이웃의 색이 나와 <strong>같으면</strong> → 이분 그래프가 아님! (NO)<br>4. 충돌 없이 끝나면 → 이분 그래프 (YES)' },
                 { title: '주의할 점', content: '그래프가 <strong>연결 그래프가 아닐 수</strong> 있어요! 즉, 떨어진 컴포넌트가 여러 개일 수 있습니다.<br><br>모든 정점을 순회하면서, 아직 색칠 안 된 정점이 있으면 거기서 새로 BFS를 시작해야 해요.<br>각 테스트 케이스마다 <code>color</code> 배열을 초기화하는 것도 잊지 마세요!' }
             ],
@@ -4495,7 +4677,7 @@ int main() {
                 </ul>`,
             hints: [
                 { title: '처음 떠오르는 방법', content: '(1,1)에서 (N,M)까지 최단 경로를 구해야 해요. 벽을 하나까지 부술 수 있으니까... 일단 벽 안 부수고 BFS, 그다음 벽을 하나씩 부숴보면서 BFS를 반복하면 되지 않을까?' },
-                { title: '근데 이러면 문제가 있어', content: '벽이 엄청 많으면 각 벽을 부술 때마다 BFS를 돌려야 해요. N, M이 최대 1,000이면 격자에 벽이 수십만 개일 수 있으니까, 벽 수 * O(NM) = 시간 초과!<br><br>벽을 부수는 것을 BFS <strong>안에서</strong> 처리할 방법은 없을까?' },
+                { title: '근데 이러면 문제가 있어', content: '벽이 엄청 많으면 각 벽을 부술 때마다 BFS를 돌려야 해요. N, M이 최대 1,000이면 격자에 벽이 수십만 개일 수 있으니까, 벽 수 * O(NM) = 시간 초과!<br><br>벽을 부수는 것을 BFS <strong>안에서</strong> 처리할 방법은 없을까?<br><br><div style="padding:8px 12px;background:var(--bg);border-radius:8px;border:1px solid var(--bg3);font-size:0.85rem;"><div style="margin-bottom:4px;font-weight:600;color:var(--accent);">상태 확장: (r, c, broken)</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><span style="padding:3px 8px;background:var(--bg2);border-radius:4px;">(3,2,0) 벽 안 부숨</span><span style="padding:3px 8px;background:var(--yellow);color:#333;border-radius:4px;">(3,2,1) 벽 부숨</span></div><div style="margin-top:4px;color:var(--text2);">같은 위치라도 다른 상태!</div></div>' },
                 { title: '이렇게 하면 어떨까?', content: '<strong>상태 확장 BFS</strong>를 사용합니다! 위치 (r, c)에 "벽을 부쉈는지 여부"를 추가해서 3차원 상태로 관리해요:<br><br><code>dist[r][c][broken]</code> (broken: 0=아직 안 부숨, 1=이미 부숨)<br><br>이동 규칙:<br>- 빈 칸(0) → 그냥 이동 (broken 유지)<br>- 벽(1) + broken=0 → 벽을 부수고 이동 (broken을 1로 변경)<br>- 벽(1) + broken=1 → 이동 불가 (이미 한 번 부숨)' },
                 { title: '왜 이게 맞을까?', content: '같은 (r, c)라도 <strong>벽을 부쉈느냐 아니냐</strong>에 따라 완전히 다른 상태예요!<br><br>예를 들어, (3, 4)에 벽을 안 부수고 도착한 것과, 벽을 부수고 도착한 것은 앞으로 갈 수 있는 경로가 달라요. 그래서 별도 상태로 관리해야 합니다.<br><br>BFS 큐에 <code>(r, c, broken)</code>을 넣으면, 도착점에 처음 도달했을 때가 최단 거리입니다.' }
             ],
