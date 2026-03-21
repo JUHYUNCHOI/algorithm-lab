@@ -630,6 +630,8 @@ const stringTopic = {
                     <span class="lang-py">Use <code>ord()</code> to convert character → number, and <code>chr()</code> to convert number → character.</span><span class="lang-cpp">Use <code>(int)</code> casting to convert character → number, and <code>(char)</code> casting to convert number → character.</span>
                     <br>
                     <span class="lang-py"><a href="https://docs.python.org/3/library/functions.html#ord" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: ord() ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/explicit_cast" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: Type Casting ↗</a></span>
+                    &nbsp;|&nbsp;
+                    <a href="https://www.asciitable.com/" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Full ASCII Table ↗</a>
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — <span class="lang-py">ord() &amp; chr()</span><span class="lang-cpp">(int) &amp; (char) Casting</span> Conversion</div>
@@ -706,6 +708,101 @@ const stringTopic = {
                     <div class="str-concept-cmp-result" id="str-concept-cmp-result" style="display:none;"></div>
                     <div class="concept-demo-msg" id="str-concept-demo3-msg">👆 Enter two strings and click "Compare" to see the character-by-character comparison!</div>
                 </div>
+            </div>
+
+            <!-- Section 4: Common String Methods -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">4</span> Common String Methods</div>
+                <div class="analogy-box">
+                    <strong>Key Point:</strong> Knowing these methods makes string problems much easier to solve.
+                    You don't need to memorize them — just know <strong>"these exist"</strong> and look them up when needed!<br>
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#string-methods" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: String Methods ↗</a></span>
+                    <span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/string/basic_string" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: std::string ↗</a></span>
+                </div>
+                <span class="lang-py"><div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="concept-card">
+                        <h3>Transform & Check</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.upper() / s.lower()<br>
+s.isalpha() / s.isdigit()<br>
+s.isalnum()<br>
+ord('A') → 65 / chr(65) → 'A'
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Case conversion, character type checks</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Find & Count</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.find('abc') → index (-1 if none)<br>
+s.count('a') → occurrence count<br>
+s.startswith('pre')<br>
+s.endswith('.txt')
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Substring position, frequency, prefix/suffix</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Split & Join</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.split(',') → ['a','b','c']<br>
+','.join(['a','b','c']) → 'a,b,c'<br>
+s.strip() / s.lstrip() / s.rstrip()<br>
+s.replace('old', 'new')
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Split by delimiter, list→string, whitespace trim</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Other Useful</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+list(s) → ['H','E','L','L','O']<br>
+''.join(reversed(s))<br>
+s[::-1]  # reverse<br>
+sorted(s) → sorted list
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">List conversion, reverse, sort</p>
+                    </div>
+                </div></span>
+                <span class="lang-cpp"><div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="concept-card">
+                        <h3>Transform & Check</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+toupper(c) / tolower(c)<br>
+isalpha(c) / isdigit(c)<br>
+isalnum(c)<br>
+(int)'A' → 65 / (char)65 → 'A'
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Case conversion, character type checks (per char)</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Find & Count</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.find("abc") → index (npos if none)<br>
+count(s.begin(), s.end(), 'a')<br>
+s.substr(0, 3) == "pre"<br>
+s.compare(other)
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Substring position, frequency, comparison</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Extract & Replace</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+getline(cin, s)<br>
+s.substr(start, len)<br>
+s.erase(pos, len)<br>
+s.replace(pos, len, "new")
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Input, extract substring, delete, replace</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>Other Useful</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+to_string(42) → "42"<br>
+stoi("42") → 42<br>
+reverse(s.begin(), s.end())<br>
+sort(s.begin(), s.end())
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">Number↔string conversion, reverse, sort</p>
+                    </div>
+                </div></span>
             </div>
 
             <div id="str-problem-list"></div>

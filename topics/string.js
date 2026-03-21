@@ -630,6 +630,8 @@ const stringTopic = {
                     <span class="lang-py"><code>ord()</code>로 문자 → 숫자, <code>chr()</code>로 숫자 → 문자로 변환할 수 있어요.</span><span class="lang-cpp"><code>(int)</code> 캐스팅으로 문자 → 숫자, <code>(char)</code> 캐스팅으로 숫자 → 문자로 변환할 수 있어요.</span>
                     <br>
                     <span class="lang-py"><a href="https://docs.python.org/3/library/functions.html#ord" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: ord() ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/explicit_cast" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: 타입 캐스팅 ↗</a></span>
+                    &nbsp;|&nbsp;
+                    <a href="https://www.asciitable.com/" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">ASCII 전체 테이블 보기 ↗</a>
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — <span class="lang-py">ord() &amp; chr()</span><span class="lang-cpp">(int) &amp; (char) 캐스팅</span> 변환</div>
@@ -706,6 +708,101 @@ const stringTopic = {
                     <div class="str-concept-cmp-result" id="str-concept-cmp-result" style="display:none;"></div>
                     <div class="concept-demo-msg" id="str-concept-demo3-msg">👆 두 문자열을 입력하고 "비교" 버튼을 눌러 한 글자씩 비교 과정을 확인해보세요!</div>
                 </div>
+            </div>
+
+            <!-- 섹션 4: 자주 쓰는 문자열 메서드 -->
+            <div class="concept-section">
+                <div class="concept-section-title"><span class="section-num">4</span> 자주 쓰는 문자열 메서드</div>
+                <div class="analogy-box">
+                    <strong>핵심:</strong> 문자열 문제를 풀 때 이 메서드들을 알면 훨씬 빠르게 풀 수 있습니다.
+                    외울 필요 없이 <strong>"이런 게 있구나"</strong> 정도만 기억하고, 필요할 때 공식 문서를 찾아보세요!<br>
+                    <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#string-methods" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: String Methods ↗</a></span>
+                    <span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/string/basic_string" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: std::string ↗</a></span>
+                </div>
+                <span class="lang-py"><div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="concept-card">
+                        <h3>변환 & 검사</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.upper() / s.lower()<br>
+s.isalpha() / s.isdigit()<br>
+s.isalnum()<br>
+ord('A') → 65 / chr(65) → 'A'
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">대소문자 변환, 알파벳/숫자 판별</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>찾기 & 세기</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.find('abc') → 인덱스 (-1 없음)<br>
+s.count('a') → 등장 횟수<br>
+s.startswith('pre')<br>
+s.endswith('.txt')
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">부분 문자열 위치, 빈도, 접두사/접미사</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>자르기 & 합치기</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.split(',') → ['a','b','c']<br>
+','.join(['a','b','c']) → 'a,b,c'<br>
+s.strip() / s.lstrip() / s.rstrip()<br>
+s.replace('old', 'new')
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">구분자로 분리, 리스트→문자열, 공백 제거</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>기타 유용한 것들</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+list(s) → ['H','E','L','L','O']<br>
+''.join(reversed(s))<br>
+s[::-1]  # 뒤집기<br>
+sorted(s) → 정렬된 리스트
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">리스트 변환, 뒤집기, 정렬</p>
+                    </div>
+                </div></span>
+                <span class="lang-cpp"><div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="concept-card">
+                        <h3>변환 & 검사</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+toupper(c) / tolower(c)<br>
+isalpha(c) / isdigit(c)<br>
+isalnum(c)<br>
+(int)'A' → 65 / (char)65 → 'A'
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">대소문자 변환, 알파벳/숫자 판별 (문자 단위)</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>찾기 & 세기</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+s.find("abc") → 인덱스 (npos 없음)<br>
+count(s.begin(), s.end(), 'a')<br>
+s.substr(0, 3) == "pre"<br>
+s.compare(other)
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">부분 문자열 위치, 빈도, 비교</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>자르기 & 합치기</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+getline(cin, s)<br>
+s.substr(start, len)<br>
+s.erase(pos, len)<br>
+s.replace(pos, len, "new")
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">입력, 부분 추출, 삭제, 치환</p>
+                    </div>
+                    <div class="concept-card">
+                        <h3>기타 유용한 것들</h3>
+                        <code style="font-size:0.82rem;color:var(--accent);display:block;line-height:1.8;">
+to_string(42) → "42"<br>
+stoi("42") → 42<br>
+reverse(s.begin(), s.end())<br>
+sort(s.begin(), s.end())
+                        </code>
+                        <p style="font-size:0.82rem;color:var(--text2);margin-top:6px;">숫자↔문자열 변환, 뒤집기, 정렬</p>
+                    </div>
+                </div></span>
             </div>
 
             <div id="str-problem-list"></div>
