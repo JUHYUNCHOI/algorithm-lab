@@ -461,6 +461,25 @@ int main() {
                     tracking the sum/max/min of the elements visible in the window.
                     Instead of recalculating from scratch each time, just subtract what left and add what entered!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Find Max Sum with Sliding Window</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:8px;">
+                        <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">Window size K:
+                            <input type="number" id="arr-demo-sw-k" min="2" max="5" value="3" style="width:56px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                        </label>
+                        <button class="concept-demo-btn" id="arr-demo-sw-step">▶ Next Step</button>
+                        <button class="concept-demo-btn danger" id="arr-demo-sw-reset">🔄 Reset</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-sw-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <span style="font-size:0.9rem;font-weight:600;">Current sum: <span id="arr-demo-sw-sum" style="color:var(--accent);font-size:1.1rem;">—</span></span>
+                            <span style="font-size:0.9rem;font-weight:600;">Max sum: <span id="arr-demo-sw-max" style="color:var(--green);font-size:1.1rem;">—</span></span>
+                        </div>
+                        <div id="arr-demo-sw-calc" style="font-size:0.85rem;color:var(--text2);min-height:20px;text-align:center;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-sw-msg">👆 Click "Next Step" to see the window slide and update the sum!</div>
+                </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -542,6 +561,25 @@ int main() {
                     <strong>Know the patterns and the solution reveals itself!</strong> When you see an array problem, ask yourself:
                     Does sorting help? → Two Pointers. Looking at ranges? → Sliding Window.
                     Precompute results per element? → Preprocessing (Prefix Sum / Product Array).
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 Try It — Max Stock Profit (Min Price Tracking)</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:8px;">
+                        <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">Prices:
+                            <input type="text" id="arr-demo-stock-input" value="7,1,5,3,6,4" style="width:180px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                        </label>
+                        <button class="concept-demo-btn" id="arr-demo-stock-step">▶ Next Step</button>
+                        <button class="concept-demo-btn danger" id="arr-demo-stock-reset">🔄 Reset</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-stock-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <span style="font-size:0.9rem;font-weight:600;">Min price: <span id="arr-demo-stock-min" style="color:var(--accent);font-size:1.1rem;">—</span></span>
+                            <span style="font-size:0.9rem;font-weight:600;">Current profit: <span id="arr-demo-stock-cur" style="color:var(--yellow);font-size:1.1rem;">—</span></span>
+                            <span style="font-size:0.9rem;font-weight:600;">Max profit: <span id="arr-demo-stock-profit" style="color:var(--green);font-size:1.1rem;">—</span></span>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-stock-msg">👆 Click "Next Step" to see how min price tracking finds the maximum profit in a single pass!</div>
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
@@ -1073,6 +1111,156 @@ int main() {
             tpResetBtn.addEventListener('click', function() {
                 tpInit();
             });
+        }
+
+        // --- 4. Sliding Window Demo ---
+        {
+            var swArr = [2, 1, 5, 1, 3, 2];
+            var swBoxesEl = container.querySelector('#arr-demo-sw-boxes');
+            var swStepBtn = container.querySelector('#arr-demo-sw-step');
+            var swResetBtn = container.querySelector('#arr-demo-sw-reset');
+            var swKInput = container.querySelector('#arr-demo-sw-k');
+            var swSumEl = container.querySelector('#arr-demo-sw-sum');
+            var swMaxEl = container.querySelector('#arr-demo-sw-max');
+            var swCalcEl = container.querySelector('#arr-demo-sw-calc');
+            var swMsgEl = container.querySelector('#arr-demo-sw-msg');
+            var swPos = -1, swSum = 0, swMaxSum = 0, swK = 3;
+            var swBoxes = [];
+
+            function swInit() {
+                swK = parseInt(swKInput.value) || 3;
+                if (swK < 2) swK = 2;
+                if (swK > swArr.length) swK = swArr.length;
+                swPos = -1; swSum = 0; swMaxSum = 0;
+                swBoxesEl.innerHTML = '';
+                swBoxes = [];
+                for (var i = 0; i < swArr.length; i++) {
+                    var b = _mkBox(swArr[i], i);
+                    swBoxesEl.appendChild(b);
+                    swBoxes.push(b);
+                }
+                swSumEl.textContent = '—';
+                swMaxEl.textContent = '—';
+                swCalcEl.textContent = '';
+                swMsgEl.textContent = '👆 Click "Next Step" to see the window slide and update the sum!';
+            }
+            swInit();
+
+            swStepBtn.addEventListener('click', function() {
+                swPos++;
+                if (swPos === 0) {
+                    swSum = 0;
+                    for (var i = 0; i < swK; i++) swSum += swArr[i];
+                    swMaxSum = swSum;
+                    swBoxes.forEach(function(b) { b.className = 'str-char-box'; });
+                    for (var i = 0; i < swK; i++) swBoxes[i].classList.add('comparing');
+                    swSumEl.textContent = swSum;
+                    swMaxEl.textContent = swMaxSum;
+                    var parts = swArr.slice(0, swK).join(' + ');
+                    swCalcEl.textContent = 'Initial window: ' + parts + ' = ' + swSum;
+                    swMsgEl.textContent = 'Initial sum of window size ' + swK + ' = ' + swSum + '. Now let\'s slide!';
+                    return;
+                }
+                var slideIdx = swPos - 1 + swK;
+                if (slideIdx >= swArr.length) {
+                    swMsgEl.textContent = 'Done! Max sum is ' + swMaxSum + ' 🎉';
+                    swBoxes.forEach(function(b) { b.classList.remove('comparing'); b.classList.add('matched'); });
+                    swCalcEl.textContent = '';
+                    return;
+                }
+                var outIdx = swPos - 1;
+                var outVal = swArr[outIdx];
+                var inVal = swArr[slideIdx];
+                swSum = swSum - outVal + inVal;
+                var oldMax = swMaxSum;
+                swMaxSum = Math.max(swMaxSum, swSum);
+                swBoxes.forEach(function(b) { b.className = 'str-char-box'; });
+                swBoxes[outIdx].style.opacity = '0.4';
+                for (var i = swPos; i <= slideIdx; i++) swBoxes[i].classList.add('comparing');
+                swSumEl.textContent = swSum;
+                swMaxEl.textContent = swMaxSum;
+                swCalcEl.innerHTML = 'Previous sum <b>' + (swSum + outVal - inVal) + '</b> − removed <b>' + outVal + '</b> + added <b>' + inVal + '</b> = <b>' + swSum + '</b>';
+                var isNew = swMaxSum > oldMax;
+                swMsgEl.textContent = 'Window [' + swPos + '~' + slideIdx + '] sum = ' + swSum + (isNew ? ' → New max!' : ' (max ' + swMaxSum + ' unchanged)');
+            });
+
+            swResetBtn.addEventListener('click', swInit);
+        }
+
+        // --- 5. Stock Max Profit Demo ---
+        {
+            var stockArr = [7, 1, 5, 3, 6, 4];
+            var stockBoxesEl = container.querySelector('#arr-demo-stock-boxes');
+            var stockStepBtn = container.querySelector('#arr-demo-stock-step');
+            var stockResetBtn = container.querySelector('#arr-demo-stock-reset');
+            var stockInputEl = container.querySelector('#arr-demo-stock-input');
+            var stockMinEl = container.querySelector('#arr-demo-stock-min');
+            var stockCurEl = container.querySelector('#arr-demo-stock-cur');
+            var stockProfitEl = container.querySelector('#arr-demo-stock-profit');
+            var stockMsgEl = container.querySelector('#arr-demo-stock-msg');
+            var stockPos = -1, stockMin = Infinity, stockProfit = 0;
+            var stockBoxes = [];
+
+            function stockInit() {
+                var raw = stockInputEl.value.split(',').map(function(v) { return parseInt(v.trim()); }).filter(function(v) { return !isNaN(v); });
+                if (raw.length >= 2) stockArr = raw;
+                stockPos = -1; stockMin = Infinity; stockProfit = 0;
+                stockBoxesEl.innerHTML = '';
+                stockBoxes = [];
+                for (var i = 0; i < stockArr.length; i++) {
+                    var b = _mkBox(stockArr[i], i);
+                    stockBoxesEl.appendChild(b);
+                    stockBoxes.push(b);
+                }
+                stockMinEl.textContent = '—';
+                stockCurEl.textContent = '—';
+                stockProfitEl.textContent = '—';
+                stockMsgEl.textContent = '👆 Click "Next Step" to see how min price tracking finds the maximum profit in a single pass!';
+            }
+            stockInit();
+
+            stockStepBtn.addEventListener('click', function() {
+                stockPos++;
+                if (stockPos >= stockArr.length) {
+                    stockMsgEl.textContent = 'Done! Max profit is ' + stockProfit + ' 🎉';
+                    stockBoxes.forEach(function(b) { b.classList.remove('comparing'); b.classList.add('matched'); });
+                    return;
+                }
+                var price = stockArr[stockPos];
+                var isNewMin = price < stockMin;
+                stockMin = Math.min(stockMin, price);
+                var curProfit = price - stockMin;
+                var isNewMax = curProfit > stockProfit;
+                stockProfit = Math.max(stockProfit, curProfit);
+
+                stockBoxes.forEach(function(b, i) {
+                    b.className = 'str-char-box';
+                    if (i < stockPos) b.style.opacity = '0.5';
+                    else b.style.opacity = '1';
+                });
+                stockBoxes[stockPos].classList.add('comparing');
+                for (var mi = 0; mi <= stockPos; mi++) {
+                    if (stockArr[mi] === stockMin) {
+                        stockBoxes[mi].style.opacity = '1';
+                        stockBoxes[mi].classList.add('matched');
+                        break;
+                    }
+                }
+
+                stockMinEl.textContent = stockMin;
+                stockCurEl.textContent = curProfit;
+                stockProfitEl.textContent = stockProfit;
+
+                if (isNewMin) {
+                    stockMsgEl.textContent = 'Price ' + price + ' → New minimum! Best buy price so far.';
+                } else if (isNewMax) {
+                    stockMsgEl.textContent = 'Price ' + price + ' − min ' + stockMin + ' = profit ' + curProfit + ' → New max profit!';
+                } else {
+                    stockMsgEl.textContent = 'Price ' + price + ' − min ' + stockMin + ' = profit ' + curProfit + ' (max profit ' + stockProfit + ' unchanged)';
+                }
+            });
+
+            stockResetBtn.addEventListener('click', stockInit);
         }
     },
 

@@ -462,6 +462,25 @@ int main() {
                     창문 안에 보이는 원소들의 합/최대/최소를 계속 추적합니다.
                     매번 처음부터 다시 세지 않고, 빠진 것은 빼고 들어온 것은 더합니다!
                 </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 슬라이딩 윈도우로 최대 합 찾기</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:8px;">
+                        <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">윈도우 크기 K:
+                            <input type="number" id="arr-demo-sw-k" min="2" max="5" value="3" style="width:56px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                        </label>
+                        <button class="concept-demo-btn" id="arr-demo-sw-step">▶ 다음 스텝</button>
+                        <button class="concept-demo-btn danger" id="arr-demo-sw-reset">🔄 초기화</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-sw-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <span style="font-size:0.9rem;font-weight:600;">현재 합: <span id="arr-demo-sw-sum" style="color:var(--accent);font-size:1.1rem;">—</span></span>
+                            <span style="font-size:0.9rem;font-weight:600;">최대 합: <span id="arr-demo-sw-max" style="color:var(--green);font-size:1.1rem;">—</span></span>
+                        </div>
+                        <div id="arr-demo-sw-calc" style="font-size:0.85rem;color:var(--text2);min-height:20px;text-align:center;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-sw-msg">👆 "다음 스텝"을 눌러 윈도우가 한 칸씩 밀리면서 합이 갱신되는 과정을 확인해보세요!</div>
+                </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -543,6 +562,25 @@ int main() {
                     <strong>패턴을 알면 풀이가 보입니다!</strong> 배열 문제를 보면 먼저 이런 질문을 해보세요:
                     정렬하면 쉬워지나? → 투 포인터. 구간을 보는 건가? → 슬라이딩 윈도우.
                     각 원소에서 결과를 미리 계산? → 전처리(누적합/곱 배열).
+                </div>
+                <div class="concept-demo">
+                    <div class="concept-demo-title">🎮 직접 해보기 — 주식 최대 이익 (최솟값 추적)</div>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:8px;">
+                        <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">가격 배열:
+                            <input type="text" id="arr-demo-stock-input" value="7,1,5,3,6,4" style="width:180px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
+                        </label>
+                        <button class="concept-demo-btn" id="arr-demo-stock-step">▶ 다음 스텝</button>
+                        <button class="concept-demo-btn danger" id="arr-demo-stock-reset">🔄 초기화</button>
+                    </div>
+                    <div class="concept-demo-body" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                        <div id="arr-demo-stock-boxes" style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;"></div>
+                        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
+                            <span style="font-size:0.9rem;font-weight:600;">최저가: <span id="arr-demo-stock-min" style="color:var(--accent);font-size:1.1rem;">—</span></span>
+                            <span style="font-size:0.9rem;font-weight:600;">현재 이익: <span id="arr-demo-stock-cur" style="color:var(--yellow);font-size:1.1rem;">—</span></span>
+                            <span style="font-size:0.9rem;font-weight:600;">최대 이익: <span id="arr-demo-stock-profit" style="color:var(--green);font-size:1.1rem;">—</span></span>
+                        </div>
+                    </div>
+                    <div class="concept-demo-msg" id="arr-demo-stock-msg">👆 "다음 스텝"을 눌러 배열을 순회하면서 최저가를 추적하고 최대 이익을 갱신하는 과정을 확인해보세요!</div>
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
@@ -1075,6 +1113,160 @@ int main() {
             tpResetBtn.addEventListener('click', function() {
                 tpInit();
             });
+        }
+
+        // --- 4. 슬라이딩 윈도우 데모 ---
+        {
+            var swArr = [2, 1, 5, 1, 3, 2];
+            var swBoxesEl = container.querySelector('#arr-demo-sw-boxes');
+            var swStepBtn = container.querySelector('#arr-demo-sw-step');
+            var swResetBtn = container.querySelector('#arr-demo-sw-reset');
+            var swKInput = container.querySelector('#arr-demo-sw-k');
+            var swSumEl = container.querySelector('#arr-demo-sw-sum');
+            var swMaxEl = container.querySelector('#arr-demo-sw-max');
+            var swCalcEl = container.querySelector('#arr-demo-sw-calc');
+            var swMsgEl = container.querySelector('#arr-demo-sw-msg');
+            var swPos = -1, swSum = 0, swMaxSum = 0, swK = 3;
+            var swBoxes = [];
+
+            function swInit() {
+                swK = parseInt(swKInput.value) || 3;
+                if (swK < 2) swK = 2;
+                if (swK > swArr.length) swK = swArr.length;
+                swPos = -1; swSum = 0; swMaxSum = 0;
+                swBoxesEl.innerHTML = '';
+                swBoxes = [];
+                for (var i = 0; i < swArr.length; i++) {
+                    var b = _mkBox(swArr[i], i);
+                    swBoxesEl.appendChild(b);
+                    swBoxes.push(b);
+                }
+                swSumEl.textContent = '—';
+                swMaxEl.textContent = '—';
+                swCalcEl.textContent = '';
+                swMsgEl.textContent = '👆 "다음 스텝"을 눌러 윈도우가 한 칸씩 밀리면서 합이 갱신되는 과정을 확인해보세요!';
+            }
+            swInit();
+
+            swStepBtn.addEventListener('click', function() {
+                swPos++;
+                // 초기 윈도우 구성 (pos 0)
+                if (swPos === 0) {
+                    swSum = 0;
+                    for (var i = 0; i < swK; i++) swSum += swArr[i];
+                    swMaxSum = swSum;
+                    swBoxes.forEach(function(b) { b.className = 'str-char-box'; });
+                    for (var i = 0; i < swK; i++) swBoxes[i].classList.add('comparing');
+                    swSumEl.textContent = swSum;
+                    swMaxEl.textContent = swMaxSum;
+                    var parts = swArr.slice(0, swK).join(' + ');
+                    swCalcEl.textContent = '초기 윈도우: ' + parts + ' = ' + swSum;
+                    swMsgEl.textContent = '크기 ' + swK + ' 윈도우의 초기 합 = ' + swSum + '. 이제 한 칸씩 밀어봅시다!';
+                    return;
+                }
+                // 윈도우 슬라이드
+                var slideIdx = swPos - 1 + swK; // 새로 들어오는 인덱스
+                if (slideIdx >= swArr.length) {
+                    swMsgEl.textContent = '완료! 최대 합은 ' + swMaxSum + '입니다 🎉';
+                    swBoxes.forEach(function(b) { b.classList.remove('comparing'); b.classList.add('matched'); });
+                    swCalcEl.textContent = '';
+                    return;
+                }
+                var outIdx = swPos - 1; // 빠지는 인덱스
+                var outVal = swArr[outIdx];
+                var inVal = swArr[slideIdx];
+                swSum = swSum - outVal + inVal;
+                var oldMax = swMaxSum;
+                swMaxSum = Math.max(swMaxSum, swSum);
+                // 하이라이트 업데이트
+                swBoxes.forEach(function(b) { b.className = 'str-char-box'; });
+                swBoxes[outIdx].style.opacity = '0.4';
+                for (var i = swPos; i <= slideIdx; i++) swBoxes[i].classList.add('comparing');
+                swSumEl.textContent = swSum;
+                swMaxEl.textContent = swMaxSum;
+                swCalcEl.innerHTML = '이전 합 <b>' + (swSum + outVal - inVal) + '</b> − 빠진 <b>' + outVal + '</b> + 들어온 <b>' + inVal + '</b> = <b>' + swSum + '</b>';
+                var isNew = swMaxSum > oldMax;
+                swMsgEl.textContent = '윈도우 [' + swPos + '~' + slideIdx + '] 합 = ' + swSum + (isNew ? ' → 최대 합 갱신!' : ' (최대 합 ' + swMaxSum + ' 유지)');
+            });
+
+            swResetBtn.addEventListener('click', swInit);
+        }
+
+        // --- 5. 주식 최대 이익 데모 ---
+        {
+            var stockArr = [7, 1, 5, 3, 6, 4];
+            var stockBoxesEl = container.querySelector('#arr-demo-stock-boxes');
+            var stockStepBtn = container.querySelector('#arr-demo-stock-step');
+            var stockResetBtn = container.querySelector('#arr-demo-stock-reset');
+            var stockInputEl = container.querySelector('#arr-demo-stock-input');
+            var stockMinEl = container.querySelector('#arr-demo-stock-min');
+            var stockCurEl = container.querySelector('#arr-demo-stock-cur');
+            var stockProfitEl = container.querySelector('#arr-demo-stock-profit');
+            var stockMsgEl = container.querySelector('#arr-demo-stock-msg');
+            var stockPos = -1, stockMin = Infinity, stockProfit = 0;
+            var stockBoxes = [];
+
+            function stockInit() {
+                var raw = stockInputEl.value.split(',').map(function(v) { return parseInt(v.trim()); }).filter(function(v) { return !isNaN(v); });
+                if (raw.length >= 2) stockArr = raw;
+                stockPos = -1; stockMin = Infinity; stockProfit = 0;
+                stockBoxesEl.innerHTML = '';
+                stockBoxes = [];
+                for (var i = 0; i < stockArr.length; i++) {
+                    var b = _mkBox(stockArr[i], i);
+                    stockBoxesEl.appendChild(b);
+                    stockBoxes.push(b);
+                }
+                stockMinEl.textContent = '—';
+                stockCurEl.textContent = '—';
+                stockProfitEl.textContent = '—';
+                stockMsgEl.textContent = '👆 "다음 스텝"을 눌러 배열을 순회하면서 최저가를 추적하고 최대 이익을 갱신하는 과정을 확인해보세요!';
+            }
+            stockInit();
+
+            stockStepBtn.addEventListener('click', function() {
+                stockPos++;
+                if (stockPos >= stockArr.length) {
+                    stockMsgEl.textContent = '완료! 최대 이익은 ' + stockProfit + '입니다 🎉';
+                    stockBoxes.forEach(function(b) { b.classList.remove('comparing'); b.classList.add('matched'); });
+                    return;
+                }
+                var price = stockArr[stockPos];
+                var isNewMin = price < stockMin;
+                stockMin = Math.min(stockMin, price);
+                var curProfit = price - stockMin;
+                var isNewMax = curProfit > stockProfit;
+                stockProfit = Math.max(stockProfit, curProfit);
+
+                stockBoxes.forEach(function(b, i) {
+                    b.className = 'str-char-box';
+                    if (i < stockPos) b.style.opacity = '0.5';
+                    else b.style.opacity = '1';
+                });
+                stockBoxes[stockPos].classList.add('comparing');
+                // 최저가 위치 하이라이트
+                for (var mi = 0; mi <= stockPos; mi++) {
+                    if (stockArr[mi] === stockMin) {
+                        stockBoxes[mi].style.opacity = '1';
+                        stockBoxes[mi].classList.add('matched');
+                        break;
+                    }
+                }
+
+                stockMinEl.textContent = stockMin;
+                stockCurEl.textContent = curProfit;
+                stockProfitEl.textContent = stockProfit;
+
+                if (isNewMin) {
+                    stockMsgEl.textContent = '가격 ' + price + ' → 새로운 최저가! 여기서 사면 가장 싸다.';
+                } else if (isNewMax) {
+                    stockMsgEl.textContent = '가격 ' + price + ' − 최저가 ' + stockMin + ' = 이익 ' + curProfit + ' → 최대 이익 갱신!';
+                } else {
+                    stockMsgEl.textContent = '가격 ' + price + ' − 최저가 ' + stockMin + ' = 이익 ' + curProfit + ' (최대 이익 ' + stockProfit + ' 유지)';
+                }
+            });
+
+            stockResetBtn.addEventListener('click', stockInit);
         }
     },
 
