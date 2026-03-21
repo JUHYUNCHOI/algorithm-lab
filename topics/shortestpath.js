@@ -15,6 +15,7 @@ var shortestPathTopic = {
     tabs: [{ id: 'concept', label: '학습하기' }],
 
     problemMeta: {
+        'boj-18352':{ type: 'BFS 최단거리',      color: '#00b894',       vizMethod: '_renderVizCityDist' },
         'boj-1753': { type: '다익스트라 기본',   color: 'var(--accent)', vizMethod: '_renderVizDijkstra' },
         'boj-11404':{ type: '플로이드-워셜',     color: 'var(--green)',  vizMethod: '_renderVizFloyd' },
         'boj-1916': { type: '다익스트라 응용',   color: '#e17055',       vizMethod: '_renderVizMinCost' },
@@ -1089,6 +1090,280 @@ var shortestPathTopic = {
     },
 
     // ====================================================================
+    // 시뮬레이션 0: 특정 거리의 도시 찾기 (boj-18352) — BFS 최단거리
+    // ====================================================================
+    _renderVizCityDist: function(container) {
+        var self = this;
+        var suffix = '-citydist';
+        var INF = Infinity;
+
+        var DEFAULT_N = 4;
+        var DEFAULT_EDGES = '1 2, 1 3, 2 3, 2 4';
+        var DEFAULT_K = 2;
+        var DEFAULT_START = 1;
+
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">BFS 최단거리: BOJ 18352 예제</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">시작 도시에서 BFS로 각 도시까지의 최단 거리를 구하고, 거리가 K인 도시를 찾습니다.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">도시 수 N: <input type="number" id="sp-cd-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">목표 거리 K: <input type="number" id="sp-cd-k" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+                '<label style="font-weight:600;">시작 도시 X: <input type="number" id="sp-cd-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">간선 (from to): <input type="text" id="sp-cd-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+                '<button class="btn btn-primary" id="sp-cd-reset">\uD83D\uDD04</button>' +
+            '</div>' +
+            self._createStepDesc(suffix) +
+            '<div id="sp-graph' + suffix + '" style="position:relative;width:100%;min-height:300px;background:var(--bg);border-radius:12px;margin-bottom:8px;overflow:hidden;"></div>' +
+            '<div id="sp-dist' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var graphEl = container.querySelector('#sp-graph' + suffix);
+        var distEl = container.querySelector('#sp-dist' + suffix);
+        var infoEl = container.querySelector('#sp-info' + suffix);
+
+        function parseEdges(edgeStr, nodeCount) {
+            var adj = [];
+            for (var i = 0; i < nodeCount; i++) adj.push([]);
+            var parts = edgeStr.split(',');
+            for (var p = 0; p < parts.length; p++) {
+                var tokens = parts[p].trim().split(/\s+/);
+                if (tokens.length >= 2) {
+                    var from = parseInt(tokens[0]) - 1;
+                    var to = parseInt(tokens[1]) - 1;
+                    if (from >= 0 && from < nodeCount && to >= 0 && to < nodeCount) {
+                        adj[from].push(to);
+                    }
+                }
+            }
+            return adj;
+        }
+
+        function getNodePositions(n, width, height) {
+            var positions = [];
+            var cx = width / 2, cy = height / 2;
+            var r = Math.min(width, height) * 0.35;
+            for (var i = 0; i < n; i++) {
+                var angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
+                positions.push({ x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
+            }
+            return positions;
+        }
+
+        function renderGraph(n, adj, dist, currentNode, queueNodes, targetK) {
+            var w = graphEl.clientWidth || 400;
+            var h = 300;
+            graphEl.style.height = h + 'px';
+            var pos = getNodePositions(n, w, h);
+            var svg = '<svg width="' + w + '" height="' + h + '" style="position:absolute;top:0;left:0;">';
+
+            // 간선 그리기 (방향 화살표)
+            for (var i = 0; i < n; i++) {
+                for (var j = 0; j < adj[i].length; j++) {
+                    var to = adj[i][j];
+                    var x1 = pos[i].x, y1 = pos[i].y, x2 = pos[to].x, y2 = pos[to].y;
+                    var dx = x2 - x1, dy = y2 - y1;
+                    var len = Math.sqrt(dx * dx + dy * dy);
+                    if (len === 0) continue;
+                    var ux = dx / len, uy = dy / len;
+                    // 노드 반지름만큼 줄이기
+                    var nr = 22;
+                    var sx = x1 + ux * nr, sy = y1 + uy * nr;
+                    var ex = x2 - ux * nr, ey = y2 - uy * nr;
+                    // 화살표 머리
+                    var arrowLen = 10, arrowAngle = Math.PI / 6;
+                    var ax1 = ex - arrowLen * Math.cos(Math.atan2(ey - sy, ex - sx) - arrowAngle);
+                    var ay1 = ey - arrowLen * Math.sin(Math.atan2(ey - sy, ex - sx) - arrowAngle);
+                    var ax2 = ex - arrowLen * Math.cos(Math.atan2(ey - sy, ex - sx) + arrowAngle);
+                    var ay2 = ey - arrowLen * Math.sin(Math.atan2(ey - sy, ex - sx) + arrowAngle);
+                    svg += '<line x1="' + sx + '" y1="' + sy + '" x2="' + ex + '" y2="' + ey + '" stroke="var(--text3)" stroke-width="1.5" />';
+                    svg += '<polygon points="' + ex + ',' + ey + ' ' + ax1 + ',' + ay1 + ' ' + ax2 + ',' + ay2 + '" fill="var(--text3)" />';
+                }
+            }
+
+            // 노드 그리기
+            for (var ni = 0; ni < n; ni++) {
+                var fill = 'var(--bg2)';
+                var stroke = 'var(--text3)';
+                var textColor = 'var(--text)';
+                var glow = '';
+                if (currentNode === ni) {
+                    fill = 'var(--yellow)'; stroke = 'var(--yellow)'; textColor = '#000';
+                    glow = ' filter="url(#glow-yellow)"';
+                } else if (dist[ni] !== INF && dist[ni] === targetK) {
+                    fill = 'var(--green)'; stroke = 'var(--green)'; textColor = 'white';
+                    glow = ' filter="url(#glow-green)"';
+                } else if (queueNodes && queueNodes.indexOf(ni) >= 0) {
+                    fill = 'var(--accent)'; stroke = 'var(--accent)'; textColor = 'white';
+                } else if (dist[ni] !== INF && dist[ni] >= 0) {
+                    fill = 'var(--bg3)'; stroke = 'var(--accent)';
+                }
+                var distLabel = dist[ni] === INF ? '\u221E' : dist[ni];
+                svg += '<circle cx="' + pos[ni].x + '" cy="' + pos[ni].y + '" r="20" fill="' + fill + '" stroke="' + stroke + '" stroke-width="2"' + glow + ' />';
+                svg += '<text x="' + pos[ni].x + '" y="' + (pos[ni].y + 1) + '" text-anchor="middle" dominant-baseline="middle" fill="' + textColor + '" font-weight="600" font-size="14">' + (ni + 1) + '</text>';
+                svg += '<text x="' + pos[ni].x + '" y="' + (pos[ni].y + 34) + '" text-anchor="middle" fill="var(--text2)" font-size="11">d=' + distLabel + '</text>';
+            }
+
+            // SVG 필터 정의
+            svg = svg.replace('<svg ', '<svg ') ;
+            var defs = '<defs>' +
+                '<filter id="glow-yellow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+                '<filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+                '</defs>';
+            svg = svg.replace('</svg>', defs + '</svg>');
+
+            graphEl.innerHTML = svg;
+        }
+
+        function renderDistTable(n, dist, targetK) {
+            distEl.innerHTML = '';
+            for (var i = 0; i < n; i++) {
+                var val = dist[i] === INF ? '\u221E' : dist[i];
+                var bg = 'background:var(--bg2);';
+                if (dist[i] !== INF && dist[i] === targetK) bg = 'background:var(--green);color:white;';
+                distEl.innerHTML += '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + (i + 1) + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
+            }
+        }
+
+        function buildAndRun(nodeCount, adj, startIdx, targetK) {
+            var simDist = [];
+            for (var i = 0; i < nodeCount; i++) simDist.push(INF);
+            simDist[startIdx] = 0;
+
+            renderGraph(nodeCount, adj, simDist, -1, [], targetK);
+            renderDistTable(nodeCount, simDist, targetK);
+            infoEl.innerHTML = '<span style="color:var(--text2);">도시 ' + (startIdx + 1) + '에서 BFS를 시작합니다. 거리 ' + targetK + '인 도시를 찾아봅시다!</span>';
+
+            var steps = [];
+            function snapState() { return { d: simDist.slice(), info: infoEl.innerHTML, graph: graphEl.innerHTML, distHtml: distEl.innerHTML }; }
+            function restoreState(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; graphEl.innerHTML = s.graph; distEl.innerHTML = s.distHtml; }
+
+            // 초기화 스텝
+            var s0 = snapState();
+            steps.push({
+                description: '초기화: dist[' + (startIdx + 1) + ']=0, 나머지=\u221E — 시작 도시만 거리 0으로 설정하고 BFS 큐에 넣습니다. 가중치가 없으므로 BFS만으로 최단거리를 구할 수 있습니다.',
+                action: function() {
+                    renderGraph(nodeCount, adj, simDist, startIdx, [], targetK);
+                    renderDistTable(nodeCount, simDist, targetK);
+                    infoEl.innerHTML = '큐: [' + (startIdx + 1) + '], dist[' + (startIdx + 1) + ']=0';
+                },
+                undo: function() { restoreState(s0); }
+            });
+
+            // BFS 시뮬레이션: 사전에 모든 스텝을 계산
+            var bfsDist = [];
+            for (var bi = 0; bi < nodeCount; bi++) bfsDist.push(bi === startIdx ? 0 : INF);
+            var queue = [startIdx];
+            var bfsSteps = []; // { type: 'dequeue'|'visit', node, neighbor?, dist? }
+
+            while (queue.length > 0) {
+                var curr = queue.shift();
+                bfsSteps.push({ type: 'dequeue', node: curr, queueAfter: queue.slice() });
+                for (var ei = 0; ei < adj[curr].length; ei++) {
+                    var nb = adj[curr][ei];
+                    if (bfsDist[nb] === INF) {
+                        bfsDist[nb] = bfsDist[curr] + 1;
+                        queue.push(nb);
+                        bfsSteps.push({ type: 'visit', node: curr, neighbor: nb, newDist: bfsDist[nb], queueAfter: queue.slice() });
+                    } else {
+                        bfsSteps.push({ type: 'skip', node: curr, neighbor: nb, queueAfter: queue.slice() });
+                    }
+                }
+            }
+
+            // BFS 스텝을 시뮬레이션 스텝으로 변환
+            bfsSteps.forEach(function(bs) {
+                (function(step) {
+                    var sb;
+                    if (step.type === 'dequeue') {
+                        steps.push({
+                            description: '큐에서 도시 <strong>' + (step.node + 1) + '</strong>을 꺼냄 (dist=' + simDist[step.node] + ') — 이 도시의 이웃들을 확인합니다. 큐에서 먼저 꺼낸 도시가 거리가 가깝기 때문에 BFS는 최단거리를 보장합니다.',
+                            action: function() {
+                                sb = snapState();
+                                renderGraph(nodeCount, adj, simDist, step.node, step.queueAfter, targetK);
+                                renderDistTable(nodeCount, simDist, targetK);
+                                var qStr = step.queueAfter.map(function(x) { return x + 1; }).join(', ');
+                                infoEl.innerHTML = '<strong>도시 ' + (step.node + 1) + ' 처리 중</strong> (dist=' + simDist[step.node] + '), 큐: [' + qStr + ']';
+                            },
+                            undo: function() { restoreState(sb); }
+                        });
+                    } else if (step.type === 'visit') {
+                        steps.push({
+                            description: '도시 ' + (step.node + 1) + ' \u2192 도시 <strong>' + (step.neighbor + 1) + '</strong>: 아직 방문하지 않았으므로 dist[' + (step.neighbor + 1) + '] = ' + step.newDist + '로 설정하고 큐에 추가합니다.',
+                            action: function() {
+                                sb = snapState();
+                                simDist[step.neighbor] = step.newDist;
+                                renderGraph(nodeCount, adj, simDist, step.node, step.queueAfter, targetK);
+                                renderDistTable(nodeCount, simDist, targetK);
+                                var qStr = step.queueAfter.map(function(x) { return x + 1; }).join(', ');
+                                infoEl.innerHTML = 'dist[' + (step.neighbor + 1) + '] = ' + step.newDist + ', 큐: [' + qStr + ']';
+                            },
+                            undo: function() { restoreState(sb); }
+                        });
+                    } else if (step.type === 'skip') {
+                        steps.push({
+                            description: '도시 ' + (step.node + 1) + ' \u2192 도시 <strong>' + (step.neighbor + 1) + '</strong>: 이미 방문한 도시이므로 건너뜁니다 (dist[' + (step.neighbor + 1) + ']=' + simDist[step.neighbor] + ', 이미 최단거리 확정).',
+                            action: function() {
+                                sb = snapState();
+                                renderGraph(nodeCount, adj, simDist, step.node, step.queueAfter, targetK);
+                                renderDistTable(nodeCount, simDist, targetK);
+                                infoEl.innerHTML = '도시 ' + (step.neighbor + 1) + '은 이미 방문함 — 스킵';
+                            },
+                            undo: function() { restoreState(sb); }
+                        });
+                    }
+                })(bs);
+            });
+
+            // 결과 스텝
+            var resultNodes = [];
+            for (var ri = 0; ri < nodeCount; ri++) {
+                if (bfsDist[ri] === targetK) resultNodes.push(ri + 1);
+            }
+            var sf;
+            steps.push({
+                description: '\u2705 BFS 완료! 거리가 ' + targetK + '인 도시: ' + (resultNodes.length > 0 ? '<strong>' + resultNodes.join(', ') + '</strong>' : '<strong>없음 (-1)</strong>') + ' — 모든 도시의 최단 거리가 확정되었습니다.',
+                action: function() {
+                    sf = snapState();
+                    // 최종 상태: dist가 K인 노드를 초록으로 표시
+                    for (var fi = 0; fi < nodeCount; fi++) simDist[fi] = bfsDist[fi];
+                    renderGraph(nodeCount, adj, simDist, -1, [], targetK);
+                    renderDistTable(nodeCount, simDist, targetK);
+                    if (resultNodes.length > 0) {
+                        infoEl.innerHTML = '<strong style="color:var(--green);">정답: ' + resultNodes.join(', ') + '</strong> (거리 ' + targetK + ')';
+                    } else {
+                        infoEl.innerHTML = '<strong style="color:var(--red);">정답: -1</strong> (거리 ' + targetK + '인 도시가 없음)';
+                    }
+                },
+                undo: function() { restoreState(sf); }
+            });
+
+            self._initStepController(container, steps, suffix);
+        }
+
+        function runFromInputs() {
+            var n = parseInt(container.querySelector('#sp-cd-n').value) || DEFAULT_N;
+            var k = parseInt(container.querySelector('#sp-cd-k').value) || DEFAULT_K;
+            var start = parseInt(container.querySelector('#sp-cd-start').value) || DEFAULT_START;
+            var edgeStr = container.querySelector('#sp-cd-edges').value || DEFAULT_EDGES;
+            if (n < 2) n = 2; if (n > 10) n = 10;
+            if (start < 1) start = 1; if (start > n) start = n;
+            if (k < 1) k = 1;
+            var adj = parseEdges(edgeStr, n);
+            buildAndRun(n, adj, start - 1, k);
+        }
+
+        container.querySelector('#sp-cd-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runFromInputs();
+        });
+
+        runFromInputs();
+    },
+
+    // ====================================================================
     // 시뮬레이션 1: 다익스트라 기본 (boj-1753)
     // ====================================================================
     _renderVizDijkstra: function(container) {
@@ -1681,13 +1956,80 @@ var shortestPathTopic = {
 
     // ===== 문제 단계 =====
     stages: [
-        { num: 1, title: '기본 최단 경로', desc: '다익스트라와 플로이드-워셜의 기본 구현을 연습합니다 (Gold IV~V)', problemIds: ['boj-1753', 'boj-11404'] },
-        { num: 2, title: '최단 경로 응용', desc: '다익스트라를 다양한 상황에 응용합니다 (Gold V ~ Medium)', problemIds: ['boj-1916', 'lc-743'] }
+        { num: 1, title: 'BFS 최단거리', desc: '가중치 없는 그래프에서 BFS로 최단 거리를 구합니다 (Silver II)', problemIds: ['boj-18352'] },
+        { num: 2, title: '기본 최단 경로', desc: '다익스트라와 플로이드-워셜의 기본 구현을 연습합니다 (Gold IV~V)', problemIds: ['boj-1753', 'boj-11404'] },
+        { num: 3, title: '최단 경로 응용', desc: '다익스트라를 다양한 상황에 응용합니다 (Gold V ~ Medium)', problemIds: ['boj-1916', 'lc-743'] }
     ],
 
     // ===== 문제 목록 =====
     problems: [
-        // ===== 1단계: 기본 최단 경로 =====
+        // ===== 1단계: BFS 최단거리 =====
+        {
+            id: 'boj-18352',
+            title: 'BOJ 18352 - 특정 거리의 도시 찾기',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/18352',
+            simIntro: 'BFS로 시작 도시에서 각 도시까지의 최단 거리를 구하고, 거리가 K인 도시를 찾는 과정을 관찰하세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>어떤 나라에는 1번부터 N번까지의 도시와 M개의 단방향 도로가 있다. 모든 도로의 거리는 1이다.</p>
+                <p>이 때 특정한 도시 X로부터 출발하여 도달할 수 있는 모든 도시 중에서, 최단 거리가 정확히 K인 모든 도시들의 번호를 출력하는 프로그램을 작성하시오. 또한 출발 도시 X에서 출발 도시 X로의 최단 거리는 항상 0이라고 가정한다.</p>
+                <p>예를 들어 N=4, K=2, X=1일 때 다음과 같이 그래프가 구성되어 있다고 가정하자.</p>
+                <p>이 때 1번 도시에서 출발하여 도달할 수 있는 도시 중에서, 최단 거리가 2인 도시는 4번 도시뿐이다. 2번과 3번 도시의 경우, 최단 거리가 1이기 때문에 출력하지 않는다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 도시의 개수 N, 도로의 개수 M, 거리 정보 K, 출발 도시의 번호 X가 주어진다. (2 ≤ N ≤ 300,000, 1 ≤ M ≤ 1,000,000, 1 ≤ K ≤ 300,000, 1 ≤ X ≤ N) 둘째 줄부터 M개의 줄에 걸쳐서 두 개의 자연수 A, B가 주어지며, A번 도시에서 B번 도시로 이동하는 단방향 도로가 존재한다는 의미이다. 단, A와 B는 서로 다른 자연수이다.</p>
+                <h4>출력</h4>
+                <p>X로부터 출발하여 도달할 수 있는 도시 중에서, 최단 거리가 정확히 K인 모든 도시의 번호를 한 줄에 하나씩 오름차순으로 출력한다.</p>
+                <p>이 때 도달할 수 있는 도시 중에서, 최단 거리가 정확히 K인 도시가 하나도 없으면 -1을 출력한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>4 4 2 1\n1 2\n1 3\n2 3\n2 4</pre></div>
+                    <div><strong>출력</strong><pre>4</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>4 3 2 1\n1 2\n1 3\n1 4</pre></div>
+                    <div><strong>출력</strong><pre>-1</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>2 ≤ N ≤ 300,000</li>
+                    <li>1 ≤ M ≤ 1,000,000</li>
+                    <li>1 ≤ K ≤ 300,000</li>
+                    <li>1 ≤ X ≤ N</li>
+                    <li>모든 도로의 거리는 1</li>
+                </ul>
+            `,
+            hints: [
+                { title: '처음 떠오르는 방법', content: '시작 도시 X에서 다른 모든 도시까지의 <strong>최단 거리</strong>를 구해야 해요.<br>일단 가장 먼저 떠오르는 건, X에서 출발해서 <strong>모든 경로를 탐색</strong>하는 거예요.<br>DFS로 모든 경로를 시도하고, 각 도시에 도착하는 최소 거리를 기록하면 되지 않을까요?' },
+                { title: '근데 이러면 문제가 있어', content: 'DFS로 모든 경로를 탐색하면, <strong>같은 도시를 여러 번</strong> 방문할 수 있어요.<br>N이 최대 300,000이고 M이 1,000,000이면 시간이 엄청 오래 걸려요!<br><br>핵심 관찰: 이 문제의 모든 도로 거리는 <strong>1</strong>이에요.<br>거리가 모두 같다면, <strong>먼저 도착한 게 곧 최단 거리</strong>예요. 이런 상황에서 딱 맞는 알고리즘이 있는데...' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>BFS(너비 우선 탐색)</strong>가 정답이에요!<br><br>BFS는 시작점에서 <strong>가까운 순서대로</strong> 탐색하기 때문에, 모든 간선 가중치가 1일 때 최단거리를 보장해요.<br>① dist 배열을 -1(미방문)로 초기화, dist[X] = 0<br>② 큐에 X를 넣고 BFS 시작<br>③ 큐에서 도시를 꺼내서, 아직 방문하지 않은 이웃 도시의 거리를 현재+1로 설정<br>④ BFS 끝나면, dist가 K인 도시를 오름차순으로 출력<br><br>시간 복잡도: O(N + M) — 각 도시와 도로를 한 번씩만 확인!' },
+                { title: 'Python/C++에선 이렇게!', content: '<span class="lang-py">Python에선 <code>collections.deque</code>를 BFS 큐로 사용해요.<br><code>deque</code>는 양쪽 끝에서 O(1)으로 넣고 뺄 수 있어서 BFS에 딱이에요.<br>리스트의 <code>pop(0)</code>은 O(N)이라 느리니까, 반드시 <code>deque</code>를 쓰세요!<br>입력이 많으니 <code>sys.stdin.readline</code>도 필수에요.</span><span class="lang-cpp">C++에선 <code>queue&lt;int&gt;</code>를 BFS 큐로 사용해요.<br><code>queue</code>는 FIFO 방식으로 <code>push()</code>와 <code>front()</code>+<code>pop()</code>으로 동작해요.<br>N이 최대 300,000이므로 <code>scanf/printf</code>로 빠른 입출력을 하는 게 안전해요!</span>' }
+            ],
+            templates: {
+                python: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, K, X = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n\ndist = [-1] * (N + 1)\ndist[X] = 0\nq = deque([X])\n\nwhile q:\n    v = q.popleft()\n    for u in graph[v]:\n        if dist[u] == -1:\n            dist[u] = dist[v] + 1\n            q.append(u)\n\nresult = [i for i in range(1, N + 1) if dist[i] == K]\nif result:\n    for city in result:\n        print(city)\nelse:\n    print(-1)',
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M, K, X;\n    scanf("%d %d %d %d", &N, &M, &K, &X);\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n    }\n\n    vector<int> dist(N + 1, -1);\n    dist[X] = 0;\n    queue<int> q;\n    q.push(X);\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            if (dist[u] == -1) {\n                dist[u] = dist[v] + 1;\n                q.push(u);\n            }\n        }\n    }\n\n    bool found = false;\n    for (int i = 1; i <= N; i++) {\n        if (dist[i] == K) {\n            printf("%d\\n", i);\n            found = true;\n        }\n    }\n    if (!found) printf("-1\\n");\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'BFS 최단거리',
+                description: '모든 간선의 가중치가 1이므로 BFS로 최단 거리를 구한 뒤, 거리가 K인 도시를 출력합니다.',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(N + M)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 그래프 구성', desc: '인접 리스트로 단방향 그래프를 저장합니다.\nsys.stdin.readline으로 빠른 입력을 받아야 N, M이 클 때 시간 초과를 피할 수 있습니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, K, X = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)' },
+                        { title: 'BFS로 최단 거리 계산', desc: '모든 간선 가중치가 1이므로 BFS가 곧 최단 거리입니다.\ndist[v]가 -1이면 미방문 → 현재 거리+1로 갱신하고 큐에 추가합니다.\ndeque의 popleft()는 O(1)이라 list의 pop(0)보다 훨씬 빠릅니다.', code: 'dist = [-1] * (N + 1)  # -1 = 미방문\ndist[X] = 0             # 시작점은 거리 0\nq = deque([X])\n\nwhile q:\n    v = q.popleft()     # 큐에서 가장 앞의 도시를 꺼냄\n    for u in graph[v]:  # 이웃 도시 확인\n        if dist[u] == -1:        # 아직 방문하지 않았다면\n            dist[u] = dist[v] + 1  # 거리 = 현재 + 1\n            q.append(u)            # 큐에 추가' },
+                        { title: '결과 출력', desc: 'dist가 정확히 K인 도시를 오름차순으로 출력합니다.\n1번부터 N번까지 순서대로 확인하면 자연스럽게 오름차순이 됩니다.\n해당 도시가 없으면 -1을 출력합니다.', code: 'result = [i for i in range(1, N + 1) if dist[i] == K]\nif result:\n    for city in result:\n        print(city)\nelse:\n    print(-1)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구성', desc: 'vector<vector<int>>로 단방향 인접 리스트를 구성합니다.\nN이 최대 300,000이므로 scanf로 빠른 입력을 받습니다.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M, K, X;\n    scanf("%d %d %d %d", &N, &M, &K, &X);\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n    }' },
+                        { title: 'BFS로 최단 거리 계산', desc: 'queue<int>로 BFS를 수행합니다.\ndist를 -1로 초기화하여 방문 여부와 거리를 동시에 관리합니다.\n방문하지 않은 이웃만 큐에 추가하므로 각 도시는 한 번만 처리됩니다.', code: '    vector<int> dist(N + 1, -1); // -1 = 미방문\n    dist[X] = 0;                  // 시작점 거리 0\n    queue<int> q;\n    q.push(X);\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop(); // 큐에서 꺼냄\n        for (int u : graph[v]) {    // 이웃 확인\n            if (dist[u] == -1) {    // 미방문이면\n                dist[u] = dist[v] + 1; // 거리 갱신\n                q.push(u);             // 큐에 추가\n            }\n        }\n    }' },
+                        { title: '결과 출력', desc: '1번부터 N번까지 순회하며 dist가 K인 도시를 출력합니다.\n순서대로 확인하므로 자동으로 오름차순이 보장됩니다.', code: '    bool found = false;\n    for (int i = 1; i <= N; i++) {\n        if (dist[i] == K) {\n            printf("%d\\n", i);\n            found = true;\n        }\n    }\n    if (!found) printf("-1\\n");\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return shortestPathTopic.problems[0].templates; }
+            }]
+        },
+
+        // ===== 2단계: 기본 최단 경로 =====
         {
             id: 'boj-1753',
             title: 'BOJ 1753 - 최단경로',
@@ -1740,7 +2082,7 @@ var shortestPathTopic = {
                         { title: '다익스트라 실행', desc: '최소 힙에서 거리가 가장 짧은 정점부터 처리합니다.\nauto [d, v]로 구조적 바인딩하여 거리와 정점을 분리합니다.', code: '    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;  // 이미 더 짧은 경로 발견됨\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[0].templates; }
+                get templates() { return shortestPathTopic.problems[1].templates; }
             }]
         },
         {
@@ -1796,11 +2138,11 @@ var shortestPathTopic = {
                         { title: '플로이드-워셜 실행', desc: 'k(경유지) → i(출발) → j(도착) 순서 필수!', code: '    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[1].templates; }
+                get templates() { return shortestPathTopic.problems[2].templates; }
             }]
         },
 
-        // ===== 2단계: 최단 경로 응용 =====
+        // ===== 3단계: 최단 경로 응용 =====
         {
             id: 'boj-1916',
             title: 'BOJ 1916 - 최소비용 구하기',
@@ -1852,7 +2194,7 @@ var shortestPathTopic = {
                         { title: '다익스트라 + 출력', desc: '다익스트라를 실행한 뒤 도착 도시 E의 최단 거리만 출력합니다.\n구조는 1753번과 동일하고, 출력만 다릅니다.', code: '    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n    printf("%d\\n", dist[E]);\n    return 0;\n}' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[2].templates; }
+                get templates() { return shortestPathTopic.problems[3].templates; }
             }]
         },
         {
@@ -1914,7 +2256,7 @@ var shortestPathTopic = {
                         { title: '결과 반환', desc: 'max_element로 dist[1]~dist[n] 중 최대값 확인.', code: 'int ans = *max_element(dist.begin()+1, dist.end());\nreturn ans == INF ? -1 : ans;' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[3].templates; }
+                get templates() { return shortestPathTopic.problems[4].templates; }
             }]
         }
     ]

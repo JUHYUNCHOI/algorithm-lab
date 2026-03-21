@@ -17,6 +17,7 @@ const arrayTopic = {
 
     // Problem-type mapping
     problemMeta: {
+        'boj-10818': { type: 'Min/Max', color: '#00b894', vizMethod: '_renderVizMinMax' },
         'lc-1':     { type: 'Hash Map Lookup',    color: 'var(--accent)', vizMethod: '_renderVizTwoSum' },
         'lc-121':   { type: 'Single Pass',        color: 'var(--green)',  vizMethod: '_renderVizStock' },
         'lc-15':    { type: 'Two Pointers',       color: '#e17055',      vizMethod: '_renderViz3Sum' },
@@ -58,7 +59,7 @@ const arrayTopic = {
 
         self._clearVizState();
 
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
@@ -1420,6 +1421,194 @@ int main() {
     // ===== Visualization Tab =====
     renderVisualize(container) { container.innerHTML = ''; },
 
+    // ===== Visualization: Min/Max (BOJ 10818) =====
+    _renderVizMinMax(container) {
+        const self = this;
+        self._clearVizState();
+        const DEFAULT_ARR = [5, 20, -1, 7, 3, -8, 15];
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">Array: <input type="text" id="minmax-input" value="5, 20, -1, 7, 3, -8, 15" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;">' +
+            '<button class="viz-input-reset" id="minmax-reset" title="Reset after input change">🔄</button></label></div>' +
+
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
+
+            '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
+            '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--yellow);background:rgba(253,203,110,0.2);vertical-align:middle;"></span> Checking</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--green);background:rgba(0,184,148,0.2);vertical-align:middle;"></span> Current Min</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> Current Max</span></div>' +
+            '<div id="minmax-boxes" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>' +
+            '</div>' +
+
+            '<div style="display:flex;gap:16px;padding:0 24px 24px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">Current Min</div>' +
+            '<div id="minmax-min" style="font-weight:700;font-size:1.1rem;color:var(--green);">—</div></div>' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">Current Max</div>' +
+            '<div id="minmax-max" style="font-weight:700;font-size:1.1rem;color:var(--accent);">—</div></div>' +
+            '</div>' +
+
+            '</div>' +
+            self._createStepControls();
+
+        var boxesEl = container.querySelector('#minmax-boxes');
+        var minEl = container.querySelector('#minmax-min');
+        var maxEl = container.querySelector('#minmax-max');
+
+        function renderBoxes(data) {
+            boxesEl.innerHTML = '';
+            data.forEach(function(v, i) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + v + '</div>';
+                boxesEl.appendChild(box);
+            });
+        }
+        function setBoxState(idx, cls) {
+            var b = boxesEl.querySelector('[data-idx="' + idx + '"]');
+            if (b) b.className = 'str-char-box' + (cls ? ' ' + cls : '');
+        }
+        function saveState(data) {
+            return {
+                boxClasses: Array.from(boxesEl.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
+                min: minEl.innerHTML,
+                max: maxEl.innerHTML
+            };
+        }
+        function restoreState(s) {
+            boxesEl.querySelectorAll('.str-char-box').forEach(function(b, i) { b.className = s.boxClasses[i]; });
+            minEl.innerHTML = s.min;
+            maxEl.innerHTML = s.max;
+        }
+
+        function buildSteps() {
+            var input = container.querySelector('#minmax-input').value;
+            var data = input.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+            if (data.length < 1) { data = DEFAULT_ARR; }
+            renderBoxes(data);
+            minEl.textContent = '—';
+            maxEl.textContent = '—';
+
+            var steps = [];
+            var curMin = data[0], curMax = data[0], minIdx = 0, maxIdx = 0;
+
+            // Step 0: initialize with first element
+            (function() {
+                var _val = data[0];
+                steps.push({
+                    description: 'Set arr[0]=' + _val + ' as both the initial min and max. We\'ve only seen one number, so it\'s both!',
+                    _before: null,
+                    action: function() {
+                        this._before = saveState(data);
+                        for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                        setBoxState(0, 'matched');
+                        minEl.innerHTML = '<strong>' + _val + '</strong> (idx 0)';
+                        maxEl.innerHTML = '<strong>' + _val + '</strong> (idx 0)';
+                    },
+                    undo: function() { restoreState(this._before); }
+                });
+            })();
+
+            // Compare remaining elements one by one
+            for (var i = 1; i < data.length; i++) {
+                (function(idx) {
+                    var val = data[idx];
+                    var prevMin = curMin, prevMax = curMax, prevMinIdx = minIdx, prevMaxIdx = maxIdx;
+                    var isNewMin = val < curMin;
+                    var isNewMax = val > curMax;
+
+                    // Comparison step
+                    steps.push({
+                        description: 'Check arr[' + idx + ']=' + val + '. Compare with min ' + prevMin + ': ' +
+                            (val < prevMin ? val + ' < ' + prevMin + ' — smaller! Need to update min!' : val + ' >= ' + prevMin + ' — min stays.') +
+                            ' Compare with max ' + prevMax + ': ' +
+                            (val > prevMax ? val + ' > ' + prevMax + ' — larger! Need to update max!' : val + ' <= ' + prevMax + ' — max stays.'),
+                        _before: null,
+                        action: function() {
+                            this._before = saveState(data);
+                            for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                            setBoxState(idx, 'comparing');
+                            setBoxState(prevMinIdx, 'matched');
+                            if (prevMaxIdx !== prevMinIdx) setBoxState(prevMaxIdx, 'visited');
+                            minEl.innerHTML = '<strong>' + prevMin + '</strong> (idx ' + prevMinIdx + ')';
+                            maxEl.innerHTML = '<strong>' + prevMax + '</strong> (idx ' + prevMaxIdx + ')';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+
+                    // Update step if min or max changed
+                    if (isNewMin || isNewMax) {
+                        var newMin = isNewMin ? val : prevMin;
+                        var newMax = isNewMax ? val : prevMax;
+                        var newMinIdx = isNewMin ? idx : prevMinIdx;
+                        var newMaxIdx = isNewMax ? idx : prevMaxIdx;
+                        steps.push({
+                            description: (isNewMin ? 'Min updated! ' + prevMin + ' → ' + val : '') +
+                                (isNewMin && isNewMax ? ' / ' : '') +
+                                (isNewMax ? 'Max updated! ' + prevMax + ' → ' + val : ''),
+                            _before: null,
+                            action: function() {
+                                this._before = saveState(data);
+                                for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                                setBoxState(newMinIdx, 'matched');
+                                if (newMaxIdx !== newMinIdx) setBoxState(newMaxIdx, 'visited');
+                                minEl.innerHTML = '<strong>' + newMin + '</strong> (idx ' + newMinIdx + ')';
+                                maxEl.innerHTML = '<strong>' + newMax + '</strong> (idx ' + newMaxIdx + ')';
+                            },
+                            undo: function() { restoreState(this._before); }
+                        });
+                    }
+
+                    if (isNewMin) { curMin = val; minIdx = idx; }
+                    if (isNewMax) { curMax = val; maxIdx = idx; }
+                })(i);
+            }
+
+            // Final result
+            var finalMin = curMin, finalMax = curMax, finalMinIdx = minIdx, finalMaxIdx = maxIdx;
+            steps.push({
+                description: 'Done! Min = ' + finalMin + ', Max = ' + finalMax + '. We scanned the array just once — O(n) time!',
+                _before: null,
+                action: function() {
+                    this._before = saveState(data);
+                    for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                    setBoxState(finalMinIdx, 'matched');
+                    if (finalMaxIdx !== finalMinIdx) setBoxState(finalMaxIdx, 'visited');
+                    minEl.innerHTML = '<strong style="font-size:1.3rem;">' + finalMin + '</strong> ✅';
+                    maxEl.innerHTML = '<strong style="font-size:1.3rem;">' + finalMax + '</strong> ✅';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            return steps;
+        }
+
+        // Reset button
+        container.querySelector('#minmax-reset').addEventListener('click', function() {
+            var state = self._vizState;
+            while (state.currentStep >= 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+            }
+            state.steps = [];
+            var input = container.querySelector('#minmax-input').value;
+            var data = input.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+            if (data.length < 1) { data = DEFAULT_ARR; }
+            renderBoxes(data);
+            minEl.textContent = '—';
+            maxEl.textContent = '—';
+            self._initStepController(container, buildSteps);
+        });
+
+        renderBoxes(DEFAULT_ARR);
+        self._initStepController(container, buildSteps);
+    },
+
     // ===== Visualization: Two Sum (Hash Map) =====
     _renderVizTwoSum(container) {
         const self = this;
@@ -2374,11 +2563,139 @@ int main() {
 
     // ===== Problems tab =====
     stages: [
-        { num: 1, title: 'Array Basics', desc: 'Single pass, Two Pointers basics (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
-        { num: 2, title: 'Array Advanced', desc: 'Advanced Two Pointers, preprocessing (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
+        { num: 1, title: 'Min/Max', desc: 'Array traversal basics', problemIds: ['boj-10818'] },
+        { num: 2, title: 'Array Basics', desc: 'Single pass, Two Pointers basics (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
+        { num: 3, title: 'Array Advanced', desc: 'Advanced Two Pointers, preprocessing (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
     ],
 
     problems: [
+        {
+            id: 'boj-10818',
+            title: 'BOJ 10818 - Min, Max',
+            difficulty: 'bronze',
+            link: 'https://www.acmicpc.net/problem/10818',
+            simIntro: 'Watch how we traverse the array from start to end, tracking the minimum and maximum values step by step!',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>Given N integers, write a program to find the minimum and maximum values.</p>
+
+                <h4>Input</h4>
+                <p>The first line contains the number of integers N (1 ≤ N ≤ 1,000,000). The second line contains N integers separated by spaces. All integers are between -1,000,000 and 1,000,000 inclusive.</p>
+
+                <h4>Output</h4>
+                <p>Print the minimum and maximum values separated by a space on the first line.</p>
+
+                <div class="problem-example"><h4>Sample Input 1</h4>
+                <pre>5
+20 10 35 30 7</pre></div>
+
+                <div class="problem-example"><h4>Sample Output 1</h4>
+                <pre>7 35</pre></div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 1,000,000</li>
+                    <li>-1,000,000 ≤ each integer ≤ 1,000,000</li>
+                </ul>
+            `,
+            inputDefault: 0,
+            solve() { return '7 35'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+nums = list(map(int, input().split()))
+
+# Initialize with first element, then traverse and update
+min_val = nums[0]
+max_val = nums[0]
+for x in nums[1:]:
+    if x < min_val:
+        min_val = x
+    if x > max_val:
+        max_val = x
+
+print(min_val, max_val)`,
+                cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<int> nums(n);
+    for (int i = 0; i < n; i++) cin >> nums[i];
+
+    // Initialize with first element, then traverse and update
+    int minVal = nums[0], maxVal = nums[0];
+    for (int i = 1; i < n; i++) {
+        if (nums[i] < minVal) minVal = nums[i];
+        if (nums[i] > maxVal) maxVal = nums[i];
+    }
+    cout << minVal << " " << maxVal << endl;
+    return 0;
+}`
+            },
+            solutions: [{
+                approach: 'Direct Traversal',
+                description: 'Traverse the array once from start to end, tracking min and max',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                hints: [
+                    { title: 'Understanding the problem', content: '<div class="hint-key">💡 Find the smallest and largest among N integers!</div><p>Example: [20, 10, 35, 30, 7] → Min <strong>7</strong>, Max <strong>35</strong></p><p>Can we find both values in a single pass through the array?</p>' },
+                    { title: 'How to set initial values?', content: '<div class="hint-key">🤔 We need a baseline to compare against!</div><p>Set the first element as the <strong>initial min and max</strong>.</p><p>Since we haven\'t seen any other numbers yet, the first number is both the current minimum and maximum.</p><span class="lang-py"><pre><code class="language-python">min_val = nums[0]  # initial min\nmax_val = nums[0]  # initial max</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">int minVal = nums[0]; // initial min\nint maxVal = nums[0]; // initial max</code></pre></span>' },
+                    { title: 'Traverse and compare!', content: '<div class="hint-key">🔄 Compare each element from the second one onwards</div><p>For each element, check two things:</p><ul><li>Is it <strong>smaller</strong> than current min? → Update min</li><li>Is it <strong>larger</strong> than current max? → Update max</li></ul><p>This way we solve it in <strong>one pass</strong> — O(n)!</p>' },
+                    { title: 'Output the result', content: '<div class="hint-key">✅ After traversal, min and max are determined!</div><p>Print them separated by a space and you\'re done!</p><span class="lang-py"><pre><code class="language-python">print(min_val, max_val)  # e.g., 7 35</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">cout << minVal << " " << maxVal << endl;</code></pre></span>' }
+                ],
+                vizMethod: '_renderVizMinMax',
+                simIntro: 'Watch how we find min and max by traversing the array!',
+                templates: {
+                    python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\n\n# Initialize with first element, then traverse and update\nmin_val = nums[0]\nmax_val = nums[0]\nfor x in nums[1:]:\n    if x < min_val:\n        min_val = x\n    if x > max_val:\n        max_val = x\n\nprint(min_val, max_val)`,
+                    cpp: `#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];\n\n    // Initialize with first element, then traverse and update\n    int minVal = nums[0], maxVal = nums[0];\n    for (int i = 1; i < n; i++) {\n        if (nums[i] < minVal) minVal = nums[i];\n        if (nums[i] > maxVal) maxVal = nums[i];\n    }\n    cout << minVal << " " << maxVal << endl;\n    return 0;\n}`
+                },
+                codeSteps: {
+                    python: [
+                        { title: 'Read input', desc: 'Read N and the N integers.\nUsing sys.stdin.readline for speed since N can be up to 1 million!', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))' },
+                        { title: 'Set initial values', desc: 'Use the first element as baseline for both min and max.\nWe\'ve only seen one number so far, so it\'s both the min and max!', code: 'min_val = nums[0]  # baseline: first element\nmax_val = nums[0]' },
+                        { title: 'Traverse and compare', desc: 'Compare each element from the second one onwards.\nUpdate min/max whenever we find a smaller/larger value!', code: 'for x in nums[1:]:\n    if x < min_val:   # smaller than current min?\n        min_val = x    # → update min!\n    if x > max_val:   # larger than current max?\n        max_val = x    # → update max!' },
+                        { title: 'Print result', desc: 'After traversal, min_val and max_val hold the answer!\nO(n) — we only look at each element once.', code: 'print(min_val, max_val)  # space-separated output' }
+                    ],
+                    cpp: [
+                        { title: 'Read input', desc: 'Read N and the N integers.\nios::sync_with_stdio(false) for faster I/O!', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];' },
+                        { title: 'Set initial values', desc: 'Use the first element as baseline for both min and max.', code: '    int minVal = nums[0], maxVal = nums[0];' },
+                        { title: 'Traverse and compare', desc: 'Compare each element from index 1 onwards.\nTwo if-statements to track min and max simultaneously!', code: '    for (int i = 1; i < n; i++) {\n        if (nums[i] < minVal) minVal = nums[i];\n        if (nums[i] > maxVal) maxVal = nums[i];\n    }' },
+                        { title: 'Print result', desc: 'O(n) single pass gives us both min and max.', code: '    cout << minVal << " " << maxVal << endl;\n    return 0;\n}' }
+                    ]
+                }
+            }, {
+                approach: 'Built-in Functions',
+                description: 'Use Python min()/max() or C++ algorithm library',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                hints: [
+                    { title: 'There\'s an easier way!', content: '<div class="hint-key">💡 Most languages have built-in functions for min/max!</div><span class="lang-py"><p>Python: <code>min()</code> and <code>max()</code> — pass a list and get the result directly.</p></span><span class="lang-cpp"><p>C++: <code>*min_element()</code> and <code>*max_element()</code> — found in the <code>&lt;algorithm&gt;</code> header.</p></span>' },
+                    { title: 'Same principle internally!', content: '<p>Built-in functions also traverse the array internally. Time complexity is the same <strong>O(n)</strong>.</p><p>Same performance as manual traversal, but much shorter and more readable code!</p>' }
+                ],
+                templates: {
+                    python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\n\n# Simple with built-in min() and max()!\nprint(min(nums), max(nums))`,
+                    cpp: `#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];\n\n    // Simple with min_element and max_element!\n    cout << *min_element(nums.begin(), nums.end()) << " "\n         << *max_element(nums.begin(), nums.end()) << endl;\n    return 0;\n}`
+                },
+                codeSteps: {
+                    python: [
+                        { title: 'Read input', desc: 'Same input reading as before.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))' },
+                        { title: 'Use built-in functions!', desc: 'min() returns the smallest, max() returns the largest.\nInternally O(n) traversal — same performance, shorter code!', code: 'print(min(nums), max(nums))  # one line!' }
+                    ],
+                    cpp: [
+                        { title: 'Read input', desc: 'Same input reading as before.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>  // min_element, max_element\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];' },
+                        { title: 'Use algorithm functions!', desc: 'min_element/max_element return iterators → dereference with *.\nInternally O(n) traversal — same performance, shorter code!', code: '    cout << *min_element(nums.begin(), nums.end()) << " "\n         << *max_element(nums.begin(), nums.end()) << endl;\n    return 0;\n}' }
+                    ]
+                }
+            }]
+        },
         {
             id: 'lc-1',
             title: 'LeetCode 1 - Two Sum',

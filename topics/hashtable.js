@@ -15,6 +15,7 @@ const hashTableTopic = {
     tabs: [{ id: 'concept', label: '학습하기' }],
 
     problemMeta: {
+        'boj-10815': { type: '집합 탐색',      color: '#00b894',      vizMethod: '_renderVizNumCard' },
         'lc-217':   { type: '해시셋 활용',    color: 'var(--accent)', vizMethod: '_renderVizContainsDup' },
         'lc-3':     { type: '슬라이딩 윈도우', color: '#6c5ce7',      vizMethod: '_renderVizLongestSub' },
         'lc-560':   { type: '누적합+해시맵',   color: '#e17055',      vizMethod: '_renderVizSubarraySum' },
@@ -37,7 +38,7 @@ const hashTableTopic = {
         const meta = self.problemMeta[problemId];
         if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
         self._clearVizState();
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
         header.innerHTML =
@@ -1149,6 +1150,130 @@ struct HashTable {
         document.addEventListener('keydown', handleKeydown); state.keydownHandler = handleKeydown; updateUI();
     },
 
+    // ===== 문제별 시뮬레이션: 숫자 카드 (BOJ 10815) =====
+    _renderVizNumCard(container) {
+        const self = this;
+        const DEFAULT_CARDS = '6,3,2,10,-10';
+        const DEFAULT_QUERIES = '10,9,-5,2,3,4,5,-10';
+        container.innerHTML = `
+            ${self._createStepDesc('-nc')}
+            <div class="sim-card">
+                <div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                    <label>카드: <input type="text" id="ht-nc-cards" value="${DEFAULT_CARDS}" style="width:200px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <label>확인할 수: <input type="text" id="ht-nc-queries" value="${DEFAULT_QUERIES}" style="width:240px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <button class="btn btn-primary" id="ht-nc-start">🔄</button>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;margin-bottom:8px;">카드 (원본 배열)</div>
+                    <div id="ht-nc-card-boxes" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;margin-bottom:8px;">카드 Set</div>
+                    <div id="ht-nc-set" class="graph-queue-display" style="min-height:40px;padding:12px;font-size:0.95rem;">{ }</div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;margin-bottom:8px;">확인할 수</div>
+                    <div id="ht-nc-query-boxes" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+                </div>
+                <div>결과: <span id="ht-nc-result" style="font-weight:600;">—</span></div>
+            </div>
+            ${self._createStepControls('-nc')}
+        `;
+        const cardBoxesEl = container.querySelector('#ht-nc-card-boxes');
+        const setEl = container.querySelector('#ht-nc-set');
+        const queryBoxesEl = container.querySelector('#ht-nc-query-boxes');
+        const resultEl = container.querySelector('#ht-nc-result');
+
+        function buildAndRun() {
+            self._clearVizState();
+            const cards = container.querySelector('#ht-nc-cards').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+            const queries = container.querySelector('#ht-nc-queries').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+
+            cardBoxesEl.innerHTML = '';
+            cards.forEach((v, i) => { const b = document.createElement('div'); b.className = 'str-char-box'; b.textContent = v; b.dataset.idx = i; cardBoxesEl.appendChild(b); });
+            queryBoxesEl.innerHTML = '';
+            queries.forEach((v, i) => { const b = document.createElement('div'); b.className = 'str-char-box'; b.textContent = v; b.dataset.idx = i; queryBoxesEl.appendChild(b); });
+            setEl.textContent = '{ }';
+            resultEl.textContent = '—';
+
+            function saveState() {
+                return {
+                    cardBoxes: Array.from(cardBoxesEl.children).map(b => ({ cls: b.className, bg: b.style.background, color: b.style.color })),
+                    queryBoxes: Array.from(queryBoxesEl.children).map(b => ({ cls: b.className, bg: b.style.background, color: b.style.color })),
+                    set: setEl.textContent, result: resultEl.innerHTML
+                };
+            }
+            function restoreState(s) {
+                Array.from(cardBoxesEl.children).forEach((b, i) => { b.className = s.cardBoxes[i].cls; b.style.background = s.cardBoxes[i].bg; b.style.color = s.cardBoxes[i].color; });
+                Array.from(queryBoxesEl.children).forEach((b, i) => { b.className = s.queryBoxes[i].cls; b.style.background = s.queryBoxes[i].bg; b.style.color = s.queryBoxes[i].color; });
+                setEl.textContent = s.set; resultEl.innerHTML = s.result;
+            }
+
+            const steps = [];
+            const cardSet = new Set();
+
+            // Step 1: Build set from cards
+            steps.push({
+                description: '카드 N장을 set에 넣습니다. set은 O(1)에 존재 여부를 확인할 수 있어요!',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    cards.forEach(v => cardSet.add(v));
+                    setEl.textContent = '{ ' + Array.from(cardSet).join(', ') + ' }';
+                    Array.from(cardBoxesEl.children).forEach(b => { b.className = 'str-char-box matched'; });
+                },
+                undo: function() { restoreState(this._before); cardSet.clear(); }
+            });
+
+            // Steps for each query
+            const results = [];
+            queries.forEach((q, i) => {
+                const found = cards.indexOf(q) !== -1;
+                steps.push({
+                    description: q + '이(가) set에 ' + (found ? '있습니다! → 1 ✓' : '없습니다! → 0 ✗') + '  (O(1) 조회)',
+                    _before: null,
+                    action: function() {
+                        this._before = saveState();
+                        // Reset previous query highlight
+                        Array.from(queryBoxesEl.children).forEach(b => {
+                            if (b.classList.contains('comparing')) {
+                                b.classList.remove('comparing');
+                            }
+                        });
+                        queryBoxesEl.children[i].classList.add('comparing');
+                        if (found) {
+                            queryBoxesEl.children[i].style.background = 'var(--green)';
+                            queryBoxesEl.children[i].style.color = '#fff';
+                        } else {
+                            queryBoxesEl.children[i].style.background = 'var(--red, #e17055)';
+                            queryBoxesEl.children[i].style.color = '#fff';
+                        }
+                        results.push(found ? 1 : 0);
+                        resultEl.innerHTML = '<span style="font-family:monospace;">' + results.join(' ') + '</span>';
+                    },
+                    undo: function() { restoreState(this._before); results.pop(); }
+                });
+            });
+
+            // Final step
+            steps.push({
+                description: '완료! 모든 수에 대해 카드 보유 여부를 O(1)에 확인했습니다. 총 시간: O(N + M)',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    Array.from(queryBoxesEl.children).forEach(b => { b.classList.remove('comparing'); });
+                    resultEl.innerHTML = '<span style="color:var(--green);font-family:monospace;font-weight:700;">' + results.join(' ') + '</span>';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            self._initStepController(container, steps, '-nc');
+        }
+
+        container.querySelector('#ht-nc-start').addEventListener('click', buildAndRun);
+        buildAndRun();
+    },
+
     // ===== 문제별 시뮬레이션: Contains Duplicate =====
     _renderVizContainsDup(container) {
         const self = this;
@@ -1630,11 +1755,141 @@ struct HashTable {
 
     // ===== 문제풀이 탭 =====
     stages: [
-        { num: 1, title: '해시맵 기본', desc: '빈도수, 존재 확인, 매핑 (Easy~Silver)', problemIds: ['lc-217', 'lc-3'] },
-        { num: 2, title: '해시맵 응용', desc: '패턴 매칭, 연속 부분 배열 (Medium~Gold)', problemIds: ['lc-560', 'boj-7785'] }
+        { num: 1, title: '숫자 카드', desc: '해시 기반 O(1) 탐색', problemIds: ['boj-10815'] },
+        { num: 2, title: '해시맵 기본', desc: '빈도수, 존재 확인, 매핑 (Easy~Silver)', problemIds: ['lc-217', 'lc-3'] },
+        { num: 3, title: '해시맵 응용', desc: '패턴 매칭, 연속 부분 배열 (Medium~Gold)', problemIds: ['lc-560', 'boj-7785'] }
     ],
 
     problems: [
+        {
+            id: 'boj-10815',
+            title: 'BOJ 10815 - 숫자 카드',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/10815',
+            descriptionHTML: `<h3>문제</h3>
+                <p>숫자 카드는 정수 하나가 적혀져 있는 카드이다. 상근이는 숫자 카드 N장을 가지고 있다. 정수 M개가 주어졌을 때, 이 수가 적혀있는 숫자 카드를 상근이가 가지고 있는지 아닌지를 구하는 프로그램을 작성하시오.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 상근이가 가지고 있는 숫자 카드의 개수 N (1 &le; N &le; 500,000)이 주어진다. 둘째 줄에는 숫자 카드에 적혀있는 정수가 주어진다. 숫자 카드에 적혀있는 수는 -10,000,000보다 크거나 같고, 10,000,000보다 작거나 같다.</p>
+                <p>셋째 줄에는 M (1 &le; M &le; 500,000)이 주어진다. 넷째 줄에는 상근이가 가지고 있는 숫자 카드인지 아닌지를 구해야 할 M개의 정수가 주어지며, 이 수는 공백으로 구분되어 있다. 이 수도 -10,000,000보다 크거나 같고, 10,000,000보다 작거나 같다.</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 입력으로 주어진 M개의 수에 대해서, 각 수가 적힌 숫자 카드를 상근이가 가지고 있으면 1을, 아니면 0을 공백으로 구분해 출력한다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5
+6 3 2 10 -10
+8
+10 9 -5 2 3 4 5 -10</pre></div>
+                    <div><strong>출력</strong><pre>1 0 0 1 1 0 0 1</pre></div>
+                </div>
+                <p class="example-explain">카드 {6, 3, 2, 10, -10}을 가지고 있을 때, 10→있음(1), 9→없음(0), -5→없음(0), 2→있음(1), 3→있음(1), 4→없음(0), 5→없음(0), -10→있음(1)</p>
+                </div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 500,000</li>
+                    <li>1 ≤ M ≤ 500,000</li>
+                    <li>카드에 적힌 수: -10,000,000 ≤ x ≤ 10,000,000</li>
+                </ul>`,
+            hints: [
+                { title: '처음 떠오르는 방법은?', content: 'M개의 수 각각에 대해 N장의 카드를 하나씩 비교하면 될 것 같아요.<br>이중 for문으로 모든 조합을 확인하면 됩니다!<br><br>근데… N과 M이 최대 <strong>50만</strong>이면?<br>50만 × 50만 = <strong>2,500억 번</strong> 비교… 시간 초과! 😱' },
+                { title: '"가지고 있나?" → 빠르게 찾는 방법', content: '카드 번호들을 <strong>어딘가에 저장</strong>해두고, 각 수에 대해 "이 번호가 있나?"를 빠르게 확인하면 돼요.<br><br>배열을 처음부터 끝까지 보는 건 O(n)… 더 빠른 방법이 있을까요?<br><br><strong>Set(집합)</strong>을 쓰면 "이 값이 있나?"를 <strong>O(1)</strong>에 확인할 수 있어요!<br><span class="lang-py">Python: <code>set()</code>의 <code>in</code> 연산자 → O(1)</span><span class="lang-cpp">C++: <code>unordered_set</code>의 <code>count()</code> → O(1)</span>' },
+                { title: 'Set으로 풀어보자', content: '① 카드 N장의 숫자를 set에 넣는다 → O(N)<br>② M개의 수 각각에 대해 set에 있는지 확인 → O(1) × M = O(M)<br><br>전체: <strong>O(N + M)</strong> — 이중 for문의 O(N×M)보다 훨씬 빠릅니다!<br><br><span class="lang-py"><code>cards = set(map(int, input().split()))</code><br><code>1 if x in cards else 0</code></span><span class="lang-cpp"><code>unordered_set&lt;int&gt; cards(arr, arr+n);</code><br><code>cards.count(x) ? 1 : 0</code></span>' },
+                { title: '정렬 + 이분탐색으로도 풀 수 있어요', content: '카드를 <strong>정렬</strong>한 뒤, 각 수에 대해 <strong>이분탐색</strong>으로 찾으면?<br>정렬 O(N log N) + 탐색 O(M log N) = <strong>O((N+M) log N)</strong><br><br>Set 풀이의 O(N+M)보다는 느리지만, 충분히 빠르고 추가 메모리도 적게 씁니다.<br><br><span class="lang-py"><code>bisect_left</code>: 정렬된 배열에서 삽입 위치를 이분탐색으로 찾는 함수</span><span class="lang-cpp"><code>binary_search</code>: 정렬된 배열에서 값이 존재하는지 이분탐색으로 확인</span>' }
+            ],
+            simIntro: '카드를 set에 넣고, 각 수에 대해 O(1) 탐색하는 과정을 확인해보세요!',
+            inputDefault: 0, solve() { return '1 0 0 1 1 0 0 1'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+cards = set(map(int, input().split()))  # set에 카드 저장 → O(N)
+m = int(input())
+queries = list(map(int, input().split()))
+
+# 각 수에 대해 set에 있는지 O(1) 확인
+print(' '.join('1' if x in cards else '0' for x in queries))`,
+                cpp: `#include <iostream>
+#include <unordered_set>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    unordered_set<int> cards;
+    for (int i = 0; i < n; i++) {
+        int x; scanf("%d", &x);
+        cards.insert(x);  // set에 카드 저장 → O(1) 삽입
+    }
+    int m; scanf("%d", &m);
+    for (int i = 0; i < m; i++) {
+        int x; scanf("%d", &x);
+        // O(1) 존재 확인
+        printf("%d ", cards.count(x) ? 1 : 0);
+    }
+}`
+            },
+            solutions: [{
+                approach: '브루트포스',
+                description: '각 수에 대해 카드 배열을 전부 탐색하여 존재 여부 확인',
+                timeComplexity: 'O(N × M)',
+                spaceComplexity: 'O(N)',
+                templates: {
+                    python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+cards = list(map(int, input().split()))
+m = int(input())
+queries = list(map(int, input().split()))
+
+result = []
+for q in queries:
+    found = 0
+    for c in cards:       # 매번 N장 전부 확인 → O(N)
+        if c == q:
+            found = 1
+            break
+    result.append(str(found))
+print(' '.join(result))`,
+                    cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    vector<int> cards(n);
+    for (int i = 0; i < n; i++) scanf("%d", &cards[i]);
+    int m; scanf("%d", &m);
+    for (int i = 0; i < m; i++) {
+        int x; scanf("%d", &x);
+        int found = 0;
+        for (int j = 0; j < n; j++) {  // 매번 N장 전부 확인
+            if (cards[j] == x) { found = 1; break; }
+        }
+        printf("%d ", found);
+    }
+}`
+                }
+            }, {
+                approach: 'Set 활용',
+                description: '카드를 set에 저장하고 O(1)에 존재 여부 확인',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(N)',
+                get templates() { return hashTableTopic.problems[0].templates; },
+                codeSteps: {
+                    python: [
+                        { title: '입력 받기', desc: 'BOJ는 입력이 많을 수 있으므로 sys.stdin.readline으로\n빠른 입력을 설정합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },
+                        { title: '카드를 set에 저장', desc: '핵심: set은 "이 값이 있나?"를 O(1)에 확인!\nN장의 카드를 set에 넣으면 이후 조회가 빠릅니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncards = set(map(int, input().split()))  # O(N)으로 set 생성' },
+                        { title: 'M개의 수 확인', desc: '각 수에 대해 "in cards"로 O(1) 확인!\nset의 해시 기반 조회 덕분에 전체 O(M)으로 처리됩니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncards = set(map(int, input().split()))  # O(N)으로 set 생성\nm = int(input())\nqueries = list(map(int, input().split()))\n\n# 각 수: set에 있나? → O(1) × M번 = O(M)\nprint(\' \'.join(\'1\' if x in cards else \'0\' for x in queries))' }
+                    ],
+                    cpp: [
+                        { title: '헤더 + set 선언', desc: 'unordered_set은 해시 기반이라 조회가 O(1)!\nset(트리 기반)은 O(log N)이므로 unordered_set을 선택합니다.', code: '#include <iostream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    unordered_set<int> cards;' },
+                        { title: '카드 저장', desc: 'N장의 카드를 하나씩 읽어서 unordered_set에 삽입합니다.\n삽입도 평균 O(1)이므로 전체 O(N).', code: '#include <iostream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    unordered_set<int> cards;\n    for (int i = 0; i < n; i++) {\n        int x; scanf("%d", &x);\n        cards.insert(x);  // O(1) 삽입\n    }' },
+                        { title: '쿼리 처리 + 출력', desc: 'count()로 존재 여부를 O(1)에 확인.\n있으면 1, 없으면 0을 출력합니다.', code: '#include <iostream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    unordered_set<int> cards;\n    for (int i = 0; i < n; i++) {\n        int x; scanf("%d", &x);\n        cards.insert(x);  // O(1) 삽입\n    }\n    int m; scanf("%d", &m);\n    for (int i = 0; i < m; i++) {\n        int x; scanf("%d", &x);\n        printf("%d ", cards.count(x) ? 1 : 0);  // O(1) 조회\n    }\n}' }
+                    ]
+                }
+            }]
+        },
         {
             id: 'lc-217',
             title: 'LeetCode 217 - Contains Duplicate',
@@ -1723,7 +1978,7 @@ public:
                 description: '해시셋으로 O(1) 존재 확인하며 순회',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[0].templates; },
+                get templates() { return hashTableTopic.problems[1].templates; },
                 codeSteps: {
                     python: [
                         { title: '함수 정의', desc: '정수 배열 nums에 중복이 있는지 확인합니다.', code: 'class Solution:\n    def containsDuplicate(self, nums):' },
@@ -1849,7 +2104,7 @@ public:
                 description: '해시맵으로 마지막 등장 위치를 기록하며 윈도우 확장',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(min(m,n))',
-                get templates() { return hashTableTopic.problems[1].templates; },
+                get templates() { return hashTableTopic.problems[2].templates; },
                 codeSteps: {
                     python: [
                         { title: '함수 정의', desc: '문자열 s에서 중복 없는 가장 긴 부분 문자열의 길이를 구합니다.', code: 'class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:' },
@@ -1993,7 +2248,7 @@ public:
                 description: '누적합의 차이를 해시맵으로 O(1)에 확인',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[2].templates; },
+                get templates() { return hashTableTopic.problems[3].templates; },
                 codeSteps: {
                     python: [
                         { title: '함수 정의', desc: '정수 배열 nums와 목표 합 k를 받습니다.', code: 'class Solution:\n    def subarraySum(self, nums, k):' },
@@ -2153,7 +2408,7 @@ int main() {
                 description: 'enter시 add, leave시 remove 후 사전 역순 정렬',
                 timeComplexity: 'O(n log n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[3].templates; },
+                get templates() { return hashTableTopic.problems[4].templates; },
                 codeSteps: {
                     python: [
                         { title: '입력 설정', desc: 'BOJ는 입력이 많을 수 있으므로 sys.stdin.readline으로\n빠른 입력을 설정합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },

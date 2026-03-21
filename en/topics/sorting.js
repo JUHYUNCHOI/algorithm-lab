@@ -15,6 +15,7 @@ const sortingTopic = {
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
+        'boj-25305': { type: 'Sort Application', color: '#00b894',      vizMethod: '_renderVizCutline' },
         'boj-2750':  { type: 'Basic Sort',    color: 'var(--accent)', vizMethod: '_renderVizSelection' },
         'boj-11650': { type: 'Custom Sort',   color: 'var(--green)',  vizMethod: '_renderVizCoordSort' },
         'lc-56':     { type: 'Interval Merge',     color: '#e17055',      vizMethod: '_renderVizMergeIntervals' },
@@ -37,7 +38,7 @@ const sortingTopic = {
         var meta = self.problemMeta[problemId];
         if (!meta) { container.innerHTML = '<p>Problem metadata not found.</p>'; return; }
         self._clearVizState();
-        var diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        var diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         var header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
         header.innerHTML =
@@ -1322,6 +1323,119 @@ sort(words.begin(), words.end(),
         }).join('');
     },
 
+    // ── Cutline (boj-25305) ──
+    _renderVizCutline(container) {
+        var self = this;
+        var DEFAULT_SCORES = [100, 76, 85, 93, 98];
+        var DEFAULT_K = 2;
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">Scores: <input type="text" id="sort-cut-input" value="' + DEFAULT_SCORES.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+                '<label style="font-weight:600;">k: <input type="number" id="sort-cut-k" value="' + DEFAULT_K + '" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+                '<button class="btn btn-primary" id="sort-cut-reset">\uD83D\uDD04</button>' +
+            '</div>' +
+            self._createStepDesc('-cut') +
+            '<div class="viz-area" style="position:relative;">' +
+                '<div id="sort-bars-cut" style="display:flex;gap:6px;align-items:flex-end;justify-content:center;min-height:220px;padding:20px 0;"></div>' +
+                '<div id="sort-fly-cut" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
+            '</div>' +
+            self._createStepControls('-cut');
+
+        var barsEl = container.querySelector('#sort-bars-cut');
+        var flyEl = container.querySelector('#sort-fly-cut');
+
+        function renderCutBars(arr, highlights) {
+            var hl = highlights || {};
+            var maxVal = Math.max.apply(null, arr);
+            barsEl.innerHTML = arr.map(function(v, i) {
+                var bg = 'var(--accent)';
+                var glow = '';
+                var lbl = '<span style="font-size:0.65rem;color:var(--text2);">[' + i + ']</span>';
+                if (hl.answer === i) {
+                    bg = 'var(--green)';
+                    glow = 'box-shadow:0 0 16px var(--green);';
+                    lbl = '<span style="font-size:0.6rem;color:var(--green);font-weight:700;">k=' + (i + 1) + ' \u2713</span>';
+                } else if (hl.counting && hl.counting.indexOf(i) >= 0) {
+                    bg = 'var(--yellow)';
+                    glow = 'box-shadow:0 0 10px var(--yellow);';
+                    lbl = '<span style="font-size:0.6rem;color:var(--yellow);font-weight:700;">#' + (i + 1) + '</span>';
+                } else if (hl.sorted) {
+                    bg = '#636e72';
+                }
+                var h = Math.max(20, (v / maxVal) * 160);
+                return '<div id="sort-bar-cut-' + i + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity 0.3s;">' +
+                    '<span style="font-size:0.8rem;font-weight:600;">' + v + '</span>' +
+                    '<div style="width:36px;height:' + h + 'px;background:' + bg + ';border-radius:4px 4px 0 0;transition:all 0.3s;' + glow + '"></div>' +
+                    lbl + '</div>';
+            }).join('');
+        }
+
+        function buildCutlineSteps(scores, k) {
+            var steps = [];
+            var arr = scores.slice();
+            var n = arr.length;
+            if (k < 1) k = 1;
+            if (k > n) k = n;
+
+            steps.push({
+                description: 'Initial array: [' + arr.join(', ') + ']. N=' + n + ' scores given, top k=' + k + ' students get a prize.',
+                action: function() { renderCutBars(arr, {}); }
+            });
+
+            steps.push({
+                description: 'To find the top ' + k + ' students, we need to sort in descending order. Highest scores first!',
+                action: function() { renderCutBars(arr, {}); }
+            });
+
+            var sorted = arr.slice().sort(function(a, b) { return b - a; });
+            steps.push({
+                description: 'Sorted in descending order! [' + sorted.join(', ') + ']. Now the first k elements are the prize winners.',
+                action: function() { renderCutBars(sorted, { sorted: true }); }
+            });
+
+            for (var c = 0; c < k; c++) {
+                (function(idx) {
+                    var countArr = [];
+                    for (var ci = 0; ci <= idx; ci++) countArr.push(ci);
+                    var isLast = idx === k - 1;
+                    var desc = '#' + (idx + 1) + ': score ' + sorted[idx] + (isLast ? ' \u2190 This is the cutline! The lowest score among prize winners.' : '');
+                    steps.push({
+                        description: desc,
+                        action: function() {
+                            renderCutBars(sorted, { sorted: true, counting: countArr, answer: isLast ? idx : -1 });
+                        }
+                    });
+                })(c);
+            }
+
+            steps.push({
+                description: 'Answer: the cutline is ' + sorted[k - 1] + '! After sorting in descending order, output the k-th element (0-indexed: arr[' + (k - 1) + ']).',
+                action: function() {
+                    renderCutBars(sorted, { sorted: true, answer: k - 1 });
+                }
+            });
+
+            return steps;
+        }
+
+        function resetCutline() {
+            var raw = container.querySelector('#sort-cut-input').value;
+            var parsed = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
+            if (parsed.length < 2) parsed = DEFAULT_SCORES.slice();
+            var k = parseInt(container.querySelector('#sort-cut-k').value, 10);
+            if (isNaN(k) || k < 1) k = 1;
+            if (k > parsed.length) k = parsed.length;
+            barsEl.innerHTML = '';
+            flyEl.innerHTML = '';
+            var steps = buildCutlineSteps(parsed, k);
+            self._initStepController(container, steps, '-cut');
+        }
+
+        container.querySelector('#sort-cut-reset').addEventListener('click', resetCutline);
+        resetCutline();
+    },
+
     // ── Selection Sort (boj-2750) ──
     _renderVizSelection(container) {
         var self = this;
@@ -1815,11 +1929,89 @@ sort(words.begin(), words.end(),
 
     // ===== Problem Tab =====
     stages: [
-        { num: 1, title: 'Basic Sort', desc: 'Sort implementation and custom sorting (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
-        { num: 2, title: 'Sort Applications', desc: 'Sorting-based problem solving (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
+        { num: 1, title: 'Cutline', desc: 'Sort and index', problemIds: ['boj-25305'] },
+        { num: 2, title: 'Basic Sort', desc: 'Sort implementation and custom sorting (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
+        { num: 3, title: 'Sort Applications', desc: 'Sorting-based problem solving (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
     ],
 
     problems: [
+        {
+            id: 'boj-25305',
+            title: 'BOJ 25305 - Cutline',
+            difficulty: 'bronze',
+            link: 'https://www.acmicpc.net/problem/25305',
+            simIntro: 'Observe how sorting scores in descending order and picking the k-th element gives us the cutline.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>N students took a coding test at Yonsei University. The top k students will receive a prize. Find the cutline score.</p>
+                <p>The cutline is the lowest score among the prize winners.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of test takers N and the number of prize winners k, separated by a space.</p>
+                <p>The second line contains each student's score x, separated by spaces.</p>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>5 2\n100 76 85 93 98</pre></div>
+                    <div><strong>Output</strong><pre>98</pre></div>
+                </div></div>
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 &le; k &le; N &le; 1,000</li>
+                    <li>1 &le; x &le; 10,000</li>
+                </ul>
+            `,
+            hints: [
+                { title: 'First thought', content: 'We need to find the top k students. What if we just line up the scores from highest to lowest?<br><strong>Sort in descending order</strong> and the highest score will be at the front!' },
+                { title: 'Where to look after sorting?', content: 'After sorting in descending order, the k-th element is the lowest score among prize winners \u2014 the <strong>cutline</strong>.<br>Since array indices start at 0, the answer is <code>arr[k-1]</code>!<br>Example: [100, 98, 93, 85, 76] with k=2 \u2192 arr[1] = 98' },
+                { title: 'Ascending order works too!', content: 'What if you sorted in ascending order? Just look at the k-th element from the end!<br><span class="lang-py"><code>arr[N-k]</code> or <code>arr[-k]</code> (Python negative index)</span><span class="lang-cpp"><code>arr[N-k]</code> gives the answer</span>' },
+                { title: 'Time complexity', content: 'Since N \u2264 1,000, any sort works fine. Built-in sort is O(N log N), more than enough.' }
+            ],
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)  # Sort descending\nprint(scores[k - 1])  # k-th element is the cutline`,
+                cpp: `#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end(), greater<int>());  // Descending\n    cout << scores[k - 1] << endl;  // k-th element is the cutline\n}`
+            },
+            solutions: [
+                {
+                    approach: 'Descending sort + indexing',
+                    description: 'Sort scores in descending order \u2014 the k-th element is the cutline.',
+                    timeComplexity: 'O(N log N)',
+                    spaceComplexity: 'O(N)',
+                    get templates() { return sortingTopic.problems[0].templates; },
+                    codeSteps: {
+                        python: [
+                            { title: 'Read Input', desc: 'Read N, k and the score array.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))' },
+                            { title: 'Sort Descending', desc: 'Use reverse=True so the highest score comes first. This makes finding the top k easy!', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)  # Highest scores first!' },
+                            { title: 'Print Cutline', desc: 'Since indices start at 0, arr[k-1] is the k-th highest score = cutline.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)\nprint(scores[k - 1])  # k-th = cutline' }
+                        ],
+                        cpp: [
+                            { title: 'Read Input', desc: 'Read N, k and the score array.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];' },
+                            { title: 'Sort Descending', desc: 'Use greater<int>() to sort highest scores first.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end(), greater<int>());  // Descending' },
+                            { title: 'Print Cutline', desc: 'Since indices start at 0, scores[k-1] is the k-th highest score = cutline.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end(), greater<int>());\n    cout << scores[k - 1] << endl;  // k-th = cutline\n}' }
+                        ]
+                    }
+                },
+                {
+                    approach: 'Ascending sort + k-th from end',
+                    description: 'Sort in ascending order, then output the k-th element from the end.',
+                    timeComplexity: 'O(N log N)',
+                    spaceComplexity: 'O(N)',
+                    templates: {
+                        python: `import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort()  # Ascending sort\nprint(scores[-k])  # k-th from end = cutline`,
+                        cpp: `#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end());  // Ascending\n    cout << scores[N - k] << endl;  // k-th from end = cutline\n}`
+                    },
+                    codeSteps: {
+                        python: [
+                            { title: 'Read Input', desc: 'Read N, k and the score array.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))' },
+                            { title: 'Sort Ascending', desc: 'Default sort() is ascending. Smallest scores come first.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort()  # Ascending sort' },
+                            { title: 'Print k-th from end', desc: 'Python negative indexing! scores[-k] is the k-th element from the end.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort()\nprint(scores[-k])  # k-th from end = cutline' }
+                        ],
+                        cpp: [
+                            { title: 'Read Input', desc: 'Read N, k and the score array.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];' },
+                            { title: 'Sort Ascending', desc: 'Default sort() is ascending.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end());  // Ascending' },
+                            { title: 'Print k-th from end', desc: 'In C++, scores[N-k] accesses the k-th element from the end.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end());\n    cout << scores[N - k] << endl;  // k-th from end = cutline\n}' }
+                        ]
+                    }
+                }
+            ]
+        },
         {
             id: 'boj-2750',
             title: 'BOJ 2750 - Sort Numbers',
@@ -1860,7 +2052,7 @@ sort(words.begin(), words.end(),
                 description: 'Store input in a list and call sort().',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
-                get templates() { return sortingTopic.problems[0].templates; },
+                get templates() { return sortingTopic.problems[1].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Read Input', desc: 'Use sys.stdin.readline for fast input and store in an array.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]' },
@@ -1916,7 +2108,7 @@ sort(words.begin(), words.end(),
                 description: 'Storing coordinates as (x, y) tuples enables automatic x → y sorting.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
-                get templates() { return sortingTopic.problems[1].templates; },
+                get templates() { return sortingTopic.problems[2].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Read Input', desc: 'Store coordinates as (x, y) tuples so they auto-compare by x then y when sorted.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))' },
@@ -1969,7 +2161,7 @@ sort(words.begin(), words.end(),
                 description: 'Sort by start point, then update end with max when overlapping.',
                 timeComplexity: 'O(n log n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return sortingTopic.problems[2].templates; },
+                get templates() { return sortingTopic.problems[3].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
@@ -2028,7 +2220,7 @@ sort(words.begin(), words.end(),
                 description: 'Sorting by age only with sort() automatically preserves input order thanks to stable sort.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
-                get templates() { return sortingTopic.problems[3].templates; },
+                get templates() { return sortingTopic.problems[4].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Read Input', desc: 'Store age (int) and name (str) as tuples. We\'ll only use age as the sort key.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))' },

@@ -15,6 +15,7 @@ const stackQueueTopic = {
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
+        'boj-10828': { type: 'Stack Implementation', color: '#00b894',      vizMethod: '_renderVizStackImpl' },
         'boj-10773': { type: 'Stack Basics',       color: 'var(--accent)', vizMethod: '_renderVizZero' },
         'lc-20':     { type: 'Bracket Validation', color: '#e17055',      vizMethod: '_renderVizParentheses' },
         'boj-2164':  { type: 'Queue Usage',        color: '#6c5ce7',      vizMethod: '_renderVizCard2' },
@@ -37,7 +38,7 @@ const stackQueueTopic = {
         const meta = self.problemMeta[problemId];
         if (!meta) { container.innerHTML = '<p>Problem metadata not found.</p>'; return; }
         self._clearVizState();
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
         header.innerHTML =
@@ -1044,6 +1045,186 @@ bool isValid(string s) {
         updateUI();
     },
 
+    // ── Stack Implementation (BOJ 10828) Visualization ──
+    _renderVizStackImpl(container) {
+        const self = this;
+        var DEFAULT_CMDS = 'push 1\npush 2\ntop\nsize\npop\npush 3\nempty';
+
+        var inputFieldHTML = '<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">Commands:<br><textarea id="sq-impl-input" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:220px;height:120px;font-family:monospace;resize:vertical;">' + DEFAULT_CMDS + '</textarea></label>' +
+            '<button class="btn btn-primary" id="sq-impl-reset" style="margin-top:22px;">🔄</button>' +
+            '</div>';
+
+        var vizHTML = '<div class="sim-card">' +
+            '<div style="position:relative;">' +
+            '<div id="sq-impl-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>' +
+            '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
+            '<div style="display:flex;flex-direction:column;align-items:center;">' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Stack</div>' +
+            '<div id="sq-stack-impl" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:100px;width:110px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
+            '</div>' +
+            '<div style="flex:0 0 auto;min-width:160px;">' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">Output</div>' +
+            '<div id="sq-output-impl" style="font-family:monospace;font-size:0.95rem;line-height:1.8;color:var(--text);min-height:40px;"></div>' +
+            '</div></div></div></div>';
+        container.innerHTML = inputFieldHTML + self._createStepDesc('-impl') + vizHTML + self._createStepControls('-impl');
+
+        var stackEl = container.querySelector('#sq-stack-impl');
+        var outputEl = container.querySelector('#sq-output-impl');
+        var flyEl = container.querySelector('#sq-impl-fly');
+        var wrapEl = flyEl.parentElement;
+
+        function parseCmds() {
+            var raw = container.querySelector('#sq-impl-input').value;
+            return raw.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+        }
+
+        function renderStack(arr, hideIdx) {
+            if (arr.length === 0) {
+                stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
+            } else {
+                stackEl.innerHTML = arr.map(function(v, i) {
+                    var hide = (i === hideIdx) ? 'opacity:0;' : '';
+                    var isTip = (i === arr.length - 1);
+                    return '<div class="str-char-box' + (isTip ? ' comparing' : '') + '" id="sq-impl-stk-' + i + '" style="text-align:center;font-weight:600;' + hide + '">' + v + (isTip ? ' \u2190top' : '') + '</div>';
+                }).join('');
+            }
+        }
+
+        function renderOutput(lines) {
+            outputEl.innerHTML = lines.map(function(l, i) {
+                return '<div' + (i === lines.length - 1 ? ' style="color:var(--accent);font-weight:700;"' : '') + '>' + l + '</div>';
+            }).join('');
+        }
+
+        function animatePush(value, afterArr, onDone) {
+            renderStack(afterArr, afterArr.length - 1);
+            var dstEl = stackEl.querySelector('#sq-impl-stk-' + (afterArr.length - 1));
+            if (!dstEl) { renderStack(afterArr); if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var dr = dstEl.getBoundingClientRect();
+            var ghost = document.createElement('div');
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + dr.width + 'px;height:' + dr.height + 'px;' +
+                'left:' + (dr.left - wr.left) + 'px;top:' + (dr.top - wr.top - 60) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--accent);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);opacity:0;' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.3s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (dr.top - wr.top) + 'px';
+                ghost.style.opacity = '1';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                renderStack(afterArr);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function animatePop(beforeArr, onDone) {
+            renderStack(beforeArr);
+            var topEl = stackEl.querySelector('#sq-impl-stk-' + (beforeArr.length - 1));
+            if (!topEl) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = topEl.getBoundingClientRect();
+            topEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = beforeArr[beforeArr.length - 1];
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--red,#e17055);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.5s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (sr.top - wr.top - 60) + 'px';
+                ghost.style.opacity = '0';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function buildImplSteps(cmds) {
+            var stepData = [];
+            var stack = [];
+            var outputs = [];
+            stepData.push({ arr: [], outputs: [], cmd: '', desc: 'Process stack commands one by one. There are 5 commands: push, pop, size, empty, top.', pushVal: null, isPop: false });
+
+            cmds.forEach(function(cmd) {
+                var parts = cmd.split(/\s+/);
+                var op = parts[0];
+                if (op === 'push') {
+                    var val = parseInt(parts[1], 10);
+                    stack = [].concat(stack, [val]);
+                    stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>push ' + val + '</strong> \u2014 Push ' + val + ' onto the stack. No output.', pushVal: val, isPop: false });
+                } else if (op === 'pop') {
+                    if (stack.length === 0) {
+                        outputs = [].concat(outputs, ['-1']);
+                        stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>pop</strong> \u2014 Stack is empty, so print <span style="color:var(--red);font-weight:700;">-1</span>.', pushVal: null, isPop: false });
+                    } else {
+                        var popped = stack[stack.length - 1];
+                        var before = [].concat(stack);
+                        stack = stack.slice(0, -1);
+                        outputs = [].concat(outputs, [String(popped)]);
+                        stepData.push({ arr: [].concat(stack), beforeArr: before, outputs: [].concat(outputs), cmd: cmd, desc: '<strong>pop</strong> \u2014 Print top value <span style="color:var(--red);font-weight:700;">' + popped + '</span> and remove it.', pushVal: null, isPop: true });
+                    }
+                } else if (op === 'size') {
+                    outputs = [].concat(outputs, [String(stack.length)]);
+                    stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>size</strong> \u2014 Stack has ' + stack.length + ' element(s), print <span style="color:var(--accent);font-weight:700;">' + stack.length + '</span>.', pushVal: null, isPop: false });
+                } else if (op === 'empty') {
+                    var res = stack.length === 0 ? '1' : '0';
+                    outputs = [].concat(outputs, [res]);
+                    stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>empty</strong> \u2014 Stack is ' + (stack.length === 0 ? 'empty' : 'not empty') + ', print <span style="color:var(--accent);font-weight:700;">' + res + '</span>.', pushVal: null, isPop: false });
+                } else if (op === 'top') {
+                    if (stack.length === 0) {
+                        outputs = [].concat(outputs, ['-1']);
+                        stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>top</strong> \u2014 Stack is empty, so print <span style="color:var(--red);font-weight:700;">-1</span>.', pushVal: null, isPop: false });
+                    } else {
+                        var topVal = stack[stack.length - 1];
+                        outputs = [].concat(outputs, [String(topVal)]);
+                        stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>top</strong> \u2014 Top value is <span style="color:var(--green);font-weight:700;">' + topVal + '</span>. Print without removing.', pushVal: null, isPop: false });
+                    }
+                }
+            });
+            stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: '', desc: 'All commands processed! Output: <strong>' + outputs.join(', ') + '</strong>', pushVal: null, isPop: false });
+
+            return stepData.map(function(st) {
+                return {
+                    description: st.desc,
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        renderOutput(st.outputs);
+                        if (dir === 'forward' && st.pushVal !== null) {
+                            animatePush(st.pushVal, st.arr, null);
+                        } else if (dir === 'forward' && st.isPop && st.beforeArr) {
+                            animatePop(st.beforeArr, function() { renderStack(st.arr); });
+                        } else {
+                            renderStack(st.arr);
+                        }
+                    }
+                };
+            });
+        }
+
+        function resetImplViz() {
+            var cmds = parseCmds();
+            if (cmds.length === 0) return;
+            flyEl.innerHTML = '';
+            stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(Empty)</div>';
+            outputEl.innerHTML = '';
+            var steps = buildImplSteps(cmds);
+            self._initStepController(container, steps, '-impl');
+        }
+
+        container.querySelector('#sq-impl-reset').addEventListener('click', resetImplViz);
+        resetImplViz();
+    },
+
     // ── Zero (BOJ 10773) Visualization ──
     _renderVizZero(container) {
         const self = this;
@@ -1782,11 +1963,127 @@ bool isValid(string s) {
 
     // ===== Problem Tab =====
     stages: [
-        { num: 1, title: 'Basic Stack & Queue', desc: 'Basic stack/queue operations and bracket validation (Silver~Easy)', problemIds: ['boj-10773', 'lc-20'] },
-        { num: 2, title: 'Stack & Queue Applications', desc: 'Deque usage and monotone stack (Silver~Medium)', problemIds: ['boj-2164', 'lc-155'] }
+        { num: 1, title: 'Implement a Stack', desc: 'Implement basic stack commands from scratch (Silver IV)', problemIds: ['boj-10828'] },
+        { num: 2, title: 'Basic Stack & Queue', desc: 'Basic stack/queue operations and bracket validation (Silver~Easy)', problemIds: ['boj-10773', 'lc-20'] },
+        { num: 3, title: 'Stack & Queue Applications', desc: 'Deque usage and monotone stack (Silver~Medium)', problemIds: ['boj-2164', 'lc-155'] }
     ],
 
     problems: [
+        {
+            id: 'boj-10828',
+            title: 'BOJ 10828 - Stack',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/10828',
+            simIntro: 'Watch how push, pop, size, empty, and top commands operate on a stack step by step.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>Implement a stack that stores integers, then process the given commands.</p>
+                <p>There are five commands:</p>
+                <ul>
+                    <li><code>push X</code>: Push integer X onto the stack.</li>
+                    <li><code>pop</code>: Print the top integer and remove it. Print -1 if the stack is empty.</li>
+                    <li><code>size</code>: Print the number of integers in the stack.</li>
+                    <li><code>empty</code>: Print 1 if the stack is empty, 0 otherwise.</li>
+                    <li><code>top</code>: Print the top integer. Print -1 if the stack is empty.</li>
+                </ul>
+                <h4>Input</h4>
+                <p>The first line contains the number of commands N (1 &le; N &le; 10,000). Each of the next N lines contains one command. Integers are between 1 and 100,000 inclusive.</p>
+                <h4>Output</h4>
+                <p>For each command that requires output, print one result per line.</p>
+
+                <div class="problem-example"><h4>Example</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>14\npush 1\npush 2\ntop\nsize\npop\npush 3\nempty\npop\npop\npop\npush 4\nempty\ntop\npop</pre></div>
+                    <div><strong>Output</strong><pre>2\n2\n2\n0\n3\n1\n-1\n0\n4\n4</pre></div>
+                </div></div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 &le; N &le; 10,000</li>
+                    <li>1 &le; X &le; 100,000</li>
+                </ul>
+            `,
+            hints: [
+                { title: 'What is a stack?', content: 'A stack is like <strong>"stacking plates"</strong>!<br><br>You stack plates on top one by one, and can only remove from the top.<br>The last item added is the first one removed -- this is called <strong>LIFO (Last In, First Out)</strong>.<br><br>This problem asks you to implement this LIFO structure and handle 5 commands!' },
+                { title: 'Understanding the 5 commands', content: 'Here is what each command does:<br><br>📥 <strong>push X</strong> → Push X onto the top of the stack (no output)<br>📤 <strong>pop</strong> → Print and remove the top value. Print -1 if empty<br>📏 <strong>size</strong> → Print the number of elements in the stack<br>❓ <strong>empty</strong> → Print 1 if empty, 0 otherwise<br>👀 <strong>top</strong> → Print the top value without removing. Print -1 if empty<br><br><strong>Difference between pop and top</strong>: pop removes the element, top only peeks!' },
+                { title: 'Which data structure to use?', content: '<span class="lang-py">In Python, a <strong>list</strong> IS a stack!<br><br><code>append(x)</code> → push (add to end)<br><code>pop()</code> → pop (remove from end + return)<br><code>stack[-1]</code> → top (peek at end)<br><code>len(stack)</code> → size<br><br>All are <strong>O(1)</strong> operations!</span><span class="lang-cpp">In C++, you can use <code>vector&lt;int&gt;</code> or <code>stack&lt;int&gt;</code>.<br><br><code>push_back(x)</code> / <code>push(x)</code> → push<br><code>pop_back()</code> / <code>pop()</code> → pop (save value first!)<br><code>back()</code> / <code>top()</code> → top<br><code>size()</code> → size<br><br>All are <strong>O(1)</strong> operations!</span>' },
+                { title: 'Handling the empty stack is key!', content: '<strong>pop</strong> and <strong>top</strong> must print -1 when the stack is empty.<br><br>Forgetting this causes a runtime error! (Trying to pop from an empty stack)<br><br>Processing steps:<br>1. Parse the command (read the number for push)<br>2. Use if-else to branch on all 5 commands<br>3. <strong>Always check if empty before pop/top!</strong><br><br><span class="lang-py">Python: <code>if not stack:</code> checks for empty</span><span class="lang-cpp">C++: <code>if (st.empty())</code> checks for empty</span>' }
+            ],
+            inputDefault: 0,
+            solve() { return '2\n2\n2\n0\n3\n1\n-1\n0\n4\n4'; },
+            solutions: [
+                {
+                    approach: 'Stack with list/array',
+                    description: 'Use a list as a stack and handle all 5 commands.',
+                    timeComplexity: 'O(N)',
+                    spaceComplexity: 'O(N)',
+                    get templates() { return stackQueueTopic.problems[0].templates; },
+                    codeSteps: {
+                        python: [
+                            { title: 'Input Setup', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []  # Use list as a stack (LIFO)', desc: 'sys.stdin.readline for fast input.\nA list IS a stack! append/pop are both O(1).' },
+                            { title: 'Handle push', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []\n\nfor _ in range(N):\n    cmd = input().split()\n    if cmd[0] == "push":\n        stack.append(int(cmd[1]))  # Add value to top', desc: 'Split the command with split() and branch on the first word.\nFor push, convert the second word to int and append!' },
+                            { title: 'Handle pop / top', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []\n\nfor _ in range(N):\n    cmd = input().split()\n    if cmd[0] == "push":\n        stack.append(int(cmd[1]))\n    elif cmd[0] == "pop":\n        # Print -1 if empty, otherwise pop and print\n        print(-1 if not stack else stack.pop())\n    elif cmd[0] == "top":\n        # Print -1 if empty, otherwise peek at top (no removal!)\n        print(-1 if not stack else stack[-1])', desc: 'Both pop and top must check for empty stack!\npop() removes and returns, stack[-1] only peeks.' },
+                            { title: 'Handle size / empty', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []\n\nfor _ in range(N):\n    cmd = input().split()\n    if cmd[0] == "push":\n        stack.append(int(cmd[1]))\n    elif cmd[0] == "pop":\n        print(-1 if not stack else stack.pop())\n    elif cmd[0] == "size":\n        print(len(stack))  # Number of elements\n    elif cmd[0] == "empty":\n        print(1 if not stack else 0)  # 1 if empty\n    elif cmd[0] == "top":\n        print(-1 if not stack else stack[-1])', desc: 'size uses len(), empty checks if the list is empty.\nAll operations are O(1), so overall O(N)!' }
+                        ],
+                        cpp: [
+                            { title: 'Input Setup', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;  // C++ standard stack', desc: 'Using the C++ <stack> library.\npush/pop/top/size/empty are all O(1).' },
+                            { title: 'Handle push', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;\n\n    while (N--) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == "push") {\n            int x;\n            cin >> x;\n            st.push(x);  // Add to top of stack\n        }', desc: 'Read the command as a string and branch.\nOnly push reads an additional integer x.' },
+                            { title: 'Handle pop / top', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;\n\n    while (N--) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == "push") {\n            int x; cin >> x;\n            st.push(x);\n        } else if (cmd == "pop") {\n            if (st.empty()) cout << -1 << "\\n";\n            else { cout << st.top() << "\\n"; st.pop(); }\n            // Must read top() first, then pop()!\n        } else if (cmd == "top") {\n            if (st.empty()) cout << -1 << "\\n";\n            else cout << st.top() << "\\n";\n            // top only peeks, no removal\n        }', desc: 'C++ pop() does NOT return a value!\nYou must read with top() first, then remove with pop().\nForgetting the empty check causes a runtime error!' },
+                            { title: 'Handle size / empty + full code', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;\n\n    while (N--) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == "push") {\n            int x; cin >> x;\n            st.push(x);\n        } else if (cmd == "pop") {\n            if (st.empty()) cout << -1 << "\\n";\n            else { cout << st.top() << "\\n"; st.pop(); }\n        } else if (cmd == "size") {\n            cout << st.size() << "\\n";\n        } else if (cmd == "empty") {\n            cout << (st.empty() ? 1 : 0) << "\\n";\n        } else if (cmd == "top") {\n            if (st.empty()) cout << -1 << "\\n";\n            else cout << st.top() << "\\n";\n        }\n    }\n    return 0;\n}', desc: 'size() and empty() are straightforward.\nUsing "\\n" is faster than endl!\nOverall time complexity: O(N) -- all operations are O(1)!' }
+                        ]
+                    }
+                }
+            ],
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+N = int(input())
+stack = []
+
+for _ in range(N):
+    cmd = input().split()
+    if cmd[0] == "push":
+        stack.append(int(cmd[1]))
+    elif cmd[0] == "pop":
+        print(-1 if not stack else stack.pop())
+    elif cmd[0] == "size":
+        print(len(stack))
+    elif cmd[0] == "empty":
+        print(1 if not stack else 0)
+    elif cmd[0] == "top":
+        print(-1 if not stack else stack[-1])`,
+                cpp: `#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    stack<int> st;
+
+    while (N--) {
+        string cmd;
+        cin >> cmd;
+        if (cmd == "push") {
+            int x; cin >> x;
+            st.push(x);
+        } else if (cmd == "pop") {
+            if (st.empty()) cout << -1 << "\\n";
+            else { cout << st.top() << "\\n"; st.pop(); }
+        } else if (cmd == "size") {
+            cout << st.size() << "\\n";
+        } else if (cmd == "empty") {
+            cout << (st.empty() ? 1 : 0) << "\\n";
+        } else if (cmd == "top") {
+            if (st.empty()) cout << -1 << "\\n";
+            else cout << st.top() << "\\n";
+        }
+    }
+    return 0;
+}`
+            }
+        },
         {
             id: 'boj-10773',
             title: 'BOJ 10773 - Zero',
@@ -1833,7 +2130,7 @@ bool isValid(string s) {
                     description: 'Pop on 0, push otherwise, then sum the remaining values.',
                     timeComplexity: 'O(K)',
                     spaceComplexity: 'O(K)',
-                    get templates() { return stackQueueTopic.problems[0].templates; },
+                    get templates() { return stackQueueTopic.problems[1].templates; },
                     codeSteps: {
                         python: [
                             { title: 'Input Setup', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # Stack: last in, first out (LIFO)', desc: 'Why a stack? Because when 0 appears, we must remove "the most recent number"!\nThe LIFO structure is a perfect fit.' },
@@ -1937,7 +2234,7 @@ int main() {
                     description: 'Push opening brackets, compare closing brackets against the top to match.',
                     timeComplexity: 'O(n)',
                     spaceComplexity: 'O(n)',
-                    get templates() { return stackQueueTopic.problems[1].templates; },
+                    get templates() { return stackQueueTopic.problems[2].templates; },
                     codeSteps: {
                         python: [
                             { title: 'Initial Setup', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # Stack to hold opening brackets\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # closing→opening mapping', desc: 'Why a dictionary? To find the matching pair in O(1) when a closing bracket appears!\npairs[")"] = "(" and so on.' },
@@ -2029,7 +2326,7 @@ public:
                     description: 'Repeatedly discard the front card and move the next card to the back.',
                     timeComplexity: 'O(N)',
                     spaceComplexity: 'O(N)',
-                    get templates() { return stackQueueTopic.problems[2].templates; },
+                    get templates() { return stackQueueTopic.problems[3].templates; },
                     codeSteps: {
                         python: [
                             { title: 'Initial Setup', code: 'from collections import deque  # O(1) insert/remove from both ends\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # Cards 1~N in queue (front = top)', desc: 'Why deque? list.pop(0) is O(n) but deque.popleft() is O(1)!\nSince removing from the front is the key operation, deque is essential.' },
@@ -2123,7 +2420,7 @@ int main() {
                     description: 'Maintain a separate min stack alongside the main stack for O(1) getMin.',
                     timeComplexity: 'O(1) per op',
                     spaceComplexity: 'O(n)',
-                    get templates() { return stackQueueTopic.problems[3].templates; },
+                    get templates() { return stackQueueTopic.problems[4].templates; },
                     codeSteps: {
                         python: [
                             { title: 'Initialize', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # Main stack: actual data\n        self.min_stack = []  # Auxiliary stack: records the min at each point', desc: 'Why two stacks? To make getMin() O(1), we must always know "what the current min is"!\nThe top of min_stack always points to the current minimum.' },

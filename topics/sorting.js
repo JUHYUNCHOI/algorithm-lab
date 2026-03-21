@@ -15,6 +15,7 @@ const sortingTopic = {
     tabs: [{ id: 'concept', label: '학습하기' }],
 
     problemMeta: {
+        'boj-25305': { type: '정렬 활용',    color: '#00b894',      vizMethod: '_renderVizCutline' },
         'boj-2750':  { type: '기본 정렬',    color: 'var(--accent)', vizMethod: '_renderVizSelection' },
         'boj-11650': { type: '커스텀 정렬',   color: 'var(--green)',  vizMethod: '_renderVizCoordSort' },
         'lc-56':     { type: '구간 병합',     color: '#e17055',      vizMethod: '_renderVizMergeIntervals' },
@@ -37,7 +38,7 @@ const sortingTopic = {
         var meta = self.problemMeta[problemId];
         if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
         self._clearVizState();
-        var diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        var diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         var header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
         header.innerHTML =
@@ -1322,6 +1323,125 @@ sort(words.begin(), words.end(),
         }).join('');
     },
 
+    // ── 커트라인 (boj-25305) ──
+    _renderVizCutline(container) {
+        var self = this;
+        var DEFAULT_SCORES = [100, 76, 85, 93, 98];
+        var DEFAULT_K = 2;
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">점수: <input type="text" id="sort-cut-input" value="' + DEFAULT_SCORES.join(', ') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+                '<label style="font-weight:600;">k: <input type="number" id="sort-cut-k" value="' + DEFAULT_K + '" min="1" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:60px;"></label>' +
+                '<button class="btn btn-primary" id="sort-cut-reset">\uD83D\uDD04</button>' +
+            '</div>' +
+            self._createStepDesc('-cut') +
+            '<div class="viz-area" style="position:relative;">' +
+                '<div id="sort-bars-cut" style="display:flex;gap:6px;align-items:flex-end;justify-content:center;min-height:220px;padding:20px 0;"></div>' +
+                '<div id="sort-fly-cut" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>' +
+            '</div>' +
+            self._createStepControls('-cut');
+
+        var barsEl = container.querySelector('#sort-bars-cut');
+        var flyEl = container.querySelector('#sort-fly-cut');
+
+        function renderCutBars(arr, highlights) {
+            // highlights: { sorted: bool, kIdx: number, counting: number[], answer: number }
+            var hl = highlights || {};
+            var maxVal = Math.max.apply(null, arr);
+            barsEl.innerHTML = arr.map(function(v, i) {
+                var bg = 'var(--accent)';
+                var glow = '';
+                var lbl = '<span style="font-size:0.65rem;color:var(--text2);">[' + i + ']</span>';
+                if (hl.answer === i) {
+                    bg = 'var(--green)';
+                    glow = 'box-shadow:0 0 16px var(--green);';
+                    lbl = '<span style="font-size:0.6rem;color:var(--green);font-weight:700;">k=' + (i + 1) + ' \u2713</span>';
+                } else if (hl.counting && hl.counting.indexOf(i) >= 0) {
+                    bg = 'var(--yellow)';
+                    glow = 'box-shadow:0 0 10px var(--yellow);';
+                    lbl = '<span style="font-size:0.6rem;color:var(--yellow);font-weight:700;">' + (i + 1) + '\uBC88\uC9F8</span>';
+                } else if (hl.sorted) {
+                    bg = '#636e72';
+                }
+                var h = Math.max(20, (v / maxVal) * 160);
+                return '<div id="sort-bar-cut-' + i + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity 0.3s;">' +
+                    '<span style="font-size:0.8rem;font-weight:600;">' + v + '</span>' +
+                    '<div style="width:36px;height:' + h + 'px;background:' + bg + ';border-radius:4px 4px 0 0;transition:all 0.3s;' + glow + '"></div>' +
+                    lbl + '</div>';
+            }).join('');
+        }
+
+        function buildCutlineSteps(scores, k) {
+            var steps = [];
+            var arr = scores.slice();
+            var n = arr.length;
+            if (k < 1) k = 1;
+            if (k > n) k = n;
+
+            // Step 0: show original
+            steps.push({
+                description: '\uCD08\uAE30 \uBC30\uC5F4: [' + arr.join(', ') + ']. N=' + n + '\uBA85\uC758 \uC810\uC218\uAC00 \uC8FC\uC5B4\uC84C\uACE0, \uC0C1\uC704 k=' + k + '\uBA85\uC5D0\uAC8C \uC0C1\uC744 \uC900\uB2E4.',
+                action: function() { renderCutBars(arr, {}); }
+            });
+
+            // Step 1: why sort?
+            steps.push({
+                description: '\uC0C1\uC704 ' + k + '\uBA85\uC744 \uCC3E\uC73C\uB824\uBA74 \uB0B4\uB9BC\uCC28\uC21C\uC73C\uB85C \uC815\uB82C\uD574\uC57C \uD569\uB2C8\uB2E4. \uAC00\uC7A5 \uB192\uC740 \uC810\uC218\uAC00 \uC55E\uC73C\uB85C \uC624\uB3C4\uB85D!',
+                action: function() { renderCutBars(arr, {}); }
+            });
+
+            // Step 2: sort descending
+            var sorted = arr.slice().sort(function(a, b) { return b - a; });
+            steps.push({
+                description: '\uB0B4\uB9BC\uCC28\uC21C \uC815\uB82C \uC644\uB8CC! [' + sorted.join(', ') + ']. \uC774\uC81C \uC55E\uC5D0\uC11C\uBD80\uD130 k\uBC88\uC9F8\uAE4C\uC9C0\uAC00 \uC0C1\uC744 \uBC1B\uB294 \uC0AC\uB78C\uB4E4\uC785\uB2C8\uB2E4.',
+                action: function() { renderCutBars(sorted, { sorted: true }); }
+            });
+
+            // Steps 3~3+k-1: count k positions one by one
+            for (var c = 0; c < k; c++) {
+                (function(idx) {
+                    var countArr = [];
+                    for (var ci = 0; ci <= idx; ci++) countArr.push(ci);
+                    var isLast = idx === k - 1;
+                    var desc = (idx + 1) + '\uBC88\uC9F8: \uC810\uC218 ' + sorted[idx] + (isLast ? ' \u2190 \uC774\uAC83\uC774 \uCEE4\uD2B8\uB77C\uC778! \uC0C1\uC744 \uBC1B\uB294 \uAC00\uC7A5 \uB0AE\uC740 \uC810\uC218\uC785\uB2C8\uB2E4.' : '');
+                    steps.push({
+                        description: desc,
+                        action: function() {
+                            renderCutBars(sorted, { sorted: true, counting: countArr, answer: isLast ? idx : -1 });
+                        }
+                    });
+                })(c);
+            }
+
+            // Final step
+            steps.push({
+                description: '\uC815\uB2F5: \uCEE4\uD2B8\uB77C\uC778\uC740 ' + sorted[k - 1] + '\uC785\uB2C8\uB2E4! \uB0B4\uB9BC\uCC28\uC21C \uC815\uB82C \uD6C4 ' + k + '\uBC88\uC9F8 \uC6D0\uC18C(0-indexed: arr[' + (k - 1) + '])\uB97C \uCD9C\uB825\uD558\uBA74 \uB429\uB2C8\uB2E4.',
+                action: function() {
+                    renderCutBars(sorted, { sorted: true, answer: k - 1 });
+                }
+            });
+
+            return steps;
+        }
+
+        function resetCutline() {
+            var raw = container.querySelector('#sort-cut-input').value;
+            var parsed = raw.split(',').map(function(s) { return parseInt(s.trim(), 10); }).filter(function(n) { return !isNaN(n); });
+            if (parsed.length < 2) parsed = DEFAULT_SCORES.slice();
+            var k = parseInt(container.querySelector('#sort-cut-k').value, 10);
+            if (isNaN(k) || k < 1) k = 1;
+            if (k > parsed.length) k = parsed.length;
+            barsEl.innerHTML = '';
+            flyEl.innerHTML = '';
+            var steps = buildCutlineSteps(parsed, k);
+            self._initStepController(container, steps, '-cut');
+        }
+
+        container.querySelector('#sort-cut-reset').addEventListener('click', resetCutline);
+        resetCutline();
+    },
+
     // ── 선택 정렬 (boj-2750) ──
     _renderVizSelection(container) {
         var self = this;
@@ -1818,11 +1938,90 @@ sort(words.begin(), words.end(),
 
     // ===== 문제 탭 =====
     stages: [
-        { num: 1, title: '기본 정렬', desc: '정렬 구현과 커스텀 정렬 (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
-        { num: 2, title: '정렬 응용', desc: '정렬 기반 문제 풀이 (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
+        { num: 1, title: '커트라인', desc: '정렬 후 인덱싱', problemIds: ['boj-25305'] },
+        { num: 2, title: '기본 정렬', desc: '정렬 구현과 커스텀 정렬 (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
+        { num: 3, title: '정렬 응용', desc: '정렬 기반 문제 풀이 (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
     ],
 
     problems: [
+        {
+            id: 'boj-25305',
+            title: 'BOJ 25305 - 커트라인',
+            difficulty: 'bronze',
+            link: 'https://www.acmicpc.net/problem/25305',
+            simIntro: '점수를 내림차순으로 정렬한 뒤, k번째 점수를 찾아 커트라인을 구하는 과정을 관찰하세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>2022 연세대학교 미래캠퍼스 슬기로운 코딩생활에 N명의 학생들이 응시했다.</p>
+                <p>이들 중 점수가 가장 높은 k명은 상을 받을 것이다. 이 때, 상을 받는 커트라인이 몇 점인지 구하라.</p>
+                <p>커트라인이란 상을 받는 사람들 중 가장 낮은 점수를 말한다.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에는 응시자의 수 N과 상을 받는 사람의 수 k가 공백을 사이에 두고 주어진다.</p>
+                <p>둘째 줄에는 각 학생의 점수 x가 공백을 사이에 두고 주어진다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5 2\n100 76 85 93 98</pre></div>
+                    <div><strong>출력</strong><pre>98</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 &le; k &le; N &le; 1,000</li>
+                    <li>1 &le; x &le; 10,000</li>
+                </ul>
+            `,
+            hints: [
+                { title: '가장 먼저 떠오르는 방법', content: '상위 k명을 찾아야 하니까, 일단 점수를 큰 순서대로 나열하면 되지 않을까요?<br><strong>내림차순 정렬</strong>하면 가장 높은 점수가 맨 앞에 오겠죠!' },
+                { title: '정렬 후 어디를 보면 될까?', content: '내림차순으로 정렬하면 앞에서 k번째가 상을 받는 사람 중 가장 낮은 점수, 즉 <strong>커트라인</strong>이에요.<br>배열 인덱스는 0부터 시작하니까 <code>arr[k-1]</code>이 답입니다!<br>예: [100, 98, 93, 85, 76]에서 k=2이면 arr[1] = 98' },
+                { title: '오름차순으로도 가능!', content: '오름차순 정렬을 했다면? 뒤에서 k번째를 보면 돼요!<br><span class="lang-py"><code>arr[N-k]</code> 또는 <code>arr[-k]</code> (Python 음수 인덱스)</span><span class="lang-cpp"><code>arr[N-k]</code>를 출력하면 됩니다</span>' },
+                { title: '시간 복잡도', content: 'N \u2264 1,000이므로 어떤 정렬을 써도 충분해요. 내장 sort는 O(N log N)이라 넉넉합니다.' }
+            ],
+            templates: {
+                python: `import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)  # 내림차순 정렬\nprint(scores[k - 1])  # k번째가 커트라인`,
+                cpp: `#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end(), greater<int>());  // 내림차순\n    cout << scores[k - 1] << endl;  // k번째가 커트라인\n}`
+            },
+            solutions: [
+                {
+                    approach: '내림차순 정렬 + 인덱싱',
+                    description: '점수를 내림차순 정렬하면 앞에서 k번째가 커트라인입니다.',
+                    timeComplexity: 'O(N log N)',
+                    spaceComplexity: 'O(N)',
+                    get templates() { return sortingTopic.problems[0].templates; },
+                    codeSteps: {
+                        python: [
+                            { title: '입력 받기', desc: 'N, k와 점수 배열을 입력받습니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))' },
+                            { title: '내림차순 정렬', desc: 'reverse=True로 큰 점수가 앞에 오도록 정렬합니다. 상위 k명을 쉽게 찾기 위해!', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)  # 큰 점수가 앞으로!' },
+                            { title: '커트라인 출력', desc: '0-indexed이므로 arr[k-1]이 k번째로 높은 점수 = 커트라인입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort(reverse=True)\nprint(scores[k - 1])  # k번째 = 커트라인' }
+                        ],
+                        cpp: [
+                            { title: '입력 받기', desc: 'N, k와 점수 배열을 입력받습니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];' },
+                            { title: '내림차순 정렬', desc: 'greater<int>()로 큰 점수가 앞에 오도록 정렬합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end(), greater<int>());  // 내림차순' },
+                            { title: '커트라인 출력', desc: '0-indexed이므로 scores[k-1]이 k번째로 높은 점수 = 커트라인입니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end(), greater<int>());\n    cout << scores[k - 1] << endl;  // k번째 = 커트라인\n}' }
+                        ]
+                    }
+                },
+                {
+                    approach: '오름차순 정렬 + 뒤에서 k번째',
+                    description: '오름차순 정렬 후 뒤에서 k번째 원소를 출력합니다.',
+                    timeComplexity: 'O(N log N)',
+                    spaceComplexity: 'O(N)',
+                    templates: {
+                        python: `import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort()  # 오름차순 정렬\nprint(scores[-k])  # 뒤에서 k번째 = 커트라인`,
+                        cpp: `#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end());  // 오름차순\n    cout << scores[N - k] << endl;  // 뒤에서 k번째 = 커트라인\n}`
+                    },
+                    codeSteps: {
+                        python: [
+                            { title: '입력 받기', desc: 'N, k와 점수 배열을 입력받습니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))' },
+                            { title: '오름차순 정렬', desc: '기본 sort()는 오름차순입니다. 작은 점수가 앞에 옵니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort()  # 오름차순 정렬' },
+                            { title: '뒤에서 k번째 출력', desc: 'Python 음수 인덱스를 활용! scores[-k]는 뒤에서 k번째 원소입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, k = map(int, input().split())\nscores = list(map(int, input().split()))\nscores.sort()\nprint(scores[-k])  # 뒤에서 k번째 = 커트라인' }
+                        ],
+                        cpp: [
+                            { title: '입력 받기', desc: 'N, k와 점수 배열을 입력받습니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];' },
+                            { title: '오름차순 정렬', desc: '기본 sort()는 오름차순입니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end());  // 오름차순' },
+                            { title: '뒤에서 k번째 출력', desc: 'C++에서는 scores[N-k]로 뒤에서 k번째 원소에 접근합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, k;\n    cin >> N >> k;\n    vector<int> scores(N);\n    for (int i = 0; i < N; i++) cin >> scores[i];\n    sort(scores.begin(), scores.end());\n    cout << scores[N - k] << endl;  // 뒤에서 k번째 = 커트라인\n}' }
+                        ]
+                    }
+                }
+            ]
+        },
         {
             id: 'boj-2750',
             title: 'BOJ 2750 - 수 정렬하기',
@@ -1863,7 +2062,7 @@ sort(words.begin(), words.end(),
                 description: '리스트에 입력을 담고 sort()를 호출합니다.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
-                get templates() { return sortingTopic.problems[0].templates; },
+                get templates() { return sortingTopic.problems[1].templates; },
                 codeSteps: {
                     python: [
                         { title: '입력 받기', desc: 'sys.stdin.readline으로 빠른 입력을 받아 배열에 저장합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\narr = [int(input()) for _ in range(N)]' },
@@ -1919,7 +2118,7 @@ sort(words.begin(), words.end(),
                 description: '좌표를 (x, y) 튜플로 만들면 자동으로 x → y 순으로 정렬됩니다.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
-                get templates() { return sortingTopic.problems[1].templates; },
+                get templates() { return sortingTopic.problems[2].templates; },
                 codeSteps: {
                     python: [
                         { title: '입력 받기', desc: '좌표를 (x, y) 튜플로 저장하면 정렬 시 자동으로 x → y 순 비교됩니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\ncoords = []\nfor _ in range(N):\n    x, y = map(int, input().split())\n    coords.append((x, y))' },
@@ -1972,7 +2171,7 @@ sort(words.begin(), words.end(),
                 description: '시작점 기준 정렬 후, 겹치면 end를 max로 갱신합니다.',
                 timeComplexity: 'O(n log n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return sortingTopic.problems[2].templates; },
+                get templates() { return sortingTopic.problems[3].templates; },
                 codeSteps: {
                     python: [
                         { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
@@ -2031,7 +2230,7 @@ sort(words.begin(), words.end(),
                 description: '나이만 기준으로 sort()하면 안정 정렬 덕분에 입력 순서가 자동 유지됩니다.',
                 timeComplexity: 'O(N log N)',
                 spaceComplexity: 'O(N)',
-                get templates() { return sortingTopic.problems[3].templates; },
+                get templates() { return sortingTopic.problems[4].templates; },
                 codeSteps: {
                     python: [
                         { title: '입력 받기', desc: '나이(int)와 이름(str)을 튜플로 저장합니다. 나이만 정렬 키로 쓸 예정입니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nmembers = []\nfor _ in range(N):\n    line = input().split()\n    members.append((int(line[0]), line[1]))' },

@@ -15,6 +15,7 @@ var topologicalSortTopic = {
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
+        'boj-14567': { type: 'Prerequisite Order',       color: '#00b894',      vizMethod: '_renderVizPrereq' },
         'boj-2252': { type: 'Basic Topological Sort',   color: 'var(--accent)', vizMethod: '_renderVizLineup' },
         'boj-1766': { type: 'Priority Queue Application',  color: 'var(--green)',  vizMethod: '_renderVizWorkbook' },
         'boj-3665': { type: 'Edge Reversal Application',    color: '#e17055',      vizMethod: '_renderVizRanking' }
@@ -1510,6 +1511,276 @@ for (int i = 0; i &lt; result.size(); i++)
     },
 
     // ====================================================================
+    // Simulation 0: Prerequisite (boj-14567) — Kahn's Algorithm + Semester Calc
+    // ====================================================================
+    _renderVizPrereq(container) {
+        var self = this, suffix = '-prereq';
+        var DEFAULT_N = 5;
+        var DEFAULT_EDGES_STR = '1 2, 1 3, 2 4, 3 4, 4 5';
+
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">Prerequisites — Find Earliest Semester</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Use Kahn\'s Algorithm to find the earliest semester for each course. Try changing the values!</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">N (courses): <input type="number" id="ts-prereq-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">Prerequisites (A B format): <input type="text" id="ts-prereq-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+                '<button class="btn btn-primary" id="ts-prereq-reset">🔄</button>' +
+            '</div>' +
+            self._createStepDesc(suffix) +
+            '<div id="pq-nodes' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="pq-indeg' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="pq-semester' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;"></div>' +
+            '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Queue</div><div id="pq-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">Process Order</div><div id="pq-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+            '</div>' +
+            '<div id="pq-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var nodesEl = container.querySelector('#pq-nodes' + suffix);
+        var indegEl = container.querySelector('#pq-indeg' + suffix);
+        var semEl = container.querySelector('#pq-semester' + suffix);
+        var queueEl = container.querySelector('#pq-queue' + suffix);
+        var resultEl = container.querySelector('#pq-result' + suffix);
+        var infoEl = container.querySelector('#pq-info' + suffix);
+
+        function nodeBox(nid, cls) { return '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;font-size:1.1rem;transition:all 0.3s;' + cls + '">' + nid + '</div>'; }
+
+        function renderNodes(states, n) {
+            nodesEl.innerHTML = '';
+            for (var i = 1; i <= n; i++) {
+                var st = states[i] || 'default';
+                var cls = 'background:var(--bg2);border:2px solid var(--border);color:var(--text);';
+                if (st === 'queued') cls = 'background:rgba(108,92,231,0.15);border:2px dashed var(--accent);color:var(--accent);';
+                if (st === 'active') cls = 'background:var(--yellow);border:2px solid var(--yellow-vivid,#f9a825);color:#333;box-shadow:0 0 12px rgba(249,168,37,0.5);';
+                if (st === 'done') cls = 'background:var(--green);border:2px solid var(--green);color:white;';
+                nodesEl.innerHTML += nodeBox(i, cls);
+            }
+        }
+        function renderIndeg(indArr, n) {
+            indegEl.innerHTML = '';
+            for (var i = 1; i <= n; i++) {
+                indegEl.innerHTML += '<div style="width:48px;text-align:center;font-size:0.8rem;color:var(--text2);">in=' + (indArr[i] != null ? indArr[i] : 0) + '</div>';
+            }
+        }
+        function renderSemester(semArr, n) {
+            semEl.innerHTML = '';
+            for (var i = 1; i <= n; i++) {
+                var val = semArr[i] || '-';
+                var bg = val !== '-' ? 'background:rgba(0,184,148,0.1);color:var(--green);font-weight:600;' : 'color:var(--text3);';
+                semEl.innerHTML += '<div style="width:48px;text-align:center;font-size:0.8rem;border-radius:6px;padding:2px 0;' + bg + '">sem=' + val + '</div>';
+            }
+        }
+        function renderQueue(arr) { queueEl.innerHTML = arr.map(function(x) { return '<div class="graph-queue-item">' + x + '</div>'; }).join(''); }
+        function renderResult(arr) { resultEl.innerHTML = arr.map(function(x) { return '<div class="graph-queue-item" style="border-color:var(--green);background:rgba(0,184,148,0.08);">' + x + '</div>'; }).join(''); }
+
+        function parseEdges(str) {
+            var edges = [];
+            str.split(',').forEach(function(part) {
+                var nums = part.trim().split(/\s+/).map(Number);
+                if (nums.length === 2 && !isNaN(nums[0]) && !isNaN(nums[1])) {
+                    edges.push([nums[0], nums[1]]);
+                }
+            });
+            return edges;
+        }
+
+        function buildGraph(n, edges) {
+            var adj = {};
+            var indeg = {};
+            for (var i = 1; i <= n; i++) { adj[i] = []; indeg[i] = 0; }
+            edges.forEach(function(e) {
+                if (e[0] >= 1 && e[0] <= n && e[1] >= 1 && e[1] <= n) {
+                    adj[e[0]].push(e[1]);
+                    indeg[e[1]]++;
+                }
+            });
+            return { adj: adj, indeg: indeg };
+        }
+
+        function buildSteps(n, edges) {
+            var g = buildGraph(n, edges);
+            var adj = g.adj;
+            var initIndeg = {};
+            for (var i = 1; i <= n; i++) initIndeg[i] = g.indeg[i];
+
+            var simIndeg = {};
+            for (var i2 = 1; i2 <= n; i2++) simIndeg[i2] = initIndeg[i2];
+            var simQueue = [];
+            var simSemester = {};
+            for (var i3 = 1; i3 <= n; i3++) simSemester[i3] = 0;
+
+            for (var i4 = 1; i4 <= n; i4++) {
+                if (simIndeg[i4] === 0) simQueue.push(i4);
+            }
+
+            var simResult = [];
+            var steps = [];
+
+            var initNodes = {};
+            for (var i5 = 1; i5 <= n; i5++) initNodes[i5] = 'default';
+
+            // Step 1: Show initial in-degrees
+            var edgeDesc = edges.map(function(e) { return e[0] + '\u2192' + e[1]; }).join(', ');
+            (function(initInd) {
+                steps.push({
+                    description: 'Calculate in-degrees from edges [' + edgeDesc + ']. \u2014 <em>In-degree = "number of prerequisites for this course"</em>',
+                    action: function() { renderNodes(initNodes, n); renderIndeg(initInd, n); renderSemester(simSemester, n); renderQueue([]); renderResult([]); infoEl.innerHTML = 'In-degree calculation complete'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initInd, n); renderSemester({}, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">Starting prerequisite topological sort.</span>'; }
+                });
+            })(JSON.parse(JSON.stringify(initIndeg)));
+
+            // Step 2: Enqueue in-degree 0 nodes + set semester=1
+            var zeroNodes = simQueue.slice();
+            if (zeroNodes.length === 0) {
+                steps.push({
+                    description: 'No nodes with in-degree 0! \u2014 <em>Possible cycle exists</em>',
+                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">No nodes with in-degree 0!</strong>'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderSemester({}, n); renderQueue([]); renderResult([]); infoEl.innerHTML = 'In-degree calculation complete'; }
+                });
+                return steps;
+            }
+
+            zeroNodes.forEach(function(v) { simSemester[v] = 1; });
+
+            (function(zn, semSnap, initInd) {
+                var queuedNodes = {};
+                for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
+                zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
+                steps.push({
+                    description: 'Enqueue in-degree 0 nodes [' + zn.join(', ') + '] and set <strong>semester=1</strong>. \u2014 <em>No prerequisites, so they can be taken in semester 1!</em>',
+                    action: function() { renderNodes(queuedNodes, n); renderIndeg(initInd, n); renderSemester(semSnap, n); renderQueue(zn.slice()); renderResult([]); infoEl.innerHTML = 'Semester 1 courses: <strong>' + zn.join(', ') + '</strong>'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initInd, n); renderSemester({}, n); renderQueue([]); renderResult([]); infoEl.innerHTML = 'In-degree calculation complete'; }
+                });
+            })(zeroNodes.slice(), JSON.parse(JSON.stringify(simSemester)), JSON.parse(JSON.stringify(initIndeg)));
+
+            // Process BFS
+            while (simQueue.length > 0) {
+                var v = simQueue.shift();
+                simResult.push(v);
+
+                var prevNodeStates = {};
+                for (var p = 1; p <= n; p++) {
+                    if (simResult.indexOf(p) >= 0 && p !== v) prevNodeStates[p] = 'done';
+                    else if (simQueue.indexOf(p) >= 0) prevNodeStates[p] = 'queued';
+                    else prevNodeStates[p] = 'default';
+                }
+                prevNodeStates[v] = 'active';
+                var curQueue = simQueue.slice();
+                var curResult = simResult.slice();
+                var prevSem = JSON.parse(JSON.stringify(simSemester));
+                var prevIndeg = {};
+                for (var pp = 1; pp <= n; pp++) prevIndeg[pp] = simIndeg[pp];
+
+                // Dequeue step
+                (function(vv, pns, cq, cr, ps) {
+                    steps.push({
+                        description: 'Dequeue <strong>course ' + vv + '</strong> (semester=' + ps[vv] + '). \u2014 <em>In-degree is 0, so all prerequisites are done!</em>',
+                        action: function() { renderNodes(pns, n); renderSemester(ps, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = 'Processing <strong>course ' + vv + '</strong> (semester ' + ps[vv] + ')'; },
+                        undo: function() {}
+                    });
+                })(v, JSON.parse(JSON.stringify(prevNodeStates)), curQueue.slice(), curResult.slice(), JSON.parse(JSON.stringify(prevSem)));
+
+                // Process each neighbor individually
+                var neighbors = adj[v] || [];
+                for (var ni = 0; ni < neighbors.length; ni++) {
+                    var u = neighbors[ni];
+                    var oldSemU = simSemester[u];
+                    var newSemU = Math.max(simSemester[u], simSemester[v] + 1);
+                    simSemester[u] = newSemU;
+                    simIndeg[u]--;
+                    var becameZero = (simIndeg[u] === 0);
+                    if (becameZero) simQueue.push(u);
+
+                    var afterNodeStates = {};
+                    for (var a = 1; a <= n; a++) {
+                        if (simResult.indexOf(a) >= 0) afterNodeStates[a] = 'done';
+                        else if (simQueue.indexOf(a) >= 0) afterNodeStates[a] = 'queued';
+                        else afterNodeStates[a] = 'default';
+                    }
+                    var afterIndeg = {};
+                    for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
+                    var afterQueue = simQueue.slice();
+                    var afterSem = JSON.parse(JSON.stringify(simSemester));
+
+                    var semExplain = 'semester[' + u + '] = max(' + oldSemU + ', semester[' + v + ']+1) = max(' + oldSemU + ', ' + (simSemester[v] + 1) + ') = ' + newSemU;
+                    var desc = 'Process edge ' + v + '\u2192' + u + ': ' + semExplain + ' \u2014 <em>Course ' + v + ' is in semester ' + prevSem[v] + ', so course ' + u + ' needs at least semester ' + newSemU + '</em>';
+                    if (becameZero) {
+                        desc += '<br>\u2192 Course ' + u + ' in-degree becomes 0 \u2014 added to queue! <em>All prerequisites completed</em>';
+                    }
+
+                    (function(desc2, ans, aind, aq, asem) {
+                        steps.push({
+                            description: desc2,
+                            action: function() { renderNodes(ans, n); renderIndeg(aind, n); renderSemester(asem, n); renderQueue(aq); infoEl.innerHTML = 'Processing edges...'; },
+                            undo: function() {}
+                        });
+                    })(desc, JSON.parse(JSON.stringify(afterNodeStates)), JSON.parse(JSON.stringify(afterIndeg)), afterQueue.slice(), JSON.parse(JSON.stringify(afterSem)));
+                }
+
+                if (neighbors.length === 0) {
+                    var doneNodeStates = {};
+                    for (var d = 1; d <= n; d++) {
+                        if (simResult.indexOf(d) >= 0) doneNodeStates[d] = 'done';
+                        else if (simQueue.indexOf(d) >= 0) doneNodeStates[d] = 'queued';
+                        else doneNodeStates[d] = 'default';
+                    }
+                    (function(vv2, dns) {
+                        steps.push({
+                            description: 'Course ' + vv2 + ' has no dependent courses. Done! \u2014 <em>No courses require this as a prerequisite</em>',
+                            action: function() { renderNodes(dns, n); infoEl.innerHTML = 'Course ' + vv2 + ' done (no dependents)'; },
+                            undo: function() {}
+                        });
+                    })(v, JSON.parse(JSON.stringify(doneNodeStates)));
+                }
+            }
+
+            // Final step
+            var finalSem = JSON.parse(JSON.stringify(simSemester));
+            var finalResult = simResult.slice();
+            steps.push({
+                description: 'Topological sort complete! The earliest semester for each course has been determined.',
+                action: function() {
+                    var fs = {};
+                    for (var f = 1; f <= n; f++) fs[f] = 'done';
+                    renderNodes(fs, n); renderQueue([]); renderResult(finalResult); renderSemester(finalSem, n);
+                    var semStr = [];
+                    for (var s = 1; s <= n; s++) semStr.push(finalSem[s] || 0);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">Done! Semesters: ' + semStr.join(' ') + '</strong>';
+                },
+                undo: function() {}
+            });
+
+            return steps;
+        }
+
+        function resetViz(n, edges) {
+            self._clearVizState();
+            var g = buildGraph(n, edges);
+            var initNodes = {};
+            for (var i = 1; i <= n; i++) initNodes[i] = 'default';
+            renderNodes(initNodes, n);
+            renderIndeg(g.indeg, n);
+            renderSemester({}, n);
+            renderQueue([]);
+            renderResult([]);
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting prerequisite topological sort.</span>';
+            var steps = buildSteps(n, edges);
+            self._initStepController(container, steps, suffix);
+        }
+
+        resetViz(DEFAULT_N, parseEdges(DEFAULT_EDGES_STR));
+
+        container.querySelector('#ts-prereq-reset').addEventListener('click', function() {
+            var n = parseInt(container.querySelector('#ts-prereq-n').value) || DEFAULT_N;
+            if (n < 2) n = 2;
+            if (n > 10) n = 10;
+            var edges = parseEdges(container.querySelector('#ts-prereq-edges').value);
+            resetViz(n, edges);
+        });
+    },
+
+    // ====================================================================
     // Simulation 1: Lineup (boj-2252) — Basic Kahn's Algorithm
     // ====================================================================
     _renderVizLineup(container) {
@@ -2353,13 +2624,87 @@ for (int i = 0; i &lt; result.size(); i++)
 
     // ===== Problem Stages =====
     stages: [
-        { num: 1, title: 'Basic Topological Sort', desc: 'Basic topological sort using in-degree and BFS (Gold III)', problemIds: ['boj-2252'] },
-        { num: 2, title: 'Advanced Topological Sort', desc: 'Priority queue, cycle detection, and other advanced applications (Gold I~II)', problemIds: ['boj-1766', 'boj-3665'] }
+        { num: 1, title: 'Prerequisites (Intro)', desc: 'Introduction to topological sort — find prerequisite course order (Gold V)', problemIds: ['boj-14567'] },
+        { num: 2, title: 'Basic Topological Sort', desc: 'Basic topological sort using in-degree and BFS (Gold III)', problemIds: ['boj-2252'] },
+        { num: 3, title: 'Advanced Topological Sort', desc: 'Priority queue, cycle detection, and other advanced applications (Gold I~II)', problemIds: ['boj-1766', 'boj-3665'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ===== Stage 1: Basic Topological Sort =====
+        // ===== Stage 1: Prerequisites (Intro) =====
+        {
+            id: 'boj-14567',
+            title: 'BOJ 14567 - Prerequisite (Prerequisite)',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/14567',
+            simIntro: 'Build a DAG from prerequisite relationships and use Kahn\'s Algorithm to find the earliest semester for each course.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>Students at Z University must take a total of N courses under the new curriculum. Each course may have prerequisite courses that must be completed first.</p>
+                <p>There is no limit on the number of courses that can be taken per semester. All courses are offered every semester.</p>
+                <p>Find the earliest semester in which each course can be taken.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of courses N (1 ≤ N ≤ 1000) and the number of prerequisite conditions M (0 ≤ M ≤ 500,000).</p>
+                <p>The next M lines each contain two integers A and B, meaning course A is a prerequisite for course B (you must complete A before taking B).</p>
+                <h4>Output</h4>
+                <p>Print the earliest semester number for each course from 1 to N, separated by spaces, on a single line.</p>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>3 2\n2 3\n1 2</pre></div>
+                    <div><strong>Output</strong><pre>1 1 2</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>6 4\n1 2\n1 3\n2 5\n4 5</pre></div>
+                    <div><strong>Output</strong><pre>1 2 2 1 3 1</pre></div>
+                </div></div>
+                <h4>Constraints</h4>
+                <ul><li>1 ≤ N ≤ 1000</li><li>0 ≤ M ≤ 500,000</li></ul>
+            `,
+            hints: [
+                {
+                    title: 'First thought — model as a graph',
+                    content: '"Must complete A before taking B" → There\'s a directed <strong>edge</strong> from A to B in a directed acyclic graph (DAG).<br>What algorithm is perfect for handling such precedence relationships? <strong>Topological sort</strong>!'
+                },
+                {
+                    title: 'How do we find the "earliest semester"?',
+                    content: 'No prerequisites → Can take it in <strong>semester 1</strong> right away!<br>Has prerequisites → Can take it the <strong>next semester</strong> after all prerequisites are completed.<br><br>In other words, <code>semester[B] = max(semester[all A\'s]) + 1</code> — the latest prerequisite + 1!'
+                },
+                {
+                    title: 'Implement with BFS (Kahn\'s Algorithm)',
+                    content: 'Put courses with in-degree 0 (no prerequisites) in the queue and start with semester=1.<br>For each dequeued course, update neighbors: <code>semester[neighbor] = max(semester[neighbor], semester[current] + 1)</code>!<br>When in-degree becomes 0, add to queue.<br><br><span class="lang-py">Python: implement BFS with <code>deque</code></span><span class="lang-cpp">C++: implement BFS with <code>queue</code></span>'
+                },
+                {
+                    title: 'Check the time complexity',
+                    content: 'We process each node once and check each edge once, so it\'s <strong>O(N + M)</strong>.<br>With N ≤ 1000 and M ≤ 500,000, this is fast enough!'
+                }
+            ],
+            templates: {
+                python: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nin_degree = [0] * (N + 1)\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1\n\nsemester = [0] * (N + 1)\nqueue = deque()\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        queue.append(i)\n        semester[i] = 1\n\nwhile queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        semester[u] = max(semester[u], semester[v] + 1)\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            queue.append(u)\n\nprint(*semester[1:])',
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }\n\n    vector<int> semester(N + 1, 0);\n    queue<int> q;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) {\n            q.push(i);\n            semester[i] = 1;\n        }\n    }\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            semester[u] = max(semester[u], semester[v] + 1);\n            if (--in_degree[u] == 0) q.push(u);\n        }\n    }\n\n    for (int i = 1; i <= N; i++)\n        printf("%d%c", semester[i], i == N ? \'\\n\' : \' \');\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'Kahn\'s Algorithm + Semester Calculation',
+                description: 'BFS from courses with in-degree 0, calculating the earliest semester for each course.',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(N + M)',
+                codeSteps: {
+                    python: [
+                        { title: 'Input and Build Graph', desc: 'Store prerequisite relationships as an adjacency list\nand count in-degrees to prepare for topological sort.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]  # adjacency list\nin_degree = [0] * (N + 1)           # in-degree count\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)  # edge a → b\n    in_degree[b] += 1   # increase b\'s in-degree' },
+                        { title: 'Enqueue In-degree 0 Courses', desc: 'Courses with no prerequisites can be taken in semester 1,\nso add them to the queue and initialize semester=1.', code: 'semester = [0] * (N + 1)\nqueue = deque()\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        queue.append(i)\n        semester[i] = 1  # no prereqs → semester 1' },
+                        { title: 'BFS + Semester Calculation', desc: 'For each dequeued course, update neighbor semesters to\nmax(current, prerequisite semester + 1).\nThe latest prerequisite + 1 gives the earliest possible semester!', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        # latest prerequisite + 1\n        semester[u] = max(semester[u], semester[v] + 1)\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            queue.append(u)' },
+                        { title: 'Output', desc: 'Print the earliest semester for each course from 1 to N.', code: 'print(*semester[1:])' }
+                    ],
+                    cpp: [
+                        { title: 'Input and Build Graph', desc: 'Store prerequisite relationships as an adjacency list\nand count in-degrees to prepare for topological sort.', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);  // edge a → b\n        in_degree[b]++;         // increase b\'s in-degree\n    }' },
+                        { title: 'Enqueue In-degree 0 Courses', desc: 'Courses with no prerequisites go into the queue\nwith semester=1.', code: '    vector<int> semester(N + 1, 0);\n    queue<int> q;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) {\n            q.push(i);\n            semester[i] = 1;  // no prereqs → semester 1\n        }\n    }' },
+                        { title: 'BFS + Semester Calculation', desc: 'For each dequeued course, update neighbor semesters to\nmax(current, prerequisite semester + 1).', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            // latest prerequisite + 1\n            semester[u] = max(semester[u], semester[v] + 1);\n            if (--in_degree[u] == 0) q.push(u);\n        }\n    }' },
+                        { title: 'Output', desc: 'Print the earliest semester for each course and exit.', code: '    for (int i = 1; i <= N; i++)\n        printf("%d%c", semester[i], i == N ? \'\\n\' : \' \');\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return topologicalSortTopic.problems[0].templates; }
+            }]
+        },
+
+        // ===== Stage 2: Basic Topological Sort =====
         {
             id: 'boj-2252',
             title: 'BOJ 2252 - Lineup',
@@ -2421,7 +2766,7 @@ for (int i = 0; i &lt; result.size(); i++)
                         { title: 'Output', desc: 'Print the topological sort result and exit.', code: '    return 0;\n}' }
                     ]
                 },
-                get templates() { return topologicalSortTopic.problems[0].templates; }
+                get templates() { return topologicalSortTopic.problems[1].templates; }
             }]
         },
 
@@ -2483,7 +2828,7 @@ for (int i = 0; i &lt; result.size(); i++)
                         { title: 'Output', desc: 'Print the topological sort result and exit.', code: '    return 0;\n}' }
                     ]
                 },
-                get templates() { return topologicalSortTopic.problems[1].templates; }
+                get templates() { return topologicalSortTopic.problems[2].templates; }
             }]
         },
         {
@@ -2543,7 +2888,7 @@ for (int i = 0; i &lt; result.size(); i++)
                         { title: 'Output Result', desc: 'Print IMPOSSIBLE for cycles, ? for ambiguous ranking,\notherwise print the confirmed ranking for this year.', code: '        if ((int)result.size() != n) printf("IMPOSSIBLE\\n");\n        else if (ambiguous) printf("?\\n");\n        else {\n            for (int i = 0; i < n; i++)\n                printf("%d%c", result[i], i==n-1?\'\\n\':\' \');\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
-                get templates() { return topologicalSortTopic.problems[2].templates; }
+                get templates() { return topologicalSortTopic.problems[3].templates; }
             }]
         }
     ],

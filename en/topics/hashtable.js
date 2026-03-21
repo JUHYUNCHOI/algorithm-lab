@@ -15,6 +15,7 @@ const hashTableTopic = {
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
+        'boj-10815': { type: 'Set Lookup',              color: '#00b894',      vizMethod: '_renderVizNumCard' },
         'lc-217':   { type: 'HashSet Usage',          color: 'var(--accent)', vizMethod: '_renderVizContainsDup' },
         'lc-3':     { type: 'Sliding Window',          color: '#6c5ce7',      vizMethod: '_renderVizLongestSub' },
         'lc-560':   { type: 'Prefix Sum + HashMap',    color: '#e17055',      vizMethod: '_renderVizSubarraySum' },
@@ -37,7 +38,7 @@ const hashTableTopic = {
         const meta = self.problemMeta[problemId];
         if (!meta) { container.innerHTML = '<p>Problem metadata not found.</p>'; return; }
         self._clearVizState();
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
         header.innerHTML =
@@ -1145,6 +1146,130 @@ struct HashTable {
         document.addEventListener('keydown', handleKeydown); state.keydownHandler = handleKeydown; updateUI();
     },
 
+    // ===== Problem Simulation: Number Card (BOJ 10815) =====
+    _renderVizNumCard(container) {
+        const self = this;
+        const DEFAULT_CARDS = '6,3,2,10,-10';
+        const DEFAULT_QUERIES = '10,9,-5,2,3,4,5,-10';
+        container.innerHTML = `
+            ${self._createStepDesc('-nc')}
+            <div class="sim-card">
+                <div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                    <label>Cards: <input type="text" id="ht-nc-cards" value="${DEFAULT_CARDS}" style="width:200px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <label>Numbers to check: <input type="text" id="ht-nc-queries" value="${DEFAULT_QUERIES}" style="width:240px;padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);"></label>
+                    <button class="btn btn-primary" id="ht-nc-start">🔄</button>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;margin-bottom:8px;">Cards (original array)</div>
+                    <div id="ht-nc-card-boxes" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;margin-bottom:8px;">Card Set</div>
+                    <div id="ht-nc-set" class="graph-queue-display" style="min-height:40px;padding:12px;font-size:0.95rem;">{ }</div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;margin-bottom:8px;">Numbers to check</div>
+                    <div id="ht-nc-query-boxes" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+                </div>
+                <div>Result: <span id="ht-nc-result" style="font-weight:600;">—</span></div>
+            </div>
+            ${self._createStepControls('-nc')}
+        `;
+        const cardBoxesEl = container.querySelector('#ht-nc-card-boxes');
+        const setEl = container.querySelector('#ht-nc-set');
+        const queryBoxesEl = container.querySelector('#ht-nc-query-boxes');
+        const resultEl = container.querySelector('#ht-nc-result');
+
+        function buildAndRun() {
+            self._clearVizState();
+            const cards = container.querySelector('#ht-nc-cards').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+            const queries = container.querySelector('#ht-nc-queries').value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+
+            cardBoxesEl.innerHTML = '';
+            cards.forEach((v, i) => { const b = document.createElement('div'); b.className = 'str-char-box'; b.textContent = v; b.dataset.idx = i; cardBoxesEl.appendChild(b); });
+            queryBoxesEl.innerHTML = '';
+            queries.forEach((v, i) => { const b = document.createElement('div'); b.className = 'str-char-box'; b.textContent = v; b.dataset.idx = i; queryBoxesEl.appendChild(b); });
+            setEl.textContent = '{ }';
+            resultEl.textContent = '—';
+
+            function saveState() {
+                return {
+                    cardBoxes: Array.from(cardBoxesEl.children).map(b => ({ cls: b.className, bg: b.style.background, color: b.style.color })),
+                    queryBoxes: Array.from(queryBoxesEl.children).map(b => ({ cls: b.className, bg: b.style.background, color: b.style.color })),
+                    set: setEl.textContent, result: resultEl.innerHTML
+                };
+            }
+            function restoreState(s) {
+                Array.from(cardBoxesEl.children).forEach((b, i) => { b.className = s.cardBoxes[i].cls; b.style.background = s.cardBoxes[i].bg; b.style.color = s.cardBoxes[i].color; });
+                Array.from(queryBoxesEl.children).forEach((b, i) => { b.className = s.queryBoxes[i].cls; b.style.background = s.queryBoxes[i].bg; b.style.color = s.queryBoxes[i].color; });
+                setEl.textContent = s.set; resultEl.innerHTML = s.result;
+            }
+
+            const steps = [];
+            const cardSet = new Set();
+
+            // Step 1: Build set from cards
+            steps.push({
+                description: 'Put all N cards into a set. Sets allow O(1) existence checks!',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    cards.forEach(v => cardSet.add(v));
+                    setEl.textContent = '{ ' + Array.from(cardSet).join(', ') + ' }';
+                    Array.from(cardBoxesEl.children).forEach(b => { b.className = 'str-char-box matched'; });
+                },
+                undo: function() { restoreState(this._before); cardSet.clear(); }
+            });
+
+            // Steps for each query
+            const results = [];
+            queries.forEach((q, i) => {
+                const found = cards.indexOf(q) !== -1;
+                steps.push({
+                    description: q + ' is ' + (found ? 'in the set! → 1 ✓' : 'NOT in the set! → 0 ✗') + '  (O(1) lookup)',
+                    _before: null,
+                    action: function() {
+                        this._before = saveState();
+                        // Reset previous query highlight
+                        Array.from(queryBoxesEl.children).forEach(b => {
+                            if (b.classList.contains('comparing')) {
+                                b.classList.remove('comparing');
+                            }
+                        });
+                        queryBoxesEl.children[i].classList.add('comparing');
+                        if (found) {
+                            queryBoxesEl.children[i].style.background = 'var(--green)';
+                            queryBoxesEl.children[i].style.color = '#fff';
+                        } else {
+                            queryBoxesEl.children[i].style.background = 'var(--red, #e17055)';
+                            queryBoxesEl.children[i].style.color = '#fff';
+                        }
+                        results.push(found ? 1 : 0);
+                        resultEl.innerHTML = '<span style="font-family:monospace;">' + results.join(' ') + '</span>';
+                    },
+                    undo: function() { restoreState(this._before); results.pop(); }
+                });
+            });
+
+            // Final step
+            steps.push({
+                description: 'Done! Checked all numbers in O(1) each. Total time: O(N + M)',
+                _before: null,
+                action: function() {
+                    this._before = saveState();
+                    Array.from(queryBoxesEl.children).forEach(b => { b.classList.remove('comparing'); });
+                    resultEl.innerHTML = '<span style="color:var(--green);font-family:monospace;font-weight:700;">' + results.join(' ') + '</span>';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            self._initStepController(container, steps, '-nc');
+        }
+
+        container.querySelector('#ht-nc-start').addEventListener('click', buildAndRun);
+        buildAndRun();
+    },
+
     // ===== Problem Simulation: Contains Duplicate =====
     _renderVizContainsDup(container) {
         const self = this;
@@ -1626,11 +1751,141 @@ struct HashTable {
 
     // ===== Problem Solving Tab =====
     stages: [
-        { num: 1, title: 'HashMap Basics', desc: 'Frequency, existence check, mapping (Easy~Silver)', problemIds: ['lc-217', 'lc-3'] },
-        { num: 2, title: 'HashMap Applications', desc: 'Pattern matching, contiguous subarrays (Medium~Gold)', problemIds: ['lc-560', 'boj-7785'] }
+        { num: 1, title: 'Number Cards', desc: 'Hash-based O(1) lookup', problemIds: ['boj-10815'] },
+        { num: 2, title: 'HashMap Basics', desc: 'Frequency, existence check, mapping (Easy~Silver)', problemIds: ['lc-217', 'lc-3'] },
+        { num: 3, title: 'HashMap Applications', desc: 'Pattern matching, contiguous subarrays (Medium~Gold)', problemIds: ['lc-560', 'boj-7785'] }
     ],
 
     problems: [
+        {
+            id: 'boj-10815',
+            title: 'BOJ 10815 - Number Cards',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/10815',
+            descriptionHTML: `<h3>Problem</h3>
+                <p>A number card has a single integer written on it. Sanggeun has N number cards. Given M integers, write a program to determine whether Sanggeun has a number card with each integer written on it.</p>
+                <h4>Input</h4>
+                <p>The first line contains N (1 &le; N &le; 500,000), the number of cards Sanggeun has. The second line contains the integers written on the cards. Each number is between -10,000,000 and 10,000,000 inclusive.</p>
+                <p>The third line contains M (1 &le; M &le; 500,000). The fourth line contains M integers to check, separated by spaces. These numbers are also between -10,000,000 and 10,000,000 inclusive.</p>
+                <h4>Output</h4>
+                <p>For each of the M numbers, print 1 if Sanggeun has a card with that number, or 0 if not, separated by spaces.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>5
+6 3 2 10 -10
+8
+10 9 -5 2 3 4 5 -10</pre></div>
+                    <div><strong>Output</strong><pre>1 0 0 1 1 0 0 1</pre></div>
+                </div>
+                <p class="example-explain">With cards {6, 3, 2, 10, -10}: 10→has(1), 9→no(0), -5→no(0), 2→has(1), 3→has(1), 4→no(0), 5→no(0), -10→has(1)</p>
+                </div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 500,000</li>
+                    <li>1 ≤ M ≤ 500,000</li>
+                    <li>Card numbers: -10,000,000 ≤ x ≤ 10,000,000</li>
+                </ul>`,
+            hints: [
+                { title: 'First idea?', content: 'For each of the M numbers, compare against all N cards one by one.<br>A nested for loop checking every combination!<br><br>But... if N and M are up to <strong>500,000</strong>?<br>500,000 × 500,000 = <strong>250 billion</strong> comparisons... TLE! 😱' },
+                { title: '"Do I have it?" → Fast lookup', content: 'Store the card numbers <strong>somewhere</strong> and quickly check "is this number there?" for each query.<br><br>Scanning an array from start to end is O(n)... is there something faster?<br><br><strong>Set</strong> can check "is this value present?" in <strong>O(1)</strong>!<br><span class="lang-py">Python: <code>set()</code> with <code>in</code> operator → O(1)</span><span class="lang-cpp">C++: <code>unordered_set</code> with <code>count()</code> → O(1)</span>' },
+                { title: 'Solve it with Set', content: '① Put N card numbers into a set → O(N)<br>② For each of M numbers, check if it\'s in the set → O(1) × M = O(M)<br><br>Total: <strong>O(N + M)</strong> — much faster than the O(N×M) nested loop!<br><br><span class="lang-py"><code>cards = set(map(int, input().split()))</code><br><code>1 if x in cards else 0</code></span><span class="lang-cpp"><code>unordered_set&lt;int&gt; cards(arr, arr+n);</code><br><code>cards.count(x) ? 1 : 0</code></span>' },
+                { title: 'Sort + Binary Search also works', content: '<strong>Sort</strong> the cards, then use <strong>binary search</strong> for each query.<br>Sort O(N log N) + Search O(M log N) = <strong>O((N+M) log N)</strong><br><br>Slower than Set\'s O(N+M), but fast enough and uses less extra memory.<br><br><span class="lang-py"><code>bisect_left</code>: finds insertion position in sorted array via binary search</span><span class="lang-cpp"><code>binary_search</code>: checks if a value exists in a sorted array via binary search</span>' }
+            ],
+            simIntro: 'Watch how cards are put into a set and each number is checked in O(1)!',
+            inputDefault: 0, solve() { return '1 0 0 1 1 0 0 1'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+cards = set(map(int, input().split()))  # Store cards in set → O(N)
+m = int(input())
+queries = list(map(int, input().split()))
+
+# Check each number against set in O(1)
+print(' '.join('1' if x in cards else '0' for x in queries))`,
+                cpp: `#include <iostream>
+#include <unordered_set>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    unordered_set<int> cards;
+    for (int i = 0; i < n; i++) {
+        int x; scanf("%d", &x);
+        cards.insert(x);  // Store card in set → O(1) insert
+    }
+    int m; scanf("%d", &m);
+    for (int i = 0; i < m; i++) {
+        int x; scanf("%d", &x);
+        // O(1) existence check
+        printf("%d ", cards.count(x) ? 1 : 0);
+    }
+}`
+            },
+            solutions: [{
+                approach: 'Brute Force',
+                description: 'For each query, scan the entire card array to check existence',
+                timeComplexity: 'O(N × M)',
+                spaceComplexity: 'O(N)',
+                templates: {
+                    python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+cards = list(map(int, input().split()))
+m = int(input())
+queries = list(map(int, input().split()))
+
+result = []
+for q in queries:
+    found = 0
+    for c in cards:       # Check all N cards each time → O(N)
+        if c == q:
+            found = 1
+            break
+    result.append(str(found))
+print(' '.join(result))`,
+                    cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    vector<int> cards(n);
+    for (int i = 0; i < n; i++) scanf("%d", &cards[i]);
+    int m; scanf("%d", &m);
+    for (int i = 0; i < m; i++) {
+        int x; scanf("%d", &x);
+        int found = 0;
+        for (int j = 0; j < n; j++) {  // Check all N cards each time
+            if (cards[j] == x) { found = 1; break; }
+        }
+        printf("%d ", found);
+    }
+}`
+                }
+            }, {
+                approach: 'Set Lookup',
+                description: 'Store cards in a set and check existence in O(1)',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(N)',
+                get templates() { return hashTableTopic.problems[0].templates; },
+                codeSteps: {
+                    python: [
+                        { title: 'Read input', desc: 'BOJ may have large input, so use sys.stdin.readline\nfor fast input.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },
+                        { title: 'Store cards in set', desc: 'Key: set can check "is this value present?" in O(1)!\nPutting N cards into a set makes later lookups fast.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncards = set(map(int, input().split()))  # Build set in O(N)' },
+                        { title: 'Check M numbers', desc: 'For each number, "in cards" checks in O(1)!\nThanks to set\'s hash-based lookup, total is O(M).', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncards = set(map(int, input().split()))  # Build set in O(N)\nm = int(input())\nqueries = list(map(int, input().split()))\n\n# Each number: in set? → O(1) × M = O(M)\nprint(\' \'.join(\'1\' if x in cards else \'0\' for x in queries))' }
+                    ],
+                    cpp: [
+                        { title: 'Headers + set declaration', desc: 'unordered_set is hash-based so lookup is O(1)!\nset (tree-based) is O(log N), so we choose unordered_set.', code: '#include <iostream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    unordered_set<int> cards;' },
+                        { title: 'Store cards', desc: 'Read N cards one by one and insert into unordered_set.\nInsert is also O(1) on average, so total is O(N).', code: '#include <iostream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    unordered_set<int> cards;\n    for (int i = 0; i < n; i++) {\n        int x; scanf("%d", &x);\n        cards.insert(x);  // O(1) insert\n    }' },
+                        { title: 'Process queries + output', desc: 'count() checks existence in O(1).\nPrint 1 if present, 0 if not.', code: '#include <iostream>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    unordered_set<int> cards;\n    for (int i = 0; i < n; i++) {\n        int x; scanf("%d", &x);\n        cards.insert(x);  // O(1) insert\n    }\n    int m; scanf("%d", &m);\n    for (int i = 0; i < m; i++) {\n        int x; scanf("%d", &x);\n        printf("%d ", cards.count(x) ? 1 : 0);  // O(1) lookup\n    }\n}' }
+                    ]
+                }
+            }]
+        },
         {
             id: 'lc-217',
             title: 'LeetCode 217 - Contains Duplicate',
@@ -1719,7 +1974,7 @@ public:
                 description: 'Iterate with O(1) existence check using a HashSet',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[0].templates; },
+                get templates() { return hashTableTopic.problems[1].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Function definition', desc: 'Check if the integer array nums contains any duplicates.', code: 'class Solution:\n    def containsDuplicate(self, nums):' },
@@ -1845,7 +2100,7 @@ public:
                 description: 'Track last seen position with a hashmap while expanding the window',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(min(m,n))',
-                get templates() { return hashTableTopic.problems[1].templates; },
+                get templates() { return hashTableTopic.problems[2].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Function definition', desc: 'Find the length of the longest substring without repeating characters in string s.', code: 'class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:' },
@@ -1989,7 +2244,7 @@ public:
                 description: 'Check prefix sum differences in O(1) using a hashmap',
                 timeComplexity: 'O(n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[2].templates; },
+                get templates() { return hashTableTopic.problems[3].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Function definition', desc: 'Takes integer array nums and target sum k.', code: 'class Solution:\n    def subarraySum(self, nums, k):' },
@@ -2149,7 +2404,7 @@ int main() {
                 description: 'Add on enter, remove on leave, then sort in reverse alphabetical order',
                 timeComplexity: 'O(n log n)',
                 spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[3].templates; },
+                get templates() { return hashTableTopic.problems[4].templates; },
                 codeSteps: {
                     python: [
                         { title: 'Input setup', desc: 'BOJ may have large input, so use sys.stdin.readline\nfor fast input.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },

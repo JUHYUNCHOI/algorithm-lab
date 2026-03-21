@@ -15,6 +15,7 @@ var shortestPathTopic = {
     tabs: [{ id: 'concept', label: 'Learn' }],
 
     problemMeta: {
+        'boj-18352':{ type: 'BFS Shortest Dist',    color: '#00b894',       vizMethod: '_renderVizCityDist' },
         'boj-1753': { type: 'Dijkstra Basics',      color: 'var(--accent)', vizMethod: '_renderVizDijkstra' },
         'boj-11404':{ type: 'Floyd-Warshall',       color: 'var(--green)',  vizMethod: '_renderVizFloyd' },
         'boj-1916': { type: 'Dijkstra Applied',     color: '#e17055',       vizMethod: '_renderVizMinCost' },
@@ -1089,6 +1090,275 @@ var shortestPathTopic = {
     },
 
     // ====================================================================
+    // Simulation 0: Find Cities at Specific Distance (boj-18352) — BFS
+    // ====================================================================
+    _renderVizCityDist: function(container) {
+        var self = this;
+        var suffix = '-citydist';
+        var INF = Infinity;
+
+        var DEFAULT_N = 4;
+        var DEFAULT_EDGES = '1 2, 1 3, 2 3, 2 4';
+        var DEFAULT_K = 2;
+        var DEFAULT_START = 1;
+
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">BFS Shortest Distance: BOJ 18352 Example</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Find shortest distances from a starting city using BFS, then identify cities at distance K.</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">Cities N: <input type="number" id="sp-cd-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">Target dist K: <input type="number" id="sp-cd-k" value="' + DEFAULT_K + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+                '<label style="font-weight:600;">Start city X: <input type="number" id="sp-cd-start" value="' + DEFAULT_START + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="1"></label>' +
+            '</div>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">Edges (from to): <input type="text" id="sp-cd-edges" value="' + DEFAULT_EDGES + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:340px;"></label>' +
+                '<button class="btn btn-primary" id="sp-cd-reset">\uD83D\uDD04</button>' +
+            '</div>' +
+            self._createStepDesc(suffix) +
+            '<div id="sp-graph' + suffix + '" style="position:relative;width:100%;min-height:300px;background:var(--bg);border-radius:12px;margin-bottom:8px;overflow:hidden;"></div>' +
+            '<div id="sp-dist' + suffix + '" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="sp-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var graphEl = container.querySelector('#sp-graph' + suffix);
+        var distEl = container.querySelector('#sp-dist' + suffix);
+        var infoEl = container.querySelector('#sp-info' + suffix);
+
+        function parseEdges(edgeStr, nodeCount) {
+            var adj = [];
+            for (var i = 0; i < nodeCount; i++) adj.push([]);
+            var parts = edgeStr.split(',');
+            for (var p = 0; p < parts.length; p++) {
+                var tokens = parts[p].trim().split(/\s+/);
+                if (tokens.length >= 2) {
+                    var from = parseInt(tokens[0]) - 1;
+                    var to = parseInt(tokens[1]) - 1;
+                    if (from >= 0 && from < nodeCount && to >= 0 && to < nodeCount) {
+                        adj[from].push(to);
+                    }
+                }
+            }
+            return adj;
+        }
+
+        function getNodePositions(n, width, height) {
+            var positions = [];
+            var cx = width / 2, cy = height / 2;
+            var r = Math.min(width, height) * 0.35;
+            for (var i = 0; i < n; i++) {
+                var angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
+                positions.push({ x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) });
+            }
+            return positions;
+        }
+
+        function renderGraph(n, adj, dist, currentNode, queueNodes, targetK) {
+            var w = graphEl.clientWidth || 400;
+            var h = 300;
+            graphEl.style.height = h + 'px';
+            var pos = getNodePositions(n, w, h);
+            var svg = '<svg width="' + w + '" height="' + h + '" style="position:absolute;top:0;left:0;">';
+
+            // Draw directed edges
+            for (var i = 0; i < n; i++) {
+                for (var j = 0; j < adj[i].length; j++) {
+                    var to = adj[i][j];
+                    var x1 = pos[i].x, y1 = pos[i].y, x2 = pos[to].x, y2 = pos[to].y;
+                    var dx = x2 - x1, dy = y2 - y1;
+                    var len = Math.sqrt(dx * dx + dy * dy);
+                    if (len === 0) continue;
+                    var ux = dx / len, uy = dy / len;
+                    var nr = 22;
+                    var sx = x1 + ux * nr, sy = y1 + uy * nr;
+                    var ex = x2 - ux * nr, ey = y2 - uy * nr;
+                    var arrowLen = 10, arrowAngle = Math.PI / 6;
+                    var ax1 = ex - arrowLen * Math.cos(Math.atan2(ey - sy, ex - sx) - arrowAngle);
+                    var ay1 = ey - arrowLen * Math.sin(Math.atan2(ey - sy, ex - sx) - arrowAngle);
+                    var ax2 = ex - arrowLen * Math.cos(Math.atan2(ey - sy, ex - sx) + arrowAngle);
+                    var ay2 = ey - arrowLen * Math.sin(Math.atan2(ey - sy, ex - sx) + arrowAngle);
+                    svg += '<line x1="' + sx + '" y1="' + sy + '" x2="' + ex + '" y2="' + ey + '" stroke="var(--text3)" stroke-width="1.5" />';
+                    svg += '<polygon points="' + ex + ',' + ey + ' ' + ax1 + ',' + ay1 + ' ' + ax2 + ',' + ay2 + '" fill="var(--text3)" />';
+                }
+            }
+
+            // Draw nodes
+            for (var ni = 0; ni < n; ni++) {
+                var fill = 'var(--bg2)';
+                var stroke = 'var(--text3)';
+                var textColor = 'var(--text)';
+                var glow = '';
+                if (currentNode === ni) {
+                    fill = 'var(--yellow)'; stroke = 'var(--yellow)'; textColor = '#000';
+                    glow = ' filter="url(#glow-yellow)"';
+                } else if (dist[ni] !== INF && dist[ni] === targetK) {
+                    fill = 'var(--green)'; stroke = 'var(--green)'; textColor = 'white';
+                    glow = ' filter="url(#glow-green)"';
+                } else if (queueNodes && queueNodes.indexOf(ni) >= 0) {
+                    fill = 'var(--accent)'; stroke = 'var(--accent)'; textColor = 'white';
+                } else if (dist[ni] !== INF && dist[ni] >= 0) {
+                    fill = 'var(--bg3)'; stroke = 'var(--accent)';
+                }
+                var distLabel = dist[ni] === INF ? '\u221E' : dist[ni];
+                svg += '<circle cx="' + pos[ni].x + '" cy="' + pos[ni].y + '" r="20" fill="' + fill + '" stroke="' + stroke + '" stroke-width="2"' + glow + ' />';
+                svg += '<text x="' + pos[ni].x + '" y="' + (pos[ni].y + 1) + '" text-anchor="middle" dominant-baseline="middle" fill="' + textColor + '" font-weight="600" font-size="14">' + (ni + 1) + '</text>';
+                svg += '<text x="' + pos[ni].x + '" y="' + (pos[ni].y + 34) + '" text-anchor="middle" fill="var(--text2)" font-size="11">d=' + distLabel + '</text>';
+            }
+
+            var defs = '<defs>' +
+                '<filter id="glow-yellow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+                '<filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+                '</defs>';
+            svg = svg.replace('</svg>', defs + '</svg>');
+
+            graphEl.innerHTML = svg;
+        }
+
+        function renderDistTable(n, dist, targetK) {
+            distEl.innerHTML = '';
+            for (var i = 0; i < n; i++) {
+                var val = dist[i] === INF ? '\u221E' : dist[i];
+                var bg = 'background:var(--bg2);';
+                if (dist[i] !== INF && dist[i] === targetK) bg = 'background:var(--green);color:white;';
+                distEl.innerHTML += '<div style="min-width:52px;text-align:center;padding:8px 4px;border-radius:8px;font-weight:600;' + bg + '"><div>' + (i + 1) + '</div><div style="font-size:0.85rem;">' + val + '</div></div>';
+            }
+        }
+
+        function buildAndRun(nodeCount, adj, startIdx, targetK) {
+            var simDist = [];
+            for (var i = 0; i < nodeCount; i++) simDist.push(INF);
+            simDist[startIdx] = 0;
+
+            renderGraph(nodeCount, adj, simDist, -1, [], targetK);
+            renderDistTable(nodeCount, simDist, targetK);
+            infoEl.innerHTML = '<span style="color:var(--text2);">Starting BFS from city ' + (startIdx + 1) + '. Let\'s find cities at distance ' + targetK + '!</span>';
+
+            var steps = [];
+            function snapState() { return { d: simDist.slice(), info: infoEl.innerHTML, graph: graphEl.innerHTML, distHtml: distEl.innerHTML }; }
+            function restoreState(s) { simDist = s.d.slice(); infoEl.innerHTML = s.info; graphEl.innerHTML = s.graph; distEl.innerHTML = s.distHtml; }
+
+            // Initialization step
+            var s0 = snapState();
+            steps.push({
+                description: 'Initialize: dist[' + (startIdx + 1) + ']=0, rest=\u221E \u2014 Set starting city distance to 0 and add to BFS queue. Since all edges have weight 1, BFS guarantees shortest distances.',
+                action: function() {
+                    renderGraph(nodeCount, adj, simDist, startIdx, [], targetK);
+                    renderDistTable(nodeCount, simDist, targetK);
+                    infoEl.innerHTML = 'Queue: [' + (startIdx + 1) + '], dist[' + (startIdx + 1) + ']=0';
+                },
+                undo: function() { restoreState(s0); }
+            });
+
+            // Pre-compute BFS steps
+            var bfsDist = [];
+            for (var bi = 0; bi < nodeCount; bi++) bfsDist.push(bi === startIdx ? 0 : INF);
+            var queue = [startIdx];
+            var bfsSteps = [];
+
+            while (queue.length > 0) {
+                var curr = queue.shift();
+                bfsSteps.push({ type: 'dequeue', node: curr, queueAfter: queue.slice() });
+                for (var ei = 0; ei < adj[curr].length; ei++) {
+                    var nb = adj[curr][ei];
+                    if (bfsDist[nb] === INF) {
+                        bfsDist[nb] = bfsDist[curr] + 1;
+                        queue.push(nb);
+                        bfsSteps.push({ type: 'visit', node: curr, neighbor: nb, newDist: bfsDist[nb], queueAfter: queue.slice() });
+                    } else {
+                        bfsSteps.push({ type: 'skip', node: curr, neighbor: nb, queueAfter: queue.slice() });
+                    }
+                }
+            }
+
+            // Convert BFS steps to simulation steps
+            bfsSteps.forEach(function(bs) {
+                (function(step) {
+                    var sb;
+                    if (step.type === 'dequeue') {
+                        steps.push({
+                            description: 'Dequeue city <strong>' + (step.node + 1) + '</strong> (dist=' + simDist[step.node] + ') \u2014 Check its neighbors. BFS guarantees shortest distances because cities dequeued first are closer.',
+                            action: function() {
+                                sb = snapState();
+                                renderGraph(nodeCount, adj, simDist, step.node, step.queueAfter, targetK);
+                                renderDistTable(nodeCount, simDist, targetK);
+                                var qStr = step.queueAfter.map(function(x) { return x + 1; }).join(', ');
+                                infoEl.innerHTML = '<strong>Processing city ' + (step.node + 1) + '</strong> (dist=' + simDist[step.node] + '), Queue: [' + qStr + ']';
+                            },
+                            undo: function() { restoreState(sb); }
+                        });
+                    } else if (step.type === 'visit') {
+                        steps.push({
+                            description: 'City ' + (step.node + 1) + ' \u2192 City <strong>' + (step.neighbor + 1) + '</strong>: Not yet visited, so set dist[' + (step.neighbor + 1) + '] = ' + step.newDist + ' and add to queue.',
+                            action: function() {
+                                sb = snapState();
+                                simDist[step.neighbor] = step.newDist;
+                                renderGraph(nodeCount, adj, simDist, step.node, step.queueAfter, targetK);
+                                renderDistTable(nodeCount, simDist, targetK);
+                                var qStr = step.queueAfter.map(function(x) { return x + 1; }).join(', ');
+                                infoEl.innerHTML = 'dist[' + (step.neighbor + 1) + '] = ' + step.newDist + ', Queue: [' + qStr + ']';
+                            },
+                            undo: function() { restoreState(sb); }
+                        });
+                    } else if (step.type === 'skip') {
+                        steps.push({
+                            description: 'City ' + (step.node + 1) + ' \u2192 City <strong>' + (step.neighbor + 1) + '</strong>: Already visited, skip (dist[' + (step.neighbor + 1) + ']=' + simDist[step.neighbor] + ', shortest distance already set).',
+                            action: function() {
+                                sb = snapState();
+                                renderGraph(nodeCount, adj, simDist, step.node, step.queueAfter, targetK);
+                                renderDistTable(nodeCount, simDist, targetK);
+                                infoEl.innerHTML = 'City ' + (step.neighbor + 1) + ' already visited \u2014 skip';
+                            },
+                            undo: function() { restoreState(sb); }
+                        });
+                    }
+                })(bs);
+            });
+
+            // Result step
+            var resultNodes = [];
+            for (var ri = 0; ri < nodeCount; ri++) {
+                if (bfsDist[ri] === targetK) resultNodes.push(ri + 1);
+            }
+            var sf;
+            steps.push({
+                description: '\u2705 BFS complete! Cities at distance ' + targetK + ': ' + (resultNodes.length > 0 ? '<strong>' + resultNodes.join(', ') + '</strong>' : '<strong>none (-1)</strong>') + ' \u2014 All shortest distances are finalized.',
+                action: function() {
+                    sf = snapState();
+                    for (var fi = 0; fi < nodeCount; fi++) simDist[fi] = bfsDist[fi];
+                    renderGraph(nodeCount, adj, simDist, -1, [], targetK);
+                    renderDistTable(nodeCount, simDist, targetK);
+                    if (resultNodes.length > 0) {
+                        infoEl.innerHTML = '<strong style="color:var(--green);">Answer: ' + resultNodes.join(', ') + '</strong> (distance ' + targetK + ')';
+                    } else {
+                        infoEl.innerHTML = '<strong style="color:var(--red);">Answer: -1</strong> (no cities at distance ' + targetK + ')';
+                    }
+                },
+                undo: function() { restoreState(sf); }
+            });
+
+            self._initStepController(container, steps, suffix);
+        }
+
+        function runFromInputs() {
+            var n = parseInt(container.querySelector('#sp-cd-n').value) || DEFAULT_N;
+            var k = parseInt(container.querySelector('#sp-cd-k').value) || DEFAULT_K;
+            var start = parseInt(container.querySelector('#sp-cd-start').value) || DEFAULT_START;
+            var edgeStr = container.querySelector('#sp-cd-edges').value || DEFAULT_EDGES;
+            if (n < 2) n = 2; if (n > 10) n = 10;
+            if (start < 1) start = 1; if (start > n) start = n;
+            if (k < 1) k = 1;
+            var adj = parseEdges(edgeStr, n);
+            buildAndRun(n, adj, start - 1, k);
+        }
+
+        container.querySelector('#sp-cd-reset').addEventListener('click', function() {
+            self._clearVizState();
+            runFromInputs();
+        });
+
+        runFromInputs();
+    },
+
+    // ====================================================================
     // Simulation 1: Dijkstra Basics (boj-1753)
     // ====================================================================
     _renderVizDijkstra: function(container) {
@@ -1681,13 +1951,79 @@ var shortestPathTopic = {
 
     // ===== Problem Stages =====
     stages: [
-        { num: 1, title: 'Basic Shortest Path', desc: 'Practice basic implementations of Dijkstra and Floyd-Warshall (Gold IV~V)', problemIds: ['boj-1753', 'boj-11404'] },
-        { num: 2, title: 'Shortest Path Applications', desc: 'Apply Dijkstra to various scenarios (Gold V ~ Medium)', problemIds: ['boj-1916', 'lc-743'] }
+        { num: 1, title: 'BFS Shortest Distance', desc: 'Find shortest distances in unweighted graphs using BFS (Silver II)', problemIds: ['boj-18352'] },
+        { num: 2, title: 'Basic Shortest Path', desc: 'Practice basic implementations of Dijkstra and Floyd-Warshall (Gold IV~V)', problemIds: ['boj-1753', 'boj-11404'] },
+        { num: 3, title: 'Shortest Path Applications', desc: 'Apply Dijkstra to various scenarios (Gold V ~ Medium)', problemIds: ['boj-1916', 'lc-743'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ===== Stage 1: Basic Shortest Path =====
+        // ===== Stage 1: BFS Shortest Distance =====
+        {
+            id: 'boj-18352',
+            title: 'BOJ 18352 - Finding Cities at Specific Distance',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/18352',
+            simIntro: 'Observe how BFS finds shortest distances from the starting city and identifies cities at distance K.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>A country has N cities numbered from 1 to N and M one-way roads. Every road has a distance of 1.</p>
+                <p>Write a program that, starting from a specific city X, outputs the numbers of all cities whose shortest distance from X is exactly K. The shortest distance from city X to itself is always 0.</p>
+                <p>For example, when N=4, K=2, X=1 with the given graph, the only city at shortest distance 2 from city 1 is city 4. Cities 2 and 3 have shortest distance 1, so they are not included.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of cities N, number of roads M, distance K, and starting city X. (2 \u2264 N \u2264 300,000, 1 \u2264 M \u2264 1,000,000, 1 \u2264 K \u2264 300,000, 1 \u2264 X \u2264 N) From the second line, M lines follow with two natural numbers A and B, meaning there is a one-way road from city A to city B. A and B are different natural numbers.</p>
+                <h4>Output</h4>
+                <p>Output the numbers of all cities whose shortest distance from X is exactly K, one per line in ascending order.</p>
+                <p>If no reachable city has shortest distance exactly K, output -1.</p>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>4 4 2 1\n1 2\n1 3\n2 3\n2 4</pre></div>
+                    <div><strong>Output</strong><pre>4</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>4 3 2 1\n1 2\n1 3\n1 4</pre></div>
+                    <div><strong>Output</strong><pre>-1</pre></div>
+                </div></div>
+                <h4>Constraints</h4>
+                <ul>
+                    <li>2 \u2264 N \u2264 300,000</li>
+                    <li>1 \u2264 M \u2264 1,000,000</li>
+                    <li>1 \u2264 K \u2264 300,000</li>
+                    <li>1 \u2264 X \u2264 N</li>
+                    <li>All roads have distance 1</li>
+                </ul>
+            `,
+            hints: [
+                { title: 'First idea that comes to mind', content: 'We need to find the <strong>shortest distance</strong> from starting city X to all other cities.<br>The most intuitive approach is to <strong>explore all paths</strong> from X.<br>Maybe DFS to try every path and record the minimum distance to each city?' },
+                { title: 'But there\'s a problem with that', content: 'DFS explores all paths, which means <strong>the same city might be visited multiple times</strong>.<br>With N up to 300,000 and M up to 1,000,000, this would take way too long!<br><br>Key observation: every road in this problem has distance <strong>1</strong>.<br>When all distances are equal, <strong>the first arrival is the shortest distance</strong>. There\'s a perfect algorithm for this situation...' },
+                { title: 'How about this approach?', content: '<strong>BFS (Breadth-First Search)</strong> is the answer!<br><br>BFS explores <strong>in order of proximity</strong>, so it guarantees shortest distances when all edge weights are 1.<br>\u2460 Initialize dist array to -1 (unvisited), set dist[X] = 0<br>\u2461 Add X to queue and start BFS<br>\u2462 Dequeue a city, set unvisited neighbors\' distance to current+1<br>\u2463 After BFS, output cities with dist equal to K in ascending order<br><br>Time complexity: O(N + M) \u2014 each city and road checked exactly once!' },
+                { title: 'In Python/C++', content: '<span class="lang-py">In Python, use <code>collections.deque</code> as the BFS queue.<br><code>deque</code> supports O(1) append and popleft, perfect for BFS.<br>Using <code>list.pop(0)</code> is O(N) and will be too slow!<br>With large input, <code>sys.stdin.readline</code> is also essential.</span><span class="lang-cpp">In C++, use <code>queue&lt;int&gt;</code> as the BFS queue.<br><code>queue</code> works FIFO with <code>push()</code> and <code>front()</code>+<code>pop()</code>.<br>With N up to 300,000, use <code>scanf/printf</code> for fast I/O.</span>' }
+            ],
+            templates: {
+                python: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, K, X = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n\ndist = [-1] * (N + 1)\ndist[X] = 0\nq = deque([X])\n\nwhile q:\n    v = q.popleft()\n    for u in graph[v]:\n        if dist[u] == -1:\n            dist[u] = dist[v] + 1\n            q.append(u)\n\nresult = [i for i in range(1, N + 1) if dist[i] == K]\nif result:\n    for city in result:\n        print(city)\nelse:\n    print(-1)',
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M, K, X;\n    scanf("%d %d %d %d", &N, &M, &K, &X);\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n    }\n\n    vector<int> dist(N + 1, -1);\n    dist[X] = 0;\n    queue<int> q;\n    q.push(X);\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            if (dist[u] == -1) {\n                dist[u] = dist[v] + 1;\n                q.push(u);\n            }\n        }\n    }\n\n    bool found = false;\n    for (int i = 1; i <= N; i++) {\n        if (dist[i] == K) {\n            printf("%d\\n", i);\n            found = true;\n        }\n    }\n    if (!found) printf("-1\\n");\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'BFS Shortest Distance',
+                description: 'Since all edges have weight 1, use BFS to find shortest distances, then output cities at distance K.',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(N + M)',
+                codeSteps: {
+                    python: [
+                        { title: 'Input & Build Graph', desc: 'Store the directed graph as an adjacency list.\nUse sys.stdin.readline for fast input to avoid TLE with large N and M.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M, K, X = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)' },
+                        { title: 'BFS for Shortest Distances', desc: 'Since all edge weights are 1, BFS gives shortest distances.\nIf dist[v] is -1, it\'s unvisited \u2014 update to current+1 and enqueue.\ndeque\'s popleft() is O(1), much faster than list\'s pop(0).', code: 'dist = [-1] * (N + 1)  # -1 = unvisited\ndist[X] = 0             # start city at distance 0\nq = deque([X])\n\nwhile q:\n    v = q.popleft()     # dequeue front city\n    for u in graph[v]:  # check neighbors\n        if dist[u] == -1:        # not yet visited\n            dist[u] = dist[v] + 1  # distance = current + 1\n            q.append(u)            # add to queue' },
+                        { title: 'Output Result', desc: 'Output cities with dist exactly K in ascending order.\nIterating from 1 to N naturally gives ascending order.\nIf no such city exists, output -1.', code: 'result = [i for i in range(1, N + 1) if dist[i] == K]\nif result:\n    for city in result:\n        print(city)\nelse:\n    print(-1)' }
+                    ],
+                    cpp: [
+                        { title: 'Input & Build Graph', desc: 'Build a directed adjacency list using vector<vector<int>>.\nWith N up to 300,000, use scanf for fast input.', code: '#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nint main() {\n    int N, M, K, X;\n    scanf("%d %d %d %d", &N, &M, &K, &X);\n    vector<vector<int>> graph(N + 1);\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n    }' },
+                        { title: 'BFS for Shortest Distances', desc: 'Use queue<int> for BFS.\nInitialize dist to -1 to track both visited status and distance.\nOnly unvisited neighbors are enqueued, so each city is processed once.', code: '    vector<int> dist(N + 1, -1); // -1 = unvisited\n    dist[X] = 0;                  // start at distance 0\n    queue<int> q;\n    q.push(X);\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop(); // dequeue\n        for (int u : graph[v]) {    // check neighbors\n            if (dist[u] == -1) {    // unvisited\n                dist[u] = dist[v] + 1; // update distance\n                q.push(u);             // enqueue\n            }\n        }\n    }' },
+                        { title: 'Output Result', desc: 'Iterate from 1 to N to output cities at distance K.\nSequential iteration guarantees ascending order automatically.', code: '    bool found = false;\n    for (int i = 1; i <= N; i++) {\n        if (dist[i] == K) {\n            printf("%d\\n", i);\n            found = true;\n        }\n    }\n    if (!found) printf("-1\\n");\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return shortestPathTopic.problems[0].templates; }
+            }]
+        },
+
+        // ===== Stage 2: Basic Shortest Path =====
         {
             id: 'boj-1753',
             title: 'BOJ 1753 - Shortest Path',
@@ -1740,7 +2076,7 @@ var shortestPathTopic = {
                         { title: 'Run Dijkstra', desc: 'Process vertices with shortest distance first from the min-heap.\nauto [d, v] uses structured bindings to separate distance and vertex.', code: '    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;  // shorter path already found\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[0].templates; }
+                get templates() { return shortestPathTopic.problems[1].templates; }
             }]
         },
         {
@@ -1796,11 +2132,11 @@ var shortestPathTopic = {
                         { title: 'Run Floyd-Warshall', desc: 'k (intermediate) then i (source) then j (destination) order is mandatory!', code: '    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[1].templates; }
+                get templates() { return shortestPathTopic.problems[2].templates; }
             }]
         },
 
-        // ===== Stage 2: Shortest Path Applications =====
+        // ===== Stage 3: Shortest Path Applications =====
         {
             id: 'boj-1916',
             title: 'BOJ 1916 - Find Minimum Cost',
@@ -1852,7 +2188,7 @@ var shortestPathTopic = {
                         { title: 'Dijkstra + Output', desc: 'Run Dijkstra, then output only the shortest distance to destination city E.\nThe structure is identical to 1753, only the output differs.', code: '    while (!pq.empty()) {\n        auto [d, v] = pq.top(); pq.pop();\n        if (d > dist[v]) continue;\n        for (auto [u, w] : graph[v]) {\n            int nd = d + w;\n            if (nd < dist[u]) {\n                dist[u] = nd;\n                pq.push({nd, u});\n            }\n        }\n    }\n    printf("%d\\n", dist[E]);\n    return 0;\n}' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[2].templates; }
+                get templates() { return shortestPathTopic.problems[3].templates; }
             }]
         },
         {
@@ -1914,7 +2250,7 @@ var shortestPathTopic = {
                         { title: 'Return Result', desc: 'Use max_element to find the maximum value among dist[1]~dist[n].', code: 'int ans = *max_element(dist.begin()+1, dist.end());\nreturn ans == INF ? -1 : ans;' }
                     ]
                 },
-                get templates() { return shortestPathTopic.problems[3].templates; }
+                get templates() { return shortestPathTopic.problems[4].templates; }
             }]
         }
     ]

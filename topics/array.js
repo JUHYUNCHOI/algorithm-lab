@@ -17,6 +17,7 @@ const arrayTopic = {
 
     // 문제-유형 매핑
     problemMeta: {
+        'boj-10818': { type: '최솟값/최댓값', color: '#00b894', vizMethod: '_renderVizMinMax' },
         'lc-1':     { type: '해시맵 탐색',    color: 'var(--accent)', vizMethod: '_renderVizTwoSum' },
         'lc-121':   { type: '한 번 순회',     color: 'var(--green)',  vizMethod: '_renderVizStock' },
         'lc-15':    { type: '투 포인터',      color: '#e17055',      vizMethod: '_renderViz3Sum' },
@@ -58,7 +59,7 @@ const arrayTopic = {
 
         self._clearVizState();
 
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
@@ -1421,6 +1422,194 @@ int main() {
     // ===== 시각화 탭 =====
     renderVisualize(container) { container.innerHTML = ''; },
 
+    // ===== 시각화: 최솟값/최댓값 (BOJ 10818) =====
+    _renderVizMinMax(container) {
+        const self = this;
+        self._clearVizState();
+        const DEFAULT_ARR = [5, 20, -1, 7, 3, -8, 15];
+
+        container.innerHTML =
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">배열: <input type="text" id="minmax-input" value="5, 20, -1, 7, 3, -8, 15" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:280px;">' +
+            '<button class="viz-input-reset" id="minmax-reset" title="입력 변경 후 다시 시작">🔄</button></label></div>' +
+
+            self._createStepDesc() +
+            '<div class="sim-card" style="overflow:hidden;padding:0;">' +
+
+            '<div style="padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:20px;">' +
+            '<div style="display:flex;gap:12px;font-size:0.7rem;color:var(--text3);font-weight:600;">' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--yellow);background:rgba(253,203,110,0.2);vertical-align:middle;"></span> 확인 중</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--green);background:rgba(0,184,148,0.2);vertical-align:middle;"></span> 현재 최솟값</span>' +
+            '<span><span style="display:inline-block;width:10px;height:10px;border-radius:3px;border:2px solid var(--accent);background:rgba(108,92,231,0.15);vertical-align:middle;"></span> 현재 최댓값</span></div>' +
+            '<div id="minmax-boxes" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;"></div>' +
+            '</div>' +
+
+            '<div style="display:flex;gap:16px;padding:0 24px 24px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">현재 최솟값</div>' +
+            '<div id="minmax-min" style="font-weight:700;font-size:1.1rem;color:var(--green);">—</div></div>' +
+            '<div style="flex:1;min-width:120px;text-align:center;">' +
+            '<div style="font-size:0.75rem;font-weight:600;color:var(--text3);margin-bottom:8px;">현재 최댓값</div>' +
+            '<div id="minmax-max" style="font-weight:700;font-size:1.1rem;color:var(--accent);">—</div></div>' +
+            '</div>' +
+
+            '</div>' +
+            self._createStepControls();
+
+        var boxesEl = container.querySelector('#minmax-boxes');
+        var minEl = container.querySelector('#minmax-min');
+        var maxEl = container.querySelector('#minmax-max');
+
+        function renderBoxes(data) {
+            boxesEl.innerHTML = '';
+            data.forEach(function(v, i) {
+                var box = document.createElement('div');
+                box.className = 'str-char-box';
+                box.dataset.idx = i;
+                box.innerHTML = '<div class="str-char-idx">' + i + '</div><div class="str-char-val">' + v + '</div>';
+                boxesEl.appendChild(box);
+            });
+        }
+        function setBoxState(idx, cls) {
+            var b = boxesEl.querySelector('[data-idx="' + idx + '"]');
+            if (b) b.className = 'str-char-box' + (cls ? ' ' + cls : '');
+        }
+        function saveState(data) {
+            return {
+                boxClasses: Array.from(boxesEl.querySelectorAll('.str-char-box')).map(function(b) { return b.className; }),
+                min: minEl.innerHTML,
+                max: maxEl.innerHTML
+            };
+        }
+        function restoreState(s) {
+            boxesEl.querySelectorAll('.str-char-box').forEach(function(b, i) { b.className = s.boxClasses[i]; });
+            minEl.innerHTML = s.min;
+            maxEl.innerHTML = s.max;
+        }
+
+        function buildSteps() {
+            var input = container.querySelector('#minmax-input').value;
+            var data = input.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+            if (data.length < 1) { data = DEFAULT_ARR; }
+            renderBoxes(data);
+            minEl.textContent = '—';
+            maxEl.textContent = '—';
+
+            var steps = [];
+            var curMin = data[0], curMax = data[0], minIdx = 0, maxIdx = 0;
+
+            // Step 0: 첫 번째 원소를 초기값으로 설정
+            (function() {
+                var _val = data[0];
+                steps.push({
+                    description: '첫 번째 원소 arr[0]=' + _val + '을 최솟값이자 최댓값의 초기값으로 설정합니다. 아직 하나밖에 안 봤으니 이 값이 현재 최소이자 최대!',
+                    _before: null,
+                    action: function() {
+                        this._before = saveState(data);
+                        for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                        setBoxState(0, 'matched');
+                        minEl.innerHTML = '<strong>' + _val + '</strong> (idx 0)';
+                        maxEl.innerHTML = '<strong>' + _val + '</strong> (idx 0)';
+                    },
+                    undo: function() { restoreState(this._before); }
+                });
+            })();
+
+            // 나머지 원소를 하나씩 비교
+            for (var i = 1; i < data.length; i++) {
+                (function(idx) {
+                    var val = data[idx];
+                    var prevMin = curMin, prevMax = curMax, prevMinIdx = minIdx, prevMaxIdx = maxIdx;
+                    var isNewMin = val < curMin;
+                    var isNewMax = val > curMax;
+
+                    // 비교 스텝: 현재 값을 min/max와 비교
+                    steps.push({
+                        description: 'arr[' + idx + ']=' + val + '을 확인합니다. 현재 최솟값 ' + prevMin + '과 비교: ' +
+                            (val < prevMin ? val + ' < ' + prevMin + ' → 더 작다! 최솟값 갱신 필요!' : val + ' ≥ ' + prevMin + ' → 최솟값 유지.') +
+                            ' 현재 최댓값 ' + prevMax + '과 비교: ' +
+                            (val > prevMax ? val + ' > ' + prevMax + ' → 더 크다! 최댓값 갱신 필요!' : val + ' ≤ ' + prevMax + ' → 최댓값 유지.'),
+                        _before: null,
+                        action: function() {
+                            this._before = saveState(data);
+                            for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                            setBoxState(idx, 'comparing');
+                            setBoxState(prevMinIdx, 'matched');
+                            if (prevMaxIdx !== prevMinIdx) setBoxState(prevMaxIdx, 'visited');
+                            minEl.innerHTML = '<strong>' + prevMin + '</strong> (idx ' + prevMinIdx + ')';
+                            maxEl.innerHTML = '<strong>' + prevMax + '</strong> (idx ' + prevMaxIdx + ')';
+                        },
+                        undo: function() { restoreState(this._before); }
+                    });
+
+                    // 갱신 스텝: 실제로 min/max 값이 바뀌었으면 보여주기
+                    if (isNewMin || isNewMax) {
+                        var newMin = isNewMin ? val : prevMin;
+                        var newMax = isNewMax ? val : prevMax;
+                        var newMinIdx = isNewMin ? idx : prevMinIdx;
+                        var newMaxIdx = isNewMax ? idx : prevMaxIdx;
+                        steps.push({
+                            description: (isNewMin ? '최솟값 갱신! ' + prevMin + ' → ' + val : '') +
+                                (isNewMin && isNewMax ? ' / ' : '') +
+                                (isNewMax ? '최댓값 갱신! ' + prevMax + ' → ' + val : ''),
+                            _before: null,
+                            action: function() {
+                                this._before = saveState(data);
+                                for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                                setBoxState(newMinIdx, 'matched');
+                                if (newMaxIdx !== newMinIdx) setBoxState(newMaxIdx, 'visited');
+                                minEl.innerHTML = '<strong>' + newMin + '</strong> (idx ' + newMinIdx + ')';
+                                maxEl.innerHTML = '<strong>' + newMax + '</strong> (idx ' + newMaxIdx + ')';
+                            },
+                            undo: function() { restoreState(this._before); }
+                        });
+                    }
+
+                    if (isNewMin) { curMin = val; minIdx = idx; }
+                    if (isNewMax) { curMax = val; maxIdx = idx; }
+                })(i);
+            }
+
+            // 최종 결과
+            var finalMin = curMin, finalMax = curMax, finalMinIdx = minIdx, finalMaxIdx = maxIdx;
+            steps.push({
+                description: '순회 완료! 최솟값 = ' + finalMin + ', 최댓값 = ' + finalMax + '. 배열을 딱 한 번 훑어서 O(n)에 해결!',
+                _before: null,
+                action: function() {
+                    this._before = saveState(data);
+                    for (var j = 0; j < data.length; j++) setBoxState(j, '');
+                    setBoxState(finalMinIdx, 'matched');
+                    if (finalMaxIdx !== finalMinIdx) setBoxState(finalMaxIdx, 'visited');
+                    minEl.innerHTML = '<strong style="font-size:1.3rem;">' + finalMin + '</strong> ✅';
+                    maxEl.innerHTML = '<strong style="font-size:1.3rem;">' + finalMax + '</strong> ✅';
+                },
+                undo: function() { restoreState(this._before); }
+            });
+
+            return steps;
+        }
+
+        // 리셋 버튼
+        container.querySelector('#minmax-reset').addEventListener('click', function() {
+            var state = self._vizState;
+            while (state.currentStep >= 0) {
+                if (state.steps[state.currentStep].undo) state.steps[state.currentStep].undo();
+                state.currentStep--;
+            }
+            state.steps = [];
+            var input = container.querySelector('#minmax-input').value;
+            var data = input.split(',').map(function(s) { return parseInt(s.trim()); }).filter(function(n) { return !isNaN(n); });
+            if (data.length < 1) { data = DEFAULT_ARR; }
+            renderBoxes(data);
+            minEl.textContent = '—';
+            maxEl.textContent = '—';
+            self._initStepController(container, buildSteps);
+        });
+
+        renderBoxes(DEFAULT_ARR);
+        self._initStepController(container, buildSteps);
+    },
+
     // ===== 시각화: Two Sum (해시맵) =====
     _renderVizTwoSum(container) {
         const self = this;
@@ -2375,11 +2564,139 @@ int main() {
 
     // ===== 문제풀이 탭 =====
     stages: [
-        { num: 1, title: '배열 기본', desc: '한 번 순회, 투 포인터 기본 (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
-        { num: 2, title: '배열 심화', desc: '투 포인터 심화, 전처리 (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
+        { num: 1, title: '최솟값/최댓값', desc: '배열 순회 입문', problemIds: ['boj-10818'] },
+        { num: 2, title: '배열 기본', desc: '한 번 순회, 투 포인터 기본 (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
+        { num: 3, title: '배열 심화', desc: '투 포인터 심화, 전처리 (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
     ],
 
     problems: [
+        {
+            id: 'boj-10818',
+            title: 'BOJ 10818 - 최소, 최대',
+            difficulty: 'bronze',
+            link: 'https://www.acmicpc.net/problem/10818',
+            simIntro: '배열을 처음부터 끝까지 순회하면서 최솟값과 최댓값을 추적하는 과정을 단계별로 확인해보세요!',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>N개의 정수가 주어진다. 이때, 최솟값과 최댓값을 구하는 프로그램을 작성하시오.</p>
+
+                <h4>입력</h4>
+                <p>첫째 줄에 정수의 개수 N (1 ≤ N ≤ 1,000,000)이 주어진다. 둘째 줄에는 N개의 정수를 공백으로 구분해서 주어진다. 모든 정수는 -1,000,000보다 크거나 같고, 1,000,000보다 작거나 같은 정수이다.</p>
+
+                <h4>출력</h4>
+                <p>첫째 줄에 최솟값과 최댓값을 공백으로 구분해 출력한다.</p>
+
+                <div class="problem-example"><h4>예제 입력 1</h4>
+                <pre>5
+20 10 35 30 7</pre></div>
+
+                <div class="problem-example"><h4>예제 출력 1</h4>
+                <pre>7 35</pre></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 1,000,000</li>
+                    <li>-1,000,000 ≤ 각 정수 ≤ 1,000,000</li>
+                </ul>
+            `,
+            inputDefault: 0,
+            solve() { return '7 35'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+nums = list(map(int, input().split()))
+
+# 첫 번째 원소로 초기화 후 순회하며 갱신
+min_val = nums[0]
+max_val = nums[0]
+for x in nums[1:]:
+    if x < min_val:
+        min_val = x
+    if x > max_val:
+        max_val = x
+
+print(min_val, max_val)`,
+                cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+    vector<int> nums(n);
+    for (int i = 0; i < n; i++) cin >> nums[i];
+
+    // 첫 번째 원소로 초기화 후 순회하며 갱신
+    int minVal = nums[0], maxVal = nums[0];
+    for (int i = 1; i < n; i++) {
+        if (nums[i] < minVal) minVal = nums[i];
+        if (nums[i] > maxVal) maxVal = nums[i];
+    }
+    cout << minVal << " " << maxVal << endl;
+    return 0;
+}`
+            },
+            solutions: [{
+                approach: '직접 순회',
+                description: '배열을 처음부터 끝까지 한 번 순회하며 최솟값과 최댓값을 추적',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                hints: [
+                    { title: '문제 이해: 뭘 구해야 할까?', content: '<div class="hint-key">💡 N개의 정수 중에서 가장 작은 수와 가장 큰 수를 찾으면 됩니다!</div><p>예시: [20, 10, 35, 30, 7] → 최솟값 <strong>7</strong>, 최댓값 <strong>35</strong></p><p>배열 전체를 한 번 살펴보면서 두 값을 동시에 찾을 수 있을까요?</p>' },
+                    { title: '초기값은 어떻게 정할까?', content: '<div class="hint-key">🤔 비교를 시작하려면 기준이 필요해요!</div><p>첫 번째 원소를 <strong>최솟값이자 최댓값의 초기값</strong>으로 설정합니다.</p><p>아직 다른 수를 보지 않았으니, 첫 번째 수가 현재까지의 최소이자 최대인 것이 맞습니다.</p><span class="lang-py"><pre><code class="language-python">min_val = nums[0]  # 초기 최솟값\nmax_val = nums[0]  # 초기 최댓값</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">int minVal = nums[0]; // 초기 최솟값\nint maxVal = nums[0]; // 초기 최댓값</code></pre></span>' },
+                    { title: '순회하며 비교!', content: '<div class="hint-key">🔄 두 번째 원소부터 끝까지 하나씩 비교합니다</div><p>각 원소를 볼 때마다 두 가지를 확인합니다:</p><ul><li>현재 최솟값보다 <strong>작으면</strong> → 최솟값 갱신</li><li>현재 최댓값보다 <strong>크면</strong> → 최댓값 갱신</li></ul><p>이렇게 하면 배열을 <strong>딱 한 번</strong>만 순회해서 O(n)에 해결!</p>' },
+                    { title: '결과 출력', content: '<div class="hint-key">✅ 순회가 끝나면 최솟값과 최댓값이 확정됩니다!</div><p>공백으로 구분하여 출력하면 끝!</p><span class="lang-py"><pre><code class="language-python">print(min_val, max_val)  # 예: 7 35</code></pre></span><span class="lang-cpp"><pre><code class="language-cpp">cout << minVal << " " << maxVal << endl;</code></pre></span>' }
+                ],
+                vizMethod: '_renderVizMinMax',
+                simIntro: '배열을 순회하며 최솟값과 최댓값을 찾아가는 과정을 확인해보세요!',
+                templates: {
+                    python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\n\n# 첫 번째 원소로 초기화 후 순회하며 갱신\nmin_val = nums[0]\nmax_val = nums[0]\nfor x in nums[1:]:\n    if x < min_val:\n        min_val = x\n    if x > max_val:\n        max_val = x\n\nprint(min_val, max_val)`,
+                    cpp: `#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];\n\n    // 첫 번째 원소로 초기화 후 순회하며 갱신\n    int minVal = nums[0], maxVal = nums[0];\n    for (int i = 1; i < n; i++) {\n        if (nums[i] < minVal) minVal = nums[i];\n        if (nums[i] > maxVal) maxVal = nums[i];\n    }\n    cout << minVal << " " << maxVal << endl;\n    return 0;\n}`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '입력 받기', desc: 'N과 N개의 정수를 입력받습니다.\nsys.stdin.readline을 쓰는 이유: N이 최대 100만이라 빠른 입력이 필요!', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))' },
+                        { title: '초기값 설정', desc: '첫 번째 원소를 최솟값과 최댓값의 기준으로 삼습니다.\n아직 하나밖에 안 봤으니 그 수가 현재 최소이자 최대!', code: 'min_val = nums[0]  # 비교 기준: 첫 번째 원소\nmax_val = nums[0]' },
+                        { title: '순회하며 비교', desc: '두 번째 원소부터 끝까지 하나씩 비교합니다.\n각 원소마다 최솟값/최댓값과 비교 → 갱신!', code: 'for x in nums[1:]:\n    if x < min_val:   # 현재 최솟값보다 작으면?\n        min_val = x    # → 최솟값 갱신!\n    if x > max_val:   # 현재 최댓값보다 크면?\n        max_val = x    # → 최댓값 갱신!' },
+                        { title: '결과 출력', desc: '순회가 끝나면 min_val, max_val이 정답!\nO(n) — 배열을 딱 한 번만 봅니다.', code: 'print(min_val, max_val)  # 공백 구분 출력' }
+                    ],
+                    cpp: [
+                        { title: '입력 받기', desc: 'N과 N개의 정수를 입력받습니다.\nios::sync_with_stdio(false)로 빠른 입출력 설정!', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];' },
+                        { title: '초기값 설정', desc: '첫 번째 원소를 최솟값과 최댓값의 기준으로 삼습니다.', code: '    int minVal = nums[0], maxVal = nums[0];' },
+                        { title: '순회하며 비교', desc: '두 번째 원소부터 끝까지 비교하며 갱신.\nif문 두 개로 최솟값/최댓값을 동시에 추적!', code: '    for (int i = 1; i < n; i++) {\n        if (nums[i] < minVal) minVal = nums[i];\n        if (nums[i] > maxVal) maxVal = nums[i];\n    }' },
+                        { title: '결과 출력', desc: 'O(n) 한 번 순회로 최솟값, 최댓값을 구했습니다.', code: '    cout << minVal << " " << maxVal << endl;\n    return 0;\n}' }
+                    ]
+                }
+            }, {
+                approach: '내장 함수',
+                description: 'Python min()/max() 또는 C++ algorithm 라이브러리 활용',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                hints: [
+                    { title: '더 간단한 방법이 있다!', content: '<div class="hint-key">💡 대부분의 언어에 최솟값/최댓값을 구하는 내장 함수가 있습니다!</div><span class="lang-py"><p>Python: <code>min()</code>과 <code>max()</code> — 리스트를 넣으면 바로 최솟값/최댓값을 반환합니다.</p></span><span class="lang-cpp"><p>C++: <code>*min_element()</code>과 <code>*max_element()</code> — <code>&lt;algorithm&gt;</code> 헤더에 있습니다.</p></span>' },
+                    { title: '내부적으로 같은 원리!', content: '<p>내장 함수도 내부적으로는 배열을 한 번 순회하면서 비교합니다. 시간 복잡도는 동일하게 <strong>O(n)</strong>입니다.</p><p>직접 순회와 성능은 같지만, 코드가 훨씬 짧고 가독성이 좋습니다!</p>' }
+                ],
+                templates: {
+                    python: `import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))\n\n# min(), max() 내장 함수로 간단하게!\nprint(min(nums), max(nums))`,
+                    cpp: `#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];\n\n    // min_element, max_element로 간단하게!\n    cout << *min_element(nums.begin(), nums.end()) << " "\n         << *max_element(nums.begin(), nums.end()) << endl;\n    return 0;\n}`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '입력 받기', desc: '이전 접근법과 동일하게 입력을 받습니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\nnums = list(map(int, input().split()))' },
+                        { title: '내장 함수로 바로 출력!', desc: 'min()은 리스트에서 최솟값, max()는 최댓값을 반환.\n내부적으로 O(n) 순회 — 직접 순회와 동일한 성능!', code: 'print(min(nums), max(nums))  # 한 줄로 끝!' }
+                    ],
+                    cpp: [
+                        { title: '입력 받기', desc: '이전 접근법과 동일하게 입력을 받습니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>  // min_element, max_element\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int n;\n    cin >> n;\n    vector<int> nums(n);\n    for (int i = 0; i < n; i++) cin >> nums[i];' },
+                        { title: 'algorithm으로 바로 출력!', desc: 'min_element/max_element는 반복자를 반환 → *로 값을 꺼냄.\n내부적으로 O(n) 순회 — 직접 순회와 동일한 성능!', code: '    cout << *min_element(nums.begin(), nums.end()) << " "\n         << *max_element(nums.begin(), nums.end()) << endl;\n    return 0;\n}' }
+                    ]
+                }
+            }]
+        },
         {
             id: 'lc-1',
             title: 'LeetCode 1 - Two Sum',

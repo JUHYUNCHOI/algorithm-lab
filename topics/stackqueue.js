@@ -15,6 +15,7 @@ const stackQueueTopic = {
     tabs: [{ id: 'concept', label: '학습하기' }],
 
     problemMeta: {
+        'boj-10828': { type: '스택 구현',   color: '#00b894',      vizMethod: '_renderVizStackImpl' },
         'boj-10773': { type: '스택 기본',   color: 'var(--accent)', vizMethod: '_renderVizZero' },
         'lc-20':     { type: '괄호 검증',   color: '#e17055',      vizMethod: '_renderVizParentheses' },
         'boj-2164':  { type: '큐 활용',     color: '#6c5ce7',      vizMethod: '_renderVizCard2' },
@@ -37,7 +38,7 @@ const stackQueueTopic = {
         const meta = self.problemMeta[problemId];
         if (!meta) { container.innerHTML = '<p>문제 메타 정보가 없습니다.</p>'; return; }
         self._clearVizState();
-        const diffMap = { gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+        const diffMap = { bronze: 'Bronze', gold: 'Gold', silver: 'Silver', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
         const header = document.createElement('div');
         header.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;';
         header.innerHTML =
@@ -1045,6 +1046,186 @@ bool isValid(string s) {
     },
 
     // ── 제로 (BOJ 10773) 시각화 ──
+    // ── 스택 구현 (BOJ 10828) 시각화 ──
+    _renderVizStackImpl(container) {
+        const self = this;
+        var DEFAULT_CMDS = 'push 1\npush 2\ntop\nsize\npop\npush 3\nempty';
+
+        var inputFieldHTML = '<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;">' +
+            '<label style="font-weight:600;">명령어 입력:<br><textarea id="sq-impl-input" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:220px;height:120px;font-family:monospace;resize:vertical;">' + DEFAULT_CMDS + '</textarea></label>' +
+            '<button class="btn btn-primary" id="sq-impl-reset" style="margin-top:22px;">🔄</button>' +
+            '</div>';
+
+        var vizHTML = '<div class="sim-card">' +
+            '<div style="position:relative;">' +
+            '<div id="sq-impl-fly" style="position:absolute;inset:0;pointer-events:none;z-index:20;"></div>' +
+            '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
+            '<div style="display:flex;flex-direction:column;align-items:center;">' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">스택</div>' +
+            '<div id="sq-stack-impl" style="display:flex;flex-direction:column-reverse;gap:4px;min-height:100px;width:110px;border:2px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:8px;background:var(--bg-secondary);"></div>' +
+            '</div>' +
+            '<div style="flex:0 0 auto;min-width:160px;">' +
+            '<div style="font-weight:600;margin-bottom:8px;color:var(--text);">출력</div>' +
+            '<div id="sq-output-impl" style="font-family:monospace;font-size:0.95rem;line-height:1.8;color:var(--text);min-height:40px;"></div>' +
+            '</div></div></div></div>';
+        container.innerHTML = inputFieldHTML + self._createStepDesc('-impl') + vizHTML + self._createStepControls('-impl');
+
+        var stackEl = container.querySelector('#sq-stack-impl');
+        var outputEl = container.querySelector('#sq-output-impl');
+        var flyEl = container.querySelector('#sq-impl-fly');
+        var wrapEl = flyEl.parentElement;
+
+        function parseCmds() {
+            var raw = container.querySelector('#sq-impl-input').value;
+            return raw.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+        }
+
+        function renderStack(arr, hideIdx) {
+            if (arr.length === 0) {
+                stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(비어있음)</div>';
+            } else {
+                stackEl.innerHTML = arr.map(function(v, i) {
+                    var hide = (i === hideIdx) ? 'opacity:0;' : '';
+                    var isTip = (i === arr.length - 1);
+                    return '<div class="str-char-box' + (isTip ? ' comparing' : '') + '" id="sq-impl-stk-' + i + '" style="text-align:center;font-weight:600;' + hide + '">' + v + (isTip ? ' \u2190top' : '') + '</div>';
+                }).join('');
+            }
+        }
+
+        function renderOutput(lines) {
+            outputEl.innerHTML = lines.map(function(l, i) {
+                return '<div' + (i === lines.length - 1 ? ' style="color:var(--accent);font-weight:700;"' : '') + '>' + l + '</div>';
+            }).join('');
+        }
+
+        function animatePush(value, afterArr, onDone) {
+            renderStack(afterArr, afterArr.length - 1);
+            var dstEl = stackEl.querySelector('#sq-impl-stk-' + (afterArr.length - 1));
+            if (!dstEl) { renderStack(afterArr); if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var dr = dstEl.getBoundingClientRect();
+            var ghost = document.createElement('div');
+            ghost.textContent = value;
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + dr.width + 'px;height:' + dr.height + 'px;' +
+                'left:' + (dr.left - wr.left) + 'px;top:' + (dr.top - wr.top - 60) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--accent);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);opacity:0;' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.3s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (dr.top - wr.top) + 'px';
+                ghost.style.opacity = '1';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                renderStack(afterArr);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function animatePop(beforeArr, onDone) {
+            renderStack(beforeArr);
+            var topEl = stackEl.querySelector('#sq-impl-stk-' + (beforeArr.length - 1));
+            if (!topEl) { if (onDone) onDone(); return; }
+            var wr = wrapEl.getBoundingClientRect();
+            var sr = topEl.getBoundingClientRect();
+            topEl.style.opacity = '0.15';
+            var ghost = document.createElement('div');
+            ghost.textContent = beforeArr[beforeArr.length - 1];
+            ghost.style.cssText = 'position:absolute;z-index:20;min-width:' + sr.width + 'px;height:' + sr.height + 'px;' +
+                'left:' + (sr.left - wr.left) + 'px;top:' + (sr.top - wr.top) + 'px;' +
+                'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;' +
+                'background:var(--red,#e17055);color:white;border-radius:8px;padding:0 6px;' +
+                'box-shadow:0 4px 20px rgba(0,0,0,0.25);' +
+                'transition:top 0.5s cubic-bezier(.4,0,.2,1),opacity 0.5s ease;';
+            flyEl.appendChild(ghost);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+                ghost.style.top = (sr.top - wr.top - 60) + 'px';
+                ghost.style.opacity = '0';
+            }); });
+            setTimeout(function() {
+                if (ghost.parentNode) ghost.parentNode.removeChild(ghost);
+                if (onDone) onDone();
+            }, 550);
+        }
+
+        function buildImplSteps(cmds) {
+            var stepData = [];
+            var stack = [];
+            var outputs = [];
+            stepData.push({ arr: [], outputs: [], cmd: '', desc: '스택 명령어를 하나씩 처리합니다. push, pop, size, empty, top 5가지 명령어가 있습니다.', pushVal: null, isPop: false });
+
+            cmds.forEach(function(cmd) {
+                var parts = cmd.split(/\s+/);
+                var op = parts[0];
+                if (op === 'push') {
+                    var val = parseInt(parts[1], 10);
+                    stack = [].concat(stack, [val]);
+                    stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>push ' + val + '</strong> \u2014 ' + val + '을(를) 스택에 넣습니다. 출력 없음.', pushVal: val, isPop: false });
+                } else if (op === 'pop') {
+                    if (stack.length === 0) {
+                        outputs = [].concat(outputs, ['-1']);
+                        stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>pop</strong> \u2014 스택이 비어있으므로 <span style="color:var(--red);font-weight:700;">-1</span>을 출력합니다.', pushVal: null, isPop: false });
+                    } else {
+                        var popped = stack[stack.length - 1];
+                        var before = [].concat(stack);
+                        stack = stack.slice(0, -1);
+                        outputs = [].concat(outputs, [String(popped)]);
+                        stepData.push({ arr: [].concat(stack), beforeArr: before, outputs: [].concat(outputs), cmd: cmd, desc: '<strong>pop</strong> \u2014 꼭대기 값 <span style="color:var(--red);font-weight:700;">' + popped + '</span>을 출력하고 제거합니다.', pushVal: null, isPop: true });
+                    }
+                } else if (op === 'size') {
+                    outputs = [].concat(outputs, [String(stack.length)]);
+                    stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>size</strong> \u2014 현재 스택에 ' + stack.length + '개의 원소가 있으므로 <span style="color:var(--accent);font-weight:700;">' + stack.length + '</span>을 출력합니다.', pushVal: null, isPop: false });
+                } else if (op === 'empty') {
+                    var res = stack.length === 0 ? '1' : '0';
+                    outputs = [].concat(outputs, [res]);
+                    stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>empty</strong> \u2014 스택이 ' + (stack.length === 0 ? '비어있으므로' : '비어있지 않으므로') + ' <span style="color:var(--accent);font-weight:700;">' + res + '</span>을 출력합니다.', pushVal: null, isPop: false });
+                } else if (op === 'top') {
+                    if (stack.length === 0) {
+                        outputs = [].concat(outputs, ['-1']);
+                        stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>top</strong> \u2014 스택이 비어있으므로 <span style="color:var(--red);font-weight:700;">-1</span>을 출력합니다.', pushVal: null, isPop: false });
+                    } else {
+                        var topVal = stack[stack.length - 1];
+                        outputs = [].concat(outputs, [String(topVal)]);
+                        stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: cmd, desc: '<strong>top</strong> \u2014 꼭대기 값은 <span style="color:var(--green);font-weight:700;">' + topVal + '</span>입니다. 제거하지 않고 출력만 합니다.', pushVal: null, isPop: false });
+                    }
+                }
+            });
+            stepData.push({ arr: [].concat(stack), outputs: [].concat(outputs), cmd: '', desc: '모든 명령어 처리 완료! 출력 결과: <strong>' + outputs.join(', ') + '</strong>', pushVal: null, isPop: false });
+
+            return stepData.map(function(st) {
+                return {
+                    description: st.desc,
+                    action: function(dir) {
+                        flyEl.innerHTML = '';
+                        renderOutput(st.outputs);
+                        if (dir === 'forward' && st.pushVal !== null) {
+                            animatePush(st.pushVal, st.arr, null);
+                        } else if (dir === 'forward' && st.isPop && st.beforeArr) {
+                            animatePop(st.beforeArr, function() { renderStack(st.arr); });
+                        } else {
+                            renderStack(st.arr);
+                        }
+                    }
+                };
+            });
+        }
+
+        function resetImplViz() {
+            var cmds = parseCmds();
+            if (cmds.length === 0) return;
+            flyEl.innerHTML = '';
+            stackEl.innerHTML = '<div style="color:var(--text-secondary);font-size:0.85rem;text-align:center;padding:20px 0;">(비어있음)</div>';
+            outputEl.innerHTML = '';
+            var steps = buildImplSteps(cmds);
+            self._initStepController(container, steps, '-impl');
+        }
+
+        container.querySelector('#sq-impl-reset').addEventListener('click', resetImplViz);
+        resetImplViz();
+    },
+
     _renderVizZero(container) {
         const self = this;
         var DEFAULT_ZERO_NUMS = '1, 3, 5, 4, 0, 0, 7, 0, 0, 6';
@@ -1784,11 +1965,127 @@ bool isValid(string s) {
 
     // ===== 문제 탭 =====
     stages: [
-        { num: 1, title: '기본 스택·큐 다루기', desc: '스택과 큐의 기본 연산과 괄호 검증 (Silver~Easy)', problemIds: ['boj-10773', 'lc-20'] },
-        { num: 2, title: '스택·큐 응용', desc: '덱 활용과 단조 스택 (Silver~Medium)', problemIds: ['boj-2164', 'lc-155'] }
+        { num: 1, title: '스택 구현하기', desc: '스택의 기본 명령어를 직접 구현해보기 (Silver IV)', problemIds: ['boj-10828'] },
+        { num: 2, title: '기본 스택·큐 다루기', desc: '스택과 큐의 기본 연산과 괄호 검증 (Silver~Easy)', problemIds: ['boj-10773', 'lc-20'] },
+        { num: 3, title: '스택·큐 응용', desc: '덱 활용과 단조 스택 (Silver~Medium)', problemIds: ['boj-2164', 'lc-155'] }
     ],
 
     problems: [
+        {
+            id: 'boj-10828',
+            title: 'BOJ 10828 - 스택',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/10828',
+            simIntro: 'push, pop, size, empty, top 명령어가 스택에서 어떻게 동작하는지 한 단계씩 확인해보세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>정수를 저장하는 스택을 구현한 다음, 입력으로 주어지는 명령을 처리하는 프로그램을 작성하시오.</p>
+                <p>명령은 총 다섯 가지이다.</p>
+                <ul>
+                    <li><code>push X</code>: 정수 X를 스택에 넣는 연산이다.</li>
+                    <li><code>pop</code>: 스택에서 가장 위에 있는 정수를 빼고, 그 수를 출력한다. 만약 스택이 비어있는 경우에는 -1을 출력한다.</li>
+                    <li><code>size</code>: 스택에 들어있는 정수의 개수를 출력한다.</li>
+                    <li><code>empty</code>: 스택이 비어있으면 1, 아니면 0을 출력한다.</li>
+                    <li><code>top</code>: 스택의 가장 위에 있는 정수를 출력한다. 만약 스택이 비어있는 경우에는 -1을 출력한다.</li>
+                </ul>
+                <h4>입력</h4>
+                <p>첫째 줄에 주어지는 명령의 수 N (1 &le; N &le; 10,000)이 주어진다. 둘째 줄부터 N개의 줄에는 명령이 하나씩 주어진다. 주어지는 정수는 1보다 크거나 같고, 100,000보다 작거나 같다. 문제에 나와있지 않은 명령이 주어지는 경우는 없다.</p>
+                <h4>출력</h4>
+                <p>출력해야하는 명령이 주어질 때마다, 한 줄에 하나씩 출력한다.</p>
+
+                <div class="problem-example"><h4>예제</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>14\npush 1\npush 2\ntop\nsize\npop\npush 3\nempty\npop\npop\npop\npush 4\nempty\ntop\npop</pre></div>
+                    <div><strong>출력</strong><pre>2\n2\n2\n0\n3\n1\n-1\n0\n4\n4</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 &le; N &le; 10,000</li>
+                    <li>1 &le; X &le; 100,000</li>
+                </ul>
+            `,
+            hints: [
+                { title: '스택이 뭐지?', content: '스택은 <strong>"접시 쌓기"</strong>와 같아요!<br><br>접시를 위에 하나씩 쌓고, 뺄 때도 맨 위에서만 빼요.<br>마지막에 넣은 것을 가장 먼저 빼는 구조 — 이걸 <strong>LIFO (Last In, First Out)</strong>라고 합니다.<br><br>이 문제는 이 LIFO 구조를 직접 구현해서 5가지 명령어를 처리하는 거예요!' },
+                { title: '5가지 명령어 정리', content: '각 명령어가 하는 일을 정리하면:<br><br>📥 <strong>push X</strong> → 스택 맨 위에 X를 넣는다 (출력 없음)<br>📤 <strong>pop</strong> → 맨 위 값을 출력하고 제거. 비어있으면 -1<br>📏 <strong>size</strong> → 현재 스택에 들어있는 개수 출력<br>❓ <strong>empty</strong> → 비어있으면 1, 아니면 0 출력<br>👀 <strong>top</strong> → 맨 위 값을 출력 (제거 안 함). 비어있으면 -1<br><br><strong>pop과 top의 차이</strong>: pop은 꺼내고 제거, top은 보기만!' },
+                { title: '어떤 자료구조로 구현하지?', content: '<span class="lang-py">Python에서는 <strong>리스트(list)</strong>가 곧 스택입니다!<br><br><code>append(x)</code> → push (맨 뒤에 추가)<br><code>pop()</code> → pop (맨 뒤에서 제거 + 반환)<br><code>stack[-1]</code> → top (맨 뒤 값 확인)<br><code>len(stack)</code> → size<br><br>모두 <strong>O(1)</strong>이라 빠릅니다!</span><span class="lang-cpp">C++에서는 <code>vector&lt;int&gt;</code>나 <code>stack&lt;int&gt;</code>를 쓸 수 있어요.<br><br><code>push_back(x)</code> / <code>push(x)</code> → push<br><code>pop_back()</code> / <code>pop()</code> → pop (값은 미리 저장!)<br><code>back()</code> / <code>top()</code> → top<br><code>size()</code> → size<br><br>모두 <strong>O(1)</strong> 연산입니다!</span>' },
+                { title: '빈 스택 처리가 핵심!', content: '<strong>pop</strong>과 <strong>top</strong>은 스택이 비어있을 때 -1을 출력해야 해요.<br><br>이걸 빠뜨리면 런타임 에러가 나요! (빈 스택에서 꺼내려고 하니까)<br><br>처리 순서:<br>1. 명령어 파싱 (push일 때 숫자도 읽기)<br>2. if-else로 5가지 명령 분기<br>3. <strong>pop/top에서 empty 체크 필수!</strong><br><br><span class="lang-py">Python: <code>if not stack:</code>으로 빈 스택 체크</span><span class="lang-cpp">C++: <code>if (st.empty())</code>으로 빈 스택 체크</span>' }
+            ],
+            inputDefault: 0,
+            solve() { return '2\n2\n2\n0\n3\n1\n-1\n0\n4\n4'; },
+            solutions: [
+                {
+                    approach: '리스트/배열로 스택 구현',
+                    description: '리스트를 스택으로 사용하여 5가지 명령어를 처리합니다.',
+                    timeComplexity: 'O(N)',
+                    spaceComplexity: 'O(N)',
+                    get templates() { return stackQueueTopic.problems[0].templates; },
+                    codeSteps: {
+                        python: [
+                            { title: '입력 설정', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []  # 리스트를 스택으로 사용 (LIFO)', desc: 'sys.stdin.readline으로 빠른 입력.\n리스트가 곧 스택! append/pop이 O(1)이라 효율적입니다.' },
+                            { title: 'push 처리', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []\n\nfor _ in range(N):\n    cmd = input().split()\n    if cmd[0] == "push":\n        stack.append(int(cmd[1]))  # 맨 위에 값 추가', desc: '명령어를 split()으로 나눠서 첫 단어로 분기합니다.\npush는 두 번째 값을 정수로 변환해서 append!' },
+                            { title: 'pop / top 처리', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []\n\nfor _ in range(N):\n    cmd = input().split()\n    if cmd[0] == "push":\n        stack.append(int(cmd[1]))\n    elif cmd[0] == "pop":\n        # 비어있으면 -1, 아니면 꺼내서 출력\n        print(-1 if not stack else stack.pop())\n    elif cmd[0] == "top":\n        # 비어있으면 -1, 아니면 맨 위 값 (제거 안 함!)\n        print(-1 if not stack else stack[-1])', desc: 'pop과 top 모두 빈 스택 체크가 필수!\npop()은 값을 꺼내고 제거, stack[-1]은 보기만 합니다.' },
+                            { title: 'size / empty 처리', code: 'import sys\ninput = sys.stdin.readline\n\nN = int(input())\nstack = []\n\nfor _ in range(N):\n    cmd = input().split()\n    if cmd[0] == "push":\n        stack.append(int(cmd[1]))\n    elif cmd[0] == "pop":\n        print(-1 if not stack else stack.pop())\n    elif cmd[0] == "size":\n        print(len(stack))  # 현재 원소 개수\n    elif cmd[0] == "empty":\n        print(1 if not stack else 0)  # 비어있으면 1\n    elif cmd[0] == "top":\n        print(-1 if not stack else stack[-1])', desc: 'size는 len(), empty는 비어있는지 확인.\n모든 연산이 O(1)이므로 전체 O(N)에 해결!' }
+                        ],
+                        cpp: [
+                            { title: '입력 설정', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;  // C++ 표준 스택 사용', desc: 'C++ <stack> 라이브러리를 사용합니다.\npush/pop/top/size/empty 모두 O(1) 연산입니다.' },
+                            { title: 'push 처리', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;\n\n    while (N--) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == "push") {\n            int x;\n            cin >> x;\n            st.push(x);  // 스택 맨 위에 추가\n        }', desc: 'string으로 명령어를 읽고 분기합니다.\npush일 때만 추가로 정수 x를 입력받습니다.' },
+                            { title: 'pop / top 처리', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;\n\n    while (N--) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == "push") {\n            int x; cin >> x;\n            st.push(x);\n        } else if (cmd == "pop") {\n            if (st.empty()) cout << -1 << "\\n";\n            else { cout << st.top() << "\\n"; st.pop(); }\n            // top()으로 값 확인 후 pop()으로 제거!\n        } else if (cmd == "top") {\n            if (st.empty()) cout << -1 << "\\n";\n            else cout << st.top() << "\\n";\n            // top은 제거하지 않고 보기만\n        }', desc: 'C++의 pop()은 값을 반환하지 않아요!\n반드시 top()으로 먼저 값을 읽고, 그 다음 pop()으로 제거합니다.\n빈 스택 체크를 잊으면 런타임 에러!' },
+                            { title: 'size / empty + 전체 코드', code: '#include <iostream>\n#include <stack>\n#include <string>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    stack<int> st;\n\n    while (N--) {\n        string cmd;\n        cin >> cmd;\n        if (cmd == "push") {\n            int x; cin >> x;\n            st.push(x);\n        } else if (cmd == "pop") {\n            if (st.empty()) cout << -1 << "\\n";\n            else { cout << st.top() << "\\n"; st.pop(); }\n        } else if (cmd == "size") {\n            cout << st.size() << "\\n";\n        } else if (cmd == "empty") {\n            cout << (st.empty() ? 1 : 0) << "\\n";\n        } else if (cmd == "top") {\n            if (st.empty()) cout << -1 << "\\n";\n            else cout << st.top() << "\\n";\n        }\n    }\n    return 0;\n}', desc: 'size()와 empty()는 간단합니다.\n"\\n"을 사용하면 endl보다 빠릅니다!\n전체 시간복잡도: O(N) — 모든 연산이 O(1)!' }
+                        ]
+                    }
+                }
+            ],
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+N = int(input())
+stack = []
+
+for _ in range(N):
+    cmd = input().split()
+    if cmd[0] == "push":
+        stack.append(int(cmd[1]))
+    elif cmd[0] == "pop":
+        print(-1 if not stack else stack.pop())
+    elif cmd[0] == "size":
+        print(len(stack))
+    elif cmd[0] == "empty":
+        print(1 if not stack else 0)
+    elif cmd[0] == "top":
+        print(-1 if not stack else stack[-1])`,
+                cpp: `#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+int main() {
+    int N;
+    cin >> N;
+    stack<int> st;
+
+    while (N--) {
+        string cmd;
+        cin >> cmd;
+        if (cmd == "push") {
+            int x; cin >> x;
+            st.push(x);
+        } else if (cmd == "pop") {
+            if (st.empty()) cout << -1 << "\\n";
+            else { cout << st.top() << "\\n"; st.pop(); }
+        } else if (cmd == "size") {
+            cout << st.size() << "\\n";
+        } else if (cmd == "empty") {
+            cout << (st.empty() ? 1 : 0) << "\\n";
+        } else if (cmd == "top") {
+            if (st.empty()) cout << -1 << "\\n";
+            else cout << st.top() << "\\n";
+        }
+    }
+    return 0;
+}`
+            }
+        },
         {
             id: 'boj-10773',
             title: 'BOJ 10773 - 제로',
@@ -1835,7 +2132,7 @@ bool isValid(string s) {
                     description: '0이 나오면 pop, 아니면 push한 뒤 남은 합을 구합니다.',
                     timeComplexity: 'O(K)',
                     spaceComplexity: 'O(K)',
-                    get templates() { return stackQueueTopic.problems[0].templates; },
+                    get templates() { return stackQueueTopic.problems[1].templates; },
                     codeSteps: {
                         python: [
                             { title: '입력 설정', code: 'import sys\ninput = sys.stdin.readline\n\nK = int(input())\nstack = []  # 스택: 마지막에 넣은 걸 먼저 꺼냄 (LIFO)', desc: '왜 스택? → 0이 나오면 "가장 최근 수"를 지워야 하니까!\nLIFO(후입선출) 구조가 딱 맞습니다.' },
@@ -1939,7 +2236,7 @@ int main() {
                     description: '여는 괄호는 push, 닫는 괄호가 나오면 top과 비교하여 매칭합니다.',
                     timeComplexity: 'O(n)',
                     spaceComplexity: 'O(n)',
-                    get templates() { return stackQueueTopic.problems[1].templates; },
+                    get templates() { return stackQueueTopic.problems[2].templates; },
                     codeSteps: {
                         python: [
                             { title: '초기 설정', code: 'class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []  # 여는 괄호를 쌓아두는 스택\n        pairs = {\')\': \'(\', \']\': \'[\', \'}\': \'{\'}  # 닫는→여는 매핑', desc: '왜 딕셔너리? → 닫는 괄호가 나왔을 때 짝을 O(1)로 찾으려고!\npairs[")"] = "(" 이런 식으로 매핑합니다.' },
@@ -2031,7 +2328,7 @@ public:
                     description: '맨 앞 카드를 버리고, 다음 카드를 뒤로 보내는 과정을 반복합니다.',
                     timeComplexity: 'O(N)',
                     spaceComplexity: 'O(N)',
-                    get templates() { return stackQueueTopic.problems[2].templates; },
+                    get templates() { return stackQueueTopic.problems[3].templates; },
                     codeSteps: {
                         python: [
                             { title: '초기 설정', code: 'from collections import deque  # 양쪽 끝 O(1) 삽입/삭제\nimport sys\ninput = sys.stdin.readline\n\nN = int(input())\nq = deque(range(1, N + 1))  # 1~N 카드를 큐에 (앞=맨 위)', desc: '왜 deque? → 리스트의 pop(0)은 O(n)이지만 deque.popleft()는 O(1)!\n카드를 앞에서 빼는 연산이 핵심이라 deque가 필수입니다.' },
@@ -2125,7 +2422,7 @@ int main() {
                     description: '메인 스택과 별도로 최솟값 스택을 유지하여 O(1) getMin을 구현합니다.',
                     timeComplexity: 'O(1) per op',
                     spaceComplexity: 'O(n)',
-                    get templates() { return stackQueueTopic.problems[3].templates; },
+                    get templates() { return stackQueueTopic.problems[4].templates; },
                     codeSteps: {
                         python: [
                             { title: '초기화', code: 'class MinStack:\n    def __init__(self):\n        self.stack = []      # 메인 스택: 실제 데이터\n        self.min_stack = []  # 보조 스택: 각 시점의 최솟값 기록', desc: '왜 스택 2개? → getMin()을 O(1)로 하려면 "지금 최솟값이 뭔지" 항상 알아야!\nmin_stack의 top이 항상 현재 최솟값을 가리킵니다.' },

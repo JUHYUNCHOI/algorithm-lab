@@ -15,6 +15,7 @@ var topologicalSortTopic = {
     tabs: [{ id: 'concept', label: '학습하기' }],
 
     problemMeta: {
+        'boj-14567': { type: '선수과목 순서',     color: '#00b894',      vizMethod: '_renderVizPrereq' },
         'boj-2252': { type: '기본 위상 정렬',   color: 'var(--accent)', vizMethod: '_renderVizLineup' },
         'boj-1766': { type: '우선순위 큐 응용',  color: 'var(--green)',  vizMethod: '_renderVizWorkbook' },
         'boj-3665': { type: '간선 반전 응용',    color: '#e17055',      vizMethod: '_renderVizRanking' }
@@ -1512,6 +1513,278 @@ for (int i = 0; i &lt; result.size(); i++)
     },
 
     // ====================================================================
+    // 시뮬레이션 0: 선수과목 (boj-14567) — Kahn's Algorithm + 학기 계산
+    // ====================================================================
+    _renderVizPrereq(container) {
+        var self = this, suffix = '-prereq';
+        var DEFAULT_N = 5;
+        var DEFAULT_EDGES_STR = '1 2, 1 3, 2 4, 3 4, 4 5';
+
+        container.innerHTML =
+            '<h3 style="margin-bottom:8px;">선수과목 — 최소 이수 학기 구하기</h3>' +
+            '<p style="color:var(--text2);margin-bottom:12px;">Kahn\'s Algorithm으로 각 과목의 가장 빠른 이수 학기를 구합니다. 값을 바꿔보세요!</p>' +
+            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
+                '<label style="font-weight:600;">N (과목 수): <input type="number" id="ts-prereq-n" value="' + DEFAULT_N + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;" min="2" max="10"></label>' +
+                '<label style="font-weight:600;">선수조건 (A B 형태): <input type="text" id="ts-prereq-edges" value="' + DEFAULT_EDGES_STR + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:260px;"></label>' +
+                '<button class="btn btn-primary" id="ts-prereq-reset">🔄</button>' +
+            '</div>' +
+            self._createStepDesc(suffix) +
+            '<div id="pq-nodes' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="pq-indeg' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;"></div>' +
+            '<div id="pq-semester' + suffix + '" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;"></div>' +
+            '<div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap;">' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">큐</div><div id="pq-queue' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+                '<div style="flex:1;min-width:120px;"><div style="font-weight:600;margin-bottom:4px;font-size:0.9rem;">처리 순서</div><div id="pq-result' + suffix + '" style="display:flex;gap:4px;min-height:36px;"></div></div>' +
+            '</div>' +
+            '<div id="pq-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
+            self._createStepControls(suffix);
+
+        var nodesEl = container.querySelector('#pq-nodes' + suffix);
+        var indegEl = container.querySelector('#pq-indeg' + suffix);
+        var semEl = container.querySelector('#pq-semester' + suffix);
+        var queueEl = container.querySelector('#pq-queue' + suffix);
+        var resultEl = container.querySelector('#pq-result' + suffix);
+        var infoEl = container.querySelector('#pq-info' + suffix);
+
+        function nodeBox(nid, cls) { return '<div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;font-size:1.1rem;transition:all 0.3s;' + cls + '">' + nid + '</div>'; }
+
+        function renderNodes(states, n) {
+            nodesEl.innerHTML = '';
+            for (var i = 1; i <= n; i++) {
+                var st = states[i] || 'default';
+                var cls = 'background:var(--bg2);border:2px solid var(--border);color:var(--text);';
+                if (st === 'queued') cls = 'background:rgba(108,92,231,0.15);border:2px dashed var(--accent);color:var(--accent);';
+                if (st === 'active') cls = 'background:var(--yellow);border:2px solid var(--yellow-vivid,#f9a825);color:#333;box-shadow:0 0 12px rgba(249,168,37,0.5);';
+                if (st === 'done') cls = 'background:var(--green);border:2px solid var(--green);color:white;';
+                nodesEl.innerHTML += nodeBox(i, cls);
+            }
+        }
+        function renderIndeg(indArr, n) {
+            indegEl.innerHTML = '';
+            for (var i = 1; i <= n; i++) {
+                indegEl.innerHTML += '<div style="width:48px;text-align:center;font-size:0.8rem;color:var(--text2);">in=' + (indArr[i] != null ? indArr[i] : 0) + '</div>';
+            }
+        }
+        function renderSemester(semArr, n) {
+            semEl.innerHTML = '';
+            for (var i = 1; i <= n; i++) {
+                var val = semArr[i] || '-';
+                var bg = val !== '-' ? 'background:rgba(0,184,148,0.1);color:var(--green);font-weight:600;' : 'color:var(--text3);';
+                semEl.innerHTML += '<div style="width:48px;text-align:center;font-size:0.8rem;border-radius:6px;padding:2px 0;' + bg + '">sem=' + val + '</div>';
+            }
+        }
+        function renderQueue(arr) { queueEl.innerHTML = arr.map(function(x) { return '<div class="graph-queue-item">' + x + '</div>'; }).join(''); }
+        function renderResult(arr) { resultEl.innerHTML = arr.map(function(x) { return '<div class="graph-queue-item" style="border-color:var(--green);background:rgba(0,184,148,0.08);">' + x + '</div>'; }).join(''); }
+
+        function parseEdges(str) {
+            var edges = [];
+            str.split(',').forEach(function(part) {
+                var nums = part.trim().split(/\s+/).map(Number);
+                if (nums.length === 2 && !isNaN(nums[0]) && !isNaN(nums[1])) {
+                    edges.push([nums[0], nums[1]]);
+                }
+            });
+            return edges;
+        }
+
+        function buildGraph(n, edges) {
+            var adj = {};
+            var indeg = {};
+            for (var i = 1; i <= n; i++) { adj[i] = []; indeg[i] = 0; }
+            edges.forEach(function(e) {
+                if (e[0] >= 1 && e[0] <= n && e[1] >= 1 && e[1] <= n) {
+                    adj[e[0]].push(e[1]);
+                    indeg[e[1]]++;
+                }
+            });
+            return { adj: adj, indeg: indeg };
+        }
+
+        function buildSteps(n, edges) {
+            var g = buildGraph(n, edges);
+            var adj = g.adj;
+            var initIndeg = {};
+            for (var i = 1; i <= n; i++) initIndeg[i] = g.indeg[i];
+
+            var simIndeg = {};
+            for (var i2 = 1; i2 <= n; i2++) simIndeg[i2] = initIndeg[i2];
+            var simQueue = [];
+            var simSemester = {};
+            for (var i3 = 1; i3 <= n; i3++) simSemester[i3] = 0;
+
+            for (var i4 = 1; i4 <= n; i4++) {
+                if (simIndeg[i4] === 0) simQueue.push(i4);
+            }
+
+            var simResult = [];
+            var steps = [];
+
+            var initNodes = {};
+            for (var i5 = 1; i5 <= n; i5++) initNodes[i5] = 'default';
+
+            // Step 1: Show initial in-degrees
+            var edgeDesc = edges.map(function(e) { return e[0] + '→' + e[1]; }).join(', ');
+            (function(initInd) {
+                steps.push({
+                    description: '간선 [' + edgeDesc + ']에서 각 노드의 진입 차수를 계산합니다. — <em>진입 차수 = "이 과목을 듣기 위해 먼저 들어야 하는 과목 수"</em>',
+                    action: function() { renderNodes(initNodes, n); renderIndeg(initInd, n); renderSemester(simSemester, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '진입 차수 계산 완료'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initInd, n); renderSemester({}, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '<span style="color:var(--text2);">선수과목 위상 정렬을 시작합니다.</span>'; }
+                });
+            })(JSON.parse(JSON.stringify(initIndeg)));
+
+            // Step 2: Enqueue in-degree 0 nodes + set semester=1
+            var zeroNodes = simQueue.slice();
+            if (zeroNodes.length === 0) {
+                steps.push({
+                    description: '진입 차수가 0인 노드가 없습니다! — <em>사이클 존재 가능</em>',
+                    action: function() { infoEl.innerHTML = '<strong style="color:var(--red);">진입 차수가 0인 노드가 없습니다!</strong>'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initIndeg, n); renderSemester({}, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '진입 차수 계산 완료'; }
+                });
+                return steps;
+            }
+
+            zeroNodes.forEach(function(v) { simSemester[v] = 1; });
+
+            (function(zn, semSnap, initInd) {
+                var queuedNodes = {};
+                for (var k = 1; k <= n; k++) queuedNodes[k] = 'default';
+                zn.forEach(function(v) { queuedNodes[v] = 'queued'; });
+                steps.push({
+                    description: '진입 차수 0인 노드 [' + zn.join(', ') + ']을 큐에 넣고 <strong>학기=1</strong>로 설정합니다. — <em>선수과목이 없으므로 1학기에 바로 수강 가능!</em>',
+                    action: function() { renderNodes(queuedNodes, n); renderIndeg(initInd, n); renderSemester(semSnap, n); renderQueue(zn.slice()); renderResult([]); infoEl.innerHTML = '1학기 과목: <strong>' + zn.join(', ') + '</strong>'; },
+                    undo: function() { renderNodes(initNodes, n); renderIndeg(initInd, n); renderSemester({}, n); renderQueue([]); renderResult([]); infoEl.innerHTML = '진입 차수 계산 완료'; }
+                });
+            })(zeroNodes.slice(), JSON.parse(JSON.stringify(simSemester)), JSON.parse(JSON.stringify(initIndeg)));
+
+            // Process BFS
+            while (simQueue.length > 0) {
+                var v = simQueue.shift();
+                simResult.push(v);
+
+                // Snapshot before processing
+                var prevNodeStates = {};
+                for (var p = 1; p <= n; p++) {
+                    if (simResult.indexOf(p) >= 0 && p !== v) prevNodeStates[p] = 'done';
+                    else if (simQueue.indexOf(p) >= 0) prevNodeStates[p] = 'queued';
+                    else prevNodeStates[p] = 'default';
+                }
+                prevNodeStates[v] = 'active';
+                var curQueue = simQueue.slice();
+                var curResult = simResult.slice();
+                var prevSem = JSON.parse(JSON.stringify(simSemester));
+                var prevIndeg = {};
+                for (var pp = 1; pp <= n; pp++) prevIndeg[pp] = simIndeg[pp];
+
+                // Dequeue step
+                (function(vv, pns, cq, cr, ps) {
+                    steps.push({
+                        description: '<strong>' + vv + '번 과목</strong>을 큐에서 꺼냅니다 (학기=' + ps[vv] + '). — <em>진입 차수가 0이라 모든 선수과목 이수 완료!</em>',
+                        action: function() { renderNodes(pns, n); renderSemester(ps, n); renderQueue(cq); renderResult(cr); infoEl.innerHTML = '<strong>' + vv + '번 과목</strong> 처리 중 (학기 ' + ps[vv] + ')'; },
+                        undo: function() {}
+                    });
+                })(v, JSON.parse(JSON.stringify(prevNodeStates)), curQueue.slice(), curResult.slice(), JSON.parse(JSON.stringify(prevSem)));
+
+                // Process each neighbor individually
+                var neighbors = adj[v] || [];
+                for (var ni = 0; ni < neighbors.length; ni++) {
+                    var u = neighbors[ni];
+                    var oldSemU = simSemester[u];
+                    var newSemU = Math.max(simSemester[u], simSemester[v] + 1);
+                    simSemester[u] = newSemU;
+                    simIndeg[u]--;
+                    var becameZero = (simIndeg[u] === 0);
+                    if (becameZero) simQueue.push(u);
+
+                    // Snapshot after this neighbor
+                    var afterNodeStates = {};
+                    for (var a = 1; a <= n; a++) {
+                        if (simResult.indexOf(a) >= 0) afterNodeStates[a] = 'done';
+                        else if (simQueue.indexOf(a) >= 0) afterNodeStates[a] = 'queued';
+                        else afterNodeStates[a] = 'default';
+                    }
+                    var afterIndeg = {};
+                    for (var ai = 1; ai <= n; ai++) afterIndeg[ai] = simIndeg[ai];
+                    var afterQueue = simQueue.slice();
+                    var afterSem = JSON.parse(JSON.stringify(simSemester));
+
+                    var semExplain = 'semester[' + u + '] = max(' + oldSemU + ', semester[' + v + ']+1) = max(' + oldSemU + ', ' + (simSemester[v] + 1) + ') = ' + newSemU;
+                    var desc = v + '→' + u + ' 간선 처리: ' + semExplain + ' — <em>' + v + '번을 ' + prevSem[v] + '학기에 들으니 ' + u + '번은 최소 ' + newSemU + '학기</em>';
+                    if (becameZero) {
+                        desc += '<br>→ ' + u + '번의 진입 차수가 0이 되어 큐에 추가! <em>모든 선수과목 이수 완료</em>';
+                    }
+
+                    (function(desc2, ans, aind, aq, asem) {
+                        steps.push({
+                            description: desc2,
+                            action: function() { renderNodes(ans, n); renderIndeg(aind, n); renderSemester(asem, n); renderQueue(aq); infoEl.innerHTML = '간선 처리 중...'; },
+                            undo: function() {}
+                        });
+                    })(desc, JSON.parse(JSON.stringify(afterNodeStates)), JSON.parse(JSON.stringify(afterIndeg)), afterQueue.slice(), JSON.parse(JSON.stringify(afterSem)));
+                }
+
+                if (neighbors.length === 0) {
+                    var doneNodeStates = {};
+                    for (var d = 1; d <= n; d++) {
+                        if (simResult.indexOf(d) >= 0) doneNodeStates[d] = 'done';
+                        else if (simQueue.indexOf(d) >= 0) doneNodeStates[d] = 'queued';
+                        else doneNodeStates[d] = 'default';
+                    }
+                    (function(vv2, dns) {
+                        steps.push({
+                            description: vv2 + '번 과목에는 후속 과목이 없습니다. 처리 완료! — <em>이 과목을 선수과목으로 요구하는 과목 없음</em>',
+                            action: function() { renderNodes(dns, n); infoEl.innerHTML = vv2 + '번 처리 완료 (후속 없음)'; },
+                            undo: function() {}
+                        });
+                    })(v, JSON.parse(JSON.stringify(doneNodeStates)));
+                }
+            }
+
+            // Final step
+            var finalSem = JSON.parse(JSON.stringify(simSemester));
+            var finalResult = simResult.slice();
+            steps.push({
+                description: '위상 정렬 완료! 각 과목의 최소 이수 학기가 결정되었습니다.',
+                action: function() {
+                    var fs = {};
+                    for (var f = 1; f <= n; f++) fs[f] = 'done';
+                    renderNodes(fs, n); renderQueue([]); renderResult(finalResult); renderSemester(finalSem, n);
+                    var semStr = [];
+                    for (var s = 1; s <= n; s++) semStr.push(finalSem[s] || 0);
+                    infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">완료! 학기: ' + semStr.join(' ') + '</strong>';
+                },
+                undo: function() {}
+            });
+
+            return steps;
+        }
+
+        function resetViz(n, edges) {
+            self._clearVizState();
+            var g = buildGraph(n, edges);
+            var initNodes = {};
+            for (var i = 1; i <= n; i++) initNodes[i] = 'default';
+            renderNodes(initNodes, n);
+            renderIndeg(g.indeg, n);
+            renderSemester({}, n);
+            renderQueue([]);
+            renderResult([]);
+            infoEl.innerHTML = '<span style="color:var(--text2);">선수과목 위상 정렬을 시작합니다.</span>';
+            var steps = buildSteps(n, edges);
+            self._initStepController(container, steps, suffix);
+        }
+
+        resetViz(DEFAULT_N, parseEdges(DEFAULT_EDGES_STR));
+
+        container.querySelector('#ts-prereq-reset').addEventListener('click', function() {
+            var n = parseInt(container.querySelector('#ts-prereq-n').value) || DEFAULT_N;
+            if (n < 2) n = 2;
+            if (n > 10) n = 10;
+            var edges = parseEdges(container.querySelector('#ts-prereq-edges').value);
+            resetViz(n, edges);
+        });
+    },
+
+    // ====================================================================
     // 시뮬레이션 1: 줄 세우기 (boj-2252) — 기본 Kahn's Algorithm
     // ====================================================================
     _renderVizLineup(container) {
@@ -2355,13 +2628,87 @@ for (int i = 0; i &lt; result.size(); i++)
 
     // ===== 문제 단계 =====
     stages: [
-        { num: 1, title: '기본 위상 정렬', desc: '진입 차수와 BFS를 활용한 기본 위상 정렬 (Gold III)', problemIds: ['boj-2252'] },
-        { num: 2, title: '심화 위상 정렬', desc: '우선순위 큐, 사이클 판별 등 심화 응용 (Gold I~II)', problemIds: ['boj-1766', 'boj-3665'] }
+        { num: 1, title: '선수과목 (입문)', desc: '위상 정렬 입문 — 선수과목 순서 구하기 (Gold V)', problemIds: ['boj-14567'] },
+        { num: 2, title: '기본 위상 정렬', desc: '진입 차수와 BFS를 활용한 기본 위상 정렬 (Gold III)', problemIds: ['boj-2252'] },
+        { num: 3, title: '심화 위상 정렬', desc: '우선순위 큐, 사이클 판별 등 심화 응용 (Gold I~II)', problemIds: ['boj-1766', 'boj-3665'] }
     ],
 
     // ===== 문제 목록 =====
     problems: [
-        // ===== 1단계: 기본 위상 정렬 =====
+        // ===== 1단계: 선수과목 (입문) =====
+        {
+            id: 'boj-14567',
+            title: 'BOJ 14567 - 선수과목 (Prerequisite)',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/14567',
+            simIntro: '선수과목 관계를 DAG로 만들고, Kahn\'s Algorithm으로 각 과목의 최소 이수 학기를 구해보세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>올해 Z대학 , , 학번인 학생들은 새로운 커리큘럼을 맞아 , 총 N개의 과목을 수강해야 한다. 각 과목을 수강하기 위해 반드시 먼저 이수해야 하는 선수과목이 있을 수 있다.</p>
+                <p>한 학기에 들을 수 있는 과목 수에는 제한이 없다. 모든 과목은 매 학기 개설된다.</p>
+                <p>각 과목을 가장 빠르게 이수할 수 있는 학기를 구하라.</p>
+                <h4>입력</h4>
+                <p>첫 번째 줄에 과목의 수 N(1 ≤ N ≤ 1000)과 선수과목 조건의 수 M(0 ≤ M ≤ 500000)이 주어진다.</p>
+                <p>다음 M개의 줄에 선수과목 조건을 나타내는 두 정수 A, B가 주어진다. A번 과목이 B번 과목의 선수과목이다. (A번을 이수해야 B번을 들을 수 있다.)</p>
+                <h4>출력</h4>
+                <p>1번 과목부터 N번 과목까지 각 과목을 이수할 수 있는 가장 빠른 학기를 공백으로 구분하여 한 줄에 출력한다.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>3 2\n2 3\n1 2</pre></div>
+                    <div><strong>출력</strong><pre>1 1 2</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>6 4\n1 2\n1 3\n2 5\n4 5</pre></div>
+                    <div><strong>출력</strong><pre>1 2 2 1 3 1</pre></div>
+                </div></div>
+                <h4>제약 조건</h4>
+                <ul><li>1 ≤ N ≤ 1000</li><li>0 ≤ M ≤ 500,000</li></ul>
+            `,
+            hints: [
+                {
+                    title: '처음 떠오르는 생각 — 그래프로 모델링',
+                    content: '"A를 먼저 들어야 B를 들을 수 있다" → A에서 B로 향하는 <strong>간선</strong>이 있는 방향 그래프(DAG)예요.<br>이런 선후관계를 처리하는 데 딱 맞는 알고리즘이 뭘까요? 바로 <strong>위상 정렬</strong>입니다!'
+                },
+                {
+                    title: '"가장 빠른 학기"는 어떻게 구하지?',
+                    content: '선수과목이 없으면 → <strong>1학기</strong>에 바로 수강 가능!<br>선수과목이 있으면 → 선수과목들이 모두 이수된 <strong>다음 학기</strong>에 들을 수 있어요.<br><br>즉, <code>semester[B] = max(semester[A들]) + 1</code> — 선수과목 중 가장 늦게 끝나는 것 + 1!'
+                },
+                {
+                    title: 'BFS(Kahn\'s 알고리즘)로 구현',
+                    content: '진입차수가 0인 과목(선수과목 없음)을 큐에 넣고 학기=1로 시작.<br>큐에서 꺼낸 과목의 이웃 진입차수를 줄이면서 <code>semester[이웃] = max(semester[이웃], semester[현재] + 1)</code>로 갱신!<br>진입차수가 0이 되면 큐에 추가.<br><br><span class="lang-py">Python: <code>deque</code>로 BFS 구현</span><span class="lang-cpp">C++: <code>queue</code>로 BFS 구현</span>'
+                },
+                {
+                    title: '시간 복잡도 확인',
+                    content: '모든 노드를 한 번씩 처리하고, 모든 간선을 한 번씩 확인하므로 <strong>O(N + M)</strong>이에요.<br>N ≤ 1000, M ≤ 500,000이니 충분히 빠릅니다!'
+                }
+            ],
+            templates: {
+                python: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]\nin_degree = [0] * (N + 1)\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)\n    in_degree[b] += 1\n\nsemester = [0] * (N + 1)\nqueue = deque()\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        queue.append(i)\n        semester[i] = 1\n\nwhile queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        semester[u] = max(semester[u], semester[v] + 1)\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            queue.append(u)\n\nprint(*semester[1:])',
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);\n        in_degree[b]++;\n    }\n\n    vector<int> semester(N + 1, 0);\n    queue<int> q;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) {\n            q.push(i);\n            semester[i] = 1;\n        }\n    }\n\n    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            semester[u] = max(semester[u], semester[v] + 1);\n            if (--in_degree[u] == 0) q.push(u);\n        }\n    }\n\n    for (int i = 1; i <= N; i++)\n        printf("%d%c", semester[i], i == N ? \'\\n\' : \' \');\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'Kahn\'s Algorithm + 학기 계산',
+                description: '진입 차수가 0인 과목부터 BFS하면서 각 과목의 최소 이수 학기를 구합니다.',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(N + M)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 그래프 구축', desc: '선수과목 관계를 인접 리스트로 저장하고\n진입 차수를 세어 위상 정렬을 준비합니다.', code: 'import sys\nfrom collections import deque\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\ngraph = [[] for _ in range(N + 1)]  # 인접 리스트\nin_degree = [0] * (N + 1)           # 진입 차수\n\nfor _ in range(M):\n    a, b = map(int, input().split())\n    graph[a].append(b)  # a → b 간선\n    in_degree[b] += 1   # b의 진입 차수 증가' },
+                        { title: '진입 차수 0인 과목 큐에 추가', desc: '선수과목이 없는 과목은 1학기에 바로 수강 가능하므로\n큐에 넣고 semester=1로 초기화합니다.', code: 'semester = [0] * (N + 1)\nqueue = deque()\nfor i in range(1, N + 1):\n    if in_degree[i] == 0:\n        queue.append(i)\n        semester[i] = 1  # 선수과목 없음 → 1학기' },
+                        { title: 'BFS + 학기 계산', desc: '큐에서 꺼낸 과목의 이웃 학기를\nmax(현재값, 선수과목 학기+1)로 갱신합니다.\n모든 선수과목 중 가장 늦은 것 + 1이 최소 이수 학기!', code: 'while queue:\n    v = queue.popleft()\n    for u in graph[v]:\n        # 선수과목 중 가장 늦게 끝나는 것 + 1\n        semester[u] = max(semester[u], semester[v] + 1)\n        in_degree[u] -= 1\n        if in_degree[u] == 0:\n            queue.append(u)' },
+                        { title: '출력', desc: '1번부터 N번까지 각 과목의 최소 이수 학기를 출력합니다.', code: 'print(*semester[1:])' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 그래프 구축', desc: '선수과목 관계를 인접 리스트로 저장하고\n진입 차수를 세어 위상 정렬을 준비합니다.', code: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<vector<int>> graph(N + 1);\n    vector<int> in_degree(N + 1, 0);\n\n    for (int i = 0; i < M; i++) {\n        int a, b;\n        scanf("%d %d", &a, &b);\n        graph[a].push_back(b);  // a → b 간선\n        in_degree[b]++;         // b의 진입 차수 증가\n    }' },
+                        { title: '진입 차수 0인 과목 큐에 추가', desc: '선수과목이 없는 과목을 queue에 넣고\nsemester=1로 초기화합니다.', code: '    vector<int> semester(N + 1, 0);\n    queue<int> q;\n    for (int i = 1; i <= N; i++) {\n        if (in_degree[i] == 0) {\n            q.push(i);\n            semester[i] = 1;  // 선수과목 없음 → 1학기\n        }\n    }' },
+                        { title: 'BFS + 학기 계산', desc: '큐에서 꺼낸 과목의 이웃 학기를\nmax(현재값, 선수과목 학기+1)로 갱신합니다.', code: '    while (!q.empty()) {\n        int v = q.front(); q.pop();\n        for (int u : graph[v]) {\n            // 선수과목 중 가장 늦게 끝나는 것 + 1\n            semester[u] = max(semester[u], semester[v] + 1);\n            if (--in_degree[u] == 0) q.push(u);\n        }\n    }' },
+                        { title: '출력', desc: '각 과목의 최소 이수 학기를 출력하고 프로그램을 종료합니다.', code: '    for (int i = 1; i <= N; i++)\n        printf("%d%c", semester[i], i == N ? \'\\n\' : \' \');\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return topologicalSortTopic.problems[0].templates; }
+            }]
+        },
+
+        // ===== 2단계: 기본 위상 정렬 =====
         {
             id: 'boj-2252',
             title: 'BOJ 2252 - 줄 세우기',
@@ -2423,11 +2770,11 @@ for (int i = 0; i &lt; result.size(); i++)
                         { title: '출력', desc: '위상 정렬 결과를 출력하고 프로그램을 종료합니다.', code: '    return 0;\n}' }
                     ]
                 },
-                get templates() { return topologicalSortTopic.problems[0].templates; }
+                get templates() { return topologicalSortTopic.problems[1].templates; }
             }]
         },
 
-        // ===== 2단계: 심화 위상 정렬 =====
+        // ===== 3단계: 심화 위상 정렬 =====
         {
             id: 'boj-1766',
             title: 'BOJ 1766 - 문제집',
@@ -2485,7 +2832,7 @@ for (int i = 0; i &lt; result.size(); i++)
                         { title: '출력', desc: '위상 정렬 결과를 출력하고 프로그램을 종료합니다.', code: '    return 0;\n}' }
                     ]
                 },
-                get templates() { return topologicalSortTopic.problems[1].templates; }
+                get templates() { return topologicalSortTopic.problems[2].templates; }
             }]
         },
         {
@@ -2545,7 +2892,7 @@ for (int i = 0; i &lt; result.size(); i++)
                         { title: '결과 출력', desc: '사이클이면 IMPOSSIBLE, 순서 불확정이면 ?,\n그 외엔 확정된 올해 순위를 출력합니다.', code: '        if ((int)result.size() != n) printf("IMPOSSIBLE\\n");\n        else if (ambiguous) printf("?\\n");\n        else {\n            for (int i = 0; i < n; i++)\n                printf("%d%c", result[i], i==n-1?\'\\n\':\' \');\n        }\n    }\n    return 0;\n}' }
                     ]
                 },
-                get templates() { return topologicalSortTopic.problems[2].templates; }
+                get templates() { return topologicalSortTopic.problems[3].templates; }
             }]
         }
     ],
