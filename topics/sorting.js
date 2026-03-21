@@ -287,7 +287,7 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                 <div class="concept-demo">
                     <div class="concept-demo-title">삽입 정렬 미니 데모</div>
                     <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
-                        왼쪽부터 <strong>정렬된 부분</strong>을 넓혀갑니다. 새 원소를 꺼내서, 정렬된 부분에서 올바른 자리를 찾아 <em>끼워넣기</em>!<br>
+                        왼쪽부터 <strong>정렬된 부분</strong>(초록)을 넓혀갑니다. 새 원소를 <em>꺼내서</em> 위에 올려놓고, 정렬된 부분에서 올바른 자리를 찾아 <em>끼워넣기</em>!<br>
                         큰 원소들이 오른쪽으로 밀리는 과정을 한 스텝씩 확인하세요.
                     </p>
                     <div class="concept-demo-btns">
@@ -296,6 +296,7 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
+                            <div id="sort-demo-ins-key" style="display:flex;justify-content:center;min-height:52px;margin-bottom:8px;align-items:center;"></div>
                             <div id="sort-demo-ins-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
                             <div id="sort-demo-ins-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
                         </div>
@@ -839,34 +840,61 @@ sort(words.begin(), words.end(),
         }
 
         // ── 삽입 정렬 미니 데모 ──
+        // key를 배열 위에 떠있게 보여주고, 빈 칸(hole)을 만들어서 이동 과정을 명확히 표현
         {
             var insInitArr = [64, 25, 12, 22, 11];
-            var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+            // phase: 'pick' = 다음 key 선택 대기, 'compare' = j와 비교 중, 'shift' = 밀기 애니메이션, 'insert' = key 삽입
+            var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, hole: -1, phase: 'pick', done: false };
             var insArrEl = container.querySelector('#sort-demo-ins-arr');
+            var insKeyEl = container.querySelector('#sort-demo-ins-key');
             var insFlyEl = container.querySelector('#sort-demo-ins-fly');
             var insMsg = container.querySelector('#sort-demo-ins-msg');
 
             function renderInsArr() {
+                // key 영역: key를 꺼냈으면 배열 위에 표시
+                if (insState.phase !== 'pick' && !insState.done) {
+                    insKeyEl.innerHTML =
+                        '<div style="display:flex;flex-direction:column;align-items:center;">' +
+                            '<div style="font-size:0.6rem;color:var(--yellow);margin-bottom:2px;font-weight:700;">key</div>' +
+                            '<div class="str-char-box" style="border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);background:rgba(253,203,110,0.15);font-weight:700;">' + insState.key + '</div>' +
+                        '</div>';
+                } else {
+                    insKeyEl.innerHTML = '';
+                }
+
+                // 배열 영역
                 insArrEl.innerHTML = insState.arr.map(function(v, idx) {
                     var cls = 'str-char-box';
                     var extra = '';
-                    if (insState.done) {
-                        cls += ' matched';
-                    } else if (idx < insState.i && insState.phase === 'pick') {
-                        cls += ' matched';
-                    }
-                    if (idx === insState.i && insState.phase === 'pick' && !insState.done) {
-                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
-                    }
-                    if (idx === insState.j && insState.phase === 'shift') {
-                        extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
-                    }
+                    var content = v;
                     var label = '';
-                    if (v === insState.key && insState.phase === 'shift' && idx === insState.j + 1) {
-                        label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">key</div>';
+
+                    if (insState.done) {
+                        // 완료: 전부 초록
+                        cls += ' matched';
+                    } else if (insState.phase === 'pick') {
+                        // pick 대기: i 미만은 정렬됨(초록), i는 다음 후보(노랑)
+                        if (idx < insState.i) cls += ' matched';
+                        if (idx === insState.i) extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    } else {
+                        // key를 꺼낸 상태
+                        if (idx === insState.hole) {
+                            // 빈 칸 표시
+                            content = '';
+                            extra = 'border:2px dashed var(--text3);background:transparent;color:transparent;box-shadow:none;';
+                            label = '<div style="font-size:0.55rem;color:var(--text3);margin-top:2px;">빈 칸</div>';
+                        } else if (idx < insState.i && idx !== insState.hole) {
+                            // 정렬된 부분
+                            cls += ' matched';
+                            // 비교 중인 원소 강조
+                            if (insState.phase === 'compare' && idx === insState.j) {
+                                extra = 'border-color:var(--red);box-shadow:0 0 10px var(--red);';
+                                label = '<div style="font-size:0.55rem;color:var(--red);margin-top:2px;">비교</div>';
+                            }
+                        }
                     }
                     return '<div style="display:flex;flex-direction:column;align-items:center;">' +
-                        '<div class="' + cls + '" id="ins-box-' + idx + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                        '<div class="' + cls + '" id="ins-box-' + idx + '" style="' + extra + '">' + content + '</div>' + label + '</div>';
                 }).join('');
             }
 
@@ -875,82 +903,109 @@ sort(words.begin(), words.end(),
 
             function insStep() {
                 if (insState.done || insAnimating) return;
+
                 if (insState.phase === 'pick') {
+                    // 다음 원소를 key로 꺼내기
                     if (insState.i >= insState.arr.length) {
                         insState.done = true;
-                        insMsg.textContent = '정렬 완료! [' + insState.arr.join(', ') + '] — 거의 정렬된 데이터라면 훨씬 빠릅니다!';
+                        insMsg.textContent = '✅ 정렬 완료! [' + insState.arr.join(', ') + '] — 거의 정렬된 데이터라면 거의 O(n)!';
                         renderInsArr();
                         return;
                     }
                     insState.key = insState.arr[insState.i];
+                    insState.hole = insState.i;
                     insState.j = insState.i - 1;
-                    insMsg.textContent = 'key = ' + insState.key + ' (인덱스 ' + insState.i + ')을 꺼냈습니다. 왼쪽 정렬된 부분에서 자리를 찾습니다.';
-                    insState.phase = 'shift';
+                    insMsg.textContent = '🃏 key = ' + insState.key + '을(를) 꺼냈습니다 (인덱스 ' + insState.i + '). 왼쪽 정렬된 부분에서 들어갈 자리를 찾아봅니다.';
+                    insState.phase = 'compare';
                     renderInsArr();
                     return;
                 }
-                if (insState.phase === 'shift') {
+
+                if (insState.phase === 'compare') {
+                    // j와 key 비교
                     if (insState.j >= 0 && insState.arr[insState.j] > insState.key) {
-                        insMsg.textContent = insState.arr[insState.j] + ' > key(' + insState.key + ') → 오른쪽으로 한 칸 밀기!';
-                        var srcIdx = insState.j, destIdx = insState.j + 1;
-                        var shiftVal = insState.arr[srcIdx];
-                        insFlyEl.innerHTML = '';
-                        // Animate the value sliding right
-                        var elSrc = insArrEl.querySelector('#ins-box-' + srcIdx);
-                        var wrapRect = insArrEl.parentElement.getBoundingClientRect();
-                        if (elSrc) {
-                            var rectSrc = elSrc.getBoundingClientRect();
-                            var elDest = insArrEl.querySelector('#ins-box-' + destIdx);
-                            var rectDest = elDest ? elDest.getBoundingClientRect() : rectSrc;
-                            elSrc.style.opacity = '0.15';
-                            var g = document.createElement('div');
-                            g.textContent = shiftVal;
-                            g.className = 'str-char-box';
-                            g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
-                                'left:' + (rectSrc.left - wrapRect.left) + 'px;' +
-                                'top:' + (rectSrc.top - wrapRect.top) + 'px;' +
-                                'width:' + rectSrc.width + 'px;height:' + rectSrc.height + 'px;' +
-                                'display:flex;align-items:center;justify-content:center;' +
-                                'transition:left 0.4s cubic-bezier(.4,0,.2,1);' +
-                                'background:#e17055;color:white;border-color:#e17055;' +
-                                'box-shadow:0 0 10px #e17055;transform:scale(1.05);';
-                            insFlyEl.appendChild(g);
-                            insAnimating = true;
-                            insStepBtn.disabled = true;
-                            insStepBtn.style.opacity = '0.5';
-                            requestAnimationFrame(function() {
-                                requestAnimationFrame(function() {
-                                    g.style.left = (rectDest.left - wrapRect.left) + 'px';
-                                });
-                            });
-                            setTimeout(function() {
-                                insAnimating = false;
-                                insStepBtn.disabled = false;
-                                insStepBtn.style.opacity = '';
-                                if (g.parentNode) g.parentNode.removeChild(g);
-                                insState.arr[destIdx] = insState.arr[srcIdx];
-                                insState.j--;
-                                renderInsArr();
-                            }, 450);
-                        } else {
-                            insState.arr[destIdx] = insState.arr[srcIdx];
-                            insState.j--;
-                            renderInsArr();
-                        }
-                        return;
+                        insMsg.textContent = '🔍 ' + insState.arr[insState.j] + ' > key(' + insState.key + ') → ' + insState.arr[insState.j] + '이(가) 더 크니까 오른쪽으로 밀어야 합니다!';
+                        insState.phase = 'shift';
+                        renderInsArr();
+                    } else if (insState.j >= 0) {
+                        insMsg.textContent = '✓ ' + insState.arr[insState.j] + ' ≤ key(' + insState.key + ') → 여기가 key의 자리! 빈 칸에 삽입합니다.';
+                        insState.phase = 'insert';
+                        renderInsArr();
+                    } else {
+                        insMsg.textContent = '✓ 맨 앞까지 왔습니다! 인덱스 0이 key의 자리입니다.';
+                        insState.phase = 'insert';
+                        renderInsArr();
                     }
-                    insState.arr[insState.j + 1] = insState.key;
-                    insMsg.textContent = 'key=' + insState.key + '을(를) 인덱스 ' + (insState.j + 1) + '에 삽입! → [' + insState.arr.join(', ') + ']';
+                    return;
+                }
+
+                if (insState.phase === 'shift') {
+                    // j번 원소를 오른쪽(hole)으로 밀기 — 애니메이션
+                    var srcIdx = insState.j;
+                    var destIdx = insState.hole;
+                    var shiftVal = insState.arr[srcIdx];
+                    insFlyEl.innerHTML = '';
+
+                    var elSrc = insArrEl.querySelector('#ins-box-' + srcIdx);
+                    var wrapRect = insArrEl.parentElement.getBoundingClientRect();
+                    if (elSrc) {
+                        var rectSrc = elSrc.getBoundingClientRect();
+                        var elDest = insArrEl.querySelector('#ins-box-' + destIdx);
+                        var rectDest = elDest ? elDest.getBoundingClientRect() : rectSrc;
+                        elSrc.style.opacity = '0.15';
+                        var g = document.createElement('div');
+                        g.textContent = shiftVal;
+                        g.className = 'str-char-box';
+                        g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
+                            'left:' + (rectSrc.left - wrapRect.left) + 'px;' +
+                            'top:' + (rectSrc.top - wrapRect.top) + 'px;' +
+                            'width:' + rectSrc.width + 'px;height:' + rectSrc.height + 'px;' +
+                            'display:flex;align-items:center;justify-content:center;' +
+                            'transition:left 0.4s cubic-bezier(.4,0,.2,1);' +
+                            'background:#e17055;color:white;border-color:#e17055;' +
+                            'box-shadow:0 0 10px #e17055;transform:scale(1.05);';
+                        insFlyEl.appendChild(g);
+                        insAnimating = true;
+                        insStepBtn.disabled = true;
+                        insStepBtn.style.opacity = '0.5';
+                        requestAnimationFrame(function() {
+                            requestAnimationFrame(function() {
+                                g.style.left = (rectDest.left - wrapRect.left) + 'px';
+                            });
+                        });
+                        setTimeout(function() {
+                            insAnimating = false;
+                            insStepBtn.disabled = false;
+                            insStepBtn.style.opacity = '';
+                            if (g.parentNode) g.parentNode.removeChild(g);
+                            // 실제 배열 업데이트: hole에 값 넣고, j가 새 hole
+                            insState.arr[destIdx] = shiftVal;
+                            insState.hole = srcIdx;
+                            insState.j--;
+                            insMsg.textContent = '→ ' + shiftVal + '을(를) 오른쪽으로 밀었습니다. 빈 칸이 왼쪽으로 이동했어요.';
+                            insState.phase = 'compare';
+                            renderInsArr();
+                        }, 450);
+                    }
+                    return;
+                }
+
+                if (insState.phase === 'insert') {
+                    // key를 빈 칸에 삽입
+                    insState.arr[insState.hole] = insState.key;
+                    insMsg.textContent = '📥 key=' + insState.key + '을(를) 인덱스 ' + insState.hole + '에 삽입! → [' + insState.arr.join(', ') + ']';
                     insState.i++;
                     insState.phase = 'pick';
+                    insState.hole = -1;
                     insFlyEl.innerHTML = '';
                     renderInsArr();
                 }
             }
 
             function insReset() {
-                insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+                insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, hole: -1, phase: 'pick', done: false };
                 insMsg.textContent = '▶ Step을 눌러 삽입 정렬을 시작하세요!';
+                insFlyEl.innerHTML = '';
                 renderInsArr();
             }
 

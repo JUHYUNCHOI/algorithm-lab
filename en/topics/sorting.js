@@ -287,7 +287,7 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                 <div class="concept-demo">
                     <div class="concept-demo-title">Insertion Sort Mini Demo</div>
                     <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
-                        Expand the <strong>sorted portion</strong> from the left. Pick a new element and find its correct position by <em>inserting</em> it!<br>
+                        Expand the <strong>sorted portion</strong> (green) from the left. <em>Pull out</em> the next element and hold it above, then find its correct position by <em>inserting</em> it!<br>
                         Watch larger elements shift right, one step at a time.
                     </p>
                     <div class="concept-demo-btns">
@@ -296,6 +296,7 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
+                            <div id="sort-demo-ins-key" style="display:flex;justify-content:center;min-height:52px;margin-bottom:8px;align-items:center;"></div>
                             <div id="sort-demo-ins-arr" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:50px;"></div>
                             <div id="sort-demo-ins-fly" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></div>
                         </div>
@@ -840,34 +841,54 @@ sort(words.begin(), words.end(),
         }
 
         // ── Insertion Sort Mini Demo ──
+        // key is shown floating above the array, with a hole (dashed box) in its original position
         {
             var insInitArr = [64, 25, 12, 22, 11];
-            var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
+            var insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, hole: -1, phase: 'pick', done: false };
             var insArrEl = container.querySelector('#sort-demo-ins-arr');
+            var insKeyEl = container.querySelector('#sort-demo-ins-key');
             var insFlyEl = container.querySelector('#sort-demo-ins-fly');
             var insMsg = container.querySelector('#sort-demo-ins-msg');
 
             function renderInsArr() {
+                // Key area: show key floating above array when extracted
+                if (insState.phase !== 'pick' && !insState.done) {
+                    insKeyEl.innerHTML =
+                        '<div style="display:flex;flex-direction:column;align-items:center;">' +
+                            '<div style="font-size:0.6rem;color:var(--yellow);margin-bottom:2px;font-weight:700;">key</div>' +
+                            '<div class="str-char-box" style="border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);background:rgba(253,203,110,0.15);font-weight:700;">' + insState.key + '</div>' +
+                        '</div>';
+                } else {
+                    insKeyEl.innerHTML = '';
+                }
+
+                // Array area
                 insArrEl.innerHTML = insState.arr.map(function(v, idx) {
                     var cls = 'str-char-box';
                     var extra = '';
+                    var content = v;
+                    var label = '';
+
                     if (insState.done) {
                         cls += ' matched';
-                    } else if (idx < insState.i && insState.phase === 'pick') {
-                        cls += ' matched';
-                    }
-                    if (idx === insState.i && insState.phase === 'pick' && !insState.done) {
-                        extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
-                    }
-                    if (idx === insState.j && insState.phase === 'shift') {
-                        extra = 'border-color:var(--red);box-shadow:0 0 6px var(--red);';
-                    }
-                    var label = '';
-                    if (v === insState.key && insState.phase === 'shift' && idx === insState.j + 1) {
-                        label = '<div style="font-size:0.65rem;color:var(--yellow);margin-top:2px;">key</div>';
+                    } else if (insState.phase === 'pick') {
+                        if (idx < insState.i) cls += ' matched';
+                        if (idx === insState.i) extra = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                    } else {
+                        if (idx === insState.hole) {
+                            content = '';
+                            extra = 'border:2px dashed var(--text3);background:transparent;color:transparent;box-shadow:none;';
+                            label = '<div style="font-size:0.55rem;color:var(--text3);margin-top:2px;">hole</div>';
+                        } else if (idx < insState.i && idx !== insState.hole) {
+                            cls += ' matched';
+                            if (insState.phase === 'compare' && idx === insState.j) {
+                                extra = 'border-color:var(--red);box-shadow:0 0 10px var(--red);';
+                                label = '<div style="font-size:0.55rem;color:var(--red);margin-top:2px;">compare</div>';
+                            }
+                        }
                     }
                     return '<div style="display:flex;flex-direction:column;align-items:center;">' +
-                        '<div class="' + cls + '" id="ins-box-' + idx + '" style="' + extra + '">' + v + '</div>' + label + '</div>';
+                        '<div class="' + cls + '" id="ins-box-' + idx + '" style="' + extra + '">' + content + '</div>' + label + '</div>';
                 }).join('');
             }
 
@@ -876,81 +897,104 @@ sort(words.begin(), words.end(),
 
             function insStep() {
                 if (insState.done || insAnimating) return;
+
                 if (insState.phase === 'pick') {
                     if (insState.i >= insState.arr.length) {
                         insState.done = true;
-                        insMsg.textContent = 'Sort complete! [' + insState.arr.join(', ') + '] — Much faster on nearly sorted data!';
+                        insMsg.textContent = '\u2705 Sort complete! [' + insState.arr.join(', ') + '] \u2014 Nearly O(n) on almost-sorted data!';
                         renderInsArr();
                         return;
                     }
                     insState.key = insState.arr[insState.i];
+                    insState.hole = insState.i;
                     insState.j = insState.i - 1;
-                    insMsg.textContent = 'Pick key = ' + insState.key + ' (index ' + insState.i + '). Find its correct position in the sorted portion.';
-                    insState.phase = 'shift';
+                    insMsg.textContent = '\uD83C\uDCCF Pulled out key = ' + insState.key + ' (index ' + insState.i + '). Now find where it belongs in the sorted portion.';
+                    insState.phase = 'compare';
                     renderInsArr();
                     return;
                 }
-                if (insState.phase === 'shift') {
+
+                if (insState.phase === 'compare') {
                     if (insState.j >= 0 && insState.arr[insState.j] > insState.key) {
-                        insMsg.textContent = insState.arr[insState.j] + ' > key(' + insState.key + ') → Shift right by one!';
-                        var srcIdx = insState.j, destIdx = insState.j + 1;
-                        var shiftVal = insState.arr[srcIdx];
-                        insFlyEl.innerHTML = '';
-                        var elSrc = insArrEl.querySelector('#ins-box-' + srcIdx);
-                        var wrapRect = insArrEl.parentElement.getBoundingClientRect();
-                        if (elSrc) {
-                            var rectSrc = elSrc.getBoundingClientRect();
-                            var elDest = insArrEl.querySelector('#ins-box-' + destIdx);
-                            var rectDest = elDest ? elDest.getBoundingClientRect() : rectSrc;
-                            elSrc.style.opacity = '0.15';
-                            var g = document.createElement('div');
-                            g.textContent = shiftVal;
-                            g.className = 'str-char-box';
-                            g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
-                                'left:' + (rectSrc.left - wrapRect.left) + 'px;' +
-                                'top:' + (rectSrc.top - wrapRect.top) + 'px;' +
-                                'width:' + rectSrc.width + 'px;height:' + rectSrc.height + 'px;' +
-                                'display:flex;align-items:center;justify-content:center;' +
-                                'transition:left 0.4s cubic-bezier(.4,0,.2,1);' +
-                                'background:#e17055;color:white;border-color:#e17055;' +
-                                'box-shadow:0 0 10px #e17055;transform:scale(1.05);';
-                            insFlyEl.appendChild(g);
-                            insAnimating = true;
-                            insStepBtn.disabled = true;
-                            insStepBtn.style.opacity = '0.5';
-                            requestAnimationFrame(function() {
-                                requestAnimationFrame(function() {
-                                    g.style.left = (rectDest.left - wrapRect.left) + 'px';
-                                });
-                            });
-                            setTimeout(function() {
-                                insAnimating = false;
-                                insStepBtn.disabled = false;
-                                insStepBtn.style.opacity = '';
-                                if (g.parentNode) g.parentNode.removeChild(g);
-                                insState.arr[destIdx] = insState.arr[srcIdx];
-                                insState.j--;
-                                renderInsArr();
-                            }, 450);
-                        } else {
-                            insState.arr[destIdx] = insState.arr[srcIdx];
-                            insState.j--;
-                            renderInsArr();
-                        }
-                        return;
+                        insMsg.textContent = '\uD83D\uDD0D ' + insState.arr[insState.j] + ' > key(' + insState.key + ') \u2192 It\u2019s bigger, so it needs to shift right!';
+                        insState.phase = 'shift';
+                        renderInsArr();
+                    } else if (insState.j >= 0) {
+                        insMsg.textContent = '\u2713 ' + insState.arr[insState.j] + ' \u2264 key(' + insState.key + ') \u2192 Found the spot! Insert key into the hole.';
+                        insState.phase = 'insert';
+                        renderInsArr();
+                    } else {
+                        insMsg.textContent = '\u2713 Reached the beginning! Index 0 is where key belongs.';
+                        insState.phase = 'insert';
+                        renderInsArr();
                     }
-                    insState.arr[insState.j + 1] = insState.key;
-                    insMsg.textContent = 'Insert key=' + insState.key + ' at index ' + (insState.j + 1) + '! → [' + insState.arr.join(', ') + ']';
+                    return;
+                }
+
+                if (insState.phase === 'shift') {
+                    var srcIdx = insState.j;
+                    var destIdx = insState.hole;
+                    var shiftVal = insState.arr[srcIdx];
+                    insFlyEl.innerHTML = '';
+
+                    var elSrc = insArrEl.querySelector('#ins-box-' + srcIdx);
+                    var wrapRect = insArrEl.parentElement.getBoundingClientRect();
+                    if (elSrc) {
+                        var rectSrc = elSrc.getBoundingClientRect();
+                        var elDest = insArrEl.querySelector('#ins-box-' + destIdx);
+                        var rectDest = elDest ? elDest.getBoundingClientRect() : rectSrc;
+                        elSrc.style.opacity = '0.15';
+                        var g = document.createElement('div');
+                        g.textContent = shiftVal;
+                        g.className = 'str-char-box';
+                        g.style.cssText = 'position:absolute;z-index:20;margin:0;' +
+                            'left:' + (rectSrc.left - wrapRect.left) + 'px;' +
+                            'top:' + (rectSrc.top - wrapRect.top) + 'px;' +
+                            'width:' + rectSrc.width + 'px;height:' + rectSrc.height + 'px;' +
+                            'display:flex;align-items:center;justify-content:center;' +
+                            'transition:left 0.4s cubic-bezier(.4,0,.2,1);' +
+                            'background:#e17055;color:white;border-color:#e17055;' +
+                            'box-shadow:0 0 10px #e17055;transform:scale(1.05);';
+                        insFlyEl.appendChild(g);
+                        insAnimating = true;
+                        insStepBtn.disabled = true;
+                        insStepBtn.style.opacity = '0.5';
+                        requestAnimationFrame(function() {
+                            requestAnimationFrame(function() {
+                                g.style.left = (rectDest.left - wrapRect.left) + 'px';
+                            });
+                        });
+                        setTimeout(function() {
+                            insAnimating = false;
+                            insStepBtn.disabled = false;
+                            insStepBtn.style.opacity = '';
+                            if (g.parentNode) g.parentNode.removeChild(g);
+                            insState.arr[destIdx] = shiftVal;
+                            insState.hole = srcIdx;
+                            insState.j--;
+                            insMsg.textContent = '\u2192 Shifted ' + shiftVal + ' right. The hole moved left.';
+                            insState.phase = 'compare';
+                            renderInsArr();
+                        }, 450);
+                    }
+                    return;
+                }
+
+                if (insState.phase === 'insert') {
+                    insState.arr[insState.hole] = insState.key;
+                    insMsg.textContent = '\uD83D\uDCE5 Inserted key=' + insState.key + ' at index ' + insState.hole + '! \u2192 [' + insState.arr.join(', ') + ']';
                     insState.i++;
                     insState.phase = 'pick';
+                    insState.hole = -1;
                     insFlyEl.innerHTML = '';
                     renderInsArr();
                 }
             }
 
             function insReset() {
-                insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, phase: 'pick', done: false };
-                insMsg.textContent = '▶ Click Step to start Insertion Sort!';
+                insState = { arr: insInitArr.slice(), i: 1, j: -1, key: -1, hole: -1, phase: 'pick', done: false };
+                insMsg.textContent = '\u25B6 Click Step to start Insertion Sort!';
+                insFlyEl.innerHTML = '';
                 renderInsArr();
             }
 
