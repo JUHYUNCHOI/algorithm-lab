@@ -805,7 +805,6 @@ sort(s.begin(), s.end())
                 </div></span>
             </div>
 
-            <div id="str-problem-list"></div>
         `;
 
         // ========== Concept demo interactions ==========
@@ -1046,65 +1045,6 @@ sort(s.begin(), s.end())
             container.querySelector('#str-concept-cmp-btn').addEventListener('click', runComparison);
         }
 
-        const listContainer = container.querySelector('#str-problem-list');
-
-        // --- Create problem cards ---
-        self.problems.forEach(prob => {
-            const meta = problemMeta[prob.id];
-            if (!meta) return;
-
-            const card = document.createElement('div');
-            card.className = 'str-problem-card';
-            card.style.borderLeft = `4px solid ${meta.color}`;
-
-            card.innerHTML = `
-                <div class="str-problem-header">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <span style="font-weight:700;font-size:0.95rem;">${prob.title}</span>
-                        <span style="padding:2px 8px;background:${meta.color}15;border-radius:6px;font-size:0.75rem;color:${meta.color};font-weight:600;">${meta.type}</span>
-                    </div>
-                    <span class="problem-diff ${prob.difficulty}">${diffMap[prob.difficulty]}</span>
-                </div>
-                <div class="str-sub-tabs">
-                    <button class="str-sub-tab active" data-sub="problem">Problem</button>
-                    <button class="str-sub-tab" data-sub="think">Hints</button>
-                    <button class="str-sub-tab" data-sub="sim">Simulation</button>
-                    <button class="str-sub-tab" data-sub="code">Code</button>
-                </div>
-                <div class="str-sub-content"></div>
-            `;
-
-            const contentEl = card.querySelector('.str-sub-content');
-            const tabs = card.querySelectorAll('.str-sub-tab');
-
-            function showTab(tabId) {
-                tabs.forEach(t => t.classList.toggle('active', t.dataset.sub === tabId));
-                contentEl.innerHTML = '';
-                self._clearVizState();
-
-                switch (tabId) {
-                    case 'problem':
-                        self._renderProblemTab(contentEl, prob);
-                        break;
-                    case 'think':
-                        self._renderThinkTab(contentEl, prob);
-                        break;
-                    case 'sim':
-                        self[meta.vizMethod](contentEl);
-                        break;
-                    case 'code':
-                        self._renderCodeTab(contentEl, prob);
-                        break;
-                }
-            }
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => showTab(tab.dataset.sub));
-            });
-
-            showTab('problem');
-            listContainer.appendChild(card);
-        });
     },
 
     // ===== Unused tabs (merged) =====
