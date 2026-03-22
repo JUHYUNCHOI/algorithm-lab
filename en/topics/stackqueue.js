@@ -165,7 +165,7 @@ const stackQueueTopic = {
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> A stack is like <em>"stacking plates"</em>!
                     You stack plates from the top (push) and can only take them off from the top (pop).
-                    The plate placed last is the first one removed. This is <strong>LIFO</strong> (Last In, First Out).
+                    The plate placed last is the first one removed. This is <strong>LIFO</strong> — Last In, First Out!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Push & Pop</div>
@@ -193,7 +193,7 @@ const stackQueueTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">pop</text></svg></div>
                         <h3>pop()</h3>
-                        <p>Removes and returns the top element. Raises an error if empty! An <code>O(1)</code> operation.</p>
+                        <p>Removes and returns the top element. Raises an error if empty! An <code>O(1)</code> — instant — operation.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">peek</text></svg></div>
@@ -243,7 +243,7 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> A queue is like <em>"waiting in line at a store"</em>!
                     The first person in line is served first. Items enter from the back (enqueue) and leave from the front (dequeue).
-                    This is <strong>FIFO</strong> (First In, First Out).
+                    This is <strong>FIFO</strong> — First In, First Out!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Enqueue & Dequeue</div>

@@ -7,7 +7,7 @@ const hashTableTopic = {
     icon: '🗂️',
     category: 'Fundamentals (Bronze~Silver)',
     order: 5,
-    description: 'O(1) lookup and counting techniques using dictionaries and sets',
+    description: 'Find any value instantly! Learn dictionaries, sets, and counting patterns',
     relatedNote: 'HashMaps are often used alongside two pointers and sliding window, and are a key tool for reducing time by using O(1) lookup instead of sorting.',
 
     sidebarExpandable: true,
@@ -174,8 +174,8 @@ const hashTableTopic = {
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--green)">O(1)</text></svg></div>
-                        <h3>Average O(1)</h3>
-                        <p>Insert, delete, and search are all O(1) on average. Much faster than O(n) search in arrays!</p>
+                        <h3>Average O(1) — instant lookup!</h3>
+                        <p>Insert, delete, and search are all O(1) on average. Much faster than O(n) — check one by one — search in arrays!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--yellow)">#</text></svg></div>

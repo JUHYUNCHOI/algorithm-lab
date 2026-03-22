@@ -608,7 +608,7 @@ const stringTopic = {
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <h3>s[i] — 인덱스 접근</h3>
-                        <p>i번째 문자를 바로 가져옵니다. <code>O(1)</code>로 매우 빠릅니다.</p>
+                        <p>i번째 문자를 바로 가져옵니다. <code>O(1)</code><small>(한 번에 바로!)</small>로 매우 빠릅니다.</p>
                         <span class="lang-py"><code style="font-size:0.85rem;color:var(--accent);">s = "HELLO"<br>s[2]  → 'L'</code></span><span class="lang-cpp"><code style="font-size:0.85rem;color:var(--accent);">string s = "HELLO";<br>s[2]  → 'L'</code></span>
                     </div>
                     <div class="concept-card">

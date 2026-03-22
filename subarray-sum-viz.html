@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; padding: 40px; color: #2d3436; }
+.step { background: white; border-radius: 16px; padding: 32px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.step-num { width: 40px; height: 40px; border-radius: 50%; background: #6c5ce7; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; }
+.step-title { font-size: 1.15rem; font-weight: 700; }
+.step-desc { color: #636e72; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.6; }
+
+.arr-row { display: flex; gap: 6px; align-items: end; margin: 12px 0; justify-content: center; }
+.arr-cell { width: 52px; height: 52px; border: 2.5px solid #dfe6e9; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; position: relative; background: white; }
+.arr-cell.active { border-color: #6c5ce7; background: #f0edff; box-shadow: 0 0 12px rgba(108,92,231,0.3); }
+.arr-cell.done { border-color: #00b894; background: #e8f8f5; }
+.arr-cell .idx { position: absolute; bottom: -18px; font-size: 0.65rem; color: #b2bec3; font-weight: 600; }
+.arr-cell .label { position: absolute; top: -20px; font-size: 0.6rem; font-weight: 700; color: #6c5ce7; }
+
+.info-row { display: flex; gap: 20px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+.info-box { padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; text-align: center; }
+.info-box.sum { background: #dfe6e9; color: #2d3436; }
+.info-box.calc { background: #ffeaa7; color: #2d3436; border: 2px solid #fdcb6e; }
+.info-box.found { background: #00b894; color: white; }
+.info-box.notfound { background: #ff7675; color: white; }
+.info-box.count { background: #6c5ce7; color: white; font-size: 1rem; }
+.info-box small { display: block; font-size: 0.7rem; font-weight: 600; opacity: 0.8; margin-bottom: 2px; }
+
+.hashmap { display: flex; gap: 6px; justify-content: center; margin: 12px 0; flex-wrap: wrap; align-items: center; }
+.hashmap-title { font-size: 0.8rem; color: #636e72; font-weight: 700; margin-right: 8px; }
+.hm-entry { padding: 6px 12px; border-radius: 8px; background: #dfe6e9; font-size: 0.8rem; font-weight: 600; }
+.hm-entry.new { background: #a29bfe; color: white; }
+.hm-entry.hit { background: #00b894; color: white; box-shadow: 0 0 10px rgba(0,184,148,0.4); }
+
+.formula { text-align: center; font-size: 1rem; margin: 12px 0; padding: 12px; background: #ffeaa7; border-radius: 10px; font-weight: 600; }
+.formula .key { color: #d63031; font-weight: 800; }
+
+.arrow { text-align: center; font-size: 1.5rem; color: #6c5ce7; margin: 4px 0; }
+
+.section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; text-align: center; color: #2d3436; }
+.section-sub { font-size: 0.9rem; color: #636e72; text-align: center; margin-bottom: 24px; }
+
+.highlight { background: #ffeaa7; padding: 2px 6px; border-radius: 4px; }
+.green { color: #00b894; }
+.red { color: #d63031; }
+.purple { color: #6c5ce7; }
+
+.prefix-visual { display: flex; gap: 0; justify-content: center; margin: 16px 0; }
+.pv-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.pv-cell { width: 52px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid #00b894; background: #e8f8f5; font-size: 0.95rem; }
+.pv-cell:first-child { border-radius: 8px 0 0 8px; }
+.pv-cell:last-child { border-radius: 0 8px 8px 0; }
+.pv-label { font-size: 0.6rem; color: #00b894; font-weight: 700; }
+.pv-plus { display: flex; align-items: center; padding: 0 2px; font-size: 0.8rem; color: #b2bec3; }
+
+.range-box { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 12px 0; }
+.range-arr { display: flex; gap: 0; }
+.range-cell { width: 42px; height: 42px; border: 2px solid #dfe6e9; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; }
+.range-cell:first-child { border-radius: 8px 0 0 8px; }
+.range-cell:last-child { border-radius: 0 8px 8px 0; }
+.range-cell.in-range { background: #00b894; color: white; border-color: #00b894; }
+.range-cell.out { opacity: 0.3; }
+</style>
+</head>
+<body>
+
+<div class="section-title">Subarray Sum Equals K — 완전 시뮬레이션</div>
+<div class="section-sub">nums = [1, 2, 3], k = 3 | 합이 3인 연속 구간을 찾자!</div>
+
+<!-- 초기 상태 -->
+<div class="step">
+    <div class="step-header"><div class="step-num">0</div><div class="step-title">초기 상태</div></div>
+    <div class="step-desc">시작하기 전에 해시맵을 <span class="highlight">{0: 1}</span>로 초기화한다.<br>→ "합이 0인 시작점이 1개 있다" = 배열 시작 전 위치를 의미!</div>
+
+    <div class="arr-row">
+        <div class="arr-cell"><span class="label"></span>1<span class="idx">idx 0</span></div>
+        <div class="arr-cell">2<span class="idx">idx 1</span></div>
+        <div class="arr-cell">3<span class="idx">idx 2</span></div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-box sum"><small>누적합 (sum)</small>0</div>
+        <div class="info-box count"><small>찾은 개수</small>0</div>
+    </div>
+
+    <div class="hashmap">
+        <span class="hashmap-title">해시맵:</span>
+        <span class="hm-entry new">{0: 1}</span>
+    </div>
+</div>
+
+<!-- Step 1 -->
+<div class="step">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">num = 1을 처리</div></div>
+
+    <div class="arr-row">
+        <div class="arr-cell active"><span class="label">▼ 현재</span>1<span class="idx">idx 0</span></div>
+        <div class="arr-cell">2<span class="idx">idx 1</span></div>
+        <div class="arr-cell">3<span class="idx">idx 2</span></div>
+    </div>
+
+    <div class="step-desc"><b>1️⃣ 누적합 갱신:</b> sum = 0 + 1 = <b>1</b></div>
+
+    <div class="info-row">
+        <div class="info-box sum"><small>누적합 (sum)</small>1</div>
+    </div>
+
+    <div class="step-desc"><b>2️⃣ sum - k 계산:</b> 1 - 3 = <b class="red">-2</b></div>
+    <div class="formula">해시맵에서 <span class="key">-2</span> 를 찾는다 → 해시맵 {0: 1} 에 <span class="red">없음! ❌</span></div>
+
+    <div class="step-desc"><b>3️⃣ 현재 누적합 1을 해시맵에 기록</b></div>
+
+    <div class="info-row">
+        <div class="info-box notfound"><small>sum - k = -2</small>해시맵에 없음 ❌</div>
+        <div class="info-box count"><small>찾은 개수</small>0 (변화 없음)</div>
+    </div>
+
+    <div class="hashmap">
+        <span class="hashmap-title">해시맵:</span>
+        <span class="hm-entry">{0: 1}</span>
+        <span class="hm-entry new">{1: 1} ← NEW</span>
+    </div>
+</div>
+
+<!-- Step 2 -->
+<div class="step">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">num = 2를 처리 ⭐ 첫 번째 발견!</div></div>
+
+    <div class="arr-row">
+        <div class="arr-cell done">1<span class="idx">idx 0</span></div>
+        <div class="arr-cell active"><span class="label">▼ 현재</span>2<span class="idx">idx 1</span></div>
+        <div class="arr-cell">3<span class="idx">idx 2</span></div>
+    </div>
+
+    <div class="step-desc"><b>1️⃣ 누적합 갱신:</b> sum = 1 + 2 = <b>3</b></div>
+
+    <div class="info-row">
+        <div class="info-box sum"><small>누적합 (sum)</small>3</div>
+    </div>
+
+    <div class="step-desc"><b>2️⃣ sum - k 계산:</b> 3 - 3 = <b class="green">0</b></div>
+    <div class="formula">해시맵에서 <span class="key">0</span> 을 찾는다 → 해시맵에 {0: 1} <span class="green">있음! ✅ count += 1</span></div>
+
+    <div class="step-desc"><b>🔍 이게 무슨 뜻이야?</b></div>
+    <div class="step-desc" style="background:#e8f8f5;padding:12px;border-radius:10px;border-left:4px solid #00b894;">
+        <b>누적합이 0이었던 지점</b>(= 배열 시작 전)부터 <b>현재 위치</b>(idx 1)까지의 합이 정확히 <b>k = 3</b>이라는 뜻!<br><br>
+        즉, <b>[1, 2]</b> 구간의 합 = 3 ✓
+    </div>
+
+    <div class="range-box">
+        <div class="range-arr">
+            <div class="range-cell in-range">1</div>
+            <div class="range-cell in-range">2</div>
+            <div class="range-cell out">3</div>
+        </div>
+        <span style="font-size:0.9rem;font-weight:700;">→ 합 = 1 + 2 = <span class="green">3 ✓</span></span>
+    </div>
+
+    <div class="info-row">
+        <div class="info-box found"><small>sum - k = 0</small>해시맵에 있음! ✅</div>
+        <div class="info-box count"><small>찾은 개수</small>0 → 1 🎉</div>
+    </div>
+
+    <div class="hashmap">
+        <span class="hashmap-title">해시맵:</span>
+        <span class="hm-entry hit">{0: 1}</span>
+        <span class="hm-entry">{1: 1}</span>
+        <span class="hm-entry new">{3: 1} ← NEW</span>
+    </div>
+</div>
+
+<!-- Step 3 -->
+<div class="step">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">num = 3을 처리 ⭐ 두 번째 발견!</div></div>
+
+    <div class="arr-row">
+        <div class="arr-cell done">1<span class="idx">idx 0</span></div>
+        <div class="arr-cell done">2<span class="idx">idx 1</span></div>
+        <div class="arr-cell active"><span class="label">▼ 현재</span>3<span class="idx">idx 2</span></div>
+    </div>
+
+    <div class="step-desc"><b>1️⃣ 누적합 갱신:</b> sum = 3 + 3 = <b>6</b></div>
+
+    <div class="info-row">
+        <div class="info-box sum"><small>누적합 (sum)</small>6</div>
+    </div>
+
+    <div class="step-desc"><b>2️⃣ sum - k 계산:</b> 6 - 3 = <b class="green">3</b></div>
+    <div class="formula">해시맵에서 <span class="key">3</span> 을 찾는다 → 해시맵에 {3: 1} <span class="green">있음! ✅ count += 1</span></div>
+
+    <div class="step-desc"><b>🔍 이게 무슨 뜻이야?</b></div>
+    <div class="step-desc" style="background:#e8f8f5;padding:12px;border-radius:10px;border-left:4px solid #00b894;">
+        <b>누적합이 3이었던 지점</b>(= idx 1까지)부터 <b>현재 위치</b>(idx 2)까지의 합이 정확히 <b>k = 3</b>이라는 뜻!<br><br>
+        즉, <b>[3]</b> 구간의 합 = 3 ✓<br>
+        (누적합 6 - 이전 누적합 3 = 구간 합 3)
+    </div>
+
+    <div class="range-box">
+        <div class="range-arr">
+            <div class="range-cell out">1</div>
+            <div class="range-cell out">2</div>
+            <div class="range-cell in-range">3</div>
+        </div>
+        <span style="font-size:0.9rem;font-weight:700;">→ 합 = <span class="green">3 ✓</span></span>
+    </div>
+
+    <div class="info-row">
+        <div class="info-box found"><small>sum - k = 3</small>해시맵에 있음! ✅</div>
+        <div class="info-box count"><small>찾은 개수</small>1 → 2 🎉</div>
+    </div>
+
+    <div class="hashmap">
+        <span class="hashmap-title">해시맵:</span>
+        <span class="hm-entry">{0: 1}</span>
+        <span class="hm-entry">{1: 1}</span>
+        <span class="hm-entry hit">{3: 1}</span>
+        <span class="hm-entry new">{6: 1} ← NEW</span>
+    </div>
+</div>
+
+<!-- 최종 결과 -->
+<div class="step" style="border: 3px solid #00b894;">
+    <div class="step-header"><div class="step-num" style="background:#00b894;">✓</div><div class="step-title" style="color:#00b894;">최종 결과: 2개 발견!</div></div>
+
+    <div class="range-box">
+        <div style="text-align:center;">
+            <div style="font-size:0.8rem;color:#636e72;margin-bottom:4px;">구간 1: [1, 2]</div>
+            <div class="range-arr">
+                <div class="range-cell in-range">1</div>
+                <div class="range-cell in-range">2</div>
+                <div class="range-cell out">3</div>
+            </div>
+            <div style="font-size:0.85rem;font-weight:700;color:#00b894;margin-top:4px;">합 = 3 ✓</div>
+        </div>
+        <div style="font-size:1.5rem;color:#b2bec3;padding:0 16px;">+</div>
+        <div style="text-align:center;">
+            <div style="font-size:0.8rem;color:#636e72;margin-bottom:4px;">구간 2: [3]</div>
+            <div class="range-arr">
+                <div class="range-cell out">1</div>
+                <div class="range-cell out">2</div>
+                <div class="range-cell in-range">3</div>
+            </div>
+            <div style="font-size:0.85rem;font-weight:700;color:#00b894;margin-top:4px;">합 = 3 ✓</div>
+        </div>
+    </div>
+
+    <div style="text-align:center;font-size:1.2rem;font-weight:800;color:#00b894;margin-top:12px;">답: 2</div>
+</div>
+
+</body>
+</html>

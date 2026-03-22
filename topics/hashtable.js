@@ -7,7 +7,7 @@ const hashTableTopic = {
     icon: '🗂️',
     category: '기초 (Bronze~Silver)',
     order: 5,
-    description: '딕셔너리와 집합을 활용한 O(1) 탐색과 카운팅 기법',
+    description: '이름표를 붙여서 한 번에 찾기! 딕셔너리와 집합 활용',
     relatedNote: '해시맵은 투 포인터, 슬라이딩 윈도우와 함께 쓰이는 경우가 많고, 정렬 대신 O(1) 탐색으로 시간을 줄이는 핵심 도구입니다.',
 
     sidebarExpandable: true,
@@ -174,8 +174,8 @@ const hashTableTopic = {
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--green)">O(1)</text></svg></div>
-                        <h3>평균 O(1)</h3>
-                        <p>삽입, 삭제, 검색 모두 평균 O(1)입니다. 배열의 O(n) 탐색보다 훨씬 빠릅니다!</p>
+                        <h3>평균 O(1) <small>(한 번에 바로!)</small></h3>
+                        <p>삽입, 삭제, 검색 모두 평균 O(1)입니다. 배열의 O(n)<small>(하나씩 다 확인)</small> 탐색보다 훨씬 빠릅니다!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--yellow)">#</text></svg></div>

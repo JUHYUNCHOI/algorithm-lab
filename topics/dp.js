@@ -1,11 +1,11 @@
 // ===== DP 토픽 모듈 =====
 var dpTopic = {
     id: 'dp',
-    title: 'Dynamic Programming',
+    title: '다이나믹 프로그래밍 (DP)',
     icon: '🧩',
     category: '문제 해결 기법 (Silver~Gold)',
     order: 12,
-    description: '중복 계산을 제거하여 효율적으로 문제를 푸는 기법',
+    description: '다이나믹 프로그래밍 — 한 번 푼 건 다시 안 풀기!',
     relatedNote: 'DP는 피보나치, 계단 오르기, LIS 등 기본 문제부터 배낭 문제, LCS까지 거의 모든 코딩테스트에 출제되는 핵심 기법입니다.',
 
     sidebarExpandable: true,
@@ -144,7 +144,7 @@ var dpTopic = {
     renderConcept(container) {
         container.innerHTML = `
             <div class="hero">
-                <h2>Dynamic Programming</h2>
+                <h2>다이나믹 프로그래밍 (DP)</h2>
                 <p class="hero-sub">큰 문제를 작은 조각으로, 한 번 푼 건 다시 풀지 않는다</p>
             </div>
 
@@ -159,7 +159,7 @@ var dpTopic = {
                 </div>
 
                 <div class="concept-demo">
-                    <div class="concept-demo-title">직접 해보기 — 피보나치 메모이제이션 테이블</div>
+                    <div class="concept-demo-title">직접 해보기 — 피보나치 메모이제이션(계산 결과를 기억해두기) 테이블</div>
                     <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">DP 테이블이 한 칸씩 채워지는 과정을 봅니다. 이미 계산된 값은 다시 계산하지 않습니다!</p>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
                         <label style="font-weight:600;font-size:0.9rem;">N:

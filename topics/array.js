@@ -218,8 +218,8 @@ const arrayTopic = {
                 </div>
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> 배열은 <em>"번호가 적힌 사물함"</em>입니다!
-                    0번 사물함, 1번 사물함... 순서대로 나란히 있고, 번호만 알면 바로 열어볼 수 있습니다(O(1)).
-                    다만 중간에 사물함을 끼워넣으려면 뒤의 것들을 모두 밀어야 합니다(O(n)).
+                    0번 사물함, 1번 사물함... 순서대로 나란히 있고, 번호만 알면 바로 열어볼 수 있습니다(O(1) — 한 번에 바로!).
+                    다만 중간에 사물함을 끼워넣으려면 뒤의 것들을 모두 밀어야 합니다(O(n) — 하나씩 다 확인).
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 인덱스로 O(1) 접근 vs 값 검색 O(n)</div>
@@ -229,8 +229,8 @@ const arrayTopic = {
                             <label style="font-size:0.85rem;font-weight:600;color:var(--text2);">인덱스:
                                 <input type="number" id="arr-demo-index-input" min="0" max="7" value="0" style="width:56px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;">
                             </label>
-                            <button class="concept-demo-btn" id="arr-demo-index-go">⚡ O(1) 바로 접근</button>
-                            <button class="concept-demo-btn" id="arr-demo-index-search" style="background:var(--yellow);color:#333;">🔍 O(n) 값 검색 시작</button>
+                            <button class="concept-demo-btn" id="arr-demo-index-go">⚡ 번호로 바로 찾기</button>
+                            <button class="concept-demo-btn" id="arr-demo-index-search" style="background:var(--yellow);color:#333;">🔍 하나씩 찾아보기</button>
                         </div>
                         <div id="arr-demo-search-controls" style="display:none;gap:12px;justify-content:center;align-items:center;margin-top:4px;">
                             <button id="arr-demo-search-prev" class="concept-demo-btn">← 이전</button>
@@ -268,7 +268,7 @@ const arrayTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">sorted</text></svg>
                         </div>
                         <h3>정렬된 배열</h3>
-                        <p>정렬되어 있으면 이분 탐색(O(log n))이 가능합니다. 투 포인터도 정렬 후 사용합니다.</p>
+                        <p>정렬되어 있으면 이분 탐색(O(log n) — 반씩 줄여가며 찾기)이 가능합니다. 투 포인터(양쪽에서 동시에 좁혀오기)도 정렬 후 사용합니다.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -354,7 +354,7 @@ int main() {
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> <em>"양쪽 끝에서 동시에 걸어오는 두 사람"</em>입니다!
                     정렬된 배열에서 두 수의 합을 찾을 때, 합이 너무 크면 오른쪽을 줄이고, 너무 작으면 왼쪽을 늘립니다.
-                    이중 for문(O(n²)) 대신 <strong>O(n)</strong>에 해결할 수 있습니다!
+                    이중 for문(O(n²) — 이중 반복문만큼 느림) 대신 <strong>O(n)</strong>에 해결할 수 있습니다!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 투 포인터로 합 찾기</div>
@@ -454,7 +454,7 @@ int main() {
             <!-- 섹션 3: 슬라이딩 윈도우 -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">3</span> 슬라이딩 윈도우 (Sliding Window)
+                    <span class="section-num">3</span> 슬라이딩 윈도우(구간을 밀면서 확인하기)
                 </div>
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> <em>"창문을 옆으로 밀면서 바깥 풍경 보기"</em>입니다!
@@ -790,7 +790,7 @@ int main() {
                 searchControlsEl.style.display = 'none';
                 goBtn.disabled = false;
                 searchBtn.disabled = false;
-                searchBtn.textContent = '🔍 O(n) 값 검색 시작';
+                searchBtn.textContent = '🔍 하나씩 찾아보기';
                 inputEl.disabled = false;
                 clearHighlights();
                 boxesEl.querySelectorAll('.str-char-box').forEach(function(b) { b.style.opacity = ''; });

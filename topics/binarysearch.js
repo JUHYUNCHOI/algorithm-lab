@@ -165,8 +165,8 @@ const binarySearchTopic = {
                         </label>
                     </div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bs-demo-intro-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="bs-demo-intro-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="bs-demo-intro-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-intro-reset">처음으로 ↺</button>
                     </div>
                     <div id="bs-demo-intro-arr-viz" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <div id="bs-demo-intro-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
@@ -246,8 +246,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         </label>
                     </div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bs-demo-fail-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="bs-demo-fail-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="bs-demo-fail-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-fail-reset">처음으로 ↺</button>
                     </div>
                     <div id="bs-demo-fail-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <div id="bs-demo-fail-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
@@ -257,7 +257,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> 시간 복잡도: O(log N)은 얼마나 빠를까?</div>
+                <div class="concept-section-title"><span class="section-num">3</span> 시간 복잡도: O(log N)<small style="font-weight:400;">(반씩 줄여가며 찾기)</small>은 얼마나 빠를까?</div>
                 <div class="analogy-box">
                     <strong>핵심:</strong> 이분 탐색은 매번 탐색 범위를 <strong>절반</strong>으로 줄입니다.
                     "절반씩 줄인다"가 왜 그렇게 빠를까요?
@@ -363,8 +363,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         <span style="font-size:0.85rem;color:var(--text3);">짐 무게: [2, 4, 5, 7, 8, 10, 12, 15, 18, 20] kg</span>
                     </div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bs-demo-param-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="bs-demo-param-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="bs-demo-param-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-param-reset">처음으로 ↺</button>
                     </div>
                     <div style="margin-bottom:6px;font-size:0.85rem;color:var(--text2);" id="bs-demo-param-question"></div>
                     <div id="bs-demo-param-arr" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px;"></div>

@@ -159,7 +159,7 @@ const sortingTopic = {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">1</span> 기본 정렬: O(n²)</div>
+                <div class="concept-section-title"><span class="section-num">1</span> 기본 정렬: O(n²) <small style="font-weight:400;">(이중 반복문만큼 느림)</small></div>
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> 카드를 정렬한다고 생각해봅시다!
                     <em>선택 정렬</em>은 "가장 작은 카드를 찾아서 맨 앞에 놓기",
@@ -272,8 +272,8 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         "Step" 버튼을 눌러 <em>한 비교씩</em> 따라가 보세요 — 최솟값이 어떻게 갱신되는지 확인!
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-sel-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-sel-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-sel-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-sel-reset">처음으로 ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
@@ -291,8 +291,8 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         큰 원소들이 오른쪽으로 밀리는 과정을 한 스텝씩 확인하세요.
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-ins-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-ins-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-ins-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-ins-reset">처음으로 ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
@@ -311,8 +311,8 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         한 비교씩 따라가 보세요!
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-bub-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-bub-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-bub-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-bub-reset">처음으로 ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
@@ -359,11 +359,11 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">2</span> 병합 정렬: O(n log n)</div>
+                <div class="concept-section-title"><span class="section-num">2</span> 병합 정렬: O(n log n) <small style="font-weight:400;">(빠른 정렬 수준)</small></div>
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> 병합 정렬은 <em>"반으로 나누고, 정렬하고, 합치기"</em>입니다!
                     카드 더미를 반으로 나누고, 각각 정렬한 뒤, 두 더미를 비교하며 합칩니다.
-                    이것이 <strong>분할 정복(Divide & Conquer)</strong>의 대표 예시입니다.
+                    이것이 <strong>분할 정복(Divide &amp; Conquer — 나누어서 정복하기)</strong>의 대표 예시입니다.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
@@ -443,8 +443,8 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
                         합칠 때 두 배열의 앞 원소를 비교해서 작은 쪽을 먼저 넣는 것이 핵심입니다.
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-merge-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-merge-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-merge-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-merge-reset">처음으로 ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="sort-demo-merge-viz" style="min-height:120px;overflow-x:auto;"></div>
@@ -530,8 +530,8 @@ sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                         배열 [38, 27, 43, 3, 9, 82, 10]에서 <strong>피벗을 선택</strong>하고, 피벗보다 작은 것은 왼쪽, 큰 것은 오른쪽으로 보내는 과정을 한 스텝씩 따라가 보세요!
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-quick-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-quick-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-quick-step">다음 ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-quick-reset">처음으로 ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="sort-demo-quick-viz" style="min-height:120px;overflow-x:auto;"></div>

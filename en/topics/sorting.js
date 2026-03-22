@@ -159,7 +159,7 @@ const sortingTopic = {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">1</span> Basic Sorts: O(n²)</div>
+                <div class="concept-section-title"><span class="section-num">1</span> Basic Sorts: O(n²) — double loop, very slow</div>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> Imagine sorting a hand of cards!
                     <em>Selection Sort</em> is "find the smallest card and place it at the front",
@@ -175,7 +175,7 @@ const sortingTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--green)">Ins</text></svg></div>
                         <h3>Insertion Sort</h3>
-                        <p><strong>Insert a card into the correct position</strong>. For nearly sorted data, it runs in O(n) — very fast!</p>
+                        <p><strong>Insert a card into the correct position</strong>. For nearly sorted data, it runs in O(n) — check one by one — very fast!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">Bub</text></svg></div>
@@ -272,8 +272,8 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         Click "Step" to follow along <em>one comparison at a time</em> — see how the minimum gets updated!
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-sel-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-sel-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-sel-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-sel-reset">Start Over ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
@@ -291,8 +291,8 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         Watch larger elements shift right, one step at a time.
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-ins-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-ins-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-ins-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-ins-reset">Start Over ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
@@ -311,8 +311,8 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
                         Follow along one comparison at a time!
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-bub-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-bub-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-bub-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-bub-reset">Start Over ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div style="position:relative;">
@@ -359,7 +359,7 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">2</span> Merge Sort: O(n log n)</div>
+                <div class="concept-section-title"><span class="section-num">2</span> Merge Sort: O(n log n) — fast sorting speed</div>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> Merge Sort is <em>"split in half, sort each half, then merge"</em>!
                     Split a pile of cards in half, sort each half, then merge the two piles by comparing from the top.
@@ -443,8 +443,8 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
                         The key is comparing front elements of two arrays and picking the smaller one.
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-merge-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-merge-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-merge-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-merge-reset">Start Over ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="sort-demo-merge-viz" style="min-height:120px;overflow-x:auto;"></div>
@@ -530,8 +530,8 @@ sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                         Follow along step by step as array [38, 27, 43, 3, 9, 82, 10] gets partitioned: <strong>pick a pivot</strong>, send smaller elements left and larger elements right!
                     </p>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="sort-demo-quick-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="sort-demo-quick-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="sort-demo-quick-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="sort-demo-quick-reset">Start Over ↺</button>
                     </div>
                     <div class="concept-demo-body">
                         <div id="sort-demo-quick-viz" style="min-height:120px;overflow-x:auto;"></div>

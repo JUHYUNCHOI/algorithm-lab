@@ -608,7 +608,7 @@ const stringTopic = {
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <h3>s[i] — Index Access</h3>
-                        <p>Gets the i-th character directly. Very fast at <code>O(1)</code>.</p>
+                        <p>Gets the i-th character directly. Very fast at <code>O(1)</code> — instant lookup!</p>
                         <span class="lang-py"><code style="font-size:0.85rem;color:var(--accent);">s = "HELLO"<br>s[2]  → 'L'</code></span><span class="lang-cpp"><code style="font-size:0.85rem;color:var(--accent);">string s = "HELLO";<br>s[2]  → 'L'</code></span>
                     </div>
                     <div class="concept-card">

@@ -217,8 +217,8 @@ const arrayTopic = {
                 </div>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> An array is like <em>"numbered lockers"</em>!
-                    Locker 0, Locker 1... lined up in order, and if you know the number, you can open it instantly (O(1)).
-                    However, inserting a locker in the middle means shifting everything after it (O(n)).
+                    Locker 0, Locker 1... lined up in order, and if you know the number, you can open it instantly — O(1) — instant lookup!
+                    However, inserting a locker in the middle means shifting everything after it — O(n) — check one by one.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try it yourself — Index O(1) Access vs Value Search O(n)</div>
@@ -267,7 +267,7 @@ const arrayTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">sorted</text></svg>
                         </div>
                         <h3>Sorted Array</h3>
-                        <p>When sorted, binary search (O(log n)) becomes possible. Two pointers also work after sorting.</p>
+                        <p>When sorted, binary search — O(log n) — halving each time — becomes possible. Two pointers also work after sorting.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -279,7 +279,7 @@ print(arr[-1])      # 6 — last element
 print(len(arr))     # 8 — length
 
 arr.append(7)       # Append to end: O(1)
-arr.sort()          # Sort: O(n log n)
+arr.sort()          # Sort: O(n log n) — fast sorting speed
 print(arr)          # [1, 1, 2, 3, 4, 5, 6, 7, 9]
 
 # List comprehension — filter even numbers
@@ -348,12 +348,12 @@ int main() {
             <!-- Section 2: Two Pointers -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">2</span> Two Pointers
+                    <span class="section-num">2</span> Two Pointers (shrink from both ends)
                 </div>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> Think of <em>"two people walking toward each other from opposite ends"</em>!
                     When finding two numbers that sum to a target in a sorted array, if the sum is too large, move the right pointer left; if too small, move the left pointer right.
-                    Instead of a double for loop (O(n²)), you can solve it in <strong>O(n)</strong>!
+                    Instead of a double for loop — O(n²) — double loop, very slow — you can solve it in <strong>O(n)</strong>!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try it yourself — Find a Sum with Two Pointers</div>
@@ -453,7 +453,7 @@ int main() {
             <!-- Section 3: Sliding Window -->
             <div class="concept-section">
                 <div class="concept-section-title">
-                    <span class="section-num">3</span> Sliding Window
+                    <span class="section-num">3</span> Sliding Window (slide a range across)
                 </div>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> Think of <em>"sliding a window across to see the view"</em>!

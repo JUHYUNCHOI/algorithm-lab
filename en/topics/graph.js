@@ -340,7 +340,7 @@ var graphTopic = {
                     <div class="concept-card">\
                         <div class="card-icon"><span class="icon-svg"><svg viewBox="0 0 48 48" width="40" height="40"><rect x="4" y="16" width="40" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="24" r="4" fill="currentColor" opacity="0.3"/><circle cx="24" cy="24" r="4" fill="currentColor" opacity="0.5"/><circle cx="36" cy="24" r="4" fill="currentColor" opacity="0.8"/><path d="M4 24l-2-3M4 24l-2 3" stroke="currentColor" stroke-width="2"/><path d="M44 24l2-3M44 24l2 3" stroke="currentColor" stroke-width="2"/></svg></span></div>\
                         <h3>Uses a Queue</h3>\
-                        <p>BFS uses a <strong>queue</strong>.<br>First in, first out (FIFO).</p>\
+                        <p>BFS uses a <strong>queue</strong>.<br>FIFO — First In, First Out!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon"><span class="icon-svg"><svg viewBox="0 0 48 48" width="40" height="40"><circle cx="24" cy="12" r="6" fill="none" stroke="#00b894" stroke-width="2"/><text x="24" y="15" text-anchor="middle" font-size="9" fill="#00b894">0</text><circle cx="14" cy="30" r="6" fill="none" stroke="#0984e3" stroke-width="2"/><text x="14" y="33" text-anchor="middle" font-size="9" fill="#0984e3">1</text><circle cx="34" cy="30" r="6" fill="none" stroke="#0984e3" stroke-width="2"/><text x="34" y="33" text-anchor="middle" font-size="9" fill="#0984e3">1</text><line x1="20" y1="17" x2="17" y2="25" stroke="currentColor" stroke-width="1.5"/><line x1="28" y1="17" x2="31" y2="25" stroke="currentColor" stroke-width="1.5"/></svg></span></div>\

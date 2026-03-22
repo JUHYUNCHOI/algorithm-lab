@@ -258,7 +258,7 @@ var graphTopic = {
 \
             <!-- ② DFS (깊이 우선 탐색) -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">2</span> DFS (깊이 우선 탐색)</div>\
+                <div class="concept-section-title"><span class="section-num">2</span> DFS (깊이 우선 탐색 — 한 길을 끝까지)</div>\
                 <div class="analogy-box">\
                     <strong>비유로 이해하기:</strong> 미로를 탐험한다고 생각해 보세요!<br><br>\
                     갈림길이 나오면 <strong>한 방향으로 끝까지</strong> 가봅니다.<br>\
@@ -328,7 +328,7 @@ var graphTopic = {
 \
             <!-- ③ BFS (너비 우선 탐색) -->\
             <div class="concept-section">\
-                <div class="concept-section-title"><span class="section-num">3</span> BFS (너비 우선 탐색)</div>\
+                <div class="concept-section-title"><span class="section-num">3</span> BFS (너비 우선 탐색 — 가까운 곳부터)</div>\
                 <div class="analogy-box">\
                     <strong>비유로 이해하기:</strong> 연못에 돌멩이를 던지면 <strong>동그란 물결</strong>이 점점 퍼져나갑니다!<br><br>\
                     BFS도 마찬가지입니다. 시작점에서 <strong>가까운 곳부터</strong> 차례대로 탐색합니다.<br>\

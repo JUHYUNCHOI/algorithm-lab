@@ -165,8 +165,8 @@ const binarySearchTopic = {
                         </label>
                     </div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bs-demo-intro-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="bs-demo-intro-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="bs-demo-intro-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-intro-reset">Start Over ↺</button>
                     </div>
                     <div id="bs-demo-intro-arr-viz" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <div id="bs-demo-intro-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
@@ -246,8 +246,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         </label>
                     </div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bs-demo-fail-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="bs-demo-fail-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="bs-demo-fail-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-fail-reset">Start Over ↺</button>
                     </div>
                     <div id="bs-demo-fail-arr" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;"></div>
                     <div id="bs-demo-fail-pointers" style="font-size:0.85rem;color:var(--text2);margin-bottom:6px;min-height:22px;"></div>
@@ -257,7 +257,7 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> Time Complexity: How Fast is O(log N)?</div>
+                <div class="concept-section-title"><span class="section-num">3</span> Time Complexity: How Fast is O(log N) — halving each time?</div>
                 <div class="analogy-box">
                     <strong>Key Point:</strong> Binary search cuts the search range in <strong>half</strong> each time.
                     Why is "halving each time" so incredibly fast?
@@ -363,8 +363,8 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
                         <span style="font-size:0.85rem;color:var(--text3);">Item weights: [2, 4, 5, 7, 8, 10, 12, 15, 18, 20] kg</span>
                     </div>
                     <div class="concept-demo-btns">
-                        <button class="concept-demo-btn" id="bs-demo-param-step">Step ▶</button>
-                        <button class="concept-demo-btn danger" id="bs-demo-param-reset">Reset ↺</button>
+                        <button class="concept-demo-btn" id="bs-demo-param-step">Next ▶</button>
+                        <button class="concept-demo-btn danger" id="bs-demo-param-reset">Start Over ↺</button>
                     </div>
                     <div style="margin-bottom:6px;font-size:0.85rem;color:var(--text2);" id="bs-demo-param-question"></div>
                     <div id="bs-demo-param-arr" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:10px;"></div>

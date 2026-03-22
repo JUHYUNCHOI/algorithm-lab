@@ -80,6 +80,14 @@ window._setAlgoLang = function(lang) {
 
     // ===== Topic list rendering =====
     const categoryOrder = ['Fundamentals (Bronze~Silver)', 'Search (Silver)', 'Problem Solving (Silver~Gold)', 'Advanced (Gold~Platinum)', 'Advanced DS (Gold~Platinum)', 'Extra Study'];
+    const categoryDisplayNames = {
+        'Fundamentals (Bronze~Silver)': 'Basics \uD83D\uDCD7',
+        'Search (Silver)': 'Search \uD83D\uDCD8',
+        'Problem Solving (Silver~Gold)': 'Problem Solving \uD83D\uDCD9',
+        'Advanced (Gold~Platinum)': 'Advanced \uD83D\uDCD5',
+        'Advanced DS (Gold~Platinum)': 'Advanced \uD83D\uDCD5',
+        'Extra Study': 'Extra Study'
+    };
 
     function renderSidebar() {
         const topics = window.AlgoTopics || {};
@@ -100,11 +108,12 @@ window._setAlgoLang = function(lang) {
 
             const header = document.createElement('div');
             header.className = 'sidebar-category';
-            header.textContent = cat;
+            header.textContent = categoryDisplayNames[cat] || cat;
             sidebarNav.appendChild(header);
 
             grouped[cat].forEach(topic => {
                 const isExpandable = topic.problems && topic.problems.length > 0;
+                const isFirstTopic = topic.id === 'string';
 
                 const btn = document.createElement('button');
                 btn.className = 'sidebar-item';
@@ -112,6 +121,7 @@ window._setAlgoLang = function(lang) {
                 btn.innerHTML = `
                     <span class="item-icon">${topic.icon}</span>
                     <span class="item-label">${topic.title}</span>
+                    ${isFirstTopic ? '<span class="start-badge">\uD83D\uDC4B START</span>' : ''}
                     <span class="item-badge">${topic.problems ? topic.problems.length + ' problems' : ''}</span>
                     ${isExpandable ? '<span class="item-chevron">▶</span>' : ''}
                 `;

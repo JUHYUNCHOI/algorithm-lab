@@ -991,7 +991,7 @@ const recursionTopic = {
                 if (fibState.idx >= fibState.steps.length - 1) {
                     fibStepBtn.disabled = true;
                     setTimeout(function() {
-                        fibMsg.textContent = '완료! 같은 fib 값이 여러 번 계산되었죠? 이 중복을 없애는 것이 바로 DP(메모이제이션)입니다!';
+                        fibMsg.textContent = '완료! 같은 fib 값이 여러 번 계산되었죠? 이 중복을 없애는 것이 바로 DP(메모이제이션 — 계산 결과를 기억해두기)입니다!';
                     }, 400);
                 }
             });

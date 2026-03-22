@@ -165,7 +165,7 @@ const stackQueueTopic = {
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> 스택은 <em>"접시 쌓기"</em>입니다!
                     접시를 위에서 쌓고(push), 위에서만 꺼냅니다(pop).
-                    가장 나중에 올린 접시를 가장 먼저 꺼내죠. 이것이 <strong>LIFO</strong>(Last In, First Out)입니다.
+                    가장 나중에 올린 접시를 가장 먼저 꺼내죠. 이것이 <strong>LIFO</strong>(나중에 넣은 게 먼저 나옴)입니다.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — Push & Pop</div>
@@ -193,7 +193,7 @@ const stackQueueTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">pop</text></svg></div>
                         <h3>pop()</h3>
-                        <p>스택 맨 위 원소를 꺼내고 반환합니다. 비어있으면 에러! <code>O(1)</code> 연산입니다.</p>
+                        <p>스택 맨 위 원소를 꺼내고 반환합니다. 비어있으면 에러! <code>O(1)</code><small>(한 번에 바로!)</small> 연산입니다.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">peek</text></svg></div>
@@ -203,7 +203,7 @@ const stackQueueTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">LIFO</text></svg></div>
                         <h3>활용 예시</h3>
-                        <p>괄호 검증, 뒤로가기 기능, 재귀 호출 스택, DFS 구현에 쓰입니다.</p>
+                        <p>괄호 검증, 뒤로가기 기능, 재귀 호출 스택, DFS(깊이 우선 탐색 — 한 길을 끝까지) 구현에 쓰입니다.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -243,7 +243,7 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
                 <div class="analogy-box">
                     <strong>비유로 이해하기:</strong> 큐는 <em>"편의점 줄 서기"</em>입니다!
                     먼저 줄 선 사람이 먼저 계산합니다. 뒤에서 들어가고(enqueue), 앞에서 나옵니다(dequeue).
-                    이것이 <strong>FIFO</strong>(First In, First Out)입니다.
+                    이것이 <strong>FIFO</strong>(먼저 넣은 게 먼저 나옴)입니다.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — Enqueue & Dequeue</div>
@@ -278,7 +278,7 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">FIFO</text></svg></div>
                         <h3>활용 예시</h3>
-                        <p>BFS 탐색, 프린터 큐, 프로세스 스케줄링에 쓰입니다.</p>
+                        <p>BFS(너비 우선 탐색 — 가까운 곳부터) 탐색, 프린터 큐, 프로세스 스케줄링에 쓰입니다.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">

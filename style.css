@@ -952,6 +952,42 @@ main {
     margin-bottom: 0.5rem;
 }
 
+.empty-desc {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text2);
+    margin-bottom: 1rem;
+}
+
+.empty-start-hint {
+    display: inline-block;
+    font-size: 0.95rem;
+    color: var(--accent);
+    background: rgba(108, 92, 231, 0.08);
+    border: 1px solid rgba(108, 92, 231, 0.2);
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-top: 0.5rem;
+}
+
+/* Start badge for first topic */
+.start-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: white;
+    background: var(--green);
+    padding: 1px 6px;
+    border-radius: 6px;
+    margin-left: 4px;
+    white-space: nowrap;
+    animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
 /* ===== Concept Section ===== */
 .hero {
     text-align: center;

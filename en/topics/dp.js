@@ -145,7 +145,7 @@ var dpTopic = {
         container.innerHTML = `
             <div class="hero">
                 <h2>Dynamic Programming</h2>
-                <p class="hero-sub">Break big problems into small pieces, and never solve the same thing twice</p>
+                <p class="hero-sub">Break big problems into small pieces, and never solve the same thing twice!<br><span style="font-size:0.85em;color:var(--text2);">DP = remember answers you already found, so you never redo the work</span></p>
             </div>
 
             <!-- Section 1: What is DP? -->
@@ -377,7 +377,7 @@ var dpTopic = {
             <!-- Section 4: Top-Down vs Bottom-Up -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">4</span> Top-Down vs Bottom-Up</div>
-                <p style="margin-bottom:1rem; color:var(--text2);">In the Top-Down approach, the technique of storing results is called <strong>Memoization</strong>. It means "memorizing results that have already been computed." <span class="lang-py">In Python, you can automate memoization with the <code>functools.lru_cache</code> decorator.</span></p>
+                <p style="margin-bottom:1rem; color:var(--text2);">In the Top-Down approach, the technique of storing results is called <strong>Memoization</strong> — remember what you already computed! It means "memorizing results that have already been computed." <span class="lang-py">In Python, you can automate memoization with the <code>functools.lru_cache</code> decorator.</span></p>
                 <div style="margin-bottom:1.2rem;">
                     <span class="lang-py"><a href="https://docs.python.org/3/library/functools.html#functools.lru_cache" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: functools.lru_cache ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: unordered_map ↗</a></span>
                 </div>
@@ -513,7 +513,7 @@ int fib(int n) {
                 <div class="concept-section-title"><span class="section-num">5</span> Recursion vs DP Performance</div>
                 <div class="comparison-container">
                     <div class="compare-card bad">
-                        <div class="compare-header"><span class="compare-emoji">🐢</span><h3>Recursion (Brute Force)</h3></div>
+                        <div class="compare-header"><span class="compare-emoji">🐢</span><h3>Recursion (Brute Force — try every possibility)</h3></div>
                         <div class="compare-body"><div class="complexity">O(2<sup>n</sup>)</div><p>Repeats the same computation</p></div>
                     </div>
                     <div class="vs-badge">VS</div>

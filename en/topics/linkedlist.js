@@ -178,7 +178,7 @@ const linkedListTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">O(1)</text></svg></div>
                         <h3>Fast Insertion/Deletion</h3>
-                        <p>Mid-list insertion/deletion is <strong>O(1)</strong>! (if you know the position) Arrays require O(n).</p>
+                        <p>Mid-list insertion/deletion is <strong>O(1)</strong> — instant lookup! (if you know the position) Arrays require O(n) — check one by one.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">O(n)</text></svg></div>
@@ -379,7 +379,7 @@ ListNode* reverseList(ListNode* head) {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">3</span> Two Pointers: Tortoise and Hare</div>
+                <div class="concept-section-title"><span class="section-num">3</span> Two Pointers (shrink from both ends): Tortoise and Hare</div>
                 <div class="analogy-box">
                     <strong>Understanding by analogy:</strong> Think about <em>"running on a circular track"</em>!
                     If a fast runner (fast, 2 steps at a time) and a slow runner (slow, 1 step at a time) run on a circular track,
