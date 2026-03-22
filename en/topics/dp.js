@@ -1207,26 +1207,127 @@ int fib(int n) {
 
         function fibVal(n) { if (n <= 2) return 1; var a=1,b=1; for(var i=3;i<=n;i++){var t=a+b;a=b;b=t;} return b; }
 
-        function buildSteps(n, recValEl, dpValEl, infoEl) {
+        function buildCallTree(n) {
+            var nodes = [], edges = [], nodeId = 0;
+            function layout(val, depth, xCenter, xSpan) {
+                var id = nodeId++;
+                nodes.push({ id: id, val: val, x: xCenter, y: depth * 50 + 24, depth: depth });
+                if (val <= 1) return id;
+                var leftId = layout(val - 1, depth + 1, xCenter - xSpan / 2, xSpan / 2);
+                edges.push({ from: id, to: leftId });
+                var rightId = layout(val - 2, depth + 1, xCenter + xSpan / 2, xSpan / 2);
+                edges.push({ from: id, to: rightId });
+                return id;
+            }
+            var totalWidth = Math.max(300, Math.pow(2, Math.min(n, 7)) * 32);
+            var totalHeight = (Math.min(n, 7) + 1) * 50 + 16;
+            layout(n, 0, totalWidth / 2, totalWidth / 3);
+            return { nodes: nodes, edges: edges, width: totalWidth, height: totalHeight };
+        }
+
+        function renderCallTreeSVG(tree) {
+            var svgNS = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('width', tree.width);
+            svg.setAttribute('height', tree.height);
+            svg.style.cssText = 'display:block;margin:0 auto;';
+            for (var e = 0; e < tree.edges.length; e++) {
+                var fromN = tree.nodes[tree.edges[e].from];
+                var toN = tree.nodes[tree.edges[e].to];
+                var line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', fromN.x); line.setAttribute('y1', fromN.y + 12);
+                line.setAttribute('x2', toN.x); line.setAttribute('y2', toN.y - 12);
+                line.setAttribute('stroke', 'var(--border)'); line.setAttribute('stroke-width', '1.5');
+                svg.appendChild(line);
+            }
+            var seen = {};
+            for (var i = 0; i < tree.nodes.length; i++) {
+                var nd = tree.nodes[i];
+                var isDup = seen[nd.val] === true;
+                seen[nd.val] = true;
+                var g = document.createElementNS(svgNS, 'g');
+                var circle = document.createElementNS(svgNS, 'circle');
+                circle.setAttribute('cx', nd.x); circle.setAttribute('cy', nd.y);
+                circle.setAttribute('r', 13);
+                circle.setAttribute('fill', isDup ? 'rgba(214,48,49,0.15)' : 'var(--bg2)');
+                circle.setAttribute('stroke', isDup ? 'var(--red)' : 'var(--border)');
+                circle.setAttribute('stroke-width', isDup ? '2' : '1.5');
+                g.appendChild(circle);
+                var text = document.createElementNS(svgNS, 'text');
+                text.setAttribute('x', nd.x); text.setAttribute('y', nd.y + 4);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10'); text.setAttribute('font-family', 'monospace');
+                text.setAttribute('fill', isDup ? 'var(--red)' : 'var(--text)');
+                text.textContent = 'f(' + nd.val + ')';
+                g.appendChild(text);
+                svg.appendChild(g);
+            }
+            return svg;
+        }
+
+        function renderDpTable(n) {
+            var dp = [0, 1, 1];
+            for (var i = 3; i <= n; i++) dp.push(dp[i-1] + dp[i-2]);
+            var html = '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;">';
+            for (var i = 1; i <= n; i++) {
+                html += '<div style="display:flex;flex-direction:column;align-items:center;">';
+                html += '<div style="font-size:0.65rem;color:var(--text3);">dp[' + i + ']</div>';
+                html += '<div style="min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:2px solid var(--green);border-radius:8px;font-weight:700;font-size:0.85rem;background:rgba(0,184,148,0.1);color:var(--green);">' + dp[i] + '</div>';
+                if (i >= 3) {
+                    html += '<div style="font-size:0.6rem;color:var(--text3);">' + dp[i-1] + '+' + dp[i-2] + '</div>';
+                }
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function buildSteps(n, vizAreaEl, recValEl, dpValEl, infoEl) {
             var recCount = fibVal(n);
             var dpCount = Math.max(n - 2, 0);
             var bigN = Math.min(n + 20, 40);
             var bigRec = fibVal(bigN);
             var bigDp = Math.max(bigN - 2, 0);
             var ratio = bigDp > 0 ? Math.round(bigRec / bigDp) : 0;
+            var showTree = (n <= 8);
             return [
                 { description: 'When computing fib(' + n + ') recursively, <strong>the same subproblems are recomputed</strong>, causing the call count to grow exponentially.',
-                  action: function() { infoEl.innerHTML = 'Recursion: fib(' + n + ')=fib(' + (n-1) + ')+fib(' + (n-2) + '), ... duplicates occur.'; },
-                  undo: function() { infoEl.innerHTML = ''; } },
-                { description: 'Recursion <strong>independently recomputes</strong> fib(' + (n-1) + ') and fib(' + (n-2) + ') each time, so the total call count reaches ' + recCount.toLocaleString() + '.',
-                  action: function() { recValEl.textContent = recCount.toLocaleString(); infoEl.innerHTML = 'Leaf count (return 1) of recursive call tree = <strong>' + recCount.toLocaleString() + '</strong>'; },
-                  undo: function() { recValEl.textContent = '?'; infoEl.innerHTML = ''; } },
+                  action: function() {
+                      infoEl.innerHTML = 'Recursion: fib(' + n + ')=fib(' + (n-1) + ')+fib(' + (n-2) + '), ... duplicates occur.';
+                      vizAreaEl.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px;font-size:0.9rem;">The recursive call tree will appear in the next step.</div>';
+                  },
+                  undo: function() { infoEl.innerHTML = ''; vizAreaEl.innerHTML = ''; } },
+                { description: 'Recursion <strong>independently recomputes</strong> fib(' + (n-1) + ') and fib(' + (n-2) + ') each time, so the total call count reaches ' + recCount.toLocaleString() + '. <span style="color:var(--red);">Red nodes = duplicate calls</span>',
+                  action: function() {
+                      recValEl.textContent = recCount.toLocaleString();
+                      infoEl.innerHTML = 'Leaf count (return 1) of recursive call tree = <strong>' + recCount.toLocaleString() + '</strong>';
+                      if (showTree) {
+                          var tree = buildCallTree(n);
+                          vizAreaEl.innerHTML = '<div style="font-weight:600;font-size:0.85rem;color:var(--red);margin-bottom:6px;text-align:center;">Recursive Call Tree — red nodes are duplicates</div>';
+                          vizAreaEl.querySelector('div').style.overflow = 'auto';
+                          vizAreaEl.appendChild(renderCallTreeSVG(tree));
+                      } else {
+                          vizAreaEl.innerHTML = '<div style="text-align:center;color:var(--red);padding:16px;font-size:0.9rem;">n=' + n + ' makes the tree too large to display.<br>Call count: <strong>' + recCount.toLocaleString() + '</strong>!</div>';
+                      }
+                  },
+                  undo: function() { recValEl.textContent = '?'; infoEl.innerHTML = ''; vizAreaEl.innerHTML = ''; } },
                 { description: 'DP <strong>stores previously computed values and reuses them</strong>, so from 3 to ' + n + ' only ' + dpCount + ' additions are needed.',
-                  action: function() { dpValEl.textContent = dpCount; infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + ' times</strong>'; },
+                  action: function() {
+                      dpValEl.textContent = dpCount;
+                      infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] \u2192 <strong>' + dpCount + ' times</strong>';
+                      vizAreaEl.innerHTML = '<div style="font-weight:600;font-size:0.85rem;color:var(--green);margin-bottom:6px;text-align:center;">DP Table — each value computed once</div>' + renderDpTable(n);
+                  },
                   undo: function() { dpValEl.textContent = '?'; } },
                 { description: 'Scale up to n=' + bigN + '? Recursion <strong>explodes exponentially</strong> to ' + bigRec.toLocaleString() + ' calls, but DP still finishes in just ' + bigDp + '.',
-                  action: function() { infoEl.innerHTML = '<strong style="color:var(--green);">n=' + bigN + ': Recursion ' + bigRec.toLocaleString() + ' times vs DP ' + bigDp + ' times. DP is ' + ratio.toLocaleString() + 'x faster!</strong>'; },
-                  undo: function() { infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + ' times</strong>'; } }
+                  action: function() {
+                      infoEl.innerHTML = '<strong style="color:var(--green);">n=' + bigN + ': Recursion ' + bigRec.toLocaleString() + ' times vs DP ' + bigDp + ' times. DP is ' + ratio.toLocaleString() + 'x faster!</strong>';
+                      vizAreaEl.innerHTML = '<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;align-items:center;">' +
+                          '<div style="text-align:center;padding:12px 20px;border:2px solid var(--red);border-radius:12px;background:rgba(214,48,49,0.05);"><div style="font-size:0.8rem;color:var(--red);font-weight:600;">Recursion (n=' + bigN + ')</div><div style="font-size:1.3rem;font-weight:700;color:var(--red);">' + bigRec.toLocaleString() + ' calls</div></div>' +
+                          '<div style="font-size:1.5rem;color:var(--text3);">vs</div>' +
+                          '<div style="text-align:center;padding:12px 20px;border:2px solid var(--green);border-radius:12px;background:rgba(0,184,148,0.05);"><div style="font-size:0.8rem;color:var(--green);font-weight:600;">DP (n=' + bigN + ')</div><div style="font-size:1.3rem;font-weight:700;color:var(--green);">' + bigDp + ' ops</div></div>' +
+                          '</div>';
+                  },
+                  undo: function() { infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] \u2192 <strong>' + dpCount + ' times</strong>'; } }
             ];
         }
 
@@ -1243,12 +1344,14 @@ int fib(int n) {
                 '<div id="fib1-rec' + suffix + '" style="text-align:center;"><div style="font-weight:600;margin-bottom:6px;">Recursive calls</div><div id="fib1-rec-val' + suffix + '" style="font-size:2rem;color:var(--red);font-weight:700;">?</div></div>' +
                 '<div id="fib1-dp' + suffix + '" style="text-align:center;"><div style="font-weight:600;margin-bottom:6px;">DP operations</div><div id="fib1-dp-val' + suffix + '" style="font-size:2rem;color:var(--green);font-weight:700;">?</div></div>' +
                 '</div>' +
+                '<div id="fib1-viz' + suffix + '" style="overflow-x:auto;margin-bottom:12px;min-height:60px;"></div>' +
                 '<div id="fib1-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
                 self._createStepControls(suffix);
             var recValEl = container.querySelector('#fib1-rec-val' + suffix);
             var dpValEl = container.querySelector('#fib1-dp-val' + suffix);
+            var vizAreaEl = container.querySelector('#fib1-viz' + suffix);
             var infoEl = container.querySelector('#fib1-info' + suffix);
-            var steps = buildSteps(n, recValEl, dpValEl, infoEl);
+            var steps = buildSteps(n, vizAreaEl, recValEl, dpValEl, infoEl);
             self._initStepController(container, steps, suffix);
             container.querySelector('#dp-fib-reset').addEventListener('click', function() {
                 var val = parseInt(container.querySelector('#dp-fib-n').value) || DEFAULT_N;

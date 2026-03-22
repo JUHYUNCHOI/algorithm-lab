@@ -637,23 +637,63 @@ var divideConquerTopic = {
             });
         })();
 
-        // ====== 인라인 데모 §2: 3단계 체험 ======
+        // ====== 인라인 데모 §2: 3단계 체험 (트리 레이아웃) ======
         (function() {
             var stepBtn = container.querySelector('#dc-inline-3step-btn');
             var resetBtn = container.querySelector('#dc-inline-3step-reset');
             var vizEl = container.querySelector('#dc-inline-3step-viz');
             var msgEl = container.querySelector('#dc-inline-3step-msg');
             if (!stepBtn) return;
+
+            // 트리 레벨별 노드: L0=[6,2,8,1], L1=[6,2],[8,1], L2=[6],[2],[8],[1]
+            // 분할: L0→L1→L2 (위→아래), 합치기: L2→L1→L0 (아래→위)
+            function makeBox(text, border, shadow) {
+                return '<span style="display:inline-block;padding:4px 10px;background:' + border + '15;border:2px solid ' + border + ';border-radius:8px;font-size:0.88rem;' + (shadow || '') + '">' + text + '</span>';
+            }
+            function makeLevelRow(label, nodes, gap) {
+                var g = gap || '12px';
+                return '<div style="display:flex;align-items:center;gap:10px;justify-content:center;">' +
+                    '<span style="font-size:0.65rem;color:var(--text3);min-width:16px;text-align:right;">' + label + '</span>' +
+                    '<div style="display:flex;gap:' + g + ';justify-content:center;">' + nodes + '</div></div>';
+            }
+            var connector = '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">\u2571\u2572</div>';
+
             var frames = [
-                { viz: '<span style="padding:6px 14px;background:var(--accent)15;border:2px solid var(--accent);border-radius:8px;font-size:1rem;">[6, 2, 8, 1]</span>', msg: '<strong>시작</strong>: 정렬되지 않은 배열 [6, 2, 8, 1]' },
-                { viz: '<span style="padding:6px 14px;background:var(--red)15;border:2px solid var(--red);border-radius:8px;">[6, 2]</span> <span style="font-size:1.2rem;color:var(--red);">✂️</span> <span style="padding:6px 14px;background:var(--red)15;border:2px solid var(--red);border-radius:8px;">[8, 1]</span>', msg: '<strong>1단계 나누기(Divide)</strong>: 반으로 쪼갭니다 → [6,2]와 [8,1]' },
-                { viz: '<span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[6]</span> <span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[2]</span> &nbsp;&nbsp; <span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[8]</span> <span style="padding:6px 14px;background:var(--yellow)15;border:2px solid var(--yellow);border-radius:8px;">[1]</span>', msg: '<strong>계속 나누기</strong>: 더 이상 나눌 수 없을 때까지! 크기 1이면 기저 조건.' },
-                { viz: '<span style="padding:6px 14px;background:var(--green)15;border:2px solid var(--green);border-radius:8px;">[2, 6]</span> &nbsp;&nbsp; <span style="padding:6px 14px;background:var(--green)15;border:2px solid var(--green);border-radius:8px;">[1, 8]</span>', msg: '<strong>2단계 풀기(Conquer)</strong>: 각 쌍을 비교해서 정렬! 2<6, 1<8' },
-                { viz: '<span style="padding:6px 14px;background:var(--green)15;border:2px solid var(--green);border-radius:8px;font-size:1rem;box-shadow:0 0 10px var(--green)40;">[1, 2, 6, 8]</span>', msg: '<strong>3단계 합치기(Combine)</strong>: 정렬된 [2,6]과 [1,8]을 합쳐서 최종 결과!' }
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')),
+                    msg: '<strong>시작</strong>: 정렬되지 않은 배열 [6, 2, 8, 1]'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')) + connector +
+                         makeLevelRow('L1', makeBox('[6, 2]', 'var(--red)') + makeBox('[8, 1]', 'var(--red)'), '24px'),
+                    msg: '<strong>1단계 나누기(Divide)</strong>: 반으로 쪼갭니다 → [6,2]와 [8,1]'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')) + connector +
+                         makeLevelRow('L1', makeBox('[6, 2]', 'var(--red)') + makeBox('[8, 1]', 'var(--red)'), '24px') +
+                         '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">\u2571\u2572 &nbsp;&nbsp;&nbsp;&nbsp; \u2571\u2572</div>' +
+                         makeLevelRow('L2', makeBox('[6]', 'var(--yellow)') + makeBox('[2]', 'var(--yellow)') + '&nbsp;&nbsp;' + makeBox('[8]', 'var(--yellow)') + makeBox('[1]', 'var(--yellow)')),
+                    msg: '<strong>계속 나누기</strong>: 더 이상 나눌 수 없을 때까지! 크기 1이면 기저 조건.'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')) + connector +
+                         makeLevelRow('L1', makeBox('[2, 6]', 'var(--green)', 'box-shadow:0 0 6px rgba(0,184,148,0.3);') + makeBox('[1, 8]', 'var(--green)', 'box-shadow:0 0 6px rgba(0,184,148,0.3);'), '24px') +
+                         '<div style="text-align:center;color:var(--green);font-size:0.8rem;">↑ 합치기 ↑</div>' +
+                         makeLevelRow('L2', makeBox('[6]', 'var(--text3)') + makeBox('[2]', 'var(--text3)') + '&nbsp;&nbsp;' + makeBox('[8]', 'var(--text3)') + makeBox('[1]', 'var(--text3)')),
+                    msg: '<strong>2단계 풀기(Conquer)</strong>: 각 쌍을 비교해서 정렬! 2<6이니 [2,6], 1<8이니 [1,8]'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[1, 2, 6, 8]', 'var(--green)', 'font-size:1rem;box-shadow:0 0 10px rgba(0,184,148,0.4);')) +
+                         '<div style="text-align:center;color:var(--green);font-size:0.8rem;">↑ 합치기 ↑</div>' +
+                         makeLevelRow('L1', makeBox('[2, 6]', 'var(--text3)') + makeBox('[1, 8]', 'var(--text3)'), '24px') +
+                         '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">\u2571\u2572 &nbsp;&nbsp;&nbsp;&nbsp; \u2571\u2572</div>' +
+                         makeLevelRow('L2', makeBox('[6]', 'var(--text3)') + makeBox('[2]', 'var(--text3)') + '&nbsp;&nbsp;' + makeBox('[8]', 'var(--text3)') + makeBox('[1]', 'var(--text3)')),
+                    msg: '<strong>3단계 합치기(Combine)</strong>: 정렬된 [2,6]과 [1,8]을 합쳐서 최종 결과 [1,2,6,8]!'
+                }
             ];
             var idx = 0;
             function render() {
-                vizEl.innerHTML = frames[idx].viz;
+                vizEl.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">' + frames[idx].viz + '</div>';
                 msgEl.innerHTML = frames[idx].msg;
                 stepBtn.disabled = idx >= frames.length - 1;
             }

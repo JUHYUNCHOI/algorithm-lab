@@ -2249,6 +2249,8 @@ const recursionTopic = {
                 '</div>' +
                 self._createStepDesc('merge') +
                 '<div class="sim-card" style="min-height:220px;">' +
+                '<div style="font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:6px;">분할 트리 — 현재 처리 중인 노드 강조</div>' +
+                '<div id="sim-merge-tree" style="overflow-x:auto;margin-bottom:16px;padding:8px 0;min-height:60px;"></div>' +
                 '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">' +
                     '<h3 style="margin:0;font-size:1rem;">배열 A</h3>' +
                     '<span id="sim-merge-cnt" style="font-size:0.85rem;color:var(--text2);"></span>' +
@@ -2263,6 +2265,69 @@ const recursionTopic = {
             var tmpEl = container.querySelector('#sim-merge-tmp');
             var infoEl = container.querySelector('#sim-merge-info');
             var cntEl = container.querySelector('#sim-merge-cnt');
+            var mergeTreeEl = container.querySelector('#sim-merge-tree');
+
+            // --- 분할 트리 구축 ---
+            var treeNodes = []; // { id, p, r, depth, parentId, children[] }
+            var treeNodeId = 0;
+            function buildTree(p, r, depth, parentId) {
+                var id = treeNodeId++;
+                treeNodes.push({ id: id, p: p, r: r, depth: depth, parentId: parentId, children: [] });
+                if (p < r) {
+                    var q = Math.floor((p + r) / 2);
+                    var leftId = buildTree(p, q, depth + 1, id);
+                    var rightId = buildTree(q + 1, r, depth + 1, id);
+                    treeNodes[id].children = [leftId, rightId];
+                }
+                return id;
+            }
+            buildTree(0, arr.length - 1, 0, -1);
+
+            // BFS로 레벨별 그룹
+            function getTreeLevels() {
+                var levels = [];
+                var queue = [{ id: 0, depth: 0 }];
+                while (queue.length) {
+                    var item = queue.shift();
+                    if (!levels[item.depth]) levels[item.depth] = [];
+                    levels[item.depth].push(treeNodes[item.id]);
+                    var ch = treeNodes[item.id].children;
+                    for (var c = 0; c < ch.length; c++) queue.push({ id: ch[c], depth: item.depth + 1 });
+                }
+                return levels;
+            }
+
+            // 트리 렌더링: 레벨별 수평 배치 (sorting.js 병합정렬 패턴과 동일)
+            function renderMergeTree(activeNodeP, activeNodeR, status) {
+                var levels = getTreeLevels();
+                var boxStyle = 'display:inline-flex;gap:2px;padding:3px 6px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg2);font-size:0.75rem;font-family:monospace;transition:all 0.3s;';
+                var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:fit-content;">';
+                for (var d = 0; d < levels.length; d++) {
+                    html += '<div style="display:flex;align-items:center;gap:8px;justify-content:center;">';
+                    html += '<span style="font-size:0.6rem;color:var(--text3);min-width:14px;text-align:right;">L' + d + '</span>';
+                    html += '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:nowrap;">';
+                    for (var i = 0; i < levels[d].length; i++) {
+                        var nd = levels[d][i];
+                        var isActive = (nd.p === activeNodeP && nd.r === activeNodeR);
+                        var border = 'var(--border)';
+                        var shadow = '';
+                        var bg = 'var(--bg2)';
+                        if (isActive && status === 'split') { border = 'var(--accent)'; shadow = 'box-shadow:0 0 8px var(--accent);'; }
+                        else if (isActive && status === 'merge') { border = 'var(--yellow)'; shadow = 'box-shadow:0 0 8px var(--yellow);'; bg = 'rgba(253,203,110,0.15)'; }
+                        else if (isActive && status === 'done') { border = 'var(--green)'; shadow = 'box-shadow:0 0 8px var(--green);'; bg = 'rgba(0,184,148,0.1)'; }
+                        html += '<div style="' + boxStyle + 'border-color:' + border + ';' + shadow + 'background:' + bg + ';">';
+                        html += '[' + nd.p + '..' + nd.r + ']';
+                        html += '</div>';
+                    }
+                    html += '</div></div>';
+                    if (d < levels.length - 1) {
+                        html += '<div style="text-align:center;color:var(--text3);font-size:0.6rem;line-height:1;">\u2502</div>';
+                    }
+                }
+                html += '</div>';
+                mergeTreeEl.innerHTML = html;
+            }
+            renderMergeTree(-1, -1, '');
 
             // --- 병합 정렬 실행하면서 세부 스텝 기록 ---
             var vizSteps = [];
@@ -2282,6 +2347,7 @@ const recursionTopic = {
                 tmpEl.innerHTML = '';
                 infoEl.innerHTML = '';
                 cntEl.textContent = '';
+                renderMergeTree(-1, -1, '');
             });
 
             function recordMergeSort(p, r, depth) {
@@ -2301,6 +2367,7 @@ const recursionTopic = {
                             '</div>';
                         tmpEl.innerHTML = '';
                         infoEl.innerHTML = '';
+                        renderMergeTree(pp, rr, 'split');
                     }; })(splitSnap, p, q, r)
                 );
 
@@ -2321,6 +2388,7 @@ const recursionTopic = {
                             '</div>';
                         tmpEl.innerHTML = renderTmpBoxes([], -1);
                         infoEl.innerHTML = '<span style="color:var(--text2);">i=' + pp + ', j=' + (qq+1) + ' — 양쪽 첫 원소부터 비교합니다</span>';
+                        renderMergeTree(pp, rr, 'merge');
                     }; })(mergeStartSnap, p, q, r, leftArr, rightArr)
                 );
 
@@ -2417,6 +2485,7 @@ const recursionTopic = {
                             } else {
                                 infoEl.innerHTML = '';
                             }
+                            renderMergeTree(pp, rr, 'merge');
                         }; })(arrSnap, curIdx, curVal, curCnt, isKth, p, r)
                     );
                 }
@@ -2440,6 +2509,7 @@ const recursionTopic = {
                     } else {
                         infoEl.innerHTML = '<div style="padding:10px 16px;background:rgba(255,71,87,0.08);border-radius:10px;border:1px solid var(--red);color:var(--red);font-weight:700;">저장 횟수(' + finalCnt + ')가 K(' + k + ')보다 적습니다 → -1</div>';
                     }
+                    renderMergeTree(0, arr.length - 1, 'done');
                 }
             );
 

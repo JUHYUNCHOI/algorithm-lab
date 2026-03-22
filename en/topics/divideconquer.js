@@ -704,6 +704,71 @@ var divideConquerTopic = {
             });
         })();
 
+        // ====== Inline Demo: 3-Step Experience (tree layout) ======
+        (function() {
+            var stepBtn = container.querySelector('#dc-inline-3step-btn');
+            var resetBtn = container.querySelector('#dc-inline-3step-reset');
+            var vizEl = container.querySelector('#dc-inline-3step-viz');
+            var msgEl = container.querySelector('#dc-inline-3step-msg');
+            if (!stepBtn) return;
+
+            function makeBox(text, border, shadow) {
+                return '<span style="display:inline-block;padding:4px 10px;background:' + border + '15;border:2px solid ' + border + ';border-radius:8px;font-size:0.88rem;' + (shadow || '') + '">' + text + '</span>';
+            }
+            function makeLevelRow(label, nodes, gap) {
+                var g = gap || '12px';
+                return '<div style="display:flex;align-items:center;gap:10px;justify-content:center;">' +
+                    '<span style="font-size:0.65rem;color:var(--text3);min-width:16px;text-align:right;">' + label + '</span>' +
+                    '<div style="display:flex;gap:' + g + ';justify-content:center;">' + nodes + '</div></div>';
+            }
+            var connector = '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">\u2571\u2572</div>';
+
+            var frames = [
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')),
+                    msg: '<strong>Start</strong>: Unsorted array [6, 2, 8, 1]'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')) + connector +
+                         makeLevelRow('L1', makeBox('[6, 2]', 'var(--red)') + makeBox('[8, 1]', 'var(--red)'), '24px'),
+                    msg: '<strong>Step 1 Divide</strong>: Split in half \u2192 [6,2] and [8,1]'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')) + connector +
+                         makeLevelRow('L1', makeBox('[6, 2]', 'var(--red)') + makeBox('[8, 1]', 'var(--red)'), '24px') +
+                         '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">\u2571\u2572 &nbsp;&nbsp;&nbsp;&nbsp; \u2571\u2572</div>' +
+                         makeLevelRow('L2', makeBox('[6]', 'var(--yellow)') + makeBox('[2]', 'var(--yellow)') + '&nbsp;&nbsp;' + makeBox('[8]', 'var(--yellow)') + makeBox('[1]', 'var(--yellow)')),
+                    msg: '<strong>Keep dividing</strong>: Until size 1 \u2014 base case reached!'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[6, 2, 8, 1]', 'var(--accent)')) + connector +
+                         makeLevelRow('L1', makeBox('[2, 6]', 'var(--green)', 'box-shadow:0 0 6px rgba(0,184,148,0.3);') + makeBox('[1, 8]', 'var(--green)', 'box-shadow:0 0 6px rgba(0,184,148,0.3);'), '24px') +
+                         '<div style="text-align:center;color:var(--green);font-size:0.8rem;">\u2191 merge \u2191</div>' +
+                         makeLevelRow('L2', makeBox('[6]', 'var(--text3)') + makeBox('[2]', 'var(--text3)') + '&nbsp;&nbsp;' + makeBox('[8]', 'var(--text3)') + makeBox('[1]', 'var(--text3)')),
+                    msg: '<strong>Step 2 Conquer</strong>: Compare each pair and sort! 2<6 \u2192 [2,6], 1<8 \u2192 [1,8]'
+                },
+                {
+                    viz: makeLevelRow('L0', makeBox('[1, 2, 6, 8]', 'var(--green)', 'font-size:1rem;box-shadow:0 0 10px rgba(0,184,148,0.4);')) +
+                         '<div style="text-align:center;color:var(--green);font-size:0.8rem;">\u2191 merge \u2191</div>' +
+                         makeLevelRow('L1', makeBox('[2, 6]', 'var(--text3)') + makeBox('[1, 8]', 'var(--text3)'), '24px') +
+                         '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">\u2571\u2572 &nbsp;&nbsp;&nbsp;&nbsp; \u2571\u2572</div>' +
+                         makeLevelRow('L2', makeBox('[6]', 'var(--text3)') + makeBox('[2]', 'var(--text3)') + '&nbsp;&nbsp;' + makeBox('[8]', 'var(--text3)') + makeBox('[1]', 'var(--text3)')),
+                    msg: '<strong>Step 3 Combine</strong>: Merge sorted [2,6] and [1,8] \u2192 final result [1,2,6,8]!'
+                }
+            ];
+            var idx = 0;
+            function render() {
+                vizEl.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">' + frames[idx].viz + '</div>';
+                msgEl.innerHTML = frames[idx].msg;
+                stepBtn.disabled = idx >= frames.length - 1;
+            }
+            render();
+            stepBtn.addEventListener('click', function() {
+                if (idx < frames.length - 1) { idx++; render(); }
+            });
+            resetBtn.addEventListener('click', function() { idx = 0; render(); });
+        })();
+
         // ====== Demo 2: Merge Sort 3-Phase ======
         (function() {
             var msStepBtn = container.querySelector('#dc-demo-ms-step');

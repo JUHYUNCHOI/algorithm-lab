@@ -2240,16 +2240,22 @@ for (int i = 1; i &lt;= n; i++) {
             '</div>' +
             self._createStepDesc(suffix) +
             '<p id="nq-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
-            '<div id="nq-board' + suffix + '" style="display:grid;gap:2px;justify-content:center;margin-bottom:8px;"></div>' +
+            '<div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;">' +
+            '<div><div style="font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:6px;text-align:center;">Chessboard</div>' +
+            '<div id="nq-board' + suffix + '" style="display:grid;gap:2px;justify-content:center;margin-bottom:8px;"></div></div>' +
+            '<div style="flex:1;min-width:200px;max-width:500px;"><div style="font-weight:600;font-size:0.85rem;color:var(--text2);margin-bottom:6px;text-align:center;">Search Tree</div>' +
+            '<div id="nq-tree' + suffix + '" style="overflow-x:auto;padding:8px 0;min-height:120px;font-family:monospace;font-size:0.78rem;line-height:1.6;white-space:pre;"></div></div>' +
+            '</div>' +
             '<div id="nq-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var boardEl = contentEl.querySelector('#nq-board' + suffix);
         var infoEl = contentEl.querySelector('#nq-info' + suffix);
         var descEl = contentEl.querySelector('#nq-desc' + suffix);
+        var treeEl = contentEl.querySelector('#nq-tree' + suffix);
         var inputN = contentEl.querySelector('#bt-queen-n');
         var resetBtn = contentEl.querySelector('#bt-queen-reset');
         function buildAndRun(n) {
-            descEl.textContent = n + '\u00d7' + n + ' chessboard: place' + n + ' queens so none attack each other.';
+            descEl.textContent = n + '\u00d7' + n + ' chessboard: place ' + n + ' queens so none attack each other.';
             var cellSize = n <= 5 ? 48 : (n <= 6 ? 42 : 36);
             boardEl.style.gridTemplateColumns = 'repeat(' + n + ',' + cellSize + 'px)';
             boardEl.innerHTML = '';
@@ -2264,58 +2270,111 @@ for (int i = 1; i &lt;= n; i++) {
             }
             function getCell(r, c) { return boardEl.querySelector('[data-row="' + r + '"][data-col="' + c + '"]'); }
             infoEl.innerHTML = '<span style="color:var(--text2);">Placing queens row by row.</span>';
+
+            // Search tree data
+            var treeNodes = [];
+            var treeNodeId = 0;
+            treeNodes.push({ id: treeNodeId++, label: 'Start', depth: 0, parentId: -1, status: 'root' });
+
             var steps = [], queens = [], solCount = 0;
             for (var i = 0; i < n; i++) queens.push(-1);
             function isValid(row, col) { for (var r = 0; r < row; r++) { if (queens[r] === col || Math.abs(queens[r]-col) === Math.abs(r-row)) return false; } return true; }
+
+            // Text-based tree rendering
+            function renderTree(highlightId, highlightStatus) {
+                var byParent = {};
+                for (var i = 0; i < treeNodes.length; i++) {
+                    var pid = treeNodes[i].parentId;
+                    if (!byParent[pid]) byParent[pid] = [];
+                    byParent[pid].push(treeNodes[i]);
+                }
+                var lines = [];
+                function drawNode(node, prefix, isLast) {
+                    var connector = node.parentId < 0 ? '' : (isLast ? '\u2514\u2500 ' : '\u251c\u2500 ');
+                    var color = 'var(--text2)';
+                    var weight = '400';
+                    if (node.status === 'solution') { color = 'var(--green)'; weight = '700'; }
+                    else if (node.status === 'fail') { color = 'var(--red)'; }
+                    else if (node.status === 'backtrack') { color = 'var(--red)'; }
+                    else if (node.status === 'place') { color = 'var(--accent)'; weight = '600'; }
+                    else if (node.status === 'root') { color = 'var(--accent)'; weight = '700'; }
+                    var isHighlight = (node.id === highlightId);
+                    var bg = isHighlight ? 'background:var(--yellow);color:#333;padding:0 4px;border-radius:3px;' : '';
+                    lines.push('<span style="color:' + color + ';font-weight:' + weight + ';' + bg + '">' + prefix + connector + node.label + '</span>');
+                    var children = byParent[node.id] || [];
+                    for (var c = 0; c < children.length; c++) {
+                        var childPrefix = node.parentId < 0 ? '' : (prefix + (isLast ? '   ' : '\u2502  '));
+                        drawNode(children[c], childPrefix, c === children.length - 1);
+                    }
+                }
+                drawNode(treeNodes[0], '', true);
+                treeEl.innerHTML = lines.join('\n');
+            }
+
+            var parentStack = [0];
+
             var solve = function(row) {
                 if (row === n) {
                     solCount++;
                     var sc = solCount, qs = queens.slice();
-                    (function(sc, qs) {
-                        steps.push({ description: sc + 'th solution found!',
-                            action: function() { for (var r = 0; r < n; r++) getCell(r, qs[r]).style.background = '#00b894'; infoEl.innerHTML = '<strong style="color:var(--green);">' + sc + 'th solution found!</strong>'; },
+                    var solNodeId = treeNodeId++;
+                    treeNodes.push({ id: solNodeId, label: '\u2705 Solution #' + sc, depth: row + 1, parentId: parentStack[parentStack.length - 1], status: 'solution' });
+                    (function(sc, qs, nid) {
+                        steps.push({ description: 'Solution #' + sc + ' found!',
+                            action: function() { for (var r = 0; r < n; r++) getCell(r, qs[r]).style.background = '#00b894'; infoEl.innerHTML = '<strong style="color:var(--green);">Solution #' + sc + ' found!</strong>'; renderTree(nid, 'solution'); },
                             undo: function() { for (var r = 0; r < n; r++) getCell(r, qs[r]).style.background = (r+qs[r])%2===0 ? '#f0d9b5' : '#b58863'; }
                         });
-                    })(sc, qs);
+                    })(sc, qs, solNodeId);
                     return;
                 }
                 for (var col = 0; col < n; col++) {
                     var cr = row, cc = col;
-                    (function(cr, cc) {
-                        steps.push({ description: (cr+1) + 'row' + (cc+1) + 'col: try queen...',
-                            action: function() { getCell(cr, cc).textContent = '?'; getCell(cr, cc).style.background = '#fdcb6e'; },
+                    var tryNodeId = treeNodeId++;
+                    var curParent = parentStack[parentStack.length - 1];
+                    treeNodes.push({ id: tryNodeId, label: 'R' + (cr+1) + 'C' + (cc+1) + '?', depth: row + 1, parentId: curParent, status: 'try' });
+                    (function(cr, cc, nid) {
+                        steps.push({ description: 'Row ' + (cr+1) + ' Col ' + (cc+1) + ': try queen...',
+                            action: function() { getCell(cr, cc).textContent = '?'; getCell(cr, cc).style.background = '#fdcb6e'; renderTree(nid, 'try'); },
                             undo: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }
                         });
-                    })(cr, cc);
+                    })(cr, cc, tryNodeId);
                     if (isValid(row, col)) {
                         queens[row] = col;
-                        (function(cr, cc) {
-                            steps.push({ description: '\u2705 ' + (cr+1) + 'row' + (cc+1) + 'col: No conflict! Place queen',
-                                action: function() { getCell(cr, cc).textContent = '\u265b'; getCell(cr, cc).style.background = '#d63031'; getCell(cr,cc).style.color = 'white'; },
+                        treeNodes[tryNodeId].status = 'place';
+                        treeNodes[tryNodeId].label = 'R' + (cr+1) + 'C' + (cc+1) + ' \u265b';
+                        (function(cr, cc, nid) {
+                            steps.push({ description: '\u2705 Row ' + (cr+1) + ' Col ' + (cc+1) + ': No conflict! Place queen',
+                                action: function() { getCell(cr, cc).textContent = '\u265b'; getCell(cr, cc).style.background = '#d63031'; getCell(cr,cc).style.color = 'white'; renderTree(nid, 'place'); },
                                 undo: function() { getCell(cr, cc).textContent = '?'; getCell(cr, cc).style.background = '#fdcb6e'; getCell(cr,cc).style.color = ''; }
                             });
-                        })(cr, cc);
+                        })(cr, cc, tryNodeId);
+                        parentStack.push(tryNodeId);
                         solve(row + 1);
+                        parentStack.pop();
                         queens[row] = -1;
-                        (function(cr, cc) {
-                            steps.push({ description: '\u21a9\ufe0f ' + (cr+1) + 'row' + (cc+1) + 'col: remove queen',
-                                action: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; getCell(cr,cc).style.color = ''; },
+                        treeNodes[tryNodeId].status = 'backtrack';
+                        treeNodes[tryNodeId].label = 'R' + (cr+1) + 'C' + (cc+1) + ' \u21a9';
+                        (function(cr, cc, nid) {
+                            steps.push({ description: '\u21a9\ufe0f Row ' + (cr+1) + ' Col ' + (cc+1) + ': remove queen (backtrack)',
+                                action: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; getCell(cr,cc).style.color = ''; renderTree(nid, 'backtrack'); },
                                 undo: function() { getCell(cr, cc).textContent = '\u265b'; getCell(cr, cc).style.background = '#d63031'; getCell(cr,cc).style.color = 'white'; }
                             });
-                        })(cr, cc);
+                        })(cr, cc, tryNodeId);
                     } else {
-                        (function(cr, cc) {
-                            steps.push({ description: '\u274c ' + (cr+1) + 'row' + (cc+1) + 'col: Conflict! Skip',
-                                action: function() { getCell(cr, cc).textContent = '\u2715'; getCell(cr, cc).style.background = '#e17055'; setTimeout(function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }, 400); },
+                        treeNodes[tryNodeId].status = 'fail';
+                        treeNodes[tryNodeId].label = 'R' + (cr+1) + 'C' + (cc+1) + ' \u2715';
+                        (function(cr, cc, nid) {
+                            steps.push({ description: '\u274c Row ' + (cr+1) + ' Col ' + (cc+1) + ': Conflict! Skip',
+                                action: function() { getCell(cr, cc).textContent = '\u2715'; getCell(cr, cc).style.background = '#e17055'; renderTree(nid, 'fail'); setTimeout(function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }, 400); },
                                 undo: function() { getCell(cr, cc).textContent = ''; getCell(cr, cc).style.background = (cr+cc)%2===0 ? '#f0d9b5' : '#b58863'; }
                             });
-                        })(cr, cc);
+                        })(cr, cc, tryNodeId);
                     }
                 }
             };
             solve(0);
             var fsc = solCount;
-            steps.push({ description: 'Search complete!' + fsc + ' solutions found', action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 Total:' + fsc + ' solutions</strong>'; }, undo: function(){} });
+            steps.push({ description: 'Search complete! ' + fsc + ' solutions found', action: function() { infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">\u2705 Total: ' + fsc + ' solutions</strong>'; renderTree(-1, ''); }, undo: function(){} });
             self._initStepController(contentEl, steps, suffix);
         }
         resetBtn.addEventListener('click', function() {

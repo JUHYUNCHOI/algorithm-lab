@@ -1211,25 +1211,129 @@ int fib(int n) {
 
         function fibVal(n) { if (n <= 2) return 1; var a=1,b=1; for(var i=3;i<=n;i++){var t=a+b;a=b;b=t;} return b; }
 
-        function buildSteps(n, recValEl, dpValEl, infoEl) {
+        // SVG 기반 재귀 호출 트리 생성 (n이 작을 때만 표시, 큰 경우 텍스트만)
+        function buildCallTree(n) {
+            var nodes = [], edges = [], nodeId = 0;
+            function layout(val, depth, xCenter, xSpan) {
+                var id = nodeId++;
+                nodes.push({ id: id, val: val, x: xCenter, y: depth * 50 + 24, depth: depth });
+                if (val <= 1) return id;
+                var leftId = layout(val - 1, depth + 1, xCenter - xSpan / 2, xSpan / 2);
+                edges.push({ from: id, to: leftId });
+                var rightId = layout(val - 2, depth + 1, xCenter + xSpan / 2, xSpan / 2);
+                edges.push({ from: id, to: rightId });
+                return id;
+            }
+            var totalWidth = Math.max(300, Math.pow(2, Math.min(n, 7)) * 32);
+            var totalHeight = (Math.min(n, 7) + 1) * 50 + 16;
+            layout(n, 0, totalWidth / 2, totalWidth / 3);
+            return { nodes: nodes, edges: edges, width: totalWidth, height: totalHeight };
+        }
+
+        function renderCallTreeSVG(tree) {
+            var svgNS = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('width', tree.width);
+            svg.setAttribute('height', tree.height);
+            svg.style.cssText = 'display:block;margin:0 auto;';
+            // edges
+            for (var e = 0; e < tree.edges.length; e++) {
+                var fromN = tree.nodes[tree.edges[e].from];
+                var toN = tree.nodes[tree.edges[e].to];
+                var line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', fromN.x); line.setAttribute('y1', fromN.y + 12);
+                line.setAttribute('x2', toN.x); line.setAttribute('y2', toN.y - 12);
+                line.setAttribute('stroke', 'var(--border)'); line.setAttribute('stroke-width', '1.5');
+                svg.appendChild(line);
+            }
+            // nodes — 중복 호출은 빨간색으로 표시
+            var seen = {};
+            for (var i = 0; i < tree.nodes.length; i++) {
+                var nd = tree.nodes[i];
+                var isDup = seen[nd.val] === true;
+                seen[nd.val] = true;
+                var g = document.createElementNS(svgNS, 'g');
+                var circle = document.createElementNS(svgNS, 'circle');
+                circle.setAttribute('cx', nd.x); circle.setAttribute('cy', nd.y);
+                circle.setAttribute('r', 13);
+                circle.setAttribute('fill', isDup ? 'rgba(214,48,49,0.15)' : 'var(--bg2)');
+                circle.setAttribute('stroke', isDup ? 'var(--red)' : 'var(--border)');
+                circle.setAttribute('stroke-width', isDup ? '2' : '1.5');
+                g.appendChild(circle);
+                var text = document.createElementNS(svgNS, 'text');
+                text.setAttribute('x', nd.x); text.setAttribute('y', nd.y + 4);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '10'); text.setAttribute('font-family', 'monospace');
+                text.setAttribute('fill', isDup ? 'var(--red)' : 'var(--text)');
+                text.textContent = 'f(' + nd.val + ')';
+                g.appendChild(text);
+                svg.appendChild(g);
+            }
+            return svg;
+        }
+
+        function renderDpTable(n) {
+            var dp = [0, 1, 1];
+            for (var i = 3; i <= n; i++) dp.push(dp[i-1] + dp[i-2]);
+            var html = '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;">';
+            for (var i = 1; i <= n; i++) {
+                html += '<div style="display:flex;flex-direction:column;align-items:center;">';
+                html += '<div style="font-size:0.65rem;color:var(--text3);">dp[' + i + ']</div>';
+                html += '<div style="min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:2px solid var(--green);border-radius:8px;font-weight:700;font-size:0.85rem;background:rgba(0,184,148,0.1);color:var(--green);">' + dp[i] + '</div>';
+                if (i >= 3) {
+                    html += '<div style="font-size:0.6rem;color:var(--text3);">' + dp[i-1] + '+' + dp[i-2] + '</div>';
+                }
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function buildSteps(n, vizAreaEl, recValEl, dpValEl, infoEl) {
             var recCount = fibVal(n);
             var dpCount = Math.max(n - 2, 0);
             var bigN = Math.min(n + 20, 40);
             var bigRec = fibVal(bigN);
             var bigDp = Math.max(bigN - 2, 0);
             var ratio = bigDp > 0 ? Math.round(bigRec / bigDp) : 0;
+            var showTree = (n <= 8); // 트리가 너무 커지지 않는 범위에서만 SVG 표시
             return [
                 { description: 'fib(' + n + ')을 재귀로 구하면, <strong>같은 하위 문제를 반복 계산</strong>하기 때문에 호출 횟수가 기하급수적으로 늘어납니다.',
-                  action: function() { infoEl.innerHTML = '재귀: fib(' + n + ')=fib(' + (n-1) + ')+fib(' + (n-2) + '), ... 중복이 생깁니다.'; },
-                  undo: function() { infoEl.innerHTML = ''; } },
-                { description: '재귀는 fib(' + (n-1) + ')과 fib(' + (n-2) + ')을 <strong>각각 독립적으로 다시 계산</strong>하므로, 총 호출 수가 ' + recCount.toLocaleString() + '회나 됩니다.',
-                  action: function() { recValEl.textContent = recCount.toLocaleString(); infoEl.innerHTML = '재귀 호출 트리의 리프(return 1) 개수 = <strong>' + recCount.toLocaleString() + '</strong>'; },
-                  undo: function() { recValEl.textContent = '?'; infoEl.innerHTML = ''; } },
+                  action: function() {
+                      infoEl.innerHTML = '재귀: fib(' + n + ')=fib(' + (n-1) + ')+fib(' + (n-2) + '), ... 중복이 생깁니다.';
+                      vizAreaEl.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px;font-size:0.9rem;">다음 스텝에서 재귀 호출 트리를 볼 수 있습니다.</div>';
+                  },
+                  undo: function() { infoEl.innerHTML = ''; vizAreaEl.innerHTML = ''; } },
+                { description: '재귀는 fib(' + (n-1) + ')과 fib(' + (n-2) + ')을 <strong>각각 독립적으로 다시 계산</strong>하므로, 총 호출 수가 ' + recCount.toLocaleString() + '회나 됩니다. <span style="color:var(--red);">빨간 노드 = 중복 호출</span>',
+                  action: function() {
+                      recValEl.textContent = recCount.toLocaleString();
+                      infoEl.innerHTML = '재귀 호출 트리의 리프(return 1) 개수 = <strong>' + recCount.toLocaleString() + '</strong>';
+                      if (showTree) {
+                          var tree = buildCallTree(n);
+                          vizAreaEl.innerHTML = '<div style="font-weight:600;font-size:0.85rem;color:var(--red);margin-bottom:6px;text-align:center;">재귀 호출 트리 — 빨간 노드가 중복 호출</div>';
+                          vizAreaEl.querySelector('div').style.overflow = 'auto';
+                          vizAreaEl.appendChild(renderCallTreeSVG(tree));
+                      } else {
+                          vizAreaEl.innerHTML = '<div style="text-align:center;color:var(--red);padding:16px;font-size:0.9rem;">n=' + n + '이면 트리가 너무 커서 표시할 수 없습니다.<br>호출 수: <strong>' + recCount.toLocaleString() + '</strong>회!</div>';
+                      }
+                  },
+                  undo: function() { recValEl.textContent = '?'; infoEl.innerHTML = ''; vizAreaEl.innerHTML = ''; } },
                 { description: 'DP는 <strong>이미 계산한 값을 저장해두고 재사용</strong>하므로, 3부터 ' + n + '까지 단 ' + dpCount + '번의 덧셈이면 충분합니다.',
-                  action: function() { dpValEl.textContent = dpCount; infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + '번</strong>'; },
+                  action: function() {
+                      dpValEl.textContent = dpCount;
+                      infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + '번</strong>';
+                      vizAreaEl.innerHTML = '<div style="font-weight:600;font-size:0.85rem;color:var(--green);margin-bottom:6px;text-align:center;">DP 테이블 — 한 번씩만 계산</div>' + renderDpTable(n);
+                  },
                   undo: function() { dpValEl.textContent = '?'; } },
                 { description: 'n=' + bigN + '으로 늘리면? 재귀는 <strong>지수적으로 폭발</strong>(' + bigRec.toLocaleString() + '회)하지만, DP는 여전히 ' + bigDp + '번이면 끝납니다.',
-                  action: function() { infoEl.innerHTML = '<strong style="color:var(--green);">n=' + bigN + ': 재귀 ' + bigRec.toLocaleString() + '회 vs DP ' + bigDp + '회. DP가 ' + ratio.toLocaleString() + '배 빠릅니다!</strong>'; },
+                  action: function() {
+                      infoEl.innerHTML = '<strong style="color:var(--green);">n=' + bigN + ': 재귀 ' + bigRec.toLocaleString() + '회 vs DP ' + bigDp + '회. DP가 ' + ratio.toLocaleString() + '배 빠릅니다!</strong>';
+                      vizAreaEl.innerHTML = '<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;align-items:center;">' +
+                          '<div style="text-align:center;padding:12px 20px;border:2px solid var(--red);border-radius:12px;background:rgba(214,48,49,0.05);"><div style="font-size:0.8rem;color:var(--red);font-weight:600;">재귀 (n=' + bigN + ')</div><div style="font-size:1.3rem;font-weight:700;color:var(--red);">' + bigRec.toLocaleString() + '회</div></div>' +
+                          '<div style="font-size:1.5rem;color:var(--text3);">vs</div>' +
+                          '<div style="text-align:center;padding:12px 20px;border:2px solid var(--green);border-radius:12px;background:rgba(0,184,148,0.05);"><div style="font-size:0.8rem;color:var(--green);font-weight:600;">DP (n=' + bigN + ')</div><div style="font-size:1.3rem;font-weight:700;color:var(--green);">' + bigDp + '회</div></div>' +
+                          '</div>';
+                  },
                   undo: function() { infoEl.innerHTML = 'DP: dp[3]=dp[2]+dp[1], ..., dp[' + n + '] → <strong>' + dpCount + '번</strong>'; } }
             ];
         }
@@ -1247,12 +1351,14 @@ int fib(int n) {
                 '<div id="fib1-rec' + suffix + '" style="text-align:center;"><div style="font-weight:600;margin-bottom:6px;">재귀 호출 수</div><div id="fib1-rec-val' + suffix + '" style="font-size:2rem;color:var(--red);font-weight:700;">?</div></div>' +
                 '<div id="fib1-dp' + suffix + '" style="text-align:center;"><div style="font-weight:600;margin-bottom:6px;">DP 연산 수</div><div id="fib1-dp-val' + suffix + '" style="font-size:2rem;color:var(--green);font-weight:700;">?</div></div>' +
                 '</div>' +
+                '<div id="fib1-viz' + suffix + '" style="overflow-x:auto;margin-bottom:12px;min-height:60px;"></div>' +
                 '<div id="fib1-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
                 self._createStepControls(suffix);
             var recValEl = container.querySelector('#fib1-rec-val' + suffix);
             var dpValEl = container.querySelector('#fib1-dp-val' + suffix);
+            var vizAreaEl = container.querySelector('#fib1-viz' + suffix);
             var infoEl = container.querySelector('#fib1-info' + suffix);
-            var steps = buildSteps(n, recValEl, dpValEl, infoEl);
+            var steps = buildSteps(n, vizAreaEl, recValEl, dpValEl, infoEl);
             self._initStepController(container, steps, suffix);
             container.querySelector('#dp-fib-reset').addEventListener('click', function() {
                 var val = parseInt(container.querySelector('#dp-fib-n').value) || DEFAULT_N;
