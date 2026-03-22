@@ -1473,32 +1473,36 @@ sort(words.begin(), words.end(),
                 // 합치기 디테일 (비교 진행 중이면 트리 아래에 표시)
                 if (step.mergeDetail) {
                     var d2 = step.mergeDetail;
-                    html += '<div style="margin-top:12px;padding:10px 16px;border:2px solid var(--yellow);border-radius:10px;background:var(--bg2);">';
-                    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;">';
-                    // 왼쪽 배열
-                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.72rem;color:var(--accent);font-weight:700;min-width:32px;">왼쪽</span>';
-                    for (var i = 0; i < d2.left.length; i++) {
-                        var ex = i < d2.li ? 'opacity:0.3;' : '';
-                        if (i === d2.li) ex = 'border-color:var(--accent);box-shadow:0 0 8px var(--accent);';
-                        html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;' + ex + '">' + d2.left[i] + '</div>';
-                    }
+                    var leftVal = d2.left[d2.li];
+                    var rightVal = d2.right[d2.ri];
+                    var pickedVal = d2.pick === 'left' ? leftVal : rightVal;
+                    var isLeftSmaller = d2.pick === 'left';
+                    html += '<div style="margin-top:12px;padding:14px 18px;border:2px solid var(--yellow);border-radius:10px;background:var(--bg2);">';
+                    // 비교 영역: 왼쪽 값 vs 오른쪽 값
+                    html += '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px;">';
+                    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">';
+                    html += '<span style="font-size:0.65rem;color:var(--accent);font-weight:700;">왼쪽</span>';
+                    html += '<div class="str-char-box" style="min-width:36px;padding:6px 10px;font-size:1rem;font-weight:700;' + (isLeftSmaller ? 'border-color:var(--green);box-shadow:0 0 12px var(--green);background:rgba(0,184,148,0.15);' : 'border-color:var(--bg3);') + '">' + leftVal + '</div>';
+                    if (isLeftSmaller) html += '<span style="font-size:0.6rem;color:var(--green);font-weight:700;">✓ 더 작음!</span>';
                     html += '</div>';
-                    // 오른쪽 배열
-                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.72rem;color:var(--yellow);font-weight:700;min-width:32px;">오른쪽</span>';
-                    for (var j = 0; j < d2.right.length; j++) {
-                        var ex2 = j < d2.ri ? 'opacity:0.3;' : '';
-                        if (j === d2.ri) ex2 = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
-                        html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;' + ex2 + '">' + d2.right[j] + '</div>';
-                    }
+                    html += '<span style="font-size:1.2rem;font-weight:700;color:var(--text3);">vs</span>';
+                    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">';
+                    html += '<span style="font-size:0.65rem;color:var(--yellow);font-weight:700;">오른쪽</span>';
+                    html += '<div class="str-char-box" style="min-width:36px;padding:6px 10px;font-size:1rem;font-weight:700;' + (!isLeftSmaller ? 'border-color:var(--green);box-shadow:0 0 12px var(--green);background:rgba(0,184,148,0.15);' : 'border-color:var(--bg3);') + '">' + rightVal + '</div>';
+                    if (!isLeftSmaller) html += '<span style="font-size:0.6rem;color:var(--green);font-weight:700;">✓ 더 작음!</span>';
                     html += '</div>';
-                    // 결과
-                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.72rem;color:var(--green);font-weight:700;min-width:32px;">결과</span>';
+                    html += '</div>';
+                    // 화살표 → 결과
+                    html += '<div style="text-align:center;color:var(--green);font-size:0.9rem;margin-bottom:8px;">↓ 결과에 추가</div>';
+                    // 결과 배열
+                    html += '<div style="display:flex;gap:6px;align-items:center;justify-content:center;">';
+                    html += '<span style="font-size:0.72rem;color:var(--green);font-weight:700;">결과</span>';
                     for (var r = 0; r < d2.result.length; r++) {
                         html += '<div class="str-char-box matched" style="min-width:28px;padding:3px 6px;font-size:0.82rem;">' + d2.result[r] + '</div>';
                     }
-                    var pickedVal = d2.pick === 'left' ? d2.left[d2.li] : d2.right[d2.ri];
                     html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;border-color:var(--green);box-shadow:0 0 10px var(--green);background:rgba(0,184,148,0.15);">' + pickedVal + '</div>';
-                    html += '</div></div></div>';
+                    html += '</div>';
+                    html += '</div>';
                 }
 
                 html += '</div>';
