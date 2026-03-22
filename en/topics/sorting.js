@@ -447,7 +447,7 @@ void merge_sort(vector&lt;int&gt;&amp; arr, int l, int r) {
                         <button class="concept-demo-btn danger" id="sort-demo-merge-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
-                        <div id="sort-demo-merge-viz" style="min-height:60px;"></div>
+                        <div id="sort-demo-merge-viz" style="min-height:120px;overflow-x:auto;"></div>
                     </div>
                     <div class="concept-demo-msg" id="sort-demo-merge-msg">▶ Press Step to start Merge Sort!</div>
                 </div>
@@ -534,7 +534,7 @@ sort(arr.begin(), arr.end());  // IntroSort, O(n log n)</code></pre>
                         <button class="concept-demo-btn danger" id="sort-demo-quick-reset">Reset ↺</button>
                     </div>
                     <div class="concept-demo-body">
-                        <div id="sort-demo-quick-viz" style="min-height:60px;"></div>
+                        <div id="sort-demo-quick-viz" style="min-height:120px;overflow-x:auto;"></div>
                     </div>
                     <div class="concept-demo-msg" id="sort-demo-quick-msg">▶ Press Step to start Quick Sort!</div>
                 </div>
@@ -1324,7 +1324,7 @@ sort(words.begin(), words.end(),
             raceReset();
         }
 
-        // ── Merge Sort Mini Demo ──
+        // ── Merge Sort Mini Demo (Tree Visualization) ──
         {
             var mergeInitArr = [38, 27, 43, 3, 9, 82, 10];
             var mergeSteps = [];
@@ -1333,143 +1333,193 @@ sort(words.begin(), words.end(),
             var mergeMsg = container.querySelector('#sort-demo-merge-msg');
             var mergeStepBtn = container.querySelector('#sort-demo-merge-step');
 
+            var mergeTree = null;
+            var mergeNodeId = 0;
+
+            function mergeBuildTree(arr) {
+                var node = { arr: arr.slice(), left: null, right: null, merged: null, id: mergeNodeId++ };
+                if (arr.length <= 1) { node.merged = arr.slice(); return node; }
+                var mid = Math.floor(arr.length / 2);
+                node.left = mergeBuildTree(arr.slice(0, mid));
+                node.right = mergeBuildTree(arr.slice(mid));
+                return node;
+            }
+
+            function mergeGetLevels(root) {
+                var levels = [];
+                var queue = [{ node: root, depth: 0 }];
+                while (queue.length) {
+                    var item = queue.shift();
+                    if (!levels[item.depth]) levels[item.depth] = [];
+                    levels[item.depth].push(item.node);
+                    if (item.node.left) queue.push({ node: item.node.left, depth: item.depth + 1 });
+                    if (item.node.right) queue.push({ node: item.node.right, depth: item.depth + 1 });
+                }
+                return levels;
+            }
+
             function mergeBuildSteps() {
                 mergeSteps = [];
-                var arr = mergeInitArr.slice();
+                mergeNodeId = 0;
+                mergeTree = mergeBuildTree(mergeInitArr);
+                var levels = mergeGetLevels(mergeTree);
 
-                mergeSteps.push({ groups: [arr.slice()], desc: 'Initial array: [' + arr.join(', ') + ']. Starting Merge Sort!', highlights: {} });
+                mergeSteps.push({ type: 'init', visibleDepth: 0, activeId: -1, mergeDetail: null, desc: 'Initial array: [' + mergeInitArr.join(', ') + ']. We will split it in half repeatedly!' });
 
-                var levels = [[arr.slice()]];
-                while (true) {
-                    var prev = levels[levels.length - 1];
-                    var next = [];
-                    var didSplit = false;
-                    for (var gi = 0; gi < prev.length; gi++) {
-                        if (prev[gi].length > 1) {
-                            var mid = Math.floor(prev[gi].length / 2);
-                            next.push(prev[gi].slice(0, mid));
-                            next.push(prev[gi].slice(mid));
-                            didSplit = true;
-                        } else {
-                            next.push(prev[gi].slice());
-                        }
-                    }
-                    if (!didSplit) break;
-                    levels.push(next);
-                    mergeSteps.push({ groups: next.map(function(g) { return g.slice(); }), desc: 'Split! Divide each group in half \u2192 ' + next.map(function(g) { return '[' + g.join(',') + ']'; }).join(' '), highlights: {} });
+                for (var d = 1; d < levels.length; d++) {
+                    mergeSteps.push({ type: 'split', visibleDepth: d, activeId: -1, mergeDetail: null, desc: 'Split (level ' + d + '): divide each group in half \u2192 ' + levels[d].map(function(n) { return '[' + n.arr.join(',') + ']'; }).join('  ') });
                 }
 
-                var currentGroups = levels[levels.length - 1].map(function(g) { return g.slice(); });
-
-                function mergeTwo(a, b) {
-                    var result = [];
-                    var i = 0, j = 0;
-                    var compSteps = [];
-                    while (i < a.length && j < b.length) {
-                        compSteps.push({ left: a.slice(), right: b.slice(), li: i, ri: j, result: result.slice(), pick: a[i] <= b[j] ? 'left' : 'right' });
-                        if (a[i] <= b[j]) {
-                            result.push(a[i]); i++;
-                        } else {
-                            result.push(b[j]); j++;
-                        }
+                function mergeCollect(node) {
+                    if (!node.left || !node.right) return;
+                    mergeCollect(node.left);
+                    mergeCollect(node.right);
+                    var a = node.left.merged, b = node.right.merged;
+                    mergeSteps.push({ type: 'mergeStart', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: null, desc: 'Merge: comparing [' + a.join(',') + '] and [' + b.join(',') + ']' });
+                    var result = [], ai = 0, bi = 0;
+                    while (ai < a.length && bi < b.length) {
+                        var pick = a[ai] <= b[bi] ? 'left' : 'right';
+                        var pickDesc = pick === 'left'
+                            ? a[ai] + ' \u2264 ' + b[bi] + ' \u2192 pick left(' + a[ai] + ')'
+                            : b[bi] + ' < ' + a[ai] + ' \u2192 pick right(' + b[bi] + ')';
+                        mergeSteps.push({ type: 'mergeCompare', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: { left: a.slice(), right: b.slice(), li: ai, ri: bi, result: result.slice(), pick: pick }, desc: 'Compare: ' + pickDesc });
+                        if (pick === 'left') { result.push(a[ai]); ai++; }
+                        else { result.push(b[bi]); bi++; }
                     }
-                    while (i < a.length) { result.push(a[i]); i++; }
-                    while (j < b.length) { result.push(b[j]); j++; }
-                    return { result: result, compSteps: compSteps };
+                    while (ai < a.length) { result.push(a[ai]); ai++; }
+                    while (bi < b.length) { result.push(b[bi]); bi++; }
+                    node.merged = result;
+                    mergeSteps.push({ type: 'mergeDone', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: null, desc: 'Merge complete! \u2192 [' + result.join(', ') + ']' });
                 }
+                mergeCollect(mergeTree);
+                mergeSteps.push({ type: 'done', visibleDepth: 0, activeId: mergeTree.id, mergeDetail: null, desc: 'Sorted! [' + mergeTree.merged.join(', ') + '] \u2014 O(n log n) time, O(n) extra memory' });
+            }
 
-                while (currentGroups.length > 1) {
-                    var nextGroups = [];
-                    for (var gi = 0; gi < currentGroups.length; gi += 2) {
-                        if (gi + 1 < currentGroups.length) {
-                            var a = currentGroups[gi], b = currentGroups[gi + 1];
-                            mergeSteps.push({
-                                groups: currentGroups.map(function(g) { return g.slice(); }),
-                                desc: 'Merge: comparing [' + a.join(',') + '] and [' + b.join(',') + ']',
-                                highlights: { merging: [gi, gi + 1] }
-                            });
-                            var mr = mergeTwo(a, b);
-                            for (var ci = 0; ci < mr.compSteps.length; ci++) {
-                                var cs = mr.compSteps[ci];
-                                var pickDesc = cs.pick === 'left'
-                                    ? cs.left[cs.li] + ' \u2264 ' + cs.right[cs.ri] + ' \u2192 pick left(' + cs.left[cs.li] + ')'
-                                    : cs.right[cs.ri] + ' < ' + cs.left[cs.li] + ' \u2192 pick right(' + cs.right[cs.ri] + ')';
-                                mergeSteps.push({
-                                    mergeDetail: { left: cs.left, right: cs.right, li: cs.li, ri: cs.ri, result: cs.result, pick: cs.pick },
-                                    desc: 'Compare: ' + pickDesc,
-                                    highlights: {}
-                                });
-                            }
-                            nextGroups.push(mr.result);
-                            var afterMerge = nextGroups.slice();
-                            for (var ri = gi + 2; ri < currentGroups.length; ri++) afterMerge.push(currentGroups[ri].slice());
-                            mergeSteps.push({
-                                groups: afterMerge.map(function(g) { return g.slice(); }),
-                                desc: 'Merge complete! \u2192 [' + mr.result.join(', ') + ']',
-                                highlights: { justMerged: [nextGroups.length - 1] }
-                            });
-                        } else {
-                            nextGroups.push(currentGroups[gi].slice());
-                        }
+            function renderMergeTreeLevel(nodes, step) {
+                var html = '';
+                for (var i = 0; i < nodes.length; i++) {
+                    var n = nodes[i];
+                    var isMerged = n.merged !== null;
+                    var isActive = step.activeId === n.id;
+                    var isDone = step.type === 'done';
+                    var vals = isMerged ? n.merged : n.arr;
+                    var borderColor = 'var(--bg3)';
+                    var shadow = '';
+                    if (isDone) { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
+                    else if (isActive && step.type === 'mergeDone') { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
+                    else if (isActive && (step.type === 'mergeStart' || step.type === 'mergeCompare')) { borderColor = 'var(--yellow)'; shadow = 'box-shadow:0 0 8px var(--yellow);'; }
+                    html += '<div style="display:flex;gap:3px;padding:4px 8px;border-radius:8px;border:2px solid ' + borderColor + ';background:var(--bg2);' + shadow + '" data-merge-node="' + n.id + '">';
+                    for (var j = 0; j < vals.length; j++) {
+                        var ecls = 'str-char-box';
+                        var estyle = 'min-width:28px;padding:3px 6px;font-size:0.82rem;';
+                        if (isDone || (isActive && step.type === 'mergeDone')) ecls += ' matched';
+                        html += '<div class="' + ecls + '" style="' + estyle + '">' + vals[j] + '</div>';
                     }
-                    currentGroups = nextGroups;
+                    html += '</div>';
                 }
-                mergeSteps.push({ groups: [currentGroups[0].slice()], desc: 'Sorted! [' + currentGroups[0].join(', ') + '] \u2014 O(n log n) time, O(n) extra memory', highlights: { done: true } });
+                return html;
             }
 
             function renderMergeViz(step) {
                 if (!step) { mergeVizEl.innerHTML = ''; return; }
-                if (step.mergeDetail) {
-                    var d = step.mergeDetail;
-                    var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;">';
-                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--accent);font-weight:700;min-width:32px;">Left</span>';
-                    for (var i = 0; i < d.left.length; i++) {
-                        var ex = i < d.li ? 'opacity:0.3;' : '';
-                        if (i === d.li) ex = 'border-color:var(--accent);box-shadow:0 0 8px var(--accent);';
-                        html += '<div class="str-char-box" style="' + ex + '">' + d.left[i] + '</div>';
-                    }
-                    html += '</div>';
-                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--yellow);font-weight:700;min-width:32px;">Right</span>';
-                    for (var j = 0; j < d.right.length; j++) {
-                        var ex2 = j < d.ri ? 'opacity:0.3;' : '';
-                        if (j === d.ri) ex2 = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
-                        html += '<div class="str-char-box" style="' + ex2 + '">' + d.right[j] + '</div>';
-                    }
-                    html += '</div>';
-                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.75rem;color:var(--green);font-weight:700;min-width:32px;">Result</span>';
-                    for (var r = 0; r < d.result.length; r++) {
-                        html += '<div class="str-char-box matched">' + d.result[r] + '</div>';
-                    }
-                    var pickedVal = d.pick === 'left' ? d.left[d.li] : d.right[d.ri];
-                    html += '<div class="str-char-box" style="border-color:var(--green);box-shadow:0 0 10px var(--green);background:rgba(0,184,148,0.15);">' + pickedVal + '</div>';
+                var levels = mergeGetLevels(mergeTree);
+                var maxDepth = step.visibleDepth;
+                if (step.type === 'mergeStart' || step.type === 'mergeCompare' || step.type === 'mergeDone' || step.type === 'done') {
+                    maxDepth = levels.length - 1;
+                }
+
+                var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:fit-content;">';
+                for (var d = 0; d <= maxDepth && d < levels.length; d++) {
+                    html += '<div style="display:flex;align-items:center;gap:10px;width:100%;justify-content:center;">';
+                    html += '<span style="font-size:0.65rem;color:var(--text3);min-width:14px;text-align:right;">L' + d + '</span>';
+                    html += '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:nowrap;">';
+                    html += renderMergeTreeLevel(levels[d], step);
                     html += '</div></div>';
-                    mergeVizEl.innerHTML = html;
-                    return;
-                }
-                var groups = step.groups;
-                var hl = step.highlights || {};
-                var html2 = '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;">';
-                for (var gi = 0; gi < groups.length; gi++) {
-                    var gStyle = 'display:flex;gap:4px;padding:6px 10px;border-radius:8px;border:2px solid var(--bg3);';
-                    if (hl.merging && hl.merging.indexOf(gi) >= 0) gStyle += 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
-                    if (hl.justMerged && hl.justMerged.indexOf(gi) >= 0) gStyle += 'border-color:var(--green);box-shadow:0 0 10px var(--green);';
-                    if (hl.done) gStyle += 'border-color:var(--green);box-shadow:0 0 10px var(--green);';
-                    html2 += '<div style="' + gStyle + '">';
-                    for (var ei = 0; ei < groups[gi].length; ei++) {
-                        var ecls = 'str-char-box';
-                        if (hl.done) ecls += ' matched';
-                        html2 += '<div class="' + ecls + '">' + groups[gi][ei] + '</div>';
+                    if (d < maxDepth && d + 1 < levels.length) {
+                        html += '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">';
+                        var connectors = [];
+                        for (var ni = 0; ni < levels[d].length; ni++) {
+                            if (levels[d][ni].left) connectors.push('\u2571\u2572');
+                            else connectors.push('\u2502');
+                        }
+                        html += connectors.join('&nbsp;&nbsp;&nbsp;&nbsp;');
+                        html += '</div>';
                     }
-                    html2 += '</div>';
-                    if (gi < groups.length - 1 && !hl.done) html2 += '<span style="color:var(--text3);font-size:0.8rem;"></span>';
                 }
-                html2 += '</div>';
-                mergeVizEl.innerHTML = html2;
+
+                if (step.mergeDetail) {
+                    var d2 = step.mergeDetail;
+                    html += '<div style="margin-top:12px;padding:10px 16px;border:2px solid var(--yellow);border-radius:10px;background:var(--bg2);">';
+                    html += '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;">';
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.72rem;color:var(--accent);font-weight:700;min-width:32px;">Left</span>';
+                    for (var i = 0; i < d2.left.length; i++) {
+                        var ex = i < d2.li ? 'opacity:0.3;' : '';
+                        if (i === d2.li) ex = 'border-color:var(--accent);box-shadow:0 0 8px var(--accent);';
+                        html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;' + ex + '">' + d2.left[i] + '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.72rem;color:var(--yellow);font-weight:700;min-width:32px;">Right</span>';
+                    for (var j = 0; j < d2.right.length; j++) {
+                        var ex2 = j < d2.ri ? 'opacity:0.3;' : '';
+                        if (j === d2.ri) ex2 = 'border-color:var(--yellow);box-shadow:0 0 8px var(--yellow);';
+                        html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;' + ex2 + '">' + d2.right[j] + '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="display:flex;gap:6px;align-items:center;"><span style="font-size:0.72rem;color:var(--green);font-weight:700;min-width:32px;">Result</span>';
+                    for (var r = 0; r < d2.result.length; r++) {
+                        html += '<div class="str-char-box matched" style="min-width:28px;padding:3px 6px;font-size:0.82rem;">' + d2.result[r] + '</div>';
+                    }
+                    var pickedVal = d2.pick === 'left' ? d2.left[d2.li] : d2.right[d2.ri];
+                    html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;border-color:var(--green);box-shadow:0 0 10px var(--green);background:rgba(0,184,148,0.15);">' + pickedVal + '</div>';
+                    html += '</div></div></div>';
+                }
+
+                html += '</div>';
+                mergeVizEl.innerHTML = html;
+            }
+
+            function mergeResetTree() {
+                function resetNode(node) {
+                    if (!node) return;
+                    if (node.left || node.right) node.merged = null;
+                    else node.merged = node.arr.slice();
+                    resetNode(node.left);
+                    resetNode(node.right);
+                }
+                resetNode(mergeTree);
+            }
+
+            function mergeFindNode(node, id) {
+                if (!node) return null;
+                if (node.id === id) return node;
+                return mergeFindNode(node.left, id) || mergeFindNode(node.right, id);
+            }
+
+            function mergeApplyStepsUpTo(idx) {
+                mergeResetTree();
+                for (var si = 0; si <= idx; si++) {
+                    var s = mergeSteps[si];
+                    if (s.type === 'mergeDone') {
+                        var nd = mergeFindNode(mergeTree, s.activeId);
+                        if (nd && nd.left && nd.right && nd.left.merged && nd.right.merged) {
+                            var a = nd.left.merged, b = nd.right.merged;
+                            var result = [], ai = 0, bi = 0;
+                            while (ai < a.length && bi < b.length) {
+                                if (a[ai] <= b[bi]) { result.push(a[ai]); ai++; }
+                                else { result.push(b[bi]); bi++; }
+                            }
+                            while (ai < a.length) { result.push(a[ai]); ai++; }
+                            while (bi < b.length) { result.push(b[bi]); bi++; }
+                            nd.merged = result;
+                        }
+                    }
+                }
             }
 
             function mergeStep() {
                 if (mergeStepIdx >= mergeSteps.length - 1) return;
                 mergeStepIdx++;
+                mergeApplyStepsUpTo(mergeStepIdx);
                 var s = mergeSteps[mergeStepIdx];
                 mergeMsg.textContent = s.desc;
                 renderMergeViz(s);
@@ -1477,6 +1527,8 @@ sort(words.begin(), words.end(),
 
             function mergeReset() {
                 mergeStepIdx = -1;
+                mergeResetTree();
+                mergeBuildSteps();
                 mergeMsg.textContent = '\u25B6 Press Step to start Merge Sort!';
                 mergeVizEl.innerHTML = '';
             }
@@ -1486,7 +1538,7 @@ sort(words.begin(), words.end(),
             container.querySelector('#sort-demo-merge-reset').addEventListener('click', mergeReset);
         }
 
-        // ── Quick Sort Mini Demo ──
+        // ── Quick Sort Mini Demo (Tree Visualization) ──
         {
             var quickInitArr = [38, 27, 43, 3, 9, 82, 10];
             var quickSteps = [];
@@ -1495,134 +1547,243 @@ sort(words.begin(), words.end(),
             var quickMsg = container.querySelector('#sort-demo-quick-msg');
             var quickStepBtn = container.querySelector('#sort-demo-quick-step');
 
+            var quickTree = null;
+            var quickNodeId = 0;
+
+            function quickBuildTree(arr, depth) {
+                var node = { arr: arr.slice(), pivot: null, left: null, pivotNode: null, right: null, sorted: null, id: quickNodeId++, depth: depth };
+                if (arr.length <= 1) { node.sorted = arr.slice(); return node; }
+                var pivotIdx = Math.floor(arr.length / 2);
+                var pivot = arr[pivotIdx];
+                node.pivot = pivot;
+                var leftArr = [], equalArr = [], rightArr = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i] < pivot) leftArr.push(arr[i]);
+                    else if (arr[i] > pivot) rightArr.push(arr[i]);
+                    else equalArr.push(arr[i]);
+                }
+                node.left = quickBuildTree(leftArr, depth + 1);
+                node.pivotNode = { arr: equalArr.slice(), sorted: equalArr.slice(), id: quickNodeId++, depth: depth + 1, pivot: null, left: null, pivotNode: null, right: null };
+                node.right = quickBuildTree(rightArr, depth + 1);
+                return node;
+            }
+
             function quickBuildSteps() {
                 quickSteps = [];
-                var arr = quickInitArr.slice();
+                quickNodeId = 0;
+                quickTree = quickBuildTree(quickInitArr, 0);
 
-                quickSteps.push({ arr: arr.slice(), desc: 'Initial array: [' + arr.join(', ') + ']. Starting Quick Sort!', highlights: {} });
+                quickSteps.push({ type: 'init', activeId: -1, scanDetail: null, desc: 'Initial array: [' + quickInitArr.join(', ') + ']. Starting Quick Sort!' });
 
-                function qsort(a, depth, label) {
-                    if (a.length <= 1) {
-                        if (a.length === 1) {
-                            quickSteps.push({ partition: { sub: a.slice(), pivot: -1, left: [], right: [], equal: a.slice(), phase: 'base' }, desc: label + '[' + a[0] + '] \u2014 a single element is already sorted!', highlights: {} });
+                function processNode(node, label) {
+                    if (node.arr.length <= 1) {
+                        if (node.arr.length === 1) {
+                            node.sorted = node.arr.slice();
+                            quickSteps.push({ type: 'base', activeId: node.id, scanDetail: null, desc: label + '[' + node.arr[0] + '] \u2014 a single element is already sorted!' });
                         }
-                        return a.slice();
+                        return;
                     }
-                    var pivotIdx = Math.floor(a.length / 2);
-                    var pivot = a[pivotIdx];
-                    quickSteps.push({ partition: { sub: a.slice(), pivot: pivot, pivotIdx: pivotIdx, left: [], right: [], equal: [], phase: 'choose' }, desc: label + 'Array [' + a.join(', ') + ']: choose pivot = ' + pivot + ' (middle element).', highlights: {} });
+                    quickSteps.push({ type: 'choose', activeId: node.id, scanDetail: null, desc: label + 'Array [' + node.arr.join(', ') + ']: choose pivot = ' + node.pivot + ' (middle element).' });
 
-                    var left = [], equal = [], right = [];
-                    for (var i = 0; i < a.length; i++) {
-                        var side = a[i] < pivot ? 'left' : (a[i] > pivot ? 'right' : 'equal');
-                        if (side === 'left') left.push(a[i]);
-                        else if (side === 'right') right.push(a[i]);
-                        else equal.push(a[i]);
+                    var leftSoFar = [], equalSoFar = [], rightSoFar = [];
+                    for (var i = 0; i < node.arr.length; i++) {
+                        var v = node.arr[i];
+                        var side = v < node.pivot ? 'left' : (v > node.pivot ? 'right' : 'equal');
+                        if (side === 'left') leftSoFar.push(v);
+                        else if (side === 'right') rightSoFar.push(v);
+                        else equalSoFar.push(v);
                         quickSteps.push({
-                            partition: { sub: a.slice(), pivot: pivot, scanIdx: i, left: left.slice(), right: right.slice(), equal: equal.slice(), phase: 'scan' },
-                            desc: a[i] + (side === 'left' ? ' < ' + pivot + ' \u2192 goes left' : (side === 'right' ? ' > ' + pivot + ' \u2192 goes right' : ' == ' + pivot + ' \u2192 pivot group')),
-                            highlights: {}
+                            type: 'scan', activeId: node.id,
+                            scanDetail: { sub: node.arr, pivot: node.pivot, scanIdx: i, left: leftSoFar.slice(), right: rightSoFar.slice(), equal: equalSoFar.slice() },
+                            desc: v + (side === 'left' ? ' < ' + node.pivot + ' \u2192 goes left' : (side === 'right' ? ' > ' + node.pivot + ' \u2192 goes right' : ' == ' + node.pivot + ' \u2192 pivot group'))
                         });
                     }
-                    quickSteps.push({
-                        partition: { sub: a.slice(), pivot: pivot, left: left.slice(), right: right.slice(), equal: equal.slice(), phase: 'partitioned' },
-                        desc: 'Partition done! Left[' + left.join(',') + '] | Pivot[' + equal.join(',') + '] | Right[' + right.join(',') + ']',
-                        highlights: {}
-                    });
 
-                    var sortedLeft = qsort(left, depth + 1, 'Left part: ');
-                    var sortedRight = qsort(right, depth + 1, 'Right part: ');
-                    var merged = sortedLeft.concat(equal).concat(sortedRight);
-                    quickSteps.push({
-                        partition: { result: merged.slice(), phase: 'combined' },
-                        desc: 'Combine: [' + sortedLeft.join(',') + '] + [' + equal.join(',') + '] + [' + sortedRight.join(',') + '] = [' + merged.join(', ') + ']',
-                        highlights: {}
-                    });
-                    return merged;
+                    quickSteps.push({ type: 'partitioned', activeId: node.id, scanDetail: null, desc: 'Partition done! Left[' + node.left.arr.join(',') + '] | Pivot[' + node.pivotNode.arr.join(',') + '] | Right[' + node.right.arr.join(',') + ']' });
+
+                    processNode(node.left, 'Left part: ');
+                    processNode(node.right, 'Right part: ');
+
+                    var sortedLeft = node.left.sorted || [];
+                    var sortedRight = node.right.sorted || [];
+                    var pivotArr = node.pivotNode.sorted || [];
+                    node.sorted = sortedLeft.concat(pivotArr).concat(sortedRight);
+                    quickSteps.push({ type: 'combined', activeId: node.id, scanDetail: null, desc: 'Combine: [' + sortedLeft.join(',') + '] + [' + pivotArr.join(',') + '] + [' + sortedRight.join(',') + '] = [' + node.sorted.join(', ') + ']' });
                 }
 
-                qsort(arr, 0, '');
-                quickSteps.push({ arr: quickInitArr.slice().sort(function(a,b){return a-b;}), desc: 'Sorted! [' + quickInitArr.slice().sort(function(a,b){return a-b;}).join(', ') + '] \u2014 Average O(n log n)', highlights: { done: true } });
+                processNode(quickTree, '');
+                quickSteps.push({ type: 'done', activeId: quickTree.id, scanDetail: null, desc: 'Sorted! [' + quickTree.sorted.join(', ') + '] \u2014 Average O(n log n)' });
+            }
+
+            function renderQuickNodeBox(node, step, isPivotChild) {
+                var isActive = step.activeId === node.id;
+                var isSorted = node.sorted !== null;
+                var isDone = step.type === 'done';
+                var vals = isSorted ? node.sorted : node.arr;
+                var borderColor = 'var(--bg3)';
+                var shadow = '';
+                var pivotLabel = '';
+                if (isDone) { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
+                else if (isActive && step.type === 'combined') { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
+                else if (isActive && step.type === 'choose') { borderColor = 'var(--yellow)'; shadow = 'box-shadow:0 0 8px var(--yellow);'; }
+                else if (isActive && (step.type === 'scan' || step.type === 'partitioned')) { borderColor = 'var(--yellow)'; shadow = 'box-shadow:0 0 8px var(--yellow);'; }
+                else if (isActive && step.type === 'base') { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 8px var(--green);'; }
+                if (isPivotChild) { borderColor = 'var(--yellow)'; shadow = 'box-shadow:0 0 6px var(--yellow);'; pivotLabel = '<div style="font-size:0.6rem;color:var(--yellow);font-weight:700;text-align:center;">pivot</div>'; }
+
+                var html = '<div style="display:flex;flex-direction:column;align-items:center;">';
+                html += '<div style="display:flex;gap:3px;padding:4px 8px;border-radius:8px;border:2px solid ' + borderColor + ';background:var(--bg2);' + shadow + '">';
+                for (var j = 0; j < vals.length; j++) {
+                    var ecls = 'str-char-box';
+                    var estyle = 'min-width:28px;padding:3px 6px;font-size:0.82rem;';
+                    if (isDone || (isActive && step.type === 'combined') || (isActive && step.type === 'base')) ecls += ' matched';
+                    html += '<div class="' + ecls + '" style="' + estyle + '">' + vals[j] + '</div>';
+                }
+                if (vals.length === 0) html += '<span style="color:var(--text3);font-size:0.75rem;">empty</span>';
+                html += '</div>' + pivotLabel + '</div>';
+                return html;
             }
 
             function renderQuickViz(step) {
                 if (!step) { quickVizEl.innerHTML = ''; return; }
-                if (step.partition) {
-                    var p = step.partition;
-                    var html = '';
-                    if (p.phase === 'base') {
-                        html = '<div style="display:flex;justify-content:center;"><div class="str-char-box matched">' + p.equal[0] + '</div></div>';
-                    } else if (p.phase === 'choose') {
-                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
-                        for (var i = 0; i < p.sub.length; i++) {
-                            var ex = i === p.pivotIdx ? 'border-color:var(--yellow);box-shadow:0 0 12px var(--yellow);' : '';
-                            var lbl = i === p.pivotIdx ? '<div style="font-size:0.6rem;color:var(--yellow);margin-top:2px;font-weight:700;">pivot</div>' : '';
-                            html += '<div style="display:flex;flex-direction:column;align-items:center;"><div class="str-char-box" style="' + ex + '">' + p.sub[i] + '</div>' + lbl + '</div>';
-                        }
-                        html += '</div>';
-                    } else if (p.phase === 'scan') {
-                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
-                        for (var i = 0; i < p.sub.length; i++) {
-                            var ex = '';
-                            if (i === p.scanIdx) ex = 'border-color:var(--accent);box-shadow:0 0 10px var(--accent);transform:scale(1.1);';
-                            else if (i < p.scanIdx) ex = 'opacity:0.4;';
-                            html += '<div class="str-char-box" style="' + ex + '">' + p.sub[i] + '</div>';
-                        }
-                        html += '</div>';
-                        html += '<div style="display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap;">';
-                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:4px;">Left (&lt;' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--accent);border-radius:8px;">';
-                        p.left.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;">' + v + '</div>'; });
-                        html += '</div></div>';
-                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--yellow);font-weight:700;margin-bottom:4px;">Pivot (=' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--yellow);border-radius:8px;">';
-                        p.equal.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;border-color:var(--yellow);">' + v + '</div>'; });
-                        html += '</div></div>';
-                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:4px;">Right (&gt;' + p.pivot + ')</div><div style="display:flex;gap:4px;justify-content:center;min-height:36px;padding:4px 8px;border:1.5px dashed var(--red, #e17055);border-radius:8px;">';
-                        p.right.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.8rem;min-width:28px;padding:3px 5px;">' + v + '</div>'; });
-                        html += '</div></div></div>';
-                    } else if (p.phase === 'partitioned') {
-                        html = '<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">';
-                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--accent);font-weight:700;margin-bottom:4px;">Left</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--accent);border-radius:8px;min-height:36px;">';
-                        p.left.forEach(function(v) { html += '<div class="str-char-box">' + v + '</div>'; });
-                        if (!p.left.length) html += '<span style="color:var(--text3);font-size:0.8rem;">empty</span>';
-                        html += '</div></div>';
-                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--yellow);font-weight:700;margin-bottom:4px;">Pivot</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--yellow);border-radius:8px;box-shadow:0 0 8px var(--yellow);">';
-                        p.equal.forEach(function(v) { html += '<div class="str-char-box" style="border-color:var(--yellow);box-shadow:0 0 6px var(--yellow);">' + v + '</div>'; });
-                        html += '</div></div>';
-                        html += '<div style="text-align:center;"><div style="font-size:0.7rem;color:var(--red);font-weight:700;margin-bottom:4px;">Right</div><div style="display:flex;gap:4px;padding:6px 10px;border:2px solid var(--red, #e17055);border-radius:8px;min-height:36px;">';
-                        p.right.forEach(function(v) { html += '<div class="str-char-box">' + v + '</div>'; });
-                        if (!p.right.length) html += '<span style="color:var(--text3);font-size:0.8rem;">empty</span>';
-                        html += '</div></div></div>';
-                    } else if (p.phase === 'combined') {
-                        html = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
-                        p.result.forEach(function(v) { html += '<div class="str-char-box matched">' + v + '</div>'; });
-                        html += '</div>';
+
+                var html = '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;min-width:fit-content;">';
+
+                function collectVisible(node) {
+                    if (!node) return [];
+                    var result = [{ node: node, children: [] }];
+                    if (node._expanded) {
+                        var leftChildren = collectVisible(node.left);
+                        var pivotChildren = node.pivotNode ? [{ node: node.pivotNode, children: [], isPivot: true }] : [];
+                        var rightChildren = collectVisible(node.right);
+                        result[0].children = leftChildren.concat(pivotChildren).concat(rightChildren);
                     }
-                    quickVizEl.innerHTML = html;
-                    return;
+                    return result;
                 }
-                var arr = step.arr;
-                var hl = step.highlights || {};
-                var html3 = '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">';
-                for (var i = 0; i < arr.length; i++) {
-                    var cls = 'str-char-box';
-                    var ex = '';
-                    if (hl.done) { cls += ' matched'; ex = 'box-shadow:0 0 10px var(--green);'; }
-                    html3 += '<div class="' + cls + '" style="' + ex + '">' + arr[i] + '</div>';
+
+                function renderLevel(items, step, depth) {
+                    if (!items.length) return '';
+                    var h = '<div style="display:flex;align-items:flex-start;gap:10px;width:100%;justify-content:center;">';
+                    h += '<span style="font-size:0.65rem;color:var(--text3);min-width:14px;text-align:right;">L' + depth + '</span>';
+                    h += '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:nowrap;">';
+                    for (var i = 0; i < items.length; i++) {
+                        h += renderQuickNodeBox(items[i].node, step, items[i].isPivot || false);
+                    }
+                    h += '</div></div>';
+                    var hasChildren = items.some(function(it) { return it.children && it.children.length > 0; });
+                    if (hasChildren) {
+                        h += '<div style="text-align:center;color:var(--text3);font-size:0.7rem;line-height:1;letter-spacing:2px;">';
+                        for (var i = 0; i < items.length; i++) {
+                            if (items[i].children && items[i].children.length > 0) h += '\u2571\u2502\u2572';
+                            else h += '\u2502';
+                            if (i < items.length - 1) h += '&nbsp;&nbsp;';
+                        }
+                        h += '</div>';
+                        var nextItems = [];
+                        for (var i = 0; i < items.length; i++) {
+                            if (items[i].children) nextItems = nextItems.concat(items[i].children);
+                        }
+                        h += renderLevel(nextItems, step, depth + 1);
+                    }
+                    return h;
                 }
-                html3 += '</div>';
-                quickVizEl.innerHTML = html3;
+
+                var tree = collectVisible(quickTree);
+                html += renderLevel(tree, step, 0);
+
+                if (step.scanDetail) {
+                    var sd = step.scanDetail;
+                    html += '<div style="margin-top:12px;padding:10px 16px;border:2px solid var(--yellow);border-radius:10px;background:var(--bg2);">';
+                    html += '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;">';
+                    for (var i = 0; i < sd.sub.length; i++) {
+                        var ex = '';
+                        if (i === sd.scanIdx) ex = 'border-color:var(--accent);box-shadow:0 0 10px var(--accent);transform:scale(1.1);';
+                        else if (i < sd.scanIdx) ex = 'opacity:0.4;';
+                        html += '<div class="str-char-box" style="min-width:28px;padding:3px 6px;font-size:0.82rem;' + ex + '">' + sd.sub[i] + '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">';
+                    html += '<div style="text-align:center;"><div style="font-size:0.68rem;color:var(--accent);font-weight:700;margin-bottom:3px;">Left (&lt;' + sd.pivot + ')</div><div style="display:flex;gap:3px;justify-content:center;min-height:30px;padding:3px 6px;border:1.5px dashed var(--accent);border-radius:8px;">';
+                    sd.left.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.78rem;min-width:26px;padding:2px 4px;">' + v + '</div>'; });
+                    html += '</div></div>';
+                    html += '<div style="text-align:center;"><div style="font-size:0.68rem;color:var(--yellow);font-weight:700;margin-bottom:3px;">Pivot (=' + sd.pivot + ')</div><div style="display:flex;gap:3px;justify-content:center;min-height:30px;padding:3px 6px;border:1.5px dashed var(--yellow);border-radius:8px;">';
+                    sd.equal.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.78rem;min-width:26px;padding:2px 4px;border-color:var(--yellow);">' + v + '</div>'; });
+                    html += '</div></div>';
+                    html += '<div style="text-align:center;"><div style="font-size:0.68rem;color:var(--red);font-weight:700;margin-bottom:3px;">Right (&gt;' + sd.pivot + ')</div><div style="display:flex;gap:3px;justify-content:center;min-height:30px;padding:3px 6px;border:1.5px dashed var(--red, #e17055);border-radius:8px;">';
+                    sd.right.forEach(function(v) { html += '<div class="str-char-box" style="font-size:0.78rem;min-width:26px;padding:2px 4px;">' + v + '</div>'; });
+                    html += '</div></div></div></div>';
+                }
+
+                html += '</div>';
+                quickVizEl.innerHTML = html;
+            }
+
+            function quickResetExpanded(node) {
+                if (!node) return;
+                node._expanded = false;
+                quickResetExpanded(node.left);
+                quickResetExpanded(node.pivotNode);
+                quickResetExpanded(node.right);
+            }
+
+            function quickApplyStepsUpTo(idx) {
+                quickResetExpanded(quickTree);
+                function resetSorted(n) {
+                    if (!n) return;
+                    if (n.left || n.right) n.sorted = null;
+                    else if (n.arr.length <= 1) n.sorted = n.arr.slice();
+                    resetSorted(n.left);
+                    resetSorted(n.pivotNode);
+                    resetSorted(n.right);
+                }
+                resetSorted(quickTree);
+
+                for (var si = 0; si <= idx; si++) {
+                    var s = quickSteps[si];
+                    if (s.type === 'partitioned') {
+                        var nd = quickFindNode(quickTree, s.activeId);
+                        if (nd) nd._expanded = true;
+                    } else if (s.type === 'combined') {
+                        var nd2 = quickFindNode(quickTree, s.activeId);
+                        if (nd2 && nd2.left && nd2.right && nd2.pivotNode) {
+                            var sl = nd2.left.sorted || [];
+                            var sr = nd2.right.sorted || [];
+                            var sp = nd2.pivotNode.sorted || [];
+                            nd2.sorted = sl.concat(sp).concat(sr);
+                        }
+                    } else if (s.type === 'base') {
+                        var nd3 = quickFindNode(quickTree, s.activeId);
+                        if (nd3) nd3.sorted = nd3.arr.slice();
+                    } else if (s.type === 'done') {
+                        var nd4 = quickFindNode(quickTree, s.activeId);
+                        if (nd4 && !nd4.sorted) {
+                            var sl2 = nd4.left ? (nd4.left.sorted || []) : [];
+                            var sr2 = nd4.right ? (nd4.right.sorted || []) : [];
+                            var sp2 = nd4.pivotNode ? (nd4.pivotNode.sorted || []) : [];
+                            nd4.sorted = sl2.concat(sp2).concat(sr2);
+                        }
+                    }
+                }
+            }
+
+            function quickFindNode(node, id) {
+                if (!node) return null;
+                if (node.id === id) return node;
+                return quickFindNode(node.left, id) || quickFindNode(node.pivotNode, id) || quickFindNode(node.right, id);
             }
 
             function quickStep() {
                 if (quickStepIdx >= quickSteps.length - 1) return;
                 quickStepIdx++;
                 var s = quickSteps[quickStepIdx];
+                quickApplyStepsUpTo(quickStepIdx);
                 quickMsg.textContent = s.desc;
                 renderQuickViz(s);
             }
 
             function quickReset() {
                 quickStepIdx = -1;
+                quickResetExpanded(quickTree);
+                quickBuildSteps();
                 quickMsg.textContent = '\u25B6 Press Step to start Quick Sort!';
                 quickVizEl.innerHTML = '';
             }
