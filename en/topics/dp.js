@@ -152,10 +152,8 @@ var dpTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> What is DP?</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> You already calculated <strong>1+1+1+1+1 = 5</strong>.<br>
-                    Now someone asks you <strong>1+1+1+1+1+1</strong>.<br>
-                    Would you add from scratch? Or just add 1 to your previous answer (5)?<br><br>
-                    DP is exactly this idea. <strong>Store computed results and reuse them</strong>!
+                    Say you just added up 1+1+1+1+1 and got 5. Now someone asks, "What's 1+1+1+1+1+1?" Would you start over from the beginning? Of course not -- you'd just take your 5 and add one more to get 6!<br><br>
+                    That's the whole idea behind Dynamic Programming: <strong>remember answers you already figured out, so you never do the same work twice</strong>. It sounds simple, but this one trick can turn a problem that takes millions of steps into one that takes just a few hundred.
                 </div>
 
                 <div class="concept-demo">
@@ -194,6 +192,9 @@ var dpTopic = {
             <!-- Section 2: Two Conditions for DP -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> Two Conditions for DP</div>
+                <div class="analogy-box">
+                    Not every problem benefits from DP -- it only helps when two things are true. Think of it like a notebook of answers: it only saves you time if you keep running into the <em>same questions</em>, and if the answer to a big question can be built from answers to smaller ones.
+                </div>
                 <div class="concept-grid">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -203,7 +204,7 @@ var dpTopic = {
                             </svg>
                         </div>
                         <h3>Overlapping Subproblems</h3>
-                        <p>The same small problems appear multiple times. Solving with recursion repeats the same computation endlessly. DP stores results once and reuses them.</p>
+                        <p>The same mini-problems keep popping up again and again. Without DP, you'd solve them from scratch every time. With DP, you write the answer down once and just look it up next time.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
@@ -214,7 +215,7 @@ var dpTopic = {
                             </svg>
                         </div>
                         <h3>Optimal Substructure</h3>
-                        <p>The answer to a big problem is built from answers to smaller problems. Solve the small problems well, and you can combine them to solve the big one.</p>
+                        <p>The best answer to a big problem is built by combining the best answers to smaller problems. Solve the small pieces well, snap them together, and you've got the answer to the whole thing.</p>
                     </div>
                 </div>
 

@@ -160,9 +160,8 @@ const linkedListTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> What is a Linked List?</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> A linked list is like a <em>"treasure hunt game"</em>!
-                    Each piece of paper (node) has a treasure (data) and <strong>the location of the next piece of paper (pointer)</strong> written on it.
-                    Starting from the first piece of paper (head), you can traverse the entire list by following the arrows!
+                    Ever done a treasure hunt where each clue tells you where to find the next one? A linked list works exactly like that! Each stop along the way is called a <strong>node</strong>, and it holds two things: some data and a note saying "the next node is over there."
+                    You start at the first node, called the <strong>head</strong>, and follow the trail from node to node. The cool part? You can easily add a new stop in the middle -- just change two notes. No need to move anything else!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
@@ -292,9 +291,8 @@ while (node) {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> Reversing a Linked List</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> Reversing a list is like <em>"flipping arrow directions"</em>!
-                    To change 1→2→3 into 3→2→1, you flip each node's next pointer to point in the opposite direction.
-                    You just need three pointers (prev, curr, next).
+                    What if you wanted to walk the treasure hunt backwards? You'd need to flip every clue so it points to the <em>previous</em> stop instead of the next one. That's reversing a linked list: take 1→2→3 and turn it into 3→2→1 by flipping each arrow.
+                    The trick is simple -- you walk along the list with three helpers named <strong>prev</strong>, <strong>curr</strong>, and <strong>next</strong>, flipping one arrow at a time.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">

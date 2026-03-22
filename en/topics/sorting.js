@@ -159,12 +159,13 @@ const sortingTopic = {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">1</span> Basic Sorts: O(n²) — double loop, very slow</div>
+                <div class="concept-section-title"><span class="section-num">1</span> Basic Sorts -- simple but slow</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> Imagine sorting a hand of cards!
-                    <em>Selection Sort</em> is "find the smallest card and place it at the front",
-                    <em>Insertion Sort</em> is "insert a new card into the correct position",
-                    <em>Bubble Sort</em> is "compare adjacent cards and swap them".
+                    Ever sorted a messy hand of cards? There are a few natural ways to do it.
+                    You could scan for the <strong>smallest card</strong> and move it to the front each time -- that's <em>Selection Sort</em>.
+                    Or you could pick up one card at a time and <strong>slide it into the right spot</strong> in your already-sorted hand -- that's <em>Insertion Sort</em>.
+                    Or you could just keep <strong>swapping neighbors</strong> that are out of order until everything settles -- that's <em>Bubble Sort</em>.
+                    They all work, but with 100 cards, each one could take up to 10,000 steps. So how can we do better? Keep reading!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
@@ -359,11 +360,11 @@ void insertion_sort(vector&lt;int&gt;&amp; arr) {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">2</span> Merge Sort: O(n log n) — fast sorting speed</div>
+                <div class="concept-section-title"><span class="section-num">2</span> Merge Sort -- the fast way</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> Merge Sort is <em>"split in half, sort each half, then merge"</em>!
-                    Split a pile of cards in half, sort each half, then merge the two piles by comparing from the top.
-                    This is a classic example of <strong>Divide & Conquer</strong>.
+                    The basic sorts we just saw are painfully slow for big lists. So how can we sort faster?
+                    Here's a clever trick: take a messy pile of cards, rip it in half, sort each half separately, then merge the two sorted halves back together like a zipper.
+                    Since you keep splitting in half, you only need about 17 levels of splitting for 100,000 cards. Compare that to 10 billion steps for basic sorts! This "split, sort, merge" strategy is called <strong>Divide & Conquer</strong>.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">

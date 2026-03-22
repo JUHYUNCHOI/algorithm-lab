@@ -161,9 +161,8 @@ const hashTableTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> What is a Hash Table?</div>
                 <div class="analogy-box">
-                    <strong>Origin of the name:</strong> <em>"Hash"</em> means to <strong>chop into small pieces</strong> in cooking.
-                    The process of breaking data (keys) into pieces and converting them to numbers is similar to chopping ingredients, hence "Hashing."
-                    Since we use that number as an <strong>index in an array (table)</strong> — <em>Hash + Table</em> = <strong>Hash Table</strong>!
+                    You know how in a library, every book has a call number so you can find it right away without scanning every shelf? A hash table works the same way -- you give it a <strong>key</strong> like a name, and it instantly tells you where the value is stored.
+                    Fun fact: the word "hash" comes from cooking, where it means to chop food into small pieces. A hash table "chops up" your key, turns it into a number, and uses that number to jump straight to the right spot. No searching needed!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
@@ -255,8 +254,7 @@ int main() {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> How Does a Hash Function Work?</div>
                 <div class="analogy-box">
-                    <strong>Key question:</strong> How do we convert the string <code>"apple"</code> into a <strong>number</strong>?
-                    A hash function works in 3 steps: <em>Split → Mix → Fit</em>.
+                    So how does a hash table turn a word like <code>"apple"</code> into a locker number? That's the job of a <strong>hash function</strong>. Think of it like a magic blender: you toss in a word, it gets chopped into numbers, blended together, and out comes a single locker number. The same word always gets the same number, so you can find it again instantly.
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">

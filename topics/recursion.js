@@ -33,7 +33,7 @@ const recursionTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 재귀란 무엇인가?</div>
                 <div class="analogy-box matryoshka-section">
-                    <strong>비유로 이해하기:</strong> 러시아 인형(마트료시카)을 생각해보세요.
+                    러시아 인형(마트료시카) 본 적 있나요? 큰 인형을 열면 안에 작은 인형이 들어 있어요!
 
                     <div class="matryoshka-container">
                         <div class="matryoshka-dolls" id="matryoshka-dolls">
@@ -83,9 +83,9 @@ const recursionTopic = {
 
                     <div class="matryoshka-text">
                         큰 인형을 열면 작은 인형이 나오고, 그 안에 더 작은 인형이 있고...<br>
-                        가장 작은 인형 — 더 이상 열 수 없는 것(<strong>멈추는 조건</strong>)을 만나면 끝!<br>
-                        재귀도 똑같습니다. <strong>함수가 자기 자신을 다시 부르면서</strong>
-                        문제를 점점 작게 만들다가, <strong>멈추는 조건</strong>에서 딱 멈춥니다.
+                        가장 작은 인형을 만나면 더 이상 열 수 없으니까 끝나죠!<br>
+                        재귀도 똑같아요. <strong>함수가 자기 자신을 다시 부르면서</strong>
+                        문제를 점점 작게 만들다가, <strong>더 이상 작아질 수 없으면</strong> 딱 멈춰요.
                     </div>
                 </div>
 

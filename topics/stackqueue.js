@@ -163,9 +163,9 @@ const stackQueueTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 스택 (Stack)</div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 스택은 <em>"접시 쌓기"</em>입니다!
-                    접시를 위에서 쌓고(push), 위에서만 꺼냅니다(pop).
-                    가장 나중에 올린 접시를 가장 먼저 꺼내죠. 이것이 <strong>LIFO</strong>(나중에 넣은 게 먼저 나옴)입니다.
+                    접시를 쌓는 걸 생각해 보세요! 접시를 위에 올리고, 꺼낼 때도 맨 위에서 꺼내잖아요?
+                    맨 아래 접시를 먼저 꺼내려면 위에 있는 것을 전부 치워야 하죠.
+                    그래서 <strong>마지막에 올린 접시가 가장 먼저 나와요</strong>. 이게 바로 스택이에요!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — Push & Pop</div>
@@ -188,22 +188,22 @@ const stackQueueTopic = {
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">push</text></svg></div>
                         <h3>push(x)</h3>
-                        <p>스택 맨 위에 원소 x를 넣습니다. <span class="lang-py">Python에서는 <code>append()</code></span><span class="lang-cpp">C++은 <code>push()</code></span>.</p>
+                        <p>접시를 맨 위에 올려요! <span class="lang-py">Python에서는 <code>append()</code></span><span class="lang-cpp">C++에서는 <code>push()</code></span>를 써요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">pop</text></svg></div>
                         <h3>pop()</h3>
-                        <p>스택 맨 위 원소를 꺼내고 반환합니다. 비어있으면 에러! <code>O(1)</code><small>(한 번에 바로!)</small> 연산입니다.</p>
+                        <p>맨 위 접시를 쏙 꺼내요! 접시가 하나도 없으면 꺼낼 수 없으니 에러가 나요. 꺼내는 건 한 번이면 돼요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">peek</text></svg></div>
                         <h3>peek / top</h3>
-                        <p>꺼내지 않고 맨 위 원소를 확인합니다. <span class="lang-py">Python에서는 <code>stack[-1]</code></span><span class="lang-cpp">C++에서는 <code>stk.top()</code></span>.</p>
+                        <p>맨 위에 뭐가 있는지 살짝 들여다봐요. 꺼내는 건 아니에요! <span class="lang-py">Python: <code>stack[-1]</code></span><span class="lang-cpp">C++: <code>stk.top()</code></span></p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">LIFO</text></svg></div>
                         <h3>활용 예시</h3>
-                        <p>괄호 검증, 뒤로가기 기능, 재귀 호출 스택, DFS(깊이 우선 탐색 — 한 길을 끝까지) 구현에 쓰입니다.</p>
+                        <p>괄호가 짝이 맞는지 확인하기, 웹 브라우저의 뒤로가기 버튼, 미로에서 한 길을 끝까지 가보는 탐색 같은 곳에서 써요!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -241,9 +241,9 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> 큐 (Queue)</div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 큐는 <em>"편의점 줄 서기"</em>입니다!
-                    먼저 줄 선 사람이 먼저 계산합니다. 뒤에서 들어가고(enqueue), 앞에서 나옵니다(dequeue).
-                    이것이 <strong>FIFO</strong>(먼저 넣은 게 먼저 나옴)입니다.
+                    편의점에서 줄을 서면 <strong>먼저 온 사람이 먼저 계산</strong>하잖아요?
+                    새로 온 사람은 맨 뒤에 서고, 맨 앞 사람부터 나가요.
+                    이게 바로 큐예요! 순서를 지키는 착한 줄 서기라고 생각하면 돼요.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — Enqueue & Dequeue</div>
@@ -268,17 +268,17 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">enqueue</text></svg></div>
                         <h3>enqueue(x)</h3>
-                        <p>큐의 뒤쪽에 원소를 넣습니다. <span class="lang-py"><code>append()</code>와 동일</span><span class="lang-cpp"><code>push()</code>와 동일</span>.</p>
+                        <p>줄 맨 뒤에 서는 거예요! <span class="lang-py"><code>append()</code></span><span class="lang-cpp"><code>push()</code></span>로 넣어요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--red, #e17055)">dequeue</text></svg></div>
                         <h3>dequeue()</h3>
-                        <p>큐의 앞쪽에서 원소를 꺼냅니다. <span class="lang-py">Python <code>deque</code>의 <code>popleft()</code></span><span class="lang-cpp">C++ <code>queue</code>의 <code>front()</code> + <code>pop()</code></span>.</p>
+                        <p>줄 맨 앞 사람이 나가는 거예요! <span class="lang-py"><code>deque</code>의 <code>popleft()</code></span><span class="lang-cpp"><code>queue</code>의 <code>front()</code> + <code>pop()</code></span>으로 꺼내요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">FIFO</text></svg></div>
                         <h3>활용 예시</h3>
-                        <p>BFS(너비 우선 탐색 — 가까운 곳부터) 탐색, 프린터 큐, 프로세스 스케줄링에 쓰입니다.</p>
+                        <p>가까운 곳부터 차례대로 탐색하기, 프린터에서 먼저 보낸 문서 먼저 출력하기 같은 곳에서 써요!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">

@@ -143,12 +143,10 @@ const binarySearchTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> What is Binary Search?</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> Imagine looking up "mango" in a dictionary.<br><br>
-                    Flipping from the first page one by one? You'd have to turn thousands of pages!<br>
-                    But if you open to the <strong>middle of the dictionary</strong>? You land near "L".<br>
-                    "M" comes after "L", so → <strong>discard the first half!</strong><br>
-                    Open the middle of the remaining half again... repeat and you'll find it quickly!<br><br>
-                    This is exactly <strong>binary search</strong>. It's extremely fast because it <strong>discards half</strong> each time.
+                    Imagine you need to find the word "mango" in a thick dictionary. Would you start at page 1 and flip through every single page? That could take thousands of flips!<br><br>
+                    Instead, you'd open the dictionary right in the middle. You land near "L." Since "M" comes after "L," you know mango must be in the second half -- so you toss the first half and never look at it again.<br>
+                    Now open the middle of what's left, toss another half, and repeat. In just 20 flips, you could find any word in a million-page dictionary!<br><br>
+                    That's <strong>binary search</strong>: throw away half the remaining options at every step. It's incredibly fast.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Find a Value with Binary Search</div>
@@ -219,18 +217,21 @@ int binary_search(vector&lt;int&gt;&amp; arr, int target) {
 
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> How Binary Search Works</div>
+                <div class="analogy-box">
+                    Binary search is like a guessing game. Your friend picks a number between 1 and 100, and after each guess they say "higher" or "lower." What's the smartest strategy? Always guess the middle! That way you cut the possibilities in half every time. Here are the three rules you need:
+                </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
-                        <h3>① Sorting Required!</h3>
-                        <p>Binary search only works on a <strong>sorted array</strong>.</p>
+                        <h3>① Numbers must be sorted!</h3>
+                        <p>This trick only works when the data is in order. Otherwise, "higher" and "lower" don't help you toss out half.</p>
                     </div>
                     <div class="concept-card">
-                        <h3>② Check the Middle</h3>
-                        <p><strong>mid = (lo + hi) / 2</strong><br>Compare with the middle value and discard half.</p>
+                        <h3>② Always check the middle</h3>
+                        <p>Pick the middle spot: <strong>mid = (lo + hi) / 2</strong>. Is it the answer? If not, you know which half to keep.</p>
                     </div>
                     <div class="concept-card">
-                        <h3>③ Narrow the Range</h3>
-                        <p>If target > mid → <strong>lo = mid+1</strong><br>If target < mid → <strong>hi = mid-1</strong></p>
+                        <h3>③ Shrink the range</h3>
+                        <p>Target bigger than mid? Move <strong>lo</strong> up. Smaller? Move <strong>hi</strong> down. Half the range vanishes every step.</p>
                     </div>
                 </div>
                 <div class="concept-demo">

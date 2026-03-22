@@ -33,7 +33,7 @@ const recursionTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> What is Recursion?</div>
                 <div class="analogy-box matryoshka-section">
-                    <strong>Understanding by analogy:</strong> Think of Russian nesting dolls (matryoshka).
+                    You know those Russian nesting dolls? Open one up, and there's a smaller one inside. Open that, and there's an even smaller one. You keep going until you reach the tiniest doll that doesn't open -- that's where you stop!
 
                     <div class="matryoshka-container">
                         <div class="matryoshka-dolls" id="matryoshka-dolls">
@@ -82,10 +82,9 @@ const recursionTopic = {
                     </div>
 
                     <div class="matryoshka-text">
-                        Open a big doll and a smaller one appears, inside that an even smaller one...<br>
-                        The smallest doll — the one that can't be opened (<strong>base case</strong>) — is where it ends!<br>
-                        Recursion works the same way. <strong>A function calls itself</strong>,
-                        making the problem smaller and smaller, until it reaches the <strong>base case</strong> and stops.
+                        Recursion works the same way. A function calls itself, handing off a slightly smaller version of the problem each time.
+                        Eventually it reaches the tiniest version -- the <strong>base case</strong> -- where the answer is obvious, and it stops calling itself.
+                        Then all the answers bubble back up, just like closing the dolls back together from smallest to biggest!
                     </div>
                 </div>
 
@@ -110,6 +109,9 @@ const recursionTopic = {
             <!-- ② Two Essential Elements of Recursion -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> Two Essential Elements of Recursion</div>
+                <div class="analogy-box">
+                    Every recursion needs exactly two ingredients. Forget one, and things go wrong! Think of it like a countdown: you need to know <em>when to stop counting</em> and <em>how to count down one step at a time</em>.
+                </div>
                 <div class="concept-grid">
                     <div class="concept-card">
                         <div class="card-icon">
@@ -120,7 +122,7 @@ const recursionTopic = {
                             </svg>
                         </div>
                         <h3>🛑 Base Case</h3>
-                        <p>The condition that <strong>stops the recursion</strong>. Without it, the function calls itself infinitely!</p>
+                        <p>This is the "stop" sign. Without it, the function keeps calling itself forever -- like a hallway of mirrors with no end!</p>
                         <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
     if n &lt;= 1:      # ← Stop here!
         return 1</code></pre></div></span>
@@ -137,7 +139,7 @@ const recursionTopic = {
                             </svg>
                         </div>
                         <h3>🔄 Calling Itself</h3>
-                        <p>Call itself again, but <strong>make the problem smaller</strong> each time!</p>
+                        <p>Each time the function calls itself, it shrinks the problem a little. Like opening the next smaller doll -- you're always making progress toward the base case!</p>
                         <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
     if n &lt;= 1:
         return 1

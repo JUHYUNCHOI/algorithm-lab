@@ -581,9 +581,9 @@ const stringTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 문자열은 문자의 배열</div>
                 <div class="analogy-box">
-                    <strong>핵심 개념:</strong> 문자열은 <em>문자(character)가 한 줄로 나열된 배열</em>입니다.
-                    각 문자에는 <strong>인덱스 번호</strong>가 있어서, 배열처럼 <code>s[0]</code>, <code>s[1]</code>로 접근할 수 있죠.
-                    <span class="lang-py">슬라이싱(<code>s[1:4]</code>), 뒤집기(<code>s[::-1]</code>) 같은 배열 연산도 그대로 됩니다!</span><span class="lang-cpp">부분 문자열(<code>s.substr(1,3)</code>), 뒤집기(<code>string(s.rbegin(), s.rend())</code>) 같은 연산도 가능합니다!</span>
+                    문자열은 글자가 한 줄로 쭉 늘어선 거예요. 마치 사물함처럼 각 칸에 글자가 하나씩 들어 있고, 번호가 매겨져 있어요.
+                    <code>s[0]</code>하면 첫 번째 칸, <code>s[3]</code>하면 네 번째 칸을 바로 열어볼 수 있죠!
+                    <span class="lang-py">중간만 잘라내기(<code>s[1:4]</code>), 거꾸로 뒤집기(<code>s[::-1]</code>)도 가능해요.</span><span class="lang-cpp">중간만 잘라내기(<code>s.substr(1,3)</code>), 거꾸로 뒤집기(<code>string(s.rbegin(), s.rend())</code>)도 가능해요.</span>
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 인덱스, 슬라이싱, 뒤집기</div>
@@ -608,17 +608,17 @@ const stringTopic = {
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <h3>s[i] — 인덱스 접근</h3>
-                        <p>i번째 문자를 바로 가져옵니다. <code>O(1)</code><small>(한 번에 바로!)</small>로 매우 빠릅니다.</p>
+                        <p>3번 글자가 궁금하면? <code>s[3]</code>으로 바로 꺼내요! 앞에서부터 세지 않아도 돼요.</p>
                         <span class="lang-py"><code style="font-size:0.85rem;color:var(--accent);">s = "HELLO"<br>s[2]  → 'L'</code></span><span class="lang-cpp"><code style="font-size:0.85rem;color:var(--accent);">string s = "HELLO";<br>s[2]  → 'L'</code></span>
                     </div>
                     <div class="concept-card">
                         <span class="lang-py"><h3>s[a:b] — 슬라이싱</h3></span><span class="lang-cpp"><h3>s.substr(a,len) — 부분 문자열</h3></span>
-                        <span class="lang-py"><p>인덱스 a부터 b-1까지 부분 문자열을 추출합니다.</p></span><span class="lang-cpp"><p>인덱스 a부터 len개의 문자를 추출합니다.</p></span>
+                        <span class="lang-py"><p>1번부터 3번까지만 쏙 뽑아내고 싶을 때 써요. <code>s[1:4]</code>하면 1, 2, 3번 글자만 나와요!</p></span><span class="lang-cpp"><p>1번부터 3글자만 쏙 뽑아내고 싶을 때 써요. <code>s.substr(1,3)</code>하면 1, 2, 3번 글자만 나와요!</p></span>
                         <span class="lang-py"><code style="font-size:0.85rem;color:var(--accent);">s[1:4]  → "ELL"</code></span><span class="lang-cpp"><code style="font-size:0.85rem;color:var(--accent);">s.substr(1,3)  → "ELL"</code></span>
                     </div>
                     <div class="concept-card">
                         <span class="lang-py"><h3>s[::-1] — 뒤집기</h3></span><span class="lang-cpp"><h3>reverse — 뒤집기</h3></span>
-                        <p>문자열 전체를 역순으로 만듭니다. 팰린드롬 검사에 자주 쓰입니다!</p>
+                        <p>거꾸로 뒤집어요! "HELLO"가 "OLLEH"로 바뀌죠. 앞뒤가 같은지 확인할 때 딱이에요.</p>
                         <span class="lang-py"><code style="font-size:0.85rem;color:var(--accent);">s[::-1]  → "OLLEH"</code></span><span class="lang-cpp"><code style="font-size:0.85rem;color:var(--accent);">string(s.rbegin(), s.rend())  → "OLLEH"</code></span>
                     </div>
                 </div>
@@ -628,8 +628,9 @@ const stringTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> ASCII 코드 — 문자와 숫자의 연결</div>
                 <div class="analogy-box">
-                    <strong>핵심 개념:</strong> 컴퓨터는 문자를 <em>숫자로 저장</em>합니다.
-                    <span class="lang-py"><code>ord()</code>로 문자 → 숫자, <code>chr()</code>로 숫자 → 문자로 변환할 수 있어요.</span><span class="lang-cpp"><code>(int)</code> 캐스팅으로 문자 → 숫자, <code>(char)</code> 캐스팅으로 숫자 → 문자로 변환할 수 있어요.</span>
+                    컴퓨터는 글자를 직접 이해하지 못해요. 대신 글자마다 고유한 번호를 붙여서 숫자로 기억해요.
+                    예를 들어 'A'는 65번, 'a'는 97번이에요!
+                    <span class="lang-py"><code>ord('A')</code>하면 65가 나오고, 반대로 <code>chr(65)</code>하면 'A'가 돌아와요.</span><span class="lang-cpp"><code>(int)'A'</code>하면 65가 나오고, 반대로 <code>(char)65</code>하면 'A'가 돌아와요.</span>
                     <br>
                     <span class="lang-py"><a href="https://docs.python.org/3/library/functions.html#ord" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: ord() ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/explicit_cast" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: 타입 캐스팅 ↗</a></span>
                     &nbsp;|&nbsp;

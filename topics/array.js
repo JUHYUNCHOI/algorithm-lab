@@ -217,9 +217,9 @@ const arrayTopic = {
                     <span class="section-num">1</span> 배열 기초
                 </div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 배열은 <em>"번호가 적힌 사물함"</em>입니다!
-                    0번 사물함, 1번 사물함... 순서대로 나란히 있고, 번호만 알면 바로 열어볼 수 있습니다(O(1) — 한 번에 바로!).
-                    다만 중간에 사물함을 끼워넣으려면 뒤의 것들을 모두 밀어야 합니다(O(n) — 하나씩 다 확인).
+                    배열은 번호가 적힌 사물함이에요! 0번, 1번, 2번... 순서대로 줄지어 있죠.
+                    3번 사물함을 열고 싶으면? 3번으로 바로 가면 돼요! 앞에서부터 세지 않아도 됩니다.
+                    다만 중간에 새 사물함을 끼워넣으려면, 뒤에 있는 사물함을 전부 한 칸씩 밀어야 해서 좀 귀찮아요.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 인덱스로 O(1) 접근 vs 값 검색 O(n)</div>
@@ -247,28 +247,28 @@ const arrayTopic = {
                             <svg width="38" height="38" viewBox="0 0 38 38"><rect x="2" y="14" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.3"/><rect x="14" y="14" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.6"/><rect x="26" y="14" width="10" height="10" rx="2" fill="var(--accent)" opacity="0.9"/></svg>
                         </div>
                         <h3>인덱스 접근 O(1)</h3>
-                        <p><code>arr[i]</code>로 어떤 위치든 바로 접근할 수 있습니다. 배열의 가장 큰 장점입니다!</p>
+                        <p><code>arr[3]</code>하면 3번 칸을 바로 열 수 있어요. 번호만 알면 한 번에 찾으니까 엄청 빨라요!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--green)">O(n)</text></svg>
                         </div>
                         <h3>순회</h3>
-                        <p>배열의 모든 원소를 한 번씩 보면 O(n)입니다. 대부분의 배열 문제의 기본입니다.</p>
+                        <p>배열에 있는 걸 전부 한 번씩 확인하는 거예요. 10개가 있으면 10번 봐야 하죠. 배열 문제의 기본이에요!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="12" font-weight="bold" fill="var(--yellow)">insert</text></svg>
                         </div>
                         <h3>삽입/삭제 O(n)</h3>
-                        <p>중간에 넣거나 빼려면 뒤의 원소를 모두 밀어야 합니다. 끝에서의 작업은 O(1)!</p>
+                        <p>중간에 끼워넣으려면 뒤에 있는 것들을 전부 한 칸씩 밀어야 해요. 맨 끝에 넣는 건 밀 필요 없으니 빨라요!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="2" y="24" font-size="11" font-weight="bold" fill="var(--accent)">sorted</text></svg>
                         </div>
                         <h3>정렬된 배열</h3>
-                        <p>정렬되어 있으면 이분 탐색(O(log n) — 반씩 줄여가며 찾기)이 가능합니다. 투 포인터(양쪽에서 동시에 좁혀오기)도 정렬 후 사용합니다.</p>
+                        <p>크기순으로 줄 세워져 있으면 반씩 쪼개가며 찾을 수 있어요. 100만 개도 20번이면 찾아요! 양쪽 끝에서 동시에 좁혀오는 방법도 쓸 수 있고요.</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
@@ -352,9 +352,9 @@ int main() {
                     <span class="section-num">2</span> 투 포인터 (Two Pointers)
                 </div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> <em>"양쪽 끝에서 동시에 걸어오는 두 사람"</em>입니다!
-                    정렬된 배열에서 두 수의 합을 찾을 때, 합이 너무 크면 오른쪽을 줄이고, 너무 작으면 왼쪽을 늘립니다.
-                    이중 for문(O(n²) — 이중 반복문만큼 느림) 대신 <strong>O(n)</strong>에 해결할 수 있습니다!
+                    양쪽 끝에서 두 사람이 동시에 걸어오면서 찾는다고 생각해 보세요!
+                    두 수를 더했는데 너무 크면? 오른쪽 사람이 한 걸음 왼쪽으로. 너무 작으면? 왼쪽 사람이 한 걸음 오른쪽으로.
+                    이렇게 하면 모든 짝을 일일이 확인하지 않아도 돼요. 100개면 100번이면 충분해요!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 투 포인터로 합 찾기</div>
@@ -378,21 +378,21 @@ int main() {
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--green)">L→</text></svg>
                         </div>
                         <h3>왼쪽에서 시작</h3>
-                        <p><code>left = 0</code>에서 시작하여 오른쪽으로 이동합니다.</p>
+                        <p>한 사람은 맨 왼쪽에서 출발해요. <code>left = 0</code>부터 오른쪽으로 한 칸씩 이동해요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="26" font-size="14" font-weight="bold" fill="var(--accent)">←R</text></svg>
                         </div>
                         <h3>오른쪽에서 시작</h3>
-                        <p><code>right = n-1</code>에서 시작하여 왼쪽으로 이동합니다.</p>
+                        <p>다른 사람은 맨 오른쪽에서 출발해요. <code>right = n-1</code>부터 왼쪽으로 이동하죠.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon">
                             <svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="22" font-size="18" font-weight="bold" fill="var(--yellow)">↔</text></svg>
                         </div>
                         <h3>조건에 따라 이동</h3>
-                        <p>합이 크면 right--, 작으면 left++. O(n)에 완료!</p>
+                        <p>합이 너무 크면 큰 쪽을 줄이고, 너무 작으면 작은 쪽을 키워요. 딱 맞으면 찾은 거예요!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">

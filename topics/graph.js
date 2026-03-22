@@ -153,33 +153,33 @@ var graphTopic = {
             <div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">1</span> 그래프란?</div>\
                 <div class="analogy-box">\
-                    <strong>비유로 이해하기:</strong> 여러분의 <strong>친구 관계</strong>를 그림으로 그려 봅시다!<br><br>\
-                    각 사람을 <strong>점(정점)</strong>으로, 친구 사이를 <strong>줄(간선)</strong>로 연결하면 됩니다.<br>\
-                    예를 들어, 민수가 영희와 친구이고, 영희가 철수와 친구이면:<br>\
-                    <strong>민수 — 영희 — 철수</strong> 이렇게 연결됩니다.<br><br>\
-                    이런 그림을 <strong>그래프</strong>라고 합니다. SNS 친구 관계, 지하철 노선도, 인터넷 연결 등 모두 그래프입니다!\
+                    여러분의 <strong>친구 관계</strong>를 그림으로 그려 볼까요?<br><br>\
+                    각 사람을 <strong>점</strong>으로, 친구 사이를 <strong>줄</strong>로 연결하면 돼요.<br>\
+                    예를 들어, 민수가 영희랑 친구이고, 영희가 철수랑 친구이면:<br>\
+                    <strong>민수 — 영희 — 철수</strong> 이렇게 줄로 이어져요.<br><br>\
+                    이런 그림을 <strong>그래프</strong>라고 해요. SNS 친구 관계, 지하철 노선도, 인터넷 연결 같은 게 다 그래프예요!\
                 </div>\
 \
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
                     <div class="concept-card">\
                         <div class="card-icon"><span class="icon-svg"><svg viewBox="0 0 48 48" width="40" height="40"><circle cx="14" cy="14" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="34" cy="14" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="34" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><line x1="19" y1="14" x2="29" y2="14" stroke="currentColor" stroke-width="2"/><line x1="16" y1="19" x2="22" y2="29" stroke="currentColor" stroke-width="2"/><line x1="32" y1="19" x2="26" y2="29" stroke="currentColor" stroke-width="2"/></svg></span></div>\
-                        <h3>정점(Vertex)과 간선(Edge)</h3>\
-                        <p>정점은 점, 간선은 점 사이를 잇는 줄입니다.<br>N개의 정점과 M개의 간선이 있습니다.</p>\
+                        <h3>정점과 간선</h3>\
+                        <p>점 하나하나가 정점이고, 점과 점을 잇는 줄이 간선이에요.<br>사람이 N명, 친구 관계가 M개라고 생각하면 돼요!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon"><span class="icon-svg"><svg viewBox="0 0 48 48" width="40" height="40"><circle cx="14" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="34" cy="24" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/><line x1="19" y1="22" x2="29" y2="22" stroke="currentColor" stroke-width="2"/><line x1="19" y1="26" x2="29" y2="26" stroke="currentColor" stroke-width="2"/><polygon points="29,20 33,22 29,24" fill="currentColor"/><polygon points="19,24 15,26 19,28" fill="currentColor"/></svg></span></div>\
                         <h3>방향 vs 무방향 그래프</h3>\
-                        <p>무방향: 양쪽 다 이동 가능 (친구 관계)<br>방향: 한 방향만 이동 (팔로우 관계)</p>\
+                        <p>친구 관계는 서로 왔다갔다 할 수 있죠? 그게 무방향!<br>SNS 팔로우처럼 한쪽만 가능하면 방향 그래프예요.</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon"><span class="icon-svg"><svg viewBox="0 0 48 48" width="40" height="40"><text x="4" y="14" font-size="10" fill="currentColor">1:</text><text x="16" y="14" font-size="10" fill="currentColor">[2, 3]</text><text x="4" y="28" font-size="10" fill="currentColor">2:</text><text x="16" y="28" font-size="10" fill="currentColor">[1, 4]</text><text x="4" y="42" font-size="10" fill="currentColor">3:</text><text x="16" y="42" font-size="10" fill="currentColor">[1]</text></svg></span></div>\
                         <h3>인접 리스트</h3>\
-                        <p>각 정점마다 연결된 이웃 목록을 저장합니다.<br>메모리 효율적! (주로 사용)</p>\
+                        <p>각 사람마다 "내 친구 목록"을 따로 적어두는 거예요.<br>필요한 만큼만 저장하니까 효율적이에요!</p>\
                     </div>\
                     <div class="concept-card">\
                         <div class="card-icon"><span class="icon-svg"><svg viewBox="0 0 48 48" width="40" height="40"><rect x="4" y="4" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="18" x2="44" y2="18" stroke="currentColor" stroke-width="1"/><line x1="4" y1="32" x2="44" y2="32" stroke="currentColor" stroke-width="1"/><line x1="18" y1="4" x2="18" y2="44" stroke="currentColor" stroke-width="1"/><line x1="32" y1="4" x2="32" y2="44" stroke="currentColor" stroke-width="1"/><text x="25" y="14" text-anchor="middle" font-size="9" fill="currentColor">1</text><text x="11" y="28" text-anchor="middle" font-size="9" fill="currentColor">1</text></svg></span></div>\
                         <h3>인접 행렬</h3>\
-                        <p>N\u00D7N 표에 연결 여부를 0/1로 저장합니다.<br>간선이 많으면 비효율적입니다.</p>\
+                        <p>N명 전체의 관계를 큰 표에 적어요. 친구면 1, 아니면 0!<br>사람이 많으면 표가 너무 커져서 비효율적이에요.</p>\
                     </div>\
                 </div>\
 \

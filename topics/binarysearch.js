@@ -143,12 +143,12 @@ const binarySearchTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 이분 탐색이란?</div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 국어사전에서 "사과"를 찾는다고 생각해 보세요.<br><br>
-                    첫 페이지부터 한 장씩 넘기면? 몇 천 페이지를 넘겨야 합니다!<br>
-                    하지만 <strong>사전의 중간</strong>을 펴면? "ㅁ" 근처가 나옵니다.<br>
-                    "사"는 "ㅁ"보다 뒤에 있으니 → <strong>앞 절반은 버립니다!</strong><br>
-                    다시 남은 절반의 중간을 펴고... 이것을 반복하면 금방 찾습니다!<br><br>
-                    이것이 바로 <strong>이분 탐색</strong>입니다. 매번 <strong>절반을 버리기</strong> 때문에 매우 빠릅니다.
+                    국어사전에서 "사과"를 찾는다고 생각해 보세요.<br><br>
+                    첫 페이지부터 한 장씩 넘기면? 몇 천 페이지를 넘겨야 해요!<br>
+                    그런데 <strong>딱 중간</strong>을 펴면? "ㅁ" 근처가 나와요.<br>
+                    "사"는 "ㅁ"보다 뒤에 있으니까 → <strong>앞 절반은 안 봐도 돼요!</strong><br>
+                    남은 절반의 중간을 또 펴고... 이걸 반복하면 금방 찾을 수 있어요!<br><br>
+                    이게 바로 <strong>이분 탐색</strong>이에요. 매번 <strong>반을 버리니까</strong> 엄청나게 빨라요.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 이분 탐색으로 값 찾기</div>

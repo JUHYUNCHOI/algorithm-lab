@@ -163,9 +163,8 @@ const stackQueueTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> Stack</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> A stack is like <em>"stacking plates"</em>!
-                    You stack plates from the top (push) and can only take them off from the top (pop).
-                    The plate placed last is the first one removed. This is <strong>LIFO</strong> — Last In, First Out!
+                    Picture a stack of cafeteria trays. You can only grab the tray on top, and when you add a new one, it goes on top too. The last tray you put down is the first one you pick up -- that's called <strong>LIFO</strong>, Last In First Out.
+                    Stacks show up everywhere: your browser's "Back" button is a stack of pages, and when your computer runs functions, it uses a stack to remember where to return to!
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Push & Pop</div>
@@ -241,9 +240,8 @@ cout &lt;&lt; stk.size();   // size → 2</code></pre>
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> Queue</div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> A queue is like <em>"waiting in line at a store"</em>!
-                    The first person in line is served first. Items enter from the back (enqueue) and leave from the front (dequeue).
-                    This is <strong>FIFO</strong> — First In, First Out!
+                    Now imagine waiting in line at a movie theater. The person who showed up first gets in first -- fair and simple. New people join at the back, and the person at the front goes in next. That's a <strong>queue</strong>, and the rule is <strong>FIFO</strong>, First In First Out.
+                    Your computer uses queues constantly: printing documents, handling web requests, and exploring mazes with BFS all rely on this fair "wait your turn" idea.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Enqueue & Dequeue</div>

@@ -581,9 +581,9 @@ const stringTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> Strings Are Arrays of Characters</div>
                 <div class="analogy-box">
-                    <strong>Key Concept:</strong> A string is <em>an array of characters lined up in a row</em>.
-                    Each character has an <strong>index number</strong>, so you can access them like an array with <code>s[0]</code>, <code>s[1]</code>.
-                    <span class="lang-py">Array operations like slicing (<code>s[1:4]</code>) and reversing (<code>s[::-1]</code>) work the same way!</span><span class="lang-cpp">Operations like substring (<code>s.substr(1,3)</code>) and reversing (<code>string(s.rbegin(), s.rend())</code>) are also available!</span>
+                    You know how lockers in a hallway each have a number on them? A string works the same way -- each character sits in its own numbered slot. The first character is at position 0, then 1, 2, and so on.
+                    So if you write <code>s[2]</code>, you instantly grab the character in slot 2, no searching needed!
+                    <span class="lang-py">And just like cutting a piece of tape, you can slice out a chunk with <code>s[1:4]</code> or flip the whole thing backwards with <code>s[::-1]</code>.</span><span class="lang-cpp">And you can grab a piece with <code>s.substr(1,3)</code> or flip the whole thing backwards with <code>string(s.rbegin(), s.rend())</code>.</span>
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Index, Slicing, Reversing</div>
@@ -628,8 +628,8 @@ const stringTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> ASCII Codes — The Link Between Characters and Numbers</div>
                 <div class="analogy-box">
-                    <strong>Key Concept:</strong> Computers <em>store characters as numbers</em>.
-                    <span class="lang-py">Use <code>ord()</code> to convert character → number, and <code>chr()</code> to convert number → character.</span><span class="lang-cpp">Use <code>(int)</code> casting to convert character → number, and <code>(char)</code> casting to convert number → character.</span>
+                    Here's a secret: computers don't actually understand letters. Behind the scenes, every character is stored as a number. The letter 'A' is really 65, 'B' is 66, and so on. This numbering system is called <strong>ASCII</strong>.
+                    <span class="lang-py">You can peek at a character's secret number with <code>ord('A')</code> which gives 65, and go back from number to character with <code>chr(65)</code> which gives 'A'.</span><span class="lang-cpp">In C++ you just cast: <code>(int)'A'</code> gives 65, and <code>(char)65</code> gives 'A'.</span>
                     <br>
                     <span class="lang-py"><a href="https://docs.python.org/3/library/functions.html#ord" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: ord() ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/language/explicit_cast" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ Reference: Type Casting ↗</a></span>
                     &nbsp;|&nbsp;

@@ -160,30 +160,30 @@ const linkedListTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 연결 리스트란?</div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 연결 리스트는 <em>"보물찾기 게임"</em>입니다!
-                    각 종이(노드)에는 보물(데이터)과 <strong>다음 종이의 위치(포인터)</strong>가 적혀 있습니다.
-                    첫 번째 종이(head)에서 시작해서 화살표를 따라가면 전체를 순회할 수 있습니다!
+                    보물찾기 게임을 해본 적 있나요? 첫 번째 쪽지에 힌트가 있고, 그걸 따라가면 다음 쪽지가 나오고, 또 따라가면 그다음 쪽지가 나오죠.
+                    연결 리스트도 똑같아요! 각 칸에 <strong>데이터</strong>와 <strong>"다음 칸은 어디야?"</strong>라는 화살표가 들어 있어요.
+                    첫 번째 칸에서 시작해서 화살표를 쭉 따라가면 전체를 볼 수 있어요!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">node</text></svg></div>
                         <h3>노드 (Node)</h3>
-                        <p><strong>데이터</strong>와 <strong>다음 노드를 가리키는 포인터(next)</strong>로 구성됩니다.</p>
+                        <p>쪽지 한 장이에요! 여기에 <strong>값</strong> 하나와 <strong>다음 쪽지가 어디 있는지</strong>가 적혀 있어요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--green)">head</text></svg></div>
                         <h3>Head</h3>
-                        <p>연결 리스트의 시작점입니다. head만 알면 전체 리스트를 순회할 수 있습니다.</p>
+                        <p>첫 번째 쪽지예요! 여기서부터 화살표를 따라가면 전체를 볼 수 있어요. 시작점만 알면 돼요!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--yellow)">O(1)</text></svg></div>
                         <h3>삽입/삭제가 빠름</h3>
-                        <p>중간 삽입/삭제가 <strong>O(1)</strong>! (위치를 안다면) 배열은 O(n)입니다.</p>
+                        <p>중간에 새 쪽지를 끼워넣거나 빼는 건 화살표만 바꿔주면 돼요! 배열처럼 뒤에 있는 걸 밀 필요가 없어요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">O(n)</text></svg></div>
                         <h3>접근이 느림</h3>
-                        <p>i번째 원소를 찾으려면 head부터 i번 따라가야 → <strong>O(n)</strong>. 배열은 O(1)!</p>
+                        <p>5번째 쪽지를 보려면 1번부터 차례로 따라가야 해요. 배열처럼 "5번!" 하고 바로 갈 수가 없어요.</p>
                     </div>
                 </div>
                 <div class="comparison-table" style="margin-top:1.5rem;overflow-x:auto;">

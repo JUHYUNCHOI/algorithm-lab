@@ -161,31 +161,31 @@ const hashTableTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> 해시 테이블이란?</div>
                 <div class="analogy-box">
-                    <strong>이름의 유래:</strong> <em>"Hash"</em>는 요리에서 재료를 <strong>잘게 다지다</strong>라는 뜻입니다.
-                    데이터(키)를 잘게 쪼개서 숫자로 바꾸는 과정이 마치 재료를 다지는 것과 비슷해서 "해싱(Hashing)"이라 부릅니다.
-                    그 숫자를 <strong>배열(테이블)의 인덱스</strong>로 쓰니까 — <em>해시 + 테이블</em> = <strong>해시 테이블</strong>!
+                    이름표가 붙은 서랍장을 생각해 보세요! "사과" 서랍을 열면 바로 사과 정보가 나와요.
+                    배열에서 뭔가를 찾으려면 하나씩 열어봐야 하잖아요? 100개면 100번 확인해야 해요.
+                    그런데 해시 테이블은 이름표만 보면 바로 찾을 수 있어서, 100개든 10만 개든 한 번이면 돼요!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--accent)">key→val</text></svg></div>
                         <h3>키-값 쌍</h3>
-                        <p>키(key)로 값(value)을 저장하고 즉시 꺼냅니다. <span class="lang-py">Python의 <code>dict</code></span><span class="lang-cpp">C++의 <code>unordered_map</code></span>.</p>
+                        <p>"사과"라는 이름으로 3을 저장하고, 나중에 "사과"로 바로 꺼내요. <span class="lang-py">Python에서는 <code>dict</code></span><span class="lang-cpp">C++에서는 <code>unordered_map</code></span>이 이 역할을 해요.</p>
                         <span class="lang-py"><a href="https://docs.python.org/3/library/stdtypes.html#dict" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: dict ↗</a></span><span class="lang-cpp"><a href="https://en.cppreference.com/w/cpp/container/unordered_map" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">C++ 참조: unordered_map ↗</a></span>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--green)">O(1)</text></svg></div>
-                        <h3>평균 O(1) <small>(한 번에 바로!)</small></h3>
-                        <p>삽입, 삭제, 검색 모두 평균 O(1)입니다. 배열의 O(n)<small>(하나씩 다 확인)</small> 탐색보다 훨씬 빠릅니다!</p>
+                        <h3>한 번에 바로 찾기!</h3>
+                        <p>넣기, 빼기, 찾기가 전부 한 번이면 돼요. 배열은 100개면 최대 100번 확인해야 하는데, 여기선 딱 1번이면 끝!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="14" font-weight="bold" fill="var(--yellow)">#</text></svg></div>
                         <h3>해시 함수</h3>
-                        <p>키를 숫자(해시값)로 변환합니다. 같은 키는 항상 같은 해시값을 줍니다.</p>
+                        <p>이름표를 서랍 번호로 바꿔주는 규칙이에요. "사과"를 넣으면 항상 같은 번호가 나와서, 그 서랍만 열면 돼요!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="12" font-weight="bold" fill="var(--red, #e17055)">set{}</text></svg></div>
                         <h3>집합 (Set)</h3>
-                        <p>값만 저장하고 <strong>중복을 허용하지 않습니다</strong>. <span class="lang-py"><code>in</code> 연산이 O(1)!</span><span class="lang-cpp"><code>count()</code>/<code>find()</code> 연산이 O(1)!</span></p>
+                        <p>같은 것을 두 번 넣어도 하나만 남아요. "이거 이미 본 적 있나?" 확인하는 게 엄청 빨라요! <span class="lang-py"><code>in</code>으로 한 번에 확인!</span><span class="lang-cpp"><code>count()</code>로 한 번에 확인!</span></p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">

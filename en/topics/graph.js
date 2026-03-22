@@ -153,11 +153,9 @@ var graphTopic = {
             <div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">1</span> What is a Graph?</div>\
                 <div class="analogy-box">\
-                    <strong>Understanding by analogy:</strong> Let\'s draw your <strong>friendships</strong> as a picture!<br><br>\
-                    Each person is a <strong>dot (vertex)</strong>, and a friendship between them is a <strong>line (edge)</strong>.<br>\
-                    For example, if Alice is friends with Bob, and Bob is friends with Charlie:<br>\
-                    <strong>Alice — Bob — Charlie</strong> — connected like this.<br><br>\
-                    This kind of picture is called a <strong>graph</strong>. Social networks, subway maps, internet connections — they\'re all graphs!\
+                    Think about your friend group. You know Alice, Alice knows Bob, Bob knows Charlie. If you drew dots for people and lines for friendships, you\'d get a web of connections. That web is called a <strong>graph</strong>!<br><br>\
+                    Each person is a <strong>vertex</strong> (a dot), and each friendship is an <strong>edge</strong> (a line between two dots).<br>\
+                    Graphs are everywhere once you start looking -- subway maps, social networks, even the internet itself is one giant graph.\
                 </div>\
 \
                 <div class="concept-grid" style="grid-template-columns: repeat(2, 1fr);">\
@@ -260,11 +258,8 @@ var graphTopic = {
             <div class="concept-section">\
                 <div class="concept-section-title"><span class="section-num">2</span> DFS (Depth-First Search)</div>\
                 <div class="analogy-box">\
-                    <strong>Understanding by analogy:</strong> Imagine exploring a maze!<br><br>\
-                    When you reach a fork, you go <strong>all the way down one path</strong>.<br>\
-                    Hit a dead end? <strong>Go back</strong> and try another direction!<br><br>\
-                    This is exactly <strong>DFS (Depth-First Search)</strong>.<br>\
-                    "Depth" first means you go as <strong>deep</strong> as possible in one direction.\
+                    Imagine you\'re exploring a cave with branching tunnels. At every fork, you always pick one tunnel and go as far as you can. Hit a dead end? Turn around, go back to the last fork, and try the next tunnel. That way you eventually explore <em>every</em> tunnel without missing any.<br><br>\
+                    That\'s <strong>DFS</strong> -- Depth-First Search. "Depth first" just means you dive as deep as possible before coming back to try other paths.\
                 </div>\
 \
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">\

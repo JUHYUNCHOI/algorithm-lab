@@ -152,15 +152,15 @@ var dpTopic = {
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">1</span> DP란 무엇인가?</div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 여러분은 이미 <strong>1+1+1+1+1 = 5</strong>를 계산했습니다.<br>
-                    이제 누가 <strong>1+1+1+1+1+1</strong>을 물어봅니다.<br>
-                    처음부터 다시 더할 건가요? 아니면 아까 답(5)에 1만 더할 건가요?<br><br>
-                    DP는 바로 이 아이디어입니다. <strong>이미 계산한 결과를 저장해두고 재활용</strong>하는 것!
+                    <strong>1+1+1+1+1 = 5</strong>를 이미 계산했어요.<br>
+                    그런데 누가 <strong>1+1+1+1+1+1</strong>은 얼마냐고 물어보면?<br>
+                    처음부터 다시 더할 필요 없죠? 아까 답 5에다 1만 더하면 돼요!<br><br>
+                    DP는 바로 이 아이디어예요. <strong>이미 풀어본 건 기억해뒀다가 다시 쓰는 것!</strong>
                 </div>
 
                 <div class="concept-demo">
-                    <div class="concept-demo-title">직접 해보기 — 피보나치 메모이제이션(계산 결과를 기억해두기) 테이블</div>
-                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">DP 테이블이 한 칸씩 채워지는 과정을 봅니다. 이미 계산된 값은 다시 계산하지 않습니다!</p>
+                    <div class="concept-demo-title">직접 해보기 — 피보나치를 기억하며 풀기</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:10px;">표가 한 칸씩 채워지는 걸 봐 보세요. 한 번 계산한 건 다시 안 해도 돼요!</p>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
                         <label style="font-weight:600;font-size:0.9rem;">N:
                             <input type="number" id="dp-demo-fib-input" value="8" min="3" max="12" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.9rem;width:60px;background:var(--card);color:var(--text);">

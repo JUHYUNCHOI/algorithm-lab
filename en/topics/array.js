@@ -216,9 +216,8 @@ const arrayTopic = {
                     <span class="section-num">1</span> Array Basics
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> An array is like <em>"numbered lockers"</em>!
-                    Locker 0, Locker 1... lined up in order, and if you know the number, you can open it instantly — O(1) — instant lookup!
-                    However, inserting a locker in the middle means shifting everything after it — O(n) — check one by one.
+                    Think of a row of numbered lockers at school -- Locker 0, Locker 1, Locker 2... If someone tells you "open Locker 5," you walk straight to it. No searching, no guessing. That's what makes arrays awesome: you jump right to any spot instantly.
+                    But what if you need to squeeze a new locker between Locker 2 and Locker 3? You'd have to slide every locker after it down by one. With 100 lockers, that's up to 100 moves! So arrays are great for reading, but inserting in the middle is expensive.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try it yourself — Index O(1) Access vs Value Search O(n)</div>
@@ -351,9 +350,8 @@ int main() {
                     <span class="section-num">2</span> Two Pointers (shrink from both ends)
                 </div>
                 <div class="analogy-box">
-                    <strong>Understanding by analogy:</strong> Think of <em>"two people walking toward each other from opposite ends"</em>!
-                    When finding two numbers that sum to a target in a sorted array, if the sum is too large, move the right pointer left; if too small, move the left pointer right.
-                    Instead of a double for loop — O(n²) — double loop, very slow — you can solve it in <strong>O(n)</strong>!
+                    Imagine two friends standing at opposite ends of a hallway, walking toward each other. One starts at the left wall, the other at the right wall, and they meet somewhere in the middle. That's exactly how Two Pointers works on a sorted array!
+                    Need to find two numbers that add up to a target? If the sum is too big, the right friend steps left. Too small? The left friend steps right. Instead of checking every possible pair -- with 100 numbers that's 5,000 pairs! -- you find the answer in just one walk across the array.
                 </div>
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try it yourself — Find a Sum with Two Pointers</div>

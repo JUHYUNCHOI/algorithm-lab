@@ -159,28 +159,29 @@ const sortingTopic = {
             </div>
 
             <div class="concept-section">
-                <div class="concept-section-title"><span class="section-num">1</span> 기본 정렬: O(n²) <small style="font-weight:400;">(이중 반복문만큼 느림)</small></div>
+                <div class="concept-section-title"><span class="section-num">1</span> 기본 정렬 <small style="font-weight:400;">(10개면 100번 비교해야 하는 느린 방법들)</small></div>
                 <div class="analogy-box">
-                    <strong>비유로 이해하기:</strong> 카드를 정렬한다고 생각해봅시다!
+                    카드를 크기순으로 정리하는 방법을 세 가지 배워 볼 거예요!
                     <em>선택 정렬</em>은 "가장 작은 카드를 찾아서 맨 앞에 놓기",
-                    <em>삽입 정렬</em>은 "새 카드를 올바른 위치에 끼워넣기",
-                    <em>버블 정렬</em>은 "옆 카드와 비교해서 교환하기"입니다.
+                    <em>삽입 정렬</em>은 "새 카드를 알맞은 자리에 끼워넣기",
+                    <em>버블 정렬</em>은 "옆에 있는 카드랑 비교해서 바꾸기"예요.
+                    10개면 대략 100번, 100개면 10,000번 비교해야 해서 느리지만, 원리가 간단해서 처음 배우기 좋아요!
                 </div>
                 <div class="concept-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--accent)">선택</text></svg></div>
                         <h3>선택 정렬</h3>
-                        <p>매번 <strong>최솟값을 찾아서</strong> 앞으로 옮깁니다. 비교 횟수가 항상 같아서 안정적이지만 느립니다.</p>
+                        <p>전체를 쭉 훑어서 <strong>가장 작은 걸 골라</strong> 맨 앞에 놓아요. 그다음 나머지에서 또 가장 작은 걸 골라요. 단순하지만 매번 전부 봐야 해서 느려요.</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--green)">삽입</text></svg></div>
                         <h3>삽입 정렬</h3>
-                        <p>카드를 <strong>올바른 위치에 끼워넣기</strong>. 거의 정렬된 데이터에서는 O(n)으로 매우 빠릅니다!</p>
+                        <p>새 카드를 받으면 <strong>알맞은 자리에 끼워넣어요</strong>. 이미 거의 정리되어 있으면 옮길 게 별로 없어서 엄청 빨라요!</p>
                     </div>
                     <div class="concept-card">
                         <div class="card-icon"><svg width="38" height="38" viewBox="0 0 38 38"><text x="4" y="24" font-size="11" font-weight="bold" fill="var(--yellow)">버블</text></svg></div>
                         <h3>버블 정렬</h3>
-                        <p>인접한 두 원소를 <strong>비교·교환</strong>. 큰 원소가 거품처럼 뒤로 올라갑니다. 교육용으로 좋습니다.</p>
+                        <p>바로 옆에 있는 것끼리 <strong>비교해서 큰 게 뒤로</strong> 가요. 탄산음료 거품이 위로 올라가듯, 큰 수가 점점 뒤로 떠올라요!</p>
                     </div>
                 </div>
                 <span class="lang-py"><div class="code-block">
