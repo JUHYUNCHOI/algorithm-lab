@@ -629,6 +629,25 @@ sort(words.begin(), words.end(),
         return a &lt; b;
     });</code></pre>
                 </div></span>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">Try Custom Sorting</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        The same data can be ordered completely differently depending on the <strong>sort key</strong>!<br>
+                        Click the buttons to change the criteria — see how the result changes with each key!
+                    </p>
+                    <div class="concept-demo-btns" id="sort-demo-custom-btns">
+                        <button class="concept-demo-btn" data-key="score">By Score ▼</button>
+                        <button class="concept-demo-btn" data-key="name">By Name (A-Z)</button>
+                        <button class="concept-demo-btn" data-key="length">By Name Length</button>
+                        <button class="concept-demo-btn danger" data-key="reset">Original Order ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-custom-arr" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;min-height:70px;transition:opacity 0.2s;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-custom-msg">Click a button to change the sort criteria!</div>
+                </div>
+
                 <div class="think-box">
                     <strong>💡 Think about it:</strong>
                     <span class="lang-py">In C++, custom comparators for <code>sort()</code> use the form
@@ -1611,6 +1630,78 @@ sort(words.begin(), words.end(),
             quickBuildSteps();
             quickStepBtn.addEventListener('click', quickStep);
             container.querySelector('#sort-demo-quick-reset').addEventListener('click', quickReset);
+        }
+
+        // ── Custom Sort Mini Demo ──
+        {
+            var customData = [
+                { name: 'Alice', score: 72 },
+                { name: 'Bob', score: 95 },
+                { name: 'Charlie', score: 88 },
+                { name: 'Dana', score: 65 },
+                { name: 'Eve', score: 91 },
+                { name: 'Frank', score: 80 }
+            ];
+            var customOriginal = customData.slice();
+            var customArrEl = container.querySelector('#sort-demo-custom-arr');
+            var customMsg = container.querySelector('#sort-demo-custom-msg');
+            var customBtns = container.querySelector('#sort-demo-custom-btns');
+            var customActiveKey = null;
+
+            function renderCustomArr(data, highlightKey) {
+                customArrEl.style.opacity = '0';
+                setTimeout(function() {
+                    customArrEl.innerHTML = data.map(function(s, i) {
+                        var keyVal = highlightKey === 'score' ? s.score + 'pts'
+                                   : highlightKey === 'length' ? s.name.length + ' chars'
+                                   : '';
+                        return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">' +
+                            '<div class="str-char-box" style="min-width:56px;padding:8px 10px;font-size:0.88rem;' +
+                            'border-color:var(--accent);box-shadow:0 0 6px rgba(108,92,231,0.15);">' +
+                            '<strong>' + s.name + '</strong><br>' +
+                            '<span style="font-size:0.78rem;color:var(--text2);">' + s.score + 'pts</span></div>' +
+                            (keyVal ? '<span style="font-size:0.72rem;color:var(--accent);font-weight:600;">key: ' + keyVal + '</span>' : '') +
+                            '</div>';
+                    }).join('');
+                    customArrEl.style.opacity = '1';
+                }, 180);
+            }
+
+            function customSortBy(key) {
+                var sorted = customData.slice();
+                if (key === 'score') {
+                    sorted.sort(function(a, b) { return a.score - b.score; });
+                    customMsg.innerHTML = '<span class="lang-py"><code>sort(key=lambda x: x.score)</code> — sorted by score, lowest first!</span>' +
+                        '<span class="lang-cpp"><code>sort(…, [](auto& a, auto& b){ return a.score < b.score; })</code> — sorted by score, lowest first!</span>';
+                } else if (key === 'name') {
+                    sorted.sort(function(a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; });
+                    customMsg.innerHTML = '<span class="lang-py"><code>sort(key=lambda x: x.name)</code> — sorted alphabetically!</span>' +
+                        '<span class="lang-cpp"><code>sort(…, [](auto& a, auto& b){ return a.name < b.name; })</code> — sorted alphabetically!</span>';
+                } else if (key === 'length') {
+                    sorted.sort(function(a, b) { return a.name.length - b.name.length; });
+                    customMsg.innerHTML = '<span class="lang-py"><code>sort(key=lambda x: len(x.name))</code> — sorted by name length, shortest first!</span>' +
+                        '<span class="lang-cpp"><code>sort(…, [](auto& a, auto& b){ return a.name.size() < b.name.size(); })</code> — sorted by name length, shortest first!</span>';
+                } else {
+                    sorted = customOriginal.slice();
+                    customMsg.textContent = 'Back to the original order.';
+                }
+                customData = sorted;
+                renderCustomArr(sorted, key === 'reset' ? null : key);
+            }
+
+            renderCustomArr(customOriginal, null);
+
+            customBtns.addEventListener('click', function(e) {
+                var btn = e.target.closest('[data-key]');
+                if (!btn) return;
+                var key = btn.getAttribute('data-key');
+                customActiveKey = key === 'reset' ? null : key;
+                customBtns.querySelectorAll('.concept-demo-btn:not(.danger)').forEach(function(b) {
+                    b.style.background = b.getAttribute('data-key') === customActiveKey ? 'var(--accent)' : '';
+                    b.style.color = b.getAttribute('data-key') === customActiveKey ? 'white' : '';
+                });
+                customSortBy(key);
+            });
         }
     },
 

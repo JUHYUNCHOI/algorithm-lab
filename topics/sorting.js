@@ -629,6 +629,25 @@ sort(words.begin(), words.end(),
         return a &lt; b;
     });</code></pre>
                 </div></span>
+
+                <div class="concept-demo">
+                    <div class="concept-demo-title">커스텀 정렬 체험하기</div>
+                    <p style="font-size:0.9rem;color:var(--text2);margin-bottom:12px;line-height:1.7;">
+                        같은 데이터도 <strong>정렬 기준(key)</strong>에 따라 순서가 완전히 달라집니다!<br>
+                        버튼을 눌러 기준을 바꿔보세요 — 어떤 기준으로 정렬하느냐에 따라 결과가 어떻게 달라지는지 확인!
+                    </p>
+                    <div class="concept-demo-btns" id="sort-demo-custom-btns">
+                        <button class="concept-demo-btn" data-key="score">점수순 ▼</button>
+                        <button class="concept-demo-btn" data-key="name">이름순 (ㄱ-ㄴ)</button>
+                        <button class="concept-demo-btn" data-key="length">이름 길이순</button>
+                        <button class="concept-demo-btn danger" data-key="reset">원래 순서 ↺</button>
+                    </div>
+                    <div class="concept-demo-body">
+                        <div id="sort-demo-custom-arr" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;min-height:70px;transition:opacity 0.2s;"></div>
+                    </div>
+                    <div class="concept-demo-msg" id="sort-demo-custom-msg">버튼을 눌러 정렬 기준을 바꿔보세요!</div>
+                </div>
+
                 <div class="think-box">
                     <strong>💡 생각해보기:</strong>
                     <span class="lang-py">C++의 <code>sort()</code>에서 커스텀 비교 함수를 쓸 때는
@@ -1637,6 +1656,78 @@ sort(words.begin(), words.end(),
             quickBuildSteps();
             quickStepBtn.addEventListener('click', quickStep);
             container.querySelector('#sort-demo-quick-reset').addEventListener('click', quickReset);
+        }
+
+        // ── 커스텀 정렬 미니 데모 ──
+        {
+            var customData = [
+                { name: '민수', score: 72 },
+                { name: '지은', score: 95 },
+                { name: '서연', score: 88 },
+                { name: '하준', score: 65 },
+                { name: '소율', score: 91 },
+                { name: '예준', score: 80 }
+            ];
+            var customOriginal = customData.slice();
+            var customArrEl = container.querySelector('#sort-demo-custom-arr');
+            var customMsg = container.querySelector('#sort-demo-custom-msg');
+            var customBtns = container.querySelector('#sort-demo-custom-btns');
+            var customActiveKey = null;
+
+            function renderCustomArr(data, highlightKey) {
+                customArrEl.style.opacity = '0';
+                setTimeout(function() {
+                    customArrEl.innerHTML = data.map(function(s, i) {
+                        var keyVal = highlightKey === 'score' ? s.score + '점'
+                                   : highlightKey === 'length' ? s.name.length + '글자'
+                                   : '';
+                        return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">' +
+                            '<div class="str-char-box" style="min-width:56px;padding:8px 10px;font-size:0.88rem;' +
+                            'border-color:var(--accent);box-shadow:0 0 6px rgba(108,92,231,0.15);">' +
+                            '<strong>' + s.name + '</strong><br>' +
+                            '<span style="font-size:0.78rem;color:var(--text2);">' + s.score + '점</span></div>' +
+                            (keyVal ? '<span style="font-size:0.72rem;color:var(--accent);font-weight:600;">key: ' + keyVal + '</span>' : '') +
+                            '</div>';
+                    }).join('');
+                    customArrEl.style.opacity = '1';
+                }, 180);
+            }
+
+            function customSortBy(key) {
+                var sorted = customData.slice();
+                if (key === 'score') {
+                    sorted.sort(function(a, b) { return a.score - b.score; });
+                    customMsg.innerHTML = '<span class="lang-py"><code>sort(key=lambda x: x.score)</code> → 점수가 낮은 순서대로!</span>' +
+                        '<span class="lang-cpp"><code>sort(…, [](auto& a, auto& b){ return a.score < b.score; })</code> → 점수가 낮은 순서대로!</span>';
+                } else if (key === 'name') {
+                    sorted.sort(function(a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; });
+                    customMsg.innerHTML = '<span class="lang-py"><code>sort(key=lambda x: x.name)</code> → 이름 가나다순!</span>' +
+                        '<span class="lang-cpp"><code>sort(…, [](auto& a, auto& b){ return a.name < b.name; })</code> → 이름 사전순!</span>';
+                } else if (key === 'length') {
+                    sorted.sort(function(a, b) { return a.name.length - b.name.length; });
+                    customMsg.innerHTML = '<span class="lang-py"><code>sort(key=lambda x: len(x.name))</code> → 이름이 짧은 순서대로!</span>' +
+                        '<span class="lang-cpp"><code>sort(…, [](auto& a, auto& b){ return a.name.size() < b.name.size(); })</code> → 이름이 짧은 순서대로!</span>';
+                } else {
+                    sorted = customOriginal.slice();
+                    customMsg.textContent = '원래 순서로 돌아왔습니다.';
+                }
+                customData = sorted;
+                renderCustomArr(sorted, key === 'reset' ? null : key);
+            }
+
+            renderCustomArr(customOriginal, null);
+
+            customBtns.addEventListener('click', function(e) {
+                var btn = e.target.closest('[data-key]');
+                if (!btn) return;
+                var key = btn.getAttribute('data-key');
+                customActiveKey = key === 'reset' ? null : key;
+                customBtns.querySelectorAll('.concept-demo-btn:not(.danger)').forEach(function(b) {
+                    b.style.background = b.getAttribute('data-key') === customActiveKey ? 'var(--accent)' : '';
+                    b.style.color = b.getAttribute('data-key') === customActiveKey ? 'white' : '';
+                });
+                customSortBy(key);
+            });
         }
     },
 
