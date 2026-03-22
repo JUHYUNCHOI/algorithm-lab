@@ -1349,272 +1349,628 @@ for (int i = 1; i &lt;= n; i++) {
         updateUI();
     },
     // ====================================================================
-    // 시뮬레이션 1: N과 M (1) — 순열 (boj-15649)
+    // 결정 트리 공통 렌더링 헬퍼
     // ====================================================================
-    _renderVizNM1(contentEl) {
+    _layoutTree(nodes) {
+        // 각 노드에 x, y 좌표를 할당 (리프 기준 bottom-up 배치)
+        var nodeW = 42, nodeH = 42, gapX = 6, gapY = 56;
+        // depth별 그룹
+        var maxDepth = 0;
+        for (var i = 0; i < nodes.length; i++) if (nodes[i].depth > maxDepth) maxDepth = nodes[i].depth;
+        var byId = {};
+        for (var i = 0; i < nodes.length; i++) byId[nodes[i].id] = nodes[i];
+        // 리프 먼저 왼쪽부터 배치, 부모는 자식 중앙
+        var leafX = 0;
+        function layout(nid) {
+            var n = byId[nid];
+            if (!n.children || n.children.length === 0) {
+                n.x = leafX; leafX += nodeW + gapX;
+                n.y = n.depth * gapY;
+                return;
+            }
+            for (var c = 0; c < n.children.length; c++) layout(n.children[c]);
+            var first = byId[n.children[0]], last = byId[n.children[n.children.length - 1]];
+            n.x = (first.x + last.x) / 2;
+            n.y = n.depth * gapY;
+        }
+        layout(nodes[0].id);
+        var totalW = leafX - gapX + nodeW;
+        var totalH = (maxDepth + 1) * gapY + nodeH;
+        return { totalW: totalW, totalH: totalH, nodeW: nodeW, nodeH: nodeH };
+    },
+
+    _renderTree(container, nodes, suffix) {
+        var byId = {};
+        for (var i = 0; i < nodes.length; i++) byId[nodes[i].id] = nodes[i];
+        var dims = this._layoutTree(nodes);
+        var treeEl = container.querySelector('#sim-tree' + suffix);
+        if (!treeEl) return;
+        treeEl.innerHTML = '';
+        treeEl.style.width = dims.totalW + 'px';
+        treeEl.style.height = dims.totalH + 'px';
+        treeEl.style.minWidth = dims.totalW + 'px';
+        // SVG 엣지
+        var svgNS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('class', 'sim-tree-edges');
+        svg.setAttribute('width', dims.totalW);
+        svg.setAttribute('height', dims.totalH);
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            if (n.parentId !== null) {
+                var p = byId[n.parentId];
+                var line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', p.x + dims.nodeW / 2);
+                line.setAttribute('y1', p.y + dims.nodeH);
+                line.setAttribute('x2', n.x + dims.nodeW / 2);
+                line.setAttribute('y2', n.y);
+                line.id = 'edge' + suffix + '-' + n.id;
+                treeEl.appendChild(line);
+            }
+        }
+        treeEl.appendChild(svg);
+        // 엣지를 svg 안에 넣어야 하지만, 위에서 treeEl에 직접 넣었으므로 svg 안으로 이동
+        // 다시 작성: svg 안에 line 넣기
+        treeEl.innerHTML = '';
+        svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('class', 'sim-tree-edges');
+        svg.setAttribute('width', dims.totalW);
+        svg.setAttribute('height', dims.totalH);
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            if (n.parentId !== null) {
+                var p = byId[n.parentId];
+                var line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', p.x + dims.nodeW / 2);
+                line.setAttribute('y1', p.y + dims.nodeH);
+                line.setAttribute('x2', n.x + dims.nodeW / 2);
+                line.setAttribute('y2', n.y);
+                line.id = 'edge' + suffix + '-' + n.id;
+                svg.appendChild(line);
+            }
+        }
+        treeEl.appendChild(svg);
+        // 노드 div
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            var div = document.createElement('div');
+            div.className = 'sim-tree-node node-hidden';
+            if (n.isRoot) div.className += ' node-root';
+            if (n.isLeaf) div.className += ' node-leaf';
+            div.id = 'tnode' + suffix + '-' + n.id;
+            div.style.left = n.x + 'px';
+            div.style.top = n.y + 'px';
+            div.textContent = n.label;
+            treeEl.appendChild(div);
+        }
+    },
+
+    _setNodeState(container, suffix, nodeId, state) {
+        var el = container.querySelector('#tnode' + suffix + '-' + nodeId);
+        if (!el) return;
+        el.className = el.className.replace(/node-hidden|node-current|node-visited|node-complete|node-backtracked|node-pruned/g, '').trim();
+        if (state) el.className += ' ' + state;
+    },
+
+    _setEdgeState(container, suffix, nodeId, state) {
+        var el = container.querySelector('#edge' + suffix + '-' + nodeId);
+        if (!el) return;
+        el.className.baseVal = (el.className.baseVal || '').replace(/edge-active|edge-complete|edge-backtracked/g, '').trim();
+        if (state) el.className.baseVal += ' ' + state;
+    },
+
+    // 트리의 노드/엣지 상태를 스냅샷으로 저장/복원
+    _applyTreeSnapshot(container, suffix, snapshot) {
+        for (var id in snapshot) {
+            this._setNodeState(container, suffix, id, snapshot[id].node);
+            if (snapshot[id].edge) this._setEdgeState(container, suffix, id, snapshot[id].edge);
+        }
+    },
+
+    // ====================================================================
+    // 공통: NM 계열 결정 트리 시뮬레이션 빌더
+    // ====================================================================
+    _buildNMTreeViz(contentEl, opts) {
+        // opts: { suffix, title, desc(N,M), defaultN, defaultM, maxN, maxM,
+        //         solverFactory(N,M) => { solve(), getNodes(), getSteps(), getFound() },
+        //         resultLabel, emptyLabel }
         var self = this;
-        var suffix = '-nm1';
-        var defaultN = 4, defaultM = 2;
+        var suffix = opts.suffix;
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (1) — 순열 생성</h3>' +
+            '<h3 style="margin-bottom:8px;">' + opts.title + '</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm1-n" value="' + defaultN + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm1-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm1-reset">🔄</button>' +
+            '<label style="font-weight:600;">N: <input type="number" id="bt' + suffix + '-n" value="' + opts.defaultN + '" min="1" max="' + opts.maxN + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<label style="font-weight:600;">M: <input type="number" id="bt' + suffix + '-m" value="' + opts.defaultM + '" min="1" max="' + opts.maxM + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<button class="btn btn-primary" id="bt' + suffix + '-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
-            '<p id="nm1-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 없이 ' + defaultM + '개를 골라 순열을 생성합니다.</p>' +
-            '<div id="nm1-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
-            '<div id="nm1-used' + suffix + '" style="text-align:center;margin-bottom:8px;"></div>' +
-            '<div id="nm1-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
+            '<div class="sim-card" style="padding:1.5rem;margin-bottom:12px;">' +
+            '<div class="sim-tree-wrapper"><div id="sim-tree' + suffix + '" style="position:relative;"></div></div>' +
+            '<div id="nm-path' + suffix + '" class="sim-tree-path-display">path = [ ]</div>' +
+            '</div>' +
+            '<div id="nm-results' + suffix + '" class="sim-tree-results"><span style="color:var(--text3);">' + opts.emptyLabel + '</span></div>' +
             self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm1-path' + suffix);
-        var usedEl = contentEl.querySelector('#nm1-used' + suffix);
-        var resultsEl = contentEl.querySelector('#nm1-results' + suffix);
-        var descEl = contentEl.querySelector('#nm1-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm1-n');
-        var inputM = contentEl.querySelector('#bt-nm1-m');
-        var resetBtn = contentEl.querySelector('#bt-nm1-reset');
+        var pathEl = contentEl.querySelector('#nm-path' + suffix);
+        var resultsEl = contentEl.querySelector('#nm-results' + suffix);
+        var inputN = contentEl.querySelector('#bt' + suffix + '-n');
+        var inputM = contentEl.querySelector('#bt' + suffix + '-m');
+        var resetBtn = contentEl.querySelector('#bt' + suffix + '-reset');
+
         function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 중복 없이 ' + M + '개를 골라 순열을 생성합니다.';
-            function renderUsed(u) { var h = ''; for (var i = 1; i <= N; i++) h += '<span style="display:inline-block;width:30px;height:30px;line-height:30px;text-align:center;margin:2px;border-radius:6px;font-weight:600;font-size:0.85rem;' + (u[i] ? 'background:var(--accent);color:white;' : 'background:var(--bg2);') + '">' + i + '</span>'; usedEl.innerHTML = h; }
-            var initUsed = []; for (var i = 0; i <= N; i++) initUsed.push(false);
-            renderUsed(initUsed);
             pathEl.textContent = 'path = [ ]'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">수열이 여기에 표시됩니다</span>';
-            var steps = [], path = [], used = initUsed.slice(), found = [];
-            var solve = function(depth) {
-                if (depth === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '수열 [' + s.join(', ') + '] 완성! (' + r + '번째)',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">수열이 여기에 표시됩니다</span>'; }
-                    }); })(snap, rc); return; }
-                for (var i = 1; i <= N; i++) {
-                    if (used[i]) { (function(ci,sp,su) { steps.push({ description: ci + '는 사용 중 → 건너뜀 (가지치기)',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ':'') + ci + '? ]'; pathEl.style.color = 'var(--red)'; renderUsed(su); },
-                        undo: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; renderUsed(su); }
-                    }); })(i,path.slice(),used.slice()); continue; }
-                    used[i] = true; path.push(i);
-                    (function(ci,sp,su) { steps.push({ description: ci + '를 선택 → path = [' + sp.join(', ') + ']',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ]'; pathEl.style.color = ''; renderUsed(su); },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; var pu = su.slice(); pu[ci] = false; renderUsed(pu); }
-                    }); })(i,path.slice(),used.slice());
-                    solve(depth + 1);
-                    path.pop(); used[i] = false;
-                    (function(ci,sp,su) { steps.push({ description: ci + '를 되돌림',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; renderUsed(su); },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ]'; var ru = su.slice(); ru[ci] = true; renderUsed(ru); }
-                    }); })(i,path.slice(),used.slice());
-                }
-            };
-            solve(0);
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개', action: function(){}, undo: function(){} });
+            resultsEl.innerHTML = '<span style="color:var(--text3);">' + opts.emptyLabel + '</span>';
+            var solver = opts.solverFactory(N, M);
+            solver.solve();
+            var nodes = solver.getNodes();
+            var steps = solver.getSteps();
+            var found = solver.getFound();
+            self._renderTree(contentEl, nodes, suffix);
+            // root 노드는 처음부터 보이게
+            self._setNodeState(contentEl, suffix, nodes[0].id, 'node-root');
             self._initStepController(contentEl, steps, suffix);
         }
+
         resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(7, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(N, parseInt(inputM.value) || defaultM));
+            var N = Math.max(1, Math.min(opts.maxN, parseInt(inputN.value) || opts.defaultN));
+            var M = Math.max(1, Math.min(opts.maxM < 0 ? N : opts.maxM, parseInt(inputM.value) || opts.defaultM));
+            if (M > N) M = N;
             inputN.value = N; inputM.value = M;
             self._clearVizState();
             buildAndRun(N, M);
         });
-        buildAndRun(defaultN, defaultM);
+        buildAndRun(opts.defaultN, opts.defaultM);
+    },
+
+    // ====================================================================
+    // 시뮬레이션 1: N과 M (1) — 순열 (boj-15649)
+    // ====================================================================
+    _renderVizNM1(contentEl) {
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm1',
+            title: 'N과 M (1) — 순열 생성',
+            defaultN: 4, defaultM: 2, maxN: 6, maxM: -1,
+            emptyLabel: '수열이 여기에 표시됩니다',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], used = [], found = [];
+                for (var i = 0; i <= N; i++) used.push(false);
+                var pathEl, resultsEl, sfx = '-nm1';
+
+                function solve(depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        var leafLabel = '[' + snap.join(',') + ']';
+                        nodes.push({ id: leafNid, label: leafLabel, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            // 이전 스냅샷: 이 리프 표시 전 상태
+                            steps.push({
+                                description: '수열 [' + s.join(', ') + '] 완성! (' + r + '번째) — M개를 모두 골랐으므로 결과에 추가합니다',
+                                action: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓';
+                                    pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">수열이 여기에 표시됩니다</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = 1; i <= N; i++) {
+                        if (used[i]) {
+                            // 가지치기: 노드를 pruned로 잠깐 보여줌
+                            var prunedNid = nodeId++;
+                            nodes.push({ id: prunedNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                            nodes[parentNid].children.push(prunedNid);
+                            (function(ci, sp, pid) {
+                                steps.push({
+                                    description: ci + '는 이미 사용 중 → 건너뜀 (가지치기). 왜? 중복 없는 순열이므로 같은 수를 다시 쓸 수 없습니다',
+                                    action: function() {
+                                        pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                        self._setNodeState(contentEl, sfx, pid, 'node-pruned');
+                                        self._setEdgeState(contentEl, sfx, pid, 'edge-backtracked');
+                                        pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ' : '') + ci + '? ]';
+                                        pathEl.style.color = 'var(--red)';
+                                    },
+                                    undo: function() {
+                                        pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                        self._setNodeState(contentEl, sfx, pid, 'node-hidden');
+                                        self._setEdgeState(contentEl, sfx, pid, '');
+                                        pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ]';
+                                        pathEl.style.color = '';
+                                    }
+                                });
+                            })(i, path.slice(), prunedNid);
+                            continue;
+                        }
+                        // 선택
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        used[i] = true; path.push(i);
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: ci + '를 선택 → path = [' + sp.join(', ') + ']. 왜? 아직 사용하지 않은 수이므로 선택 가능합니다',
+                                action: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ]';
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                        solve(depth + 1, choiceNid);
+                        path.pop(); used[i] = false;
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: ci + '를 되돌림. 왜? 이 가지의 탐색이 끝났으므로 다른 선택을 시도합니다',
+                                action: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ]';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                    }
+                }
+                return {
+                    solve: function() { solve(0, 0); steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 순열', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
+        });
     },
 
     // ====================================================================
     // 시뮬레이션 2: N과 M (2) — 조합 (boj-15650)
     // ====================================================================
     _renderVizNM2(contentEl) {
-        var self = this, suffix = '-nm2';
-        var defaultN = 4, defaultM = 2;
-        contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (2) — 조합 생성</h3>' +
-            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm2-n" value="' + defaultN + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm2-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm2-reset">🔄</button>' +
-            '</div>' +
-            self._createStepDesc(suffix) +
-            '<p id="nm2-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 ' + defaultM + '개를 오름차순으로 고릅니다. start 파라미터로 중복을 방지합니다.</p>' +
-            '<div id="nm2-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
-            '<div id="nm2-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
-            self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm2-path' + suffix);
-        var resultsEl = contentEl.querySelector('#nm2-results' + suffix);
-        var descEl = contentEl.querySelector('#nm2-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm2-n');
-        var inputM = contentEl.querySelector('#bt-nm2-m');
-        var resetBtn = contentEl.querySelector('#bt-nm2-reset');
-        function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 ' + M + '개를 오름차순으로 고릅니다. start 파라미터로 중복을 방지합니다.';
-            pathEl.textContent = 'path = [ ], start = 1'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">조합이 여기에 표시됩니다</span>';
-            var steps = [], path = [], found = [];
-            var solve = function(start) {
-                if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '조합 [' + s.join(', ') + '] 완성! (' + r + '번째)',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">조합이 여기에 표시됩니다</span>'; }
-                    }); })(snap,rc); return; }
-                for (var i = start; i <= N; i++) {
-                    path.push(i);
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 선택 (start=' + st + ') → path = [' + sp.join(', ') + ']',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ], start = ' + (ci+1); pathEl.style.color = ''; },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + st; }
-                    }); })(i,path.slice(),start);
-                    solve(i + 1);
-                    path.pop();
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 되돌림',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ], start = ' + st; pathEl.style.color = ''; },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ], start = ' + (ci+1); }
-                    }); })(i,path.slice(),start);
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm2',
+            title: 'N과 M (2) — 조합 생성',
+            defaultN: 4, defaultM: 2, maxN: 6, maxM: -1,
+            emptyLabel: '조합이 여기에 표시됩니다',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], found = [];
+                var sfx = '-nm2';
+
+                function solve(start, depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        nodes.push({ id: leafNid, label: '[' + snap.join(',') + ']', depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: '조합 [' + s.join(', ') + '] 완성! (' + r + '번째) — M개를 모두 골랐으므로 결과에 추가합니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓';
+                                    pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">조합이 여기에 표시됩니다</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = start; i <= N; i++) {
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        path.push(i);
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: ci + '를 선택 (start=' + st + ') → path = [' + sp.join(', ') + ']. 왜? start=' + st + '부터 고르므로 오름차순이 보장됩니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ], start = ' + (ci + 1);
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ], start = ' + st;
+                                    pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                        solve(i + 1, depth + 1, choiceNid);
+                        path.pop();
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: ci + '를 되돌림. 왜? 이 가지의 탐색이 끝났으므로 다음 수를 시도합니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ], start = ' + st;
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ], start = ' + (ci + 1);
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                    }
                 }
-            };
-            solve(1);
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 조합', action: function(){}, undo: function(){} });
-            self._initStepController(contentEl, steps, suffix);
-        }
-        resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(7, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(N, parseInt(inputM.value) || defaultM));
-            inputN.value = N; inputM.value = M;
-            self._clearVizState();
-            buildAndRun(N, M);
+                return {
+                    solve: function() { solve(1, 0, 0); steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 조합', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
         });
-        buildAndRun(defaultN, defaultM);
     },
 
     // ====================================================================
     // 시뮬레이션 3: N과 M (3) — 중복 순열 (boj-15651)
     // ====================================================================
     _renderVizNM3(contentEl) {
-        var self = this, suffix = '-nm3';
-        var defaultN = 3, defaultM = 2;
-        contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (3) — 중복 순열</h3>' +
-            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm3-n" value="' + defaultN + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm3-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm3-reset">🔄</button>' +
-            '</div>' +
-            self._createStepDesc(suffix) +
-            '<p id="nm3-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 허용하여 ' + defaultM + '개를 고릅니다. used 배열이 없습니다!</p>' +
-            '<div id="nm3-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
-            '<div id="nm3-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
-            self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm3-path' + suffix);
-        var resultsEl = contentEl.querySelector('#nm3-results' + suffix);
-        var descEl = contentEl.querySelector('#nm3-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm3-n');
-        var inputM = contentEl.querySelector('#bt-nm3-m');
-        var resetBtn = contentEl.querySelector('#bt-nm3-reset');
-        function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 중복 허용하여 ' + M + '개를 고릅니다. used 배열이 없습니다!';
-            pathEl.textContent = 'path = [ ]'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">중복 순열이 여기에 표시됩니다</span>';
-            var steps = [], path = [], found = [];
-            var solve = function() {
-                if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] 완성! (' + r + '번째)',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">중복 순열이 여기에 표시됩니다</span>'; }
-                    }); })(snap,rc); return; }
-                for (var i = 1; i <= N; i++) {
-                    path.push(i);
-                    (function(ci,sp) { steps.push({ description: ci + '를 선택 → path = [' + sp.join(', ') + '] (중복 허용)',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ]'; pathEl.style.color = ''; },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; }
-                    }); })(i,path.slice());
-                    solve();
-                    path.pop();
-                    (function(ci,sp) { steps.push({ description: ci + '를 되돌림',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ]'; }
-                    }); })(i,path.slice());
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm3',
+            title: 'N과 M (3) — 중복 순열',
+            defaultN: 3, defaultM: 2, maxN: 4, maxM: 3,
+            emptyLabel: '중복 순열이 여기에 표시됩니다',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], found = [];
+                var sfx = '-nm3';
+
+                function solve(depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        nodes.push({ id: leafNid, label: '[' + snap.join(',') + ']', depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: '[' + s.join(', ') + '] 완성! (' + r + '번째) — 중복 허용이라 같은 수가 여러 번 나올 수 있습니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">중복 순열이 여기에 표시됩니다</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = 1; i <= N; i++) {
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        path.push(i);
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: ci + '를 선택 → path = [' + sp.join(', ') + ']. 왜? used 체크가 없으므로 모든 수를 매번 선택 가능합니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ]'; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                        solve(depth + 1, choiceNid);
+                        path.pop();
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: ci + '를 되돌림. 왜? 다음 수를 시도하기 위해 현재 선택을 취소합니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ]';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                    }
                 }
-            };
-            solve();
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개 (N^M = ' + N + '^' + M + ' = ' + Math.pow(N,M) + ')', action: function(){}, undo: function(){} });
-            self._initStepController(contentEl, steps, suffix);
-        }
-        resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(5, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(5, parseInt(inputM.value) || defaultM));
-            inputN.value = N; inputM.value = M;
-            self._clearVizState();
-            buildAndRun(N, M);
+                return {
+                    solve: function() { solve(0, 0); steps.push({ description: '탐색 완료! 총 ' + found.length + '개 (N^M = ' + N + '^' + M + ' = ' + Math.pow(N, M) + ')', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
         });
-        buildAndRun(defaultN, defaultM);
     },
 
     // ====================================================================
     // 시뮬레이션 4: N과 M (4) — 중복 조합 (boj-15652)
     // ====================================================================
     _renderVizNM4(contentEl) {
-        var self = this, suffix = '-nm4';
-        var defaultN = 3, defaultM = 2;
-        contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N과 M (4) — 중복 조합</h3>' +
-            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm4-n" value="' + defaultN + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm4-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm4-reset">🔄</button>' +
-            '</div>' +
-            self._createStepDesc(suffix) +
-            '<p id="nm4-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}에서 중복 허용 + 비내림차순으로 ' + defaultM + '개를 고릅니다. start를 i로 넘깁니다 (i+1 아님!).</p>' +
-            '<div id="nm4-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
-            '<div id="nm4-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
-            self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm4-path' + suffix);
-        var resultsEl = contentEl.querySelector('#nm4-results' + suffix);
-        var descEl = contentEl.querySelector('#nm4-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm4-n');
-        var inputM = contentEl.querySelector('#bt-nm4-m');
-        var resetBtn = contentEl.querySelector('#bt-nm4-reset');
-        function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}에서 중복 허용 + 비내림차순으로 ' + M + '개를 고릅니다. start를 i로 넘깁니다 (i+1 아님!).';
-            pathEl.textContent = 'path = [ ], start = 1'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">중복 조합이 여기에 표시됩니다</span>';
-            var steps = [], path = [], found = [];
-            var solve = function(start) {
-                if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] 완성! (' + r + '번째)',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">중복 조합이 여기에 표시됩니다</span>'; }
-                    }); })(snap,rc); return; }
-                for (var i = start; i <= N; i++) {
-                    path.push(i);
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 선택 (start=' + st + ') → path = [' + sp.join(', ') + ']',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ], start = ' + ci; pathEl.style.color = ''; },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + st; }
-                    }); })(i,path.slice(),start);
-                    solve(i); // i, not i+1!
-                    path.pop();
-                    (function(ci,sp,st) { steps.push({ description: ci + '를 되돌림',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ], start = ' + st; pathEl.style.color = ''; },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ], start = ' + ci; }
-                    }); })(i,path.slice(),start);
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm4',
+            title: 'N과 M (4) — 중복 조합',
+            defaultN: 3, defaultM: 2, maxN: 4, maxM: 3,
+            emptyLabel: '중복 조합이 여기에 표시됩니다',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], found = [];
+                var sfx = '-nm4';
+
+                function solve(start, depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        nodes.push({ id: leafNid, label: '[' + snap.join(',') + ']', depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: '[' + s.join(', ') + '] 완성! (' + r + '번째) — 비내림차순 + 중복 허용 조합입니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ], start = ' + s[s.length - 1]; pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">중복 조합이 여기에 표시됩니다</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = start; i <= N; i++) {
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        path.push(i);
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: ci + '를 선택 (start=' + st + ') → path = [' + sp.join(', ') + ']. 왜? 다음 재귀에서 start를 ' + ci + '로 넘기면 비내림차순이 보장됩니다 (i+1이 아닌 i!)',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ], start = ' + ci; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ], start = ' + st; pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                        solve(i, depth + 1, choiceNid);
+                        path.pop();
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: ci + '를 되돌림. 왜? 이 가지 탐색이 끝났으므로 다음 수를 시도합니다',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ], start = ' + st; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ], start = ' + ci;
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                    }
                 }
-            };
-            solve(1);
-            steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 중복 조합', action: function(){}, undo: function(){} });
-            self._initStepController(contentEl, steps, suffix);
-        }
-        resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(5, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(5, parseInt(inputM.value) || defaultM));
-            inputN.value = N; inputM.value = M;
-            self._clearVizState();
-            buildAndRun(N, M);
+                return {
+                    solve: function() { solve(1, 0, 0); steps.push({ description: '탐색 완료! 총 ' + found.length + '개의 중복 조합', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
         });
-        buildAndRun(defaultN, defaultM);
     },
+
     // ====================================================================
     // 시뮬레이션 5: 연산자 끼워넣기 (boj-14888)
     // ====================================================================
     _renderVizOperator(contentEl) {
         var self = this, suffix = '-op';
-        var defaultNums = [1, 2, 3], defaultOps = [1, 1, 0, 0]; // +1, -1
+        var defaultNums = [1, 2, 3], defaultOps = [1, 1, 0, 0];
         var opSyms = ['+', '-', '*', '/'];
         contentEl.innerHTML =
             '<h3 style="margin-bottom:8px;">연산자 끼워넣기</h3>' +
@@ -1624,39 +1980,59 @@ for (int i = 1; i &lt;= n; i++) {
             '<button class="btn btn-primary" id="bt-op-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
-            '<p id="op-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
-            '<div id="op-expr' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:600;margin-bottom:8px;"></div>' +
-            '<div id="op-ops' + suffix + '" style="text-align:center;margin-bottom:8px;font-size:0.85rem;"></div>' +
+            '<div class="sim-card" style="padding:1.5rem;margin-bottom:12px;">' +
+            '<div class="sim-tree-wrapper"><div id="sim-tree' + suffix + '" style="position:relative;"></div></div>' +
+            '<div id="op-expr' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:4px;"></div>' +
+            '<div id="op-ops' + suffix + '" style="text-align:center;margin-bottom:4px;font-size:0.85rem;"></div>' +
+            '</div>' +
             '<div id="op-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var exprEl = contentEl.querySelector('#op-expr' + suffix);
         var opsEl = contentEl.querySelector('#op-ops' + suffix);
         var infoEl = contentEl.querySelector('#op-info' + suffix);
-        var descEl = contentEl.querySelector('#op-desc' + suffix);
         var inputNums = contentEl.querySelector('#bt-op-nums');
         var inputOps = contentEl.querySelector('#bt-op-ops');
         var resetBtn = contentEl.querySelector('#bt-op-reset');
+
         function buildAndRun(nums, ops) {
             var initExpr = nums.join(' ☐ ');
-            descEl.textContent = '숫자 [' + nums.join(', ') + '], 연산자 +' + ops[0] + '개 -' + ops[1] + '개 *' + ops[2] + '개 /' + ops[3] + '개. 모든 배치를 시도하여 최대/최소를 구합니다.';
             exprEl.textContent = initExpr; exprEl.style.color = '';
             function renderOps(o) { opsEl.innerHTML = '남은 연산자: + ' + o[0] + '개, - ' + o[1] + '개, * ' + o[2] + '개, / ' + o[3] + '개'; }
             renderOps(ops);
             infoEl.innerHTML = '<span style="color:var(--text2);">최댓값과 최솟값을 찾습니다</span>';
+
+            var treeNodes = [{ id: 0, label: '' + nums[0], depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+            var nodeId = 1;
             var steps = [], results = [], maxV = -Infinity, minV = Infinity;
             var curOps = ops.slice();
-            var solve = function(idx, current, expr) {
+
+            var solve = function(idx, current, expr, parentNid) {
                 if (idx === nums.length) {
                     results.push({ expr: expr, val: current });
                     if (current > maxV) maxV = current;
                     if (current < minV) minV = current;
                     var rc = results.length, cm = maxV, cn = minV, ce = expr, cv = current;
-                    (function(rc, cm, cn, ce, cv) {
-                        steps.push({ description: ce + ' = ' + cv + ' (현재 max=' + cm + ', min=' + cn + ')',
-                            action: function() { exprEl.textContent = ce + ' = ' + cv; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '결과 ' + rc + '개 | <strong>max = ' + cm + '</strong>, <strong>min = ' + cn + '</strong>'; },
-                            undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; var prev = rc > 1 ? results[rc-2] : null; infoEl.innerHTML = prev ? '결과 ' + (rc-1) + '개' : '<span style="color:var(--text2);">최댓값과 최솟값을 찾습니다</span>'; }
+                    // 리프 노드: 결과값
+                    var leafNid = nodeId++;
+                    treeNodes.push({ id: leafNid, label: '=' + cv, depth: idx - 1, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                    treeNodes[parentNid].children.push(leafNid);
+                    (function(rc, cm, cn, ce, cv, lid) {
+                        steps.push({
+                            description: ce + ' = ' + cv + ' (현재 max=' + cm + ', min=' + cn + '). 왜? 모든 연산자를 배치한 하나의 완성된 식입니다',
+                            action: function() {
+                                self._setNodeState(contentEl, suffix, lid, 'node-complete');
+                                self._setEdgeState(contentEl, suffix, lid, 'edge-complete');
+                                exprEl.textContent = ce + ' = ' + cv; exprEl.style.color = 'var(--green)';
+                                infoEl.innerHTML = '결과 ' + rc + '개 | <strong>max = ' + cm + '</strong>, <strong>min = ' + cn + '</strong>';
+                            },
+                            undo: function() {
+                                self._setNodeState(contentEl, suffix, lid, 'node-hidden');
+                                self._setEdgeState(contentEl, suffix, lid, '');
+                                exprEl.textContent = initExpr; exprEl.style.color = '';
+                                infoEl.innerHTML = rc > 1 ? '결과 ' + (rc - 1) + '개' : '<span style="color:var(--text2);">최댓값과 최솟값을 찾습니다</span>';
+                            }
                         });
-                    })(rc, cm, cn, ce, cv);
+                    })(rc, cm, cn, ce, cv, leafNid);
                     return;
                 }
                 for (var i = 0; i < 4; i++) {
@@ -1669,29 +2045,63 @@ for (int i = 1; i &lt;= n; i++) {
                         else nxt = (current / nums[idx]) | 0;
                         var newExpr = expr + ' ' + opSyms[i] + ' ' + nums[idx];
                         var snapOps = curOps.slice();
-                        (function(ci, ne, so, prevExpr) {
-                            steps.push({ description: opSyms[ci] + ' ' + nums[idx] + ' 시도 → ' + ne,
-                                action: function() { exprEl.textContent = ne + (idx < nums.length - 1 ? ' ☐ ...' : ''); exprEl.style.color = ''; renderOps(so); },
-                                undo: function() { var po = so.slice(); po[ci]++; exprEl.textContent = prevExpr + ' ☐ ...'; renderOps(po); }
+                        var choiceNid = nodeId++;
+                        treeNodes.push({ id: choiceNid, label: opSyms[i] + nums[idx], depth: idx - 1, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        treeNodes[parentNid].children.push(choiceNid);
+                        (function(ci, ne, so, prevExpr, nid) {
+                            steps.push({
+                                description: opSyms[ci] + ' ' + nums[idx] + ' 시도 → ' + ne + '. 왜? 남은 ' + opSyms[ci] + ' 연산자가 있으므로 이 배치를 시도합니다',
+                                action: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-current');
+                                    self._setEdgeState(contentEl, suffix, nid, 'edge-active');
+                                    exprEl.textContent = ne + (idx < nums.length - 1 ? ' ☐ ...' : ''); exprEl.style.color = '';
+                                    renderOps(so);
+                                },
+                                undo: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, suffix, nid, '');
+                                    var po = so.slice(); po[ci]++;
+                                    exprEl.textContent = prevExpr + (idx > 1 ? ' ☐ ...' : ' ☐ ...'); renderOps(po);
+                                }
                             });
-                        })(i, newExpr, snapOps, expr);
-                        solve(idx + 1, nxt, newExpr);
+                        })(i, newExpr, snapOps, expr, choiceNid);
+                        solve(idx + 1, nxt, newExpr, choiceNid);
                         curOps[i]++;
+                        // 되돌림은 연산자 시뮬에서는 별도 스텝 불필요 (다음 선택이 바로 이어지므로)
+                        // 하지만 트리에서 backtrack 표시
+                        (function(nid, so) {
+                            steps.push({
+                                description: '되돌림. 왜? 이 연산자 배치의 탐색이 끝났으므로 다른 연산자를 시도합니다',
+                                action: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, suffix, nid, 'edge-backtracked');
+                                    renderOps(so);
+                                },
+                                undo: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-current');
+                                    self._setEdgeState(contentEl, suffix, nid, 'edge-active');
+                                }
+                            });
+                        })(choiceNid, curOps.slice());
                     }
                 }
             };
-            solve(1, nums[0], '' + nums[0]);
+            solve(1, nums[0], '' + nums[0], 0);
             var fm = maxV, fn = minV;
-            steps.push({ description: '완료! 최댓값 = ' + fm + ', 최솟값 = ' + fn,
-                action: function() { exprEl.textContent = 'max = ' + fm + ', min = ' + fn; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ 최댓값 = ' + fm + ', 최솟값 = ' + fn + '</strong>'; },
+            steps.push({
+                description: '완료! 최댓값 = ' + fm + ', 최솟값 = ' + fn,
+                action: function() { exprEl.textContent = 'max = ' + fm + ', min = ' + fn; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">최댓값 = ' + fm + ', 최솟값 = ' + fn + '</strong>'; },
                 undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; }
             });
+            self._renderTree(contentEl, treeNodes, suffix);
+            self._setNodeState(contentEl, suffix, 0, 'node-root');
             self._initStepController(contentEl, steps, suffix);
         }
+
         resetBtn.addEventListener('click', function() {
             var nums = inputNums.value.split(',').map(function(x) { return parseInt(x.trim()); }).filter(function(x) { return !isNaN(x); });
             if (nums.length < 2) nums = defaultNums.slice();
-            if (nums.length > 8) nums = nums.slice(0, 8);
+            if (nums.length > 6) nums = nums.slice(0, 6);
             var opsArr = inputOps.value.split(',').map(function(x) { return Math.max(0, parseInt(x.trim()) || 0); });
             while (opsArr.length < 4) opsArr.push(0);
             opsArr = opsArr.slice(0, 4);

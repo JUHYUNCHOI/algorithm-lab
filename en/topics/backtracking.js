@@ -1409,314 +1409,654 @@ for (int i = 1; i &lt;= n; i++) {
         updateUI();
     },
     // ====================================================================
-    // Simulation 1: N and M (1) — Permutation (boj-15649)
+    // Decision Tree Common Rendering Helpers
     // ====================================================================
-    _renderVizNM1(contentEl) {
+    _layoutTree(nodes) {
+        var nodeW = 42, nodeH = 42, gapX = 6, gapY = 56;
+        var maxDepth = 0;
+        for (var i = 0; i < nodes.length; i++) if (nodes[i].depth > maxDepth) maxDepth = nodes[i].depth;
+        var byId = {};
+        for (var i = 0; i < nodes.length; i++) byId[nodes[i].id] = nodes[i];
+        var leafX = 0;
+        function layout(nid) {
+            var n = byId[nid];
+            if (!n.children || n.children.length === 0) {
+                n.x = leafX; leafX += nodeW + gapX;
+                n.y = n.depth * gapY;
+                return;
+            }
+            for (var c = 0; c < n.children.length; c++) layout(n.children[c]);
+            var first = byId[n.children[0]], last = byId[n.children[n.children.length - 1]];
+            n.x = (first.x + last.x) / 2;
+            n.y = n.depth * gapY;
+        }
+        layout(nodes[0].id);
+        var totalW = leafX - gapX + nodeW;
+        var totalH = (maxDepth + 1) * gapY + nodeH;
+        return { totalW: totalW, totalH: totalH, nodeW: nodeW, nodeH: nodeH };
+    },
+
+    _renderTree(container, nodes, suffix) {
+        var byId = {};
+        for (var i = 0; i < nodes.length; i++) byId[nodes[i].id] = nodes[i];
+        var dims = this._layoutTree(nodes);
+        var treeEl = container.querySelector('#sim-tree' + suffix);
+        if (!treeEl) return;
+        treeEl.innerHTML = '';
+        treeEl.style.width = dims.totalW + 'px';
+        treeEl.style.height = dims.totalH + 'px';
+        treeEl.style.minWidth = dims.totalW + 'px';
+        var svgNS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('class', 'sim-tree-edges');
+        svg.setAttribute('width', dims.totalW);
+        svg.setAttribute('height', dims.totalH);
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            if (n.parentId !== null) {
+                var p = byId[n.parentId];
+                var line = document.createElementNS(svgNS, 'line');
+                line.setAttribute('x1', p.x + dims.nodeW / 2);
+                line.setAttribute('y1', p.y + dims.nodeH);
+                line.setAttribute('x2', n.x + dims.nodeW / 2);
+                line.setAttribute('y2', n.y);
+                line.id = 'edge' + suffix + '-' + n.id;
+                svg.appendChild(line);
+            }
+        }
+        treeEl.appendChild(svg);
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            var div = document.createElement('div');
+            div.className = 'sim-tree-node node-hidden';
+            if (n.isRoot) div.className += ' node-root';
+            if (n.isLeaf) div.className += ' node-leaf';
+            div.id = 'tnode' + suffix + '-' + n.id;
+            div.style.left = n.x + 'px';
+            div.style.top = n.y + 'px';
+            div.textContent = n.label;
+            treeEl.appendChild(div);
+        }
+    },
+
+    _setNodeState(container, suffix, nodeId, state) {
+        var el = container.querySelector('#tnode' + suffix + '-' + nodeId);
+        if (!el) return;
+        el.className = el.className.replace(/node-hidden|node-current|node-visited|node-complete|node-backtracked|node-pruned/g, '').trim();
+        if (state) el.className += ' ' + state;
+    },
+
+    _setEdgeState(container, suffix, nodeId, state) {
+        var el = container.querySelector('#edge' + suffix + '-' + nodeId);
+        if (!el) return;
+        el.className.baseVal = (el.className.baseVal || '').replace(/edge-active|edge-complete|edge-backtracked/g, '').trim();
+        if (state) el.className.baseVal += ' ' + state;
+    },
+
+    _applyTreeSnapshot(container, suffix, snapshot) {
+        for (var id in snapshot) {
+            this._setNodeState(container, suffix, id, snapshot[id].node);
+            if (snapshot[id].edge) this._setEdgeState(container, suffix, id, snapshot[id].edge);
+        }
+    },
+
+    // ====================================================================
+    // Common: NM Decision Tree Simulation Builder
+    // ====================================================================
+    _buildNMTreeViz(contentEl, opts) {
         var self = this;
-        var suffix = '-nm1';
-        var defaultN = 4, defaultM = 2;
+        var suffix = opts.suffix;
         contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N and M (1) — Permutation Generation</h3>' +
+            '<h3 style="margin-bottom:8px;">' + opts.title + '</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm1-n" value="' + defaultN + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm1-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm1-reset">🔄</button>' +
+            '<label style="font-weight:600;">N: <input type="number" id="bt' + suffix + '-n" value="' + opts.defaultN + '" min="1" max="' + opts.maxN + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<label style="font-weight:600;">M: <input type="number" id="bt' + suffix + '-m" value="' + opts.defaultM + '" min="1" max="' + opts.maxM + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
+            '<button class="btn btn-primary" id="bt' + suffix + '-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
-            '<p id="nm1-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pick' + defaultM + ' without repetition to generate permutations.</p>' +
-            '<div id="nm1-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
-            '<div id="nm1-used' + suffix + '" style="text-align:center;margin-bottom:8px;"></div>' +
-            '<div id="nm1-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
+            '<div class="sim-card" style="padding:1.5rem;margin-bottom:12px;">' +
+            '<div class="sim-tree-wrapper"><div id="sim-tree' + suffix + '" style="position:relative;"></div></div>' +
+            '<div id="nm-path' + suffix + '" class="sim-tree-path-display">path = [ ]</div>' +
+            '</div>' +
+            '<div id="nm-results' + suffix + '" class="sim-tree-results"><span style="color:var(--text3);">' + opts.emptyLabel + '</span></div>' +
             self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm1-path' + suffix);
-        var usedEl = contentEl.querySelector('#nm1-used' + suffix);
-        var resultsEl = contentEl.querySelector('#nm1-results' + suffix);
-        var descEl = contentEl.querySelector('#nm1-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm1-n');
-        var inputM = contentEl.querySelector('#bt-nm1-m');
-        var resetBtn = contentEl.querySelector('#bt-nm1-reset');
+        var pathEl = contentEl.querySelector('#nm-path' + suffix);
+        var resultsEl = contentEl.querySelector('#nm-results' + suffix);
+        var inputN = contentEl.querySelector('#bt' + suffix + '-n');
+        var inputM = contentEl.querySelector('#bt' + suffix + '-m');
+        var resetBtn = contentEl.querySelector('#bt' + suffix + '-reset');
+
         function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}, pick' + M + ' without repetition to generate permutations.';
-            function renderUsed(u) { var h = ''; for (var i = 1; i <= N; i++) h += '<span style="display:inline-block;width:30px;height:30px;line-height:30px;text-align:center;margin:2px;border-radius:6px;font-weight:600;font-size:0.85rem;' + (u[i] ? 'background:var(--accent);color:white;' : 'background:var(--bg2);') + '">' + i + '</span>'; usedEl.innerHTML = h; }
-            var initUsed = []; for (var i = 0; i <= N; i++) initUsed.push(false);
-            renderUsed(initUsed);
             pathEl.textContent = 'path = [ ]'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">Sequences will appear here</span>';
-            var steps = [], path = [], used = initUsed.slice(), found = [];
-            var solve = function(depth) {
-                if (depth === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: 'Sequence [' + s.join(', ') + '] complete! (#' + r + ')',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Sequences will appear here</span>'; }
-                    }); })(snap, rc); return; }
-                for (var i = 1; i <= N; i++) {
-                    if (used[i]) { (function(ci,sp,su) { steps.push({ description: ci + ' is in use → Skip (pruning)',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ':'') + ci + '? ]'; pathEl.style.color = 'var(--red)'; renderUsed(su); },
-                        undo: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; renderUsed(su); }
-                    }); })(i,path.slice(),used.slice()); continue; }
-                    used[i] = true; path.push(i);
-                    (function(ci,sp,su) { steps.push({ description: ci + ' chosen → path = [' + sp.join(', ') + ']',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ]'; pathEl.style.color = ''; renderUsed(su); },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; var pu = su.slice(); pu[ci] = false; renderUsed(pu); }
-                    }); })(i,path.slice(),used.slice());
-                    solve(depth + 1);
-                    path.pop(); used[i] = false;
-                    (function(ci,sp,su) { steps.push({ description: ci + ' undone',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; renderUsed(su); },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ]'; var ru = su.slice(); ru[ci] = true; renderUsed(ru); }
-                    }); })(i,path.slice(),used.slice());
-                }
-            };
-            solve(0);
-            steps.push({ description: 'Search complete! Total: ' + found.length, action: function(){}, undo: function(){} });
+            resultsEl.innerHTML = '<span style="color:var(--text3);">' + opts.emptyLabel + '</span>';
+            var solver = opts.solverFactory(N, M);
+            solver.solve();
+            var nodes = solver.getNodes();
+            var steps = solver.getSteps();
+            self._renderTree(contentEl, nodes, suffix);
+            self._setNodeState(contentEl, suffix, nodes[0].id, 'node-root');
             self._initStepController(contentEl, steps, suffix);
         }
+
         resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(7, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(N, parseInt(inputM.value) || defaultM));
+            var N = Math.max(1, Math.min(opts.maxN, parseInt(inputN.value) || opts.defaultN));
+            var M = Math.max(1, Math.min(opts.maxM < 0 ? N : opts.maxM, parseInt(inputM.value) || opts.defaultM));
+            if (M > N) M = N;
             inputN.value = N; inputM.value = M;
             self._clearVizState();
             buildAndRun(N, M);
         });
-        buildAndRun(defaultN, defaultM);
+        buildAndRun(opts.defaultN, opts.defaultM);
+    },
+
+    // ====================================================================
+    // Simulation 1: N and M (1) — Permutation (boj-15649)
+    // ====================================================================
+    _renderVizNM1(contentEl) {
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm1',
+            title: 'N and M (1) — Permutation Generation',
+            defaultN: 4, defaultM: 2, maxN: 6, maxM: -1,
+            emptyLabel: 'Sequences will appear here',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], used = [], found = [];
+                for (var i = 0; i <= N; i++) used.push(false);
+                var pathEl, resultsEl, sfx = '-nm1';
+
+                function solve(depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        var leafLabel = '[' + snap.join(',') + ']';
+                        nodes.push({ id: leafNid, label: leafLabel, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: 'Sequence [' + s.join(', ') + '] complete! (#' + r + ') — All M numbers chosen, adding to results',
+                                action: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓';
+                                    pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">Sequences will appear here</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = 1; i <= N; i++) {
+                        if (used[i]) {
+                            var prunedNid = nodeId++;
+                            nodes.push({ id: prunedNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                            nodes[parentNid].children.push(prunedNid);
+                            (function(ci, sp, pid) {
+                                steps.push({
+                                    description: ci + ' is already in use → Skip (pruning). Why? No-repeat permutation cannot reuse the same number',
+                                    action: function() {
+                                        pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                        self._setNodeState(contentEl, sfx, pid, 'node-pruned');
+                                        self._setEdgeState(contentEl, sfx, pid, 'edge-backtracked');
+                                        pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ' : '') + ci + '? ]';
+                                        pathEl.style.color = 'var(--red)';
+                                    },
+                                    undo: function() {
+                                        pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                        self._setNodeState(contentEl, sfx, pid, 'node-hidden');
+                                        self._setEdgeState(contentEl, sfx, pid, '');
+                                        pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ]';
+                                        pathEl.style.color = '';
+                                    }
+                                });
+                            })(i, path.slice(), prunedNid);
+                            continue;
+                        }
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        used[i] = true; path.push(i);
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: 'Choose ' + ci + ' → path = [' + sp.join(', ') + ']. Why? This number is not yet used, so it can be selected',
+                                action: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ]';
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                        solve(depth + 1, choiceNid);
+                        path.pop(); used[i] = false;
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: 'Undo ' + ci + '. Why? This branch is fully explored, so we try a different choice',
+                                action: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ]';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                    }
+                }
+                return {
+                    solve: function() { solve(0, 0); steps.push({ description: 'Search complete! Total: ' + found.length + ' permutations', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
+        });
     },
 
     // ====================================================================
     // Simulation 2: N and M (2) — Combination (boj-15650)
     // ====================================================================
     _renderVizNM2(contentEl) {
-        var self = this, suffix = '-nm2';
-        var defaultN = 4, defaultM = 2;
-        contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N and M (2) — Combination Generation</h3>' +
-            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm2-n" value="' + defaultN + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm2-m" value="' + defaultM + '" min="1" max="7" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm2-reset">🔄</button>' +
-            '</div>' +
-            self._createStepDesc(suffix) +
-            '<p id="nm2-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pick' + defaultM + ' in ascending order. The start parameter prevents duplicates.</p>' +
-            '<div id="nm2-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
-            '<div id="nm2-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
-            self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm2-path' + suffix);
-        var resultsEl = contentEl.querySelector('#nm2-results' + suffix);
-        var descEl = contentEl.querySelector('#nm2-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm2-n');
-        var inputM = contentEl.querySelector('#bt-nm2-m');
-        var resetBtn = contentEl.querySelector('#bt-nm2-reset');
-        function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}, pick' + M + ' in ascending order. The start parameter prevents duplicates.';
-            pathEl.textContent = 'path = [ ], start = 1'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">Combinations will appear here</span>';
-            var steps = [], path = [], found = [];
-            var solve = function(start) {
-                if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: 'Combination [' + s.join(', ') + '] complete! (#' + r + ')',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Combinations will appear here</span>'; }
-                    }); })(snap,rc); return; }
-                for (var i = start; i <= N; i++) {
-                    path.push(i);
-                    (function(ci,sp,st) { steps.push({ description: ci + ' chosen (start=' + st + ') → path = [' + sp.join(', ') + ']',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ], start = ' + (ci+1); pathEl.style.color = ''; },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + st; }
-                    }); })(i,path.slice(),start);
-                    solve(i + 1);
-                    path.pop();
-                    (function(ci,sp,st) { steps.push({ description: ci + ' undone',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ], start = ' + st; pathEl.style.color = ''; },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ], start = ' + (ci+1); }
-                    }); })(i,path.slice(),start);
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm2',
+            title: 'N and M (2) — Combination Generation',
+            defaultN: 4, defaultM: 2, maxN: 6, maxM: -1,
+            emptyLabel: 'Combinations will appear here',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], found = [];
+                var sfx = '-nm2';
+
+                function solve(start, depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        nodes.push({ id: leafNid, label: '[' + snap.join(',') + ']', depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: 'Combination [' + s.join(', ') + '] complete! (#' + r + ') — All M numbers chosen, adding to results',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓';
+                                    pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]';
+                                    pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">Combinations will appear here</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = start; i <= N; i++) {
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        path.push(i);
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: 'Choose ' + ci + ' (start=' + st + ') → path = [' + sp.join(', ') + ']. Why? Starting from ' + st + ' guarantees ascending order',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ], start = ' + (ci + 1);
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ], start = ' + st;
+                                    pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                        solve(i + 1, depth + 1, choiceNid);
+                        path.pop();
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: 'Undo ' + ci + '. Why? This branch is fully explored, trying the next number',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ], start = ' + st;
+                                    pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ], start = ' + (ci + 1);
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                    }
                 }
-            };
-            solve(1);
-            steps.push({ description: 'Search complete! Total:' + found.length + ' combinations', action: function(){}, undo: function(){} });
-            self._initStepController(contentEl, steps, suffix);
-        }
-        resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(7, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(N, parseInt(inputM.value) || defaultM));
-            inputN.value = N; inputM.value = M;
-            self._clearVizState();
-            buildAndRun(N, M);
+                return {
+                    solve: function() { solve(1, 0, 0); steps.push({ description: 'Search complete! Total: ' + found.length + ' combinations', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
         });
-        buildAndRun(defaultN, defaultM);
     },
 
     // ====================================================================
     // Simulation 3: N and M (3) — Perm. w/ Repetition (boj-15651)
     // ====================================================================
     _renderVizNM3(contentEl) {
-        var self = this, suffix = '-nm3';
-        var defaultN = 3, defaultM = 2;
-        contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N and M (3) — Perm. w/ Repetition</h3>' +
-            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm3-n" value="' + defaultN + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm3-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm3-reset">🔄</button>' +
-            '</div>' +
-            self._createStepDesc(suffix) +
-            '<p id="nm3-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pick' + defaultM + ' with repetition allowed. No used array needed!</p>' +
-            '<div id="nm3-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ]</div>' +
-            '<div id="nm3-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
-            self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm3-path' + suffix);
-        var resultsEl = contentEl.querySelector('#nm3-results' + suffix);
-        var descEl = contentEl.querySelector('#nm3-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm3-n');
-        var inputM = contentEl.querySelector('#bt-nm3-m');
-        var resetBtn = contentEl.querySelector('#bt-nm3-reset');
-        function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}, pick' + M + ' with repetition allowed. No used array needed!';
-            pathEl.textContent = 'path = [ ]'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">Permutations w/ repetition will appear here</span>';
-            var steps = [], path = [], found = [];
-            var solve = function() {
-                if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] complete! (#' + r + ')',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Permutations w/ repetition will appear here</span>'; }
-                    }); })(snap,rc); return; }
-                for (var i = 1; i <= N; i++) {
-                    path.push(i);
-                    (function(ci,sp) { steps.push({ description: ci + ' chosen → path = [' + sp.join(', ') + '] (repetition allowed)',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ]'; pathEl.style.color = ''; },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ]'; }
-                    }); })(i,path.slice());
-                    solve();
-                    path.pop();
-                    (function(ci,sp) { steps.push({ description: ci + ' undone',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ]'; pathEl.style.color = ''; },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ]'; }
-                    }); })(i,path.slice());
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm3',
+            title: 'N and M (3) — Perm. w/ Repetition',
+            defaultN: 3, defaultM: 2, maxN: 4, maxM: 3,
+            emptyLabel: 'Permutations w/ repetition will appear here',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], found = [];
+                var sfx = '-nm3';
+
+                function solve(depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        nodes.push({ id: leafNid, label: '[' + snap.join(',') + ']', depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: '[' + s.join(', ') + '] complete! (#' + r + ') — Repetition allowed, so the same number can appear multiple times',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">Permutations w/ repetition will appear here</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = 1; i <= N; i++) {
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        path.push(i);
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: 'Choose ' + ci + ' → path = [' + sp.join(', ') + ']. Why? No used check, so every number is available each time',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ]'; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                        solve(depth + 1, choiceNid);
+                        path.pop();
+                        (function(ci, sp, nid) {
+                            steps.push({
+                                description: 'Undo ' + ci + '. Why? Undoing the current choice to try the next number',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ]'; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ]';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid);
+                    }
                 }
-            };
-            solve();
-            steps.push({ description: 'Search complete! Total:' + found.length + ' (N^M = ' + N + '^' + M + ' = ' + Math.pow(N,M) + ')', action: function(){}, undo: function(){} });
-            self._initStepController(contentEl, steps, suffix);
-        }
-        resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(5, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(5, parseInt(inputM.value) || defaultM));
-            inputN.value = N; inputM.value = M;
-            self._clearVizState();
-            buildAndRun(N, M);
+                return {
+                    solve: function() { solve(0, 0); steps.push({ description: 'Search complete! Total: ' + found.length + ' (N^M = ' + N + '^' + M + ' = ' + Math.pow(N, M) + ')', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
         });
-        buildAndRun(defaultN, defaultM);
     },
 
     // ====================================================================
     // Simulation 4: N and M (4) — Comb. w/ Repetition (boj-15652)
     // ====================================================================
     _renderVizNM4(contentEl) {
-        var self = this, suffix = '-nm4';
-        var defaultN = 3, defaultM = 2;
-        contentEl.innerHTML =
-            '<h3 style="margin-bottom:8px;">N and M (4) — Comb. w/ Repetition</h3>' +
-            '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">N: <input type="number" id="bt-nm4-n" value="' + defaultN + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<label style="font-weight:600;">M: <input type="number" id="bt-nm4-m" value="' + defaultM + '" min="1" max="5" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:70px;"></label>' +
-            '<button class="btn btn-primary" id="bt-nm4-reset">🔄</button>' +
-            '</div>' +
-            self._createStepDesc(suffix) +
-            '<p id="nm4-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;">{1..' + defaultN + '}, pickrepetition allowed + non-decreasing order,' + defaultM + '. Pass start as i (not i+1!).</p>' +
-            '<div id="nm4-path' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:8px;">path = [ ], start = 1</div>' +
-            '<div id="nm4-results' + suffix + '" style="padding:8px;background:var(--bg);border-radius:8px;min-height:32px;margin-bottom:12px;text-align:center;font-size:0.85rem;"></div>' +
-            self._createStepControls(suffix);
-        var pathEl = contentEl.querySelector('#nm4-path' + suffix);
-        var resultsEl = contentEl.querySelector('#nm4-results' + suffix);
-        var descEl = contentEl.querySelector('#nm4-desc' + suffix);
-        var inputN = contentEl.querySelector('#bt-nm4-n');
-        var inputM = contentEl.querySelector('#bt-nm4-m');
-        var resetBtn = contentEl.querySelector('#bt-nm4-reset');
-        function buildAndRun(N, M) {
-            descEl.textContent = '{1..' + N + '}, pickrepetition allowed + non-decreasing order,' + M + '. Pass start as i (not i+1!).';
-            pathEl.textContent = 'path = [ ], start = 1'; pathEl.style.color = '';
-            resultsEl.innerHTML = '<span style="color:var(--text3);">Combinations w/ repetition will appear here</span>';
-            var steps = [], path = [], found = [];
-            var solve = function(start) {
-                if (path.length === M) { var snap = path.slice(); found.push(snap); var rc = found.length;
-                    (function(s,r) { steps.push({ description: '[' + s.join(', ') + '] complete! (#' + r + ')',
-                        action: function() { pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)'; resultsEl.innerHTML = found.slice(0,r).map(function(x){return '['+x.join(',')+']';}).join(' '); },
-                        undo: function() { var p = s.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + s[s.length-1]; pathEl.style.color = ''; resultsEl.innerHTML = r>1 ? found.slice(0,r-1).map(function(x){return '['+x.join(',')+']';}).join(' ') : '<span style="color:var(--text3);">Combinations w/ repetition will appear here</span>'; }
-                    }); })(snap,rc); return; }
-                for (var i = start; i <= N; i++) {
-                    path.push(i);
-                    (function(ci,sp,st) { steps.push({ description: ci + ' chosen (start=' + st + ') → path = [' + sp.join(', ') + ']',
-                        action: function() { pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length<M?', ___':'') + ' ], start = ' + ci; pathEl.style.color = ''; },
-                        undo: function() { var p = sp.slice(0,-1); pathEl.textContent = 'path = [ ' + (p.length>0?p.join(', ')+', ___':'___') + ' ], start = ' + st; }
-                    }); })(i,path.slice(),start);
-                    solve(i); // i, not i+1!
-                    path.pop();
-                    (function(ci,sp,st) { steps.push({ description: ci + ' undone',
-                        action: function() { pathEl.textContent = 'path = [ ' + (sp.length>0?sp.join(', ')+', ___':'___') + ' ], start = ' + st; pathEl.style.color = ''; },
-                        undo: function() { var r = sp.slice(); r.push(ci); pathEl.textContent = 'path = [ ' + r.join(', ') + (r.length<M?', ___':'') + ' ], start = ' + ci; }
-                    }); })(i,path.slice(),start);
+        var self = this;
+        self._buildNMTreeViz(contentEl, {
+            suffix: '-nm4',
+            title: 'N and M (4) — Comb. w/ Repetition',
+            defaultN: 3, defaultM: 2, maxN: 4, maxM: 3,
+            emptyLabel: 'Combinations w/ repetition will appear here',
+            solverFactory: function(N, M) {
+                var nodes = [{ id: 0, label: 'root', depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+                var nodeId = 1;
+                var steps = [], path = [], found = [];
+                var sfx = '-nm4';
+
+                function solve(start, depth, parentNid) {
+                    if (depth === M) {
+                        var snap = path.slice(); found.push(snap); var rc = found.length;
+                        var leafNid = nodeId++;
+                        nodes.push({ id: leafNid, label: '[' + snap.join(',') + ']', depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                        nodes[parentNid].children.push(leafNid);
+                        (function(s, r, lid) {
+                            steps.push({
+                                description: '[' + s.join(', ') + '] complete! (#' + r + ') — Non-decreasing + repetition allowed combination',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-complete');
+                                    self._setEdgeState(contentEl, sfx, lid, 'edge-complete');
+                                    pathEl.textContent = 'path = [ ' + s.join(', ') + ' ] ✓'; pathEl.style.color = 'var(--green)';
+                                    resultsEl.innerHTML = found.slice(0, r).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ');
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    var resultsEl = contentEl.querySelector('#nm-results' + sfx);
+                                    self._setNodeState(contentEl, sfx, lid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, lid, '');
+                                    var prev = s.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ], start = ' + s[s.length - 1]; pathEl.style.color = '';
+                                    resultsEl.innerHTML = r > 1 ? found.slice(0, r - 1).map(function(x) { return '<span class="bt-result-tag">[' + x.join(', ') + ']</span>'; }).join(' ') : '<span style="color:var(--text3);">Combinations w/ repetition will appear here</span>';
+                                }
+                            });
+                        })(snap, rc, leafNid);
+                        return;
+                    }
+                    for (var i = start; i <= N; i++) {
+                        var choiceNid = nodeId++;
+                        nodes.push({ id: choiceNid, label: '' + i, depth: depth, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        nodes[parentNid].children.push(choiceNid);
+                        path.push(i);
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: 'Choose ' + ci + ' (start=' + st + ') → path = [' + sp.join(', ') + ']. Why? Next recursion passes start=' + ci + ' to guarantee non-decreasing order (i, not i+1!)',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    pathEl.textContent = 'path = [ ' + sp.join(', ') + (sp.length < M ? ', ___' : '') + ' ], start = ' + ci; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, sfx, nid, '');
+                                    var prev = sp.slice(0, -1);
+                                    pathEl.textContent = 'path = [ ' + (prev.length > 0 ? prev.join(', ') + ', ___' : '___') + ' ], start = ' + st; pathEl.style.color = '';
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                        solve(i, depth + 1, choiceNid);
+                        path.pop();
+                        (function(ci, sp, nid, st) {
+                            steps.push({
+                                description: 'Undo ' + ci + '. Why? This branch is fully explored, trying the next number',
+                                action: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-backtracked');
+                                    pathEl.textContent = 'path = [ ' + (sp.length > 0 ? sp.join(', ') + ', ___' : '___') + ' ], start = ' + st; pathEl.style.color = '';
+                                },
+                                undo: function() {
+                                    var pathEl = contentEl.querySelector('#nm-path' + sfx);
+                                    self._setNodeState(contentEl, sfx, nid, 'node-current');
+                                    self._setEdgeState(contentEl, sfx, nid, 'edge-active');
+                                    var restored = sp.slice(); restored.push(ci);
+                                    pathEl.textContent = 'path = [ ' + restored.join(', ') + (restored.length < M ? ', ___' : '') + ' ], start = ' + ci;
+                                }
+                            });
+                        })(i, path.slice(), choiceNid, start);
+                    }
                 }
-            };
-            solve(1);
-            steps.push({ description: 'Search complete! Total:' + found.length + ' combinations w/ repetition', action: function(){}, undo: function(){} });
-            self._initStepController(contentEl, steps, suffix);
-        }
-        resetBtn.addEventListener('click', function() {
-            var N = Math.max(1, Math.min(5, parseInt(inputN.value) || defaultN));
-            var M = Math.max(1, Math.min(5, parseInt(inputM.value) || defaultM));
-            inputN.value = N; inputM.value = M;
-            self._clearVizState();
-            buildAndRun(N, M);
+                return {
+                    solve: function() { solve(1, 0, 0); steps.push({ description: 'Search complete! Total: ' + found.length + ' combinations w/ repetition', action: function() {}, undo: function() {} }); },
+                    getNodes: function() { return nodes; },
+                    getSteps: function() { return steps; },
+                    getFound: function() { return found; }
+                };
+            }
         });
-        buildAndRun(defaultN, defaultM);
     },
+
     // ====================================================================
     // Simulation 5: Operator Insertion (boj-14888)
     // ====================================================================
     _renderVizOperator(contentEl) {
         var self = this, suffix = '-op';
-        var defaultNums = [1, 2, 3], defaultOps = [1, 1, 0, 0]; // +1, -1
+        var defaultNums = [1, 2, 3], defaultOps = [1, 1, 0, 0];
         var opSyms = ['+', '-', '*', '/'];
         contentEl.innerHTML =
             '<h3 style="margin-bottom:8px;">Operator Insertion</h3>' +
             '<div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">' +
-            '<label style="font-weight:600;">Numbers:<input type="text" id="bt-op-nums" value="' + defaultNums.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:120px;" placeholder="1,2,3"></label>' +
-            '<label style="font-weight:600;">Operators(+,-,*,/):<input type="text" id="bt-op-ops" value="' + defaultOps.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;" placeholder="1,1,0,0"></label>' +
+            '<label style="font-weight:600;">Numbers: <input type="text" id="bt-op-nums" value="' + defaultNums.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:120px;" placeholder="1,2,3"></label>' +
+            '<label style="font-weight:600;">Operators(+,-,*,/): <input type="text" id="bt-op-ops" value="' + defaultOps.join(',') + '" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:1rem;width:100px;" placeholder="1,1,0,0"></label>' +
             '<button class="btn btn-primary" id="bt-op-reset">🔄</button>' +
             '</div>' +
             self._createStepDesc(suffix) +
-            '<p id="op-desc' + suffix + '" style="color:var(--text2);margin-bottom:12px;"></p>' +
-            '<div id="op-expr' + suffix + '" style="text-align:center;font-size:1.2rem;font-weight:600;margin-bottom:8px;"></div>' +
-            '<div id="op-ops' + suffix + '" style="text-align:center;margin-bottom:8px;font-size:0.85rem;"></div>' +
+            '<div class="sim-card" style="padding:1.5rem;margin-bottom:12px;">' +
+            '<div class="sim-tree-wrapper"><div id="sim-tree' + suffix + '" style="position:relative;"></div></div>' +
+            '<div id="op-expr' + suffix + '" style="text-align:center;font-size:1.1rem;font-weight:600;margin-bottom:4px;"></div>' +
+            '<div id="op-ops' + suffix + '" style="text-align:center;margin-bottom:4px;font-size:0.85rem;"></div>' +
+            '</div>' +
             '<div id="op-info' + suffix + '" style="padding:10px;background:var(--bg);border-radius:8px;text-align:center;margin-bottom:12px;min-height:36px;"></div>' +
             self._createStepControls(suffix);
         var exprEl = contentEl.querySelector('#op-expr' + suffix);
         var opsEl = contentEl.querySelector('#op-ops' + suffix);
         var infoEl = contentEl.querySelector('#op-info' + suffix);
-        var descEl = contentEl.querySelector('#op-desc' + suffix);
         var inputNums = contentEl.querySelector('#bt-op-nums');
         var inputOps = contentEl.querySelector('#bt-op-ops');
         var resetBtn = contentEl.querySelector('#bt-op-reset');
+
         function buildAndRun(nums, ops) {
             var initExpr = nums.join(' ☐ ');
-            descEl.textContent = 'Numbers [' + nums.join(', ') + '], operators: +' + ops[0] + ' -' + ops[1] + ' *' + ops[2] + ' /' + ops[3] + '. Try all arrangements to find max/min.';
             exprEl.textContent = initExpr; exprEl.style.color = '';
-            function renderOps(o) { opsEl.innerHTML = 'Remaining operators: +' + o[0] + ', -' + o[1] + ', * ' + o[2] + ', /' + o[3] + ''; }
+            function renderOps(o) { opsEl.innerHTML = 'Remaining: + ' + o[0] + ', - ' + o[1] + ', * ' + o[2] + ', / ' + o[3]; }
             renderOps(ops);
             infoEl.innerHTML = '<span style="color:var(--text2);">Finding max and min values</span>';
+
+            var treeNodes = [{ id: 0, label: '' + nums[0], depth: 0, parentId: null, children: [], isRoot: true, isLeaf: false }];
+            var nodeId = 1;
             var steps = [], results = [], maxV = -Infinity, minV = Infinity;
             var curOps = ops.slice();
-            var solve = function(idx, current, expr) {
+
+            var solve = function(idx, current, expr, parentNid) {
                 if (idx === nums.length) {
                     results.push({ expr: expr, val: current });
                     if (current > maxV) maxV = current;
                     if (current < minV) minV = current;
                     var rc = results.length, cm = maxV, cn = minV, ce = expr, cv = current;
-                    (function(rc, cm, cn, ce, cv) {
-                        steps.push({ description: ce + ' = ' + cv + ' (current max=' + cm + ', min=' + cn + ')',
-                            action: function() { exprEl.textContent = ce + ' = ' + cv; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = 'Result' + rc + ' |<strong>max = ' + cm + '</strong>, <strong>min = ' + cn + '</strong>'; },
-                            undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; var prev = rc > 1 ? results[rc-2] : null; infoEl.innerHTML = prev ? 'Result' + (rc-1) + '' : '<span style="color:var(--text2);">Finding max and min values</span>'; }
+                    var leafNid = nodeId++;
+                    treeNodes.push({ id: leafNid, label: '=' + cv, depth: idx - 1, parentId: parentNid, children: [], isRoot: false, isLeaf: true });
+                    treeNodes[parentNid].children.push(leafNid);
+                    (function(rc, cm, cn, ce, cv, lid) {
+                        steps.push({
+                            description: ce + ' = ' + cv + ' (current max=' + cm + ', min=' + cn + '). Why? All operators placed — this is one complete expression',
+                            action: function() {
+                                self._setNodeState(contentEl, suffix, lid, 'node-complete');
+                                self._setEdgeState(contentEl, suffix, lid, 'edge-complete');
+                                exprEl.textContent = ce + ' = ' + cv; exprEl.style.color = 'var(--green)';
+                                infoEl.innerHTML = 'Results: ' + rc + ' | <strong>max = ' + cm + '</strong>, <strong>min = ' + cn + '</strong>';
+                            },
+                            undo: function() {
+                                self._setNodeState(contentEl, suffix, lid, 'node-hidden');
+                                self._setEdgeState(contentEl, suffix, lid, '');
+                                exprEl.textContent = initExpr; exprEl.style.color = '';
+                                infoEl.innerHTML = rc > 1 ? 'Results: ' + (rc - 1) : '<span style="color:var(--text2);">Finding max and min values</span>';
+                            }
                         });
-                    })(rc, cm, cn, ce, cv);
+                    })(rc, cm, cn, ce, cv, leafNid);
                     return;
                 }
                 for (var i = 0; i < 4; i++) {
@@ -1729,35 +2069,67 @@ for (int i = 1; i &lt;= n; i++) {
                         else nxt = (current / nums[idx]) | 0;
                         var newExpr = expr + ' ' + opSyms[i] + ' ' + nums[idx];
                         var snapOps = curOps.slice();
-                        (function(ci, ne, so, prevExpr) {
-                            steps.push({ description: opSyms[ci] + ' ' + nums[idx] + ' try →' + ne,
-                                action: function() { exprEl.textContent = ne + (idx < nums.length - 1 ? ' ☐ ...' : ''); exprEl.style.color = ''; renderOps(so); },
-                                undo: function() { var po = so.slice(); po[ci]++; exprEl.textContent = prevExpr + ' ☐ ...'; renderOps(po); }
+                        var choiceNid = nodeId++;
+                        treeNodes.push({ id: choiceNid, label: opSyms[i] + nums[idx], depth: idx - 1, parentId: parentNid, children: [], isRoot: false, isLeaf: false });
+                        treeNodes[parentNid].children.push(choiceNid);
+                        (function(ci, ne, so, prevExpr, nid) {
+                            steps.push({
+                                description: opSyms[ci] + ' ' + nums[idx] + ' try → ' + ne + '. Why? There is a remaining ' + opSyms[ci] + ' operator to try',
+                                action: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-current');
+                                    self._setEdgeState(contentEl, suffix, nid, 'edge-active');
+                                    exprEl.textContent = ne + (idx < nums.length - 1 ? ' ☐ ...' : ''); exprEl.style.color = '';
+                                    renderOps(so);
+                                },
+                                undo: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-hidden');
+                                    self._setEdgeState(contentEl, suffix, nid, '');
+                                    var po = so.slice(); po[ci]++;
+                                    exprEl.textContent = prevExpr + (idx > 1 ? ' ☐ ...' : ' ☐ ...'); renderOps(po);
+                                }
                             });
-                        })(i, newExpr, snapOps, expr);
-                        solve(idx + 1, nxt, newExpr);
+                        })(i, newExpr, snapOps, expr, choiceNid);
+                        solve(idx + 1, nxt, newExpr, choiceNid);
                         curOps[i]++;
+                        (function(nid, so) {
+                            steps.push({
+                                description: 'Undo. Why? This operator branch is fully explored, trying another operator',
+                                action: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-backtracked');
+                                    self._setEdgeState(contentEl, suffix, nid, 'edge-backtracked');
+                                    renderOps(so);
+                                },
+                                undo: function() {
+                                    self._setNodeState(contentEl, suffix, nid, 'node-current');
+                                    self._setEdgeState(contentEl, suffix, nid, 'edge-active');
+                                }
+                            });
+                        })(choiceNid, curOps.slice());
                     }
                 }
             };
-            solve(1, nums[0], '' + nums[0]);
+            solve(1, nums[0], '' + nums[0], 0);
             var fm = maxV, fn = minV;
-            steps.push({ description: 'Done! max =' + fm + ', min =' + fn,
-                action: function() { exprEl.textContent = 'max = ' + fm + ', min = ' + fn; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">✅ max =' + fm + ', min =' + fn + '</strong>'; },
+            steps.push({
+                description: 'Done! max = ' + fm + ', min = ' + fn,
+                action: function() { exprEl.textContent = 'max = ' + fm + ', min = ' + fn; exprEl.style.color = 'var(--green)'; infoEl.innerHTML = '<strong style="font-size:1.1rem;color:var(--green);">max = ' + fm + ', min = ' + fn + '</strong>'; },
                 undo: function() { exprEl.textContent = initExpr; exprEl.style.color = ''; }
             });
+            self._renderTree(contentEl, treeNodes, suffix);
+            self._setNodeState(contentEl, suffix, 0, 'node-root');
             self._initStepController(contentEl, steps, suffix);
         }
+
         resetBtn.addEventListener('click', function() {
             var nums = inputNums.value.split(',').map(function(x) { return parseInt(x.trim()); }).filter(function(x) { return !isNaN(x); });
             if (nums.length < 2) nums = defaultNums.slice();
-            if (nums.length > 8) nums = nums.slice(0, 8);
+            if (nums.length > 6) nums = nums.slice(0, 6);
             var opsArr = inputOps.value.split(',').map(function(x) { return Math.max(0, parseInt(x.trim()) || 0); });
             while (opsArr.length < 4) opsArr.push(0);
             opsArr = opsArr.slice(0, 4);
             var totalOps = opsArr[0] + opsArr[1] + opsArr[2] + opsArr[3];
             if (totalOps !== nums.length - 1) {
-                alert('Total operator count must be' + (nums.length - 1) + ' (numbers:' + nums.length + ' - 1). Current:' + totalOps);
+                alert('Total operator count must be ' + (nums.length - 1) + ' (numbers: ' + nums.length + ' - 1). Current: ' + totalOps);
                 return;
             }
             inputNums.value = nums.join(',');

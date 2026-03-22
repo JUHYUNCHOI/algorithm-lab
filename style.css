@@ -4163,6 +4163,127 @@ button.problem-card:hover {
     font-size: 0.82rem;
 }
 
+/* ===== 시뮬 결정 트리 시각화 ===== */
+.sim-tree-wrapper {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 1rem 0.5rem 1.5rem;
+    min-height: 120px;
+}
+.sim-tree-wrapper svg.sim-tree-edges {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+.sim-tree-wrapper svg.sim-tree-edges line {
+    stroke: var(--border);
+    stroke-width: 2;
+    transition: stroke 0.3s, opacity 0.3s;
+}
+.sim-tree-wrapper svg.sim-tree-edges line.edge-active {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+}
+.sim-tree-wrapper svg.sim-tree-edges line.edge-complete {
+    stroke: var(--green);
+}
+.sim-tree-wrapper svg.sim-tree-edges line.edge-backtracked {
+    stroke: var(--red);
+    opacity: 0.35;
+}
+.sim-tree-node {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Fira Code', 'SF Mono', monospace;
+    background: var(--bg3);
+    border: 2px solid transparent;
+    color: var(--text);
+    transition: all 0.3s ease;
+    z-index: 2;
+    white-space: nowrap;
+}
+.sim-tree-node.node-hidden {
+    opacity: 0;
+    transform: scale(0.4);
+}
+.sim-tree-node.node-current {
+    background: var(--yellow);
+    color: #333;
+    border-color: #f0a500;
+    box-shadow: 0 0 14px rgba(253, 203, 110, 0.6);
+    transform: scale(1.15);
+    z-index: 5;
+}
+.sim-tree-node.node-visited {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent2);
+}
+.sim-tree-node.node-complete {
+    background: var(--green);
+    color: #fff;
+    border-color: #27ae60;
+    box-shadow: 0 0 10px rgba(0, 184, 148, 0.35);
+}
+.sim-tree-node.node-backtracked {
+    opacity: 0.35;
+    background: var(--bg3);
+    color: var(--red);
+    border-color: var(--red);
+}
+.sim-tree-node.node-pruned {
+    opacity: 0.3;
+    background: var(--bg3);
+    color: var(--red);
+    text-decoration: line-through;
+}
+.sim-tree-node.node-root {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.7rem;
+    width: 40px;
+    height: 40px;
+}
+.sim-tree-node.node-leaf {
+    border-radius: 8px;
+    width: auto;
+    min-width: 36px;
+    padding: 0 6px;
+}
+.sim-tree-path-display {
+    text-align: center;
+    font-family: 'Fira Code', 'SF Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: var(--bg);
+    border-radius: 8px;
+    transition: color 0.3s;
+}
+.sim-tree-results {
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 8px;
+    background: var(--bg);
+    border-radius: 8px;
+    min-height: 32px;
+    margin-bottom: 12px;
+}
+@media (max-width: 768px) {
+    .sim-tree-node { width: 30px; height: 30px; font-size: 0.7rem; }
+    .sim-tree-node.node-root { width: 34px; height: 34px; }
+}
+
 /* ===== 순열 시각화 보조 ===== */
 .perm-path-display {
     font-family: 'Fira Code', 'SF Mono', monospace;

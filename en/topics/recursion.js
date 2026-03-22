@@ -1224,15 +1224,15 @@ const recursionTopic = {
                 </div>
                 <div class="viz-panels-grid">
                     <div class="viz-panel">
-                        <div class="viz-panel-header"><h3>Call Log</h3></div>
+                        <div class="viz-panel-header"><h3>Recursion Tree</h3>
+                        <div class="counter">Calls: <span id="call-count" class="counter-num">0</span></div></div>
                         <div class="viz-panel-body">
-                            <div id="call-log" class="viz-call-log"></div>
+                            <div id="concept-fib-tree" style="overflow-x:auto;padding:12px 0;min-height:200px;"></div>
                         </div>
                     </div>
                     <div class="viz-panel">
                         <div class="viz-panel-header">
                             <h3>Call Count</h3>
-                            <div class="counter">Total: <span id="call-count" class="counter-num">0</span> calls</div>
                         </div>
                         <div class="viz-panel-body">
                             <div id="call-counts" class="dp-table-container" style="flex-wrap:wrap;gap:8px;"></div>
@@ -1243,10 +1243,11 @@ const recursionTopic = {
                 ${self._createStepControls('concept-fib')}
             `;
 
-            const logEl = el.querySelector('#call-log');
+            const treeEl = el.querySelector('#concept-fib-tree');
             const countsEl = el.querySelector('#call-counts');
             const totalEl = el.querySelector('#call-count');
 
+            // Call count cells
             const countCells = [];
             for (let i = 0; i <= n; i++) {
                 const cell = document.createElement('div');
@@ -1256,99 +1257,189 @@ const recursionTopic = {
                 countCells.push(cell);
             }
 
-            const rawSteps = [];
-            const fib = [0, 1, 1];
-            for (let i = 3; i <= n; i++) fib[i] = fib[i - 1] + fib[i - 2];
+            // Tree node layout
+            const treeNodes = [];
+            const treeEdges = [];
+            let treeNodeId = 0;
 
-            const simulate = (k, depth) => {
-                rawSteps.push({ type: 'call', k, depth });
-                if (k <= 1) {
-                    rawSteps.push({ type: 'base', k, depth, value: k });
-                    return k;
-                }
-                const v1 = simulate(k - 1, depth + 1);
-                const v2 = simulate(k - 2, depth + 1);
-                rawSteps.push({ type: 'return', k, depth, v1, v2, result: v1 + v2 });
-                return v1 + v2;
-            };
-            simulate(n, 0);
+            function layoutTree(val, depth, xCenter, xSpan) {
+                const id = treeNodeId++;
+                treeNodes.push({ id, val, x: xCenter, y: depth * 64 + 30, depth });
+                if (val <= 1) return id;
+                const leftId = layoutTree(val - 1, depth + 1, xCenter - xSpan / 2, xSpan / 2);
+                treeEdges.push({ from: id, to: leftId });
+                const rightId = layoutTree(val - 2, depth + 1, xCenter + xSpan / 2, xSpan / 2);
+                treeEdges.push({ from: id, to: rightId });
+                return id;
+            }
 
-            const steps = [];
-            const logLines = [];
-            const callCounts = new Array(n + 1).fill(0);
-            let totalCalls = 0;
+            const totalWidth = Math.max(400, Math.pow(2, n) * 44);
+            const totalHeight = (n + 1) * 64 + 20;
+            layoutTree(n, 0, totalWidth / 2, totalWidth / 3);
 
-            rawSteps.forEach(s => {
-                const indent = '\u00A0\u00A0'.repeat(s.depth);
+            // Create SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', totalWidth);
+            svg.setAttribute('height', totalHeight);
+            svg.style.cssText = 'display:block;margin:0 auto;';
 
-                if (s.type === 'call') {
-                    const ck = s.k;
-                    steps.push({
-                        description: `Call fib(${ck}) (depth ${s.depth}) — need fib(${ck-1}) + fib(${ck-2}), so we recurse deeper`,
-                        action() {
-                            callCounts[ck]++;
-                            totalCalls++;
-                            countCells[ck].querySelector('.dp-cell-value').textContent = callCounts[ck];
-                            if (callCounts[ck] > 1) countCells[ck].classList.add('memo-hit');
-                            totalEl.textContent = totalCalls;
-                            const line = document.createElement('div');
-                            line.className = 'log-line call';
-                            line.textContent = `${indent}→ fib(${ck})`;
-                            logEl.appendChild(line);
-                            logLines.push(line);
-                            logEl.scrollTop = logEl.scrollHeight;
-                        },
-                        undo() {
-                            callCounts[ck]--;
-                            totalCalls--;
-                            countCells[ck].querySelector('.dp-cell-value').textContent = callCounts[ck];
-                            if (callCounts[ck] <= 1) countCells[ck].classList.remove('memo-hit');
-                            totalEl.textContent = totalCalls;
-                            const line = logLines.pop();
-                            if (line) line.remove();
-                        }
-                    });
-                } else if (s.type === 'base') {
-                    steps.push({
-                        description: `fib(${s.k}) = ${s.value} returned — <strong>base case</strong>: n<=2 cannot be split further, so return immediately without recursion`,
-                        action() {
-                            countCells[s.k].classList.add('base');
-                            const line = document.createElement('div');
-                            line.className = 'log-line base-case';
-                            line.textContent = `${indent}← fib(${s.k}) = ${s.value} ✓`;
-                            logEl.appendChild(line);
-                            logLines.push(line);
-                            logEl.scrollTop = logEl.scrollHeight;
-                        },
-                        undo() {
-                            if (callCounts[s.k] <= 1) countCells[s.k].classList.remove('base');
-                            const line = logLines.pop();
-                            if (line) line.remove();
-                        }
-                    });
-                } else if (s.type === 'return') {
-                    steps.push({
-                        description: `fib(${s.k}) = fib(${s.k-1}) + fib(${s.k-2}) = ${s.v1} + ${s.v2} = ${s.result} returned — combines both sub-results and passes them up to the caller`,
-                        action() {
-                            countCells[s.k].classList.add('filled');
-                            const line = document.createElement('div');
-                            line.className = 'log-line return-val';
-                            line.textContent = `${indent}← fib(${s.k}) = ${s.result}`;
-                            logEl.appendChild(line);
-                            logLines.push(line);
-                            logEl.scrollTop = logEl.scrollHeight;
-                        },
-                        undo() {
-                            countCells[s.k].classList.remove('filled');
-                            const line = logLines.pop();
-                            if (line) line.remove();
-                        }
-                    });
-                }
+            // Edges (hidden initially)
+            treeEdges.forEach(e => {
+                const fromNode = treeNodes[e.from];
+                const toNode = treeNodes[e.to];
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', fromNode.x);
+                line.setAttribute('y1', fromNode.y + 16);
+                line.setAttribute('x2', toNode.x);
+                line.setAttribute('y2', toNode.y - 16);
+                line.setAttribute('stroke', 'var(--border)');
+                line.setAttribute('stroke-width', '2');
+                line.style.opacity = '0';
+                line.style.transition = 'opacity 0.3s ease';
+                line.dataset.from = e.from;
+                line.dataset.to = e.to;
+                svg.appendChild(line);
             });
 
+            // Nodes (hidden initially)
+            const nodeEls = {};
+            treeNodes.forEach(nd => {
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.style.opacity = '0';
+                g.style.transition = 'opacity 0.3s ease';
+
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', nd.x);
+                circle.setAttribute('cy', nd.y);
+                circle.setAttribute('r', 18);
+                circle.setAttribute('fill', 'var(--bg2)');
+                circle.setAttribute('stroke', 'var(--border)');
+                circle.setAttribute('stroke-width', '2');
+                g.appendChild(circle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', nd.x);
+                text.setAttribute('y', nd.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '12');
+                text.setAttribute('font-family', 'monospace');
+                text.setAttribute('fill', 'var(--text)');
+                text.textContent = 'f(' + nd.val + ')';
+                g.appendChild(text);
+
+                svg.appendChild(g);
+                nodeEls[nd.id] = { g, circle, text };
+            });
+
+            treeEl.appendChild(svg);
+
+            // Precompute fib values
+            const fibVals = [0, 1];
+            for (let fi = 2; fi <= n; fi++) fibVals[fi] = fibVals[fi - 1] + fibVals[fi - 2];
+
+            // Build steps (DFS order)
+            const steps = [];
+            let callCount = 0;
+            const callCounts = new Array(n + 1).fill(0);
+
+            function buildSteps(nodeIdx) {
+                const nd = treeNodes[nodeIdx];
+                const nIdx = nodeIdx;
+                const nVal = nd.val;
+                const isBase = nVal <= 1;
+
+                const descCall = isBase
+                    ? `Call fib(${nVal}) — <strong>base case</strong>: return ${nVal} immediately`
+                    : `Call fib(${nVal}) — need fib(${nVal - 1}) + fib(${nVal - 2}), so we recurse deeper`;
+
+                steps.push({
+                    description: descCall,
+                    action() {
+                        callCount++;
+                        callCounts[nVal]++;
+                        totalEl.textContent = callCount;
+                        countCells[nVal].querySelector('.dp-cell-value').textContent = callCounts[nVal];
+                        if (callCounts[nVal] > 1) countCells[nVal].classList.add('memo-hit');
+                        if (isBase) countCells[nVal].classList.add('base');
+                        const nel = nodeEls[nIdx];
+                        nel.g.style.opacity = '1';
+                        svg.querySelectorAll('line').forEach(line => {
+                            if (parseInt(line.dataset.to) === nIdx) line.style.opacity = '1';
+                        });
+                        if (isBase) {
+                            nel.circle.setAttribute('stroke', 'var(--green)');
+                            nel.circle.setAttribute('fill', 'var(--green)');
+                            nel.circle.setAttribute('fill-opacity', '0.15');
+                            nel.circle.setAttribute('stroke-width', '3');
+                        } else if (callCounts[nVal] > 1) {
+                            nel.circle.setAttribute('stroke', 'var(--red)');
+                            nel.circle.setAttribute('fill', 'var(--red)');
+                            nel.circle.setAttribute('fill-opacity', '0.15');
+                            nel.circle.setAttribute('stroke-width', '3');
+                        } else {
+                            nel.circle.setAttribute('stroke', 'var(--yellow)');
+                            nel.circle.setAttribute('fill', 'var(--yellow)');
+                            nel.circle.setAttribute('fill-opacity', '0.15');
+                            nel.circle.setAttribute('stroke-width', '3');
+                        }
+                    },
+                    undo() {
+                        callCount--;
+                        callCounts[nVal]--;
+                        totalEl.textContent = callCount;
+                        countCells[nVal].querySelector('.dp-cell-value').textContent = callCounts[nVal];
+                        if (callCounts[nVal] <= 1) countCells[nVal].classList.remove('memo-hit');
+                        if (isBase && callCounts[nVal] <= 0) countCells[nVal].classList.remove('base');
+                        const nel = nodeEls[nIdx];
+                        nel.g.style.opacity = '0';
+                        svg.querySelectorAll('line').forEach(line => {
+                            if (parseInt(line.dataset.to) === nIdx) line.style.opacity = '0';
+                        });
+                        nel.circle.setAttribute('stroke', 'var(--border)');
+                        nel.circle.setAttribute('fill', 'var(--bg2)');
+                        nel.circle.setAttribute('fill-opacity', '1');
+                        nel.circle.setAttribute('stroke-width', '2');
+                    }
+                });
+
+                if (nVal > 1) {
+                    const childEdges = treeEdges.filter(e => e.from === nodeIdx);
+                    childEdges.forEach(ce => buildSteps(ce.to));
+
+                    const result = fibVals[nVal];
+                    steps.push({
+                        description: `fib(${nVal}) = fib(${nVal - 1}) + fib(${nVal - 2}) = ${fibVals[nVal - 1]} + ${fibVals[nVal - 2]} = ${result} returned — combines both sub-results and passes up to the caller`,
+                        action() {
+                            countCells[nVal].classList.add('filled');
+                            const nel = nodeEls[nIdx];
+                            nel.circle.setAttribute('stroke', 'var(--green)');
+                            nel.circle.setAttribute('fill', 'var(--green)');
+                            nel.circle.setAttribute('fill-opacity', '0.15');
+                            nel.circle.setAttribute('stroke-width', '3');
+                            nel.text.textContent = String(result);
+                        },
+                        undo() {
+                            countCells[nVal].classList.remove('filled');
+                            const nel = nodeEls[nIdx];
+                            if (callCounts[nVal] > 1) {
+                                nel.circle.setAttribute('stroke', 'var(--red)');
+                                nel.circle.setAttribute('fill', 'var(--red)');
+                            } else {
+                                nel.circle.setAttribute('stroke', 'var(--yellow)');
+                                nel.circle.setAttribute('fill', 'var(--yellow)');
+                            }
+                            nel.circle.setAttribute('fill-opacity', '0.15');
+                            nel.circle.setAttribute('stroke-width', '3');
+                            nel.text.textContent = 'f(' + nVal + ')';
+                        }
+                    });
+                }
+            }
+            buildSteps(0);
+
+            const totalNodeCount = treeNodes.length;
             steps.push({
-                description: `✅ fib(${n}) = ${fib[n]}, total ${totalCalls || rawSteps.filter(s=>s.type==='call').length} calls! Lots of duplicates, right? → This is solved with DP`,
+                description: `✅ fib(${n}) = ${fibVals[n]}, total ${totalNodeCount} calls! Lots of duplicates, right? → This is solved with DP`,
                 action() {},
                 undo() {}
             });
@@ -1735,97 +1826,187 @@ const recursionTopic = {
                 self._createStepDesc('fib') +
                 '<div class="viz-panel"><div class="viz-panel-header"><h3>fib(' + n + ') Recursion Tree</h3>' +
                 '<div class="counter">Calls: <span id="sim-fib-cnt">0</span></div></div>' +
-                '<div class="viz-panel-body"><div id="sim-log-fib" class="viz-call-log" style="max-height:300px;overflow-y:auto;"></div></div></div>' +
+                '<div class="viz-panel-body"><div id="sim-fib-tree" style="overflow-x:auto;padding:12px 0;min-height:200px;"></div></div></div>' +
                 self._createStepControls('fib');
 
-            var logEl = container.querySelector('#sim-log-fib');
+            var treeEl = container.querySelector('#sim-fib-tree');
             var cntEl = container.querySelector('#sim-fib-cnt');
 
-            var rawSteps = [];
-            var simulate = function(k, depth) {
-                rawSteps.push({ type: 'call', k: k, depth: depth });
-                if (k <= 1) {
-                    rawSteps.push({ type: 'base', k: k, depth: depth, value: k });
-                    return k;
-                }
-                var v1 = simulate(k - 1, depth + 1);
-                var v2 = simulate(k - 2, depth + 1);
-                rawSteps.push({ type: 'return', k: k, depth: depth, result: v1 + v2 });
-                return v1 + v2;
-            };
-            var fibResult = simulate(n, 0);
+            // Build tree nodes recursively
+            var nodes = [];
+            var edges = [];
+            var nodeId = 0;
 
-            var steps = [];
-            var logLines = [];
-            var callCount = 0;
-            var totalCalls = rawSteps.filter(function(s){ return s.type === 'call'; }).length;
+            function layoutTree(val, depth, xCenter, xSpan) {
+                var id = nodeId++;
+                nodes.push({ id: id, val: val, x: xCenter, y: depth * 64 + 30, depth: depth });
+                if (val <= 1) return id;
+                var leftId = layoutTree(val - 1, depth + 1, xCenter - xSpan / 2, xSpan / 2);
+                edges.push({ from: id, to: leftId });
+                var rightId = layoutTree(val - 2, depth + 1, xCenter + xSpan / 2, xSpan / 2);
+                edges.push({ from: id, to: rightId });
+                return id;
+            }
 
-            rawSteps.forEach(function(s) {
-                var indent = '';
-                for (var d = 0; d < s.depth; d++) indent += '\u00A0\u00A0';
+            var totalWidth = Math.max(400, Math.pow(2, n) * 44);
+            var totalHeight = (n + 1) * 64 + 20;
+            layoutTree(n, 0, totalWidth / 2, totalWidth / 3);
 
-                if (s.type === 'call') {
-                    (function(sk, sd) {
-                        steps.push({
-                            description: 'Call fib(' + sk + ') (depth ' + sd + ') — need fib(' + (sk-1) + ') + fib(' + (sk-2) + '), so we recurse deeper',
-                            action: function() {
-                                callCount++;
-                                cntEl.textContent = callCount;
-                                var line = document.createElement('div');
-                                line.className = 'log-line call';
-                                line.textContent = indent + '→ fib(' + sk + ')';
-                                logEl.appendChild(line);
-                                logLines.push(line);
-                                logEl.scrollTop = logEl.scrollHeight;
-                            },
-                            undo: function() {
-                                callCount--;
-                                cntEl.textContent = callCount;
-                                var line = logLines.pop();
-                                if (line) line.remove();
-                            }
-                        });
-                    })(s.k, s.depth);
-                } else if (s.type === 'base') {
-                    (function(sk, sv) {
-                        steps.push({
-                            description: 'fib(' + sk + ') = ' + sv + ' — <strong>base case</strong>: n<=2 cannot be split further, return immediately',
-                            action: function() {
-                                var line = document.createElement('div');
-                                line.className = 'log-line base-case';
-                                line.textContent = indent + '← fib(' + sk + ') = ' + sv + ' ✓';
-                                logEl.appendChild(line);
-                                logLines.push(line);
-                                logEl.scrollTop = logEl.scrollHeight;
-                            },
-                            undo: function() {
-                                var line = logLines.pop();
-                                if (line) line.remove();
-                            }
-                        });
-                    })(s.k, s.value);
-                } else if (s.type === 'return') {
-                    (function(sk, sr) {
-                        steps.push({
-                            description: 'Return fib(' + sk + ') = ' + sr + ' — combines both sub-results and passes them up to the caller',
-                            action: function() {
-                                var line = document.createElement('div');
-                                line.className = 'log-line return-val';
-                                line.textContent = indent + '← fib(' + sk + ') = ' + sr;
-                                logEl.appendChild(line);
-                                logLines.push(line);
-                                logEl.scrollTop = logEl.scrollHeight;
-                            },
-                            undo: function() {
-                                var line = logLines.pop();
-                                if (line) line.remove();
-                            }
-                        });
-                    })(s.k, s.result);
-                }
+            // Create SVG
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', totalWidth);
+            svg.setAttribute('height', totalHeight);
+            svg.style.cssText = 'display:block;margin:0 auto;';
+
+            // Edges (hidden initially)
+            edges.forEach(function(e) {
+                var fromNode = nodes[e.from];
+                var toNode = nodes[e.to];
+                var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', fromNode.x);
+                line.setAttribute('y1', fromNode.y + 16);
+                line.setAttribute('x2', toNode.x);
+                line.setAttribute('y2', toNode.y - 16);
+                line.setAttribute('stroke', 'var(--border)');
+                line.setAttribute('stroke-width', '2');
+                line.style.opacity = '0';
+                line.style.transition = 'opacity 0.3s ease';
+                line.dataset.from = e.from;
+                line.dataset.to = e.to;
+                svg.appendChild(line);
             });
 
-            steps.push({ description: '✅ fib(' + n + ') = ' + fibResult + ', total ' + totalCalls + ' calls!', action: function(){}, undo: function(){} });
+            // Nodes (hidden initially)
+            var nodeEls = {};
+            nodes.forEach(function(nd) {
+                var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.style.opacity = '0';
+                g.style.transition = 'opacity 0.3s ease';
+
+                var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', nd.x);
+                circle.setAttribute('cy', nd.y);
+                circle.setAttribute('r', 18);
+                circle.setAttribute('fill', 'var(--bg2)');
+                circle.setAttribute('stroke', 'var(--border)');
+                circle.setAttribute('stroke-width', '2');
+                g.appendChild(circle);
+
+                var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', nd.x);
+                text.setAttribute('y', nd.y + 5);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '12');
+                text.setAttribute('font-family', 'monospace');
+                text.setAttribute('fill', 'var(--text)');
+                text.textContent = 'f(' + nd.val + ')';
+                g.appendChild(text);
+
+                svg.appendChild(g);
+                nodeEls[nd.id] = { g: g, circle: circle, text: text };
+            });
+
+            treeEl.appendChild(svg);
+
+            // Precompute fib values
+            var fibVals = [0, 1];
+            for (var fi = 2; fi <= n; fi++) fibVals[fi] = fibVals[fi - 1] + fibVals[fi - 2];
+
+            // Build steps in DFS order
+            var steps = [];
+            var callCount = 0;
+            var callCounts = {};
+            for (var ci = 0; ci <= n; ci++) callCounts[ci] = 0;
+
+            function buildSteps(nodeIdx) {
+                var nd = nodes[nodeIdx];
+                (function(nIdx, nVal) {
+                    var isBase = nVal <= 1;
+                    var descCall = isBase
+                        ? 'Call fib(' + nVal + ') — <strong>base case</strong>: return ' + nVal + ' immediately'
+                        : 'Call fib(' + nVal + ') — need fib(' + (nVal - 1) + ') + fib(' + (nVal - 2) + '), so we recurse deeper';
+                    steps.push({
+                        description: descCall,
+                        action: function() {
+                            callCount++;
+                            cntEl.textContent = callCount;
+                            callCounts[nVal]++;
+                            var nel = nodeEls[nIdx];
+                            nel.g.style.opacity = '1';
+                            svg.querySelectorAll('line').forEach(function(line) {
+                                if (parseInt(line.dataset.to) === nIdx) line.style.opacity = '1';
+                            });
+                            if (isBase) {
+                                nel.circle.setAttribute('stroke', 'var(--green)');
+                                nel.circle.setAttribute('fill', 'var(--green)');
+                                nel.circle.setAttribute('fill-opacity', '0.15');
+                                nel.circle.setAttribute('stroke-width', '3');
+                            } else if (callCounts[nVal] > 1) {
+                                nel.circle.setAttribute('stroke', 'var(--red)');
+                                nel.circle.setAttribute('fill', 'var(--red)');
+                                nel.circle.setAttribute('fill-opacity', '0.15');
+                                nel.circle.setAttribute('stroke-width', '3');
+                            } else {
+                                nel.circle.setAttribute('stroke', 'var(--yellow)');
+                                nel.circle.setAttribute('fill', 'var(--yellow)');
+                                nel.circle.setAttribute('fill-opacity', '0.15');
+                                nel.circle.setAttribute('stroke-width', '3');
+                            }
+                        },
+                        undo: function() {
+                            callCount--;
+                            cntEl.textContent = callCount;
+                            callCounts[nVal]--;
+                            var nel = nodeEls[nIdx];
+                            nel.g.style.opacity = '0';
+                            svg.querySelectorAll('line').forEach(function(line) {
+                                if (parseInt(line.dataset.to) === nIdx) line.style.opacity = '0';
+                            });
+                            nel.circle.setAttribute('stroke', 'var(--border)');
+                            nel.circle.setAttribute('fill', 'var(--bg2)');
+                            nel.circle.setAttribute('fill-opacity', '1');
+                            nel.circle.setAttribute('stroke-width', '2');
+                        }
+                    });
+                })(nodeIdx, nd.val);
+
+                if (nd.val > 1) {
+                    var childEdges = edges.filter(function(e) { return e.from === nodeIdx; });
+                    childEdges.forEach(function(ce) { buildSteps(ce.to); });
+                    (function(nIdx, nVal) {
+                        var result = fibVals[nVal];
+                        steps.push({
+                            description: 'fib(' + nVal + ') = fib(' + (nVal - 1) + ') + fib(' + (nVal - 2) + ') = ' + fibVals[nVal - 1] + ' + ' + fibVals[nVal - 2] + ' = ' + result + ' returned — combines both sub-results and passes up',
+                            action: function() {
+                                var nel = nodeEls[nIdx];
+                                nel.circle.setAttribute('stroke', 'var(--green)');
+                                nel.circle.setAttribute('fill', 'var(--green)');
+                                nel.circle.setAttribute('fill-opacity', '0.15');
+                                nel.circle.setAttribute('stroke-width', '3');
+                                nel.text.textContent = result;
+                            },
+                            undo: function() {
+                                var nel = nodeEls[nIdx];
+                                if (callCounts[nVal] > 1) {
+                                    nel.circle.setAttribute('stroke', 'var(--red)');
+                                    nel.circle.setAttribute('fill', 'var(--red)');
+                                } else {
+                                    nel.circle.setAttribute('stroke', 'var(--yellow)');
+                                    nel.circle.setAttribute('fill', 'var(--yellow)');
+                                }
+                                nel.circle.setAttribute('fill-opacity', '0.15');
+                                nel.circle.setAttribute('stroke-width', '3');
+                                nel.text.textContent = 'f(' + nVal + ')';
+                            }
+                        });
+                    })(nodeIdx, nd.val);
+                }
+            }
+            buildSteps(0);
+
+            var totalCalls = nodes.length;
+            var fibResult = fibVals[n];
+            steps.push({ description: '✅ fib(' + n + ') = ' + fibResult + ', total ' + totalCalls + ' calls! Can you see the duplicated computations?', action: function(){}, undo: function(){} });
             self._initStepController(container, steps, 'fib');
 
             container.querySelector('#rec-fib-reset').addEventListener('click', function() {
