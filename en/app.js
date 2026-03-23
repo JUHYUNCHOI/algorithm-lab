@@ -79,14 +79,12 @@ window._setAlgoLang = function(lang) {
     });
 
     // ===== Topic list rendering =====
-    const categoryOrder = ['Fundamentals (Bronze~Silver)', 'Search (Silver)', 'Problem Solving (Silver~Gold)', 'Advanced (Gold~Platinum)', 'Advanced DS (Gold~Platinum)', 'Extra Study'];
+    const categoryOrder = ['Fundamentals (Bronze~Silver)', 'Search (Silver)', 'Problem Solving (Silver~Gold)', 'Advanced (Gold~Platinum)'];
     const categoryDisplayNames = {
         'Fundamentals (Bronze~Silver)': 'Basics \uD83D\uDCD7',
         'Search (Silver)': 'Search \uD83D\uDCD8',
         'Problem Solving (Silver~Gold)': 'Problem Solving \uD83D\uDCD9',
-        'Advanced (Gold~Platinum)': 'Advanced \uD83D\uDCD5',
-        'Advanced DS (Gold~Platinum)': 'Advanced \uD83D\uDCD5',
-        'Extra Study': 'Extra Study'
+        'Advanced (Gold~Platinum)': 'Advanced \uD83D\uDCD5'
     };
 
     function renderSidebar() {

@@ -4,7 +4,7 @@ var treeTopic = {
     title: 'Tree',
     icon: '🌳',
     category: 'Advanced (Gold~Platinum)',
-    order: 14,
+    order: 15,
     description: 'Learn about trees that represent hierarchical structures and various traversal methods',
     relatedNote: 'There are also advanced tree data structures such as Binary Search Trees (BST), Segment Trees, AVL Trees, and Red-Black Trees.',
 

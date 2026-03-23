@@ -5,8 +5,8 @@ var trieTopic = {
     id: 'trie',
     title: '트라이',
     icon: '🔠',
-    category: '고급 자료구조 (Gold~Platinum)',
-    order: 20,
+    category: '심화 (Gold~Platinum)',
+    order: 18,
     description: '문자열을 효율적으로 저장하고 검색하는 트리 자료구조',
     relatedNote: '트라이는 자동완성, 맞춤법 검사, IP 라우팅 등에 활용되며, 압축 트라이(Radix Tree)로 메모리를 절약할 수 있습니다.',
 
@@ -1647,69 +1647,63 @@ var trieTopic = {
 
     // ===== 문제 단계 =====
     stages: [
-        { num: 1, title: '기본 트라이', desc: '트라이 구현과 문자열 집합 확인 (Medium~Silver)', problemIds: ['lc-208', 'boj-14425'] },
-        { num: 2, title: '트라이 응용', desc: '접두사 관계와 공통 접두사 (Gold~Easy)', problemIds: ['boj-5052', 'lc-14'] }
+        { num: 1, title: '접두사와 문자열 집합', desc: '공통 접두사, 문자열 집합 확인 (Easy~Silver)', problemIds: ['lc-14', 'boj-14425'] },
+        { num: 2, title: '트라이 구현과 응용', desc: '트라이 직접 구현, 접두사 관계 판별 (Medium~Gold)', problemIds: ['lc-208', 'boj-5052'] }
     ],
 
     // ===== 문제 목록 =====
     problems: [
-        // ===== 1단계: 기본 트라이 =====
         {
-            id: 'lc-208',
-            title: 'LeetCode 208 - Implement Trie',
-            difficulty: 'medium',
-            link: 'https://leetcode.com/problems/implement-trie-prefix-tree/',
-            simIntro: '트라이에 단어를 삽입하고 search/startsWith가 어떻게 동작하는지 확인하세요.',
+            id: 'lc-14',
+            title: 'LeetCode 14 - Longest Common Prefix',
+            difficulty: 'easy',
+            link: 'https://leetcode.com/problems/longest-common-prefix/',
+            simIntro: '문자열을 세로로 비교하여 공통 접두사를 찾는 과정을 관찰하세요.',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>트라이(접두사 트리)를 구현하세요. Trie 클래스에는 다음 메서드가 있습니다:</p>
-                <ul>
-                    <li><code>Trie()</code> - 트라이 객체를 초기화합니다.</li>
-                    <li><code>void insert(String word)</code> - 문자열 word를 트라이에 삽입합니다.</li>
-                    <li><code>boolean search(String word)</code> - 문자열 word가 트라이에 있으면 true, 없으면 false를 반환합니다.</li>
-                    <li><code>boolean startsWith(String prefix)</code> - 이전에 삽입된 문자열 중 접두사 prefix를 가진 것이 있으면 true를 반환합니다.</li>
-                </ul>
+                <p>문자열 배열에서 가장 긴 공통 접두사(prefix)를 찾으세요. 공통 접두사가 없으면 빈 문자열 ""을 반환합니다.</p>
                 <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
-[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]</pre></div>
-                    <div><strong>출력</strong><pre>[null, null, true, false, true, null, true]</pre></div>
-                </div><p class="example-explain">insert("apple") → search("apple") = true, search("app") = false (app은 삽입된 적 없음), startsWith("app") = true (apple이 app으로 시작), insert("app") → search("app") = true</p></div>
+                    <div><strong>입력</strong><pre>strs = ["flower","flow","flight"]</pre></div>
+                    <div><strong>출력</strong><pre>"fl"</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>strs = ["dog","racecar","car"]</pre></div>
+                    <div><strong>출력</strong><pre>""</pre></div>
+                </div><p class="example-explain">공통 접두사가 없습니다.</p></div>
                 <h4>제약 조건</h4>
                 <ul>
-                    <li>1 ≤ word.length, prefix.length ≤ 2,000</li>
-                    <li>word와 prefix는 영어 소문자로만 구성</li>
-                    <li>insert, search, startsWith 호출은 합쳐서 최대 3 × 10<sup>4</sup>번</li>
+                    <li>1 ≤ strs.length ≤ 200</li>
+                    <li>0 ≤ strs[i].length ≤ 200</li>
+                    <li>strs[i]는 영어 소문자로만 구성</li>
                 </ul>
             `,
             hints: [
-                { title: '가장 단순한 방법: 리스트에 저장', content: '일단 모든 단어를 <strong>리스트</strong>에 저장하면 어떨까요?<br><code>search</code>는 리스트에서 <code>in</code> 연산으로 찾고, <code>startsWith</code>는 for문으로 하나씩 접두사를 비교하면 되겠죠.<br>근데... 단어가 수만 개 쌓이면? search는 O(N), startsWith는 매번 모든 단어를 순회하니까 점점 느려져요!' },
-                { title: '접두사를 빠르게 찾으려면?', content: '트라이는 <strong>글자 하나씩 노드로 내려가는 트리 구조</strong>입니다.<br>"apple"과 "app"을 넣으면 "a→p→p" 경로를 <strong>공유</strong>해요.<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;padding:12px;background:var(--bg2);border-radius:10px;"><div style="display:flex;align-items:center;gap:0;"><div style="width:30px;height:30px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;background:var(--accent)15;">root</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">a</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">p</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">p</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (app)</span></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--accent)10;">l</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">e</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (apple)</span></div></div>공통 접두사를 공유하니까 메모리도 절약되고, 탐색도 <strong>O(L)</strong> (L = 단어 길이)로 끝나요!<br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0;"><div style="padding:6px 10px;background:var(--red)12;border:1.5px solid var(--red);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--red);font-weight:600;">리스트</div>O(N) 탐색</div><div style="padding:6px 10px;background:var(--green)12;border:1.5px solid var(--green);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--green);font-weight:600;">트라이</div>O(L) 탐색</div></div>' },
-                { title: '노드 구조 설계', content: '각 노드에는 두 가지가 필요합니다:<br>① <strong>children</strong> — 자식 노드를 저장하는 공간 (다음 글자로 가는 길)<br>② <strong>isEnd</strong> — 이 노드에서 단어가 끝나는지 표시하는 플래그<br><span class="lang-py">Python: <code>children = {}</code> 딕셔너리로 자식 관리. 글자를 키로 사용하면 유연해요.</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, Node*&gt;</code> 또는 <code>Node* children[26]</code> 배열로 자식 관리. 배열이 더 빠르지만, map이 더 유연합니다.</span>' }
+                { title: '처음 생각: 첫 문자열과 하나씩 비교', content: '첫 번째 문자열을 기준으로 나머지와 <strong>한 글자씩</strong> 비교하면 어떨까요?<br>i번째 글자를 모든 문자열에서 확인하고, 다른 글자가 나오면 거기까지가 공통 접두사!<br>이 방법은 O(S) (S = 전체 문자 수)로 충분히 빠릅니다.' },
+                { title: '더 효율적인 방법은?', content: '문자열 배열을 <strong>사전순 정렬</strong>하면, <strong>첫 번째</strong>와 <strong>마지막</strong> 문자열만 비교하면 돼요!<br>사전순으로 가장 다른 두 문자열의 공통 접두사 = 전체 공통 접두사이기 때문이죠.<br><span class="lang-py">Python: <code>min(strs)</code>와 <code>max(strs)</code>가 사전순 양 끝을 바로 줍니다!</span><span class="lang-cpp">C++: <code>*min_element(strs.begin(), strs.end())</code>와 <code>*max_element(...)</code>로 사전순 양 끝을 구합니다!</span>' },
+                { title: '트라이 활용', content: '모든 문자열을 트라이에 넣고, 루트에서 출발합니다.<br><strong>자식이 1개뿐이고 is_end가 아닌</strong> 노드를 따라 쭉 내려가면 — 분기점이나 is_end를 만나는 지점까지가 공통 접두사!<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:10px;background:var(--bg2);border-radius:10px;font-size:0.82rem;"><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">f</div><div style="width:2px;height:8px;background:var(--green);"></div><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">l</div><div style="font-size:0.65rem;color:var(--green);font-weight:600;">↑ 공통 접두사 "fl"</div><div style="display:flex;gap:20px;margin-top:4px;"><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">o</div><div style="font-size:0.6rem;color:var(--text2);">flower, flow</div></div><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">i</div><div style="font-size:0.6rem;color:var(--text2);">flight</div></div></div><div style="font-size:0.65rem;color:var(--red);font-weight:600;margin-top:4px;">자식 2개 → 여기서 멈춤!</div></div>트라이가 공통 접두사를 "구조적으로" 보여주는 좋은 예시입니다.' }
             ],
             templates: {
-                python: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True',
-                cpp: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;\npublic:\n    Trie() { root = new Node(); }\n\n    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};'
+                python: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""\n        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]\n        return strs[0]',
+                cpp: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";\n        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }\n        return prefix;\n    }\n};'
             },
             solutions: [{
-                approach: '트라이 직접 구현',
-                description: 'TrieNode에 children 맵과 is_end 플래그를 두고 insert/search/startsWith를 구현합니다.',
-                timeComplexity: 'O(L) per operation',
-                spaceComplexity: 'O(총 문자 수)',
+                approach: '세로 스캔',
+                description: '첫 번째 문자열의 각 위치를 기준으로 모든 문자열과 비교합니다.',
+                timeComplexity: 'O(S) (S = 전체 문자 수)',
+                spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: 'TrieNode 정의', desc: 'children 딕셔너리로 자식 노드를 저장합니다.\nis_end 플래그로 단어의 끝을 표시합니다.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False' },
-                        { title: 'Trie 초기화', desc: '빈 루트 노드를 생성합니다.\n모든 삽입/검색은 루트에서 시작합니다.', code: 'class Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
-                        { title: 'insert 구현', desc: '한 글자씩 따라가며 없는 노드는 새로 생성합니다.\n마지막 노드에 is_end = True로 단어 끝을 표시합니다.', code: '    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True' },
-                        { title: 'search / startsWith', desc: 'search는 경로 끝에서 is_end를 확인합니다.\nstartsWith는 경로 존재만 확인하므로 is_end 무관합니다.', code: '    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True' }
+                        { title: '예외 처리', desc: '빈 배열이면 공통 접두사가 없으므로 빈 문자열을 반환합니다.', code: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""' },
+                        { title: '세로 스캔', desc: '첫 문자열의 i번째 글자를 기준으로 나머지와 비교합니다.\n글자가 다르거나 문자열이 짧으면 그 지점까지가 공통 접두사입니다.', code: '        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]' },
+                        { title: '전체 일치 시', desc: '루프를 끝까지 돌았다면 첫 문자열 전체가 공통 접두사입니다.', code: '        return strs[0]' }
                     ],
                     cpp: [
-                        { title: 'Node 구조체 정의', desc: 'unordered_map으로 자식 관리.\nPython dict와 동일한 역할.', code: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;' },
-                        { title: 'Trie 초기화', desc: 'new Node()로 빈 루트 생성.\nPython의 self.root = TrieNode()과 동일합니다.', code: 'public:\n    Trie() { root = new Node(); }' },
-                        { title: 'insert 구현', desc: 'count()로 키 존재 확인 → 없으면 new Node().\n->로 포인터 멤버 접근.', code: '    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }' },
-                        { title: 'search / startsWith', desc: 'search는 is_end 확인, startsWith는 경로만 확인.', code: '    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};' }
+                        { title: '예외 처리', desc: '빈 벡터면 빈 문자열을 즉시 반환합니다.', code: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";' },
+                        { title: '접두사 축소법', desc: '첫 문자열을 prefix로 시작.\n각 문자열과 비교하며 안 맞으면 prefix를 줄임.', code: '        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }' },
+                        { title: '결과 반환', desc: '모든 문자열과 매칭된 최종 prefix를 반환합니다.', code: '        return prefix;\n    }\n};' }
                     ]
                 },
-                get templates() { return trieTopic.problems[0].templates; }
+                get templates() { return trieTopic.problems[3].templates; }
             }]
         },
         {
@@ -1781,7 +1775,65 @@ judge</pre></div>
             }]
         },
 
-        // ===== 2단계: 트라이 응용 =====
+        // ===== 2단계: 트라이 응용 =====,
+        {
+            id: 'lc-208',
+            title: 'LeetCode 208 - Implement Trie',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/implement-trie-prefix-tree/',
+            simIntro: '트라이에 단어를 삽입하고 search/startsWith가 어떻게 동작하는지 확인하세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>트라이(접두사 트리)를 구현하세요. Trie 클래스에는 다음 메서드가 있습니다:</p>
+                <ul>
+                    <li><code>Trie()</code> - 트라이 객체를 초기화합니다.</li>
+                    <li><code>void insert(String word)</code> - 문자열 word를 트라이에 삽입합니다.</li>
+                    <li><code>boolean search(String word)</code> - 문자열 word가 트라이에 있으면 true, 없으면 false를 반환합니다.</li>
+                    <li><code>boolean startsWith(String prefix)</code> - 이전에 삽입된 문자열 중 접두사 prefix를 가진 것이 있으면 true를 반환합니다.</li>
+                </ul>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]</pre></div>
+                    <div><strong>출력</strong><pre>[null, null, true, false, true, null, true]</pre></div>
+                </div><p class="example-explain">insert("apple") → search("apple") = true, search("app") = false (app은 삽입된 적 없음), startsWith("app") = true (apple이 app으로 시작), insert("app") → search("app") = true</p></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ word.length, prefix.length ≤ 2,000</li>
+                    <li>word와 prefix는 영어 소문자로만 구성</li>
+                    <li>insert, search, startsWith 호출은 합쳐서 최대 3 × 10<sup>4</sup>번</li>
+                </ul>
+            `,
+            hints: [
+                { title: '가장 단순한 방법: 리스트에 저장', content: '일단 모든 단어를 <strong>리스트</strong>에 저장하면 어떨까요?<br><code>search</code>는 리스트에서 <code>in</code> 연산으로 찾고, <code>startsWith</code>는 for문으로 하나씩 접두사를 비교하면 되겠죠.<br>근데... 단어가 수만 개 쌓이면? search는 O(N), startsWith는 매번 모든 단어를 순회하니까 점점 느려져요!' },
+                { title: '접두사를 빠르게 찾으려면?', content: '트라이는 <strong>글자 하나씩 노드로 내려가는 트리 구조</strong>입니다.<br>"apple"과 "app"을 넣으면 "a→p→p" 경로를 <strong>공유</strong>해요.<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;padding:12px;background:var(--bg2);border-radius:10px;"><div style="display:flex;align-items:center;gap:0;"><div style="width:30px;height:30px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;background:var(--accent)15;">root</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">a</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">p</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">p</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (app)</span></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--accent)10;">l</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">e</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (apple)</span></div></div>공통 접두사를 공유하니까 메모리도 절약되고, 탐색도 <strong>O(L)</strong> (L = 단어 길이)로 끝나요!<br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0;"><div style="padding:6px 10px;background:var(--red)12;border:1.5px solid var(--red);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--red);font-weight:600;">리스트</div>O(N) 탐색</div><div style="padding:6px 10px;background:var(--green)12;border:1.5px solid var(--green);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--green);font-weight:600;">트라이</div>O(L) 탐색</div></div>' },
+                { title: '노드 구조 설계', content: '각 노드에는 두 가지가 필요합니다:<br>① <strong>children</strong> — 자식 노드를 저장하는 공간 (다음 글자로 가는 길)<br>② <strong>isEnd</strong> — 이 노드에서 단어가 끝나는지 표시하는 플래그<br><span class="lang-py">Python: <code>children = {}</code> 딕셔너리로 자식 관리. 글자를 키로 사용하면 유연해요.</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, Node*&gt;</code> 또는 <code>Node* children[26]</code> 배열로 자식 관리. 배열이 더 빠르지만, map이 더 유연합니다.</span>' }
+            ],
+            templates: {
+                python: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True',
+                cpp: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;\npublic:\n    Trie() { root = new Node(); }\n\n    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};'
+            },
+            solutions: [{
+                approach: '트라이 직접 구현',
+                description: 'TrieNode에 children 맵과 is_end 플래그를 두고 insert/search/startsWith를 구현합니다.',
+                timeComplexity: 'O(L) per operation',
+                spaceComplexity: 'O(총 문자 수)',
+                codeSteps: {
+                    python: [
+                        { title: 'TrieNode 정의', desc: 'children 딕셔너리로 자식 노드를 저장합니다.\nis_end 플래그로 단어의 끝을 표시합니다.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False' },
+                        { title: 'Trie 초기화', desc: '빈 루트 노드를 생성합니다.\n모든 삽입/검색은 루트에서 시작합니다.', code: 'class Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
+                        { title: 'insert 구현', desc: '한 글자씩 따라가며 없는 노드는 새로 생성합니다.\n마지막 노드에 is_end = True로 단어 끝을 표시합니다.', code: '    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True' },
+                        { title: 'search / startsWith', desc: 'search는 경로 끝에서 is_end를 확인합니다.\nstartsWith는 경로 존재만 확인하므로 is_end 무관합니다.', code: '    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True' }
+                    ],
+                    cpp: [
+                        { title: 'Node 구조체 정의', desc: 'unordered_map으로 자식 관리.\nPython dict와 동일한 역할.', code: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;' },
+                        { title: 'Trie 초기화', desc: 'new Node()로 빈 루트 생성.\nPython의 self.root = TrieNode()과 동일합니다.', code: 'public:\n    Trie() { root = new Node(); }' },
+                        { title: 'insert 구현', desc: 'count()로 키 존재 확인 → 없으면 new Node().\n->로 포인터 멤버 접근.', code: '    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }' },
+                        { title: 'search / startsWith', desc: 'search는 is_end 확인, startsWith는 경로만 확인.', code: '    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};' }
+                    ]
+                },
+                get templates() { return trieTopic.problems[0].templates; }
+            }]
+        },
         {
             id: 'boj-5052',
             title: 'BOJ 5052 - 전화번호 목록',
@@ -1846,59 +1898,6 @@ YES</pre></div>
                     ]
                 },
                 get templates() { return trieTopic.problems[2].templates; }
-            }]
-        },
-        {
-            id: 'lc-14',
-            title: 'LeetCode 14 - Longest Common Prefix',
-            difficulty: 'easy',
-            link: 'https://leetcode.com/problems/longest-common-prefix/',
-            simIntro: '문자열을 세로로 비교하여 공통 접두사를 찾는 과정을 관찰하세요.',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>문자열 배열에서 가장 긴 공통 접두사(prefix)를 찾으세요. 공통 접두사가 없으면 빈 문자열 ""을 반환합니다.</p>
-                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>strs = ["flower","flow","flight"]</pre></div>
-                    <div><strong>출력</strong><pre>"fl"</pre></div>
-                </div></div>
-                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>strs = ["dog","racecar","car"]</pre></div>
-                    <div><strong>출력</strong><pre>""</pre></div>
-                </div><p class="example-explain">공통 접두사가 없습니다.</p></div>
-                <h4>제약 조건</h4>
-                <ul>
-                    <li>1 ≤ strs.length ≤ 200</li>
-                    <li>0 ≤ strs[i].length ≤ 200</li>
-                    <li>strs[i]는 영어 소문자로만 구성</li>
-                </ul>
-            `,
-            hints: [
-                { title: '처음 생각: 첫 문자열과 하나씩 비교', content: '첫 번째 문자열을 기준으로 나머지와 <strong>한 글자씩</strong> 비교하면 어떨까요?<br>i번째 글자를 모든 문자열에서 확인하고, 다른 글자가 나오면 거기까지가 공통 접두사!<br>이 방법은 O(S) (S = 전체 문자 수)로 충분히 빠릅니다.' },
-                { title: '더 효율적인 방법은?', content: '문자열 배열을 <strong>사전순 정렬</strong>하면, <strong>첫 번째</strong>와 <strong>마지막</strong> 문자열만 비교하면 돼요!<br>사전순으로 가장 다른 두 문자열의 공통 접두사 = 전체 공통 접두사이기 때문이죠.<br><span class="lang-py">Python: <code>min(strs)</code>와 <code>max(strs)</code>가 사전순 양 끝을 바로 줍니다!</span><span class="lang-cpp">C++: <code>*min_element(strs.begin(), strs.end())</code>와 <code>*max_element(...)</code>로 사전순 양 끝을 구합니다!</span>' },
-                { title: '트라이 활용', content: '모든 문자열을 트라이에 넣고, 루트에서 출발합니다.<br><strong>자식이 1개뿐이고 is_end가 아닌</strong> 노드를 따라 쭉 내려가면 — 분기점이나 is_end를 만나는 지점까지가 공통 접두사!<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:10px;background:var(--bg2);border-radius:10px;font-size:0.82rem;"><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">f</div><div style="width:2px;height:8px;background:var(--green);"></div><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">l</div><div style="font-size:0.65rem;color:var(--green);font-weight:600;">↑ 공통 접두사 "fl"</div><div style="display:flex;gap:20px;margin-top:4px;"><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">o</div><div style="font-size:0.6rem;color:var(--text2);">flower, flow</div></div><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">i</div><div style="font-size:0.6rem;color:var(--text2);">flight</div></div></div><div style="font-size:0.65rem;color:var(--red);font-weight:600;margin-top:4px;">자식 2개 → 여기서 멈춤!</div></div>트라이가 공통 접두사를 "구조적으로" 보여주는 좋은 예시입니다.' }
-            ],
-            templates: {
-                python: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""\n        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]\n        return strs[0]',
-                cpp: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";\n        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }\n        return prefix;\n    }\n};'
-            },
-            solutions: [{
-                approach: '세로 스캔',
-                description: '첫 번째 문자열의 각 위치를 기준으로 모든 문자열과 비교합니다.',
-                timeComplexity: 'O(S) (S = 전체 문자 수)',
-                spaceComplexity: 'O(1)',
-                codeSteps: {
-                    python: [
-                        { title: '예외 처리', desc: '빈 배열이면 공통 접두사가 없으므로 빈 문자열을 반환합니다.', code: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""' },
-                        { title: '세로 스캔', desc: '첫 문자열의 i번째 글자를 기준으로 나머지와 비교합니다.\n글자가 다르거나 문자열이 짧으면 그 지점까지가 공통 접두사입니다.', code: '        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]' },
-                        { title: '전체 일치 시', desc: '루프를 끝까지 돌았다면 첫 문자열 전체가 공통 접두사입니다.', code: '        return strs[0]' }
-                    ],
-                    cpp: [
-                        { title: '예외 처리', desc: '빈 벡터면 빈 문자열을 즉시 반환합니다.', code: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";' },
-                        { title: '접두사 축소법', desc: '첫 문자열을 prefix로 시작.\n각 문자열과 비교하며 안 맞으면 prefix를 줄임.', code: '        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }' },
-                        { title: '결과 반환', desc: '모든 문자열과 매칭된 최종 prefix를 반환합니다.', code: '        return prefix;\n    }\n};' }
-                    ]
-                },
-                get templates() { return trieTopic.problems[3].templates; }
             }]
         }
     ]

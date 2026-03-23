@@ -4,7 +4,7 @@ var graphTopic = {
     title: '그래프와 순회',
     icon: '🕸️',
     category: '탐색 (Silver)',
-    order: 8,
+    order: 9,
     description: '정점과 간선으로 이루어진 그래프를 DFS/BFS로 탐색하는 기법',
     relatedNote: '이 외에도 위상 정렬, 최단 경로, 최소 신장 트리, 강한 연결 요소 등의 심화 그래프 알고리즘이 있습니다.',
 

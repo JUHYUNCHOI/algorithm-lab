@@ -79,14 +79,12 @@ window._setAlgoLang = function(lang) {
     });
 
     // ===== 주제 목록 렌더링 =====
-    const categoryOrder = ['기초 (Bronze~Silver)', '탐색 (Silver)', '문제 해결 기법 (Silver~Gold)', '심화 (Gold~Platinum)', '고급 자료구조 (Gold~Platinum)', '추가 학습'];
+    const categoryOrder = ['기초 (Bronze~Silver)', '탐색 (Silver)', '문제 해결 기법 (Silver~Gold)', '심화 (Gold~Platinum)'];
     const categoryDisplayNames = {
         '기초 (Bronze~Silver)': '기초 \uD83D\uDCD7',
         '탐색 (Silver)': '탐색 \uD83D\uDCD8',
         '문제 해결 기법 (Silver~Gold)': '문제 해결 \uD83D\uDCD9',
-        '심화 (Gold~Platinum)': '심화 \uD83D\uDCD5',
-        '고급 자료구조 (Gold~Platinum)': '심화 \uD83D\uDCD5',
-        '추가 학습': '추가 학습'
+        '심화 (Gold~Platinum)': '심화 \uD83D\uDCD5'
     };
 
     function renderSidebar() {

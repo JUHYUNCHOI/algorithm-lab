@@ -6,7 +6,7 @@ const stackQueueTopic = {
     title: 'Stack & Queue',
     icon: '📦',
     category: 'Fundamentals (Bronze~Silver)',
-    order: 4,
+    order: 3,
     description: 'Principles of LIFO stacks and FIFO queues, bracket validation, and deque usage',
     relatedNote: 'Other commonly tested stack/queue problems include monotone stacks, postfix expression conversion, and sliding window maximum (deque).',
 

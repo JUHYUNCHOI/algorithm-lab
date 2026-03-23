@@ -4,7 +4,7 @@ const binarySearchTopic = {
     title: 'Binary Search',
     icon: '🔍',
     category: 'Search (Silver)',
-    order: 6,
+    order: 8,
     description: 'A technique for quickly finding a value in sorted data',
     relatedNote: 'Binary search is often extended to Parametric Search, a technique that converts optimization problems into decision problems.',
 

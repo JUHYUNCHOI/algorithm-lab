@@ -5,8 +5,8 @@ var trieTopic = {
     id: 'trie',
     title: 'Trie',
     icon: '🔠',
-    category: 'Advanced DS (Gold~Platinum)',
-    order: 20,
+    category: 'Advanced (Gold~Platinum)',
+    order: 18,
     description: 'A tree data structure for efficiently storing and searching strings',
     relatedNote: 'Tries are used in autocomplete, spell-checking, IP routing, and more. A compressed trie (Radix Tree) can save memory.',
 
@@ -1632,69 +1632,63 @@ var trieTopic = {
 
     // ===== Problem Stages =====
     stages: [
-        { num: 1, title: 'Basic Trie', desc: 'Trie implementation and string set lookup (Medium~Silver)', problemIds: ['lc-208', 'boj-14425'] },
-        { num: 2, title: 'Applied Trie', desc: 'Prefix relationships and common prefixes (Gold~Easy)', problemIds: ['boj-5052', 'lc-14'] }
+        { num: 1, title: 'Prefix & String Sets', desc: 'Common prefix, string set lookup (Easy~Silver)', problemIds: ['lc-14', 'boj-14425'] },
+        { num: 2, title: 'Trie Implementation & Applications', desc: 'Implement trie, prefix relationship detection (Medium~Gold)', problemIds: ['lc-208', 'boj-5052'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ===== Stage 1: Basic Trie =====
         {
-            id: 'lc-208',
-            title: 'LeetCode 208 - Implement Trie',
-            difficulty: 'medium',
-            link: 'https://leetcode.com/problems/implement-trie-prefix-tree/',
-            simIntro: 'Insert words into a trie and see how search/startsWith work.',
+            id: 'lc-14',
+            title: 'LeetCode 14 - Longest Common Prefix',
+            difficulty: 'easy',
+            link: 'https://leetcode.com/problems/longest-common-prefix/',
+            simIntro: 'Watch the process of comparing strings vertically to find the common prefix.',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>Implement a trie (prefix tree). The Trie class has the following methods:</p>
-                <ul>
-                    <li><code>Trie()</code> - Initializes the trie object.</li>
-                    <li><code>void insert(String word)</code> - Inserts the string word into the trie.</li>
-                    <li><code>boolean search(String word)</code> - Returns true if the string word is in the trie, false otherwise.</li>
-                    <li><code>boolean startsWith(String prefix)</code> - Returns true if any previously inserted string has the prefix.</li>
-                </ul>
+                <p>Find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string "".</p>
                 <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
-[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]</pre></div>
-                    <div><strong>Output</strong><pre>[null, null, true, false, true, null, true]</pre></div>
-                </div><p class="example-explain">insert("apple") → search("apple") = true, search("app") = false ("app" was never inserted), startsWith("app") = true ("apple" starts with "app"), insert("app") → search("app") = true</p></div>
+                    <div><strong>Input</strong><pre>strs = ["flower","flow","flight"]</pre></div>
+                    <div><strong>Output</strong><pre>"fl"</pre></div>
+                </div></div>
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>strs = ["dog","racecar","car"]</pre></div>
+                    <div><strong>Output</strong><pre>""</pre></div>
+                </div><p class="example-explain">There is no common prefix.</p></div>
                 <h4>Constraints</h4>
                 <ul>
-                    <li>1 ≤ word.length, prefix.length ≤ 2,000</li>
-                    <li>word and prefix consist only of lowercase English letters</li>
-                    <li>The total number of insert, search, and startsWith calls is at most 3 × 10<sup>4</sup> times</li>
+                    <li>1 ≤ strs.length ≤ 200</li>
+                    <li>0 ≤ strs[i].length ≤ 200</li>
+                    <li>strs[i] consists only of lowercase English letters</li>
                 </ul>
             `,
             hints: [
-                { title: 'Simplest approach: store in a list', content: 'What if we just store all words in a <strong>list</strong>?<br><code>search</code> uses the <code>in</code> operator on the list, and <code>startsWith</code> loops through each word to compare prefixes.<br>But... what if tens of thousands of words pile up? search is O(N), and startsWith loops through every word each time, getting slower and slower!' },
-                { title: 'How to search prefixes quickly?', content: 'A trie is a <strong>tree structure where you descend one character per node</strong>.<br>If you insert "apple" and "app", they <strong>share</strong> the path "a->p->p".<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;padding:12px;background:var(--bg2);border-radius:10px;"><div style="display:flex;align-items:center;gap:0;"><div style="width:30px;height:30px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;background:var(--accent)15;">root</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">a</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">p</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">p</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (app)</span></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--accent)10;">l</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">e</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (apple)</span></div></div>Sharing common prefixes saves memory, and searching finishes in <strong>O(L)</strong> (L = word length)!<br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0;"><div style="padding:6px 10px;background:var(--red)12;border:1.5px solid var(--red);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--red);font-weight:600;">List</div>O(N) search</div><div style="padding:6px 10px;background:var(--green)12;border:1.5px solid var(--green);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--green);font-weight:600;">Trie</div>O(L) search</div></div>' },
-                { title: 'Designing the node structure', content: 'Each node needs two things:<br>1. <strong>children</strong> -- space to store child nodes (paths to the next character)<br>2. <strong>isEnd</strong> -- a flag indicating whether a word ends at this node<br><span class="lang-py">Python: <code>children = {}</code> manages children with a dictionary. Using characters as keys makes it flexible.</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, Node*&gt;</code> or <code>Node* children[26]</code> array for child management. Arrays are faster, but maps are more flexible.</span>' }
+                { title: 'First thought: compare character by character with the first string', content: 'What if we take the first string and compare it with the rest <strong>character by character</strong>?<br>Check the i-th character across all strings; when a different character appears, the common prefix ends there!<br>This approach runs in O(S) (S = total characters) and is fast enough.' },
+                { title: 'A more efficient approach?', content: 'If you <strong>sort the array lexicographically</strong>, you only need to compare the <strong>first</strong> and <strong>last</strong> strings!<br>The common prefix of the two most different strings (lexicographically) equals the overall common prefix.<br><span class="lang-py">Python: <code>min(strs)</code> and <code>max(strs)</code> directly give you the lexicographic extremes!</span><span class="lang-cpp">C++: <code>*min_element(strs.begin(), strs.end())</code> and <code>*max_element(...)</code> give the lexicographic extremes!</span>' },
+                { title: 'Using a trie', content: 'Insert all strings into a trie, then start from the root.<br>Keep following nodes that have <strong>exactly one child and are not is_end</strong> -- the common prefix ends at a branching point or an is_end node!<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:10px;background:var(--bg2);border-radius:10px;font-size:0.82rem;"><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">f</div><div style="width:2px;height:8px;background:var(--green);"></div><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">l</div><div style="font-size:0.65rem;color:var(--green);font-weight:600;">^ common prefix "fl"</div><div style="display:flex;gap:20px;margin-top:4px;"><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">o</div><div style="font-size:0.6rem;color:var(--text2);">flower, flow</div></div><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">i</div><div style="font-size:0.6rem;color:var(--text2);">flight</div></div></div><div style="font-size:0.65rem;color:var(--red);font-weight:600;margin-top:4px;">2 children -> stop here!</div></div>This is a great example of how a trie "structurally" reveals common prefixes.' }
             ],
             templates: {
-                python: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True',
-                cpp: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;\npublic:\n    Trie() { root = new Node(); }\n\n    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};'
+                python: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""\n        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]\n        return strs[0]',
+                cpp: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";\n        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }\n        return prefix;\n    }\n};'
             },
             solutions: [{
-                approach: 'Direct Trie Implementation',
-                description: 'Implement insert/search/startsWith using a TrieNode with a children map and is_end flag.',
-                timeComplexity: 'O(L) per operation',
-                spaceComplexity: 'O(total characters)',
+                approach: 'Vertical Scanning',
+                description: 'Compare all strings at each position based on the first string.',
+                timeComplexity: 'O(S) (S = total characters)',
+                spaceComplexity: 'O(1)',
                 codeSteps: {
                     python: [
-                        { title: 'Define TrieNode', desc: 'Store child nodes using a children dictionary.\nMark end of word with the is_end flag.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False' },
-                        { title: 'Initialize Trie', desc: 'Create an empty root node.\nAll insertions and searches start from the root.', code: 'class Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
-                        { title: 'Implement insert', desc: 'Follow each character, creating new nodes when missing.\nMark the last node with is_end = True to indicate end of word.', code: '    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True' },
-                        { title: 'search / startsWith', desc: 'search checks is_end at the end of the path.\nstartsWith only checks if the path exists, so is_end does not matter.', code: '    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True' }
+                        { title: 'Edge case handling', desc: 'If the array is empty, there is no common prefix, so return an empty string.', code: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""' },
+                        { title: 'Vertical scanning', desc: 'Compare the i-th character of the first string with all others.\nIf characters differ or a string is too short, the common prefix ends there.', code: '        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]' },
+                        { title: 'Full match case', desc: 'If the loop completes without breaking, the entire first string is the common prefix.', code: '        return strs[0]' }
                     ],
                     cpp: [
-                        { title: 'Define Node struct', desc: 'Manage children with unordered_map.\nSame role as Python dict.', code: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;' },
-                        { title: 'Initialize Trie', desc: 'Create an empty root with new Node().\nEquivalent to Python self.root = TrieNode().', code: 'public:\n    Trie() { root = new Node(); }' },
-                        { title: 'Implement insert', desc: 'Check key existence with count(), create new Node() if missing.\nAccess pointer members with ->.', code: '    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }' },
-                        { title: 'search / startsWith', desc: 'search checks is_end, startsWith only checks the path.', code: '    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};' }
+                        { title: 'Edge case handling', desc: 'If the vector is empty, immediately return an empty string.', code: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";' },
+                        { title: 'Prefix shrinking method', desc: 'Start with the first string as prefix.\nCompare with each string and shrink prefix when it does not match.', code: '        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }' },
+                        { title: 'Return Result', desc: 'Return the final prefix that matched all strings.', code: '        return prefix;\n    }\n};' }
                     ]
                 },
-                get templates() { return trieTopic.problems[0].templates; }
+                get templates() { return trieTopic.problems[3].templates; }
             }]
         },
         {
@@ -1766,7 +1760,65 @@ judge</pre></div>
             }]
         },
 
-        // ===== Stage 2: Applied Trie =====
+        // ===== Stage 2: Applied Trie =====,
+        {
+            id: 'lc-208',
+            title: 'LeetCode 208 - Implement Trie',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/implement-trie-prefix-tree/',
+            simIntro: 'Insert words into a trie and see how search/startsWith work.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>Implement a trie (prefix tree). The Trie class has the following methods:</p>
+                <ul>
+                    <li><code>Trie()</code> - Initializes the trie object.</li>
+                    <li><code>void insert(String word)</code> - Inserts the string word into the trie.</li>
+                    <li><code>boolean search(String word)</code> - Returns true if the string word is in the trie, false otherwise.</li>
+                    <li><code>boolean startsWith(String prefix)</code> - Returns true if any previously inserted string has the prefix.</li>
+                </ul>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]</pre></div>
+                    <div><strong>Output</strong><pre>[null, null, true, false, true, null, true]</pre></div>
+                </div><p class="example-explain">insert("apple") → search("apple") = true, search("app") = false ("app" was never inserted), startsWith("app") = true ("apple" starts with "app"), insert("app") → search("app") = true</p></div>
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ word.length, prefix.length ≤ 2,000</li>
+                    <li>word and prefix consist only of lowercase English letters</li>
+                    <li>The total number of insert, search, and startsWith calls is at most 3 × 10<sup>4</sup> times</li>
+                </ul>
+            `,
+            hints: [
+                { title: 'Simplest approach: store in a list', content: 'What if we just store all words in a <strong>list</strong>?<br><code>search</code> uses the <code>in</code> operator on the list, and <code>startsWith</code> loops through each word to compare prefixes.<br>But... what if tens of thousands of words pile up? search is O(N), and startsWith loops through every word each time, getting slower and slower!' },
+                { title: 'How to search prefixes quickly?', content: 'A trie is a <strong>tree structure where you descend one character per node</strong>.<br>If you insert "apple" and "app", they <strong>share</strong> the path "a->p->p".<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin:10px 0;padding:12px;background:var(--bg2);border-radius:10px;"><div style="display:flex;align-items:center;gap:0;"><div style="width:30px;height:30px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;background:var(--accent)15;">root</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">a</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--green)15;color:var(--green);">p</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">p</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (app)</span></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--accent)10;">l</div></div><div style="width:2px;height:10px;background:var(--text2);"></div><div style="display:flex;align-items:center;gap:0;"><div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--yellow);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;background:var(--yellow)20;box-shadow:0 0 6px var(--yellow);">e</div><span style="font-size:0.65rem;color:var(--yellow);font-weight:600;margin-left:6px;">isEnd (apple)</span></div></div>Sharing common prefixes saves memory, and searching finishes in <strong>O(L)</strong> (L = word length)!<br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:8px 0;"><div style="padding:6px 10px;background:var(--red)12;border:1.5px solid var(--red);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--red);font-weight:600;">List</div>O(N) search</div><div style="padding:6px 10px;background:var(--green)12;border:1.5px solid var(--green);border-radius:6px;font-size:0.82rem;text-align:center;"><div style="color:var(--green);font-weight:600;">Trie</div>O(L) search</div></div>' },
+                { title: 'Designing the node structure', content: 'Each node needs two things:<br>1. <strong>children</strong> -- space to store child nodes (paths to the next character)<br>2. <strong>isEnd</strong> -- a flag indicating whether a word ends at this node<br><span class="lang-py">Python: <code>children = {}</code> manages children with a dictionary. Using characters as keys makes it flexible.</span><span class="lang-cpp">C++: <code>unordered_map&lt;char, Node*&gt;</code> or <code>Node* children[26]</code> array for child management. Arrays are faster, but maps are more flexible.</span>' }
+            ],
+            templates: {
+                python: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True',
+                cpp: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;\npublic:\n    Trie() { root = new Node(); }\n\n    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }\n\n    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};'
+            },
+            solutions: [{
+                approach: 'Direct Trie Implementation',
+                description: 'Implement insert/search/startsWith using a TrieNode with a children map and is_end flag.',
+                timeComplexity: 'O(L) per operation',
+                spaceComplexity: 'O(total characters)',
+                codeSteps: {
+                    python: [
+                        { title: 'Define TrieNode', desc: 'Store child nodes using a children dictionary.\nMark end of word with the is_end flag.', code: 'class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False' },
+                        { title: 'Initialize Trie', desc: 'Create an empty root node.\nAll insertions and searches start from the root.', code: 'class Trie:\n    def __init__(self):\n        self.root = TrieNode()' },
+                        { title: 'Implement insert', desc: 'Follow each character, creating new nodes when missing.\nMark the last node with is_end = True to indicate end of word.', code: '    def insert(self, word: str) -> None:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True' },
+                        { title: 'search / startsWith', desc: 'search checks is_end at the end of the path.\nstartsWith only checks if the path exists, so is_end does not matter.', code: '    def search(self, word: str) -> bool:\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def startsWith(self, prefix: str) -> bool:\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True' }
+                    ],
+                    cpp: [
+                        { title: 'Define Node struct', desc: 'Manage children with unordered_map.\nSame role as Python dict.', code: 'class Trie {\n    struct Node {\n        unordered_map<char, Node*> children;\n        bool is_end = false;\n    };\n    Node* root;' },
+                        { title: 'Initialize Trie', desc: 'Create an empty root with new Node().\nEquivalent to Python self.root = TrieNode().', code: 'public:\n    Trie() { root = new Node(); }' },
+                        { title: 'Implement insert', desc: 'Check key existence with count(), create new Node() if missing.\nAccess pointer members with ->.', code: '    void insert(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch))\n                node->children[ch] = new Node();\n            node = node->children[ch];\n        }\n        node->is_end = true;\n    }' },
+                        { title: 'search / startsWith', desc: 'search checks is_end, startsWith only checks the path.', code: '    bool search(string word) {\n        Node* node = root;\n        for (char ch : word) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return node->is_end;\n    }\n\n    bool startsWith(string prefix) {\n        Node* node = root;\n        for (char ch : prefix) {\n            if (!node->children.count(ch)) return false;\n            node = node->children[ch];\n        }\n        return true;\n    }\n};' }
+                    ]
+                },
+                get templates() { return trieTopic.problems[0].templates; }
+            }]
+        },
         {
             id: 'boj-5052',
             title: 'BOJ 5052 - Phone List',
@@ -1831,59 +1883,6 @@ YES</pre></div>
                     ]
                 },
                 get templates() { return trieTopic.problems[2].templates; }
-            }]
-        },
-        {
-            id: 'lc-14',
-            title: 'LeetCode 14 - Longest Common Prefix',
-            difficulty: 'easy',
-            link: 'https://leetcode.com/problems/longest-common-prefix/',
-            simIntro: 'Watch the process of comparing strings vertically to find the common prefix.',
-            descriptionHTML: `
-                <h3>Problem</h3>
-                <p>Find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string "".</p>
-                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>strs = ["flower","flow","flight"]</pre></div>
-                    <div><strong>Output</strong><pre>"fl"</pre></div>
-                </div></div>
-                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>strs = ["dog","racecar","car"]</pre></div>
-                    <div><strong>Output</strong><pre>""</pre></div>
-                </div><p class="example-explain">There is no common prefix.</p></div>
-                <h4>Constraints</h4>
-                <ul>
-                    <li>1 ≤ strs.length ≤ 200</li>
-                    <li>0 ≤ strs[i].length ≤ 200</li>
-                    <li>strs[i] consists only of lowercase English letters</li>
-                </ul>
-            `,
-            hints: [
-                { title: 'First thought: compare character by character with the first string', content: 'What if we take the first string and compare it with the rest <strong>character by character</strong>?<br>Check the i-th character across all strings; when a different character appears, the common prefix ends there!<br>This approach runs in O(S) (S = total characters) and is fast enough.' },
-                { title: 'A more efficient approach?', content: 'If you <strong>sort the array lexicographically</strong>, you only need to compare the <strong>first</strong> and <strong>last</strong> strings!<br>The common prefix of the two most different strings (lexicographically) equals the overall common prefix.<br><span class="lang-py">Python: <code>min(strs)</code> and <code>max(strs)</code> directly give you the lexicographic extremes!</span><span class="lang-cpp">C++: <code>*min_element(strs.begin(), strs.end())</code> and <code>*max_element(...)</code> give the lexicographic extremes!</span>' },
-                { title: 'Using a trie', content: 'Insert all strings into a trie, then start from the root.<br>Keep following nodes that have <strong>exactly one child and are not is_end</strong> -- the common prefix ends at a branching point or an is_end node!<br><br><div style="display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:10px;background:var(--bg2);border-radius:10px;font-size:0.82rem;"><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">f</div><div style="width:2px;height:8px;background:var(--green);"></div><div style="padding:3px 8px;border-radius:12px;border:2px solid var(--green);background:var(--green)15;font-weight:700;color:var(--green);">l</div><div style="font-size:0.65rem;color:var(--green);font-weight:600;">^ common prefix "fl"</div><div style="display:flex;gap:20px;margin-top:4px;"><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">o</div><div style="font-size:0.6rem;color:var(--text2);">flower, flow</div></div><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:2px;height:8px;background:var(--text2);"></div><div style="padding:3px 8px;border-radius:12px;border:1.5px solid var(--accent);font-weight:600;">i</div><div style="font-size:0.6rem;color:var(--text2);">flight</div></div></div><div style="font-size:0.65rem;color:var(--red);font-weight:600;margin-top:4px;">2 children -> stop here!</div></div>This is a great example of how a trie "structurally" reveals common prefixes.' }
-            ],
-            templates: {
-                python: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""\n        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]\n        return strs[0]',
-                cpp: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";\n        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }\n        return prefix;\n    }\n};'
-            },
-            solutions: [{
-                approach: 'Vertical Scanning',
-                description: 'Compare all strings at each position based on the first string.',
-                timeComplexity: 'O(S) (S = total characters)',
-                spaceComplexity: 'O(1)',
-                codeSteps: {
-                    python: [
-                        { title: 'Edge case handling', desc: 'If the array is empty, there is no common prefix, so return an empty string.', code: 'class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return ""' },
-                        { title: 'Vertical scanning', desc: 'Compare the i-th character of the first string with all others.\nIf characters differ or a string is too short, the common prefix ends there.', code: '        for i in range(len(strs[0])):\n            ch = strs[0][i]\n            for s in strs[1:]:\n                if i >= len(s) or s[i] != ch:\n                    return strs[0][:i]' },
-                        { title: 'Full match case', desc: 'If the loop completes without breaking, the entire first string is the common prefix.', code: '        return strs[0]' }
-                    ],
-                    cpp: [
-                        { title: 'Edge case handling', desc: 'If the vector is empty, immediately return an empty string.', code: 'class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        if (strs.empty()) return "";' },
-                        { title: 'Prefix shrinking method', desc: 'Start with the first string as prefix.\nCompare with each string and shrink prefix when it does not match.', code: '        string prefix = strs[0];\n        for (int i = 1; i < strs.size(); i++) {\n            while (strs[i].find(prefix) != 0) {\n                prefix = prefix.substr(0, prefix.size() - 1);\n                if (prefix.empty()) return "";\n            }\n        }' },
-                        { title: 'Return Result', desc: 'Return the final prefix that matched all strings.', code: '        return prefix;\n    }\n};' }
-                    ]
-                },
-                get templates() { return trieTopic.problems[3].templates; }
             }]
         }
     ]

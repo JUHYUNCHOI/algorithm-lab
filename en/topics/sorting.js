@@ -5,8 +5,8 @@ const sortingTopic = {
     id: 'sorting',
     title: 'Sort',
     icon: '🔢',
-    category: 'Fundamentals (Bronze~Silver)',
-    order: 3,
+    category: 'Search (Silver)',
+    order: 7,
     description: 'Everything about sorting — from Bubble/Selection/Insertion to Merge/Quick Sort',
     relatedNote: 'Also important are special sorts like Counting Sort and Radix Sort, as well as the concept of sort stability.',
 
@@ -2575,8 +2575,8 @@ sort(words.begin(), words.end(),
     // ===== Problem Tab =====
     stages: [
         { num: 1, title: 'Cutline', desc: 'Sort and index', problemIds: ['boj-25305'] },
-        { num: 2, title: 'Basic Sort', desc: 'Sort implementation and custom sorting (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
-        { num: 3, title: 'Sort Applications', desc: 'Sorting-based problem solving (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
+        { num: 2, title: 'Basic Sort', desc: 'Sort implementation and custom sorting (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650', 'boj-10814'] },
+        { num: 3, title: 'Sort Applications', desc: 'Sorting-based problem solving (Medium)', problemIds: ['lc-56'] }
     ],
 
     problems: [
@@ -2769,61 +2769,6 @@ sort(words.begin(), words.end(),
             }]
         },
         {
-            id: 'lc-56',
-            title: 'LeetCode 56 - Merge Intervals',
-            difficulty: 'medium',
-            link: 'https://leetcode.com/problems/merge-intervals/',
-            simIntro: 'Observe the process of sorting by start point, then merging overlapping intervals in order.',
-            descriptionHTML: `
-                <h3>Problem</h3>
-                <p>Given an array of <code>intervals</code> where <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code>, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the intervals in the input.</p>
-                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>intervals = [[1,3],[2,6],[8,10],[15,18]]</pre></div>
-                    <div><strong>Output</strong><pre>[[1,6],[8,10],[15,18]]</pre></div>
-                </div><p class="example-explain">Intervals [1,3] and [2,6] overlap, so they are merged into [1,6].</p></div>
-                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>intervals = [[1,4],[4,5]]</pre></div>
-                    <div><strong>Output</strong><pre>[[1,5]]</pre></div>
-                </div><p class="example-explain">Intervals [1,4] and [4,5] are considered overlapping.</p></div>
-                <h4>Constraints</h4>
-                <ul>
-                    <li>1 &le; intervals.length &le; 10<sup>4</sup></li>
-                    <li>intervals[i].length == 2</li>
-                    <li>0 &le; start<sub>i</sub> &le; end<sub>i</sub> &le; 10<sup>4</sup></li>
-                </ul>
-            `,
-            hints: [
-                { title: 'First thought: compare one by one?', content: 'You could compare every pair of intervals to check for overlap. But with n intervals, that\'s O(n&sup2;) comparisons... With 10,000 intervals, that\'s 100 million comparisons!' },
-                { title: 'Sorting makes it easy!', content: '<strong>Sort by start point</strong>, and overlapping intervals will always be adjacent. Then just scan once from left to right and merge! Sort O(n log n) + scan O(n) = <strong>O(n log n)</strong>' },
-                { title: 'Merge logic', content: 'If the current interval\'s end &ge; next interval\'s start, they overlap — merge them: <code>end = max(current end, next end)</code>.<br>If they don\'t overlap? Add the new interval to the result and move on.' }
-            ],
-            templates: {
-                python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # Sort by start point\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # Overlap!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
-                cpp: `class Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end());\n        vector<vector<int>> merged = {intervals[0]};\n\n        for (int i = 1; i < intervals.size(); i++) {\n            if (intervals[i][0] <= merged.back()[1])\n                merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n            else\n                merged.push_back(intervals[i]);\n        }\n        return merged;\n    }\n};`
-            },
-            solutions: [{
-                approach: 'Sort + Sequential Merge',
-                description: 'Sort by start point, then update end with max when overlapping.',
-                timeComplexity: 'O(n log n)',
-                spaceComplexity: 'O(n)',
-                get templates() { return sortingTopic.problems[3].templates; },
-                codeSteps: {
-                    python: [
-                        { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
-                        { title: 'Add First Interval', desc: 'Put the first interval in the result list as the starting point for comparison.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]' },
-                        { title: 'Overlap Check + Merge', desc: 'If the current interval\'s start is less than or equal to the previous interval\'s end, they overlap — extend end with max.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:  # Overlap!\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])' },
-                        { title: 'Return Result', desc: 'Return the merged interval list.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n\n    return merged' }
-                    ],
-                    cpp: [
-                        { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());' },
-                        { title: 'Add First Interval', desc: 'Put the first interval in the result vector as the starting point for comparison.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};' },
-                        { title: 'Overlap Check + Merge', desc: 'If the current interval\'s start is less than or equal to the previous interval\'s end, they overlap — extend end with max.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }' },
-                        { title: 'Return Result', desc: 'Return the merged interval vector.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }\n\n    return merged;\n}' }
-                    ]
-                }
-            }]
-        },
-        {
             id: 'boj-10814',
             title: 'BOJ 10814 - Sort by Age',
             difficulty: 'silver',
@@ -2876,6 +2821,61 @@ sort(words.begin(), words.end(),
                         { title: 'Read Input', desc: 'Store age and name together as pair<int, string>.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;' },
                         { title: 'Stable Sort by Age', desc: 'C++ sort() is unstable, so stable_sort() is needed to preserve input order for equal ages.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    // stable_sort: preserves input order for equal keys!\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });' },
                         { title: 'Output', desc: 'Use structured bindings to cleanly output age and name.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });\n\n    for (auto& [age, name] : v)\n        cout << age << " " << name << "\\n";\n}' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'lc-56',
+            title: 'LeetCode 56 - Merge Intervals',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/merge-intervals/',
+            simIntro: 'Observe the process of sorting by start point, then merging overlapping intervals in order.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>Given an array of <code>intervals</code> where <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code>, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the intervals in the input.</p>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>intervals = [[1,3],[2,6],[8,10],[15,18]]</pre></div>
+                    <div><strong>Output</strong><pre>[[1,6],[8,10],[15,18]]</pre></div>
+                </div><p class="example-explain">Intervals [1,3] and [2,6] overlap, so they are merged into [1,6].</p></div>
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>intervals = [[1,4],[4,5]]</pre></div>
+                    <div><strong>Output</strong><pre>[[1,5]]</pre></div>
+                </div><p class="example-explain">Intervals [1,4] and [4,5] are considered overlapping.</p></div>
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 &le; intervals.length &le; 10<sup>4</sup></li>
+                    <li>intervals[i].length == 2</li>
+                    <li>0 &le; start<sub>i</sub> &le; end<sub>i</sub> &le; 10<sup>4</sup></li>
+                </ul>
+            `,
+            hints: [
+                { title: 'First thought: compare one by one?', content: 'You could compare every pair of intervals to check for overlap. But with n intervals, that\'s O(n&sup2;) comparisons... With 10,000 intervals, that\'s 100 million comparisons!' },
+                { title: 'Sorting makes it easy!', content: '<strong>Sort by start point</strong>, and overlapping intervals will always be adjacent. Then just scan once from left to right and merge! Sort O(n log n) + scan O(n) = <strong>O(n log n)</strong>' },
+                { title: 'Merge logic', content: 'If the current interval\'s end &ge; next interval\'s start, they overlap — merge them: <code>end = max(current end, next end)</code>.<br>If they don\'t overlap? Add the new interval to the result and move on.' }
+            ],
+            templates: {
+                python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # Sort by start point\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # Overlap!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
+                cpp: `class Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end());\n        vector<vector<int>> merged = {intervals[0]};\n\n        for (int i = 1; i < intervals.size(); i++) {\n            if (intervals[i][0] <= merged.back()[1])\n                merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n            else\n                merged.push_back(intervals[i]);\n        }\n        return merged;\n    }\n};`
+            },
+            solutions: [{
+                approach: 'Sort + Sequential Merge',
+                description: 'Sort by start point, then update end with max when overlapping.',
+                timeComplexity: 'O(n log n)',
+                spaceComplexity: 'O(n)',
+                get templates() { return sortingTopic.problems[3].templates; },
+                codeSteps: {
+                    python: [
+                        { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
+                        { title: 'Add First Interval', desc: 'Put the first interval in the result list as the starting point for comparison.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]' },
+                        { title: 'Overlap Check + Merge', desc: 'If the current interval\'s start is less than or equal to the previous interval\'s end, they overlap — extend end with max.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:  # Overlap!\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])' },
+                        { title: 'Return Result', desc: 'Return the merged interval list.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n\n    return merged' }
+                    ],
+                    cpp: [
+                        { title: 'Sort by Start', desc: 'Sorting by start point ensures overlapping intervals are adjacent, allowing a single-pass merge.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());' },
+                        { title: 'Add First Interval', desc: 'Put the first interval in the result vector as the starting point for comparison.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};' },
+                        { title: 'Overlap Check + Merge', desc: 'If the current interval\'s start is less than or equal to the previous interval\'s end, they overlap — extend end with max.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }' },
+                        { title: 'Return Result', desc: 'Return the merged interval vector.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }\n\n    return merged;\n}' }
                     ]
                 }
             }]

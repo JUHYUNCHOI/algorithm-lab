@@ -4,7 +4,7 @@ var prefixSumTopic = {
     title: 'Prefix Sum',
     icon: '📊',
     category: 'Search (Silver)',
-    order: 9,
+    order: 10,
     description: 'A technique for computing range sums in constant time',
     relatedNote: 'Prefix sums can be extended to IMOS method (difference arrays), 2D applications, and combinations with modular arithmetic.',
 
@@ -1482,13 +1482,12 @@ int query(int r1, int c1, int r2, int c2) {\n\
     // ===== Problem Stages =====
     stages: [
         { num: 1, title: '1D Basics', desc: 'Basic Prefix Sum (Silver III)', problemIds: ['boj-11659', 'boj-2559'] },
-        { num: 2, title: 'Applications', desc: 'Prefix Sum Applications (Silver I ~ Gold III)', problemIds: ['boj-16139', 'boj-10986'] },
-        { num: 3, title: '2D', desc: '2D Prefix Sum (Silver I ~ Gold V)', problemIds: ['boj-11660', 'boj-25682'] }
+        { num: 2, title: 'Applications + 2D', desc: 'Prefix Sum applications, 2D Prefix Sum (Silver I ~ Gold V)', problemIds: ['boj-16139', 'boj-11660', 'boj-25682'] },
+        { num: 3, title: 'Advanced', desc: 'Modular arithmetic applications (Gold III)', problemIds: ['boj-10986'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ========== Stage 1: 1D Basics ==========
         {
             id: 'boj-11659', title: 'BOJ 11659 - Range Sum Query 4', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11659',
@@ -1596,7 +1595,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             }]
         },
 
-        // ========== Stage 2: Applications ==========
+        // ========== Stage 2: Applications ==========,
         {
             id: 'boj-16139', title: 'BOJ 16139 - Human-Computer Interaction', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/16139',
@@ -1648,59 +1647,6 @@ int query(int r1, int c1, int r2, int c2) {\n\
                 get templates() { return prefixSumTopic.problems[2].templates; }
             }]
         },
-        {
-            id: 'boj-10986', title: 'BOJ 10986 - Remainder Sum', difficulty: 'gold',
-            link: 'https://www.acmicpc.net/problem/10986',
-            simIntro: 'Watch how we count pairs of prefix sums with the same remainder.',
-            descriptionHTML: `
-                <h3>Problem</h3>
-                <p>Given N numbers A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>, write a program to count the number of contiguous subarrays whose sum is divisible by M. That is, count the number of pairs (i, j) where i ≤ j and A<sub>i</sub> + ... + A<sub>j</sub> is divisible by M.</p>
-                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>5 3\n1 2 3 1 2</pre></div>
-                    <div><strong>Output</strong><pre>7</pre></div>
-                </div></div>
-                <h4>Input</h4>
-                <p>The first line contains N and M. (1 ≤ N ≤ 10<sup>6</sup>, 2 ≤ M ≤ 10<sup>3</sup>) The second line contains N numbers A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>. (0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
-                <h4>Output</h4>
-                <p>Output the number of contiguous subarrays whose sum is divisible by M.</p>
-                <h4>Constraints</h4>
-                <ul>
-                    <li>1 ≤ N ≤ 10<sup>6</sup></li>
-                    <li>2 ≤ M ≤ 10<sup>3</sup></li>
-                    <li>0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup></li>
-                </ul>
-            `,
-            hints: [
-                { title: 'First intuition', content: 'Try all (i, j) pairs, compute the subarray sum, and check if it is divisible by M?<br><br>Use a double for-loop for i and j, then compute the subarray sum = <code>prefix[j] - prefix[i]</code> and check divisibility by M.' },
-                { title: 'But there\'s a problem with this', content: 'N can be up to <strong>1,000,000</strong> (one million)!<br>All (i, j) pairs is about N^2 / 2 = <strong>500 billion</strong>... absolutely impossible!<br><br>But wait -- if the subarray sum is a multiple of M, that means <code>prefix[j] - prefix[i]</code> is a multiple of M.<br>Rephrasing: <code>prefix[j] % M == prefix[i] % M</code>!' },
-                { title: 'What if we try this?', content: '<strong>Pair up prefix sums with the same remainder</strong>!<br><br><div style="padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.8rem;"><div style="text-align:center;margin-bottom:6px;font-weight:600;">M=3: prefix values % 3</div><div style="display:flex;gap:3px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:6px;"><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--yellow);color:white;">2</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span></div><div style="text-align:center;font-size:0.75rem;color:var(--text3);">remainder 0: <span style="color:var(--green);font-weight:600;">3</span> → C(3,2)=3 pairs | remainder 1: 2 → 1 pair | remainder 2: 1 → 0 pairs</div></div>1. Compute prefix[i] % M for each i<br>2. <code>cnt[r]</code> = count with remainder r<br>3. Answer = sum of <code>cnt[r] x (cnt[r]-1) / 2</code><br><br>Include <code>prefix[0] = 0</code> in remainder 0!<br><span class="lang-cpp">Answer can be very large -- <code>long long</code> required!</span><span class="lang-py">Python handles big numbers automatically!</span>' }
-            ],
-            templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\n# Count per remainder\ncnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1  # remainder of prefix[0] = 0 is 0\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1\n\n# Pairs with same remainder = nC2\nans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)',
-                cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;\n\n    long long cnt[1001] = {0};\n    cnt[0] = 1;\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }\n\n    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;\n    }\n    cout << ans << endl;\n    return 0;\n}'
-            },
-            solutions: [{
-                approach: 'Remainder Classification',
-                description: 'Two prefix sums with the same remainder mod M means their difference (= subarray sum) is divisible by M. Count such pairs via nC2.',
-                timeComplexity: 'O(N + M)',
-                spaceComplexity: 'O(M)',
-                codeSteps: {
-                    python: [
-                        { title: 'Input', desc: 'Read N numbers and divisor M.\nWe count subarrays whose sum is divisible by M.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))' },
-                        { title: 'Count Per Remainder', desc: 'Two positions with the same prefix sum remainder form a subarray divisible by M.\ncnt[0]=1: include prefix[0]=0 in remainder 0.', code: 'cnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1' },
-                        { title: 'Combination Count', desc: 'Pairs with same remainder = nC2 = n*(n-1)//2.\nSum over all remainders to get the answer.', code: 'ans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)' }
-                    ],
-                    cpp: [
-                        { title: 'Input', desc: 'Read N numbers and divisor M.\nsync_with_stdio(false) for fast I/O.', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;' },
-                        { title: 'Count Per Remainder', desc: 'Must count prefix[0]=0 too, so cnt[0]=1.\nlong long: values up to 1 billion, prevents prefix sum overflow.', code: '    long long cnt[1001] = {0};\n    cnt[0] = 1;  // Include prefix[0]=0 in remainder 0\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }' },
-                        { title: 'Combination Count', desc: 'nC2 = n*(n-1)/2.\nAnswer can be very large, so long long is required.', code: '    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;  // nC2\n    }\n    cout << ans << endl;\n    return 0;\n}' }
-                    ]
-                },
-                get templates() { return prefixSumTopic.problems[3].templates; }
-            }]
-        },
-
-        // ========== Stage 3: 2D ==========
         {
             id: 'boj-11660', title: 'BOJ 11660 - Range Sum Query 5', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11660',
@@ -1805,7 +1751,60 @@ int query(int r1, int c1, int r2, int c2) {\n\
                 },
                 get templates() { return prefixSumTopic.problems[5].templates; }
             }]
-        }
+        },
+        {
+            id: 'boj-10986', title: 'BOJ 10986 - Remainder Sum', difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/10986',
+            simIntro: 'Watch how we count pairs of prefix sums with the same remainder.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>Given N numbers A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>, write a program to count the number of contiguous subarrays whose sum is divisible by M. That is, count the number of pairs (i, j) where i ≤ j and A<sub>i</sub> + ... + A<sub>j</sub> is divisible by M.</p>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>5 3\n1 2 3 1 2</pre></div>
+                    <div><strong>Output</strong><pre>7</pre></div>
+                </div></div>
+                <h4>Input</h4>
+                <p>The first line contains N and M. (1 ≤ N ≤ 10<sup>6</sup>, 2 ≤ M ≤ 10<sup>3</sup>) The second line contains N numbers A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>. (0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
+                <h4>Output</h4>
+                <p>Output the number of contiguous subarrays whose sum is divisible by M.</p>
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 10<sup>6</sup></li>
+                    <li>2 ≤ M ≤ 10<sup>3</sup></li>
+                    <li>0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup></li>
+                </ul>
+            `,
+            hints: [
+                { title: 'First intuition', content: 'Try all (i, j) pairs, compute the subarray sum, and check if it is divisible by M?<br><br>Use a double for-loop for i and j, then compute the subarray sum = <code>prefix[j] - prefix[i]</code> and check divisibility by M.' },
+                { title: 'But there\'s a problem with this', content: 'N can be up to <strong>1,000,000</strong> (one million)!<br>All (i, j) pairs is about N^2 / 2 = <strong>500 billion</strong>... absolutely impossible!<br><br>But wait -- if the subarray sum is a multiple of M, that means <code>prefix[j] - prefix[i]</code> is a multiple of M.<br>Rephrasing: <code>prefix[j] % M == prefix[i] % M</code>!' },
+                { title: 'What if we try this?', content: '<strong>Pair up prefix sums with the same remainder</strong>!<br><br><div style="padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.8rem;"><div style="text-align:center;margin-bottom:6px;font-weight:600;">M=3: prefix values % 3</div><div style="display:flex;gap:3px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:6px;"><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--yellow);color:white;">2</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span></div><div style="text-align:center;font-size:0.75rem;color:var(--text3);">remainder 0: <span style="color:var(--green);font-weight:600;">3</span> → C(3,2)=3 pairs | remainder 1: 2 → 1 pair | remainder 2: 1 → 0 pairs</div></div>1. Compute prefix[i] % M for each i<br>2. <code>cnt[r]</code> = count with remainder r<br>3. Answer = sum of <code>cnt[r] x (cnt[r]-1) / 2</code><br><br>Include <code>prefix[0] = 0</code> in remainder 0!<br><span class="lang-cpp">Answer can be very large -- <code>long long</code> required!</span><span class="lang-py">Python handles big numbers automatically!</span>' }
+            ],
+            templates: {
+                python: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\n# Count per remainder\ncnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1  # remainder of prefix[0] = 0 is 0\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1\n\n# Pairs with same remainder = nC2\nans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)',
+                cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;\n\n    long long cnt[1001] = {0};\n    cnt[0] = 1;\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }\n\n    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;\n    }\n    cout << ans << endl;\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'Remainder Classification',
+                description: 'Two prefix sums with the same remainder mod M means their difference (= subarray sum) is divisible by M. Count such pairs via nC2.',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(M)',
+                codeSteps: {
+                    python: [
+                        { title: 'Input', desc: 'Read N numbers and divisor M.\nWe count subarrays whose sum is divisible by M.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))' },
+                        { title: 'Count Per Remainder', desc: 'Two positions with the same prefix sum remainder form a subarray divisible by M.\ncnt[0]=1: include prefix[0]=0 in remainder 0.', code: 'cnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1' },
+                        { title: 'Combination Count', desc: 'Pairs with same remainder = nC2 = n*(n-1)//2.\nSum over all remainders to get the answer.', code: 'ans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)' }
+                    ],
+                    cpp: [
+                        { title: 'Input', desc: 'Read N numbers and divisor M.\nsync_with_stdio(false) for fast I/O.', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;' },
+                        { title: 'Count Per Remainder', desc: 'Must count prefix[0]=0 too, so cnt[0]=1.\nlong long: values up to 1 billion, prevents prefix sum overflow.', code: '    long long cnt[1001] = {0};\n    cnt[0] = 1;  // Include prefix[0]=0 in remainder 0\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }' },
+                        { title: 'Combination Count', desc: 'nC2 = n*(n-1)/2.\nAnswer can be very large, so long long is required.', code: '    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;  // nC2\n    }\n    cout << ans << endl;\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return prefixSumTopic.problems[3].templates; }
+            }]
+        },
+
+        // ========== Stage 3: 2D ==========
     ]
 };
 

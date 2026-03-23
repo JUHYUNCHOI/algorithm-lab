@@ -4,7 +4,7 @@ var prefixSumTopic = {
     title: '누적합',
     icon: '📊',
     category: '탐색 (Silver)',
-    order: 9,
+    order: 10,
     description: '구간의 합을 한 번에 구하는 기법',
     relatedNote: '누적합은 IMOS법(차분 배열), 2차원 확장, 나머지 연산과의 조합 등으로 다양하게 응용됩니다.',
 
@@ -1482,13 +1482,12 @@ int query(int r1, int c1, int r2, int c2) {\n\
     // ===== 문제 단계 =====
     stages: [
         { num: 1, title: '1차원 입문', desc: '기본 누적합 (Silver III)', problemIds: ['boj-11659', 'boj-2559'] },
-        { num: 2, title: '응용', desc: '누적합 활용 (Silver I ~ Gold III)', problemIds: ['boj-16139', 'boj-10986'] },
-        { num: 3, title: '2차원', desc: '2차원 누적합 (Silver I ~ Gold V)', problemIds: ['boj-11660', 'boj-25682'] }
+        { num: 2, title: '응용 + 2차원', desc: '누적합 활용, 2차원 누적합 (Silver I ~ Gold V)', problemIds: ['boj-16139', 'boj-11660', 'boj-25682'] },
+        { num: 3, title: '심화', desc: '나머지 연산 응용 (Gold III)', problemIds: ['boj-10986'] }
     ],
 
     // ===== 문제 목록 =====
     problems: [
-        // ========== 1단계: 1차원 입문 ==========
         {
             id: 'boj-11659', title: 'BOJ 11659 - 구간 합 구하기 4', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11659',
@@ -1596,7 +1595,7 @@ int query(int r1, int c1, int r2, int c2) {\n\
             }]
         },
 
-        // ========== 2단계: 응용 ==========
+        // ========== 2단계: 응용 ==========,
         {
             id: 'boj-16139', title: 'BOJ 16139 - 인간-컴퓨터 상호작용', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/16139',
@@ -1648,59 +1647,6 @@ int query(int r1, int c1, int r2, int c2) {\n\
                 get templates() { return prefixSumTopic.problems[2].templates; }
             }]
         },
-        {
-            id: 'boj-10986', title: 'BOJ 10986 - 나머지 합', difficulty: 'gold',
-            link: 'https://www.acmicpc.net/problem/10986',
-            simIntro: '누적합의 나머지가 같은 쌍을 세는 과정을 관찰하세요.',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>수 N개 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어졌을 때, 연속 부분 합이 M으로 나누어 떨어지는 구간의 개수를 구하는 프로그램을 작성하시오. 즉, A<sub>i</sub> + ... + A<sub>j</sub> (i ≤ j)의 합이 M으로 나누어 떨어지는 (i, j) 쌍의 개수를 구하시오.</p>
-                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>5 3\n1 2 3 1 2</pre></div>
-                    <div><strong>출력</strong><pre>7</pre></div>
-                </div></div>
-                <h4>입력</h4>
-                <p>첫째 줄에 N과 M이 주어진다. (1 ≤ N ≤ 10<sup>6</sup>, 2 ≤ M ≤ 10<sup>3</sup>) 둘째 줄에 N개의 수 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어진다. (0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
-                <h4>출력</h4>
-                <p>첫째 줄에 연속 부분 합이 M으로 나누어 떨어지는 구간의 개수를 출력한다.</p>
-                <h4>제약 조건</h4>
-                <ul>
-                    <li>1 ≤ N ≤ 10<sup>6</sup></li>
-                    <li>2 ≤ M ≤ 10<sup>3</sup></li>
-                    <li>0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup></li>
-                </ul>
-            `,
-            hints: [
-                { title: '처음 떠오르는 방법', content: '모든 (i, j) 쌍을 시도해서 구간 합을 구한 뒤, M으로 나누어 떨어지는지 확인하면 되지 않을까?<br><br>이중 for문으로 i와 j를 정하고, 누적합으로 구간 합 = <code>prefix[j] - prefix[i]</code>를 구해서 M으로 나눠보자.' },
-                { title: '근데 이러면 문제가 있어', content: 'N이 최대 <strong>1,000,000</strong>(백만)이야!<br>모든 (i, j) 쌍은 약 N² / 2 = <strong>5000억 개</strong>... 절대 불가능!<br><br>그런데 잠깐, 구간 합이 M의 배수라는 건 <code>prefix[j] - prefix[i]</code>가 M의 배수라는 거잖아?<br>이걸 다르게 표현하면... <code>prefix[j] % M == prefix[i] % M</code>이 되네!' },
-                { title: '이렇게 하면 어떨까?', content: '누적합의 <strong>나머지가 같은 것끼리 짝</strong>을 지으면 돼!<br><br><div style="padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.8rem;"><div style="text-align:center;margin-bottom:6px;font-weight:600;">M=3 일 때 prefix % 3</div><div style="display:flex;gap:3px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:6px;"><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--yellow);color:white;">2</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span></div><div style="text-align:center;font-size:0.75rem;color:var(--text3);">나머지 0: <span style="color:var(--green);font-weight:600;">3개</span> → C(3,2)=3쌍 | 나머지 1: 2개 → 1쌍 | 나머지 2: 1개 → 0쌍</div></div>① 각 prefix 값을 M으로 나눈 나머지를 구해<br>② <code>cnt[r]</code> = 나머지가 r인 prefix 값의 개수<br>③ 답 = 각 나머지별 <code>cnt[r] × (cnt[r]-1) / 2</code>를 합산<br><br><code>prefix[0] = 0</code>도 나머지 0에 포함시켜야 해!<br><span class="lang-cpp">답이 매우 커질 수 있으니 <code>long long</code> 타입 필수!</span><span class="lang-py">Python은 큰 수를 자동 처리하니 걱정 없어!</span>' }
-            ],
-            templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\n# 나머지별 개수 세기\ncnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1  # prefix[0] = 0의 나머지는 0\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1\n\n# 나머지가 같은 쌍의 수 = nC2\nans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)',
-                cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;\n\n    long long cnt[1001] = {0};\n    cnt[0] = 1;\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }\n\n    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;\n    }\n    cout << ans << endl;\n    return 0;\n}'
-            },
-            solutions: [{
-                approach: '나머지 분류',
-                description: '누적합의 나머지가 같은 쌍의 수를 조합(nC2)으로 구합니다.',
-                timeComplexity: 'O(N + M)',
-                spaceComplexity: 'O(M)',
-                codeSteps: {
-                    python: [
-                        { title: '입력', desc: 'N개 수와 나눌 수 M을 입력받습니다.\n구간 합이 M으로 나누어 떨어지는 경우를 셉니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))' },
-                        { title: '나머지별 개수', desc: '누적합의 나머지가 같은 두 위치의 구간 합은 M의 배수.\ncnt[0]=1: prefix[0]=0도 나머지 0에 포함시킵니다.', code: 'cnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1' },
-                        { title: '조합 계산', desc: '나머지가 같은 쌍의 수 = nC2 = n*(n-1)//2.\n모든 나머지 값에 대해 합산하면 답입니다.', code: 'ans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)' }
-                    ],
-                    cpp: [
-                        { title: '입력', desc: 'N개 수와 나눌 수 M을 입력받습니다.\n빠른 입출력을 위해 sync_with_stdio(false) 설정.', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;' },
-                        { title: '나머지별 개수', desc: 'prefix[0]=0의 나머지도 세야 하므로 cnt[0]=1로 시작.\nlong long: 값이 10억까지이므로 누적합 오버플로 방지.', code: '    long long cnt[1001] = {0};\n    cnt[0] = 1;  // prefix[0]=0도 나머지 0에 포함\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }' },
-                        { title: '조합 계산', desc: 'nC2 = n*(n-1)/2.\n답이 매우 커질 수 있으므로 long long 필수.', code: '    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;  // nC2\n    }\n    cout << ans << endl;\n    return 0;\n}' }
-                    ]
-                },
-                get templates() { return prefixSumTopic.problems[3].templates; }
-            }]
-        },
-
-        // ========== 3단계: 2차원 ==========
         {
             id: 'boj-11660', title: 'BOJ 11660 - 구간 합 구하기 5', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/11660',
@@ -1805,7 +1751,60 @@ int query(int r1, int c1, int r2, int c2) {\n\
                 },
                 get templates() { return prefixSumTopic.problems[5].templates; }
             }]
-        }
+        },
+        {
+            id: 'boj-10986', title: 'BOJ 10986 - 나머지 합', difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/10986',
+            simIntro: '누적합의 나머지가 같은 쌍을 세는 과정을 관찰하세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>수 N개 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어졌을 때, 연속 부분 합이 M으로 나누어 떨어지는 구간의 개수를 구하는 프로그램을 작성하시오. 즉, A<sub>i</sub> + ... + A<sub>j</sub> (i ≤ j)의 합이 M으로 나누어 떨어지는 (i, j) 쌍의 개수를 구하시오.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>5 3\n1 2 3 1 2</pre></div>
+                    <div><strong>출력</strong><pre>7</pre></div>
+                </div></div>
+                <h4>입력</h4>
+                <p>첫째 줄에 N과 M이 주어진다. (1 ≤ N ≤ 10<sup>6</sup>, 2 ≤ M ≤ 10<sup>3</sup>) 둘째 줄에 N개의 수 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어진다. (0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>
+                <h4>출력</h4>
+                <p>첫째 줄에 연속 부분 합이 M으로 나누어 떨어지는 구간의 개수를 출력한다.</p>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ N ≤ 10<sup>6</sup></li>
+                    <li>2 ≤ M ≤ 10<sup>3</sup></li>
+                    <li>0 ≤ A<sub>i</sub> ≤ 10<sup>9</sup></li>
+                </ul>
+            `,
+            hints: [
+                { title: '처음 떠오르는 방법', content: '모든 (i, j) 쌍을 시도해서 구간 합을 구한 뒤, M으로 나누어 떨어지는지 확인하면 되지 않을까?<br><br>이중 for문으로 i와 j를 정하고, 누적합으로 구간 합 = <code>prefix[j] - prefix[i]</code>를 구해서 M으로 나눠보자.' },
+                { title: '근데 이러면 문제가 있어', content: 'N이 최대 <strong>1,000,000</strong>(백만)이야!<br>모든 (i, j) 쌍은 약 N² / 2 = <strong>5000억 개</strong>... 절대 불가능!<br><br>그런데 잠깐, 구간 합이 M의 배수라는 건 <code>prefix[j] - prefix[i]</code>가 M의 배수라는 거잖아?<br>이걸 다르게 표현하면... <code>prefix[j] % M == prefix[i] % M</code>이 되네!' },
+                { title: '이렇게 하면 어떨까?', content: '누적합의 <strong>나머지가 같은 것끼리 짝</strong>을 지으면 돼!<br><br><div style="padding:10px;background:var(--bg2);border-radius:10px;margin:8px 0;font-size:0.8rem;"><div style="text-align:center;margin-bottom:6px;font-weight:600;">M=3 일 때 prefix % 3</div><div style="display:flex;gap:3px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:6px;"><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--yellow);color:white;">2</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span><span style="padding:3px 8px;border-radius:4px;background:var(--accent);color:white;">1</span><span style="padding:3px 8px;border-radius:4px;background:var(--green);color:white;font-weight:600;">0</span></div><div style="text-align:center;font-size:0.75rem;color:var(--text3);">나머지 0: <span style="color:var(--green);font-weight:600;">3개</span> → C(3,2)=3쌍 | 나머지 1: 2개 → 1쌍 | 나머지 2: 1개 → 0쌍</div></div>① 각 prefix 값을 M으로 나눈 나머지를 구해<br>② <code>cnt[r]</code> = 나머지가 r인 prefix 값의 개수<br>③ 답 = 각 나머지별 <code>cnt[r] × (cnt[r]-1) / 2</code>를 합산<br><br><code>prefix[0] = 0</code>도 나머지 0에 포함시켜야 해!<br><span class="lang-cpp">답이 매우 커질 수 있으니 <code>long long</code> 타입 필수!</span><span class="lang-py">Python은 큰 수를 자동 처리하니 걱정 없어!</span>' }
+            ],
+            templates: {
+                python: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))\n\n# 나머지별 개수 세기\ncnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1  # prefix[0] = 0의 나머지는 0\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1\n\n# 나머지가 같은 쌍의 수 = nC2\nans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)',
+                cpp: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;\n\n    long long cnt[1001] = {0};\n    cnt[0] = 1;\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }\n\n    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;\n    }\n    cout << ans << endl;\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: '나머지 분류',
+                description: '누적합의 나머지가 같은 쌍의 수를 조합(nC2)으로 구합니다.',
+                timeComplexity: 'O(N + M)',
+                spaceComplexity: 'O(M)',
+                codeSteps: {
+                    python: [
+                        { title: '입력', desc: 'N개 수와 나눌 수 M을 입력받습니다.\n구간 합이 M으로 나누어 떨어지는 경우를 셉니다.', code: 'import sys\ninput = sys.stdin.readline\n\nN, M = map(int, input().split())\narr = list(map(int, input().split()))' },
+                        { title: '나머지별 개수', desc: '누적합의 나머지가 같은 두 위치의 구간 합은 M의 배수.\ncnt[0]=1: prefix[0]=0도 나머지 0에 포함시킵니다.', code: 'cnt = [0] * M\nprefix_mod = 0\ncnt[0] = 1\n\nfor x in arr:\n    prefix_mod = (prefix_mod + x) % M\n    cnt[prefix_mod] += 1' },
+                        { title: '조합 계산', desc: '나머지가 같은 쌍의 수 = nC2 = n*(n-1)//2.\n모든 나머지 값에 대해 합산하면 답입니다.', code: 'ans = 0\nfor c in cnt:\n    ans += c * (c - 1) // 2\n\nprint(ans)' }
+                    ],
+                    cpp: [
+                        { title: '입력', desc: 'N개 수와 나눌 수 M을 입력받습니다.\n빠른 입출력을 위해 sync_with_stdio(false) 설정.', code: '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n\n    int N, M;\n    cin >> N >> M;' },
+                        { title: '나머지별 개수', desc: 'prefix[0]=0의 나머지도 세야 하므로 cnt[0]=1로 시작.\nlong long: 값이 10억까지이므로 누적합 오버플로 방지.', code: '    long long cnt[1001] = {0};\n    cnt[0] = 1;  // prefix[0]=0도 나머지 0에 포함\n    long long prefix_mod = 0;\n\n    for (int i = 0; i < N; i++) {\n        long long x;\n        cin >> x;\n        prefix_mod = (prefix_mod + x) % M;\n        cnt[prefix_mod]++;\n    }' },
+                        { title: '조합 계산', desc: 'nC2 = n*(n-1)/2.\n답이 매우 커질 수 있으므로 long long 필수.', code: '    long long ans = 0;\n    for (int r = 0; r < M; r++) {\n        ans += cnt[r] * (cnt[r] - 1) / 2;  // nC2\n    }\n    cout << ans << endl;\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return prefixSumTopic.problems[3].templates; }
+            }]
+        },
+
+        // ========== 3단계: 2차원 ==========
     ]
 };
 

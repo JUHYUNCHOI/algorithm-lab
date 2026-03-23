@@ -4,7 +4,7 @@ var greedyTopic = {
     title: 'Greedy',
     icon: '🏆',
     category: 'Problem Solving (Silver~Gold)',
-    order: 11,
+    order: 13,
     description: 'A technique that repeatedly makes the best choice at each moment',
     relatedNote: 'Greedy is often used together with sorting and priority queues. The key is proving whether it guarantees an optimal solution.',
 

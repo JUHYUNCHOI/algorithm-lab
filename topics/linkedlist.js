@@ -5,8 +5,8 @@ const linkedListTopic = {
     id: 'linkedlist',
     title: '연결 리스트',
     icon: '🔗',
-    category: '추가 학습',
-    order: 21,
+    category: '기초 (Bronze~Silver)',
+    order: 5,
     description: '노드와 포인터, 단일/이중 연결 리스트, 순환 탐지와 뒤집기',
     relatedNote: '이 외에도 이중 연결 리스트, LRU 캐시(해시맵+리스트), 스킵 리스트 등의 확장 개념이 있습니다.',
 

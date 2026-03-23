@@ -4,7 +4,7 @@ var divideConquerTopic = {
     title: 'Divide & Conquer',
     icon: '🔪',
     category: 'Problem Solving (Silver~Gold)',
-    order: 13,
+    order: 14,
     description: 'Break a big problem into smaller pieces, solve each, and combine the results',
     relatedNote: 'Divide & Conquer is the foundation of merge sort, quick sort, and binary search, and is commonly used in area-division problems like colored paper and quadtree.',
 
@@ -2687,14 +2687,12 @@ var divideConquerTopic = {
     // ===== Problem Stages =====
     stages: [
         { num: 1, title: 'Area Division', desc: 'Recursive 2D area partitioning (Silver)', problemIds: ['boj-2630', 'boj-1992', 'boj-1780'] },
-        { num: 2, title: 'Exponentiation', desc: 'Divide and conquer exponentiation (Silver~Gold)', problemIds: ['boj-1629', 'boj-11401'] },
-        { num: 3, title: 'Matrix', desc: 'Matrix multiplication + exponentiation (Silver~Gold)', problemIds: ['boj-2740', 'boj-10830', 'boj-11444'] },
-        { num: 4, title: 'Advanced', desc: 'Range divide and conquer (Platinum)', problemIds: ['boj-6549'] }
+        { num: 2, title: 'Exponentiation + Matrix', desc: 'Divide and conquer exponentiation, matrix multiplication (Silver~Gold)', problemIds: ['boj-1629', 'boj-2740', 'boj-10830', 'boj-11444'] },
+        { num: 3, title: 'Advanced', desc: "Fermat's little theorem, range divide and conquer (Gold~Platinum)", problemIds: ['boj-11401', 'boj-6549'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ========== Stage 1: Area Division ==========
         {
             id: 'boj-2630', title: 'BOJ 2630 - Making Colored Paper', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2630',
@@ -2837,7 +2835,7 @@ var divideConquerTopic = {
             }]
         },
 
-        // ========== Stage 2: Exponentiation ==========
+        // ========== Stage 2: Exponentiation ==========,
         {
             id: 'boj-1629', title: 'BOJ 1629 - Multiplication', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1629',
@@ -2885,55 +2883,6 @@ var divideConquerTopic = {
                 get templates() { return divideConquerTopic.problems[3].templates; }
             }]
         },
-        {
-            id: 'boj-11401', title: 'BOJ 11401 - Binomial Coefficient 3', difficulty: 'gold',
-            link: 'https://www.acmicpc.net/problem/11401',
-            simIntro: 'Watch binomial coefficients computed via modular inverse using Fermat\'s Little Theorem.',
-            descriptionHTML: `
-    <h3>Problem</h3>
-    <p>Given a natural number N and integer K, write a program to compute the binomial coefficient C(N, K) modulo 1,000,000,007. Use Fermat\'s Little Theorem to compute the modular inverse.</p>
-    <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-        <div><strong>Input</strong><pre>5 2</pre></div>
-        <div><strong>Output</strong><pre>10</pre></div>
-    </div></div>
-    <h4>Input</h4>
-    <p>The first line contains N and K. (1 ≤ N ≤ 4,000,000, 0 ≤ K ≤ N)</p>
-    <h4>Output</h4>
-    <p>Output C(N, K) modulo 1,000,000,007.</p>
-    <h4>Constraints</h4>
-    <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
-`,
-            hints: [
-                { title: 'First intuition', content: 'Since C(N, K) = N! / (K! x (N-K)!), why not compute the factorials and divide?<br><br><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0;padding:10px 14px;background:var(--bg2);border-radius:8px;font-family:monospace;font-size:0.9rem;"><span style="font-weight:700;color:var(--accent);">C(5,2)</span><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;font-weight:600;">5!</div><div style="padding:2px 8px;">2! x 3!</div></div><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;color:var(--green);font-weight:600;">120</div><div style="padding:2px 8px;">2 x 6</div></div><span>=</span><span style="font-weight:700;color:var(--green);font-size:1.1rem;">10</span></div>If we precompute up to N!, we can directly get the numerator (N!) and denominator (K! x (N-K)!).' },
-                { title: 'But there\'s a problem with this', content: 'N can be up to <strong>4 million</strong>. The factorial of 4 million is astronomically large and cannot be directly divided.<br><br>That is why we compute the remainder modulo 1,000,000,007... but <strong>division does not work directly in modular arithmetic!</strong><br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">(a / b) % p != (a % p) / (b % p) -- this does not work!</div><br>How do we handle division?' },
-                { title: 'What if we try this?', content: 'This is where <strong>Fermat\'s Little Theorem</strong> comes in!<br><br>When p is prime: <strong>a<sup>-1</sup> = a<sup>(p-2)</sup> mod p</strong><br><br>In other words, we can replace division with <strong>exponentiation (multiplication)</strong>!<br><br>C(N,K) mod p = N! x (K!)<sup>(p-2)</sup> x ((N-K)!)<sup>(p-2)</sup> mod p<br><br>Implementation in 3 steps:<br>1. Precompute factorial array (0! through N!)<br>2. Use <strong>divide and conquer exponentiation</strong> to compute the inverse<br>3. Multiply the three values and we are done!<br><br>The exponentiation code from problem 1629 can be reused directly here.' }
-            ],
-            templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nMOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD\n\ndef power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1: result = result * a % mod\n    return result\n\nans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)',
-                cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];\nll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1) result = result * a % mod;\n    return result;\n}\nint main() {\n    int N, K; cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++) fac[i] = fac[i-1] * i % MOD;\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}'
-            },
-            solutions: [{
-                approach: 'Factorial + Fermat\'s Little Theorem',
-                description: 'Precompute factorials, then compute inverse via divide and conquer exponentiation.',
-                timeComplexity: 'O(N + log p)',
-                spaceComplexity: 'O(N)',
-                codeSteps: {
-                    python: [
-                        { title: 'Input and factorials', desc: 'Precompute factorials from 0! to N!.\nUsed later in C(N,K) = N! / (K! * (N-K)!).', code: 'MOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD' },
-                        { title: 'Exponentiation (for inverse)', desc: 'Direct modular division is not possible. Use Fermat\'s Little Theorem.\na^(p-2) mod p is the modular inverse of a.', code: 'def power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1:\n        result = result * a % mod\n    return result' },
-                        { title: 'Compute result', desc: 'N! x (K!)^(p-2) x ((N-K)!)^(p-2) mod p\nreplaces division with multiplication.', code: 'ans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)' }
-                    ],
-                    cpp: [
-                        { title: 'Input and factorials', desc: 'Precompute factorials in a global array.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];  // N up to 4 million' },
-                        { title: 'Exponentiation (for inverse)', desc: 'Fermat\'s Little Theorem: a^(-1) ≡ a^(p-2) mod p.', code: 'll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1)\n        result = result * a % mod;\n    return result;\n}' },
-                        { title: 'Compute result', desc: 'Precompute factorials in main, then compute C(N,K) via two inverse calls.', code: 'int main() {\n    int N, K;\n    cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++)\n        fac[i] = fac[i - 1] * i % MOD;\n    // C(N,K) = N! * (K!)^(p-2) * ((N-K)!)^(p-2)\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}' }
-                    ]
-                },
-                get templates() { return divideConquerTopic.problems[4].templates; }
-            }]
-        },
-
-        // ========== Stage 3: Matrix ==========
         {
             id: 'boj-2740', title: 'BOJ 2740 - Matrix Multiplication', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2740',
@@ -3080,7 +3029,56 @@ var divideConquerTopic = {
             }]
         },
 
-        // ========== Stage 4: Advanced ==========
+        // ========== Stage 4: Advanced ==========,
+        {
+            id: 'boj-11401', title: 'BOJ 11401 - Binomial Coefficient 3', difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/11401',
+            simIntro: 'Watch binomial coefficients computed via modular inverse using Fermat\'s Little Theorem.',
+            descriptionHTML: `
+    <h3>Problem</h3>
+    <p>Given a natural number N and integer K, write a program to compute the binomial coefficient C(N, K) modulo 1,000,000,007. Use Fermat\'s Little Theorem to compute the modular inverse.</p>
+    <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+        <div><strong>Input</strong><pre>5 2</pre></div>
+        <div><strong>Output</strong><pre>10</pre></div>
+    </div></div>
+    <h4>Input</h4>
+    <p>The first line contains N and K. (1 ≤ N ≤ 4,000,000, 0 ≤ K ≤ N)</p>
+    <h4>Output</h4>
+    <p>Output C(N, K) modulo 1,000,000,007.</p>
+    <h4>Constraints</h4>
+    <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
+`,
+            hints: [
+                { title: 'First intuition', content: 'Since C(N, K) = N! / (K! x (N-K)!), why not compute the factorials and divide?<br><br><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0;padding:10px 14px;background:var(--bg2);border-radius:8px;font-family:monospace;font-size:0.9rem;"><span style="font-weight:700;color:var(--accent);">C(5,2)</span><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;font-weight:600;">5!</div><div style="padding:2px 8px;">2! x 3!</div></div><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;color:var(--green);font-weight:600;">120</div><div style="padding:2px 8px;">2 x 6</div></div><span>=</span><span style="font-weight:700;color:var(--green);font-size:1.1rem;">10</span></div>If we precompute up to N!, we can directly get the numerator (N!) and denominator (K! x (N-K)!).' },
+                { title: 'But there\'s a problem with this', content: 'N can be up to <strong>4 million</strong>. The factorial of 4 million is astronomically large and cannot be directly divided.<br><br>That is why we compute the remainder modulo 1,000,000,007... but <strong>division does not work directly in modular arithmetic!</strong><br><br><div style="background:var(--bg2);padding:12px;border-radius:8px;font-size:0.9rem;">(a / b) % p != (a % p) / (b % p) -- this does not work!</div><br>How do we handle division?' },
+                { title: 'What if we try this?', content: 'This is where <strong>Fermat\'s Little Theorem</strong> comes in!<br><br>When p is prime: <strong>a<sup>-1</sup> = a<sup>(p-2)</sup> mod p</strong><br><br>In other words, we can replace division with <strong>exponentiation (multiplication)</strong>!<br><br>C(N,K) mod p = N! x (K!)<sup>(p-2)</sup> x ((N-K)!)<sup>(p-2)</sup> mod p<br><br>Implementation in 3 steps:<br>1. Precompute factorial array (0! through N!)<br>2. Use <strong>divide and conquer exponentiation</strong> to compute the inverse<br>3. Multiply the three values and we are done!<br><br>The exponentiation code from problem 1629 can be reused directly here.' }
+            ],
+            templates: {
+                python: 'import sys\ninput = sys.stdin.readline\n\nMOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD\n\ndef power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1: result = result * a % mod\n    return result\n\nans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)',
+                cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];\nll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1) result = result * a % mod;\n    return result;\n}\nint main() {\n    int N, K; cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++) fac[i] = fac[i-1] * i % MOD;\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'Factorial + Fermat\'s Little Theorem',
+                description: 'Precompute factorials, then compute inverse via divide and conquer exponentiation.',
+                timeComplexity: 'O(N + log p)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: 'Input and factorials', desc: 'Precompute factorials from 0! to N!.\nUsed later in C(N,K) = N! / (K! * (N-K)!).', code: 'MOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD' },
+                        { title: 'Exponentiation (for inverse)', desc: 'Direct modular division is not possible. Use Fermat\'s Little Theorem.\na^(p-2) mod p is the modular inverse of a.', code: 'def power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1:\n        result = result * a % mod\n    return result' },
+                        { title: 'Compute result', desc: 'N! x (K!)^(p-2) x ((N-K)!)^(p-2) mod p\nreplaces division with multiplication.', code: 'ans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)' }
+                    ],
+                    cpp: [
+                        { title: 'Input and factorials', desc: 'Precompute factorials in a global array.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];  // N up to 4 million' },
+                        { title: 'Exponentiation (for inverse)', desc: 'Fermat\'s Little Theorem: a^(-1) ≡ a^(p-2) mod p.', code: 'll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1)\n        result = result * a % mod;\n    return result;\n}' },
+                        { title: 'Compute result', desc: 'Precompute factorials in main, then compute C(N,K) via two inverse calls.', code: 'int main() {\n    int N, K;\n    cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++)\n        fac[i] = fac[i - 1] * i % MOD;\n    // C(N,K) = N! * (K!)^(p-2) * ((N-K)!)^(p-2)\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return divideConquerTopic.problems[4].templates; }
+            }]
+        },
+
+        // ========== Stage 3: Matrix ==========,
         {
             id: 'boj-6549', title: 'BOJ 6549 - Largest Rectangle in a Histogram', difficulty: 'platinum',
             link: 'https://www.acmicpc.net/problem/6549',

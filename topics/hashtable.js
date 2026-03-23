@@ -6,7 +6,7 @@ const hashTableTopic = {
     title: '해시 테이블',
     icon: '🗂️',
     category: '기초 (Bronze~Silver)',
-    order: 5,
+    order: 4,
     description: '이름표를 붙여서 한 번에 찾기! 딕셔너리와 집합 활용',
     relatedNote: '해시맵은 투 포인터, 슬라이딩 윈도우와 함께 쓰이는 경우가 많고, 정렬 대신 O(1) 탐색으로 시간을 줄이는 핵심 도구입니다.',
 
@@ -1756,8 +1756,8 @@ struct HashTable {
     // ===== 문제풀이 탭 =====
     stages: [
         { num: 1, title: '숫자 카드', desc: '해시 기반 O(1) 탐색', problemIds: ['boj-10815'] },
-        { num: 2, title: '해시맵 기본', desc: '빈도수, 존재 확인, 매핑 (Easy~Silver)', problemIds: ['lc-217', 'lc-3'] },
-        { num: 3, title: '해시맵 응용', desc: '패턴 매칭, 연속 부분 배열 (Medium~Gold)', problemIds: ['lc-560', 'boj-7785'] }
+        { num: 2, title: '해시맵 기본', desc: '빈도수, 존재 확인, 집합 (Easy~Silver)', problemIds: ['lc-217', 'boj-7785'] },
+        { num: 3, title: '해시맵 응용', desc: '슬라이딩 윈도우, 연속 부분 배열 (Medium~Gold)', problemIds: ['lc-3', 'lc-560'] }
     ],
 
     problems: [
@@ -1990,6 +1990,160 @@ public:
                         { title: '함수 정의 + 셋 초기화', desc: 'unordered_set은 O(1)로 포함 여부 확인이 가능합니다.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        // O(1) 조회 가능한 해시셋\n        unordered_set<int> seen;' },
                         { title: '순회하며 중복 체크', desc: '이미 있으면 true (중복!), 없으면 삽입하여 기록합니다.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true; // 중복!\n            seen.insert(n); // 기록\n        }' },
                         { title: '결과 반환', desc: '끝까지 중복 없으면 false입니다.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true;\n            seen.insert(n);\n        }\n        return false;\n    }\n};' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'boj-7785',
+            title: 'BOJ 7785 - 회사에 있는 사람',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/7785',
+            descriptionHTML: `<h3>문제</h3>
+                <p>출입 기록이 주어집니다. <code>"enter"</code>면 입장, <code>"leave"</code>면 퇴장입니다.
+                현재 회사에 <strong>남아있는 사람</strong>을 사전 역순으로 출력하세요.</p>
+                <h4>입력</h4>
+                <p>첫째 줄에 출입 기록의 수 n (1 &le; n &le; 10<sup>6</sup>)이 주어진다. 다음 n개의 줄에는 각 직원의 이름과 "enter" 또는 "leave"가 주어진다. 이름은 알파벳 대소문자로 이루어져 있으며, 길이는 1 이상 20 이하이다.</p>
+                <h4>출력</h4>
+                <p>현재 회사에 있는 모든 사람을 사전 역순으로 한 줄에 한 명씩 출력한다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>4
+Baha enter
+Asber enter
+Baha leave
+Artem enter</pre></div>
+                    <div><strong>출력</strong><pre>Asber
+Artem</pre></div>
+                </div>
+                <p class="example-explain">Baha는 퇴장했으므로, 남은 Asber와 Artem을 사전 역순으로 출력</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>2
+Kim enter
+Kim leave</pre></div>
+                    <div><strong>출력</strong><pre>(없음)</pre></div>
+                </div>
+                <p class="example-explain">모든 사람이 퇴장하여 아무도 남지 않음</p>
+                </div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 ≤ n ≤ 10⁶</li>
+                    <li>이름은 알파벳 대소문자, 길이 1~20</li>
+                    <li>같은 이름이 두 번 enter하는 경우는 없음</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>삽입/삭제가 O(1)인 자료구조는 무엇일까요?</p>`,
+            hints: [
+                { title: '문제를 쉽게 이해해보자', content: '회사 출입문에 카드를 찍어요.<br><code>enter</code> = 출근 (회사에 들어옴)<br><code>leave</code> = 퇴근 (회사에서 나감)<br><br>모든 기록을 다 처리한 뒤, <strong>지금 회사에 남아있는 사람</strong>을 출력하면 됩니다!' },
+                { title: '어떤 자료구조가 좋을까?', content: '사람이 <strong>들어오면 추가, 나가면 제거</strong>해야 해요.<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;"><div style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#ff6b6b;margin-bottom:4px;">리스트</div><div style="font-size:0.85em;">제거: O(n) — 이름 찾기 느림</div></div><div style="background:rgba(81,207,102,0.1);border:1px solid rgba(81,207,102,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#51cf66;margin-bottom:4px;">Set(집합)</div><div style="font-size:0.85em;">추가/제거: O(1) — 빠름!</div></div></div><span class="lang-py">Python: <code>set.add()</code> / <code>set.discard()</code></span><span class="lang-cpp">C++: <code>set&lt;string&gt;</code>의 <code>insert()</code> / <code>erase()</code></span>' },
+                { title: 'Set으로 풀어보자', content: '빈 set을 만들고, 기록을 하나씩 읽어요:<br><br>① <code>"Baha enter"</code> → set에 Baha 추가<br>② <code>"Asher enter"</code> → set에 Asher 추가<br>③ <code>"Baha leave"</code> → set에서 Baha 제거<br><br>끝! set에 남은 사람 = 회사에 있는 사람' },
+                { title: '사전 역순으로 출력하기', content: '남은 사람들을 <strong>사전 역순(Z→A)</strong>으로 출력해야 해요.<br><span class="lang-py">Python: <code>sorted(company, reverse=True)</code></span><span class="lang-cpp">C++: <code>set&lt;string, greater&lt;string&gt;&gt;</code>로 자동 역순, 또는 <code>rbegin()</code>~<code>rend()</code>로 역순 순회</span><br><br>예: {Asher, Cam} → 역순 → Cam, Asher 순서로 출력!' },
+                { title: '시간 복잡도', content: '기록 n개를 처리: set 추가/제거 각 O(1) → <strong>O(n)</strong><br>남은 m명 정렬: <strong>O(m log m)</strong><br><br>전체: <strong>O(n + m log m)</strong>이에요.' }
+            ],
+            simIntro: '출입 기록을 처리하면서 집합(set)에 사람을 추가/제거하는 과정을 확인해보세요!',
+            inputDefault: 0, solve() { return 'Asber\\nArtem'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+company = set()
+
+for _ in range(n):
+    name, action = input().split()
+    if action == 'enter':
+        company.add(name)
+    else:
+        company.discard(name)
+
+for name in sorted(company, reverse=True):
+    print(name)`,
+                cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <set>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    set<string, greater<string>> company;
+    while (n--) {
+        char name[20], action[10];
+        scanf("%s %s", name, action);
+        if (action[0] == 'e') company.insert(name);
+        else company.erase(name);
+    }
+    for (auto& s : company) printf("%s\\n", s.c_str());
+}`
+            },
+            solutions: [{
+                approach: '브루트포스 (리스트)',
+                description: '리스트에 추가/선형 탐색 제거 후 정렬',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(n)',
+                templates: {
+                    python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+company = []
+
+for _ in range(n):
+    name, action = input().split()
+    if action == 'enter':
+        company.append(name)
+    else:
+        company.remove(name)  # O(n) 선형 탐색
+
+company.sort(reverse=True)
+for name in company:
+    print(name)`,
+                    cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    vector<string> company;
+    while (n--) {
+        char name[20], action[10];
+        scanf("%s %s", name, action);
+        if (action[0] == 'e') {
+            company.push_back(name);
+        } else {
+            // O(n) 선형 탐색 + 삭제
+            auto it = find(company.begin(), company.end(), string(name));
+            if (it != company.end()) company.erase(it);
+        }
+    }
+    sort(company.rbegin(), company.rend());
+    for (auto& s : company) printf("%s\\n", s.c_str());
+}`
+                }
+            }, {
+                approach: '집합(Set) 활용',
+                description: 'enter시 add, leave시 remove 후 사전 역순 정렬',
+                timeComplexity: 'O(n log n)',
+                spaceComplexity: 'O(n)',
+                get templates() { return hashTableTopic.problems[4].templates; },
+                codeSteps: {
+                    python: [
+                        { title: '입력 설정', desc: 'BOJ는 입력이 많을 수 있으므로 sys.stdin.readline으로\n빠른 입력을 설정합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },
+                        { title: '집합(Set) 초기화', desc: '핵심: set은 add/discard가 O(1)!\n리스트의 remove는 O(n)이므로, 출입이 잦으면 set이 훨씬 빠릅니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)' },
+                        { title: '출입 기록 처리', desc: 'enter → add로 추가, leave → discard로 제거.\ndiscard는 없는 원소여도 에러가 나지 않아 안전합니다.\n(remove는 없으면 KeyError 발생!)', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) 추가\n    else:\n        company.discard(name)  # O(1) 제거 (없어도 OK)' },
+                        { title: '사전 역순 출력', desc: 'sorted()로 정렬 후 reverse=True로 역순 출력.\nset은 순서가 없으므로 출력 전 반드시 정렬해야 합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) 추가\n    else:\n        company.discard(name)  # O(1) 제거 (없어도 OK)\n\n# set은 순서 없음 → sorted()로 정렬 필요\nfor name in sorted(company, reverse=True):\n    print(name)' }
+                    ],
+                    cpp: [
+                        { title: '헤더 + 역순 set', desc: 'C++ set은 자동 정렬됨! greater<string>을 넣으면\n삽입할 때마다 사전 역순으로 자동 정렬됩니다.\n→ 마지막에 따로 sort할 필요 없음', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;' },
+                        { title: '출입 기록 처리', desc: 'insert/erase 모두 O(log n) — 리스트의 O(n)보다 빠름.\naction[0] == \'e\'로 간단히 enter/leave 구분합니다.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }' },
+                        { title: '결과 출력', desc: 'set<greater>는 이미 역순 정렬 상태!\n추가 정렬 없이 순서대로 출력하면 됩니다.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }\n    // 이미 역순 정렬 → 그대로 출력\n    for (auto& s : company) printf("%s\\n", s.c_str());\n}' }
                     ]
                 }
             }]
@@ -2266,160 +2420,6 @@ public:
                         { title: '반복 + 누적합 갱신', desc: '원소를 하나씩 더해 "처음~현재"까지의 합을 구합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n; // 누적합 갱신' },
                         { title: '핵심: 이전 누적합 찾기 + 기록', desc: 'sum - k가 이전에 나왔다면 그 구간 합이 k!\n현재 누적합도 기록해서 뒤의 원소가 찾을 수 있게 합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            // sum - k가 이전에 나왔다면 → 구간 합 = k\n            if (pc.count(sum - k)) cnt += pc[sum - k];\n            pc[sum]++; // 현재 누적합 기록\n        }' },
                         { title: '결과 반환', desc: '총 개수를 반환합니다.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            if (pc.count(sum - k)) cnt += pc[sum - k];\n            pc[sum]++;\n        }\n        return cnt;\n    }\n};' }
-                    ]
-                }
-            }]
-        },
-        {
-            id: 'boj-7785',
-            title: 'BOJ 7785 - 회사에 있는 사람',
-            difficulty: 'silver',
-            link: 'https://www.acmicpc.net/problem/7785',
-            descriptionHTML: `<h3>문제</h3>
-                <p>출입 기록이 주어집니다. <code>"enter"</code>면 입장, <code>"leave"</code>면 퇴장입니다.
-                현재 회사에 <strong>남아있는 사람</strong>을 사전 역순으로 출력하세요.</p>
-                <h4>입력</h4>
-                <p>첫째 줄에 출입 기록의 수 n (1 &le; n &le; 10<sup>6</sup>)이 주어진다. 다음 n개의 줄에는 각 직원의 이름과 "enter" 또는 "leave"가 주어진다. 이름은 알파벳 대소문자로 이루어져 있으며, 길이는 1 이상 20 이하이다.</p>
-                <h4>출력</h4>
-                <p>현재 회사에 있는 모든 사람을 사전 역순으로 한 줄에 한 명씩 출력한다.</p>
-
-                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>4
-Baha enter
-Asber enter
-Baha leave
-Artem enter</pre></div>
-                    <div><strong>출력</strong><pre>Asber
-Artem</pre></div>
-                </div>
-                <p class="example-explain">Baha는 퇴장했으므로, 남은 Asber와 Artem을 사전 역순으로 출력</p>
-                </div>
-
-                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>2
-Kim enter
-Kim leave</pre></div>
-                    <div><strong>출력</strong><pre>(없음)</pre></div>
-                </div>
-                <p class="example-explain">모든 사람이 퇴장하여 아무도 남지 않음</p>
-                </div>
-
-                <h4>제약 조건</h4>
-                <ul>
-                    <li>1 ≤ n ≤ 10⁶</li>
-                    <li>이름은 알파벳 대소문자, 길이 1~20</li>
-                    <li>같은 이름이 두 번 enter하는 경우는 없음</li>
-                </ul>
-
-                <h4>💡 Follow-up</h4>
-                <p>삽입/삭제가 O(1)인 자료구조는 무엇일까요?</p>`,
-            hints: [
-                { title: '문제를 쉽게 이해해보자', content: '회사 출입문에 카드를 찍어요.<br><code>enter</code> = 출근 (회사에 들어옴)<br><code>leave</code> = 퇴근 (회사에서 나감)<br><br>모든 기록을 다 처리한 뒤, <strong>지금 회사에 남아있는 사람</strong>을 출력하면 됩니다!' },
-                { title: '어떤 자료구조가 좋을까?', content: '사람이 <strong>들어오면 추가, 나가면 제거</strong>해야 해요.<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;"><div style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#ff6b6b;margin-bottom:4px;">리스트</div><div style="font-size:0.85em;">제거: O(n) — 이름 찾기 느림</div></div><div style="background:rgba(81,207,102,0.1);border:1px solid rgba(81,207,102,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#51cf66;margin-bottom:4px;">Set(집합)</div><div style="font-size:0.85em;">추가/제거: O(1) — 빠름!</div></div></div><span class="lang-py">Python: <code>set.add()</code> / <code>set.discard()</code></span><span class="lang-cpp">C++: <code>set&lt;string&gt;</code>의 <code>insert()</code> / <code>erase()</code></span>' },
-                { title: 'Set으로 풀어보자', content: '빈 set을 만들고, 기록을 하나씩 읽어요:<br><br>① <code>"Baha enter"</code> → set에 Baha 추가<br>② <code>"Asher enter"</code> → set에 Asher 추가<br>③ <code>"Baha leave"</code> → set에서 Baha 제거<br><br>끝! set에 남은 사람 = 회사에 있는 사람' },
-                { title: '사전 역순으로 출력하기', content: '남은 사람들을 <strong>사전 역순(Z→A)</strong>으로 출력해야 해요.<br><span class="lang-py">Python: <code>sorted(company, reverse=True)</code></span><span class="lang-cpp">C++: <code>set&lt;string, greater&lt;string&gt;&gt;</code>로 자동 역순, 또는 <code>rbegin()</code>~<code>rend()</code>로 역순 순회</span><br><br>예: {Asher, Cam} → 역순 → Cam, Asher 순서로 출력!' },
-                { title: '시간 복잡도', content: '기록 n개를 처리: set 추가/제거 각 O(1) → <strong>O(n)</strong><br>남은 m명 정렬: <strong>O(m log m)</strong><br><br>전체: <strong>O(n + m log m)</strong>이에요.' }
-            ],
-            simIntro: '출입 기록을 처리하면서 집합(set)에 사람을 추가/제거하는 과정을 확인해보세요!',
-            inputDefault: 0, solve() { return 'Asber\\nArtem'; },
-            templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-n = int(input())
-company = set()
-
-for _ in range(n):
-    name, action = input().split()
-    if action == 'enter':
-        company.add(name)
-    else:
-        company.discard(name)
-
-for name in sorted(company, reverse=True):
-    print(name)`,
-                cpp: `#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-using namespace std;
-
-int main() {
-    int n; scanf("%d", &n);
-    set<string, greater<string>> company;
-    while (n--) {
-        char name[20], action[10];
-        scanf("%s %s", name, action);
-        if (action[0] == 'e') company.insert(name);
-        else company.erase(name);
-    }
-    for (auto& s : company) printf("%s\\n", s.c_str());
-}`
-            },
-            solutions: [{
-                approach: '브루트포스 (리스트)',
-                description: '리스트에 추가/선형 탐색 제거 후 정렬',
-                timeComplexity: 'O(n²)',
-                spaceComplexity: 'O(n)',
-                templates: {
-                    python: `import sys
-input = sys.stdin.readline
-
-n = int(input())
-company = []
-
-for _ in range(n):
-    name, action = input().split()
-    if action == 'enter':
-        company.append(name)
-    else:
-        company.remove(name)  # O(n) 선형 탐색
-
-company.sort(reverse=True)
-for name in company:
-    print(name)`,
-                    cpp: `#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <string>
-using namespace std;
-
-int main() {
-    int n; scanf("%d", &n);
-    vector<string> company;
-    while (n--) {
-        char name[20], action[10];
-        scanf("%s %s", name, action);
-        if (action[0] == 'e') {
-            company.push_back(name);
-        } else {
-            // O(n) 선형 탐색 + 삭제
-            auto it = find(company.begin(), company.end(), string(name));
-            if (it != company.end()) company.erase(it);
-        }
-    }
-    sort(company.rbegin(), company.rend());
-    for (auto& s : company) printf("%s\\n", s.c_str());
-}`
-                }
-            }, {
-                approach: '집합(Set) 활용',
-                description: 'enter시 add, leave시 remove 후 사전 역순 정렬',
-                timeComplexity: 'O(n log n)',
-                spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[4].templates; },
-                codeSteps: {
-                    python: [
-                        { title: '입력 설정', desc: 'BOJ는 입력이 많을 수 있으므로 sys.stdin.readline으로\n빠른 입력을 설정합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },
-                        { title: '집합(Set) 초기화', desc: '핵심: set은 add/discard가 O(1)!\n리스트의 remove는 O(n)이므로, 출입이 잦으면 set이 훨씬 빠릅니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)' },
-                        { title: '출입 기록 처리', desc: 'enter → add로 추가, leave → discard로 제거.\ndiscard는 없는 원소여도 에러가 나지 않아 안전합니다.\n(remove는 없으면 KeyError 발생!)', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) 추가\n    else:\n        company.discard(name)  # O(1) 제거 (없어도 OK)' },
-                        { title: '사전 역순 출력', desc: 'sorted()로 정렬 후 reverse=True로 역순 출력.\nset은 순서가 없으므로 출력 전 반드시 정렬해야 합니다.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) 추가\n    else:\n        company.discard(name)  # O(1) 제거 (없어도 OK)\n\n# set은 순서 없음 → sorted()로 정렬 필요\nfor name in sorted(company, reverse=True):\n    print(name)' }
-                    ],
-                    cpp: [
-                        { title: '헤더 + 역순 set', desc: 'C++ set은 자동 정렬됨! greater<string>을 넣으면\n삽입할 때마다 사전 역순으로 자동 정렬됩니다.\n→ 마지막에 따로 sort할 필요 없음', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;' },
-                        { title: '출입 기록 처리', desc: 'insert/erase 모두 O(log n) — 리스트의 O(n)보다 빠름.\naction[0] == \'e\'로 간단히 enter/leave 구분합니다.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }' },
-                        { title: '결과 출력', desc: 'set<greater>는 이미 역순 정렬 상태!\n추가 정렬 없이 순서대로 출력하면 됩니다.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → 삽입 시 자동 역순 정렬\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }\n    // 이미 역순 정렬 → 그대로 출력\n    for (auto& s : company) printf("%s\\n", s.c_str());\n}' }
                     ]
                 }
             }]

@@ -4,7 +4,7 @@ var divideConquerTopic = {
     title: '분할정복',
     icon: '🔪',
     category: '문제 해결 기법 (Silver~Gold)',
-    order: 13,
+    order: 14,
     description: '큰 문제를 작게 나눠서 풀고 합치는 기법',
     relatedNote: '분할정복은 병합 정렬, 퀵 정렬, 이진 탐색의 기반이며, 색종이/쿼드트리 같은 영역 분할 문제에서 자주 활용됩니다.',
 
@@ -2899,14 +2899,12 @@ var divideConquerTopic = {
     // ===== 문제 단계 =====
     stages: [
         { num: 1, title: '영역 나누기', desc: '2D 영역을 재귀로 분할 (Silver)', problemIds: ['boj-2630', 'boj-1992', 'boj-1780'] },
-        { num: 2, title: '거듭제곱', desc: '분할정복 거듭제곱 (Silver~Gold)', problemIds: ['boj-1629', 'boj-11401'] },
-        { num: 3, title: '행렬', desc: '행렬 곱셈 + 거듭제곱 (Silver~Gold)', problemIds: ['boj-2740', 'boj-10830', 'boj-11444'] },
-        { num: 4, title: '심화', desc: '구간 분할정복 (Platinum)', problemIds: ['boj-6549'] }
+        { num: 2, title: '거듭제곱 + 행렬', desc: '분할정복 거듭제곱, 행렬 곱셈 (Silver~Gold)', problemIds: ['boj-1629', 'boj-2740', 'boj-10830', 'boj-11444'] },
+        { num: 3, title: '심화', desc: '페르마 소정리, 구간 분할정복 (Gold~Platinum)', problemIds: ['boj-11401', 'boj-6549'] }
     ],
 
     // ===== 문제 목록 =====
     problems: [
-        // ========== 1단계: 영역 나누기 ==========
         {
             id: 'boj-2630', title: 'BOJ 2630 - 색종이 만들기', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2630',
@@ -3049,7 +3047,7 @@ var divideConquerTopic = {
             }]
         },
 
-        // ========== 2단계: 거듭제곱 ==========
+        // ========== 2단계: 거듭제곱 ==========,
         {
             id: 'boj-1629', title: 'BOJ 1629 - 곱셈', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/1629',
@@ -3097,55 +3095,6 @@ var divideConquerTopic = {
                 get templates() { return divideConquerTopic.problems[3].templates; }
             }]
         },
-        {
-            id: 'boj-11401', title: 'BOJ 11401 - 이항 계수 3', difficulty: 'gold',
-            link: 'https://www.acmicpc.net/problem/11401',
-            simIntro: '페르마 소정리를 이용해 이항 계수를 모듈러 역원으로 계산하는 과정을 관찰하세요.',
-            descriptionHTML: `
-    <h3>문제</h3>
-    <p>자연수 N과 정수 K가 주어졌을 때, 이항 계수 C(N, K)를 1,000,000,007로 나눈 나머지를 구하는 프로그램을 작성하시오. 페르마의 소정리를 이용하여 모듈러 역원을 구한다.</p>
-    <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-        <div><strong>입력</strong><pre>5 2</pre></div>
-        <div><strong>출력</strong><pre>10</pre></div>
-    </div></div>
-    <h4>입력</h4>
-    <p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 4,000,000, 0 ≤ K ≤ N)</p>
-    <h4>출력</h4>
-    <p>C(N, K)를 1,000,000,007로 나눈 나머지를 출력한다.</p>
-    <h4>제약 조건</h4>
-    <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
-`,
-            hints: [
-                { title: '처음 떠오르는 방법', content: '이항 계수 C(N, K) = N! / (K! × (N-K)!) 이니까, 팩토리얼을 구해서 나누면 되지 않을까?<br><br><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0;padding:10px 14px;background:var(--bg2);border-radius:8px;font-family:monospace;font-size:0.9rem;"><span style="font-weight:700;color:var(--accent);">C(5,2)</span><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;font-weight:600;">5!</div><div style="padding:2px 8px;">2! × 3!</div></div><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;color:var(--green);font-weight:600;">120</div><div style="padding:2px 8px;">2 × 6</div></div><span>=</span><span style="font-weight:700;color:var(--green);font-size:1.1rem;">10</span></div>N!까지 미리 계산해두면 분자(N!)와 분모(K! × (N-K)!)를 바로 구할 수 있어.' },
-                { title: '근데 이러면 문제가 있어', content: 'N이 최대 <strong>400만</strong>이야. 400만 팩토리얼은 천문학적인 숫자라 직접 나눌 수 없어.<br><br>그래서 1,000,000,007로 나눈 나머지를 구하라는 건데... <strong>모듈러 연산에서는 나눗셈을 직접 할 수 없어!</strong><br><br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;"><div style="padding:8px 12px;background:var(--green)15;border:1.5px solid var(--green);border-radius:8px;font-size:0.85rem;text-align:center;"><div style="color:var(--green);font-weight:600;margin-bottom:4px;">덧셈/곱셈 OK</div><code>(a+b)%p = (a%p+b%p)%p</code></div><div style="padding:8px 12px;background:var(--red)15;border:1.5px solid var(--red);border-radius:8px;font-size:0.85rem;text-align:center;"><div style="color:var(--red);font-weight:600;margin-bottom:4px;">나눗셈 NO!</div><code>(a/b)%p ≠ (a%p)/(b%p)</code></div></div>나눗셈을 어떻게 처리하지?' },
-                { title: '이렇게 하면 어떨까?', content: '<strong>페르마 소정리</strong>가 여기서 등장해!<br><br>p가 소수일 때: <strong>a<sup>-1</sup> ≡ a<sup>(p-2)</sup> mod p</strong><br><br>즉, 나눗셈을 <strong>거듭제곱(곱셈)</strong>으로 바꿀 수 있어!<br><br>C(N,K) mod p = N! × (K!)<sup>(p-2)</sup> × ((N-K)!)<sup>(p-2)</sup> mod p<br><br>구현 3단계:<br>① 팩토리얼 배열 미리 계산 (0! ~ N!)<br>② 앞에서 배운 <strong>분할정복 거듭제곱</strong>으로 역원 계산<br>③ 세 값을 곱하면 끝!<br><br>1629번(곱셈)의 거듭제곱 코드를 여기서 그대로 재사용할 수 있어.' }
-            ],
-            templates: {
-                python: 'import sys\ninput = sys.stdin.readline\n\nMOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD\n\ndef power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1: result = result * a % mod\n    return result\n\nans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)',
-                cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];\nll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1) result = result * a % mod;\n    return result;\n}\nint main() {\n    int N, K; cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++) fac[i] = fac[i-1] * i % MOD;\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}'
-            },
-            solutions: [{
-                approach: '팩토리얼 + 페르마 소정리',
-                description: '팩토리얼을 미리 계산하고, 분할정복 거듭제곱으로 역원을 구합니다.',
-                timeComplexity: 'O(N + log p)',
-                spaceComplexity: 'O(N)',
-                codeSteps: {
-                    python: [
-                        { title: '입력 및 팩토리얼', desc: '팩토리얼을 0!부터 N!까지 미리 계산해둡니다.\n나중에 C(N,K) = N! / (K! * (N-K)!)에서 사용합니다.', code: 'MOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD' },
-                        { title: '거듭제곱 (역원용)', desc: '모듈러 나눗셈은 직접 불가 → 페르마 소정리로 역원을 구합니다.\na^(p-2) mod p가 a의 모듈러 역원입니다.', code: 'def power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1:\n        result = result * a % mod\n    return result' },
-                        { title: '결과 계산', desc: 'N! × (K!)^(p-2) × ((N-K)!)^(p-2) mod p로\n나눗셈을 곱셈으로 바꿔 계산합니다.', code: 'ans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)' }
-                    ],
-                    cpp: [
-                        { title: '입력 및 팩토리얼', desc: '전역 배열로 팩토리얼을 미리 계산합니다.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];  // N 최대 400만' },
-                        { title: '거듭제곱 (역원용)', desc: '페르마 소정리: a^(-1) ≡ a^(p-2) mod p.', code: 'll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1)\n        result = result * a % mod;\n    return result;\n}' },
-                        { title: '결과 계산', desc: 'main에서 팩토리얼 전처리 후, 역원 2번으로 C(N,K) 계산.', code: 'int main() {\n    int N, K;\n    cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++)\n        fac[i] = fac[i - 1] * i % MOD;\n    // C(N,K) = N! * (K!)^(p-2) * ((N-K)!)^(p-2)\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}' }
-                    ]
-                },
-                get templates() { return divideConquerTopic.problems[4].templates; }
-            }]
-        },
-
-        // ========== 3단계: 행렬 ==========
         {
             id: 'boj-2740', title: 'BOJ 2740 - 행렬 곱셈', difficulty: 'silver',
             link: 'https://www.acmicpc.net/problem/2740',
@@ -3292,7 +3241,56 @@ var divideConquerTopic = {
             }]
         },
 
-        // ========== 4단계: 심화 ==========
+        // ========== 4단계: 심화 ==========,
+        {
+            id: 'boj-11401', title: 'BOJ 11401 - 이항 계수 3', difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/11401',
+            simIntro: '페르마 소정리를 이용해 이항 계수를 모듈러 역원으로 계산하는 과정을 관찰하세요.',
+            descriptionHTML: `
+    <h3>문제</h3>
+    <p>자연수 N과 정수 K가 주어졌을 때, 이항 계수 C(N, K)를 1,000,000,007로 나눈 나머지를 구하는 프로그램을 작성하시오. 페르마의 소정리를 이용하여 모듈러 역원을 구한다.</p>
+    <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+        <div><strong>입력</strong><pre>5 2</pre></div>
+        <div><strong>출력</strong><pre>10</pre></div>
+    </div></div>
+    <h4>입력</h4>
+    <p>첫째 줄에 N과 K가 주어진다. (1 ≤ N ≤ 4,000,000, 0 ≤ K ≤ N)</p>
+    <h4>출력</h4>
+    <p>C(N, K)를 1,000,000,007로 나눈 나머지를 출력한다.</p>
+    <h4>제약 조건</h4>
+    <ul><li>1 ≤ N ≤ 4,000,000</li><li>0 ≤ K ≤ N</li></ul>
+`,
+            hints: [
+                { title: '처음 떠오르는 방법', content: '이항 계수 C(N, K) = N! / (K! × (N-K)!) 이니까, 팩토리얼을 구해서 나누면 되지 않을까?<br><br><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0;padding:10px 14px;background:var(--bg2);border-radius:8px;font-family:monospace;font-size:0.9rem;"><span style="font-weight:700;color:var(--accent);">C(5,2)</span><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;font-weight:600;">5!</div><div style="padding:2px 8px;">2! × 3!</div></div><span>=</span><div style="text-align:center;"><div style="border-bottom:2px solid var(--text2);padding:2px 8px;color:var(--green);font-weight:600;">120</div><div style="padding:2px 8px;">2 × 6</div></div><span>=</span><span style="font-weight:700;color:var(--green);font-size:1.1rem;">10</span></div>N!까지 미리 계산해두면 분자(N!)와 분모(K! × (N-K)!)를 바로 구할 수 있어.' },
+                { title: '근데 이러면 문제가 있어', content: 'N이 최대 <strong>400만</strong>이야. 400만 팩토리얼은 천문학적인 숫자라 직접 나눌 수 없어.<br><br>그래서 1,000,000,007로 나눈 나머지를 구하라는 건데... <strong>모듈러 연산에서는 나눗셈을 직접 할 수 없어!</strong><br><br><div style="display:flex;gap:12px;flex-wrap:wrap;margin:10px 0;"><div style="padding:8px 12px;background:var(--green)15;border:1.5px solid var(--green);border-radius:8px;font-size:0.85rem;text-align:center;"><div style="color:var(--green);font-weight:600;margin-bottom:4px;">덧셈/곱셈 OK</div><code>(a+b)%p = (a%p+b%p)%p</code></div><div style="padding:8px 12px;background:var(--red)15;border:1.5px solid var(--red);border-radius:8px;font-size:0.85rem;text-align:center;"><div style="color:var(--red);font-weight:600;margin-bottom:4px;">나눗셈 NO!</div><code>(a/b)%p ≠ (a%p)/(b%p)</code></div></div>나눗셈을 어떻게 처리하지?' },
+                { title: '이렇게 하면 어떨까?', content: '<strong>페르마 소정리</strong>가 여기서 등장해!<br><br>p가 소수일 때: <strong>a<sup>-1</sup> ≡ a<sup>(p-2)</sup> mod p</strong><br><br>즉, 나눗셈을 <strong>거듭제곱(곱셈)</strong>으로 바꿀 수 있어!<br><br>C(N,K) mod p = N! × (K!)<sup>(p-2)</sup> × ((N-K)!)<sup>(p-2)</sup> mod p<br><br>구현 3단계:<br>① 팩토리얼 배열 미리 계산 (0! ~ N!)<br>② 앞에서 배운 <strong>분할정복 거듭제곱</strong>으로 역원 계산<br>③ 세 값을 곱하면 끝!<br><br>1629번(곱셈)의 거듭제곱 코드를 여기서 그대로 재사용할 수 있어.' }
+            ],
+            templates: {
+                python: 'import sys\ninput = sys.stdin.readline\n\nMOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD\n\ndef power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1: result = result * a % mod\n    return result\n\nans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)',
+                cpp: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];\nll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1) result = result * a % mod;\n    return result;\n}\nint main() {\n    int N, K; cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++) fac[i] = fac[i-1] * i % MOD;\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: '팩토리얼 + 페르마 소정리',
+                description: '팩토리얼을 미리 계산하고, 분할정복 거듭제곱으로 역원을 구합니다.',
+                timeComplexity: 'O(N + log p)',
+                spaceComplexity: 'O(N)',
+                codeSteps: {
+                    python: [
+                        { title: '입력 및 팩토리얼', desc: '팩토리얼을 0!부터 N!까지 미리 계산해둡니다.\n나중에 C(N,K) = N! / (K! * (N-K)!)에서 사용합니다.', code: 'MOD = 1_000_000_007\nN, K = map(int, input().split())\n\nfac = [1] * (N + 1)\nfor i in range(1, N + 1):\n    fac[i] = fac[i - 1] * i % MOD' },
+                        { title: '거듭제곱 (역원용)', desc: '모듈러 나눗셈은 직접 불가 → 페르마 소정리로 역원을 구합니다.\na^(p-2) mod p가 a의 모듈러 역원입니다.', code: 'def power(a, b, mod):\n    if b == 0: return 1\n    if b == 1: return a % mod\n    half = power(a, b // 2, mod)\n    result = half * half % mod\n    if b % 2 == 1:\n        result = result * a % mod\n    return result' },
+                        { title: '결과 계산', desc: 'N! × (K!)^(p-2) × ((N-K)!)^(p-2) mod p로\n나눗셈을 곱셈으로 바꿔 계산합니다.', code: 'ans = fac[N]\nans = ans * power(fac[K], MOD - 2, MOD) % MOD\nans = ans * power(fac[N - K], MOD - 2, MOD) % MOD\nprint(ans)' }
+                    ],
+                    cpp: [
+                        { title: '입력 및 팩토리얼', desc: '전역 배열로 팩토리얼을 미리 계산합니다.', code: '#include <iostream>\nusing namespace std;\ntypedef long long ll;\nconst ll MOD = 1000000007;\nll fac[4000001];  // N 최대 400만' },
+                        { title: '거듭제곱 (역원용)', desc: '페르마 소정리: a^(-1) ≡ a^(p-2) mod p.', code: 'll power(ll a, ll b, ll mod) {\n    if (b == 0) return 1;\n    if (b == 1) return a % mod;\n    ll half = power(a, b / 2, mod);\n    ll result = half * half % mod;\n    if (b % 2 == 1)\n        result = result * a % mod;\n    return result;\n}' },
+                        { title: '결과 계산', desc: 'main에서 팩토리얼 전처리 후, 역원 2번으로 C(N,K) 계산.', code: 'int main() {\n    int N, K;\n    cin >> N >> K;\n    fac[0] = 1;\n    for (int i = 1; i <= N; i++)\n        fac[i] = fac[i - 1] * i % MOD;\n    // C(N,K) = N! * (K!)^(p-2) * ((N-K)!)^(p-2)\n    ll ans = fac[N];\n    ans = ans * power(fac[K], MOD - 2, MOD) % MOD;\n    ans = ans * power(fac[N - K], MOD - 2, MOD) % MOD;\n    cout << ans << endl;\n    return 0;\n}' }
+                    ]
+                },
+                get templates() { return divideConquerTopic.problems[4].templates; }
+            }]
+        },
+
+        // ========== 3단계: 행렬 ==========,
         {
             id: 'boj-6549', title: 'BOJ 6549 - 히스토그램에서 가장 큰 직사각형', difficulty: 'platinum',
             link: 'https://www.acmicpc.net/problem/6549',

@@ -2409,7 +2409,7 @@ int main() {
     stages: [
         { num: 1, title: 'Min/Max', desc: 'Array traversal basics', problemIds: ['boj-10818'] },
         { num: 2, title: 'Array Basics', desc: 'Single pass, Two Pointers basics (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
-        { num: 3, title: 'Array Advanced', desc: 'Advanced Two Pointers, preprocessing (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
+        { num: 3, title: 'Array Advanced', desc: 'Advanced Two Pointers, preprocessing (Medium~Gold)', problemIds: ['boj-2003', 'lc-15'] }
     ],
 
     problems: [
@@ -3201,146 +3201,6 @@ public:
             }]
         },
         {
-            id: 'lc-15',
-            title: 'LeetCode 15 - 3Sum',
-            difficulty: 'medium',
-            link: 'https://leetcode.com/problems/3sum/',
-            simIntro: 'Watch how fixing one number and using two pointers narrows down the search!',
-            descriptionHTML: `
-                <h3>Problem</h3>
-                <p>In the integer array <code>nums</code>, find all
-                combinations of <strong>three numbers</strong> that sum to <code>0</code>.</p>
-                <p>Duplicate combinations must be removed.</p>
-
-                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>nums = [-1,0,1,2,-1,-4]</pre></div>
-                    <div><strong>Output</strong><pre>[[-1,-1,2],[-1,0,1]]</pre></div>
-                </div>
-                <p class="example-explain">(-1)+(-1)+2 = 0, (-1)+0+1 = 0</p>
-                </div>
-
-                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>nums = [0,1,1]</pre></div>
-                    <div><strong>Output</strong><pre>[]</pre></div>
-                </div>
-                <p class="example-explain">There are no three numbers that sum to 0.</p>
-                </div>
-
-                <div class="problem-example"><h4>Example 3</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>nums = [0,0,0]</pre></div>
-                    <div><strong>Output</strong><pre>[[0,0,0]]</pre></div>
-                </div></div>
-
-                <h4>Constraints</h4>
-                <ul>
-                    <li>3 ≤ nums.length ≤ 3000</li>
-                    <li>-10⁵ ≤ nums[i] ≤ 10⁵</li>
-                </ul>
-
-                <h4>💡 Follow-up</h4>
-                <p>Can you solve it faster than O(n³)?</p>
-            `,
-            hints: [
-                { title: 'First Thought: How to Solve?', content: 'We need to find all combinations of three numbers that sum to 0. The simplest approach? A triple for loop checking all three-number combinations!<br><code>if nums[i] + nums[j] + nums[k] == 0</code> then add to results.' },
-                { title: 'Let\'s Try It!', content: '<code>nums = [-1, 0, 1, 2, -1, -4]</code> let\'s try:<br>• (-1)+0+1=0 ✅, (-1)+2+(-1)=0 ✅, 0+1+(-1)=0 → this is the same combination as above!<br><br>We get duplicates! [-1, 0, 1] can appear multiple times. We can use a Set to remove duplicates, but... the triple for loop itself is too slow.' },
-                { title: 'Problem Found!', content: 'A triple for loop is <strong>O(n³)</strong>! with n = 3,000 that\'s 27 billion operations! 😱<br><br><strong>Key question:</strong> What benefit does sorting the array give us?<br>Sorting enables ① easy duplicate skipping and ② using <strong>two pointers</strong> to find the other two numbers!' },
-                { title: 'A Better Approach!', content: 'After sorting, <strong>fix one number</strong> and find the other two with <strong>two pointers</strong>!<div style="display:flex;gap:4px;align-items:center;margin:14px 0;padding:12px;background:var(--bg2);border-radius:10px;justify-content:center;flex-wrap:wrap;"><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#e17055;color:white;border-radius:8px;font-weight:700;font-size:0.9em;">-4</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#fdcb6e;color:#2d3436;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #e17055;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">0</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">2</span></div><div style="display:flex;justify-content:center;gap:12px;margin-bottom:8px;font-size:0.85em;"><span style="color:#e17055;font-weight:600;">i(fixed)</span><span style="color:#00b894;font-weight:600;">L→ ←R (two pointers)</span></div>• Fix i → left=i+1, right=end<br>• If the sum of three is less than 0, left++; if greater, right--<br><br>This gives O(n) × O(n) = <strong>O(n²)</strong>!' },
-                { title: 'Key Idea Summary', content: '① Sort the array — O(n log n)<br>② Iterate i from 0, skip if <code>nums[i] == nums[i-1]</code> (remove duplicates)<br>③ Two pointer search with left=i+1, right=end<br>④ If sum is 0, add to results + skip left/right duplicates<br><br><strong>O(n³) → O(n²)</strong> improvement! Sorting is the key.' }
-            ],
-            inputDefault: 0,
-            solve() { return '[[-1, -1, 2], [-1, 0, 1]]'; },
-            templates: {
-                python: `class Solution:
-    def threeSum(self, nums):
-        nums.sort()
-        result = []
-        for i in range(len(nums) - 2):
-            if i > 0 and nums[i] == nums[i - 1]:
-                continue  # skip duplicates
-            left, right = i + 1, len(nums) - 1
-            while left < right:
-                s = nums[i] + nums[left] + nums[right]
-                if s == 0:
-                    result.append([nums[i], nums[left], nums[right]])
-                    while left < right and nums[left] == nums[left + 1]: left += 1
-                    while left < right and nums[right] == nums[right - 1]: right -= 1
-                    left += 1; right -= 1
-                elif s < 0:
-                    left += 1
-                else:
-                    right -= 1
-        return result`,
-                cpp: `class Solution {
-public:
-    vector<vector<int>> threeSum(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        vector<vector<int>> res;
-        for (int i = 0; i < (int)nums.size() - 2; i++) {
-            if (i > 0 && nums[i] == nums[i-1]) continue;
-            int l = i + 1, r = nums.size() - 1;
-            while (l < r) {
-                int s = nums[i] + nums[l] + nums[r];
-                if (s == 0) {
-                    res.push_back({nums[i], nums[l], nums[r]});
-                    while (l < r && nums[l] == nums[l+1]) l++;
-                    while (l < r && nums[r] == nums[r-1]) r--;
-                    l++; r--;
-                } else if (s < 0) l++;
-                else r--;
-            }
-        }
-        return res;
-    }
-};`
-            },
-            solutions: [{
-                approach: 'Brute Force',
-                description: 'Check all three-number combinations with triple for loop, remove duplicates with Set',
-                timeComplexity: 'O(n³)',
-                spaceComplexity: 'O(n)',
-                templates: {
-                    python: `class Solution:\n    def threeSum(self, nums):\n        result = set()\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):\n                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)\n        return [list(t) for t in result]`,
-                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`
-                },
-                codeSteps: {
-                    python: [
-                        { title: 'Initialize Result Set', desc: 'Use set to prevent duplicate combinations.\n[-1,0,1] and [0,-1,1] are the same → sort then add to set for dedup!', code: 'class Solution:\n    def threeSum(self, nums):\n        result = set()  # automatically removes duplicate combos\n        n = len(nums)' },
-                        { title: 'Triple For Loop', desc: 'Check all (i, j, k) combinations one by one.\nO(n³) — most intuitive but slow approach.', code: '        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):' },
-                        { title: 'Check Sum + Remove Duplicates', desc: 'If sum is 0, add as sorted tuple to set.\nsorted → same combination regardless of order becomes same tuple!', code: '                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)  # set auto-removes duplicates' },
-                        { title: 'Convert Results', desc: 'Convert set of tuples to list of lists and return.', code: '        return [list(t) for t in result]' }
-                    ],
-                    cpp: [
-                        { title: 'Initialize Set', desc: 'Use set<vector<int>> for dedup.\nSorted vectors automatically deduplicate identical combinations.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet; // remove duplicates\n        int n = nums.size();' },
-                        { title: 'Triple For Loop + Check Sum', desc: 'Check all (i,j,k) combinations → O(n³).\nIf sum is 0, sort and insert into set.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }' },
-                        { title: 'Return Result', desc: 'Convert set → vector and return.', code: '        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};' }
-                    ]
-                }
-            }, {
-                approach: 'Sort + Two Pointers',
-                description: 'Sort, fix one number, and search for the other two with two pointers',
-                timeComplexity: 'O(n²)',
-                spaceComplexity: 'O(1)',
-                templates: {
-                    python: `class Solution:\n    def threeSum(self, nums):\n        nums.sort()\n        result = []\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            left, right = i + 1, len(nums) - 1\n            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:\n                    left += 1\n                else:\n                    right -= 1\n        return result`,
-                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`
-                },
-                codeSteps: {
-                    python: [
-                        { title: 'Sort', desc: 'Key: sorting enables two pointers!\nIn a sorted array, if sum is too small → left↑, too large → right↓.', code: 'class Solution:\n    def threeSum(self, nums):\n        nums.sort()  # Sort → enables two pointers!\n        result = []' },
-                        { title: 'Fix First Number + Skip Duplicates', desc: 'Fix i and find the other two with two pointers.\nSkip duplicate values of i to prevent duplicate combinations!', code: '        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:  # skip duplicate\n                continue' },
-                        { title: 'Set Up Two Pointers', desc: 'left = right after i, right = end of array.\nNarrow these two pointers until they meet.', code: '            left, right = i + 1, len(nums) - 1' },
-                        { title: 'Compare Sum + Move Pointers', desc: 'Sum == 0 → Answer! Add to results and skip duplicates.\nSum < 0 → need larger value → left++\nSum > 0 → need smaller value → right--', code: '            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:   # sum too small → move left right\n                    left += 1\n                else:          # sum too large → move right left\n                    right -= 1' },
-                        { title: 'Return Result', desc: 'O(n²) — Sort O(n log n) + two pointers O(n) for each i\nMuch faster than O(n³) brute force!', code: '        return result' }
-                    ],
-                    cpp: [
-                        { title: 'Sort + Initialize', desc: 'Sorting enables two pointers!\nIf sum too small → left↑, too large → right↓.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end()); // Sort → two pointers!\n        vector<vector<int>> res;' },
-                        { title: 'Fix i + Skip Duplicates', desc: 'Fix i, find rest with two pointers.\nSkip same values → prevent duplicate combinations!', code: '        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue; // skip duplicates' },
-                        { title: 'Two Pointer Search', desc: 'Sum == 0 → Answer! Skip duplicates, move both.\nSum < 0 → left++, Sum > 0 → right--', code: '            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // sum small → move left\n                else r--;               // sum large → move right\n            }\n        }\n        return res;\n    }\n};' }
-                    ]
-                }
-            }]
-        },
-        {
             id: 'boj-2003',
             title: 'BOJ 2003 - Sum of Numbers 2',
             difficulty: 'silver',
@@ -3533,6 +3393,146 @@ int main() {
                         { title: 'Input + Initialize Pointers', desc: 'Manage range [s, e) with two pointers.\nIf sum too small extend e, too large shrink s, so O(n).', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0; // range [s, e)' },
                         { title: 'Main Loop + Check Sum', desc: 'Sum >= M means subtract s and advance (shrink).\nIf e reaches end, stop.\nSum < M means add e and expand.\nCheck sum == M each iteration.', code: '    while (true) {\n        if (sum >= M) sum -= arr[s++];     // shrink range\n        else if (e >= N) break;            // End\n        else sum += arr[e++];              // expand range\n        if (sum == M) cnt++;               // sum equals M!\n    }' },
                         { title: 'Output Result', desc: 'O(n) since s and e each move at most N times.', code: '    printf("%d\\n", cnt);\n}' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'lc-15',
+            title: 'LeetCode 15 - 3Sum',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/3sum/',
+            simIntro: 'Watch how fixing one number and using two pointers narrows down the search!',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>In the integer array <code>nums</code>, find all
+                combinations of <strong>three numbers</strong> that sum to <code>0</code>.</p>
+                <p>Duplicate combinations must be removed.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [-1,0,1,2,-1,-4]</pre></div>
+                    <div><strong>Output</strong><pre>[[-1,-1,2],[-1,0,1]]</pre></div>
+                </div>
+                <p class="example-explain">(-1)+(-1)+2 = 0, (-1)+0+1 = 0</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [0,1,1]</pre></div>
+                    <div><strong>Output</strong><pre>[]</pre></div>
+                </div>
+                <p class="example-explain">There are no three numbers that sum to 0.</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 3</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>nums = [0,0,0]</pre></div>
+                    <div><strong>Output</strong><pre>[[0,0,0]]</pre></div>
+                </div></div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>3 ≤ nums.length ≤ 3000</li>
+                    <li>-10⁵ ≤ nums[i] ≤ 10⁵</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>Can you solve it faster than O(n³)?</p>
+            `,
+            hints: [
+                { title: 'First Thought: How to Solve?', content: 'We need to find all combinations of three numbers that sum to 0. The simplest approach? A triple for loop checking all three-number combinations!<br><code>if nums[i] + nums[j] + nums[k] == 0</code> then add to results.' },
+                { title: 'Let\'s Try It!', content: '<code>nums = [-1, 0, 1, 2, -1, -4]</code> let\'s try:<br>• (-1)+0+1=0 ✅, (-1)+2+(-1)=0 ✅, 0+1+(-1)=0 → this is the same combination as above!<br><br>We get duplicates! [-1, 0, 1] can appear multiple times. We can use a Set to remove duplicates, but... the triple for loop itself is too slow.' },
+                { title: 'Problem Found!', content: 'A triple for loop is <strong>O(n³)</strong>! with n = 3,000 that\'s 27 billion operations! 😱<br><br><strong>Key question:</strong> What benefit does sorting the array give us?<br>Sorting enables ① easy duplicate skipping and ② using <strong>two pointers</strong> to find the other two numbers!' },
+                { title: 'A Better Approach!', content: 'After sorting, <strong>fix one number</strong> and find the other two with <strong>two pointers</strong>!<div style="display:flex;gap:4px;align-items:center;margin:14px 0;padding:12px;background:var(--bg2);border-radius:10px;justify-content:center;flex-wrap:wrap;"><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#e17055;color:white;border-radius:8px;font-weight:700;font-size:0.9em;">-4</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#fdcb6e;color:#2d3436;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #e17055;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">0</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">2</span></div><div style="display:flex;justify-content:center;gap:12px;margin-bottom:8px;font-size:0.85em;"><span style="color:#e17055;font-weight:600;">i(fixed)</span><span style="color:#00b894;font-weight:600;">L→ ←R (two pointers)</span></div>• Fix i → left=i+1, right=end<br>• If the sum of three is less than 0, left++; if greater, right--<br><br>This gives O(n) × O(n) = <strong>O(n²)</strong>!' },
+                { title: 'Key Idea Summary', content: '① Sort the array — O(n log n)<br>② Iterate i from 0, skip if <code>nums[i] == nums[i-1]</code> (remove duplicates)<br>③ Two pointer search with left=i+1, right=end<br>④ If sum is 0, add to results + skip left/right duplicates<br><br><strong>O(n³) → O(n²)</strong> improvement! Sorting is the key.' }
+            ],
+            inputDefault: 0,
+            solve() { return '[[-1, -1, 2], [-1, 0, 1]]'; },
+            templates: {
+                python: `class Solution:
+    def threeSum(self, nums):
+        nums.sort()
+        result = []
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue  # skip duplicates
+            left, right = i + 1, len(nums) - 1
+            while left < right:
+                s = nums[i] + nums[left] + nums[right]
+                if s == 0:
+                    result.append([nums[i], nums[left], nums[right]])
+                    while left < right and nums[left] == nums[left + 1]: left += 1
+                    while left < right and nums[right] == nums[right - 1]: right -= 1
+                    left += 1; right -= 1
+                elif s < 0:
+                    left += 1
+                else:
+                    right -= 1
+        return result`,
+                cpp: `class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        for (int i = 0; i < (int)nums.size() - 2; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            int l = i + 1, r = nums.size() - 1;
+            while (l < r) {
+                int s = nums[i] + nums[l] + nums[r];
+                if (s == 0) {
+                    res.push_back({nums[i], nums[l], nums[r]});
+                    while (l < r && nums[l] == nums[l+1]) l++;
+                    while (l < r && nums[r] == nums[r-1]) r--;
+                    l++; r--;
+                } else if (s < 0) l++;
+                else r--;
+            }
+        }
+        return res;
+    }
+};`
+            },
+            solutions: [{
+                approach: 'Brute Force',
+                description: 'Check all three-number combinations with triple for loop, remove duplicates with Set',
+                timeComplexity: 'O(n³)',
+                spaceComplexity: 'O(n)',
+                templates: {
+                    python: `class Solution:\n    def threeSum(self, nums):\n        result = set()\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):\n                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)\n        return [list(t) for t in result]`,
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: 'Initialize Result Set', desc: 'Use set to prevent duplicate combinations.\n[-1,0,1] and [0,-1,1] are the same → sort then add to set for dedup!', code: 'class Solution:\n    def threeSum(self, nums):\n        result = set()  # automatically removes duplicate combos\n        n = len(nums)' },
+                        { title: 'Triple For Loop', desc: 'Check all (i, j, k) combinations one by one.\nO(n³) — most intuitive but slow approach.', code: '        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):' },
+                        { title: 'Check Sum + Remove Duplicates', desc: 'If sum is 0, add as sorted tuple to set.\nsorted → same combination regardless of order becomes same tuple!', code: '                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)  # set auto-removes duplicates' },
+                        { title: 'Convert Results', desc: 'Convert set of tuples to list of lists and return.', code: '        return [list(t) for t in result]' }
+                    ],
+                    cpp: [
+                        { title: 'Initialize Set', desc: 'Use set<vector<int>> for dedup.\nSorted vectors automatically deduplicate identical combinations.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet; // remove duplicates\n        int n = nums.size();' },
+                        { title: 'Triple For Loop + Check Sum', desc: 'Check all (i,j,k) combinations → O(n³).\nIf sum is 0, sort and insert into set.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }' },
+                        { title: 'Return Result', desc: 'Convert set → vector and return.', code: '        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};' }
+                    ]
+                }
+            }, {
+                approach: 'Sort + Two Pointers',
+                description: 'Sort, fix one number, and search for the other two with two pointers',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `class Solution:\n    def threeSum(self, nums):\n        nums.sort()\n        result = []\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            left, right = i + 1, len(nums) - 1\n            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:\n                    left += 1\n                else:\n                    right -= 1\n        return result`,
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: 'Sort', desc: 'Key: sorting enables two pointers!\nIn a sorted array, if sum is too small → left↑, too large → right↓.', code: 'class Solution:\n    def threeSum(self, nums):\n        nums.sort()  # Sort → enables two pointers!\n        result = []' },
+                        { title: 'Fix First Number + Skip Duplicates', desc: 'Fix i and find the other two with two pointers.\nSkip duplicate values of i to prevent duplicate combinations!', code: '        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:  # skip duplicate\n                continue' },
+                        { title: 'Set Up Two Pointers', desc: 'left = right after i, right = end of array.\nNarrow these two pointers until they meet.', code: '            left, right = i + 1, len(nums) - 1' },
+                        { title: 'Compare Sum + Move Pointers', desc: 'Sum == 0 → Answer! Add to results and skip duplicates.\nSum < 0 → need larger value → left++\nSum > 0 → need smaller value → right--', code: '            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:   # sum too small → move left right\n                    left += 1\n                else:          # sum too large → move right left\n                    right -= 1' },
+                        { title: 'Return Result', desc: 'O(n²) — Sort O(n log n) + two pointers O(n) for each i\nMuch faster than O(n³) brute force!', code: '        return result' }
+                    ],
+                    cpp: [
+                        { title: 'Sort + Initialize', desc: 'Sorting enables two pointers!\nIf sum too small → left↑, too large → right↓.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end()); // Sort → two pointers!\n        vector<vector<int>> res;' },
+                        { title: 'Fix i + Skip Duplicates', desc: 'Fix i, find rest with two pointers.\nSkip same values → prevent duplicate combinations!', code: '        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue; // skip duplicates' },
+                        { title: 'Two Pointer Search', desc: 'Sum == 0 → Answer! Skip duplicates, move both.\nSum < 0 → left++, Sum > 0 → right--', code: '            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // sum small → move left\n                else r--;               // sum large → move right\n            }\n        }\n        return res;\n    }\n};' }
                     ]
                 }
             }]

@@ -6,7 +6,7 @@ var topologicalSortTopic = {
     title: 'Topological Sort',
     icon: '📋',
     category: 'Advanced (Gold~Platinum)',
-    order: 16,
+    order: 17,
     description: 'A technique for linearly ordering all nodes in a DAG while respecting precedence constraints',
     relatedNote: 'Topological sort is used in build systems, course scheduling, task scheduling, and other problems with prerequisite constraints.',
 

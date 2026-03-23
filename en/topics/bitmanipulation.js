@@ -5,8 +5,8 @@ var bitManipulationTopic = {
     id: 'bitmanipulation',
     title: 'Bit Manipulation',
     icon: '💻',
-    category: 'Advanced DS (Gold~Platinum)',
-    order: 19,
+    category: 'Advanced (Gold~Platinum)',
+    order: 20,
     description: 'Efficient problem-solving techniques using bitwise operations and bitmasks',
     relatedNote: 'Bitwise operations form the foundation for various optimization techniques such as bitmask DP, subset enumeration, and XOR tricks.',
 

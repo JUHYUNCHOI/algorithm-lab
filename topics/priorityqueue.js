@@ -3,8 +3,8 @@ var priorityQueueTopic = {
     id: 'priorityqueue',
     title: '우선순위 큐',
     icon: '🏥',
-    category: '고급 자료구조 (Gold~Platinum)',
-    order: 17,
+    category: '심화 (Gold~Platinum)',
+    order: 16,
     description: '가장 중요한 것부터 꺼내는 자료구조',
     relatedNote: '우선순위 큐는 다익스트라, 허프만 코딩, 중앙값 유지, 작업 스케줄링 등 다양한 알고리즘의 핵심 도구입니다.',
 

@@ -5,8 +5,8 @@ const sortingTopic = {
     id: 'sorting',
     title: '정렬',
     icon: '🔢',
-    category: '기초 (Bronze~Silver)',
-    order: 3,
+    category: '탐색 (Silver)',
+    order: 7,
     description: '버블/선택/삽입 정렬부터 병합/퀵 정렬까지, 정렬의 모든 것',
     relatedNote: '이 외에도 카운팅 정렬, 기수 정렬 등 특수 정렬과 정렬의 안정성(stability) 개념이 중요합니다.',
 
@@ -2641,8 +2641,8 @@ sort(words.begin(), words.end(),
     // ===== 문제 탭 =====
     stages: [
         { num: 1, title: '커트라인', desc: '정렬 후 인덱싱', problemIds: ['boj-25305'] },
-        { num: 2, title: '기본 정렬', desc: '정렬 구현과 커스텀 정렬 (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650'] },
-        { num: 3, title: '정렬 응용', desc: '정렬 기반 문제 풀이 (Easy~Medium)', problemIds: ['lc-56', 'boj-10814'] }
+        { num: 2, title: '기본 정렬', desc: '정렬 구현과 커스텀 정렬 (Bronze~Silver)', problemIds: ['boj-2750', 'boj-11650', 'boj-10814'] },
+        { num: 3, title: '정렬 응용', desc: '정렬 기반 문제 풀이 (Medium)', problemIds: ['lc-56'] }
     ],
 
     problems: [
@@ -2836,61 +2836,6 @@ sort(words.begin(), words.end(),
             }]
         },
         {
-            id: 'lc-56',
-            title: 'LeetCode 56 - Merge Intervals',
-            difficulty: 'medium',
-            link: 'https://leetcode.com/problems/merge-intervals/',
-            simIntro: '시작점으로 정렬한 뒤, 겹치는 구간을 순서대로 병합하는 과정을 관찰하세요.',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>구간 배열 <code>intervals</code>가 주어집니다. <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code>입니다. 겹치는 구간을 모두 합치고, 겹치지 않는 구간만 남긴 배열을 반환하세요.</p>
-                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>intervals = [[1,3],[2,6],[8,10],[15,18]]</pre></div>
-                    <div><strong>출력</strong><pre>[[1,6],[8,10],[15,18]]</pre></div>
-                </div><p class="example-explain">구간 [1,3]과 [2,6]이 겹치므로 [1,6]으로 합칩니다.</p></div>
-                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>intervals = [[1,4],[4,5]]</pre></div>
-                    <div><strong>출력</strong><pre>[[1,5]]</pre></div>
-                </div><p class="example-explain">구간 [1,4]와 [4,5]는 겹치는 것으로 간주합니다.</p></div>
-                <h4>제약 조건</h4>
-                <ul>
-                    <li>1 &le; intervals.length &le; 10<sup>4</sup></li>
-                    <li>intervals[i].length == 2</li>
-                    <li>0 &le; start<sub>i</sub> &le; end<sub>i</sub> &le; 10<sup>4</sup></li>
-                </ul>
-            `,
-            hints: [
-                { title: '처음 생각: 하나씩 비교?', content: '모든 구간 쌍을 하나씩 비교하면 겹치는지 알 수 있어요. 하지만 구간이 n개면 비교 횟수가 O(n&sup2;)... 구간이 10,000개면 1억 번 비교!<div style="margin-top:10px;overflow-x:auto;"><table style="border-collapse:collapse;font-size:0.85rem;margin:0 auto;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;border:1px solid var(--bg3);">방법</th><th style="padding:6px 10px;border:1px solid var(--bg3);">비교 횟수</th><th style="padding:6px 10px;border:1px solid var(--bg3);">n=10,000</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">모든 쌍 비교</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n²)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--red);">~1억 ❌</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">정렬 후 순회</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">~13만 ✅</td></tr></table></div>' },
-                { title: '정렬하면 쉬워진다!', content: '<strong>시작점 기준으로 정렬</strong>하면, 겹치는 구간은 반드시 연속으로 나열돼요. 그러면 앞에서부터 한 번만 스캔하면서 합치면 끝!<div style="margin-top:12px;"><div style="font-size:0.8rem;color:var(--text2);margin-bottom:4px;">정렬 전: 순서가 뒤죽박죽</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[1,3]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[2,6]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[15,18]</div></div><div style="font-size:0.8rem;color:var(--green);margin-bottom:4px;">정렬 후: 겹치는 구간이 나란히!</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[1,3]</div><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[2,6]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[15,18]</div></div></div>' },
-                { title: '합치기 로직', content: '현재 구간의 끝 &ge; 다음 구간의 시작이면 겹치니까 합쳐요 → <code>끝 = max(현재 끝, 다음 끝)</code>.<br>겹치지 않으면? 새 구간을 결과에 추가하고 다음으로 넘어가면 돼요.<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[1,3]</div><div style="font-size:0.85rem;">+</div><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[2,6]</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--text2);">3 &ge; 2 겹침!</div><div style="font-size:1rem;">→</div><div style="padding:4px 10px;border-radius:6px;background:var(--green);color:white;font-size:0.85rem;">[1, max(3,6)] = [1,6]</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--accent);font-size:0.85rem;">[1,6]</div><div style="font-size:0.85rem;">+</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--text2);">6 < 8 안 겹침</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--accent);">새 구간 추가</div></div></div>' }
-            ],
-            templates: {
-                python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # 시작점 기준 정렬\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # 겹침!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
-                cpp: `class Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end());\n        vector<vector<int>> merged = {intervals[0]};\n\n        for (int i = 1; i < intervals.size(); i++) {\n            if (intervals[i][0] <= merged.back()[1])\n                merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n            else\n                merged.push_back(intervals[i]);\n        }\n        return merged;\n    }\n};`
-            },
-            solutions: [{
-                approach: '정렬 + 순차 병합',
-                description: '시작점 기준 정렬 후, 겹치면 end를 max로 갱신합니다.',
-                timeComplexity: 'O(n log n)',
-                spaceComplexity: 'O(n)',
-                get templates() { return sortingTopic.problems[3].templates; },
-                codeSteps: {
-                    python: [
-                        { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
-                        { title: '첫 구간 추가', desc: '결과 리스트에 첫 구간을 넣어 비교의 시작점을 만듭니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]' },
-                        { title: '겹침 판별 + 병합', desc: '현재 구간의 시작이 이전 구간의 끝 이하이면 겹치므로, end를 max로 확장합니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:  # 겹침!\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])' },
-                        { title: '결과 반환', desc: '병합이 완료된 구간 리스트를 반환합니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n\n    return merged' }
-                    ],
-                    cpp: [
-                        { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());' },
-                        { title: '첫 구간 추가', desc: '결과 벡터에 첫 구간을 넣어 비교의 시작점을 만듭니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};' },
-                        { title: '겹침 판별 + 병합', desc: '현재 구간의 시작이 이전 구간의 끝 이하이면 겹치므로, end를 max로 확장합니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }' },
-                        { title: '결과 반환', desc: '병합이 완료된 구간 벡터를 반환합니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }\n\n    return merged;\n}' }
-                    ]
-                }
-            }]
-        },
-        {
             id: 'boj-10814',
             title: 'BOJ 10814 - 나이순 정렬',
             difficulty: 'silver',
@@ -2943,6 +2888,61 @@ sort(words.begin(), words.end(),
                         { title: '입력 받기', desc: 'pair<int, string>으로 나이와 이름을 함께 저장합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;' },
                         { title: '나이 기준 안정 정렬', desc: 'C++ sort()는 불안정 정렬이므로 stable_sort()를 써야 같은 나이끼리 입력 순서가 보장됩니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    // stable_sort: 같은 키이면 입력 순서 유지!\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });' },
                         { title: '출력', desc: '구조화 바인딩으로 나이와 이름을 깔끔하게 출력합니다.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint main() {\n    int N;\n    cin >> N;\n    vector<pair<int, string>> v(N);\n    for (int i = 0; i < N; i++)\n        cin >> v[i].first >> v[i].second;\n\n    stable_sort(v.begin(), v.end(), [](auto& a, auto& b) {\n        return a.first < b.first;\n    });\n\n    for (auto& [age, name] : v)\n        cout << age << " " << name << "\\n";\n}' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'lc-56',
+            title: 'LeetCode 56 - Merge Intervals',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/merge-intervals/',
+            simIntro: '시작점으로 정렬한 뒤, 겹치는 구간을 순서대로 병합하는 과정을 관찰하세요.',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>구간 배열 <code>intervals</code>가 주어집니다. <code>intervals[i] = [start<sub>i</sub>, end<sub>i</sub>]</code>입니다. 겹치는 구간을 모두 합치고, 겹치지 않는 구간만 남긴 배열을 반환하세요.</p>
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>intervals = [[1,3],[2,6],[8,10],[15,18]]</pre></div>
+                    <div><strong>출력</strong><pre>[[1,6],[8,10],[15,18]]</pre></div>
+                </div><p class="example-explain">구간 [1,3]과 [2,6]이 겹치므로 [1,6]으로 합칩니다.</p></div>
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>intervals = [[1,4],[4,5]]</pre></div>
+                    <div><strong>출력</strong><pre>[[1,5]]</pre></div>
+                </div><p class="example-explain">구간 [1,4]와 [4,5]는 겹치는 것으로 간주합니다.</p></div>
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>1 &le; intervals.length &le; 10<sup>4</sup></li>
+                    <li>intervals[i].length == 2</li>
+                    <li>0 &le; start<sub>i</sub> &le; end<sub>i</sub> &le; 10<sup>4</sup></li>
+                </ul>
+            `,
+            hints: [
+                { title: '처음 생각: 하나씩 비교?', content: '모든 구간 쌍을 하나씩 비교하면 겹치는지 알 수 있어요. 하지만 구간이 n개면 비교 횟수가 O(n&sup2;)... 구간이 10,000개면 1억 번 비교!<div style="margin-top:10px;overflow-x:auto;"><table style="border-collapse:collapse;font-size:0.85rem;margin:0 auto;"><tr style="background:var(--bg2);"><th style="padding:6px 10px;border:1px solid var(--bg3);">방법</th><th style="padding:6px 10px;border:1px solid var(--bg3);">비교 횟수</th><th style="padding:6px 10px;border:1px solid var(--bg3);">n=10,000</th></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">모든 쌍 비교</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n²)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--red);">~1억 ❌</td></tr><tr><td style="padding:6px 10px;border:1px solid var(--bg3);">정렬 후 순회</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);">O(n log n)</td><td style="padding:6px 10px;text-align:center;border:1px solid var(--bg3);color:var(--green);font-weight:700;">~13만 ✅</td></tr></table></div>' },
+                { title: '정렬하면 쉬워진다!', content: '<strong>시작점 기준으로 정렬</strong>하면, 겹치는 구간은 반드시 연속으로 나열돼요. 그러면 앞에서부터 한 번만 스캔하면서 합치면 끝!<div style="margin-top:12px;"><div style="font-size:0.8rem;color:var(--text2);margin-bottom:4px;">정렬 전: 순서가 뒤죽박죽</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[1,3]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[2,6]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[15,18]</div></div><div style="font-size:0.8rem;color:var(--green);margin-bottom:4px;">정렬 후: 겹치는 구간이 나란히!</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[1,3]</div><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[2,6]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[15,18]</div></div></div>' },
+                { title: '합치기 로직', content: '현재 구간의 끝 &ge; 다음 구간의 시작이면 겹치니까 합쳐요 → <code>끝 = max(현재 끝, 다음 끝)</code>.<br>겹치지 않으면? 새 구간을 결과에 추가하고 다음으로 넘어가면 돼요.<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[1,3]</div><div style="font-size:0.85rem;">+</div><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--yellow);font-size:0.85rem;">[2,6]</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--text2);">3 &ge; 2 겹침!</div><div style="font-size:1rem;">→</div><div style="padding:4px 10px;border-radius:6px;background:var(--green);color:white;font-size:0.85rem;">[1, max(3,6)] = [1,6]</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="padding:4px 10px;border-radius:6px;border:2px solid var(--accent);font-size:0.85rem;">[1,6]</div><div style="font-size:0.85rem;">+</div><div style="padding:4px 10px;border-radius:6px;background:var(--bg2);font-size:0.85rem;">[8,10]</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--text2);">6 < 8 안 겹침</div><div style="font-size:1rem;">→</div><div style="font-size:0.85rem;color:var(--accent);">새 구간 추가</div></div></div>' }
+            ],
+            templates: {
+                python: `class Solution:\n    def merge(self, intervals):\n        intervals.sort(key=lambda x: x[0])  # 시작점 기준 정렬\n        merged = [intervals[0]]\n\n        for start, end in intervals[1:]:\n            if start <= merged[-1][1]:  # 겹침!\n                merged[-1][1] = max(merged[-1][1], end)\n            else:\n                merged.append([start, end])\n\n        return merged`,
+                cpp: `class Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        sort(intervals.begin(), intervals.end());\n        vector<vector<int>> merged = {intervals[0]};\n\n        for (int i = 1; i < intervals.size(); i++) {\n            if (intervals[i][0] <= merged.back()[1])\n                merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n            else\n                merged.push_back(intervals[i]);\n        }\n        return merged;\n    }\n};`
+            },
+            solutions: [{
+                approach: '정렬 + 순차 병합',
+                description: '시작점 기준 정렬 후, 겹치면 end를 max로 갱신합니다.',
+                timeComplexity: 'O(n log n)',
+                spaceComplexity: 'O(n)',
+                get templates() { return sortingTopic.problems[3].templates; },
+                codeSteps: {
+                    python: [
+                        { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])' },
+                        { title: '첫 구간 추가', desc: '결과 리스트에 첫 구간을 넣어 비교의 시작점을 만듭니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]' },
+                        { title: '겹침 판별 + 병합', desc: '현재 구간의 시작이 이전 구간의 끝 이하이면 겹치므로, end를 max로 확장합니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:  # 겹침!\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])' },
+                        { title: '결과 반환', desc: '병합이 완료된 구간 리스트를 반환합니다.', code: 'def merge(self, intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n\n    return merged' }
+                    ],
+                    cpp: [
+                        { title: '시작점 정렬', desc: '시작점 기준으로 정렬하면 겹치는 구간이 연속으로 나와 한 번의 순회로 병합할 수 있습니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());' },
+                        { title: '첫 구간 추가', desc: '결과 벡터에 첫 구간을 넣어 비교의 시작점을 만듭니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};' },
+                        { title: '겹침 판별 + 병합', desc: '현재 구간의 시작이 이전 구간의 끝 이하이면 겹치므로, end를 max로 확장합니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }' },
+                        { title: '결과 반환', desc: '병합이 완료된 구간 벡터를 반환합니다.', code: 'vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n\n    vector<vector<int>> merged = {intervals[0]};\n\n    for (int i = 1; i < intervals.size(); i++) {\n        if (intervals[i][0] <= merged.back()[1])\n            merged.back()[1] = max(merged.back()[1], intervals[i][1]);\n        else\n            merged.push_back(intervals[i]);\n    }\n\n    return merged;\n}' }
                     ]
                 }
             }]

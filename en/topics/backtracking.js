@@ -4,7 +4,7 @@ var backtrackingTopic = {
     title: 'Backtracking',
     icon: '🔙',
     category: 'Problem Solving (Silver~Gold)',
-    order: 10,
+    order: 11,
     description: 'A technique that tries every path and backtracks when stuck to explore alternatives',
     relatedNote: 'Backtracking is widely used in generating permutations/combinations, constraint satisfaction problems (CSP), game tree searches, and more.',
 

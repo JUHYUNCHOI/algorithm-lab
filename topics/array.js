@@ -2417,7 +2417,7 @@ int main() {
     stages: [
         { num: 1, title: '최솟값/최댓값', desc: '배열 순회 입문', problemIds: ['boj-10818'] },
         { num: 2, title: '배열 기본', desc: '한 번 순회, 투 포인터 기본 (Easy~Silver)', problemIds: ['lc-1', 'lc-121'] },
-        { num: 3, title: '배열 심화', desc: '투 포인터 심화, 전처리 (Medium~Gold)', problemIds: ['lc-15', 'boj-2003'] }
+        { num: 3, title: '배열 심화', desc: '투 포인터 심화, 전처리 (Medium~Gold)', problemIds: ['boj-2003', 'lc-15'] }
     ],
 
     problems: [
@@ -3209,146 +3209,6 @@ public:
             }]
         },
         {
-            id: 'lc-15',
-            title: 'LeetCode 15 - 3Sum',
-            difficulty: 'medium',
-            link: 'https://leetcode.com/problems/3sum/',
-            simIntro: '정렬 후 하나를 고정하고 투 포인터로 좁혀가는 과정을 확인해보세요!',
-            descriptionHTML: `
-                <h3>문제</h3>
-                <p>정수 배열 <code>nums</code>에서 합이 <code>0</code>이 되는
-                <strong>세 수의 조합</strong>을 모두 찾으세요.</p>
-                <p>중복되는 조합은 제거해야 합니다.</p>
-
-                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>nums = [-1,0,1,2,-1,-4]</pre></div>
-                    <div><strong>출력</strong><pre>[[-1,-1,2],[-1,0,1]]</pre></div>
-                </div>
-                <p class="example-explain">(-1)+(-1)+2 = 0, (-1)+0+1 = 0</p>
-                </div>
-
-                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>nums = [0,1,1]</pre></div>
-                    <div><strong>출력</strong><pre>[]</pre></div>
-                </div>
-                <p class="example-explain">합이 0이 되는 세 수 조합이 없습니다.</p>
-                </div>
-
-                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
-                    <div><strong>입력</strong><pre>nums = [0,0,0]</pre></div>
-                    <div><strong>출력</strong><pre>[[0,0,0]]</pre></div>
-                </div></div>
-
-                <h4>제약 조건</h4>
-                <ul>
-                    <li>3 ≤ nums.length ≤ 3000</li>
-                    <li>-10⁵ ≤ nums[i] ≤ 10⁵</li>
-                </ul>
-
-                <h4>💡 Follow-up</h4>
-                <p>O(n³)보다 빠르게 풀 수 있을까요?</p>
-            `,
-            hints: [
-                { title: '처음 생각: 어떻게 풀까?', content: '세 수의 합이 0이 되는 조합을 모두 찾아야 합니다. 가장 단순한 방법은? 삼중 for문으로 모든 세 수 조합을 확인하는 것!<br><code>if nums[i] + nums[j] + nums[k] == 0</code>이면 결과에 추가합니다.' },
-                { title: '한번 해볼까?', content: '<code>nums = [-1, 0, 1, 2, -1, -4]</code>로 해볼게요:<br>• (-1)+0+1=0 ✅, (-1)+2+(-1)=0 ✅, 0+1+(-1)=0 → 이건 위와 같은 조합!<br><br>중복이 생깁니다! [-1, 0, 1]이 여러 번 나올 수 있어요. Set을 써서 중복을 제거할 수 있지만... 삼중 for문 자체가 너무 느립니다.' },
-                { title: '문제 발견!', content: '삼중 for문은 <strong>O(n³)</strong>입니다! n이 3,000이면 270억 번 연산! 😱<br><br><strong>핵심 질문:</strong> 배열을 정렬하면 뭐가 좋아질까?<br>정렬하면 ① 중복 건너뛰기가 쉬워지고 ② 두 수를 고르는 데 <strong>투 포인터</strong>를 쓸 수 있습니다!' },
-                { title: '더 좋은 방법 발견!', content: '정렬 후 <strong>하나를 고정</strong>하고, 나머지 두 수를 <strong>투 포인터</strong>로 찾습니다!<div style="display:flex;gap:4px;align-items:center;margin:14px 0;padding:12px;background:var(--bg2);border-radius:10px;justify-content:center;flex-wrap:wrap;"><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#e17055;color:white;border-radius:8px;font-weight:700;font-size:0.9em;">-4</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#fdcb6e;color:#2d3436;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #e17055;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">0</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">2</span></div><div style="display:flex;justify-content:center;gap:12px;margin-bottom:8px;font-size:0.85em;"><span style="color:#e17055;font-weight:600;">i(고정)</span><span style="color:#00b894;font-weight:600;">L→ ←R (투 포인터)</span></div>• i를 고정 → left=i+1, right=끝<br>• 세 수의 합이 0보다 작으면 left++, 크면 right--<br><br>이렇게 하면 O(n) × O(n) = <strong>O(n²)</strong>!' },
-                { title: '핵심 아이디어 정리', content: '① 배열을 정렬합니다 — O(n log n)<br>② i를 0부터 순회하며, <code>nums[i] == nums[i-1]</code>이면 건너뜁니다 (중복 제거)<br>③ left=i+1, right=끝으로 투 포인터 탐색<br>④ 합이 0이면 결과 추가 + left/right 중복도 건너뜀<br><br><strong>O(n³) → O(n²)</strong>으로 개선! 정렬이 핵심입니다.' }
-            ],
-            inputDefault: 0,
-            solve() { return '[[-1, -1, 2], [-1, 0, 1]]'; },
-            templates: {
-                python: `class Solution:
-    def threeSum(self, nums):
-        nums.sort()
-        result = []
-        for i in range(len(nums) - 2):
-            if i > 0 and nums[i] == nums[i - 1]:
-                continue  # 중복 건너뛰기
-            left, right = i + 1, len(nums) - 1
-            while left < right:
-                s = nums[i] + nums[left] + nums[right]
-                if s == 0:
-                    result.append([nums[i], nums[left], nums[right]])
-                    while left < right and nums[left] == nums[left + 1]: left += 1
-                    while left < right and nums[right] == nums[right - 1]: right -= 1
-                    left += 1; right -= 1
-                elif s < 0:
-                    left += 1
-                else:
-                    right -= 1
-        return result`,
-                cpp: `class Solution {
-public:
-    vector<vector<int>> threeSum(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        vector<vector<int>> res;
-        for (int i = 0; i < (int)nums.size() - 2; i++) {
-            if (i > 0 && nums[i] == nums[i-1]) continue;
-            int l = i + 1, r = nums.size() - 1;
-            while (l < r) {
-                int s = nums[i] + nums[l] + nums[r];
-                if (s == 0) {
-                    res.push_back({nums[i], nums[l], nums[r]});
-                    while (l < r && nums[l] == nums[l+1]) l++;
-                    while (l < r && nums[r] == nums[r-1]) r--;
-                    l++; r--;
-                } else if (s < 0) l++;
-                else r--;
-            }
-        }
-        return res;
-    }
-};`
-            },
-            solutions: [{
-                approach: '브루트포스',
-                description: '삼중 for문으로 모든 세 수 조합을 확인하고 Set으로 중복 제거',
-                timeComplexity: 'O(n³)',
-                spaceComplexity: 'O(n)',
-                templates: {
-                    python: `class Solution:\n    def threeSum(self, nums):\n        result = set()\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):\n                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)\n        return [list(t) for t in result]`,
-                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`
-                },
-                codeSteps: {
-                    python: [
-                        { title: '결과 Set 초기화', desc: '중복 조합 방지를 위해 set 사용.\n[-1,0,1]과 [0,-1,1]은 같은 조합 → 정렬 후 set에 넣으면 중복 제거!', code: 'class Solution:\n    def threeSum(self, nums):\n        result = set()  # 중복 조합 자동 제거\n        n = len(nums)' },
-                        { title: '삼중 for문', desc: '모든 (i, j, k) 조합을 하나씩 확인.\nO(n³) — 가장 직관적이지만 느린 방법.', code: '        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):' },
-                        { title: '합 확인 + 중복 제거', desc: '합이 0이면 정렬된 튜플로 set에 추가.\nsorted → 순서 무관하게 같은 조합이면 같은 튜플!', code: '                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)  # set이므로 중복 자동 제거' },
-                        { title: '결과 변환', desc: 'set의 튜플들을 리스트로 변환하여 반환.', code: '        return [list(t) for t in result]' }
-                    ],
-                    cpp: [
-                        { title: 'Set 초기화', desc: '중복 제거를 위해 set<vector<int>> 사용.\n정렬된 vector를 넣으면 동일 조합 자동 제거.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet; // 중복 제거\n        int n = nums.size();' },
-                        { title: '삼중 for문 + 합 확인', desc: '모든 (i,j,k) 조합을 확인 → O(n³).\n합이 0이면 정렬 후 set에 삽입.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }' },
-                        { title: '결과 반환', desc: 'set → vector로 변환하여 반환.', code: '        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};' }
-                    ]
-                }
-            }, {
-                approach: '정렬 + 투 포인터',
-                description: '정렬 후 하나를 고정하고, 나머지 두 수를 투 포인터로 탐색',
-                timeComplexity: 'O(n²)',
-                spaceComplexity: 'O(1)',
-                templates: {
-                    python: `class Solution:\n    def threeSum(self, nums):\n        nums.sort()\n        result = []\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            left, right = i + 1, len(nums) - 1\n            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:\n                    left += 1\n                else:\n                    right -= 1\n        return result`,
-                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`
-                },
-                codeSteps: {
-                    python: [
-                        { title: '정렬', desc: '핵심: 정렬하면 투 포인터를 쓸 수 있다!\n정렬된 배열에서 합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution:\n    def threeSum(self, nums):\n        nums.sort()  # 정렬 → 투 포인터 사용 가능!\n        result = []' },
-                        { title: '첫 번째 수 고정 + 중복 건너뛰기', desc: 'i를 하나 고정하고 나머지 두 수를 투 포인터로 찾습니다.\n같은 값의 i를 건너뛰어야 중복 조합 방지!', code: '        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:  # 중복 건너뛰기\n                continue' },
-                        { title: '투 포인터 설정', desc: 'left = i 바로 다음, right = 배열 끝.\n이 두 포인터가 서로 만날 때까지 좁혀갑니다.', code: '            left, right = i + 1, len(nums) - 1' },
-                        { title: '합 비교 + 포인터 이동', desc: '합 == 0 → 정답! 결과에 추가 후 중복 건너뛰기.\n합 < 0 → 더 큰 값 필요 → left++\n합 > 0 → 더 작은 값 필요 → right--', code: '            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:   # 합이 작다 → left 오른쪽으로\n                    left += 1\n                else:          # 합이 크다 → right 왼쪽으로\n                    right -= 1' },
-                        { title: '결과 반환', desc: 'O(n²) — 정렬 O(n log n) + 각 i에 투 포인터 O(n)\nO(n³) 브루트포스보다 훨씬 빠릅니다!', code: '        return result' }
-                    ],
-                    cpp: [
-                        { title: '정렬 + 초기화', desc: '정렬하면 투 포인터 사용 가능!\n합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end()); // 정렬 → 투 포인터!\n        vector<vector<int>> res;' },
-                        { title: 'i 고정 + 중복 건너뛰기', desc: 'i를 고정 후 나머지를 투 포인터로 찾음.\n같은 값 건너뛰기 → 중복 조합 방지!', code: '        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue; // 중복 skip' },
-                        { title: '투 포인터 탐색', desc: '합 == 0 → 정답! 중복 건너뛰고 양쪽 이동.\n합 < 0 → left++, 합 > 0 → right--', code: '            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // 합 작다 → left 이동\n                else r--;               // 합 크다 → right 이동\n            }\n        }\n        return res;\n    }\n};' }
-                    ]
-                }
-            }]
-        },
-        {
             id: 'boj-2003',
             title: 'BOJ 2003 - 수들의 합 2',
             difficulty: 'silver',
@@ -3541,6 +3401,146 @@ int main() {
                         { title: '입력 + 포인터 초기화', desc: '두 포인터 s, e로 구간 [s, e)을 관리.\n합이 작으면 e 확장, 크면 s 축소 → O(n).', code: '#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int N, M;\n    scanf("%d %d", &N, &M);\n    vector<int> arr(N);\n    for (int i = 0; i < N; i++) scanf("%d", &arr[i]);\n\n    int s = 0, e = 0, sum = 0, cnt = 0; // 구간 [s, e)' },
                         { title: '메인 루프 + 합 확인', desc: '합 ≥ M → s 빼고 전진 (구간 축소).\ne가 끝이면 종료.\n합 < M → e 더하고 확장.\n매 반복 합 == M 확인.', code: '    while (true) {\n        if (sum >= M) sum -= arr[s++];     // 구간 축소\n        else if (e >= N) break;            // 종료\n        else sum += arr[e++];              // 구간 확장\n        if (sum == M) cnt++;               // 합이 M!\n    }' },
                         { title: '결과 출력', desc: 'O(n) — s와 e 각각 최대 N번만 이동.', code: '    printf("%d\\n", cnt);\n}' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'lc-15',
+            title: 'LeetCode 15 - 3Sum',
+            difficulty: 'medium',
+            link: 'https://leetcode.com/problems/3sum/',
+            simIntro: '정렬 후 하나를 고정하고 투 포인터로 좁혀가는 과정을 확인해보세요!',
+            descriptionHTML: `
+                <h3>문제</h3>
+                <p>정수 배열 <code>nums</code>에서 합이 <code>0</code>이 되는
+                <strong>세 수의 조합</strong>을 모두 찾으세요.</p>
+                <p>중복되는 조합은 제거해야 합니다.</p>
+
+                <div class="problem-example"><h4>예제 1</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [-1,0,1,2,-1,-4]</pre></div>
+                    <div><strong>출력</strong><pre>[[-1,-1,2],[-1,0,1]]</pre></div>
+                </div>
+                <p class="example-explain">(-1)+(-1)+2 = 0, (-1)+0+1 = 0</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 2</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [0,1,1]</pre></div>
+                    <div><strong>출력</strong><pre>[]</pre></div>
+                </div>
+                <p class="example-explain">합이 0이 되는 세 수 조합이 없습니다.</p>
+                </div>
+
+                <div class="problem-example"><h4>예제 3</h4><div class="example-grid">
+                    <div><strong>입력</strong><pre>nums = [0,0,0]</pre></div>
+                    <div><strong>출력</strong><pre>[[0,0,0]]</pre></div>
+                </div></div>
+
+                <h4>제약 조건</h4>
+                <ul>
+                    <li>3 ≤ nums.length ≤ 3000</li>
+                    <li>-10⁵ ≤ nums[i] ≤ 10⁵</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>O(n³)보다 빠르게 풀 수 있을까요?</p>
+            `,
+            hints: [
+                { title: '처음 생각: 어떻게 풀까?', content: '세 수의 합이 0이 되는 조합을 모두 찾아야 합니다. 가장 단순한 방법은? 삼중 for문으로 모든 세 수 조합을 확인하는 것!<br><code>if nums[i] + nums[j] + nums[k] == 0</code>이면 결과에 추가합니다.' },
+                { title: '한번 해볼까?', content: '<code>nums = [-1, 0, 1, 2, -1, -4]</code>로 해볼게요:<br>• (-1)+0+1=0 ✅, (-1)+2+(-1)=0 ✅, 0+1+(-1)=0 → 이건 위와 같은 조합!<br><br>중복이 생깁니다! [-1, 0, 1]이 여러 번 나올 수 있어요. Set을 써서 중복을 제거할 수 있지만... 삼중 for문 자체가 너무 느립니다.' },
+                { title: '문제 발견!', content: '삼중 for문은 <strong>O(n³)</strong>입니다! n이 3,000이면 270억 번 연산! 😱<br><br><strong>핵심 질문:</strong> 배열을 정렬하면 뭐가 좋아질까?<br>정렬하면 ① 중복 건너뛰기가 쉬워지고 ② 두 수를 고르는 데 <strong>투 포인터</strong>를 쓸 수 있습니다!' },
+                { title: '더 좋은 방법 발견!', content: '정렬 후 <strong>하나를 고정</strong>하고, 나머지 두 수를 <strong>투 포인터</strong>로 찾습니다!<div style="display:flex;gap:4px;align-items:center;margin:14px 0;padding:12px;background:var(--bg2);border-radius:10px;justify-content:center;flex-wrap:wrap;"><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#e17055;color:white;border-radius:8px;font-weight:700;font-size:0.9em;">-4</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#fdcb6e;color:#2d3436;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #e17055;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">-1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">0</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#dfe6e9;color:#636e72;border-radius:8px;font-weight:700;font-size:0.9em;">1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:#6c5ce7;color:white;border-radius:8px;font-weight:700;font-size:0.9em;box-shadow:0 0 0 2px #00b894;">2</span></div><div style="display:flex;justify-content:center;gap:12px;margin-bottom:8px;font-size:0.85em;"><span style="color:#e17055;font-weight:600;">i(고정)</span><span style="color:#00b894;font-weight:600;">L→ ←R (투 포인터)</span></div>• i를 고정 → left=i+1, right=끝<br>• 세 수의 합이 0보다 작으면 left++, 크면 right--<br><br>이렇게 하면 O(n) × O(n) = <strong>O(n²)</strong>!' },
+                { title: '핵심 아이디어 정리', content: '① 배열을 정렬합니다 — O(n log n)<br>② i를 0부터 순회하며, <code>nums[i] == nums[i-1]</code>이면 건너뜁니다 (중복 제거)<br>③ left=i+1, right=끝으로 투 포인터 탐색<br>④ 합이 0이면 결과 추가 + left/right 중복도 건너뜀<br><br><strong>O(n³) → O(n²)</strong>으로 개선! 정렬이 핵심입니다.' }
+            ],
+            inputDefault: 0,
+            solve() { return '[[-1, -1, 2], [-1, 0, 1]]'; },
+            templates: {
+                python: `class Solution:
+    def threeSum(self, nums):
+        nums.sort()
+        result = []
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue  # 중복 건너뛰기
+            left, right = i + 1, len(nums) - 1
+            while left < right:
+                s = nums[i] + nums[left] + nums[right]
+                if s == 0:
+                    result.append([nums[i], nums[left], nums[right]])
+                    while left < right and nums[left] == nums[left + 1]: left += 1
+                    while left < right and nums[right] == nums[right - 1]: right -= 1
+                    left += 1; right -= 1
+                elif s < 0:
+                    left += 1
+                else:
+                    right -= 1
+        return result`,
+                cpp: `class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> res;
+        for (int i = 0; i < (int)nums.size() - 2; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            int l = i + 1, r = nums.size() - 1;
+            while (l < r) {
+                int s = nums[i] + nums[l] + nums[r];
+                if (s == 0) {
+                    res.push_back({nums[i], nums[l], nums[r]});
+                    while (l < r && nums[l] == nums[l+1]) l++;
+                    while (l < r && nums[r] == nums[r-1]) r--;
+                    l++; r--;
+                } else if (s < 0) l++;
+                else r--;
+            }
+        }
+        return res;
+    }
+};`
+            },
+            solutions: [{
+                approach: '브루트포스',
+                description: '삼중 for문으로 모든 세 수 조합을 확인하고 Set으로 중복 제거',
+                timeComplexity: 'O(n³)',
+                spaceComplexity: 'O(n)',
+                templates: {
+                    python: `class Solution:\n    def threeSum(self, nums):\n        result = set()\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):\n                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)\n        return [list(t) for t in result]`,
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet;\n        int n = nums.size();\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }\n        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '결과 Set 초기화', desc: '중복 조합 방지를 위해 set 사용.\n[-1,0,1]과 [0,-1,1]은 같은 조합 → 정렬 후 set에 넣으면 중복 제거!', code: 'class Solution:\n    def threeSum(self, nums):\n        result = set()  # 중복 조합 자동 제거\n        n = len(nums)' },
+                        { title: '삼중 for문', desc: '모든 (i, j, k) 조합을 하나씩 확인.\nO(n³) — 가장 직관적이지만 느린 방법.', code: '        for i in range(n):\n            for j in range(i + 1, n):\n                for k in range(j + 1, n):' },
+                        { title: '합 확인 + 중복 제거', desc: '합이 0이면 정렬된 튜플로 set에 추가.\nsorted → 순서 무관하게 같은 조합이면 같은 튜플!', code: '                    if nums[i] + nums[j] + nums[k] == 0:\n                        triplet = tuple(sorted([nums[i], nums[j], nums[k]]))\n                        result.add(triplet)  # set이므로 중복 자동 제거' },
+                        { title: '결과 변환', desc: 'set의 튜플들을 리스트로 변환하여 반환.', code: '        return [list(t) for t in result]' }
+                    ],
+                    cpp: [
+                        { title: 'Set 초기화', desc: '중복 제거를 위해 set<vector<int>> 사용.\n정렬된 vector를 넣으면 동일 조합 자동 제거.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        set<vector<int>> resultSet; // 중복 제거\n        int n = nums.size();' },
+                        { title: '삼중 for문 + 합 확인', desc: '모든 (i,j,k) 조합을 확인 → O(n³).\n합이 0이면 정렬 후 set에 삽입.', code: '        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                for (int k = j + 1; k < n; k++) {\n                    if (nums[i] + nums[j] + nums[k] == 0) {\n                        vector<int> triplet = {nums[i], nums[j], nums[k]};\n                        sort(triplet.begin(), triplet.end());\n                        resultSet.insert(triplet);\n                    }\n                }\n            }\n        }' },
+                        { title: '결과 반환', desc: 'set → vector로 변환하여 반환.', code: '        return vector<vector<int>>(resultSet.begin(), resultSet.end());\n    }\n};' }
+                    ]
+                }
+            }, {
+                approach: '정렬 + 투 포인터',
+                description: '정렬 후 하나를 고정하고, 나머지 두 수를 투 포인터로 탐색',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                templates: {
+                    python: `class Solution:\n    def threeSum(self, nums):\n        nums.sort()\n        result = []\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            left, right = i + 1, len(nums) - 1\n            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:\n                    left += 1\n                else:\n                    right -= 1\n        return result`,
+                    cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end());\n        vector<vector<int>> res;\n        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue;\n            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n};`
+                },
+                codeSteps: {
+                    python: [
+                        { title: '정렬', desc: '핵심: 정렬하면 투 포인터를 쓸 수 있다!\n정렬된 배열에서 합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution:\n    def threeSum(self, nums):\n        nums.sort()  # 정렬 → 투 포인터 사용 가능!\n        result = []' },
+                        { title: '첫 번째 수 고정 + 중복 건너뛰기', desc: 'i를 하나 고정하고 나머지 두 수를 투 포인터로 찾습니다.\n같은 값의 i를 건너뛰어야 중복 조합 방지!', code: '        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:  # 중복 건너뛰기\n                continue' },
+                        { title: '투 포인터 설정', desc: 'left = i 바로 다음, right = 배열 끝.\n이 두 포인터가 서로 만날 때까지 좁혀갑니다.', code: '            left, right = i + 1, len(nums) - 1' },
+                        { title: '합 비교 + 포인터 이동', desc: '합 == 0 → 정답! 결과에 추가 후 중복 건너뛰기.\n합 < 0 → 더 큰 값 필요 → left++\n합 > 0 → 더 작은 값 필요 → right--', code: '            while left < right:\n                s = nums[i] + nums[left] + nums[right]\n                if s == 0:\n                    result.append([nums[i], nums[left], nums[right]])\n                    while left < right and nums[left] == nums[left + 1]: left += 1\n                    while left < right and nums[right] == nums[right - 1]: right -= 1\n                    left += 1; right -= 1\n                elif s < 0:   # 합이 작다 → left 오른쪽으로\n                    left += 1\n                else:          # 합이 크다 → right 왼쪽으로\n                    right -= 1' },
+                        { title: '결과 반환', desc: 'O(n²) — 정렬 O(n log n) + 각 i에 투 포인터 O(n)\nO(n³) 브루트포스보다 훨씬 빠릅니다!', code: '        return result' }
+                    ],
+                    cpp: [
+                        { title: '정렬 + 초기화', desc: '정렬하면 투 포인터 사용 가능!\n합이 작으면 left↑, 크면 right↓로 좁히기.', code: 'class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        sort(nums.begin(), nums.end()); // 정렬 → 투 포인터!\n        vector<vector<int>> res;' },
+                        { title: 'i 고정 + 중복 건너뛰기', desc: 'i를 고정 후 나머지를 투 포인터로 찾음.\n같은 값 건너뛰기 → 중복 조합 방지!', code: '        for (int i = 0; i < (int)nums.size() - 2; i++) {\n            if (i > 0 && nums[i] == nums[i-1]) continue; // 중복 skip' },
+                        { title: '투 포인터 탐색', desc: '합 == 0 → 정답! 중복 건너뛰고 양쪽 이동.\n합 < 0 → left++, 합 > 0 → right--', code: '            int l = i + 1, r = nums.size() - 1;\n            while (l < r) {\n                int s = nums[i] + nums[l] + nums[r];\n                if (s == 0) {\n                    res.push_back({nums[i], nums[l], nums[r]});\n                    while (l < r && nums[l] == nums[l+1]) l++;\n                    while (l < r && nums[r] == nums[r-1]) r--;\n                    l++; r--;\n                } else if (s < 0) l++;  // 합 작다 → left 이동\n                else r--;               // 합 크다 → right 이동\n            }\n        }\n        return res;\n    }\n};' }
                     ]
                 }
             }]

@@ -6,7 +6,7 @@ const hashTableTopic = {
     title: 'Hash Table',
     icon: '🗂️',
     category: 'Fundamentals (Bronze~Silver)',
-    order: 5,
+    order: 4,
     description: 'Find any value instantly! Learn dictionaries, sets, and counting patterns',
     relatedNote: 'HashMaps are often used alongside two pointers and sliding window, and are a key tool for reducing time by using O(1) lookup instead of sorting.',
 
@@ -1750,8 +1750,8 @@ struct HashTable {
     // ===== Problem Solving Tab =====
     stages: [
         { num: 1, title: 'Number Cards', desc: 'Hash-based O(1) lookup', problemIds: ['boj-10815'] },
-        { num: 2, title: 'HashMap Basics', desc: 'Frequency, existence check, mapping (Easy~Silver)', problemIds: ['lc-217', 'lc-3'] },
-        { num: 3, title: 'HashMap Applications', desc: 'Pattern matching, contiguous subarrays (Medium~Gold)', problemIds: ['lc-560', 'boj-7785'] }
+        { num: 2, title: 'HashMap Basics', desc: 'Frequency, existence check, sets (Easy~Silver)', problemIds: ['lc-217', 'boj-7785'] },
+        { num: 3, title: 'HashMap Applications', desc: 'Sliding window, contiguous subarrays (Medium~Gold)', problemIds: ['lc-3', 'lc-560'] }
     ],
 
     problems: [
@@ -1984,6 +1984,160 @@ public:
                         { title: 'Function definition + Set init', desc: 'unordered_set allows O(1) membership checks.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        // HashSet with O(1) lookup\n        unordered_set<int> seen;' },
                         { title: 'Iterate and check duplicates', desc: 'If already present, return true (duplicate!). Otherwise insert to record it.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true; // Duplicate!\n            seen.insert(n); // Record it\n        }' },
                         { title: 'Return Result', desc: 'If no duplicates found after full traversal, return false.', code: 'class Solution {\npublic:\n    bool containsDuplicate(vector<int>& nums) {\n        unordered_set<int> seen;\n        for (int n : nums) {\n            if (seen.count(n)) return true;\n            seen.insert(n);\n        }\n        return false;\n    }\n};' }
+                    ]
+                }
+            }]
+        },
+        {
+            id: 'boj-7785',
+            title: 'BOJ 7785 - People at Company',
+            difficulty: 'silver',
+            link: 'https://www.acmicpc.net/problem/7785',
+            descriptionHTML: `<h3>Problem</h3>
+                <p>You are given entry logs. <code>"enter"</code> means entering, <code>"leave"</code> means leaving.
+                Print the <strong>people still remaining</strong> at the company in reverse alphabetical order.</p>
+                <h4>Input</h4>
+                <p>The first line contains the number of log entries n (1 &le; n &le; 10<sup>6</sup>). Each of the next n lines contains a name and "enter" or "leave". Names consist of uppercase and lowercase letters with length between 1 and 20.</p>
+                <h4>Output</h4>
+                <p>Print all people currently at the company in reverse alphabetical order, one per line.</p>
+
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>4
+Baha enter
+Asber enter
+Baha leave
+Artem enter</pre></div>
+                    <div><strong>Output</strong><pre>Asber
+Artem</pre></div>
+                </div>
+                <p class="example-explain">Baha has left, so print the remaining Asber and Artem in reverse alphabetical order</p>
+                </div>
+
+                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>2
+Kim enter
+Kim leave</pre></div>
+                    <div><strong>Output</strong><pre>(none)</pre></div>
+                </div>
+                <p class="example-explain">Everyone has left, so no one remains</p>
+                </div>
+
+                <h4>Constraints</h4>
+                <ul>
+                    <li>1 ≤ n ≤ 10⁶</li>
+                    <li>Names consist of uppercase and lowercase letters, length 1~20</li>
+                    <li>The same name will not enter twice without leaving first</li>
+                </ul>
+
+                <h4>💡 Follow-up</h4>
+                <p>What data structure supports O(1) insertion and deletion?</p>`,
+            hints: [
+                { title: 'Understanding the problem', content: 'People swipe a card at the company door.<br><code>enter</code> = coming to work (entering the company)<br><code>leave</code> = leaving work (exiting the company)<br><br>After processing all records, print the <strong>people still at the company</strong>!' },
+                { title: 'Which data structure works best?', content: 'We need to <strong>add when entering, remove when leaving</strong>.<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;"><div style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#ff6b6b;margin-bottom:4px;">List</div><div style="font-size:0.85em;">Remove: O(n) — slow name lookup</div></div><div style="background:rgba(81,207,102,0.1);border:1px solid rgba(81,207,102,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#51cf66;margin-bottom:4px;">Set</div><div style="font-size:0.85em;">Add/Remove: O(1) — fast!</div></div></div><span class="lang-py">Python: <code>set.add()</code> / <code>set.discard()</code></span><span class="lang-cpp">C++: <code>set&lt;string&gt;</code> with <code>insert()</code> / <code>erase()</code></span>' },
+                { title: 'Solving with a Set', content: 'Create an empty set, then read logs one by one:<br><br>1. <code>"Baha enter"</code> → add Baha to set<br>2. <code>"Asher enter"</code> → add Asher to set<br>3. <code>"Baha leave"</code> → remove Baha from set<br><br>Done! People remaining in the set = people at the company' },
+                { title: 'Printing in reverse alphabetical order', content: 'Print the remaining people in <strong>reverse alphabetical order (Z→A)</strong>.<br><span class="lang-py">Python: <code>sorted(company, reverse=True)</code></span><span class="lang-cpp">C++: <code>set&lt;string, greater&lt;string&gt;&gt;</code> for automatic reverse order, or iterate with <code>rbegin()</code>~<code>rend()</code></span><br><br>Example: {Asher, Cam} → reverse → Cam, Asher!' },
+                { title: 'Time complexity', content: 'Processing n records: set add/remove each O(1) → <strong>O(n)</strong><br>Sorting m remaining people: <strong>O(m log m)</strong><br><br>Total: <strong>O(n + m log m)</strong>.' }
+            ],
+            simIntro: 'Watch how entry logs are processed by adding/removing people from a set!',
+            inputDefault: 0, solve() { return 'Asber\\nArtem'; },
+            templates: {
+                python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+company = set()
+
+for _ in range(n):
+    name, action = input().split()
+    if action == 'enter':
+        company.add(name)
+    else:
+        company.discard(name)
+
+for name in sorted(company, reverse=True):
+    print(name)`,
+                cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <set>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    set<string, greater<string>> company;
+    while (n--) {
+        char name[20], action[10];
+        scanf("%s %s", name, action);
+        if (action[0] == 'e') company.insert(name);
+        else company.erase(name);
+    }
+    for (auto& s : company) printf("%s\\n", s.c_str());
+}`
+            },
+            solutions: [{
+                approach: 'Brute Force (List)',
+                description: 'Add to list / linear search removal, then sort',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(n)',
+                templates: {
+                    python: `import sys
+input = sys.stdin.readline
+
+n = int(input())
+company = []
+
+for _ in range(n):
+    name, action = input().split()
+    if action == 'enter':
+        company.append(name)
+    else:
+        company.remove(name)  # O(n) linear search
+
+company.sort(reverse=True)
+for name in company:
+    print(name)`,
+                    cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int main() {
+    int n; scanf("%d", &n);
+    vector<string> company;
+    while (n--) {
+        char name[20], action[10];
+        scanf("%s %s", name, action);
+        if (action[0] == 'e') {
+            company.push_back(name);
+        } else {
+            // O(n) linear search + delete
+            auto it = find(company.begin(), company.end(), string(name));
+            if (it != company.end()) company.erase(it);
+        }
+    }
+    sort(company.rbegin(), company.rend());
+    for (auto& s : company) printf("%s\\n", s.c_str());
+}`
+                }
+            }, {
+                approach: 'Using a Set',
+                description: 'Add on enter, remove on leave, then sort in reverse alphabetical order',
+                timeComplexity: 'O(n log n)',
+                spaceComplexity: 'O(n)',
+                get templates() { return hashTableTopic.problems[4].templates; },
+                codeSteps: {
+                    python: [
+                        { title: 'Input setup', desc: 'BOJ may have large input, so use sys.stdin.readline\nfor fast input.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },
+                        { title: 'Initialize Set', desc: 'Key: set has O(1) add/discard!\nList remove is O(n), so for frequent entries/exits, set is much faster.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)' },
+                        { title: 'Process entry logs', desc: 'enter → add with add(), leave → remove with discard().\ndiscard does not raise an error if the element is missing, making it safe.\n(remove raises KeyError if missing!)', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) add\n    else:\n        company.discard(name)  # O(1) remove (safe if missing)' },
+                        { title: 'Print in reverse alphabetical order', desc: 'Sort with sorted() and reverse=True for reverse output.\nSets have no order, so sorting before printing is required.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) add\n    else:\n        company.discard(name)  # O(1) remove (safe if missing)\n\n# set has no order → must sort before printing\nfor name in sorted(company, reverse=True):\n    print(name)' }
+                    ],
+                    cpp: [
+                        { title: 'Headers + reverse-ordered set', desc: 'C++ set is automatically sorted! Using greater<string>\nautomatically sorts in reverse alphabetical order on insertion.\n→ No need to sort separately at the end', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → auto reverse sort on insert\n    set<string, greater<string>> company;' },
+                        { title: 'Process entry logs', desc: 'insert/erase are both O(log n) — faster than O(n) with a list.\naction[0] == \'e\' is a simple way to distinguish enter/leave.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → auto reverse sort on insert\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }' },
+                        { title: 'Output Result', desc: 'set<greater> is already in reverse sorted order!\nJust print in order without additional sorting.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → auto reverse sort on insert\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }\n    // Already reverse sorted → print as-is\n    for (auto& s : company) printf("%s\\n", s.c_str());\n}' }
                     ]
                 }
             }]
@@ -2260,160 +2414,6 @@ public:
                         { title: 'Loop + update prefix sum', desc: 'Add elements one by one to compute the running total from start to current.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n; // Update prefix sum' },
                         { title: 'Key: Find previous prefix sum + record', desc: 'If sum - k appeared before, that range sums to k!\nAlso record the current prefix sum so later elements can find it.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            // If sum - k appeared before → subarray sum = k\n            if (pc.count(sum - k)) cnt += pc[sum - k];\n            pc[sum]++; // Record current prefix sum\n        }' },
                         { title: 'Return Result', desc: 'Return the total count.', code: 'class Solution {\npublic:\n    int subarraySum(vector<int>& nums, int k) {\n        unordered_map<int, int> pc;\n        pc[0] = 1;\n        int sum = 0, cnt = 0;\n        for (int n : nums) {\n            sum += n;\n            if (pc.count(sum - k)) cnt += pc[sum - k];\n            pc[sum]++;\n        }\n        return cnt;\n    }\n};' }
-                    ]
-                }
-            }]
-        },
-        {
-            id: 'boj-7785',
-            title: 'BOJ 7785 - People at Company',
-            difficulty: 'silver',
-            link: 'https://www.acmicpc.net/problem/7785',
-            descriptionHTML: `<h3>Problem</h3>
-                <p>You are given entry logs. <code>"enter"</code> means entering, <code>"leave"</code> means leaving.
-                Print the <strong>people still remaining</strong> at the company in reverse alphabetical order.</p>
-                <h4>Input</h4>
-                <p>The first line contains the number of log entries n (1 &le; n &le; 10<sup>6</sup>). Each of the next n lines contains a name and "enter" or "leave". Names consist of uppercase and lowercase letters with length between 1 and 20.</p>
-                <h4>Output</h4>
-                <p>Print all people currently at the company in reverse alphabetical order, one per line.</p>
-
-                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>4
-Baha enter
-Asber enter
-Baha leave
-Artem enter</pre></div>
-                    <div><strong>Output</strong><pre>Asber
-Artem</pre></div>
-                </div>
-                <p class="example-explain">Baha has left, so print the remaining Asber and Artem in reverse alphabetical order</p>
-                </div>
-
-                <div class="problem-example"><h4>Example 2</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>2
-Kim enter
-Kim leave</pre></div>
-                    <div><strong>Output</strong><pre>(none)</pre></div>
-                </div>
-                <p class="example-explain">Everyone has left, so no one remains</p>
-                </div>
-
-                <h4>Constraints</h4>
-                <ul>
-                    <li>1 ≤ n ≤ 10⁶</li>
-                    <li>Names consist of uppercase and lowercase letters, length 1~20</li>
-                    <li>The same name will not enter twice without leaving first</li>
-                </ul>
-
-                <h4>💡 Follow-up</h4>
-                <p>What data structure supports O(1) insertion and deletion?</p>`,
-            hints: [
-                { title: 'Understanding the problem', content: 'People swipe a card at the company door.<br><code>enter</code> = coming to work (entering the company)<br><code>leave</code> = leaving work (exiting the company)<br><br>After processing all records, print the <strong>people still at the company</strong>!' },
-                { title: 'Which data structure works best?', content: 'We need to <strong>add when entering, remove when leaving</strong>.<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;"><div style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#ff6b6b;margin-bottom:4px;">List</div><div style="font-size:0.85em;">Remove: O(n) — slow name lookup</div></div><div style="background:rgba(81,207,102,0.1);border:1px solid rgba(81,207,102,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="font-weight:700;color:#51cf66;margin-bottom:4px;">Set</div><div style="font-size:0.85em;">Add/Remove: O(1) — fast!</div></div></div><span class="lang-py">Python: <code>set.add()</code> / <code>set.discard()</code></span><span class="lang-cpp">C++: <code>set&lt;string&gt;</code> with <code>insert()</code> / <code>erase()</code></span>' },
-                { title: 'Solving with a Set', content: 'Create an empty set, then read logs one by one:<br><br>1. <code>"Baha enter"</code> → add Baha to set<br>2. <code>"Asher enter"</code> → add Asher to set<br>3. <code>"Baha leave"</code> → remove Baha from set<br><br>Done! People remaining in the set = people at the company' },
-                { title: 'Printing in reverse alphabetical order', content: 'Print the remaining people in <strong>reverse alphabetical order (Z→A)</strong>.<br><span class="lang-py">Python: <code>sorted(company, reverse=True)</code></span><span class="lang-cpp">C++: <code>set&lt;string, greater&lt;string&gt;&gt;</code> for automatic reverse order, or iterate with <code>rbegin()</code>~<code>rend()</code></span><br><br>Example: {Asher, Cam} → reverse → Cam, Asher!' },
-                { title: 'Time complexity', content: 'Processing n records: set add/remove each O(1) → <strong>O(n)</strong><br>Sorting m remaining people: <strong>O(m log m)</strong><br><br>Total: <strong>O(n + m log m)</strong>.' }
-            ],
-            simIntro: 'Watch how entry logs are processed by adding/removing people from a set!',
-            inputDefault: 0, solve() { return 'Asber\\nArtem'; },
-            templates: {
-                python: `import sys
-input = sys.stdin.readline
-
-n = int(input())
-company = set()
-
-for _ in range(n):
-    name, action = input().split()
-    if action == 'enter':
-        company.add(name)
-    else:
-        company.discard(name)
-
-for name in sorted(company, reverse=True):
-    print(name)`,
-                cpp: `#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <set>
-using namespace std;
-
-int main() {
-    int n; scanf("%d", &n);
-    set<string, greater<string>> company;
-    while (n--) {
-        char name[20], action[10];
-        scanf("%s %s", name, action);
-        if (action[0] == 'e') company.insert(name);
-        else company.erase(name);
-    }
-    for (auto& s : company) printf("%s\\n", s.c_str());
-}`
-            },
-            solutions: [{
-                approach: 'Brute Force (List)',
-                description: 'Add to list / linear search removal, then sort',
-                timeComplexity: 'O(n²)',
-                spaceComplexity: 'O(n)',
-                templates: {
-                    python: `import sys
-input = sys.stdin.readline
-
-n = int(input())
-company = []
-
-for _ in range(n):
-    name, action = input().split()
-    if action == 'enter':
-        company.append(name)
-    else:
-        company.remove(name)  # O(n) linear search
-
-company.sort(reverse=True)
-for name in company:
-    print(name)`,
-                    cpp: `#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <string>
-using namespace std;
-
-int main() {
-    int n; scanf("%d", &n);
-    vector<string> company;
-    while (n--) {
-        char name[20], action[10];
-        scanf("%s %s", name, action);
-        if (action[0] == 'e') {
-            company.push_back(name);
-        } else {
-            // O(n) linear search + delete
-            auto it = find(company.begin(), company.end(), string(name));
-            if (it != company.end()) company.erase(it);
-        }
-    }
-    sort(company.rbegin(), company.rend());
-    for (auto& s : company) printf("%s\\n", s.c_str());
-}`
-                }
-            }, {
-                approach: 'Using a Set',
-                description: 'Add on enter, remove on leave, then sort in reverse alphabetical order',
-                timeComplexity: 'O(n log n)',
-                spaceComplexity: 'O(n)',
-                get templates() { return hashTableTopic.problems[4].templates; },
-                codeSteps: {
-                    python: [
-                        { title: 'Input setup', desc: 'BOJ may have large input, so use sys.stdin.readline\nfor fast input.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())' },
-                        { title: 'Initialize Set', desc: 'Key: set has O(1) add/discard!\nList remove is O(n), so for frequent entries/exits, set is much faster.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)' },
-                        { title: 'Process entry logs', desc: 'enter → add with add(), leave → remove with discard().\ndiscard does not raise an error if the element is missing, making it safe.\n(remove raises KeyError if missing!)', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) add\n    else:\n        company.discard(name)  # O(1) remove (safe if missing)' },
-                        { title: 'Print in reverse alphabetical order', desc: 'Sort with sorted() and reverse=True for reverse output.\nSets have no order, so sorting before printing is required.', code: 'import sys\ninput = sys.stdin.readline\n\nn = int(input())\ncompany = set()  # set → add/discard O(1)\n\nfor _ in range(n):\n    name, action = input().split()\n    if action == "enter":\n        company.add(name)      # O(1) add\n    else:\n        company.discard(name)  # O(1) remove (safe if missing)\n\n# set has no order → must sort before printing\nfor name in sorted(company, reverse=True):\n    print(name)' }
-                    ],
-                    cpp: [
-                        { title: 'Headers + reverse-ordered set', desc: 'C++ set is automatically sorted! Using greater<string>\nautomatically sorts in reverse alphabetical order on insertion.\n→ No need to sort separately at the end', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → auto reverse sort on insert\n    set<string, greater<string>> company;' },
-                        { title: 'Process entry logs', desc: 'insert/erase are both O(log n) — faster than O(n) with a list.\naction[0] == \'e\' is a simple way to distinguish enter/leave.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → auto reverse sort on insert\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }' },
-                        { title: 'Output Result', desc: 'set<greater> is already in reverse sorted order!\nJust print in order without additional sorting.', code: '#include <iostream>\n#include <string>\n#include <set>\nusing namespace std;\n\nint main() {\n    int n; scanf("%d", &n);\n    // greater → auto reverse sort on insert\n    set<string, greater<string>> company;\n    while (n--) {\n        char name[20], action[10];\n        scanf("%s %s", name, action);\n        if (action[0] == \'e\') company.insert(name);  // O(log n)\n        else company.erase(name);                     // O(log n)\n    }\n    // Already reverse sorted → print as-is\n    for (auto& s : company) printf("%s\\n", s.c_str());\n}' }
                     ]
                 }
             }]

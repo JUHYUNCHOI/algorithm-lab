@@ -4,7 +4,7 @@ var greedyTopic = {
     title: '그리디',
     icon: '🏆',
     category: '문제 해결 기법 (Silver~Gold)',
-    order: 11,
+    order: 13,
     description: '지금 당장 가장 좋은 선택을 반복하는 기법',
     relatedNote: '그리디는 정렬, 우선순위 큐와 함께 사용되는 경우가 많으며, 최적해를 보장하는지 증명하는 것이 핵심입니다.',
 

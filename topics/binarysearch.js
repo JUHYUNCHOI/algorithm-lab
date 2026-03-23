@@ -4,7 +4,7 @@ const binarySearchTopic = {
     title: '이분 탐색',
     icon: '🔍',
     category: '탐색 (Silver)',
-    order: 6,
+    order: 8,
     description: '정렬된 데이터에서 원하는 값을 빠르게 찾는 기법',
     relatedNote: '이분 탐색은 최적화 문제에서 결정 문제로 변환하는 매개변수 탐색(Parametric Search) 기법으로 자주 확장됩니다.',
 

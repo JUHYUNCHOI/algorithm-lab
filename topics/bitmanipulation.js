@@ -5,8 +5,8 @@ var bitManipulationTopic = {
     id: 'bitmanipulation',
     title: '비트 조작',
     icon: '💻',
-    category: '고급 자료구조 (Gold~Platinum)',
-    order: 19,
+    category: '심화 (Gold~Platinum)',
+    order: 20,
     description: '비트 연산과 비트 마스크를 활용한 효율적인 문제 해결 기법',
     relatedNote: '비트 연산은 비트마스크 DP, 부분집합 열거, XOR 트릭 등 다양한 최적화 기법의 기반이 됩니다.',
 

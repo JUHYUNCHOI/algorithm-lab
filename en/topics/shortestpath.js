@@ -6,7 +6,7 @@ var shortestPathTopic = {
     title: 'Shortest Path',
     icon: '🛤️',
     category: 'Advanced (Gold~Platinum)',
-    order: 15,
+    order: 19,
     description: 'Algorithms for finding minimum-cost paths in weighted graphs',
     relatedNote: 'There are also other shortest path algorithms such as Bellman-Ford (negative edges), SPFA, A* search, and more.',
 
@@ -2193,13 +2193,12 @@ var shortestPathTopic = {
     // ===== Problem Stages =====
     stages: [
         { num: 1, title: 'BFS Shortest Distance', desc: 'Find shortest distances in unweighted graphs using BFS (Silver II)', problemIds: ['boj-18352'] },
-        { num: 2, title: 'Basic Shortest Path', desc: 'Practice basic implementations of Dijkstra and Floyd-Warshall (Gold IV~V)', problemIds: ['boj-1753', 'boj-11404'] },
-        { num: 3, title: 'Shortest Path Applications', desc: 'Apply Dijkstra to various scenarios (Gold V ~ Medium)', problemIds: ['boj-1916', 'lc-743'] }
+        { num: 2, title: 'Dijkstra', desc: 'Dijkstra basics and applications (Gold IV~V ~ Medium)', problemIds: ['boj-1753', 'boj-1916', 'lc-743'] },
+        { num: 3, title: 'Floyd-Warshall', desc: 'All-pairs shortest path (Gold IV)', problemIds: ['boj-11404'] }
     ],
 
     // ===== Problem List =====
     problems: [
-        // ===== Stage 1: BFS Shortest Distance =====
         {
             id: 'boj-18352',
             title: 'BOJ 18352 - Finding Cities at Specific Distance',
@@ -2264,7 +2263,7 @@ var shortestPathTopic = {
             }]
         },
 
-        // ===== Stage 2: Basic Shortest Path =====
+        // ===== Stage 2: Basic Shortest Path =====,
         {
             id: 'boj-1753',
             title: 'BOJ 1753 - Shortest Path',
@@ -2320,64 +2319,6 @@ var shortestPathTopic = {
                 get templates() { return shortestPathTopic.problems[1].templates; }
             }]
         },
-        {
-            id: 'boj-11404',
-            title: 'BOJ 11404 - Floyd',
-            difficulty: 'gold',
-            link: 'https://www.acmicpc.net/problem/11404',
-            simIntro: 'Observe how the distance matrix updates as intermediate vertex k is added one by one.',
-            descriptionHTML: `
-                <h3>Problem</h3>
-                <p>There are n (2 ≤ n ≤ 100) cities. There are m (1 ≤ m ≤ 100,000) buses, each departing from one city and arriving at another. Each bus has a cost for a single use.</p>
-                <p>Write a program that finds the minimum cost of traveling from city A to city B for all pairs of cities (A, B).</p>
-                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
-                    <div><strong>Input</strong><pre>5\n14\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n3 5 10\n3 1 8\n1 4 2\n5 1 7\n3 4 2\n5 2 4</pre></div>
-                    <div><strong>Output</strong><pre>0 2 3 1 4\n12 0 15 2 5\n8 5 0 1 1\n10 7 13 0 3\n7 4 10 6 0</pre></div>
-                </div></div>
-                <h4>Input</h4>
-                <p>The first line contains the number of cities n (2 ≤ n ≤ 100). The second line contains the number of buses m (1 ≤ m ≤ 100,000). From the third line to the (m+2)-th line, each line contains a bus's departure city, arrival city, and cost. The bus cost is a non-negative integer less than 100,000.</p>
-                <h4>Output</h4>
-                <p>Output n lines. The j-th number on the i-th line is the minimum cost of traveling from city i to city j. If there is no path from i to j, output 0.</p>
-                <h4>Constraints</h4>
-                <ul>
-                    <li>2 ≤ n ≤ 100</li>
-                    <li>1 ≤ m ≤ 100,000</li>
-                    <li>Cost ≤ 100,000</li>
-                    <li>Output 0 if there is no path</li>
-                </ul>
-            `,
-            hints: [
-                { title: 'First intuition', content: 'We need the shortest path for all city pairs (A, B).<br>The first idea is to run <strong>Dijkstra n times</strong>, once starting from each city.<br>Dijkstra from city 1, Dijkstra from city 2, ... Dijkstra from city n. This gives shortest distances for all pairs!' },
-                { title: 'But there\'s a problem with this', content: 'Running Dijkstra n times gives a time complexity of O(n * (n+m) log n).<br>Since n ≤ 100, it would actually work, but the implementation is complex.<br>With n this small, is there a <strong>simpler method</strong>?<br>O(n\u00B3) = 100\u00B3 = 1,000,000 is fast enough!' },
-                { title: 'What if we try this?', content: 'The <strong>Floyd-Warshall algorithm</strong> finds all-pairs shortest paths with a single triple nested loop!<br>Idea: "When going from i to j, would it be shorter <strong>via k</strong>?" Check for every k.<br><br><div style="margin:10px 0;padding:12px;background:var(--bg2);border-radius:8px;font-size:0.88em;text-align:center;"><div style="font-weight:600;margin-bottom:8px;">Is it shorter to go through k?</div><div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;"><span style="padding:6px 12px;border:2px solid var(--accent);border-radius:50%;font-weight:700;">i</span><span style="color:var(--text2);">——<span style="font-size:0.8em;">dp[i][k]</span>——→</span><span style="padding:6px 12px;border:2px solid var(--yellow);background:var(--warm-bg);border-radius:50%;font-weight:700;">k</span><span style="color:var(--text2);">——<span style="font-size:0.8em;">dp[k][j]</span>——→</span><span style="padding:6px 12px;border:2px solid var(--accent);border-radius:50%;font-weight:700;">j</span></div><div style="margin-top:8px;"><code style="background:var(--bg);padding:4px 10px;border-radius:4px;">dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])</code></div><div style="margin-top:6px;color:var(--text2);font-size:0.85em;">Try k=1,2,...,n as intermediate nodes to find all-pairs shortest paths!</div></div>Two important notes:<br>1. <strong>k (intermediate) must be the outermost loop</strong>! The k, i, j order is essential.<br>2. If there are <strong>multiple buses for the same route, store only the minimum</strong>!' },
-                { title: 'In Python/C++!', content: '<span class="lang-py">In Python, initialize a 2D list with <code>[[INF] * (n+1) for _ in range(n+1)]</code>.<br>After the triple loop, cells still at INF mean no path exists, so <strong>replace them with 0</strong> for output.<br>With heavy I/O, using <code>sys.stdin.readline</code> is recommended!</span><span class="lang-cpp">In C++, initialize with <code>vector&lt;vector&lt;int&gt;&gt; dp(n+1, vector&lt;int&gt;(n+1, INF))</code>.<br>After the triple loop, replace INF with 0 for output.<br>Using <code>scanf/printf</code> speeds up I/O!</span>' }
-            ],
-            templates: {
-                python: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0\n\nfor _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)\n\nfor k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])\n\nfor i in range(1, n + 1):\n    print(\' \'.join(str(x) if x != INF else \'0\' for x in dp[i][1:n+1]))',
-                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;\n\n    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }\n\n    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            printf("%d ", dp[i][j] == INF ? 0 : dp[i][j]);\n        }\n        printf("\\n");\n    }\n    return 0;\n}'
-            },
-            solutions: [{
-                approach: 'Floyd-Warshall',
-                description: 'Find all-pairs shortest distances in O(N\u00B3) with a triple nested loop.',
-                timeComplexity: 'O(N\u00B3)',
-                spaceComplexity: 'O(N\u00B2)',
-                codeSteps: {
-                    python: [
-                        { title: 'Input & Initialization', desc: 'Fill the 2D array with INF, set dp[i][i] to 0.\nPrepare the distance matrix to hold all-pairs shortest distances.', code: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0' },
-                        { title: 'Edge Input', desc: 'Multiple edges can exist for the same source-destination pair,\nso store only the minimum using min.', code: 'for _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)' },
-                        { title: 'Run Floyd-Warshall', desc: 'Add intermediate vertex k one at a time, updating all-pairs distances.\nThe k, i, j order is essential (k must be the outermost loop).', code: 'for k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])' }
-                    ],
-                    cpp: [
-                        { title: 'Input & Initialization', desc: 'Initialize N*N distance matrix with INF using vector<vector<int>>.\nDistance from a vertex to itself is 0.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n+1, vector<int>(n+1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;' },
-                        { title: 'Edge Input', desc: 'Multiple edges for same route: store only the minimum with min.', code: '    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }' },
-                        { title: 'Run Floyd-Warshall', desc: 'k (intermediate) then i (source) then j (destination) order is mandatory!', code: '    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);' }
-                    ]
-                },
-                get templates() { return shortestPathTopic.problems[2].templates; }
-            }]
-        },
-
-        // ===== Stage 3: Shortest Path Applications =====
         {
             id: 'boj-1916',
             title: 'BOJ 1916 - Find Minimum Cost',
@@ -2493,7 +2434,65 @@ var shortestPathTopic = {
                 },
                 get templates() { return shortestPathTopic.problems[4].templates; }
             }]
-        }
+        },
+        {
+            id: 'boj-11404',
+            title: 'BOJ 11404 - Floyd',
+            difficulty: 'gold',
+            link: 'https://www.acmicpc.net/problem/11404',
+            simIntro: 'Observe how the distance matrix updates as intermediate vertex k is added one by one.',
+            descriptionHTML: `
+                <h3>Problem</h3>
+                <p>There are n (2 ≤ n ≤ 100) cities. There are m (1 ≤ m ≤ 100,000) buses, each departing from one city and arriving at another. Each bus has a cost for a single use.</p>
+                <p>Write a program that finds the minimum cost of traveling from city A to city B for all pairs of cities (A, B).</p>
+                <div class="problem-example"><h4>Example 1</h4><div class="example-grid">
+                    <div><strong>Input</strong><pre>5\n14\n1 2 2\n1 3 3\n1 4 1\n1 5 10\n2 4 2\n3 4 1\n3 5 1\n4 5 3\n3 5 10\n3 1 8\n1 4 2\n5 1 7\n3 4 2\n5 2 4</pre></div>
+                    <div><strong>Output</strong><pre>0 2 3 1 4\n12 0 15 2 5\n8 5 0 1 1\n10 7 13 0 3\n7 4 10 6 0</pre></div>
+                </div></div>
+                <h4>Input</h4>
+                <p>The first line contains the number of cities n (2 ≤ n ≤ 100). The second line contains the number of buses m (1 ≤ m ≤ 100,000). From the third line to the (m+2)-th line, each line contains a bus's departure city, arrival city, and cost. The bus cost is a non-negative integer less than 100,000.</p>
+                <h4>Output</h4>
+                <p>Output n lines. The j-th number on the i-th line is the minimum cost of traveling from city i to city j. If there is no path from i to j, output 0.</p>
+                <h4>Constraints</h4>
+                <ul>
+                    <li>2 ≤ n ≤ 100</li>
+                    <li>1 ≤ m ≤ 100,000</li>
+                    <li>Cost ≤ 100,000</li>
+                    <li>Output 0 if there is no path</li>
+                </ul>
+            `,
+            hints: [
+                { title: 'First intuition', content: 'We need the shortest path for all city pairs (A, B).<br>The first idea is to run <strong>Dijkstra n times</strong>, once starting from each city.<br>Dijkstra from city 1, Dijkstra from city 2, ... Dijkstra from city n. This gives shortest distances for all pairs!' },
+                { title: 'But there\'s a problem with this', content: 'Running Dijkstra n times gives a time complexity of O(n * (n+m) log n).<br>Since n ≤ 100, it would actually work, but the implementation is complex.<br>With n this small, is there a <strong>simpler method</strong>?<br>O(n\u00B3) = 100\u00B3 = 1,000,000 is fast enough!' },
+                { title: 'What if we try this?', content: 'The <strong>Floyd-Warshall algorithm</strong> finds all-pairs shortest paths with a single triple nested loop!<br>Idea: "When going from i to j, would it be shorter <strong>via k</strong>?" Check for every k.<br><br><div style="margin:10px 0;padding:12px;background:var(--bg2);border-radius:8px;font-size:0.88em;text-align:center;"><div style="font-weight:600;margin-bottom:8px;">Is it shorter to go through k?</div><div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;"><span style="padding:6px 12px;border:2px solid var(--accent);border-radius:50%;font-weight:700;">i</span><span style="color:var(--text2);">——<span style="font-size:0.8em;">dp[i][k]</span>——→</span><span style="padding:6px 12px;border:2px solid var(--yellow);background:var(--warm-bg);border-radius:50%;font-weight:700;">k</span><span style="color:var(--text2);">——<span style="font-size:0.8em;">dp[k][j]</span>——→</span><span style="padding:6px 12px;border:2px solid var(--accent);border-radius:50%;font-weight:700;">j</span></div><div style="margin-top:8px;"><code style="background:var(--bg);padding:4px 10px;border-radius:4px;">dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])</code></div><div style="margin-top:6px;color:var(--text2);font-size:0.85em;">Try k=1,2,...,n as intermediate nodes to find all-pairs shortest paths!</div></div>Two important notes:<br>1. <strong>k (intermediate) must be the outermost loop</strong>! The k, i, j order is essential.<br>2. If there are <strong>multiple buses for the same route, store only the minimum</strong>!' },
+                { title: 'In Python/C++!', content: '<span class="lang-py">In Python, initialize a 2D list with <code>[[INF] * (n+1) for _ in range(n+1)]</code>.<br>After the triple loop, cells still at INF mean no path exists, so <strong>replace them with 0</strong> for output.<br>With heavy I/O, using <code>sys.stdin.readline</code> is recommended!</span><span class="lang-cpp">In C++, initialize with <code>vector&lt;vector&lt;int&gt;&gt; dp(n+1, vector&lt;int&gt;(n+1, INF))</code>.<br>After the triple loop, replace INF with 0 for output.<br>Using <code>scanf/printf</code> speeds up I/O!</span>' }
+            ],
+            templates: {
+                python: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0\n\nfor _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)\n\nfor k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])\n\nfor i in range(1, n + 1):\n    print(\' \'.join(str(x) if x != INF else \'0\' for x in dp[i][1:n+1]))',
+                cpp: '#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;\n\n    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }\n\n    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= n; j++) {\n            printf("%d ", dp[i][j] == INF ? 0 : dp[i][j]);\n        }\n        printf("\\n");\n    }\n    return 0;\n}'
+            },
+            solutions: [{
+                approach: 'Floyd-Warshall',
+                description: 'Find all-pairs shortest distances in O(N\u00B3) with a triple nested loop.',
+                timeComplexity: 'O(N\u00B3)',
+                spaceComplexity: 'O(N\u00B2)',
+                codeSteps: {
+                    python: [
+                        { title: 'Input & Initialization', desc: 'Fill the 2D array with INF, set dp[i][i] to 0.\nPrepare the distance matrix to hold all-pairs shortest distances.', code: 'import sys\ninput = sys.stdin.readline\nINF = float(\'inf\')\n\nn = int(input())\nm = int(input())\ndp = [[INF] * (n + 1) for _ in range(n + 1)]\nfor i in range(1, n + 1):\n    dp[i][i] = 0' },
+                        { title: 'Edge Input', desc: 'Multiple edges can exist for the same source-destination pair,\nso store only the minimum using min.', code: 'for _ in range(m):\n    a, b, c = map(int, input().split())\n    dp[a][b] = min(dp[a][b], c)' },
+                        { title: 'Run Floyd-Warshall', desc: 'Add intermediate vertex k one at a time, updating all-pairs distances.\nThe k, i, j order is essential (k must be the outermost loop).', code: 'for k in range(1, n + 1):\n    for i in range(1, n + 1):\n        for j in range(1, n + 1):\n            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j])' }
+                    ],
+                    cpp: [
+                        { title: 'Input & Initialization', desc: 'Initialize N*N distance matrix with INF using vector<vector<int>>.\nDistance from a vertex to itself is 0.', code: '#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nconst int INF = 1e9;\n\nint main() {\n    int n, m;\n    scanf("%d %d", &n, &m);\n    vector<vector<int>> dp(n+1, vector<int>(n+1, INF));\n    for (int i = 1; i <= n; i++) dp[i][i] = 0;' },
+                        { title: 'Edge Input', desc: 'Multiple edges for same route: store only the minimum with min.', code: '    for (int i = 0; i < m; i++) {\n        int a, b, c;\n        scanf("%d %d %d", &a, &b, &c);\n        dp[a][b] = min(dp[a][b], c);\n    }' },
+                        { title: 'Run Floyd-Warshall', desc: 'k (intermediate) then i (source) then j (destination) order is mandatory!', code: '    for (int k = 1; k <= n; k++)\n        for (int i = 1; i <= n; i++)\n            for (int j = 1; j <= n; j++)\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);' }
+                    ]
+                },
+                get templates() { return shortestPathTopic.problems[2].templates; }
+            }]
+        },
+
+        // ===== Stage 3: Shortest Path Applications =====
     ]
 };
 
