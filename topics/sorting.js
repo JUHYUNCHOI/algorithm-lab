@@ -1395,7 +1395,7 @@ sort(words.begin(), words.end(),
                     mergeCollect(node.right);
                     // 이 노드에서 합치기
                     var a = node.left.merged, b = node.right.merged;
-                    mergeSteps.push({ type: 'mergeStart', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: null, desc: '합치기: [' + a.join(',') + '] 와 [' + b.join(',') + '] 을 비교하며 합칩니다.' });
+                    mergeSteps.push({ type: 'mergeStart', visibleDepth: levels.length - 1, activeId: node.id, focusIds: [node.id, node.left.id, node.right.id], mergeDetail: null, desc: '합치기: [' + a.join(',') + '] 와 [' + b.join(',') + '] 을 비교하며 합칩니다.' });
                     // 비교 스텝
                     var result = [], ai = 0, bi = 0;
                     while (ai < a.length && bi < b.length) {
@@ -1403,14 +1403,14 @@ sort(words.begin(), words.end(),
                         var pickDesc = pick === 'left'
                             ? a[ai] + ' \u2264 ' + b[bi] + ' \u2192 \uc67c\ucabd(' + a[ai] + ')\uc744 \uacb0\uacfc\uc5d0 \ucd94\uac00'
                             : b[bi] + ' < ' + a[ai] + ' \u2192 \uc624\ub978\ucabd(' + b[bi] + ')\uc744 \uacb0\uacfc\uc5d0 \ucd94\uac00';
-                        mergeSteps.push({ type: 'mergeCompare', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: { left: a.slice(), right: b.slice(), li: ai, ri: bi, result: result.slice(), pick: pick }, desc: '비교: ' + pickDesc });
+                        mergeSteps.push({ type: 'mergeCompare', visibleDepth: levels.length - 1, activeId: node.id, focusIds: [node.id, node.left.id, node.right.id], mergeDetail: { left: a.slice(), right: b.slice(), li: ai, ri: bi, result: result.slice(), pick: pick }, desc: '비교: ' + pickDesc });
                         if (pick === 'left') { result.push(a[ai]); ai++; }
                         else { result.push(b[bi]); bi++; }
                     }
                     while (ai < a.length) { result.push(a[ai]); ai++; }
                     while (bi < b.length) { result.push(b[bi]); bi++; }
                     node.merged = result;
-                    mergeSteps.push({ type: 'mergeDone', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: null, desc: '합치기 완료! \u2192 [' + result.join(', ') + ']' });
+                    mergeSteps.push({ type: 'mergeDone', visibleDepth: levels.length - 1, activeId: node.id, focusIds: [node.id, node.left.id, node.right.id], mergeDetail: null, desc: '합치기 완료! \u2192 [' + result.join(', ') + ']' });
                 }
                 mergeCollect(mergeTree);
                 mergeSteps.push({ type: 'done', visibleDepth: 0, activeId: mergeTree.id, mergeDetail: null, desc: '정렬 완료! [' + mergeTree.merged.join(', ') + '] \u2014 O(n log n) 시간, O(n) 추가 메모리' });
@@ -1418,18 +1418,21 @@ sort(words.begin(), words.end(),
 
             function renderMergeTreeLevel(nodes, step) {
                 var html = '';
+                var hasFocus = step.focusIds && step.focusIds.length > 0;
                 for (var i = 0; i < nodes.length; i++) {
                     var n = nodes[i];
                     var isMerged = n.merged !== null;
                     var isActive = step.activeId === n.id;
                     var isDone = step.type === 'done';
+                    var isFocused = !hasFocus || step.focusIds.indexOf(n.id) >= 0;
+                    var dimStyle = (!isFocused && !isDone) ? 'opacity:0.3;' : '';
                     var vals = isMerged ? n.merged : n.arr;
                     var borderColor = 'var(--bg3)';
                     var shadow = '';
                     if (isDone) { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
                     else if (isActive && step.type === 'mergeDone') { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
                     else if (isActive && (step.type === 'mergeStart' || step.type === 'mergeCompare')) { borderColor = 'var(--yellow)'; shadow = 'box-shadow:0 0 8px var(--yellow);'; }
-                    html += '<div style="display:flex;gap:3px;padding:4px 8px;border-radius:8px;border:2px solid ' + borderColor + ';background:var(--bg2);' + shadow + '" data-merge-node="' + n.id + '">';
+                    html += '<div style="display:flex;gap:3px;padding:4px 8px;border-radius:8px;border:2px solid ' + borderColor + ';background:var(--bg2);' + shadow + dimStyle + 'transition:opacity 0.3s;" data-merge-node="' + n.id + '">';
                     for (var j = 0; j < vals.length; j++) {
                         var ecls = 'str-char-box';
                         var estyle = 'min-width:28px;padding:3px 6px;font-size:0.82rem;';

@@ -1376,21 +1376,21 @@ sort(words.begin(), words.end(),
                     mergeCollect(node.left);
                     mergeCollect(node.right);
                     var a = node.left.merged, b = node.right.merged;
-                    mergeSteps.push({ type: 'mergeStart', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: null, desc: 'Merge: comparing [' + a.join(',') + '] and [' + b.join(',') + ']' });
+                    mergeSteps.push({ type: 'mergeStart', visibleDepth: levels.length - 1, activeId: node.id, focusIds: [node.id, node.left.id, node.right.id], mergeDetail: null, desc: 'Merge: comparing [' + a.join(',') + '] and [' + b.join(',') + ']' });
                     var result = [], ai = 0, bi = 0;
                     while (ai < a.length && bi < b.length) {
                         var pick = a[ai] <= b[bi] ? 'left' : 'right';
                         var pickDesc = pick === 'left'
                             ? a[ai] + ' \u2264 ' + b[bi] + ' \u2192 pick left(' + a[ai] + ')'
                             : b[bi] + ' < ' + a[ai] + ' \u2192 pick right(' + b[bi] + ')';
-                        mergeSteps.push({ type: 'mergeCompare', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: { left: a.slice(), right: b.slice(), li: ai, ri: bi, result: result.slice(), pick: pick }, desc: 'Compare: ' + pickDesc });
+                        mergeSteps.push({ type: 'mergeCompare', visibleDepth: levels.length - 1, activeId: node.id, focusIds: [node.id, node.left.id, node.right.id], mergeDetail: { left: a.slice(), right: b.slice(), li: ai, ri: bi, result: result.slice(), pick: pick }, desc: 'Compare: ' + pickDesc });
                         if (pick === 'left') { result.push(a[ai]); ai++; }
                         else { result.push(b[bi]); bi++; }
                     }
                     while (ai < a.length) { result.push(a[ai]); ai++; }
                     while (bi < b.length) { result.push(b[bi]); bi++; }
                     node.merged = result;
-                    mergeSteps.push({ type: 'mergeDone', visibleDepth: levels.length - 1, activeId: node.id, mergeDetail: null, desc: 'Merge complete! \u2192 [' + result.join(', ') + ']' });
+                    mergeSteps.push({ type: 'mergeDone', visibleDepth: levels.length - 1, activeId: node.id, focusIds: [node.id, node.left.id, node.right.id], mergeDetail: null, desc: 'Merge complete! \u2192 [' + result.join(', ') + ']' });
                 }
                 mergeCollect(mergeTree);
                 mergeSteps.push({ type: 'done', visibleDepth: 0, activeId: mergeTree.id, mergeDetail: null, desc: 'Sorted! [' + mergeTree.merged.join(', ') + '] \u2014 O(n log n) time, O(n) extra memory' });
@@ -1398,18 +1398,21 @@ sort(words.begin(), words.end(),
 
             function renderMergeTreeLevel(nodes, step) {
                 var html = '';
+                var hasFocus = step.focusIds && step.focusIds.length > 0;
                 for (var i = 0; i < nodes.length; i++) {
                     var n = nodes[i];
                     var isMerged = n.merged !== null;
                     var isActive = step.activeId === n.id;
                     var isDone = step.type === 'done';
+                    var isFocused = !hasFocus || step.focusIds.indexOf(n.id) >= 0;
+                    var dimStyle = (!isFocused && !isDone) ? 'opacity:0.3;' : '';
                     var vals = isMerged ? n.merged : n.arr;
                     var borderColor = 'var(--bg3)';
                     var shadow = '';
                     if (isDone) { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
                     else if (isActive && step.type === 'mergeDone') { borderColor = 'var(--green)'; shadow = 'box-shadow:0 0 10px var(--green);'; }
                     else if (isActive && (step.type === 'mergeStart' || step.type === 'mergeCompare')) { borderColor = 'var(--yellow)'; shadow = 'box-shadow:0 0 8px var(--yellow);'; }
-                    html += '<div style="display:flex;gap:3px;padding:4px 8px;border-radius:8px;border:2px solid ' + borderColor + ';background:var(--bg2);' + shadow + '" data-merge-node="' + n.id + '">';
+                    html += '<div style="display:flex;gap:3px;padding:4px 8px;border-radius:8px;border:2px solid ' + borderColor + ';background:var(--bg2);' + shadow + dimStyle + 'transition:opacity 0.3s;" data-merge-node="' + n.id + '">';
                     for (var j = 0; j < vals.length; j++) {
                         var ecls = 'str-char-box';
                         var estyle = 'min-width:28px;padding:3px 6px;font-size:0.82rem;';
