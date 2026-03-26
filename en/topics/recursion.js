@@ -1504,7 +1504,7 @@ const recursionTopic = {
                 pegs[1].push(i);
                 const disk = document.createElement('div');
                 disk.className = 'hanoi-disk';
-                disk.style.width = (30 + i * 25) + 'px';
+                disk.style.width = (30 + i * 18) + 'px';
                 disk.style.background = colors[(i - 1) % colors.length];
                 disk.dataset.size = i;
                 disk.textContent = i;
@@ -2749,7 +2749,7 @@ const recursionTopic = {
             for (var i = n; i >= 1; i--) {
                 var disk = document.createElement('div');
                 disk.className = 'hanoi-disk';
-                disk.style.width = (30 + i * 25) + 'px';
+                disk.style.width = (30 + i * 18) + 'px';
                 disk.style.background = colors[(i - 1) % colors.length];
                 disk.dataset.size = i;
                 disk.textContent = i;
