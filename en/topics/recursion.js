@@ -82,9 +82,7 @@ const recursionTopic = {
                     </div>
 
                     <div class="matryoshka-text">
-                        Recursion works the same way. A function calls itself, handing off a slightly smaller version of the problem each time.
-                        Eventually it reaches the tiniest version -- the <strong>base case</strong> -- where the answer is obvious, and it stops calling itself.
-                        Then all the answers bubble back up, just like closing the dolls back together from smallest to biggest!
+                        Recursion works the same way. A function <strong>calls itself</strong>, making the problem smaller each time, until it hits the <strong>base case</strong> and stops.
                     </div>
                 </div>
 
@@ -104,55 +102,22 @@ const recursionTopic = {
                         when <code>factorial(1) = 1</code>, it stops calling itself.
                     </div>
                 </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">Try It Now</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">Factorial — use the recursion you just learned!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-27433');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">Solve →</button>
+                </div>
             </div>
 
             <!-- ② Two Essential Elements of Recursion -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> Two Essential Elements of Recursion</div>
-                <div class="analogy-box">
-                    Every recursion needs exactly two ingredients. Forget one, and things go wrong! Think of it like a countdown: you need to know <em>when to stop counting</em> and <em>how to count down one step at a time</em>.
-                </div>
-                <div class="concept-grid">
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <rect x="25" y="25" width="30" height="30" rx="6" fill="none" stroke="var(--red)" stroke-width="3"/>
-                                <line x1="35" y1="35" x2="45" y2="45" stroke="var(--red)" stroke-width="3"/>
-                                <line x1="45" y1="35" x2="35" y2="45" stroke="var(--red)" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <h3>🛑 Base Case</h3>
-                        <p>This is the "stop" sign. Without it, the function keeps calling itself forever -- like a hallway of mirrors with no end!</p>
-                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n &lt;= 1:      # ← Stop here!
-        return 1</code></pre></div></span>
-                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
-    if (n &lt;= 1)      // ← Stop here!
-        return 1;
-}</code></pre></div></span>
-                    </div>
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <path d="M40 15 A25 25 0 1 1 39 15" fill="none" stroke="var(--accent)" stroke-width="3"/>
-                                <polygon points="35,12 40,20 45,12" fill="var(--accent)"/>
-                            </svg>
-                        </div>
-                        <h3>🔄 Calling Itself</h3>
-                        <p>Each time the function calls itself, it shrinks the problem a little. Like opening the next smaller doll -- you're always making progress toward the base case!</p>
-                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n &lt;= 1:
-        return 1
-    return n * factorial(n - 1)  # ← Recursion!</code></pre></div></span>
-                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
-    if (n &lt;= 1)
-        return 1;
-    return n * factorial(n - 1);  // ← Recursion!
-}</code></pre></div></span>
-                    </div>
-                </div>
 
-                <!-- Demo 2: Base Case Comparison -->
+                <!-- Demo 2: Base Case Comparison (demo first!) -->
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — With Base Case vs Without</div>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
@@ -178,6 +143,23 @@ const recursionTopic = {
                     <div class="concept-demo-msg" id="rec-demo-basecase-msg">👆 Click "Run" to compare factorial(5) with and without a base case!</div>
                 </div>
 
+                <p style="margin:1.2rem 0 0.8rem;line-height:1.75;">See that? Without a base case it runs forever. Every recursion needs two things: a <strong>🛑 Base Case</strong> (when to stop) and a <strong>🔄 Recursive Call</strong> (calling itself with a smaller problem).</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>🛑 Base Case</h3>
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">if n &lt;= 1:      # ← Stop here!
+    return 1</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">if (n &lt;= 1)      // ← Stop here!
+    return 1;</code></pre></div></span>
+                    </div>
+                    <div class="concept-card">
+                        <h3>🔄 Calling Itself</h3>
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">return n * factorial(n - 1)  # ← Recursion!</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">return n * factorial(n - 1);  // ← Recursion!</code></pre></div></span>
+                    </div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -191,14 +173,22 @@ const recursionTopic = {
                         That's why a base case is <strong>absolutely required</strong>.
                     </div>
                 </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">Try It Now</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">Fibonacci — recursion with two base cases!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-10870');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">Solve →</button>
+                </div>
             </div>
 
             <!-- ③ How Recursion Works: The Call Stack -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">3</span> How Does Recursion Work?</div>
-                <p style="margin-bottom: 1rem;">Each time a function calls itself, it <strong>stacks up like plates</strong>. When the base case is reached, it returns answers one by one from the top.</p>
 
-                <!-- Demo 3: Call Stack Visualization -->
+                <!-- Demo 3: Call Stack Visualization (demo first!) -->
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 Try It — Building and Unwinding the Call Stack</div>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
@@ -222,11 +212,22 @@ const recursionTopic = {
                     <div class="concept-demo-msg" id="rec-demo-cs-msg">👆 Click "Next Step" to watch the call stack build and unwind for factorial(4)!</div>
                 </div>
 
+                <p style="margin:1.2rem 0 0.8rem;line-height:1.75;">Each recursive call <strong>stacks up like plates</strong>. When the base case is reached, answers come back <strong>from the top down</strong>.</p>
+
                 <div class="key-difference-box">
                     <div>📥 <strong>Calling</strong>: Digs from the big problem into smaller ones (plates stack up)</div>
                     <div>📤 <strong>Returning</strong>: Returns answers starting from the base case going back up (plates are removed)</div>
                     <div>💡 What if too many stack up? The computer can't handle it! (<span class="lang-py">Python allows up to 1000 by default — you can increase it with <code>sys.setrecursionlimit()</code></span><span class="lang-cpp">C++ can handle tens of thousands depending on stack size, but it will crash if it overflows!</span>)</div>
                     <div style="margin-top:8px;"><span class="lang-py"><a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python Docs: sys.setrecursionlimit() ↗</a></span></div>
+                </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">Try It Now</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">Recursion Expert — count how many times the call stack builds up!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-25501');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">Solve →</button>
                 </div>
             </div>
 
@@ -368,6 +369,15 @@ const recursionTopic = {
                         <strong>3. Getting smaller:</strong> n → n-1, n-2 (decreases each time)<br><br>
                         Remember this pattern! You'll use it again when you learn DP.
                     </div>
+                </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">Try It Now</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">Merge Sort — split in half recursively to sort!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-24060');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">Solve →</button>
                 </div>
             </div>
         `;

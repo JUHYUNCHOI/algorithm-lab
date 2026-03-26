@@ -489,6 +489,10 @@ window._setAlgoLang = function(lang) {
         setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     };
 
+    window.selectProblem = function(topicId, problemId) {
+        selectProblem(topicId, problemId);
+    };
+
     // ===== 콘텐츠 렌더링 =====
     function renderContent() {
         if (!currentTopic) return;

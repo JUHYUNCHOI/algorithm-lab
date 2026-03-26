@@ -82,10 +82,7 @@ const recursionTopic = {
                     </div>
 
                     <div class="matryoshka-text">
-                        큰 인형을 열면 작은 인형이 나오고, 그 안에 더 작은 인형이 있고...<br>
-                        가장 작은 인형을 만나면 더 이상 열 수 없으니까 끝나죠!<br>
-                        재귀도 똑같아요. <strong>함수가 자기 자신을 다시 부르면서</strong>
-                        문제를 점점 작게 만들다가, <strong>더 이상 작아질 수 없으면</strong> 딱 멈춰요.
+                        재귀도 똑같아요. <strong>함수가 자기 자신을 부르면서</strong> 문제를 점점 작게 만들다가, <strong>더 이상 작아질 수 없으면</strong> 멈춰요.
                     </div>
                 </div>
 
@@ -105,52 +102,22 @@ const recursionTopic = {
                         <code>factorial(1) = 1</code>이 되면 더 이상 부르지 않습니다.
                     </div>
                 </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">바로 풀어보기</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">팩토리얼 — 방금 배운 재귀를 직접 써보세요!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-27433');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">풀러 가기 →</button>
+                </div>
             </div>
 
             <!-- ② 재귀의 두 가지 필수 요소 -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">2</span> 재귀에 꼭 필요한 두 가지</div>
-                <div class="concept-grid">
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <rect x="25" y="25" width="30" height="30" rx="6" fill="none" stroke="var(--red)" stroke-width="3"/>
-                                <line x1="35" y1="35" x2="45" y2="45" stroke="var(--red)" stroke-width="3"/>
-                                <line x1="45" y1="35" x2="35" y2="45" stroke="var(--red)" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <h3>🛑 멈추는 조건</h3>
-                        <p>재귀를 <strong>멈추는 조건</strong>. 이것이 없으면 무한히 자기를 부릅니다!</p>
-                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n &lt;= 1:      # ← 여기서 멈춤!
-        return 1</code></pre></div></span>
-                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
-    if (n &lt;= 1)      // ← 여기서 멈춤!
-        return 1;
-}</code></pre></div></span>
-                    </div>
-                    <div class="concept-card">
-                        <div class="card-icon">
-                            <svg viewBox="0 0 80 80" class="icon-svg">
-                                <path d="M40 15 A25 25 0 1 1 39 15" fill="none" stroke="var(--accent)" stroke-width="3"/>
-                                <polygon points="35,12 40,20 45,12" fill="var(--accent)"/>
-                            </svg>
-                        </div>
-                        <h3>🔄 자기 자신 부르기</h3>
-                        <p>자기 자신을 다시 부르되, <strong>문제를 더 작게</strong> 만들어야 합니다!</p>
-                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">def factorial(n):
-    if n &lt;= 1:
-        return 1
-    return n * factorial(n - 1)  # ← 재귀!</code></pre></div></span>
-                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">int factorial(int n) {
-    if (n &lt;= 1)
-        return 1;
-    return n * factorial(n - 1);  // ← 재귀!
-}</code></pre></div></span>
-                    </div>
-                </div>
 
-                <!-- 데모 2: 멈추는 조건 비교 -->
+                <!-- 데모 2: 멈추는 조건 비교 (데모 먼저!) -->
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 멈추는 조건이 있을 때 vs 없을 때</div>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
@@ -176,6 +143,23 @@ const recursionTopic = {
                     <div class="concept-demo-msg" id="rec-demo-basecase-msg">👆 "실행" 버튼을 눌러 factorial(5)를 두 가지 방식으로 비교해보세요!</div>
                 </div>
 
+                <p style="margin:1.2rem 0 0.8rem;line-height:1.75;">방금 봤죠? 멈추는 조건이 없으면 끝없이 돌아요. 재귀에는 <strong>🛑 멈추는 조건</strong>과 <strong>🔄 자기를 다시 부르기</strong>, 이 두 가지가 꼭 필요해요.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>🛑 멈추는 조건</h3>
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">if n &lt;= 1:      # ← 여기서 멈춤!
+    return 1</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">if (n &lt;= 1)      // ← 여기서 멈춤!
+    return 1;</code></pre></div></span>
+                    </div>
+                    <div class="concept-card">
+                        <h3>🔄 자기 자신 부르기</h3>
+                        <span class="lang-py"><div class="code-block"><pre><code class="language-python">return n * factorial(n - 1)  # ← 재귀!</code></pre></div></span>
+                        <span class="lang-cpp"><div class="code-block"><pre><code class="language-cpp">return n * factorial(n - 1);  // ← 재귀!</code></pre></div></span>
+                    </div>
+                </div>
+
                 <div class="think-box">
                     <div class="think-box-question">
                         <span class="think-box-question-icon">Q</span>
@@ -189,14 +173,22 @@ const recursionTopic = {
                         그래서 멈추는 조건은 <strong>반드시</strong> 있어야 합니다.
                     </div>
                 </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">바로 풀어보기</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">피보나치 수 — 멈추는 조건 두 개가 필요한 재귀!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-10870');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">풀러 가기 →</button>
+                </div>
             </div>
 
             <!-- ③ 재귀의 동작 원리: 콜 스택 -->
             <div class="concept-section">
                 <div class="concept-section-title"><span class="section-num">3</span> 재귀는 어떻게 동작할까?</div>
-                <p style="margin-bottom: 1rem;">함수가 자기를 부를 때마다 <strong>접시처럼 쌓입니다</strong>. 멈추는 조건에 도달하면 위에서부터 하나씩 꺼내며 답을 돌려줍니다.</p>
 
-                <!-- 데모 3: 콜 스택 시각화 -->
+                <!-- 데모 3: 콜 스택 시각화 (데모 먼저!) -->
                 <div class="concept-demo">
                     <div class="concept-demo-title">🎮 직접 해보기 — 콜 스택 쌓고 꺼내기</div>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
@@ -220,11 +212,22 @@ const recursionTopic = {
                     <div class="concept-demo-msg" id="rec-demo-cs-msg">👆 "다음 단계" 버튼을 눌러 factorial(4)의 콜 스택이 쌓이고 꺼내지는 과정을 관찰하세요!</div>
                 </div>
 
+                <p style="margin:1.2rem 0 0.8rem;line-height:1.75;">함수가 자기를 부를 때마다 <strong>접시처럼 쌓이고</strong>, 멈추는 조건에서부터 <strong>위에서 하나씩 꺼내며</strong> 답을 돌려줘요.</p>
+
                 <div class="key-difference-box">
                     <div>📥 <strong>부르기</strong>: 큰 문제 → 작은 문제로 파고듭니다 (접시가 쌓입니다)</div>
                     <div>📤 <strong>돌려주기</strong>: 멈추는 조건부터 거꾸로 답을 돌려줍니다 (접시를 꺼냅니다)</div>
                     <div>💡 너무 많이 쌓이면? 컴퓨터가 감당을 못합니다! (<span class="lang-py">파이썬은 최대 1000번까지 — <code>sys.setrecursionlimit()</code>으로 늘릴 수 있습니다</span><span class="lang-cpp">C++은 스택 크기에 따라 수만~수십만 번까지 가능하지만, 그래도 넘치면 크래시!</span>)</div>
                     <div style="margin-top:8px;"><span class="lang-py"><a href="https://docs.python.org/3/library/sys.html#sys.setrecursionlimit" target="_blank" style="font-size:0.85rem;color:var(--accent);text-decoration:underline;">Python 공식 문서: sys.setrecursionlimit() ↗</a></span></div>
+                </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">바로 풀어보기</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">재귀의 귀재 — 콜 스택이 몇 번 쌓이는지 직접 세보세요!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-25501');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">풀러 가기 →</button>
                 </div>
             </div>
 
@@ -366,6 +369,15 @@ const recursionTopic = {
                         <strong>3. 점점 작게:</strong> n → n-1, n-2 (매번 줄어듦)<br><br>
                         이 패턴을 잘 기억하세요! 나중에 DP를 배울 때 그대로 쓰게 됩니다.
                     </div>
+                </div>
+
+                <div class="try-problem-link" style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--warm-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:1.3rem;">🎯</span>
+                    <div>
+                        <div style="font-weight:700;color:var(--text);margin-bottom:2px;">바로 풀어보기</div>
+                        <div style="font-size:0.85rem;color:var(--text2);">병합 정렬 — 재귀로 반씩 쪼개서 정렬하는 문제!</div>
+                    </div>
+                    <button onclick="if(window.selectProblem) window.selectProblem('recursion','boj-24060');" style="margin-left:auto;padding:8px 20px;background:var(--accent);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">풀러 가기 →</button>
                 </div>
             </div>
         `;

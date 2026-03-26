@@ -486,6 +486,10 @@ window._setAlgoLang = function(lang) {
         setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     };
 
+    window.selectProblem = function(topicId, problemId) {
+        selectProblem(topicId, problemId);
+    };
+
     // ===== Content rendering =====
     function renderContent() {
         if (!currentTopic) return;
