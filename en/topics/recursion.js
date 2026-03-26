@@ -1508,7 +1508,7 @@ const recursionTopic = {
                 disk.style.background = colors[(i - 1) % colors.length];
                 disk.dataset.size = i;
                 disk.textContent = i;
-                peg1El.prepend(disk);
+                peg1El.appendChild(disk);
             }
 
             const moveCountEl = el.querySelector('#move-count');
@@ -1530,9 +1530,9 @@ const recursionTopic = {
                     action() {
                         const fromEl = el.querySelector(`#peg-${m.from}`);
                         const toEl = el.querySelector(`#peg-${m.to}`);
-                        const disk = fromEl.firstChild;
+                        const disk = fromEl.lastChild;
                         if (disk) {
-                            toEl.prepend(disk);
+                            toEl.appendChild(disk);
                         }
                         moveNum++;
                         moveCountEl.textContent = moveNum;
@@ -1540,9 +1540,9 @@ const recursionTopic = {
                     undo() {
                         const fromEl = el.querySelector(`#peg-${m.from}`);
                         const toEl = el.querySelector(`#peg-${m.to}`);
-                        const disk = toEl.firstChild;
+                        const disk = toEl.lastChild;
                         if (disk) {
-                            fromEl.prepend(disk);
+                            fromEl.appendChild(disk);
                         }
                         moveNum--;
                         moveCountEl.textContent = moveNum;
@@ -2753,7 +2753,7 @@ const recursionTopic = {
                 disk.style.background = colors[(i - 1) % colors.length];
                 disk.dataset.size = i;
                 disk.textContent = i;
-                peg1El.prepend(disk);
+                peg1El.appendChild(disk);
             }
 
             var cntEl = container.querySelector('#sim-hanoi-cnt');
@@ -2776,16 +2776,16 @@ const recursionTopic = {
                     action: function() {
                         var fromEl = container.querySelector('#sim-peg-' + m.from);
                         var toEl = container.querySelector('#sim-peg-' + m.to);
-                        var dsk = fromEl.firstChild;
-                        if (dsk) toEl.prepend(dsk);
+                        var dsk = fromEl.lastChild;
+                        if (dsk) toEl.appendChild(dsk);
                         moveNum++;
                         cntEl.textContent = moveNum;
                     },
                     undo: function() {
                         var fromEl = container.querySelector('#sim-peg-' + m.from);
                         var toEl = container.querySelector('#sim-peg-' + m.to);
-                        var dsk = toEl.firstChild;
-                        if (dsk) fromEl.prepend(dsk);
+                        var dsk = toEl.lastChild;
+                        if (dsk) fromEl.appendChild(dsk);
                         moveNum--;
                         cntEl.textContent = moveNum;
                     }
@@ -2945,7 +2945,17 @@ const recursionTopic = {
             simIntro: 'See how the palindrome-checking recursion narrows in from both ends!',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>We want to convert an integer to a string and determine whether that string is a palindrome using a recursive function. Given the isPalindrome function, for each string output the palindrome result (1 or 0) and the number of times the recursion function is called.</p>
+                <p>We want to convert an integer to a string and determine whether that string is a palindrome using a recursive function. The following isPalindrome and recursion functions are given. For each string, output the palindrome result (1 or 0) and the number of times the recursion function is called.</p>
+                <pre style="background:var(--bg);padding:1rem;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;line-height:1.6;overflow-x:auto;">recursion(s, l, r){
+    if(l >= r) return 1
+    else if(s[l] != s[r]) return 0
+    else return recursion(s, l+1, r-1)
+}
+
+isPalindrome(s){
+    return recursion(s, 0, length(s)-1)
+}</pre>
+                <p>The key task is to count the number of times the <code>recursion</code> function is called in the pseudocode above.</p>
                 <h4>Input</h4>
                 <p>The first line contains the number of test cases T (1 ≤ T ≤ 1,000).</p>
                 <p>From the second line, T lines each contain a string S consisting of uppercase letters. (1 ≤ |S| ≤ 1,000)</p>
@@ -3007,7 +3017,29 @@ ABCDA</pre></div>
             simIntro: 'Watch the order in which values are stored during the split and merge phases of merge sort!',
             descriptionHTML: `
                 <h3>Problem</h3>
-                <p>Seojun is again a TA for the merge sort class. Below is the pseudocode for merge sort that sorts in ascending order. Given array A, write a program that finds the Kth value stored into array A when sorting it in ascending order using merge sort. If the total number of stores is less than K, output -1.</p>
+                <p>Seojun is again a TA for the merge sort class. Below is the pseudocode for merge sort that sorts in ascending order.</p>
+                <pre style="background:var(--bg);padding:1rem;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;line-height:1.6;overflow-x:auto;">merge_sort(A, p, r):
+    if p < r
+        q = ⌊(p + r) / 2⌋
+        merge_sort(A, p, q)
+        merge_sort(A, q + 1, r)
+        merge(A, p, q, r)
+
+merge(A, p, q, r):
+    i = p, j = q + 1, t = 1
+    while i ≤ q and j ≤ r
+        if A[i] ≤ A[j]
+            tmp[t++] = A[i++]
+        else
+            tmp[t++] = A[j++]
+    while i ≤ q
+        tmp[t++] = A[i++]
+    while j ≤ r
+        tmp[t++] = A[j++]
+    i = p, t = 1
+    while i ≤ r
+        A[i++] = tmp[t++]    # This is the "store"</pre>
+                <p>Given array A, write a program that finds the Kth value stored into array A when sorting it in ascending order using merge sort. If the total number of stores is less than K, output -1.</p>
                 <h4>Input</h4>
                 <p>The first line contains the size of array A, N (5 ≤ N ≤ 500,000), and the store count K (1 ≤ K ≤ 10<sup>8</sup>).</p>
                 <p>The next line contains N distinct elements A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>. (1 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>

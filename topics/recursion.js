@@ -1528,7 +1528,7 @@ const recursionTopic = {
                 disk.style.background = colors[(i - 1) % colors.length];
                 disk.dataset.size = i;
                 disk.textContent = i;
-                peg1El.prepend(disk);
+                peg1El.appendChild(disk);
             }
 
             const moveCountEl = el.querySelector('#move-count');
@@ -1550,9 +1550,9 @@ const recursionTopic = {
                     action() {
                         const fromEl = el.querySelector(`#peg-${m.from}`);
                         const toEl = el.querySelector(`#peg-${m.to}`);
-                        const disk = fromEl.firstChild;
+                        const disk = fromEl.lastChild;
                         if (disk) {
-                            toEl.prepend(disk);
+                            toEl.appendChild(disk);
                         }
                         moveNum++;
                         moveCountEl.textContent = moveNum;
@@ -1560,9 +1560,9 @@ const recursionTopic = {
                     undo() {
                         const fromEl = el.querySelector(`#peg-${m.from}`);
                         const toEl = el.querySelector(`#peg-${m.to}`);
-                        const disk = toEl.firstChild;
+                        const disk = toEl.lastChild;
                         if (disk) {
-                            fromEl.prepend(disk);
+                            fromEl.appendChild(disk);
                         }
                         moveNum--;
                         moveCountEl.textContent = moveNum;
@@ -2788,7 +2788,7 @@ const recursionTopic = {
                 disk.style.background = colors[(i - 1) % colors.length];
                 disk.dataset.size = i;
                 disk.textContent = i;
-                peg1El.prepend(disk);
+                peg1El.appendChild(disk);
             }
 
             var cntEl = container.querySelector('#sim-hanoi-cnt');
@@ -2811,16 +2811,16 @@ const recursionTopic = {
                     action: function() {
                         var fromEl = container.querySelector('#sim-peg-' + m.from);
                         var toEl = container.querySelector('#sim-peg-' + m.to);
-                        var dsk = fromEl.firstChild;
-                        if (dsk) toEl.prepend(dsk);
+                        var dsk = fromEl.lastChild;
+                        if (dsk) toEl.appendChild(dsk);
                         moveNum++;
                         cntEl.textContent = moveNum;
                     },
                     undo: function() {
                         var fromEl = container.querySelector('#sim-peg-' + m.from);
                         var toEl = container.querySelector('#sim-peg-' + m.to);
-                        var dsk = toEl.firstChild;
-                        if (dsk) fromEl.prepend(dsk);
+                        var dsk = toEl.lastChild;
+                        if (dsk) fromEl.appendChild(dsk);
                         moveNum--;
                         cntEl.textContent = moveNum;
                     }
@@ -2980,7 +2980,17 @@ const recursionTopic = {
             simIntro: '회문 검사 재귀가 양쪽 끝에서 어떻게 좁혀가는지 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>정수를 문자열로 변환한 다음, 그 문자열이 팰린드롬인지 재귀 함수를 이용해 판별하려 한다. isPalindrome 함수가 주어졌을 때, 각 문자열에 대해 팰린드롬 여부(1 또는 0)와 재귀 함수 recursion의 호출 횟수를 출력하시오.</p>
+                <p>정수를 문자열로 변환한 다음, 그 문자열이 팰린드롬인지 재귀 함수를 이용해 판별하려 한다. 아래와 같이 재귀 함수 isPalindrome과 recursion이 주어졌을 때, 각 문자열에 대해 팰린드롬 여부(1 또는 0)와 재귀 함수 recursion의 호출 횟수를 출력하시오.</p>
+                <pre style="background:var(--bg);padding:1rem;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;line-height:1.6;overflow-x:auto;">recursion(s, l, r){
+    if(l >= r) return 1
+    else if(s[l] != s[r]) return 0
+    else return recursion(s, l+1, r-1)
+}
+
+isPalindrome(s){
+    return recursion(s, 0, length(s)-1)
+}</pre>
+                <p>위 의사 코드에서 <code>recursion</code> 함수의 호출 횟수를 세는 것이 핵심이다.</p>
                 <h4>입력</h4>
                 <p>첫째 줄에 테스트케이스의 개수 T가 주어진다. (1 ≤ T ≤ 1,000)</p>
                 <p>둘째 줄부터 T개의 줄에 알파벳 대문자로 구성된 문자열 S가 주어진다. (1 ≤ |S| ≤ 1,000)</p>
@@ -3042,7 +3052,29 @@ ABCDA</pre></div>
             simIntro: '병합 정렬의 분할과 병합 과정에서 값이 저장되는 순서를 확인해보세요!',
             descriptionHTML: `
                 <h3>문제</h3>
-                <p>오늘도 서준이는 병합 정렬 수업 조교를 맡았다. 아래는 오름차순으로 정렬하는 병합 정렬 의사 코드이다. 배열 A가 주어졌을 때, 병합 정렬로 배열을 오름차순으로 정렬할 경우 배열 A에 K번째로 저장되는 수를 구하는 프로그램을 작성하시오. 저장 횟수가 K보다 작으면 -1을 출력한다.</p>
+                <p>오늘도 서준이는 병합 정렬 수업 조교를 맡았다. 아래는 오름차순으로 정렬하는 병합 정렬 의사 코드이다.</p>
+                <pre style="background:var(--bg);padding:1rem;border-radius:8px;border:1px solid var(--border);font-size:0.85rem;line-height:1.6;overflow-x:auto;">merge_sort(A, p, r):
+    if p < r
+        q = ⌊(p + r) / 2⌋
+        merge_sort(A, p, q)
+        merge_sort(A, q + 1, r)
+        merge(A, p, q, r)
+
+merge(A, p, q, r):
+    i = p, j = q + 1, t = 1
+    while i ≤ q and j ≤ r
+        if A[i] ≤ A[j]
+            tmp[t++] = A[i++]
+        else
+            tmp[t++] = A[j++]
+    while i ≤ q
+        tmp[t++] = A[i++]
+    while j ≤ r
+        tmp[t++] = A[j++]
+    i = p, t = 1
+    while i ≤ r
+        A[i++] = tmp[t++]    # 이 부분이 "저장"</pre>
+                <p>배열 A가 주어졌을 때, 병합 정렬로 배열을 오름차순으로 정렬할 경우 배열 A에 K번째로 저장되는 수를 구하는 프로그램을 작성하시오. 저장 횟수가 K보다 작으면 -1을 출력한다.</p>
                 <h4>입력</h4>
                 <p>첫째 줄에 배열 A의 크기 N(5 ≤ N ≤ 500,000), 저장 횟수 K(1 ≤ K ≤ 10<sup>8</sup>)가 주어진다.</p>
                 <p>다음 줄에 서로 다른 배열 A의 원소 A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub>이 주어진다. (1 ≤ A<sub>i</sub> ≤ 10<sup>9</sup>)</p>

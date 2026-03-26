@@ -3971,25 +3971,28 @@ button.problem-card:hover {
 
 /* ===== 하노이 탑 시각화 ===== */
 .hanoi-pegs {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1rem;
-    padding: 1rem 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding: 1rem 0.5rem;
+    min-height: 220px;
+    position: relative;
 }
 
 .hanoi-peg {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 30%;
     position: relative;
-    min-height: 200px;
+    min-height: 180px;
+    justify-content: flex-end;
 }
 
 .peg-label {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text2);
-    margin-bottom: 0.5rem;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -3997,26 +4000,30 @@ button.problem-card:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    top: -8px;
+    z-index: 2;
 }
 
 .peg-rod {
     width: 6px;
-    height: 100px;
+    height: 140px;
     background: linear-gradient(to bottom, var(--bg3), var(--border));
-    border-radius: 3px;
+    border-radius: 3px 3px 0 0;
     position: absolute;
-    top: 40px;
+    bottom: 0;
     z-index: 0;
 }
 
 .peg-disks {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     gap: 4px;
-    position: absolute;
-    bottom: 12px;
+    position: relative;
     z-index: 1;
+    width: 100%;
+    padding-bottom: 4px;
 }
 
 .hanoi-disk {
