@@ -1,5 +1,22 @@
 // ===== Algorithm Lab - Main App Engine =====
 
+// ===== 트랙 설정 (URL param → localStorage) =====
+const _trackParam = new URLSearchParams(window.location.search).get('track');
+if (_trackParam) localStorage.setItem('algo-track', _trackParam);
+window._algoTrack = localStorage.getItem('algo-track') || 'cpp';
+
+// Python 트랙에서 보여줄 토픽 (10개)
+const PYTHON_TOPICS = new Set([
+  'sorting', 'string', 'array', 'prefixsum', 'recursion',
+  'stackqueue', 'hashtable', 'binarysearch', 'greedy', 'dp'
+]);
+
+// 현재 트랙에서 보여줄 토픽인지 확인
+window._isTopicVisible = function(topicId) {
+  if (window._algoTrack === 'python') return PYTHON_TOPICS.has(topicId);
+  return true; // cpp/igcse는 전체
+};
+
 // ===== 전역 언어 설정 (Python / C++) =====
 window._algoLang = localStorage.getItem('algo-lang') || 'python';
 document.body.setAttribute('data-lang', window._algoLang);
@@ -93,6 +110,7 @@ window._setAlgoLang = function(lang) {
 
         const grouped = {};
         Object.values(topics).forEach(topic => {
+            if (!window._isTopicVisible(topic.id)) return;
             const cat = topic.category || '기타';
             if (!grouped[cat]) grouped[cat] = [];
             grouped[cat].push(topic);
@@ -330,6 +348,11 @@ window._setAlgoLang = function(lang) {
             expandedTopicId = topicId;
         }
 
+        // Coderin 진도 추적 — 토픽 탐색 시작
+        if (typeof window.trackAlgoTopicStart === 'function') {
+            window.trackAlgoTopicStart(topicId);
+        }
+
         updateSidebarActiveStates();
 
         const prob = topic.problems.find(p => p.id === problemId);
@@ -487,6 +510,11 @@ window._setAlgoLang = function(lang) {
         renderContent();
         updateHash();
         setTimeout(() => { content.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+
+        // Coderin 진도 추적 — 'code' 탭 도달 시 토픽 완료 기록
+        if (tabId === 'code' && currentTopic && typeof window.trackAlgoTopicComplete === 'function') {
+            window.trackAlgoTopicComplete(currentTopic.id);
+        }
     };
 
     window.selectProblem = function(topicId, problemId) {
